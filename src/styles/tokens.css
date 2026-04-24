@@ -1,0 +1,83 @@
+/* Tamazia · Design Tokens
+   Single source of truth for all colour, typography, spacing, motion.
+   Edit only this file to change the whole site. */
+
+:root {
+  /* PALETTE */
+  --ink: #0A0A0B;
+  --ivory: #FAF7F2;
+  --ivory-warm: #F4F0E8;
+  --oxblood: #5A1A2B;
+  --oxblood-warm: #6D2037;
+  --oxblood-deep: #451220;
+  --gold: #C9A772;
+  --gold-warm: #D4B787;
+  --pearl: #E8E4DC;
+  --obsidian: #1A1A1D;
+  --obsidian-deep: #0F0F11;
+  --ink-muted: #4A4A4D;
+
+  /* HAIRLINE + SOFT TINTS */
+  --hairline: rgba(10, 10, 11, 0.12);
+  --hairline-strong: rgba(10, 10, 11, 0.22);
+  --gold-hairline: rgba(201, 167, 114, 0.35);
+  --gold-hairline-strong: rgba(201, 167, 114, 0.6);
+  --gold-soft: rgba(201, 167, 114, 0.4);
+  --oxblood-hairline: rgba(90, 26, 43, 0.18);
+
+  /* TYPOGRAPHY FAMILIES */
+  --ff-display: 'Playfair Display', Georgia, serif;
+  --ff-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --ff-signature: 'Great Vibes', 'Pinyon Script', cursive;
+
+  /* FLUID TYPE SCALE */
+  --fs-h1: clamp(46px, 5vw + 0.5rem, 88px);
+  --fs-h2: clamp(32px, 3vw + 0.5rem, 56px);
+  --fs-h3: clamp(20px, 1.5vw + 0.5rem, 28px);
+  --fs-pull-quote: clamp(18px, 1.4vw + 0.3rem, 22px);
+  --fs-sub-headline: clamp(22px, 1.8vw + 0.5rem, 28px);
+  --fs-display-numeral: clamp(64px, 6vw + 1rem, 120px);
+  --fs-body: clamp(15px, 0.5vw + 0.75rem, 17px);
+  --fs-body-large: clamp(16px, 0.6vw + 0.8rem, 18px);
+  --fs-body-small: 13px;
+  --fs-micro: 11px;
+  --fs-nano: 10px;
+
+  /* LETTER-SPACING */
+  --ls-h1-display: -0.025em;
+  --ls-h2: -0.02em;
+  --ls-h3: -0.01em;
+  --ls-caps-eyebrow: 0.32em;
+  --ls-caps-nav: 0.18em;
+  --ls-caps-micro: 0.2em;
+  --ls-caps-ticker: 0.22em;
+
+  /* SPACING RHYTHM */
+  --section-padding-block: clamp(80px, 10vw, 160px);
+  --section-gap: clamp(48px, 6vw, 96px);
+  --block-gap: clamp(24px, 3vw, 40px);
+  --element-gap: clamp(16px, 2vw, 24px);
+  --text-gap: 16px;
+
+  /* CONTAINER */
+  --container-max: 1440px;
+  --container-padding: clamp(24px, 4vw, 80px);
+
+  /* MOTION */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-micro: 200ms;
+  --duration-short: 400ms;
+  --duration-mid: 600ms;
+  --duration-long: 900ms;
+  --duration-extra-long: 1400ms;
+  --duration-ambient: 60000ms;
+}
+
+/* PRINT DEFAULTS (unused at launch but defined) */
+@media print {
+  :root {
+    --ivory: #ffffff;
+    --ink: #000000;
+  }
+}

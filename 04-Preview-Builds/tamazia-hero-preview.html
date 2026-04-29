@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamazia · Hero Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0A0A0B;
+      --ivory: #FAF7F2;
+      --ivory-warm: #F4F0E8;
+      --oxblood: #5A1A2B;
+      --oxblood-warm: #6D2037;
+      --oxblood-deep: #451220;
+      --gold: #C9A772;
+      --gold-warm: #D4B787;
+      --gold-soft: rgba(201, 167, 114, 0.4);
+      --pearl: #E8E4DC;
+      --obsidian: #1A1A1D;
+      --obsidian-deep: #0F0F11;
+      --ink-muted: #4A4A4D;
+      --hairline: rgba(10, 10, 11, 0.12);
+      --gold-hairline: rgba(201, 167, 114, 0.35);
+      --gold-hairline-strong: rgba(201, 167, 114, 0.6);
+      --oxblood-hairline: rgba(90, 26, 43, 0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      hanging-punctuation: first last;
+    }
+
+    body {
+      background: var(--ivory);
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      font-feature-settings: "kern", "liga", "clig", "calt";
+    }
+
+    ::selection { background: var(--oxblood); color: var(--ivory); }
+
+    .emph {
+      font-style: italic;
+      color: var(--oxblood);
+      font-weight: 500;
+      font-feature-settings: "kern", "liga", "dlig", "swsh";
+    }
+
+    /* ============================================================
+       TOP STRIP
+       ============================================================ */
+    .top-strip {
+      height: 36px;
+      background: var(--ivory);
+      border-bottom: 1px solid var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      font-weight: 400;
+    }
+
+    .top-strip .dot {
+      color: var(--gold);
+      margin: 0 10px;
+      opacity: 0.85;
+    }
+
+    /* ============================================================
+       MAIN NAV
+       ============================================================ */
+    .main-nav {
+      height: 76px;
+      background: var(--ivory);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 72px;
+      border-bottom: 1px solid var(--hairline);
+      position: sticky;
+      top: 36px;
+      z-index: 100;
+    }
+
+    /* Circular burgundy crest logo */
+    .logo-crest {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--oxblood);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 0 0 1px rgba(201, 167, 114, 0.1);
+      transition: transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                  box-shadow 400ms ease;
+    }
+
+    .logo-crest::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border: 1px solid rgba(201, 167, 114, 0.3);
+      border-radius: 50%;
+    }
+
+    .logo-crest .t {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      transform: translateY(-1px);
+    }
+
+    .logo-crest:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 4px rgba(201, 167, 114, 0.08);
+    }
+
+    .logo-wordmark {
+      margin-left: 14px;
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-items {
+      display: flex;
+      list-style: none;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-items li {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+      cursor: pointer;
+      position: relative;
+      padding: 6px 0;
+      transition: color 300ms ease;
+      font-weight: 400;
+    }
+
+    .nav-items li::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .nav-items li:hover::after { width: 100%; }
+    .nav-items li:hover { color: var(--oxblood); }
+
+    .nav-cta {
+      background: var(--oxblood);
+      color: var(--ivory);
+      border: 1px solid var(--gold);
+      height: 46px;
+      padding: 0 26px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-left: 40px;
+      transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+    }
+
+    .nav-cta:hover {
+      background: var(--oxblood-warm);
+      border-color: var(--gold-warm);
+      box-shadow: 0 0 0 3px rgba(201, 167, 114, 0.12);
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 112px;
+      left: 0;
+      height: 1px;
+      background: var(--oxblood);
+      width: 0%;
+      transition: width 120ms linear;
+      z-index: 99;
+      opacity: 0.7;
+    }
+
+    /* ============================================================
+       HERO (IVORY BG NOW)
+       ============================================================ */
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 112px);
+      background: var(--ivory);
+      overflow: hidden;
+      padding: 56px 80px 120px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    /* Vignette entry (subtle warm glow on ivory) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(201, 167, 114, 0.1) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 30% at 50% 100%, rgba(90, 26, 43, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      animation: vignette-in 2500ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes vignette-in { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Paper grain */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Right margin hairline */
+    .margin-rule {
+      position: absolute;
+      right: 56px;
+      top: 80px;
+      bottom: 80px;
+      width: 1px;
+      background: var(--oxblood-hairline);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       REGULATION RIBBON (more prominent, oxblood, more laws)
+       ============================================================ */
+    .regulation-ribbon {
+      position: absolute;
+      right: 4%;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 3;
+      mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+    }
+
+    /* Ribbon header label */
+    .ribbon-label {
+      position: absolute;
+      top: 100px;
+      right: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      opacity: 0;
+      animation: fade-in-up 800ms ease 1000ms forwards;
+      font-weight: 500;
+    }
+
+    .ribbon-column {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 18px;
+      animation: ribbon-scroll 110s linear infinite;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      opacity: 0.5;
+      text-align: right;
+      font-weight: 500;
+      padding-right: 16px;
+    }
+
+    .ribbon-column span {
+      white-space: nowrap;
+      display: block;
+    }
+
+    .ribbon-column span.gold {
+      color: var(--gold);
+      font-style: italic;
+      font-weight: 400;
+      opacity: 0.75;
+      font-size: 13px;
+    }
+
+    @keyframes ribbon-scroll {
+      from { transform: translateY(0); }
+      to { transform: translateY(-50%); }
+    }
+
+    /* Monogram watermark T */
+    .monogram {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .monogram-t {
+      font-family: 'Playfair Display', serif;
+      font-size: 680px;
+      font-weight: 400;
+      color: var(--oxblood);
+      line-height: 1;
+      opacity: 0.025;
+      animation: monogram-breath 8s ease-in-out infinite;
+      letter-spacing: -0.04em;
+    }
+
+    @keyframes monogram-breath {
+      0%, 100% { opacity: 0.025; transform: scale(1); }
+      50% { opacity: 0.04; transform: scale(1.01); }
+    }
+
+    /* ============================================================
+       HERO CONTENT
+       ============================================================ */
+    .hero-content {
+      position: relative;
+      z-index: 4;
+      max-width: 900px;
+      width: 62%;
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      font-weight: 500;
+      opacity: 0;
+      animation: fade-in-up 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 400ms forwards;
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 28px;
+      height: 1px;
+      background: var(--oxblood);
+    }
+
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sub-headline above H1 */
+    .sub-headline {
+      margin-top: 18px;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 1.8vw + 0.5rem, 28px);
+      line-height: 1.3;
+      color: var(--ink);
+      font-weight: 400;
+      max-width: 720px;
+      letter-spacing: -0.005em;
+      font-feature-settings: "kern", "liga", "dlig";
+      opacity: 0;
+      animation: fade-in-up 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) 600ms forwards;
+    }
+
+    /* Fleuron divider */
+    .fleuron {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fade-in-up 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 1000ms forwards;
+    }
+
+    .fleuron-rule {
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.45;
+      flex: 0 0 80px;
+    }
+
+    .fleuron-mark {
+      font-size: 16px;
+      color: var(--gold);
+      line-height: 1;
+      font-family: 'Playfair Display', serif;
+      animation: fleuron-rotate 14s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes fleuron-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Pull quote above H1 */
+    .pull-quote {
+      position: relative;
+      padding: 4px 44px;
+      max-width: 720px;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 1.4vw + 0.3rem, 21px);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.35;
+      letter-spacing: 0.003em;
+      opacity: 0;
+      animation: fade-in-up 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) 1300ms forwards;
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      position: absolute;
+      top: -22px;
+      left: -2px;
+      font-family: 'Playfair Display', serif;
+      font-size: 72px;
+      font-style: normal;
+      color: var(--gold);
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .pull-quote::after {
+      content: '\201D';
+      position: absolute;
+      bottom: -52px;
+      right: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 72px;
+      font-style: normal;
+      color: var(--gold);
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .manicule {
+      position: absolute;
+      left: -36px;
+      top: 14px;
+      font-size: 18px;
+      color: var(--oxblood);
+      opacity: 0;
+      animation: fade-in-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 1600ms forwards;
+    }
+
+    /* Gold hairline divider before H1 */
+    .h1-divider {
+      margin: 28px 0 20px;
+      height: 1px;
+      background: linear-gradient(to right, transparent 0%, var(--gold) 20%, var(--gold) 80%, transparent 100%);
+      opacity: 0;
+      max-width: 520px;
+      animation: h1-divider-in 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 1800ms forwards;
+      transform-origin: left center;
+      transform: scaleX(0);
+    }
+
+    @keyframes h1-divider-in {
+      from { opacity: 0; transform: scaleX(0); }
+      to { opacity: 0.6; transform: scaleX(1); }
+    }
+
+    /* ============================================================
+       H1
+       ============================================================ */
+    .hero-h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+      font-size: clamp(48px, 5.2vw + 0.5rem, 92px);
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      font-feature-settings: "kern", "liga", "dlig", "lnum", "swsh";
+    }
+
+    .h1-row {
+      display: flex;
+      align-items: baseline;
+      gap: 32px;
+      position: relative;
+      padding-bottom: 8px;
+      margin-bottom: 0;
+    }
+
+    .numeral {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--oxblood);
+      flex-shrink: 0;
+      width: 36px;
+      text-align: right;
+      opacity: 0;
+      transform: translateX(8px);
+      transition: opacity 600ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                  transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      line-height: 1;
+      align-self: flex-end;
+      padding-bottom: 22px;
+      letter-spacing: 0.02em;
+    }
+
+    .numeral.visible {
+      opacity: 0.9;
+      transform: translateX(0);
+    }
+
+    .line-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: baseline;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .line {
+      display: inline-block;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .line .emph {
+      color: var(--oxblood);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .line.typing::after {
+      content: '';
+      display: inline-block;
+      width: 2px;
+      height: 0.9em;
+      background: var(--oxblood);
+      margin-left: 4px;
+      vertical-align: -0.1em;
+      animation: blink 0.6s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .h1-row::after {
+      content: '';
+      position: absolute;
+      left: 68px;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--oxblood);
+      opacity: 0.18;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .h1-row.complete::after { transform: scaleX(1); }
+
+    /* Margin notes */
+    .margin-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 700ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                  transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: flex-end;
+      padding-bottom: 24px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .margin-note::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 12px;
+      height: 1px;
+      background: var(--oxblood);
+      opacity: 0.6;
+    }
+
+    .margin-note.visible {
+      opacity: 0.85;
+      transform: translateX(0);
+    }
+
+    /* ============================================================
+       "THE AUTHOR" FRAMED CARD (pre-headline moved below H1)
+       A certificate-style credential frame. Feels like it earned its place.
+       ============================================================ */
+    .author-frame {
+      position: relative;
+      margin-top: 40px;
+      max-width: 680px;
+      padding: 32px 40px;
+      border: 1px solid var(--gold);
+      background: rgba(201, 167, 114, 0.04);
+      opacity: 0;
+      animation: frame-in 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) 4600ms forwards;
+    }
+
+    @keyframes frame-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Inner double-line */
+    .author-frame::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(201, 167, 114, 0.35);
+      pointer-events: none;
+    }
+
+    /* Corner ornaments (4 gold diamonds at each corner) */
+    .corner {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      transform: rotate(45deg);
+      background: var(--ivory);
+      border: 1px solid var(--gold);
+    }
+    .corner.tl { top: -6px; left: -6px; }
+    .corner.tr { top: -6px; right: -6px; }
+    .corner.bl { bottom: -6px; left: -6px; }
+    .corner.br { bottom: -6px; right: -6px; }
+
+    /* Frame eyebrow continues the Roman numeral sequence */
+    .author-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .author-eyebrow .roman {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--oxblood);
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
+    .author-eyebrow .rule {
+      flex: 1;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+      max-width: 80px;
+    }
+
+    .author-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--oxblood);
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -0.005em;
+    }
+
+    .author-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.65;
+      max-width: 580px;
+      letter-spacing: 0.002em;
+    }
+
+    .author-text .emph {
+      color: var(--oxblood);
+      font-weight: 500;
+    }
+
+    .author-credentials {
+      margin-top: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .author-credentials .sep { margin: 0 8px; opacity: 0.6; }
+
+    /* Primary CTA */
+    .primary-cta {
+      margin-top: 36px;
+      background: var(--oxblood);
+      color: var(--ivory);
+      border: 1px solid var(--gold);
+      height: 66px;
+      padding: 0 40px;
+      min-width: 360px;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      opacity: 0;
+      animation: fade-in-up 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 5500ms forwards;
+      transition: transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                  background 400ms ease,
+                  border-color 400ms ease,
+                  box-shadow 400ms ease,
+                  letter-spacing 400ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .primary-cta .cta-arrow {
+      display: inline-block;
+      transition: transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 20px;
+    }
+
+    .primary-cta:hover {
+      background: var(--oxblood-warm);
+      border-color: var(--gold-warm);
+      box-shadow: 0 0 32px rgba(201, 167, 114, 0.25);
+      letter-spacing: 0.08em;
+    }
+
+    .primary-cta:hover .cta-arrow {
+      transform: translateX(6px);
+      color: var(--gold-warm);
+    }
+
+    /* ============================================================
+       TICKER — kept dark for contrast + Bloomberg feel
+       ============================================================ */
+    .verified-ticker {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 52px;
+      background: var(--obsidian);
+      border-top: 1px solid var(--gold);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      z-index: 6;
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 56px;
+      white-space: nowrap;
+      animation: ticker-slide 70s linear infinite;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding-left: 80px;
+      font-weight: 500;
+    }
+
+    .ticker-inner span { flex-shrink: 0; }
+
+    .ticker-inner .ornament {
+      color: var(--gold);
+      opacity: 0.5;
+      font-size: 10px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    @keyframes ticker-slide {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ============================================================
+       SIGNATURE BLOCK (Vetted by + Aman Pareek + flourish)
+       ============================================================ */
+    .signature-wrap {
+      position: absolute;
+      right: 80px;
+      bottom: 96px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .signature-wrap::before {
+      content: '';
+      display: block;
+      width: 64px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0;
+      margin-bottom: 12px;
+      align-self: flex-end;
+      animation: line-draw 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 5800ms forwards;
+    }
+
+    @keyframes line-draw {
+      from { opacity: 0; width: 0; }
+      to { opacity: 0.7; width: 64px; }
+    }
+
+    /* "Vetted by" label */
+    .vetted-by {
+      font-family: 'Inter', sans-serif;
+      font-style: italic;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fade-in-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 6000ms forwards;
+      font-weight: 400;
+    }
+
+    /* Signature — Great Vibes for dramatic flourish on the 'k' */
+    .signature {
+      font-family: 'Great Vibes', 'Pinyon Script', cursive;
+      font-size: 72px;
+      color: var(--oxblood);
+      line-height: 0.9;
+      clip-path: inset(0 100% 0 0);
+      animation: signature-draw 1800ms cubic-bezier(0.3, 0.7, 0.3, 1) 6200ms forwards;
+      letter-spacing: 0.01em;
+      padding-right: 8px;
+      padding-bottom: 4px;
+    }
+
+    @keyframes signature-draw {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0 0 0 0); }
+    }
+
+    /* Gold flourish underline below signature */
+    .signature-flourish {
+      margin-top: -4px;
+      margin-right: 20px;
+      align-self: flex-end;
+      opacity: 0;
+      animation: fade-in-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 7900ms forwards;
+    }
+
+    .signature-flourish svg {
+      display: block;
+      overflow: visible;
+    }
+
+    .signature-caption {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      opacity: 0;
+      margin-top: 10px;
+      animation: fade-in-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 8200ms forwards;
+      font-weight: 500;
+    }
+
+    .signature-caption .sep { margin: 0 6px; opacity: 0.5; color: var(--gold); }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 100px;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      z-index: 5;
+      opacity: 0;
+      animation: fade-in-up 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) 6500ms forwards;
+    }
+
+    .scroll-track {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, transparent 0%, var(--oxblood) 30%, var(--oxblood) 70%, transparent 100%);
+      opacity: 0.45;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-diamond {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 5px;
+      height: 5px;
+      background: var(--oxblood);
+      transform: translateX(-50%) rotate(45deg);
+      animation: diamond-travel 3s ease-in-out infinite;
+    }
+
+    @keyframes diamond-travel {
+      0% { top: 0; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { top: 45px; opacity: 0; }
+    }
+
+    .scroll-cue span {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      opacity: 0.7;
+      font-weight: 500;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .ribbon-column, .ticker-inner, .scroll-diamond,
+      .monogram-t, .fleuron-mark { animation: none !important; }
+      .signature { clip-path: none !important; }
+      .h1-row::after { transform: scaleX(1); }
+      .h1-divider { transform: scaleX(1); opacity: 0.6; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1280px) {
+      .hero { padding: 80px 48px 120px; }
+      .regulation-ribbon { right: 2%; width: 220px; }
+      .signature-wrap { right: 48px; }
+      .margin-rule { right: 28px; }
+    }
+
+    @media (max-width: 1024px) {
+      .hero { padding: 64px 32px 140px; flex-direction: column; }
+      .hero-content { width: 100%; }
+      .h1-row { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .h1-row::after { display: none; }
+      .line-wrap { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .margin-note { padding-bottom: 0; margin-bottom: 8px; align-self: flex-start; }
+      .numeral { padding-bottom: 0; align-self: flex-start; width: auto; text-align: left; }
+      .regulation-ribbon { right: 0; width: 160px; opacity: 0.6; }
+      .signature-wrap { right: 32px; bottom: 96px; }
+      .scroll-cue { display: none; }
+      .margin-rule { display: none; }
+      .primary-cta { min-width: 0; width: 100%; max-width: 420px; }
+      .manicule { display: none; }
+      .ribbon-label { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .top-strip { font-size: 8.5px; padding: 0 10px; overflow: hidden; letter-spacing: 0.15em; }
+      .main-nav { padding: 0 20px; height: 60px; }
+      .nav-items { display: none; }
+      .logo-crest { width: 40px; height: 40px; }
+      .logo-crest .t { font-size: 19px; }
+      .logo-wordmark { font-size: 16px; margin-left: 10px; }
+      .nav-cta { height: 40px; padding: 0 16px; font-size: 10px; margin-left: 0; }
+      .hero { padding: 48px 24px 120px; }
+      .sub-headline { font-size: 19px; }
+      .hero-h1 { font-size: 38px; }
+      .pull-quote { font-size: 17px; padding: 12px 30px; }
+      .pull-quote::before { font-size: 54px; top: -12px; }
+      .pull-quote::after { font-size: 54px; bottom: -40px; }
+      .primary-cta { font-size: 14px; height: 58px; padding: 0 24px; }
+      .signature { font-size: 54px; }
+      .signature-wrap { bottom: 84px; right: 24px; }
+      .regulation-ribbon { display: none; }
+      .monogram-t { font-size: 380px; }
+      .eyebrow { font-size: 10px; padding-left: 32px; }
+      .fleuron-rule { flex: 0 0 40px; }
+      .author-frame { padding: 24px 20px; }
+      .author-title { font-size: 20px; }
+      .author-text { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-strip">
+    LONDON<span class="dot">·</span>DUBAI<span class="dot">·</span>NEW YORK<span class="dot">·</span>PARIS<span class="dot">✦</span>MEMBER, CHARTERED INSTITUTE OF ARBITRATORS<span class="dot">·</span>MEMBER, AMERICAN BAR ASSOCIATION
+  </header>
+
+  <nav class="main-nav">
+    <div class="logo-group">
+      <div class="logo-crest" aria-label="Tamazia crest">
+        <span class="t">T</span>
+      </div>
+      <div class="logo-wordmark">Tamazia</div>
+    </div>
+    <ul class="nav-items">
+      <li>Why Us</li>
+      <li>Sectors</li>
+      <li>Cases</li>
+      <li>Process</li>
+      <li>Pricing</li>
+      <li>FAQ</li>
+      <li>Contact</li>
+    </ul>
+    <button class="nav-cta">Request a Briefing</button>
+  </nav>
+
+  <div class="progress-bar" id="progress"></div>
+
+  <section class="hero">
+    <div class="monogram" aria-hidden="true">
+      <span class="monogram-t">T</span>
+    </div>
+
+    <!-- Vertical label beside regulation ribbon -->
+    <div class="ribbon-label" aria-hidden="true">Frameworks reviewed per campaign</div>
+
+    <!-- Regulation ribbon — MORE PROMINENT + MORE LAWS -->
+    <div class="regulation-ribbon" aria-hidden="true">
+      <div class="ribbon-column">
+        <span>SRA</span>
+        <span>Bar Standards</span>
+        <span>DIFC</span>
+        <span>GDPR</span>
+        <span>FCA COBS</span>
+        <span class="gold">EU AI Act</span>
+        <span>MHRA</span>
+        <span>HIPAA</span>
+        <span>CQC</span>
+        <span>GMC</span>
+        <span>ADA</span>
+        <span>SEC Reg FD</span>
+        <span>DFSA</span>
+        <span class="gold">NYSE</span>
+        <span>FINRA</span>
+        <span>PRA</span>
+        <span>ICO</span>
+        <span>CNIL</span>
+        <span>BaFin</span>
+        <span class="gold">AMF</span>
+        <span>MAS</span>
+        <span>HKMA</span>
+        <span>SFC</span>
+        <span>SEBI</span>
+        <span>RBI</span>
+        <span>IRDAI</span>
+        <span>DPDP</span>
+        <span class="gold">RERA</span>
+        <span>Trakheesi</span>
+        <span>CMA</span>
+        <span>ASA UK</span>
+        <span>NAD US</span>
+        <span class="gold">CCPA</span>
+        <span>CAN-SPAM</span>
+        <span>CASL</span>
+        <span>POPIA</span>
+        <span>LGPD</span>
+        <span>PDPA SG</span>
+        <span class="gold">DSA</span>
+        <span>DMA</span>
+        <span>NIS2</span>
+        <span>FDA</span>
+        <span>FTC</span>
+        <span>CFTC</span>
+        <span>SFO</span>
+        <!-- duplicate for seamless loop -->
+        <span>SRA</span>
+        <span>Bar Standards</span>
+        <span>DIFC</span>
+        <span>GDPR</span>
+        <span>FCA COBS</span>
+        <span class="gold">EU AI Act</span>
+        <span>MHRA</span>
+        <span>HIPAA</span>
+        <span>CQC</span>
+        <span>GMC</span>
+        <span>ADA</span>
+        <span>SEC Reg FD</span>
+        <span>DFSA</span>
+        <span class="gold">NYSE</span>
+        <span>FINRA</span>
+        <span>PRA</span>
+        <span>ICO</span>
+        <span>CNIL</span>
+        <span>BaFin</span>
+        <span class="gold">AMF</span>
+        <span>MAS</span>
+        <span>HKMA</span>
+        <span>SFC</span>
+        <span>SEBI</span>
+        <span>RBI</span>
+        <span>IRDAI</span>
+        <span>DPDP</span>
+        <span class="gold">RERA</span>
+        <span>Trakheesi</span>
+        <span>CMA</span>
+        <span>ASA UK</span>
+        <span>NAD US</span>
+        <span class="gold">CCPA</span>
+        <span>CAN-SPAM</span>
+        <span>CASL</span>
+        <span>POPIA</span>
+        <span>LGPD</span>
+        <span>PDPA SG</span>
+        <span class="gold">DSA</span>
+        <span>DMA</span>
+        <span>NIS2</span>
+        <span>FDA</span>
+        <span>FTC</span>
+        <span>CFTC</span>
+        <span>SFO</span>
+      </div>
+    </div>
+
+    <div class="margin-rule" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="eyebrow">The Brief &middot; 2026</div>
+
+      <p class="sub-headline">
+        Your SEO agency doesn&rsquo;t have a <span class="emph">lawyer</span>. Ours is run by <span class="emph">one</span>.
+      </p>
+
+      <div class="fleuron" aria-hidden="true">
+        <div class="fleuron-rule"></div>
+        <span class="fleuron-mark">&#10086;</span>
+        <div class="fleuron-rule"></div>
+      </div>
+
+      <blockquote class="pull-quote">
+        Ranking is only valuable if it is <span class="emph">legal</span>.
+      </blockquote>
+
+      <div class="h1-divider" aria-hidden="true"></div>
+
+      <h1 class="hero-h1">
+        <div class="h1-row">
+          <span class="numeral" data-delay="2000">I.</span>
+          <div class="line-wrap">
+            <span class="line" data-text="Outrank {{competitors.}}"></span>
+            <span class="margin-note" data-delay="3400">Verified &middot; 2024</span>
+          </div>
+        </div>
+        <div class="h1-row">
+          <span class="numeral" data-delay="2900">II.</span>
+          <div class="line-wrap">
+            <span class="line" data-text="Master {{regulators.}}"></span>
+            <span class="margin-note" data-delay="4000">200+ Frameworks</span>
+          </div>
+        </div>
+        <div class="h1-row">
+          <span class="numeral" data-delay="3800">III.</span>
+          <div class="line-wrap">
+            <span class="line" data-text="{{One}} agency."></span>
+            <span class="margin-note" data-delay="4500">Four Continents</span>
+          </div>
+        </div>
+      </h1>
+
+      <!-- THE AUTHOR framed card · pre-headline moved here with certificate treatment -->
+      <div class="author-frame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+
+        <div class="author-eyebrow">
+          <span class="roman">IV.</span>
+          <span>The Practice</span>
+          <span class="rule"></span>
+        </div>
+
+        <div class="author-title">Led by a founder. Run to a standard.</div>
+
+        <p class="author-text">
+          An <span class="emph">LLM in International Business Law</span>, King&rsquo;s College London, at the head of a team of regulatory analysts, AI search engineers, and legal content strategists <span class="emph">working to a standard regulated enterprises cannot source elsewhere</span>.
+        </p>
+
+        <div class="author-credentials">
+          KING&rsquo;S COLLEGE LONDON
+          <span class="sep">&middot;</span>
+          CHARTERED INSTITUTE OF ARBITRATORS
+          <span class="sep">&middot;</span>
+          AMERICAN BAR ASSOCIATION
+        </div>
+      </div>
+
+      <button class="primary-cta">
+        <span>Request your compliance and SEO audit</span>
+        <span class="cta-arrow" aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+
+    <!-- Signature block with Vetted by label -->
+    <div class="signature-wrap" aria-label="Founder's signature">
+      <div class="vetted-by">Vetted by</div>
+      <div class="signature">Aman Pareek</div>
+      <div class="signature-flourish" aria-hidden="true">
+        <svg width="180" height="22" viewBox="0 0 180 22" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 2 10 C 20 4, 40 18, 60 12 C 80 6, 100 16, 130 10 C 150 6, 165 14, 178 10"
+                stroke="#C9A772" stroke-width="1" fill="none" stroke-linecap="round"
+                style="stroke-dasharray: 220; stroke-dashoffset: 220; animation: flourish-draw 1400ms cubic-bezier(0.2, 0.8, 0.2, 1) 7900ms forwards;"/>
+        </svg>
+      </div>
+      <div class="signature-caption">
+        Founder<span class="sep">&middot;</span>LLM, King&rsquo;s College London
+      </div>
+    </div>
+
+    <style>
+      @keyframes flourish-draw {
+        to { stroke-dashoffset: 0; }
+      }
+    </style>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <div class="scroll-track">
+        <div class="scroll-diamond"></div>
+      </div>
+      <span>Continue</span>
+    </div>
+
+    <div class="verified-ticker" aria-label="Verified client case data">
+      <div class="ticker-inner">
+        <span>KAMAT HOTELS GROUP <span class="ornament">&middot;</span> NSE-LISTED HOSPITALITY <span class="ornament">&middot;</span> DIRECT-BOOKING SHIFT <span class="ornament">&middot;</span> VERIFIED 2024</span>
+        <span class="ornament">&#10030;</span>
+        <span>CG ONCOLOGY <span class="ornament">&middot;</span> NYSE: CGON <span class="ornament">&middot;</span> +96% AT IPO <span class="ornament">&middot;</span> VERIFIED PER SEC FILINGS</span>
+        <span class="ornament">&#10030;</span>
+        <span>MERAAS <span class="ornament">&middot;</span> DUBAI HOLDING SUBSIDIARY <span class="ornament">&middot;</span> RERA COMPLIANT <span class="ornament">&middot;</span> 2024</span>
+        <span class="ornament">&#10030;</span>
+        <span>200+ LAWS REVIEWED PER CAMPAIGN</span>
+        <span class="ornament">&#10030;</span>
+        <span>FOUR CONTINENTS</span>
+        <span class="ornament">&#10030;</span>
+        <span>KAMAT HOTELS GROUP <span class="ornament">&middot;</span> NSE-LISTED HOSPITALITY <span class="ornament">&middot;</span> DIRECT-BOOKING SHIFT <span class="ornament">&middot;</span> VERIFIED 2024</span>
+        <span class="ornament">&#10030;</span>
+        <span>CG ONCOLOGY <span class="ornament">&middot;</span> NYSE: CGON <span class="ornament">&middot;</span> +96% AT IPO <span class="ornament">&middot;</span> VERIFIED PER SEC FILINGS</span>
+        <span class="ornament">&#10030;</span>
+        <span>MERAAS <span class="ornament">&middot;</span> DUBAI HOLDING SUBSIDIARY <span class="ornament">&middot;</span> RERA COMPLIANT <span class="ornament">&middot;</span> 2024</span>
+        <span class="ornament">&#10030;</span>
+        <span>200+ LAWS REVIEWED PER CAMPAIGN</span>
+        <span class="ornament">&#10030;</span>
+        <span>FOUR CONTINENTS</span>
+        <span class="ornament">&#10030;</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduceMotion) {
+        document.querySelectorAll('.line').forEach(line => {
+          line.innerHTML = parseEmph(line.dataset.text);
+        });
+        document.querySelectorAll('.margin-note, .numeral').forEach(el => el.classList.add('visible'));
+        document.querySelectorAll('.h1-row').forEach(row => row.classList.add('complete'));
+        return;
+      }
+
+      const rows = document.querySelectorAll('.h1-row');
+      let cumulativeDelay = 2100;
+
+      rows.forEach((row) => {
+        const numeral = row.querySelector('.numeral');
+        const line = row.querySelector('.line');
+        const text = line.dataset.text;
+        const plainLength = text.replace(/\{\{|\}\}/g, '').length;
+        const speed = 42;
+
+        setTimeout(() => numeral.classList.add('visible'), cumulativeDelay - 200);
+        setTimeout(() => typeText(line, text, speed), cumulativeDelay);
+
+        const lineCompleteTime = cumulativeDelay + plainLength * speed + 100;
+        setTimeout(() => row.classList.add('complete'), lineCompleteTime);
+
+        cumulativeDelay += plainLength * speed + 300;
+      });
+
+      document.querySelectorAll('.margin-note').forEach(note => {
+        const delay = parseInt(note.dataset.delay, 10) || 0;
+        setTimeout(() => note.classList.add('visible'), delay);
+      });
+
+      const progressBar = document.getElementById('progress');
+      window.addEventListener('scroll', () => {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = window.scrollY;
+        const progress = scrollable > 0 ? (scrolled / scrollable) * 100 : 0;
+        progressBar.style.width = progress + '%';
+      });
+    });
+
+    function parseEmph(text) {
+      return text.replace(/\{\{([^}]+)\}\}/g, '<span class="emph">$1</span>');
+    }
+
+    function typeText(el, text, speed) {
+      el.classList.add('typing');
+      const segments = [];
+      let remaining = text;
+      while (remaining.length > 0) {
+        const startMatch = remaining.indexOf('{{');
+        if (startMatch === -1) {
+          segments.push({ text: remaining, emph: false });
+          break;
+        }
+        if (startMatch > 0) {
+          segments.push({ text: remaining.substring(0, startMatch), emph: false });
+        }
+        const endMatch = remaining.indexOf('}}', startMatch);
+        segments.push({ text: remaining.substring(startMatch + 2, endMatch), emph: true });
+        remaining = remaining.substring(endMatch + 2);
+      }
+
+      let segIdx = 0;
+      let charIdx = 0;
+
+      const interval = setInterval(() => {
+        if (segIdx >= segments.length) {
+          clearInterval(interval);
+          el.classList.remove('typing');
+          return;
+        }
+        const seg = segments[segIdx];
+        charIdx++;
+        let html = '';
+        for (let j = 0; j < segIdx; j++) {
+          const s = segments[j];
+          if (s.emph) html += `<span class="emph">${s.text}</span>`;
+          else html += s.text;
+        }
+        const partial = seg.text.substring(0, charIdx);
+        if (seg.emph) html += `<span class="emph">${partial}</span>`;
+        else html += partial;
+        el.innerHTML = html;
+        if (charIdx >= seg.text.length) {
+          segIdx++;
+          charIdx = 0;
+        }
+      }, speed);
+    }
+  </script>
+</body>
+</html>

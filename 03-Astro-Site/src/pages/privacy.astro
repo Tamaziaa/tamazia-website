@@ -1,0 +1,189 @@
+---
+// Privacy Notice · Approved by Danish (CLO), 28 April 2026
+// Calibrated to: UK GDPR + DPA 2018, EU GDPR, UAE PDPL Federal Decree-Law 45/2021,
+// California CCPA/CPRA (where Tamazia delivers to US clients).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+const lastUpdated = '28 April 2026';
+---
+<BaseLayout
+  title="Privacy Notice · Tamazia"
+  description="How Tamazia collects, processes, retains, and protects personal data. UK GDPR + EU GDPR + UAE PDPL aligned."
+>
+  <Header />
+  <main id="main" class="legal-page">
+    <article class="legal-inner">
+      <p class="eyebrow">Legal · Privacy</p>
+      <h1>Privacy Notice</h1>
+      <p class="lede">
+        Last updated: {lastUpdated}. This notice explains what personal data Tamazia collects when you
+        engage with the firm, what we do with it, who has access to it, and what rights you have under
+        UK GDPR, EU GDPR, UAE PDPL, and equivalent regimes.
+      </p>
+
+      <section>
+        <h2>1. Who we are</h2>
+        <p>
+          Tamazia is an international SEO and regulatory-compliance content firm operated by Aman Pareek.
+          For data-protection purposes Tamazia acts as the data controller for personal data collected
+          through tamazia.in. Contact for privacy matters:
+          <a href="mailto:realfamemedia@gmail.com">realfamemedia@gmail.com</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. The personal data we collect</h2>
+        <table class="legal-table">
+          <thead>
+            <tr><th>Source</th><th>Data</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Quick Audit form (homepage)</td>
+              <td>Domain or keyword, work email, sector</td>
+              <td>To deliver the requested compliance and SEO audit and follow-up</td>
+            </tr>
+            <tr>
+              <td>Briefing request form (Contact section)</td>
+              <td>Name, work email, company, role, sector, primary outcome</td>
+              <td>To respond to the briefing request and assess fit</td>
+            </tr>
+            <tr>
+              <td>Footer briefings signup</td>
+              <td>Email</td>
+              <td>To send the regulatory briefings (opt-in marketing under PECR / CAN-SPAM)</td>
+            </tr>
+            <tr>
+              <td>Server logs (Cloudflare Pages)</td>
+              <td>IP address, user agent, request URL, timestamp</td>
+              <td>Security and abuse prevention; aggregated for performance review</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>3. Lawful basis</h2>
+        <ul>
+          <li><strong>Consent</strong> (Article 6(1)(a) UK/EU GDPR; Article 5 UAE PDPL): briefing signup, audit form, contact form.</li>
+          <li><strong>Legitimate interests</strong> (Article 6(1)(f) UK/EU GDPR): server logs for security; consent banner storage.</li>
+          <li><strong>Legal obligation</strong> (Article 6(1)(c) UK/EU GDPR): retention of records where required by accounting, AML, or sectoral regulation.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Who we share data with</h2>
+        <p>Personal data is shared only with the processors required to deliver the service:</p>
+        <ul>
+          <li><strong>Cloudflare, Inc.</strong> — hosting, CDN, DDoS protection (US/EU). Data Processing Addendum in place.</li>
+          <li><strong>Resend, Inc.</strong> — transactional email delivery for audit and briefing follow-ups (US). DPA in place.</li>
+        </ul>
+        <p>
+          Tamazia does not sell or share personal data for advertising or any third-party purpose. We do
+          not disclose data to law enforcement except where compelled by a valid legal order.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. International transfers</h2>
+        <p>
+          Tamazia operates internationally. Personal data may be transferred to the United States (Cloudflare,
+          Resend) and processed there. Transfers are protected by the EU-US Data Privacy Framework, UK
+          International Data Transfer Agreement, and equivalent UAE PDPL safeguards. Standard Contractual
+          Clauses apply where required.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Retention</h2>
+        <p>
+          Audit and briefing submissions are retained for 24 months from last contact, or longer where
+          required by law or where you remain an active client. Server logs are retained for 30 days. The
+          consent state stored in your browser persists until you clear it.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Your rights</h2>
+        <p>Under UK GDPR, EU GDPR, and UAE PDPL you have the right to:</p>
+        <ul>
+          <li>Access the personal data we hold about you.</li>
+          <li>Have inaccurate data corrected.</li>
+          <li>Have your data erased (subject to legal-retention exceptions).</li>
+          <li>Restrict or object to processing.</li>
+          <li>Receive your data in a portable format.</li>
+          <li>Withdraw consent at any time without affecting prior lawful processing.</li>
+          <li>Lodge a complaint with the UK ICO (<a href="https://ico.org.uk" rel="noopener">ico.org.uk</a>) or the UAE TDRA / equivalent supervisory authority in your jurisdiction.</li>
+        </ul>
+        <p>
+          To exercise any of the above, email <a href="mailto:realfamemedia@gmail.com">realfamemedia@gmail.com</a>
+          with the subject line "Privacy request". We respond within 30 days.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Security</h2>
+        <p>
+          tamazia.in is served over HTTPS with HSTS, strict CSP, and modern security headers. Backend
+          functions run on Cloudflare's isolated workers runtime. Submission payloads are sanitised before
+          dispatch. Personal data at rest is held only inside Resend (transactional email log) and
+          Cloudflare logs (request metadata).
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Cookies</h2>
+        <p>See the <a href="/cookie-policy">cookie policy</a> for the complete list of storage we use.</p>
+      </section>
+
+      <section>
+        <h2>10. Changes</h2>
+        <p>
+          Material changes to this notice are versioned by the "Last updated" date at the top. If a change
+          materially affects how your data is processed, we will notify you by email where you have given
+          us a contact address.
+        </p>
+      </section>
+
+      <p class="legal-footer-note">
+        Read alongside the <a href="/cookie-policy">cookie policy</a> and <a href="/terms">terms of
+        service</a>. For binding legal questions, contact the firm directly.
+      </p>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal-page {
+    background: var(--ivory);
+    color: var(--oxblood-ink);
+    padding: 80px 0 120px;
+  }
+  .legal-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+    font-family: var(--ff-body, Inter, system-ui, sans-serif);
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-text-strong, #5C3F18); margin: 0 0 16px; }
+  h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-size: clamp(36px, 5vw, 52px); font-weight: 500; line-height: 1.15; margin: 0 0 24px; color: var(--oxblood); }
+  .lede { font-size: 18px; line-height: 1.7; color: var(--oxblood-wine); margin: 0 0 48px; border-bottom: 1px solid var(--gold); padding-bottom: 32px; }
+  section { margin: 0 0 40px; }
+  h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-size: clamp(20px, 2.4vw, 26px); font-weight: 500; margin: 0 0 16px; color: var(--oxblood-ink); }
+  p, li { font-size: 16px; line-height: 1.75; margin: 0 0 14px; color: var(--oxblood-wine); }
+  ul { padding-left: 22px; margin: 0 0 14px; }
+  a { color: var(--gold-text-strong, #5C3F18); text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { color: var(--oxblood); }
+  .legal-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+  .legal-table th, .legal-table td { border: 1px solid rgba(90, 26, 43, 0.18); padding: 10px 12px; text-align: left; vertical-align: top; }
+  .legal-table th { background: rgba(201, 167, 114, 0.12); font-weight: 600; color: var(--oxblood-ink); }
+  .legal-footer-note { margin: 56px 0 0; padding: 24px 0 0; border-top: 1px solid rgba(201, 167, 114, 0.4); font-size: 13px; font-style: italic; color: var(--oxblood-mist, #6D2037); }
+  @media (max-width: 640px) {
+    .legal-page { padding: 56px 0 80px; }
+    .lede { font-size: 16px; padding-bottom: 24px; margin-bottom: 36px; }
+    .legal-table { font-size: 13px; }
+    .legal-table th, .legal-table td { padding: 8px 10px; }
+  }
+</style>

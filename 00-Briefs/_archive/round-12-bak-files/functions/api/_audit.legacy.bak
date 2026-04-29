@@ -1,0 +1,332 @@
+// Netlify Serverless Function · /api/audit · plain JS (no TypeScript)
+// Tamazia Quick Audit Engine backend.
+
+const SECTOR_KEYWORDS = {
+  legal: ['sra', 'solicitor', 'barrister', 'law firm', 'chambers', 'partner', 'counsel', 'litigation', 'legal', 'advocate', 'attorney', 'clifford chance', 'linklaters', 'allen overy', 'freshfields', 'slaughter may', 'dla piper', 'latham watkins', 'kirkland ellis', 'baker mckenzie', 'arbitration', 'arbitrator', 'tribunal', 'mediation', 'dispute resolution', 'icc ', 'lcia', 'siac', 'diac', 'hkiac', 'juris', 'kluwer', 'investment treaty', 'international law'],
+  healthcare: ['clinic', 'hospital', 'medical', 'doctor', 'surgeon', 'gp ', 'healthcare', 'hipaa', 'dental', 'cosmetic', 'therapy', 'mayo clinic', 'cleveland clinic', 'nhs'],
+  hospitality: ['hotel', 'resort', 'suite', 'concierge', 'boutique hotel', 'hospitality', 'villa', 'spa resort', 'inn', 'four seasons', 'ritz carlton', 'mandarin oriental', 'aman ', 'bulgari', 'rosewood', 'st regis', 'park hyatt', 'sofitel', 'peninsula', 'oberoi', 'taj ', 'raffles', 'banyan tree', 'st. regis', 'jumeirah', 'kempinski', 'shangri'],
+  'real-estate': ['property', 'real estate', 'developer', 'broker', 'estate', 'rera', 'ipo', 'listing', 'meraas', 'emaar', 'dubai properties', 'damac', 'aldar', 'sobha', 'nakheel'],
+  finance: ['wealth', 'asset management', 'fca', 'investment', 'private bank', 'family office', 'fund', 'blackrock', 'goldman sachs', 'jp morgan', 'rothschild', 'pictet'],
+  fb: ['restaurant', 'michelin', 'cocktail bar', 'wine bar', 'gastropub', 'dining', 'menu', 'cuisine', 'chef', 'nobu', 'zuma', 'fine dining', 'tasting menu'],
+  education: ['school', 'university', 'college', 'tuition', 'admission'],
+};
+
+const COMPLIANCE_SNIPPETS = {
+  legal: { regulator: 'SRA', short: 'SRA Transparency Rules 2018 require fee information on certain practice areas. Review recommended.', citation: 'SRA TRANSPARENCY RULES 2018' },
+  healthcare: { regulator: 'MHRA + E-E-A-T', short: 'Health claims require MHRA-compliant phrasing. Google E-E-A-T scrutiny applies to medical content.', citation: 'MHRA HUMAN MEDICINES REGULATIONS 2012' },
+  hospitality: { regulator: 'GOOGLE POLICIES', short: 'Direct-booking visibility depends on Google Business Profile coverage + schema markup. Audit recommended.', citation: 'SCHEMA.ORG HOTEL' },
+  'real-estate': { regulator: 'RERA / SEC', short: 'Jurisdiction-specific disclosure required. RERA permits for UAE, SEC Reg FD for US-listed entities.', citation: 'RERA LAW NO. 7 OF 2013' },
+  finance: { regulator: 'FCA COBS 4', short: 'Financial promotions must be fair, clear, and not misleading. FCA COBS 4 applies to all content.', citation: 'FCA COBS 4.5' },
+  fb: { regulator: 'GOOGLE MAPS', short: 'Google Maps citation architecture + menu schema determine local search dominance.', citation: 'SCHEMA.ORG RESTAURANT' },
+  education: { regulator: 'ASA / CAP', short: 'Educational advertising must comply with ASA CAP codes. International student claims require substantiation.', citation: 'CAP CODE 13' },
+  default: { regulator: 'GENERAL', short: 'Regulatory framework applied after sector identification in the full audit.', citation: 'FULL AUDIT' },
+};
+
+function selectObservation(cwvScore, metaScore, regScore) {
+  if (cwvScore >= 80 && metaScore >= 80 && regScore >= 80) return 'Baseline strong. Growth ceiling determined by AI-search visibility and content strategy.';
+  if (cwvScore >= 70 && regScore < 60) return 'Technical foundation is solid. Regulatory content exposure is the exposed flank.';
+  if (cwvScore < 50) return 'Site loads slowly and under-indexes key search signals. High-priority technical audit recommended.';
+  if (regScore < 40) return 'Regulatory exposure is the dominant risk. A full compliance review is the correct next step.';
+  if (cwvScore < 70 && regScore < 70) return 'Gaps visible across technical and regulatory lines. Ranking currently leaves revenue on the table.';
+  return 'Findings suggest mixed technical and compliance posture. Full audit recommended for prioritisation.';
+}
+
+function classifyInput(input) {
+  const trimmed = input.trim();
+  if (/^https?:\/\//i.test(trimmed)) return 'url';
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)+/i.test(trimmed)) return 'url';
+  return 'keyword';
+}
+
+function normaliseUrl(input) {
+  let u = input.trim();
+  if (!u.startsWith('http')) u = 'https://' + u;
+  try {
+    const url = new URL(u);
+    return url.origin + url.pathname;
+  } catch { return u; }
+}
+
+function inferSector(text) {
+  const lower = text.toLowerCase();
+  let best = 'default';
+  let bestScore = 0;
+  for (const [sector, keywords] of Object.entries(SECTOR_KEYWORDS)) {
+    const hits = keywords.filter(k => lower.includes(k)).length;
+    if (hits > bestScore) { bestScore = hits; best = sector; }
+  }
+  return bestScore > 0 ? best : 'default';
+}
+
+async function fetchPageSpeedInsights(url) {
+  try {
+    const api = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&category=performance`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(api, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const audits = data?.lighthouseResult?.audits || {};
+    const categories = data?.lighthouseResult?.categories || {};
+    const lcp = audits['largest-contentful-paint']?.numericValue;
+    const cls = audits['cumulative-layout-shift']?.numericValue;
+    const perfScore = (categories?.performance?.score || 0) * 100;
+    return {
+      cwv: {
+        lcp: lcp ? (lcp / 1000).toFixed(1) + 's' : null,
+        cls: cls ? cls.toFixed(2) : null,
+      },
+      score: Math.round(perfScore),
+    };
+  } catch { return null; }
+}
+
+async function fetchHTML(url) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TamaziaAuditBot/1.0)' },
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return null;
+    return await res.text();
+  } catch { return null; }
+}
+
+function analyseHTML(html) {
+  const checks = {
+    title: /<title[^>]*>([^<]+)<\/title>/i.test(html),
+    metaDesc: /<meta[^>]+name=["']description["']/i.test(html),
+    canonical: /<link[^>]+rel=["']canonical["']/i.test(html),
+    og: /<meta[^>]+property=["']og:/i.test(html),
+    twitterCard: /<meta[^>]+name=["']twitter:/i.test(html),
+    schema: /application\/ld\+json/i.test(html),
+    h1: /<h1[^>]*>/i.test(html),
+    viewport: /<meta[^>]+name=["']viewport["']/i.test(html),
+    charset: /<meta[^>]+charset/i.test(html),
+    robots: /<meta[^>]+name=["']robots["']/i.test(html),
+    hreflang: /<link[^>]+hreflang=/i.test(html),
+    privacyLink: /href=["'][^"']*(privacy|cookie)[^"']*["']/i.test(html),
+  };
+  const passCount = Object.values(checks).filter(Boolean).length;
+  const totalChecks = Object.keys(checks).length;
+  const metaScore = Math.round((passCount / totalChecks) * 100);
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const bodyText = bodyMatch ? bodyMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 10000) : '';
+  return { metaScore, meta: { passed: passCount, total: totalChecks, checks }, sectorText: bodyText };
+}
+
+// Errors-vs-should-be generator · sector-specific (Aman directive in BD-6)
+function errorsVsShouldBe(checks, sector, regScore, cwvScore) {
+  const items = [];
+  if (!checks.schema) {
+    items.push({
+      issue: 'No JSON-LD structured data detected',
+      shouldBe: `Organisation + ${sector === 'legal' ? 'ProfessionalService' : sector === 'healthcare' ? 'MedicalBusiness' : sector === 'hospitality' ? 'Hotel' : sector === 'real-estate' ? 'RealEstateAgent' : sector === 'fb' ? 'Restaurant' : 'LocalBusiness'} schema with regulator membership, helping AI engines cite you correctly.`,
+      severity: 'high',
+    });
+  }
+  if (!checks.metaDesc) {
+    items.push({
+      issue: 'Missing meta description',
+      shouldBe: '140-160 characters with regulator mention inline. E-E-A-T trust signal for Google + AI search.',
+      severity: 'medium',
+    });
+  } else {
+    items.push({
+      issue: 'Meta description present but unverified',
+      shouldBe: 'Verify length is 140-160 chars and includes one sector regulator (SRA/MHRA/FCA/RERA) for E-E-A-T.',
+      severity: 'low',
+    });
+  }
+  if (!checks.canonical) {
+    items.push({
+      issue: 'Missing canonical link',
+      shouldBe: 'Self-referential canonical on every page to prevent duplicate-index penalties.',
+      severity: 'medium',
+    });
+  }
+  if (!checks.og || !checks.twitterCard) {
+    items.push({
+      issue: 'Open Graph + Twitter cards incomplete',
+      shouldBe: 'Full OG + Twitter card meta with 1200×630 image. Critical for LinkedIn share quality with enterprise buyers.',
+      severity: 'medium',
+    });
+  }
+  if (!checks.hreflang && (sector === 'hospitality' || sector === 'real-estate' || sector === 'legal')) {
+    items.push({
+      issue: 'No hreflang tags for international markets',
+      shouldBe: 'Hreflang for UK / UAE / US to serve sector-relevant audiences in their jurisdiction without duplicate content penalty.',
+      severity: 'high',
+    });
+  }
+  if (cwvScore < 70) {
+    items.push({
+      issue: `Core Web Vitals below threshold (${cwvScore}/100)`,
+      shouldBe: 'LCP < 2.5s, INP < 200ms, CLS < 0.1. Below threshold = ranking penalty. Above threshold = the floor your competitors are clearing.',
+      severity: cwvScore < 50 ? 'high' : 'medium',
+    });
+  }
+  if (regScore < 60) {
+    const regulator =
+      sector === 'legal' ? 'SRA Transparency Rules 2018'
+      : sector === 'healthcare' ? 'MHRA Human Medicines Regulations 2012 + ASA CAP'
+      : sector === 'hospitality' ? 'ASA hospitality advertising codes'
+      : sector === 'real-estate' ? 'RERA Law No. 7 of 2013 + Trakheesi'
+      : sector === 'finance' ? 'FCA COBS 4 financial promotion'
+      : 'sector-specific regulator';
+    items.push({
+      issue: `Regulatory exposure detected (${regScore}/100 readiness)`,
+      shouldBe: `${regulator} review of all published content. Liability sits with you, not your agency, when a regulator notices.`,
+      severity: 'high',
+    });
+  }
+  return items.slice(0, 7);
+}
+
+function regulatoryReadiness(html, sector) {
+  let score = 50;
+  const lower = html.toLowerCase();
+  if (/privacy[- ]?policy/i.test(html)) score += 10;
+  if (/cookie[- ]?(policy|banner)/i.test(html)) score += 10;
+  if (lower.includes('gdpr')) score += 5;
+  if (lower.includes('terms')) score += 5;
+  if (lower.includes('modern slavery') || lower.includes('accessibility statement')) score += 5;
+  if (sector === 'legal' && lower.includes('sra')) score += 10;
+  if (sector === 'healthcare' && (lower.includes('cqc') || lower.includes('hipaa'))) score += 10;
+  if (sector === 'finance' && lower.includes('fca')) score += 10;
+  if (sector === 'real-estate' && lower.includes('rera')) score += 10;
+  return Math.min(score, 100);
+}
+
+exports.handler = async (event) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
+
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
+  if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+
+  let body;
+  try { body = JSON.parse(event.body || '{}'); }
+  catch { return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
+
+  const input = (body.input || '').toString().trim();
+  if (!input || input.length < 3) return { statusCode: 400, headers, body: JSON.stringify({ error: 'Input too short' }) };
+
+  // Email-upfront gate (Gate E · BD-6 enforcement)
+  const email = (body.email || '').toString().trim().toLowerCase();
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const sectorChoice = (body.sector || '').toString().trim();
+
+  // Email + sector required to run the full audit. Fall through to allow demo mode if explicitly requested.
+  if (!emailValid && body.demo !== true) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: 'A work email is required to deliver your findings.' }),
+    };
+  }
+  if (!sectorChoice && body.demo !== true) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: 'Please select your sector so the audit applies the right regulatory framework.' }),
+    };
+  }
+
+  const type = classifyInput(input);
+  const start = Date.now();
+
+  if (type === 'url') {
+    const url = normaliseUrl(input);
+    const [psi, html] = await Promise.all([fetchPageSpeedInsights(url), fetchHTML(url)]);
+    const htmlAnalysis = html ? analyseHTML(html) : { metaScore: 0, meta: { passed: 0, total: 12, checks: {} }, sectorText: '' };
+    const sector = inferSector(url + ' ' + (htmlAnalysis.sectorText || ''));
+    const regScore = html ? regulatoryReadiness(html, sector) : 50;
+    const snippet = COMPLIANCE_SNIPPETS[sector] || COMPLIANCE_SNIPPETS.default;
+    const cwvScore = psi?.score || 60;
+    const observation = selectObservation(cwvScore, htmlAnalysis.metaScore, regScore);
+
+    const errors = errorsVsShouldBe(htmlAnalysis.meta.checks, sector, regScore, cwvScore);
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        type: 'url',
+        input: url,
+        tookMs: Date.now() - start,
+        email: email || null,
+        userSector: sectorChoice || null,
+        metrics: [
+          { label: 'CORE WEB VITALS · LCP',          value: psi?.cwv?.lcp || 'n/a',                                              status: cwvScore >= 80 ? 'green' : cwvScore >= 50 ? 'amber' : 'red' },
+          { label: 'META & SCHEMA READINESS',        value: `${htmlAnalysis.meta.passed}/${htmlAnalysis.meta.total}`,             status: htmlAnalysis.metaScore >= 80 ? 'green' : htmlAnalysis.metaScore >= 50 ? 'amber' : 'red' },
+          { label: 'REGULATORY READINESS / 100',     value: regScore.toString(),                                                  status: regScore >= 70 ? 'green' : regScore >= 40 ? 'amber' : 'red' },
+          { label: 'AI SEARCH VISIBILITY',           value: htmlAnalysis.meta.checks.schema ? 'INDEXABLE' : 'GAP',               status: htmlAnalysis.meta.checks.schema ? 'green' : 'red' },
+        ],
+        errors,
+        observation,
+        sector: sector === 'default' ? 'General' : sector.toUpperCase().replace('-', ' '),
+        compliance: snippet,
+        // Authority Preferred Partner Rate upsell (BD-1: 20% framed as institutional rate, not discount)
+        upsell: {
+          headline: 'Your full audit is ready. Want Tamazia to build the fix?',
+          tier: 'Authority',
+          standardRate: '£4,500/month',
+          preferredRate: '£3,600/month',
+          term: '6-month strategic engagement',
+          framing: 'Preferred Partner Rate',
+          body: `The preview above identifies ${errors.length} issues. The full Tamazia audit covers technical, regulatory, AI search, and competitive layers across two jurisdictions. Authority is our multi-location scale tier — used by regulated groups across London, Dubai and New York. Six-month engagements include monthly founder review, two-jurisdiction compliance, and bi-weekly revenue attribution.`,
+          microFooter: 'The reduced rate reflects the strategic continuity and priority founder access. No obligation from this audit. Speak-with-founder is a 30-minute call before any commercial commitment.',
+          cta: 'Speak with the founder about Authority',
+          ctaHref: '#contact',
+        },
+      }),
+    };
+  }
+
+  // Keyword mode
+  const keyword = input.toLowerCase();
+  const sector = inferSector(keyword);
+  const snippet = COMPLIANCE_SNIPPETS[sector] || COMPLIANCE_SNIPPETS.default;
+
+  let intent = 'INFORMATIONAL';
+  if (/how|what|why|when/.test(keyword)) intent = 'INFORMATIONAL';
+  if (/best|review|compare|top /.test(keyword)) intent = 'COMMERCIAL';
+  if (/buy|price|book|request|hire|contact/.test(keyword)) intent = 'TRANSACTIONAL';
+
+  let magnitude = 'MID';
+  const wordCount = keyword.split(/\s+/).length;
+  if (wordCount <= 2) magnitude = 'HIGH';
+  if (wordCount === 1) magnitude = 'VERY HIGH';
+  if (wordCount >= 5) magnitude = 'LOW';
+
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({
+      type: 'keyword',
+      input: keyword,
+      tookMs: Date.now() - start,
+      metrics: [
+        { label: 'COMMERCIAL INTENT', value: intent, status: intent === 'TRANSACTIONAL' ? 'green' : 'amber' },
+        { label: 'QUERY MAGNITUDE', value: magnitude, status: magnitude === 'VERY HIGH' || magnitude === 'HIGH' ? 'green' : 'amber' },
+        { label: 'DETECTED SECTOR', value: sector === 'default' ? 'AMBIGUOUS' : sector.toUpperCase().replace('-', ' '), status: sector !== 'default' ? 'green' : 'amber' },
+      ],
+      observation: intent === 'TRANSACTIONAL'
+        ? 'Transactional intent with displacement potential. Top SERP owned by peer-grade domains. A displacement strategy requires E-E-A-T plus local schema.'
+        : intent === 'COMMERCIAL'
+        ? 'Commercial intent. Clear window for content-led displacement of incumbent domains.'
+        : 'Informational query. Content authority layer required before commercial queries move.',
+      sector: sector === 'default' ? 'General' : sector.toUpperCase().replace('-', ' '),
+      compliance: snippet,
+    }),
+  };
+};

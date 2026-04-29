@@ -1,0 +1,26 @@
+# Dependencies
+**/node_modules/
+
+# Build output  
+**/dist/
+
+# QA generated artifacts
+00-Briefs/qa-runner/reports/
+00-Briefs/qa-runner/layers/
+
+# Binary design references (kept in local tar.gz backup)
+01-Screenshots/
+**/*.png
+**/*.jpg
+**/*.jpeg
+
+# Credentials
+.env
+.env.local
+.env.cloudflare
+
+# Build artifacts
+*.zip
+**/.DS_Store
+**/.astro/
+03-Astro-Site/.wrangler/

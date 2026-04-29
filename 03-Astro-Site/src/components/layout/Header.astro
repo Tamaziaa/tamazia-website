@@ -1,0 +1,224 @@
+---
+import { heroContent } from '../../content/hero';
+---
+{/* B-02 fix · top credentials strip removed per Aman directive */}
+
+<nav class="main-nav" aria-label="Primary">
+  <div class="logo-group">
+    <a href="/" class="logo-crest" aria-label="Tamazia home">
+      <span class="t">T</span>
+    </a>
+    <a href="/" class="logo-wordmark">Tamazia</a>
+  </div>
+  <ul class="nav-items">
+    {heroContent.navItems.map(item => <li><a href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}>{item}</a></li>)}
+  </ul>
+  <a class="nav-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
+</nav>
+
+<div class="progress-bar" id="progress"></div>
+
+<style>
+  .top-strip {
+    height: 36px;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    font-weight: 400;
+    padding: 0 16px;
+  }
+
+  .top-strip .dot {
+    color: var(--gold);
+    margin: 0 10px;
+    opacity: 0.85;
+  }
+
+  .main-nav {
+    height: 76px;
+    background: var(--ivory);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 72px;
+    border-bottom: 1px solid var(--hairline);
+    position: sticky;
+    top: 36px;
+    z-index: 100;
+  }
+
+  .logo-group { display: flex; align-items: center; }
+
+  .logo-crest {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--oxblood);
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(201, 167, 114, 0.1);
+    transition: transform var(--duration-short) var(--ease-out), box-shadow var(--duration-short) var(--ease-out);
+    text-decoration: none;
+    /* Round-7 fix · explicit gold inheritance so axe and contrast tools score correctly */
+    color: var(--gold);
+  }
+
+  .logo-crest::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px solid rgba(201, 167, 114, 0.3);
+    border-radius: 50%;
+  }
+
+  .logo-crest .t {
+    font-family: var(--ff-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    transform: translateY(-1px);
+  }
+
+  .logo-crest:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 4px rgba(201, 167, 114, 0.08);
+  }
+
+  .logo-wordmark {
+    margin-left: 14px;
+    font-family: var(--ff-display);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-items {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .nav-items li a {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    position: relative;
+    padding: 6px 0;
+    transition: color var(--duration-short) ease;
+    font-weight: 400;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .nav-items li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 500ms var(--ease-out);
+  }
+
+  .nav-items li a:hover::after { width: 100%; }
+  .nav-items li a:hover { color: var(--oxblood); }
+
+  /* Round-12 fix · keyboard focus indicator (was implicit; axe + L07 flagged the gap) */
+  .nav-items li a:focus-visible,
+  .nav-cta:focus-visible,
+  .logo-crest:focus-visible,
+  .logo-wordmark:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  .nav-items li a:focus-visible::after { width: 100%; }
+
+  .nav-cta {
+    background: var(--oxblood);
+    color: var(--ivory);
+    border: 1px solid var(--gold);
+    height: 46px;
+    padding: 0 26px;
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-left: 40px;
+    transition: background var(--duration-short) ease, border-color var(--duration-short) ease, box-shadow var(--duration-short) ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .nav-cta:hover {
+    background: var(--oxblood-warm);
+    border-color: var(--gold-warm);
+    box-shadow: 0 0 0 3px rgba(201, 167, 114, 0.12);
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 112px;
+    left: 0;
+    height: 1px;
+    background: var(--oxblood);
+    width: 0%;
+    transition: width 120ms linear;
+    z-index: 99;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 1024px) {
+    .main-nav { padding: 0 32px; }
+    .nav-items { display: none; }
+    /* Round-8 fix · 44px min touch target on mobile */
+    .nav-cta { height: 44px; padding: 0 18px; font-size: 10px; margin-left: 0; }
+  }
+
+  @media (max-width: 640px) {
+    .top-strip { font-size: 8.5px; letter-spacing: 0.15em; }
+    .main-nav { padding: 0 16px; height: 64px; }
+    /* Round-8 fix · 44px min touch target on mobile */
+    .logo-crest { width: 44px; height: 44px; }
+    .logo-crest .t { font-size: 20px; }
+    .logo-wordmark { font-size: 16px; margin-left: 10px; padding: 14px 0; line-height: 1; min-height: 44px; display: inline-flex; align-items: center; }
+    .progress-bar { top: 96px; }
+  }
+</style>
+
+<script>
+  // Progress bar follows scroll
+  const bar = document.getElementById('progress');
+  if (bar) {
+    window.addEventListener('scroll', () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = window.scrollY;
+      const progress = scrollable > 0 ? (scrolled / scrollable) * 100 : 0;
+      bar.style.width = progress + '%';
+    });
+  }
+</script>

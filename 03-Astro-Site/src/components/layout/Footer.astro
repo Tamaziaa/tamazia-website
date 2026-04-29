@@ -1,0 +1,568 @@
+---
+import { footerContent } from '../../content/footer';
+
+const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, legalLinks, copyright } = footerContent;
+const year = new Date().getFullYear();
+---
+<footer class="footer" role="contentinfo">
+  <!-- Monogram watermark -->
+  <div class="monogram" aria-hidden="true">
+    <span class="monogram-t">T</span>
+  </div>
+
+  <div class="container">
+    <!-- Top hairline -->
+    <div class="top-hairline" aria-hidden="true"></div>
+
+    <!-- Three-column grid -->
+    <div class="footer-grid">
+      <!-- Column 1: Brand -->
+      <div class="col col-brand">
+        <!-- Full lockup (crest + wordmark) -->
+        <div class="brand-lockup">
+          <div class="lockup-crest">
+            <span class="t">T</span>
+          </div>
+          <div class="lockup-wordmark">{wordmark}</div>
+        </div>
+
+        <p class="tagline">{tagline}</p>
+
+        <div class="locations">
+          {locations.map((loc, i) => (
+            <>
+              {i > 0 && <span class="sep">·</span>}
+              <span class="location">{loc}</span>
+            </>
+          ))}
+        </div>
+
+        <div class="credentials">
+          {credentials.map((c, i) => (
+            <>
+              {i > 0 && <span class="sep">·</span>}
+              <span class="cred">{c}</span>
+            </>
+          ))}
+        </div>
+      </div>
+
+      <!-- Column 2: Navigation -->
+      <nav class="col col-nav" aria-label="Footer navigation">
+        <h3 class="col-heading">{navigationHeading}</h3>
+        <ul>
+          {navigationItems.map(item => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Column 3: Regulatory Briefings -->
+      <div class="col col-briefings">
+        <h3 class="col-heading">{briefingsHeading}</h3>
+        <p class="briefings-body">{briefingsBody}</p>
+
+        <form class="briefings-form" id="briefings-form" action="/api/briefings" method="POST" novalidate>
+          <label class="sr-only" for="briefings-email">Email address</label>
+          <input
+            type="email"
+            id="briefings-email"
+            name="email"
+            placeholder="your@domain.com"
+            autocomplete="email"
+            required
+          />
+          {/* Honeypot — hidden from real users; bots fill it and get silently 200'd */}
+          <label class="sr-only" for="briefings-bot-field">Leave this field empty</label>
+          <input type="text" id="briefings-bot-field" name="bot-field" tabindex="-1" autocomplete="off" aria-hidden="true" class="briefings-honeypot" />
+          <button type="submit" class="subscribe-btn" id="briefings-submit">{briefingsCta}</button>
+          <p class="briefings-status" id="briefings-status" role="status" aria-live="polite" hidden></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bottom hairline -->
+    <div class="bottom-hairline" aria-hidden="true"></div>
+
+    <!-- Small print -->
+    <div class="small-print">
+      <div class="copyright">{copyright.replace('2026', year.toString())}</div>
+      <div class="legal-links">
+        {legalLinks.map((link, i) => (
+          <>
+            {i > 0 && <span class="sep" aria-hidden="true">·</span>}
+            <a href={link.href}>{link.label}</a>
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to top button -->
+  <a href="#" class="back-to-top" aria-label="Back to top" id="back-to-top">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M 12 4 L 12 20 M 6 10 L 12 4 L 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</footer>
+
+<style>
+  .footer {
+    /* B-28 fix · gradient finale into oxblood-ink */
+    background: linear-gradient(180deg, #3A0F1C 0%, #2A0C14 60%, #1F0810 100%);
+    color: var(--pearl);
+    padding: 88px 0 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .monogram {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .monogram-t {
+    font-family: var(--ff-display);
+    font-size: 600px;
+    color: var(--gold);
+    line-height: 1;
+    opacity: 0.03;
+    letter-spacing: -0.04em;
+  }
+
+  .container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+    position: relative;
+    z-index: 2;
+  }
+
+  .top-hairline {
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 80px;
+    opacity: 0.6;
+  }
+
+  /* Grid */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1fr;
+    gap: 64px;
+    margin-bottom: 80px;
+  }
+
+  /* Brand column */
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .lockup-crest {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--oxblood);
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .lockup-crest::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px solid rgba(201, 167, 114, 0.3);
+    border-radius: 50%;
+  }
+
+  .lockup-crest .t {
+    font-family: var(--ff-display);
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    transform: translateY(-2px);
+  }
+
+  .lockup-wordmark {
+    font-family: var(--ff-display);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--ivory);
+    letter-spacing: 0.08em;
+  }
+
+  .tagline {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold);
+    margin-bottom: 32px;
+    max-width: 420px;
+  }
+
+  .locations {
+    font-family: var(--ff-body);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--pearl);
+    margin-bottom: 16px;
+  }
+
+  .locations .sep {
+    color: var(--gold);
+    margin: 0 10px;
+    opacity: 0.7;
+  }
+
+  .credentials {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    line-height: 1.8;
+    max-width: 460px;
+  }
+
+  .credentials .sep {
+    margin: 0 8px;
+    opacity: 0.5;
+  }
+
+  /* Navigation */
+  .col-heading {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(201, 167, 114, 0.3);
+  }
+
+  .col-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .col-nav a {
+    font-family: var(--ff-body);
+    font-size: 14px;
+    color: var(--pearl);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 300ms ease;
+    display: inline-block;
+  }
+
+  .col-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 400ms var(--ease-out);
+  }
+
+  .col-nav a:hover {
+    color: var(--gold);
+  }
+
+  .col-nav a:hover::after {
+    width: 100%;
+  }
+
+  /* Briefings */
+  .briefings-body {
+    font-family: var(--ff-body);
+    font-size: 14px;
+    color: var(--pearl);
+    line-height: 1.6;
+    opacity: 0.85;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .briefings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .briefings-form input {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(201, 167, 114, 0.5);
+    color: var(--ivory);
+    padding: 12px 0;
+    font-family: var(--ff-display);
+    /* Round-8 fix · 16px prevents iOS Safari auto-zoom on focus */
+    font-size: 16px;
+    font-style: italic;
+    outline: none;
+    transition: border-color 300ms ease;
+    border-radius: 0;
+  }
+
+  .briefings-form input::placeholder {
+    color: var(--pearl);
+    opacity: 0.5;
+  }
+
+  .briefings-form input:focus {
+    border-bottom-color: var(--gold);
+  }
+
+  .subscribe-btn {
+    height: 48px;
+    background: var(--oxblood);
+    color: var(--ivory);
+    border: 1px solid var(--gold);
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    cursor: pointer;
+    transition: background 300ms ease, border-color 300ms ease;
+    border-radius: 4px;
+  }
+
+  .subscribe-btn:hover {
+    background: var(--oxblood-warm);
+    border-color: var(--gold-warm);
+  }
+
+  .subscribe-btn[disabled] {
+    opacity: 0.55;
+    cursor: wait;
+  }
+
+  /* Honeypot — fully hidden from sighted + AT users, but bots will fill it */
+  .briefings-honeypot {
+    position: absolute !important;
+    left: -10000px !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    /* Round-12 fix · keeping ≥16px so L13 audit doesn't flag, but it's invisible */
+    font-size: 16px;
+  }
+
+  /* Status message under the form (success / error) */
+  .briefings-status {
+    font-family: var(--ff-body);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    margin: 8px 0 0;
+    padding: 10px 12px;
+    border-left: 2px solid var(--gold);
+    background: rgba(201, 167, 114, 0.08);
+    color: var(--ivory);
+    line-height: 1.5;
+  }
+  .briefings-status[data-status="error"] {
+    border-left-color: #C76E2A;
+    background: rgba(199, 110, 42, 0.12);
+  }
+
+  /* Bottom */
+  .bottom-hairline {
+    height: 1px;
+    background: rgba(201, 167, 114, 0.4);
+    margin-bottom: 24px;
+  }
+
+  .small-print {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    color: var(--pearl);
+    opacity: 0.6;
+    font-weight: 400;
+  }
+
+  .copyright {
+    letter-spacing: 0.05em;
+  }
+
+  .legal-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .legal-links a {
+    color: var(--pearl);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    /* Round-8 fix · 44px min tap target on mobile (was 20px) */
+    padding: 12px 4px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 300ms ease, border-color 300ms ease;
+  }
+
+  .legal-links a:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .legal-links .sep {
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  /* Back to top */
+  .back-to-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    background: var(--obsidian);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out), background 300ms ease;
+    transform: translateY(8px);
+    z-index: 90;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    background: var(--oxblood);
+  }
+
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .lockup-wordmark { font-size: 28px; }
+  }
+
+  @media (max-width: 640px) {
+    .footer { padding: 80px 0 40px; }
+    .top-hairline { margin-bottom: 48px; }
+    .brand-lockup { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .small-print { flex-direction: column; align-items: flex-start; }
+    .lockup-wordmark { font-size: 24px; }
+    .tagline { font-size: 16px; }
+    .back-to-top { bottom: 24px; right: 24px; width: 40px; height: 40px; }
+  }
+</style>
+
+<script>
+  // Back to top visibility
+  const btn = document.getElementById('back-to-top');
+  if (btn) {
+    window.addEventListener('scroll', () => {
+      btn.classList.toggle('visible', window.scrollY > 600);
+    }, { passive: true });
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Round-12 fix · Footer briefings form → /api/briefings
+  // Replaces the broken data-netlify="true" submission (TAMAZIA-28 P0 #1).
+  (() => {
+    const form = document.getElementById('briefings-form') as HTMLFormElement | null;
+    if (!form) return;
+    const emailInput = document.getElementById('briefings-email') as HTMLInputElement | null;
+    const submitBtn  = document.getElementById('briefings-submit') as HTMLButtonElement | null;
+    const status     = document.getElementById('briefings-status') as HTMLParagraphElement | null;
+
+    function show(message: string, kind: 'success' | 'error') {
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.status = kind;
+      status.hidden = false;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!emailInput || !submitBtn) return;
+      const email = (emailInput.value || '').trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        show('Please enter a valid email address.', 'error');
+        emailInput.focus();
+        return;
+      }
+      const originalLabel = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Subscribing…';
+      try {
+        const res = await fetch('/api/briefings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            'bot-field': (form.querySelector('[name="bot-field"]') as HTMLInputElement)?.value || '',
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok !== false) {
+          show(data.message || 'Subscribed. The first briefing will arrive within 7 days.', 'success');
+          form.reset();
+        } else {
+          show(data.error || 'Subscription failed. Please email realfamemedia@gmail.com directly.', 'error');
+        }
+      } catch {
+        show('Network error. Please try again or email realfamemedia@gmail.com directly.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        if (originalLabel) submitBtn.textContent = originalLabel;
+      }
+    });
+  })();
+</script>

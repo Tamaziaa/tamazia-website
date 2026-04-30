@@ -17,11 +17,11 @@ Markets served: United Kingdom, European Union, United States, Middle East (UAE,
 
 ## Key pages
 
-- [/](https://tamazia.in/): Home, with the Quick Audit instrument, sectors, case studies, pricing, FAQ, and contact form.
-- [/insights/](https://tamazia.in/insights/): Long-form thought-leadership articles by sector.
-- [/cookie-policy](https://tamazia.in/cookie-policy): Cookie policy.
-- [/privacy](https://tamazia.in/privacy): Privacy notice.
-- [/terms](https://tamazia.in/terms): Terms of service.
+- [/](https://tamazia.co.uk/): Home, with the Quick Audit instrument, sectors, case studies, pricing, FAQ, and contact form.
+- [/insights/](https://tamazia.co.uk/insights/): Long-form thought-leadership articles by sector.
+- [/cookie-policy](https://tamazia.co.uk/cookie-policy): Cookie policy.
+- [/privacy](https://tamazia.co.uk/privacy): Privacy notice.
+- [/terms](https://tamazia.co.uk/terms): Terms of service.
 
 ## Contact
 

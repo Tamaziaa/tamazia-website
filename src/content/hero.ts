@@ -1,4 +1,4 @@
-// Hero section content — verbatim live tamazia.in (TAMAZIA-13 snapshot)
+// Hero section content — verbatim live tamazia.co.uk (TAMAZIA-13 snapshot)
 // Edit this file to change hero copy. Rebuild takes 30 seconds.
 // Use {{...}} markers around words you want in italic gold emphasis.
 
@@ -12,8 +12,21 @@ export const heroContent = {
   ],
 
   navItems: ['Why Us', 'Sectors', 'Cases', 'Process', 'Pricing', 'FAQ', 'Contact'],
+
+  // G.1/G.2/G.5 · Full nav with absolute paths for new deep pages
+  headerNav: [
+    { label: 'Why Us',       href: '/#why-us' },
+    { label: 'Services',     href: '/services/' },
+    { label: 'Cases',        href: '/case-studies/' },
+    { label: 'About',        href: '/about/' },
+    { label: 'Process',      href: '/#process' },
+    { label: 'Pricing',      href: '/#pricing' },
+    { label: 'FAQ',          href: '/#faq' },
+    { label: 'Contact',      href: '/#contact' },
+  ],
+
   navCta: 'Request a Briefing',
-  navCtaUrl: '#contact',
+  navCtaUrl: '/#contact',
 
   // Subhead (above H1). Verbatim live site. Restored — was missing from prior rebuild.
   subHeadline:

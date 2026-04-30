@@ -1,4 +1,4 @@
-// How Tamazia Works · 3-step process · verbatim live tamazia.in (TAMAZIA-13 §5)
+// How Tamazia Works · 3-step process · verbatim live tamazia.co.uk (TAMAZIA-13 §5)
 // Restored: full Step 1 paragraph, Step 2 team list, Step 3 audit-as-first-step framing.
 
 // Phase E: E.01 BLOCKER — role labels removed. Replaced with founder-direct delivery model.

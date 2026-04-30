@@ -1,4 +1,4 @@
-// Footer · verbatim live tamazia.in (TAMAZIA-13 §9)
+// Footer · verbatim live tamazia.co.uk (TAMAZIA-13 §9)
 
 export const footerContent = {
   wordmark: 'TAMAZIA',
@@ -10,7 +10,7 @@ export const footerContent = {
 
   // Verbatim credentials line from live site footer
   credentialsLine:
-    'London · Dubai · New York · Paris | Member, Chartered Institute of Arbitrators | Member, American Bar Association',
+    'London · Dubai · New York · EU | Member, Chartered Institute of Arbitrators | Member, American Bar Association',
 
   // Optional partner badges (kept but not in main credentials line)
   partnerBadges: ['GOOGLE PARTNER', 'META BUSINESS PARTNER'],
@@ -22,14 +22,15 @@ export const footerContent = {
 
   navigationHeading: 'NAVIGATION',
   navigationItems: [
-    { label: 'Why Us', href: '#why-us' },
-    { label: 'Sectors', href: '#sectors' },
-    { label: 'Case Studies', href: '#cases' },
-    { label: 'How We Work', href: '#process' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'FAQ', href: '#faq' },
-    { label: 'Contact', href: '#contact' },
-    { label: 'Insights', href: '/insights' },
+    { label: 'Why Us', href: '/#why-us' },
+    { label: 'Services', href: '/services/' },
+    { label: 'Case Studies', href: '/case-studies/' },
+    { label: 'About', href: '/about/' },
+    { label: 'How We Work', href: '/#process' },
+    { label: 'Pricing', href: '/#pricing' },
+    { label: 'FAQ', href: '/#faq' },
+    { label: 'Contact', href: '/#contact' },
+    { label: 'Insights', href: '/insights/' },
   ],
 
   briefingsHeading: 'REGULATORY BRIEFINGS',
@@ -39,9 +40,9 @@ export const footerContent = {
   briefingsConsent: 'By submitting you consent to receive regulatory briefings from Tamazia. Unsubscribe at any time. No marketing or sales content.',
 
   legalLinks: [
-    { label: 'Terms of Service', href: '/terms' },
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Cookie Policy', href: '/cookie-policy' },
+    { label: 'Terms of Service', href: '/terms/' },
+    { label: 'Privacy Notice', href: '/privacy-notice/' },
+    { label: 'Cookie Policy', href: '/cookie-policy/' },
   ],
 
   copyright: '© 2026 Tamazia. All rights reserved.',

@@ -18,6 +18,14 @@ const featureIcons: Record<string, string> = {
       <p class="intro">{intro}</p>
     </div>
 
+    {/* G.6 · Currency switcher · GBP:1 USD:1.27 AED:4.67 */}
+    <div class="currency-switcher" role="group" aria-label="Display currency">
+      <button class="currency-btn active" data-currency="GBP" aria-pressed="true">GBP £</button>
+      <button class="currency-btn" data-currency="USD" aria-pressed="false">USD $</button>
+      <button class="currency-btn" data-currency="AED" aria-pressed="false">AED د.إ</button>
+      <span class="currency-note">All engagements are invoiced in GBP</span>
+    </div>
+
     <div class="tiers-grid">
       {tiers.map((t: any) => (
         <div class={`tier-card tier-${t.tier} ${t.mostPopular ? 'tier-most-popular' : ''}`} data-tier={t.name}>
@@ -26,8 +34,8 @@ const featureIcons: Record<string, string> = {
           <div class="tier-head">
             <span class="tier-numeral">{t.numeral}</span>
             <h3 class="tier-name">{t.name}</h3>
-            <div class="tier-price">
-              {t.price}
+            <div class="tier-price" data-gbp={t.priceGbp ?? (t.name === 'Foundation' ? 2500 : t.name === 'Growth' ? 4500 : 9500)}>
+              <span class="price-display">{t.price}</span>
               {t.priceUnit && <span class="price-unit">{t.priceUnit}</span>}
             </div>
             <p class="tier-tagline">{t.tagline}</p>
@@ -689,4 +697,111 @@ const featureIcons: Record<string, string> = {
     .mandate-actions { gap: 20px; flex-direction: column; }
     .mandate-signature { font-size: 36px; }
   }
+
+  /* G.6 · Currency switcher */
+  .currency-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .currency-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 16px;
+    border: 1px solid var(--hairline);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--t-bg), border-color var(--t-border), color var(--t-color);
+    opacity: 0.65;
+  }
+
+  .currency-btn:hover {
+    opacity: 1;
+    border-color: var(--oxblood);
+  }
+
+  .currency-btn.active {
+    background: var(--oxblood);
+    border-color: var(--oxblood);
+    color: var(--gold);
+    opacity: 1;
+  }
+
+  .currency-note {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    opacity: 0.45;
+    margin-left: 8px;
+    font-style: italic;
+  }
+
+  .price-display {
+    /* inherits tier-price font properties */
+  }
+
+  @media (max-width: 640px) {
+    .currency-switcher { gap: 6px; }
+    .currency-note { display: none; }
+  }
 </style>
+
+<script>
+  // G.6 · Currency switcher · rates: GBP 1 : USD 1.27 : AED 4.67
+  (function () {
+    const RATES: Record<string, number> = { GBP: 1, USD: 1.27, AED: 4.67 };
+    const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', AED: 'د.إ' };
+    const LS_KEY = 'tamazia_currency';
+
+    function formatPrice(gbp: number, currency: string): string {
+      const converted = Math.round(gbp * RATES[currency] / 100) * 100;
+      return `From ${SYMBOLS[currency]}${converted.toLocaleString()}`;
+    }
+
+    function applyPrices(currency: string): void {
+      document.querySelectorAll<HTMLElement>('[data-gbp]').forEach((el) => {
+        const gbp = parseInt(el.getAttribute('data-gbp') ?? '0', 10);
+        const display = el.querySelector<HTMLElement>('.price-display');
+        if (display) display.textContent = formatPrice(gbp, currency);
+      });
+    }
+
+    function activateButton(currency: string): void {
+      document.querySelectorAll<HTMLButtonElement>('.currency-btn').forEach((btn) => {
+        const isActive = btn.dataset.currency === currency;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+    }
+
+    function setCurrency(currency: string): void {
+      try { localStorage.setItem(LS_KEY, currency); } catch (_) { /* private browsing */ }
+      activateButton(currency);
+      applyPrices(currency);
+    }
+
+    // Init: respect localStorage override, otherwise default to GBP
+    let initial = 'GBP';
+    try { initial = localStorage.getItem(LS_KEY) ?? 'GBP'; } catch (_) {}
+    if (!RATES[initial]) initial = 'GBP';
+
+    document.querySelectorAll<HTMLButtonElement>('.currency-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const currency = btn.dataset.currency ?? 'GBP';
+        setCurrency(currency);
+      });
+    });
+
+    // Apply on load
+    setCurrency(initial);
+  })();
+</script>

@@ -12,7 +12,7 @@ export interface Props {
 const {
   title = 'Tamazia · International SEO for regulated enterprises',
   description = 'Lawyer-led SEO and regulatory compliance firm. Every campaign passes through 200+ laws before anything goes live. Trusted by an NSE-listed hotel group, CG Oncology (Nasdaq: CGON), Meraas (Dubai Holding).',
-  canonical = 'https://tamazia.co.uk',
+  canonical = 'https://tamazia.co.uk/',
   ogImage = '/og-default.png',
   noindex = false,
 } = Astro.props;
@@ -99,11 +99,19 @@ const jsonLd = {
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#5A1A2B" />
 
+    <!-- G.39 · hreflang · en-GB canonical + en + x-default -->
+    <link rel="alternate" hreflang="en-GB" href={canonical} />
+    <link rel="alternate" hreflang="en" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
     <!-- Preconnect -->
     <link rel="preconnect" href="https://api.resend.com" />
 
     <!-- Structured data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Named slot for page-level JSON-LD and additional head tags -->
+    <slot name="head" />
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
@@ -113,8 +121,8 @@ const jsonLd = {
     <div id="cookie-strip" class="cookie-strip" role="region" aria-label="Cookie consent" hidden>
       <p class="cookie-text">
         We use only essential cookies for site functionality. No third-party tracking. No marketing pixels.
-        Read the <a href="/cookie-policy" class="cookie-link">cookie policy</a> or the
-        <a href="/privacy" class="cookie-link">privacy notice</a>.
+        Read the <a href="/cookie-policy/" class="cookie-link">cookie policy</a> or the
+        <a href="/privacy-notice/" class="cookie-link">privacy notice</a>.
       </p>
       <div class="cookie-actions">
         <button type="button" class="cookie-btn cookie-btn--reject" id="cookie-reject">Reject non-essential</button>

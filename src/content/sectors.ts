@@ -1,4 +1,4 @@
-// Sectors section · 6 bento cards · verbatim live tamazia.in (TAMAZIA-13 §3)
+// Sectors section · 6 bento cards · verbatim live tamazia.co.uk (TAMAZIA-13 §3)
 // All cards equal weight (BD · Aman directive "no dominant card").
 // Each card has 6 unique elements: numeral, icon, title+shorthand, body, regulation chips, sector-specific stat/quote.
 

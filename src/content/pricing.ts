@@ -1,4 +1,4 @@
-// Pricing · 3 tiers · verbatim live tamazia.in (TAMAZIA-13 §6)
+// Pricing · 3 tiers · verbatim live tamazia.co.uk (TAMAZIA-13 §6)
 // Full feature lists restored. Authority "Most popular" ribbon. Enterprise mandate callout.
 
 export const pricingContent = {
@@ -30,7 +30,7 @@ export const pricingContent = {
         },
         {
           headline: "Every word your brand publishes reviewed against your sector's legal framework before it goes live",
-          body: 'One compliance-reviewed content piece per month. UK: SRA Code Rules 8.7 and 8.9, MHRA Human Medicines Regulations 2012, FCA COBS 4. US: ABA Model Rules 7.1 to 7.3, HIPAA Privacy Rule 45 CFR 164.508 and 164.502, FTC Act Section 5. UAE: Federal Decree-Law No. 55 of 2023, MOHAP requirements, RERA Law No. 7 of 2013. Reviewed before Google sees it, before a regulator does.',
+          body: 'One compliance-reviewed content piece per month. UK: SRA Standards and Regulations (2019) Standards 8.7 and 8.9 (Code of Conduct for Solicitors, RELs and RFLs), MHRA Human Medicines Regulations 2012, FCA COBS 4. US: ABA Model Rules 7.1 to 7.3, HIPAA Privacy Rule 45 CFR 164.508 and 164.502, FTC Act Section 5. UAE: Federal Decree-Law No. 55 of 2023, MOHAP requirements, RERA Law No. 7 of 2013. Reviewed before Google sees it, before a regulator does.',
         },
         {
           headline: 'A complete technical audit with a prioritised fix document delivered to your development team',
@@ -97,11 +97,11 @@ export const pricingContent = {
         },
         {
           headline: 'The strategy that removes dependency on platforms extracting revenue between you and your buyer',
-          body: 'Booking.com and Expedia charge 15 to 25% per reservation. Tamazia builds the direct search visibility that intercepts buyers before the platform does, the same approach behind 882% revenue growth. Every sector.',
+          body: 'Booking.com and Expedia charge 15 to 25% per reservation. Tamazia builds the direct search visibility that intercepts buyers before the platform does, the same approach behind 882% direct revenue growth for a hospitality client (under NDA). Every sector.',
         },
         {
           headline: 'Your brand inside AI-generated answers across the platforms where buyers now make decisions',
-          body: 'GEO (Generative Engine Optimisation) included as standard. AI search traffic grew 527% year-on-year. Content restructured for AI citation eligibility across Claude, ChatGPT, Perplexity, and Google AI Overviews.',
+          body: 'GEO (Generative Engine Optimisation) included as standard. Content restructured for AI citation eligibility across Claude, ChatGPT, Perplexity, and Google AI Overviews. Tamazia-tracked accounts saw AI-referred sessions grow significantly year-on-year as generative answer surfaces expand.',
         },
         {
           headline: 'Two jurisdictions reviewed on every piece of content simultaneously',

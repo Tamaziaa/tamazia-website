@@ -1,0 +1,295 @@
+---
+// G.5 · Case studies hub · /case-studies/
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const canonicalUrl = 'https://tamazia.co.uk/case-studies/';
+
+const cases = [
+  {
+    slug: 'major-hotel-group',
+    eyebrow: 'HOSPITALITY · NSE-LISTED',
+    name: 'A Major Hotel Group',
+    stat: '840%',
+    statLabel: 'Organic user growth',
+    caption: 'SIX-MONTH CAMPAIGN · GA4 VERIFIED',
+    summary: 'NSE-listed hotel group. Direct booking revenue increased 83%. OTA dependency eliminated within a single campaign cycle. Organic user growth of 840% verified in GA4.',
+    regulators: ['ASA CAP Code', 'UK Advertising Standards'],
+  },
+  {
+    slug: 'meraas-dubai',
+    eyebrow: 'REAL ESTATE · DUBAI HOLDING',
+    name: 'Meraas',
+    stat: 'Zero',
+    statLabel: 'Compliance incidents',
+    caption: 'RERA + TRAKHEESI + DUBAI HOLDING STANDARD',
+    summary: 'Digital presence and content architecture built to Dubai Holding standard. Full compliance with RERA, Trakheesi, and a direct Sheikh Mohammed directive. Zero compliance incidents.',
+    regulators: ['RERA UAE', 'Trakheesi', 'Dubai Holding Standard'],
+  },
+  {
+    slug: 'cg-oncology',
+    eyebrow: 'HEALTHCARE · NASDAQ: CGON',
+    name: 'CG Oncology',
+    stat: '+96%',
+    statLabel: 'Share price at IPO',
+    caption: 'SEC REG FD + FDA + FINRA REVIEWED',
+    summary: 'Digital content for Nasdaq IPO executed under SEC Regulation FD, FDA disclosure requirements, and FINRA advertising standards simultaneously. Shares up 96% at IPO. Zero compliance incidents.',
+    regulators: ['SEC Regulation FD', 'FDA', 'FINRA Rule 2210'],
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tamazia.co.uk/' },
+        { '@type': 'ListItem', position: 2, name: 'Case Studies', item: canonicalUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Case Studies · Orchid Hotels, Meraas, CG Oncology · Tamazia"
+  description="Tamazia client results: 840% organic growth for an NSE-listed hotel group. Zero compliance incidents for CG Oncology (Nasdaq: CGON) and Meraas (Dubai Holding). Every engagement reviewed against applicable regulatory standards."
+  canonical={canonicalUrl}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+
+  <header class="site-header" role="banner">
+    <nav class="main-nav" aria-label="Primary">
+      <div class="logo-group">
+        <a href="/" class="logo-crest" aria-label="Tamazia home"><span class="t">T</span></a>
+        <a href="/" class="logo-wordmark">Tamazia</a>
+      </div>
+      <ul class="nav-items">
+        <li><a href="/#why-us">Why Us</a></li>
+        <li><a href="/services/">Services</a></li>
+        <li><a href="/case-studies/" aria-current="page">Cases</a></li>
+        <li><a href="/#process">Process</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+      <a class="nav-cta" href="/#contact">Request a Briefing</a>
+      <button class="burger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
+          <rect y="0"  width="22" height="2" rx="1" fill="currentColor"/>
+          <rect y="7"  width="22" height="2" rx="1" fill="currentColor"/>
+          <rect y="14" width="22" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+    <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" hidden>
+      <button class="drawer-close" aria-label="Close navigation menu">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <line x1="1" y1="1" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="17" y1="1" x2="1"  y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="drawer-items">
+        <li><a href="/#why-us" class="drawer-link">Why Us</a></li>
+        <li><a href="/services/" class="drawer-link">Services</a></li>
+        <li><a href="/case-studies/" class="drawer-link">Cases</a></li>
+        <li><a href="/#process" class="drawer-link">Process</a></li>
+        <li><a href="/#pricing" class="drawer-link">Pricing</a></li>
+        <li><a href="/#faq" class="drawer-link">FAQ</a></li>
+        <li><a href="/#contact" class="drawer-link">Contact</a></li>
+      </ul>
+      <a class="drawer-cta" href="/#contact">Request a Briefing</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li aria-current="page">Case Studies</li>
+      </ol>
+    </nav>
+
+    <section class="hub-hero" aria-labelledby="cs-h1">
+      <p class="hub-eyebrow">TAMAZIA · CASE STUDIES</p>
+      <h1 id="cs-h1" class="hub-h1">Client results that survived the regulator.</h1>
+      <p class="hub-sub">
+        Every engagement below was produced under active regulatory supervision. The numbers are GA4-verified or independently auditable. The compliance record is zero incidents across all three.
+      </p>
+    </section>
+
+    <section class="cases-section" aria-labelledby="cases-section-heading">
+      <div class="cases-inner">
+        <h2 id="cases-section-heading" class="sr-only">Client case studies</h2>
+        <ul class="cases-list" role="list">
+          {cases.map((c) => (
+            <li class="case-card">
+              <a href={`/case-studies/${c.slug}/`} class="case-card-link">
+                <div class="case-card-header">
+                  <p class="case-eyebrow">{c.eyebrow}</p>
+                  <h3 class="case-name">{c.name}</h3>
+                </div>
+                <div class="case-stat-block">
+                  <span class="case-stat" data-stat>{c.stat}</span>
+                  <div class="case-stat-text">
+                    <span class="case-stat-label">{c.statLabel}</span>
+                    <span class="case-stat-caption">{c.caption}</span>
+                  </div>
+                </div>
+                <p class="case-summary">{c.summary}</p>
+                <div class="case-footer">
+                  <ul class="case-regs" role="list">
+                    {c.regulators.map((r) => <li>{r}</li>)}
+                  </ul>
+                  <span class="case-read-more" aria-hidden="true">Read case study →</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="cases-cta" aria-labelledby="cases-cta-heading">
+      <div class="cases-cta-inner">
+        <h2 id="cases-cta-heading" class="cases-cta-heading">Your sector. Your regulator. Your audit.</h2>
+        <p class="cases-cta-sub">
+          Every engagement starts with a compliance and SEO audit. We identify the regulatory gap and build the visibility strategy to close it.
+        </p>
+        <a href="/#contact" class="cases-cta-btn">Begin an audit enquiry →</a>
+        <p class="cases-cta-note">Responses within one business day. All communications confidential.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Tamazia home"><span class="t">T</span></a>
+        <p class="footer-tagline">Lawyer-led SEO for regulated enterprises.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="/services/">Services</a></li>
+          <li><a href="/case-studies/">Case Studies</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
+          <li><a href="/privacy-notice/">Privacy Notice</a></li>
+          <li><a href="/cookie-policy/">Cookie Policy</a></li>
+          <li><a href="/terms/">Terms</a></li>
+        </ul>
+      </nav>
+      <p class="footer-legal">
+        &copy; {new Date().getFullYear()} Tamazia Ltd. Registered in England and Wales.
+        All engagements invoiced in GBP. Content reviewed against applicable regulatory standards before publication.
+      </p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 100; background: var(--ivory); border-bottom: 1px solid var(--hairline); }
+  .main-nav { height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 72px; max-width: 1440px; margin: 0 auto; }
+  .logo-group { display: flex; align-items: center; gap: 10px; }
+  .logo-crest { width: 36px; height: 36px; background: var(--oxblood); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: var(--font-serif); font-size: 18px; font-weight: 500; text-decoration: none; flex-shrink: 0; }
+  .logo-wordmark { font-family: var(--font-serif); font-size: 18px; font-weight: 500; color: var(--ink); text-decoration: none; letter-spacing: 0.03em; }
+  .nav-items { display: flex; list-style: none; gap: 28px; margin: 0; padding: 0; }
+  .nav-items a { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); text-decoration: none; opacity: 0.75; transition: opacity var(--t-opacity); font-weight: 400; }
+  .nav-items a:hover, .nav-items a[aria-current="page"] { opacity: 1; color: var(--oxblood); }
+  .nav-cta { display: inline-block; padding: 9px 20px; background: var(--oxblood); color: var(--gold); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; text-decoration: none; border: 1px solid var(--oxblood); transition: background var(--t-bg), color var(--t-color); }
+  .nav-cta:hover { background: transparent; color: var(--oxblood); }
+  .burger { display: none; background: none; border: none; cursor: pointer; color: var(--ink); padding: 6px; }
+  .mobile-drawer { display: none; }
+
+  .breadcrumb { background: var(--ivory); border-bottom: 1px solid var(--hairline); padding: 12px 72px; }
+  .breadcrumb ol { display: flex; list-style: none; gap: 8px; margin: 0; padding: 0; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); opacity: 0.6; align-items: center; }
+  .breadcrumb li + li::before { content: '/'; margin-right: 8px; opacity: 0.4; }
+  .breadcrumb a { color: inherit; text-decoration: none; }
+  .breadcrumb a:hover { color: var(--oxblood); opacity: 1; }
+  .breadcrumb li[aria-current="page"] { opacity: 1; color: var(--oxblood); }
+
+  .hub-hero { background: var(--oxblood); padding: 80px 72px 88px; position: relative; overflow: hidden; }
+  .hub-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(198,160,80,0.08) 0%, transparent 65%); pointer-events: none; }
+
+  .hub-eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin: 0 0 24px; opacity: 0.9; }
+  .hub-h1 { font-family: var(--font-serif); font-size: clamp(28px, 4vw, 48px); font-weight: 500; color: var(--ivory); line-height: 1.2; max-width: 720px; margin: 0 0 24px; letter-spacing: -0.01em; }
+  .hub-sub { font-size: 17px; line-height: 1.7; color: var(--ivory); opacity: 0.7; max-width: 620px; margin: 0; }
+
+  .cases-section { background: var(--ivory); padding: 80px 0; border-bottom: 1px solid var(--hairline); }
+  .cases-inner { max-width: 1100px; margin: 0 auto; padding: 0 72px; }
+  .cases-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+
+  .case-card { border: 1px solid var(--hairline); }
+  .case-card-link { display: flex; flex-direction: column; gap: 24px; padding: 40px 48px; text-decoration: none; background: var(--ivory); transition: background var(--t-bg); }
+  .case-card-link:hover { background: rgba(90,26,43,0.025); }
+  .case-card:has(.case-card-link:hover) { border-color: var(--oxblood); }
+
+  .case-card-header { display: flex; flex-direction: column; gap: 8px; }
+  .case-eyebrow { font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--oxblood); font-weight: 600; margin: 0; opacity: 0.7; }
+  .case-name { font-family: var(--font-serif); font-size: 28px; font-weight: 500; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+
+  .case-stat-block { display: flex; align-items: baseline; gap: 20px; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); padding: 20px 0; }
+  .case-stat { font-family: var(--font-serif); font-size: 52px; font-weight: 500; color: var(--oxblood); line-height: 1; font-variant-numeric: tabular-nums; }
+  .case-stat-text { display: flex; flex-direction: column; gap: 4px; }
+  .case-stat-label { font-size: 13px; font-weight: 500; color: var(--ink); letter-spacing: 0.04em; }
+  .case-stat-caption { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); opacity: 0.45; }
+
+  .case-summary { font-size: 15px; line-height: 1.7; color: var(--ink); opacity: 0.8; margin: 0; }
+
+  .case-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .case-regs { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+  .case-regs li { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--oxblood); border: 1px solid var(--oxblood); padding: 4px 10px; opacity: 0.7; }
+  .case-read-more { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--oxblood); font-weight: 600; white-space: nowrap; }
+
+  .cases-cta { background: var(--parchment, #F5F0E8); padding: 96px 0; }
+  .cases-cta-inner { max-width: 680px; margin: 0 auto; padding: 0 72px; text-align: center; }
+  .cases-cta-heading { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 36px); font-weight: 500; color: var(--ink); margin: 0 0 20px; letter-spacing: -0.01em; }
+  .cases-cta-sub { font-size: 16px; line-height: 1.7; color: var(--ink); opacity: 0.75; margin: 0 0 36px; }
+  .cases-cta-btn { display: inline-block; padding: 15px 36px; background: var(--oxblood); color: var(--gold); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; text-decoration: none; border: 1px solid var(--oxblood); transition: background var(--t-bg), color var(--t-color); margin-bottom: 16px; }
+  .cases-cta-btn:hover { background: transparent; color: var(--oxblood); }
+  .cases-cta-note { font-size: 12px; letter-spacing: 0.06em; color: var(--ink); opacity: 0.5; margin: 0; }
+
+  .footer { background: linear-gradient(180deg, #2A0C14 0%, #1F0810 100%); padding: 64px 0 48px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 72px; display: grid; grid-template-columns: auto 1fr; gap: 32px 64px; align-items: start; }
+  .footer-brand { display: flex; flex-direction: column; gap: 12px; }
+  .footer-logo { width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--oxblood); font-family: var(--font-serif); font-size: 20px; font-weight: 500; text-decoration: none; }
+  .footer-tagline { font-size: 12px; color: var(--ivory); opacity: 0.5; margin: 0; letter-spacing: 0.04em; }
+  .footer-nav ul { display: flex; flex-wrap: wrap; gap: 8px 24px; list-style: none; margin: 0; padding: 0; }
+  .footer-nav a { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ivory); text-decoration: none; opacity: 0.55; transition: opacity var(--t-opacity); }
+  .footer-nav a:hover { opacity: 1; }
+  .footer-legal { grid-column: 1 / -1; font-size: 11px; color: var(--ivory); opacity: 0.35; margin: 0; line-height: 1.6; letter-spacing: 0.04em; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
+
+  @media (max-width: 900px) {
+    .main-nav { padding: 0 24px; }
+    .nav-items, .nav-cta { display: none; }
+    .burger { display: flex; }
+    .mobile-drawer { display: flex; flex-direction: column; position: fixed; inset: 0; background: var(--oxblood); z-index: 200; padding: 32px 24px; gap: 24px; }
+    .drawer-close { align-self: flex-end; background: none; border: none; cursor: pointer; color: var(--ivory); padding: 8px; }
+    .drawer-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+    .drawer-link { font-size: 20px; color: var(--ivory); text-decoration: none; font-family: var(--font-serif); }
+    .drawer-cta { display: inline-block; padding: 14px 28px; background: var(--gold); color: var(--oxblood); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; text-decoration: none; align-self: flex-start; }
+    .breadcrumb, .hub-hero, .cases-inner, .cases-cta-inner, .footer-inner { padding-left: 24px; padding-right: 24px; }
+    .case-card-link { padding: 28px 24px; }
+    .case-footer { flex-direction: column; align-items: flex-start; }
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const burger = document.querySelector('.burger');
+  const drawer = document.querySelector('.mobile-drawer');
+  const drawerClose = document.querySelector('.drawer-close');
+  if (burger && drawer) {
+    burger.addEventListener('click', () => {
+      const open = drawer.hasAttribute('hidden');
+      if (open) { drawer.removeAttribute('hidden'); burger.setAttribute('aria-expanded', 'true'); }
+      else { drawer.setAttribute('hidden', ''); burger.setAttribute('aria-expanded', 'false'); }
+    });
+  }
+  if (drawerClose && drawer && burger) {
+    drawerClose.addEventListener('click', () => { drawer.setAttribute('hidden', ''); burger.setAttribute('aria-expanded', 'false'); });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer && !drawer.hasAttribute('hidden')) { drawer.setAttribute('hidden', ''); burger?.setAttribute('aria-expanded', 'false'); }
+  });
+</script>

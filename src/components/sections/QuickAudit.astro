@@ -4,7 +4,7 @@
 <section class="quick-audit" id="quick-audit" aria-labelledby="audit-heading">
   <div class="container">
     <div class="audit-inner">
-      <div class="eyebrow">TAMAZIA AUDIT</div>
+      <div class="eyebrow">TAMAZIA INSTRUMENT</div>
       <h2 id="audit-heading" class="audit-h">Benchmark your compliance and SEO exposure.</h2>
       <p class="audit-subline">
         Enter your domain or a primary commercial keyword. Compliance exposure, Core Web Vitals, and AI-search visibility reviewed against your sector's regulatory framework.
@@ -89,7 +89,7 @@
           <span class="microcopy-lock" aria-hidden="true">◈</span>
           Used only to deliver your findings. Never sold or shared.
         </p>
-        <a href="#" class="sample-link" id="sample-link">View a sample audit →</a>
+        <button type="button" class="sample-link" id="sample-link">View a sample audit →</button>
       </div>
 
       <!-- LOADING STATE -->
@@ -169,7 +169,7 @@
           <div class="result-divider"></div>
 
           <a href="#contact" class="full-audit-cta" id="full-audit-cta">
-            <span>REQUEST YOUR FULL COMPLIANCE AND SEO AUDIT</span>
+            <span>Request your full Tamazia audit →</span>
             <span class="cta-arrow" aria-hidden="true">&rarr;</span>
           </a>
 
@@ -1008,7 +1008,7 @@
   const result = document.getElementById('audit-result') as HTMLElement;
   const error = document.getElementById('audit-error') as HTMLElement;
   const errorMsg = document.getElementById('error-message') as HTMLElement;
-  const sampleLink = document.getElementById('sample-link') as HTMLAnchorElement;
+  const sampleLink = document.getElementById('sample-link') as HTMLButtonElement;
   const ctaLink = document.getElementById('full-audit-cta') as HTMLAnchorElement;
 
   async function runAudit(value: string, isSample = false) {

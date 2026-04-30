@@ -6,8 +6,6 @@ zitYWXy7
 netlify/
 .netlify/
 deploy.sh
-
-# Environment files
 .env
+.env.cloudflare
 .env.*
-dist/

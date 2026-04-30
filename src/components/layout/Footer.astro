@@ -45,6 +45,12 @@ const year = new Date().getFullYear();
             </>
           ))}
         </div>
+
+        <!-- Partner badges (I.31) — Google Partner + Meta Business Partner -->
+        <div class="partner-badges" aria-label="Agency certifications">
+          <img src="/google-partner.png" alt="Google Partner" class="partner-badge" width="120" height="50" loading="lazy" />
+          <img src="/meta-partner.png" alt="Meta Business Partner" class="partner-badge" width="120" height="50" loading="lazy" />
+        </div>
       </div>
 
       <!-- Column 2: Navigation -->
@@ -75,8 +81,8 @@ const year = new Date().getFullYear();
           {/* Honeypot — hidden from real users; bots fill it and get silently 200'd */}
           <label class="sr-only" for="briefings-bot-field">Leave this field empty</label>
           <input type="text" id="briefings-bot-field" name="bot-field" tabindex="-1" autocomplete="off" aria-hidden="true" class="briefings-honeypot" />
-          <button type="submit" class="briefings-btn" id="briefings-submit">{briefingsCta}</button>
           <p class="briefings-consent">{briefingsConsent}</p>
+          <button type="submit" class="briefings-btn" id="briefings-submit">{briefingsCta}</button>
           <p class="briefings-status" id="briefings-status" role="status" aria-live="polite" hidden></p>
         </form>
       </div>
@@ -508,72 +514,23 @@ const year = new Date().getFullYear();
     .tagline { font-size: 16px; }
     .back-to-top { bottom: 24px; right: 24px; width: 40px; height: 40px; }
   }
-</style>
 
-<script>
-  // Back to top visibility
-  const btn = document.getElementById('back-to-top');
-  if (btn) {
-    window.addEventListener('scroll', () => {
-      btn.classList.toggle('visible', window.scrollY > 600);
-    }, { passive: true });
-
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+  /* I.31 · Partner badge strip */
+  .partner-badges {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
   }
+  .partner-badge {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.85;
+    filter: brightness(1.1);
+    transition: opacity 200ms ease;
+  }
+  .partner-badge:hover { opacity: 1; }
 
-  // Round-12 fix · Footer briefings form → /api/briefings
-  // Replaces the broken data-netlify="true" submission (TAMAZIA-28 P0 #1).
-  (() => {
-    const form = document.getElementById('briefings-form') as HTMLFormElement | null;
-    if (!form) return;
-    const emailInput = document.getElementById('briefings-email') as HTMLInputElement | null;
-    const submitBtn  = document.getElementById('briefings-submit') as HTMLButtonElement | null;
-    const status     = document.getElementById('briefings-status') as HTMLParagraphElement | null;
-
-    function show(message: string, kind: 'success' | 'error') {
-      if (!status) return;
-      status.textContent = message;
-      status.dataset.status = kind;
-      status.hidden = false;
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!emailInput || !submitBtn) return;
-      const email = (emailInput.value || '').trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        show('Please enter a valid email address.', 'error');
-        emailInput.focus();
-        return;
-      }
-      const originalLabel = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting…';
-      try {
-        const res = await fetch('/api/briefings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            'bot-field': (form.querySelector('[name="bot-field"]') as HTMLInputElement)?.value || '',
-          }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok && data.ok !== false) {
-          show(data.message || 'Registered. The first briefing will arrive within 7 days.', 'success');
-          form.reset();
-        } else {
-          show(data.error || 'Subscription failed. Please email realfamemedia@gmail.com directly.', 'error');
-        }
-      } catch {
-        show('Network error. Please try again or email realfamemedia@gmail.com directly.', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        if (originalLabel) submitBtn.textContent = originalLabel;
-      }
-    });
-  })();
-</script>
+</style>

@@ -1,0 +1,290 @@
+---
+// G.5 · Case study: Meraas (Dubai Holding)
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const canonicalUrl = 'https://tamazia.co.uk/case-studies/meraas-dubai/';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${canonicalUrl}#article`,
+      headline: 'Case Study: Digital Presence for Meraas (Dubai Holding): RERA, Trakheesi, Zero Compliance Incidents',
+      description: 'How Tamazia built and delivered the digital presence and content architecture for Meraas, a Dubai Holding subsidiary, to Dubai Holding standard under RERA, Trakheesi, and a direct Sheikh Mohammed directive.',
+      author: { '@id': 'https://tamazia.co.uk/about/#person' },
+      publisher: { '@id': 'https://tamazia.co.uk/#organization' },
+      url: canonicalUrl,
+      inLanguage: 'en-GB',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tamazia.co.uk/' },
+        { '@type': 'ListItem', position: 2, name: 'Case Studies', item: 'https://tamazia.co.uk/case-studies/' },
+        { '@type': 'ListItem', position: 3, name: 'Meraas', item: canonicalUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Case Study: Meraas (Dubai Holding) · RERA & Trakheesi Compliance · Tamazia"
+  description="How Tamazia built the digital presence for Meraas, a Dubai Holding subsidiary, to Dubai Holding standard under RERA, Trakheesi, and a direct Sheikh Mohammed directive. Zero compliance incidents."
+  canonical={canonicalUrl}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+
+  <header class="site-header" role="banner">
+    <nav class="main-nav" aria-label="Primary">
+      <div class="logo-group">
+        <a href="/" class="logo-crest" aria-label="Tamazia home"><span class="t">T</span></a>
+        <a href="/" class="logo-wordmark">Tamazia</a>
+      </div>
+      <ul class="nav-items">
+        <li><a href="/#why-us">Why Us</a></li>
+        <li><a href="/services/">Services</a></li>
+        <li><a href="/case-studies/" aria-current="true">Cases</a></li>
+        <li><a href="/#process">Process</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+      <a class="nav-cta" href="/#contact">Request a Briefing</a>
+      <button class="burger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
+          <rect y="0"  width="22" height="2" rx="1" fill="currentColor"/>
+          <rect y="7"  width="22" height="2" rx="1" fill="currentColor"/>
+          <rect y="14" width="22" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+    <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" hidden>
+      <button class="drawer-close" aria-label="Close navigation menu">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <line x1="1" y1="1" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="17" y1="1" x2="1"  y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="drawer-items">
+        <li><a href="/#why-us" class="drawer-link">Why Us</a></li>
+        <li><a href="/services/" class="drawer-link">Services</a></li>
+        <li><a href="/case-studies/" class="drawer-link">Cases</a></li>
+        <li><a href="/#process" class="drawer-link">Process</a></li>
+        <li><a href="/#pricing" class="drawer-link">Pricing</a></li>
+        <li><a href="/#faq" class="drawer-link">FAQ</a></li>
+        <li><a href="/#contact" class="drawer-link">Contact</a></li>
+      </ul>
+      <a class="drawer-cta" href="/#contact">Request a Briefing</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/case-studies/">Case Studies</a></li>
+        <li aria-current="page">Meraas</li>
+      </ol>
+    </nav>
+
+    <article>
+      <header class="cs-hero" aria-labelledby="cs-h1">
+        <p class="cs-eyebrow">TAMAZIA · REAL ESTATE · DUBAI HOLDING</p>
+        <h1 id="cs-h1" class="cs-h1">Digital presence for a Dubai Holding subsidiary. Zero compliance incidents.</h1>
+        <p class="cs-sub">Meraas is a subsidiary of Dubai Holding. The engagement required full compliance with RERA under UAE Law No. 7 of 2013, the Trakheesi off-plan marketing system, and a direct directive from Sheikh Mohammed. Every piece of content cleared each standard before publication.</p>
+        <ul class="cs-meta-strip" role="list">
+          <li><span class="meta-label">Client</span><span class="meta-value">Meraas (Dubai Holding)</span></li>
+          <li><span class="meta-label">Sector</span><span class="meta-value">Real Estate · UAE</span></li>
+          <li><span class="meta-label">Standards</span><span class="meta-value">RERA · Trakheesi · Dubai Holding</span></li>
+          <li><span class="meta-label">Incidents</span><span class="meta-value">Zero</span></li>
+        </ul>
+      </header>
+
+      <section class="cs-stats" aria-label="Engagement results">
+        <div class="cs-stats-inner">
+          <ul class="stat-grid" role="list">
+            <li class="stat-card">
+              <span class="stat-number" data-stat>Zero</span>
+              <span class="stat-label">Compliance incidents</span>
+              <span class="stat-period">RERA + Trakheesi + Dubai Holding standard</span>
+            </li>
+            <li class="stat-card">
+              <span class="stat-number" data-stat>3</span>
+              <span class="stat-label">Regulatory frameworks applied simultaneously</span>
+              <span class="stat-period">RERA · Trakheesi · Dubai Holding directive</span>
+            </li>
+            <li class="stat-card">
+              <span class="stat-number" data-stat>UAE</span>
+              <span class="stat-label">Primary jurisdiction</span>
+              <span class="stat-period">With international buyer audience coverage</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cs-body" aria-labelledby="cs-context-heading">
+        <div class="cs-body-inner">
+          <h2 id="cs-context-heading" class="cs-section-label">The Regulatory Constraint</h2>
+          <div class="cs-prose">
+            <p>
+              Real estate advertising in the UAE is not a voluntary compliance exercise. The Real Estate Regulatory Authority, constituted under Dubai Law No. 7 of 2013, requires every real estate advertisement to include the property registration number, the developer's licence number, and the agent's RERA registration. The Trakheesi system governs off-plan marketing permissions. Non-compliant advertising is an enforcement matter, not a civil one.
+            </p>
+            <p>
+              The Meraas engagement operated under an additional layer of obligation: Dubai Holding standards and a direct directive issued by Sheikh Mohammed. That directive established specific presentation requirements for Meraas properties that went beyond the minimum RERA threshold. Content that met the legal minimum but did not meet the Dubai Holding standard was not acceptable.
+            </p>
+            <p>
+              The engagement was also subject to the expectations of an international buyer audience that included UK buyers (CPR 2008 compliance), European buyers, and buyers from across the GCC. A property marketed with an investment return expectation to US buyers raises separate considerations under applicable state securities laws. The review process covered each buyer jurisdiction simultaneously.
+            </p>
+          </div>
+
+          <h2 class="cs-section-label">The Approach</h2>
+          <div class="cs-prose">
+            <p>
+              Every content deliverable was mapped against the RERA checklist first: registration numbers present, developer licence number visible, Trakheesi permission confirmed for off-plan references. The Dubai Holding presentation standard was applied as a secondary layer: tone, structure, and claim substantiation reviewed against the internal standard before external publication.
+            </p>
+            <p>
+              Property descriptions, amenity content, and location guides were produced under the same dual-standard review. The content architecture was built to make future compliance updates, triggered by changes in RERA guidance or Dubai Holding direction, straightforward to implement without full content rebuilds.
+            </p>
+          </div>
+
+          <h2 class="cs-section-label">The Outcome</h2>
+          <div class="cs-prose">
+            <p>
+              Zero compliance incidents across the engagement. No RERA enforcement action. No Dubai Holding escalation. No content required to be withdrawn or amended post-publication.
+            </p>
+            <p>
+              The compliance record stands as the primary metric of this engagement. In a regulatory environment where non-compliant advertising is an enforcement matter, the absence of incidents is not a baseline expectation. It is a deliverable.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-cta" aria-labelledby="cs-cta-heading">
+        <div class="cs-cta-inner">
+          <h2 id="cs-cta-heading" class="cs-cta-heading">Begin a Real Estate audit enquiry</h2>
+          <p class="cs-cta-sub">Every real estate engagement opens with a regulatory audit against RERA, Trakheesi, CPR 2008, and applicable jurisdiction standards for your buyer markets.</p>
+          <a href="/services/real-estate/" class="cs-cta-secondary">Real estate sector page →</a>
+          <a href="/#contact" class="cs-cta-btn">Begin an audit enquiry →</a>
+          <p class="cs-cta-note">Responses within one business day. All communications confidential.</p>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Tamazia home"><span class="t">T</span></a>
+        <p class="footer-tagline">Lawyer-led SEO for regulated enterprises.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="/services/">Services</a></li>
+          <li><a href="/case-studies/">Case Studies</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
+          <li><a href="/privacy-notice/">Privacy Notice</a></li>
+          <li><a href="/cookie-policy/">Cookie Policy</a></li>
+          <li><a href="/terms/">Terms</a></li>
+        </ul>
+      </nav>
+      <p class="footer-legal">
+        &copy; {new Date().getFullYear()} Tamazia Ltd. Registered in England and Wales.
+        All engagements invoiced in GBP. Content reviewed against applicable regulatory standards before publication.
+      </p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 100; background: var(--ivory); border-bottom: 1px solid var(--hairline); }
+  .main-nav { height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 72px; max-width: 1440px; margin: 0 auto; }
+  .logo-group { display: flex; align-items: center; gap: 10px; }
+  .logo-crest { width: 36px; height: 36px; background: var(--oxblood); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: var(--font-serif); font-size: 18px; font-weight: 500; text-decoration: none; flex-shrink: 0; }
+  .logo-wordmark { font-family: var(--font-serif); font-size: 18px; font-weight: 500; color: var(--ink); text-decoration: none; letter-spacing: 0.03em; }
+  .nav-items { display: flex; list-style: none; gap: 28px; margin: 0; padding: 0; }
+  .nav-items a { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); text-decoration: none; opacity: 0.75; transition: opacity var(--t-opacity); font-weight: 400; }
+  .nav-items a:hover, .nav-items a[aria-current="true"] { opacity: 1; color: var(--oxblood); }
+  .nav-cta { display: inline-block; padding: 9px 20px; background: var(--oxblood); color: var(--gold); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; text-decoration: none; border: 1px solid var(--oxblood); transition: background var(--t-bg), color var(--t-color); }
+  .nav-cta:hover { background: transparent; color: var(--oxblood); }
+  .burger { display: none; background: none; border: none; cursor: pointer; color: var(--ink); padding: 6px; }
+  .mobile-drawer { display: none; }
+  .breadcrumb { background: var(--ivory); border-bottom: 1px solid var(--hairline); padding: 12px 72px; }
+  .breadcrumb ol { display: flex; list-style: none; gap: 8px; margin: 0; padding: 0; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); opacity: 0.6; align-items: center; }
+  .breadcrumb li + li::before { content: '/'; margin-right: 8px; opacity: 0.4; }
+  .breadcrumb a { color: inherit; text-decoration: none; }
+  .breadcrumb a:hover { color: var(--oxblood); opacity: 1; }
+  .breadcrumb li[aria-current="page"] { opacity: 1; color: var(--oxblood); }
+  .cs-hero { background: var(--oxblood); padding: 80px 72px 64px; position: relative; overflow: hidden; }
+  .cs-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(198,160,80,0.08) 0%, transparent 65%); pointer-events: none; }
+  .cs-eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin: 0 0 24px; opacity: 0.9; }
+  .cs-h1 { font-family: var(--font-serif); font-size: clamp(26px, 3.5vw, 44px); font-weight: 500; color: var(--ivory); line-height: 1.2; max-width: 820px; margin: 0 0 20px; letter-spacing: -0.01em; }
+  .cs-sub { font-size: 16px; line-height: 1.7; color: var(--ivory); opacity: 0.7; max-width: 680px; margin: 0 0 36px; }
+  .cs-meta-strip { display: flex; flex-wrap: wrap; gap: 0; list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255,255,255,0.12); }
+  .cs-meta-strip li { display: flex; flex-direction: column; gap: 4px; padding: 16px 28px 16px 0; border-right: 1px solid rgba(255,255,255,0.1); margin-right: 28px; }
+  .cs-meta-strip li:last-child { border-right: none; }
+  .meta-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); opacity: 0.6; }
+  .meta-value { font-size: 13px; color: var(--ivory); opacity: 0.85; }
+  .cs-stats { background: var(--ivory); padding: 64px 0; border-bottom: 1px solid var(--hairline); }
+  .cs-stats-inner { max-width: 1100px; margin: 0 auto; padding: 0 72px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .stat-card { border: 1px solid var(--hairline); padding: 36px 32px; display: flex; flex-direction: column; gap: 8px; }
+  .stat-number { font-family: var(--font-serif); font-size: clamp(36px, 4vw, 52px); font-weight: 500; color: var(--oxblood); line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat-label { font-size: 15px; font-weight: 500; color: var(--ink); }
+  .stat-period { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); opacity: 0.45; }
+  .cs-body { background: var(--ivory); padding: 80px 0; border-bottom: 1px solid var(--hairline); }
+  .cs-body-inner { max-width: 820px; margin: 0 auto; padding: 0 72px; }
+  .cs-section-label { font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--oxblood); font-weight: 600; margin: 48px 0 20px; opacity: 0.8; }
+  .cs-section-label:first-child { margin-top: 0; }
+  .cs-prose p { font-size: 16px; line-height: 1.78; color: var(--ink); opacity: 0.85; margin: 0 0 20px; }
+  .cs-prose p:last-child { margin-bottom: 0; }
+  .cs-cta { background: var(--parchment, #F5F0E8); padding: 96px 0; }
+  .cs-cta-inner { max-width: 680px; margin: 0 auto; padding: 0 72px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .cs-cta-heading { font-family: var(--font-serif); font-size: clamp(22px, 2.8vw, 32px); font-weight: 500; color: var(--ink); margin: 0 0 16px; letter-spacing: -0.01em; }
+  .cs-cta-sub { font-size: 15px; line-height: 1.7; color: var(--ink); opacity: 0.7; margin: 0 0 32px; }
+  .cs-cta-secondary { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--oxblood); text-decoration: none; font-weight: 600; margin-bottom: 16px; opacity: 0.8; transition: opacity var(--t-opacity); }
+  .cs-cta-secondary:hover { opacity: 1; }
+  .cs-cta-btn { display: inline-block; padding: 15px 36px; background: var(--oxblood); color: var(--gold); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; text-decoration: none; border: 1px solid var(--oxblood); transition: background var(--t-bg), color var(--t-color); margin-bottom: 16px; }
+  .cs-cta-btn:hover { background: transparent; color: var(--oxblood); }
+  .cs-cta-note { font-size: 12px; letter-spacing: 0.06em; color: var(--ink); opacity: 0.5; margin: 0; }
+  .footer { background: linear-gradient(180deg, #2A0C14 0%, #1F0810 100%); padding: 64px 0 48px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 72px; display: grid; grid-template-columns: auto 1fr; gap: 32px 64px; align-items: start; }
+  .footer-brand { display: flex; flex-direction: column; gap: 12px; }
+  .footer-logo { width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--oxblood); font-family: var(--font-serif); font-size: 20px; font-weight: 500; text-decoration: none; }
+  .footer-tagline { font-size: 12px; color: var(--ivory); opacity: 0.5; margin: 0; letter-spacing: 0.04em; }
+  .footer-nav ul { display: flex; flex-wrap: wrap; gap: 8px 24px; list-style: none; margin: 0; padding: 0; }
+  .footer-nav a { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ivory); text-decoration: none; opacity: 0.55; transition: opacity var(--t-opacity); }
+  .footer-nav a:hover { opacity: 1; }
+  .footer-legal { grid-column: 1 / -1; font-size: 11px; color: var(--ivory); opacity: 0.35; margin: 0; line-height: 1.6; letter-spacing: 0.04em; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
+  @media (max-width: 900px) {
+    .main-nav { padding: 0 24px; }
+    .nav-items, .nav-cta { display: none; }
+    .burger { display: flex; }
+    .mobile-drawer { display: flex; flex-direction: column; position: fixed; inset: 0; background: var(--oxblood); z-index: 200; padding: 32px 24px; gap: 24px; }
+    .drawer-close { align-self: flex-end; background: none; border: none; cursor: pointer; color: var(--ivory); padding: 8px; }
+    .drawer-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+    .drawer-link { font-size: 20px; color: var(--ivory); text-decoration: none; font-family: var(--font-serif); }
+    .drawer-cta { display: inline-block; padding: 14px 28px; background: var(--gold); color: var(--oxblood); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; text-decoration: none; align-self: flex-start; }
+    .breadcrumb, .cs-hero, .cs-stats-inner, .cs-body-inner, .cs-cta-inner, .footer-inner { padding-left: 24px; padding-right: 24px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .cs-meta-strip { flex-direction: column; }
+    .cs-meta-strip li { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); margin-right: 0; padding-right: 0; }
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+</style>
+<script>
+  const burger = document.querySelector('.burger');
+  const drawer = document.querySelector('.mobile-drawer');
+  const drawerClose = document.querySelector('.drawer-close');
+  if (burger && drawer) {
+    burger.addEventListener('click', () => {
+      const open = drawer.hasAttribute('hidden');
+      if (open) { drawer.removeAttribute('hidden'); burger.setAttribute('aria-expanded', 'true'); }
+      else { drawer.setAttribute('hidden', ''); burger.setAttribute('aria-expanded', 'false'); }
+    });
+  }
+  if (drawerClose && drawer && burger) { drawerClose.addEventListener('click', () => { drawer.setAttribute('hidden', ''); burger.setAttribute('aria-expanded', 'false'); }); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer && !drawer.hasAttribute('hidden')) { drawer.setAttribute('hidden', ''); burger?.setAttribute('aria-expanded', 'false'); } });
+</script>

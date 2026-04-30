@@ -1,4 +1,4 @@
-// Contact · 6-field form per live tamazia.in (TAMAZIA-13 §8)
+// Contact · 6-field form per live tamazia.co.uk (TAMAZIA-13 §8)
 // 12-option sector dropdown matching live site exactly.
 
 export const contactContent = {
@@ -44,7 +44,7 @@ export const contactContent = {
       label: 'Sector',
       type: 'select',
       required: true,
-      // Verbatim 12 options from live tamazia.in contact form
+      // Verbatim 12 options from live tamazia.co.uk contact form
       options: [
         'Law Firm',
         'Healthcare',
@@ -70,10 +70,10 @@ export const contactContent = {
     },
   ],
 
-  submitLabel: 'Request SEO & Compliance Audit',
+  submitLabel: 'Begin the conversation →',
 
   calendlyHeading: 'Or schedule directly using the calendar below.',
-  calendlyUrl: 'https://calendly.com/tamazia',
+  calendlyUrl: 'https://cal.com/tamazia',
 
   confidentiality: 'All briefings are conducted under NDA on request. The founder reviews every enquiry.',
 

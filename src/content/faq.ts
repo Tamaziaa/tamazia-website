@@ -1,4 +1,4 @@
-// FAQ · 6 questions verbatim from live tamazia.in (TAMAZIA-13 §7)
+// FAQ · 6 questions verbatim from live tamazia.co.uk (TAMAZIA-13 §7)
 // Structure: 6 top-level Q&As. Sub-content (sector breakdowns) handled within Q2 answer.
 
 export const faqContent = {
@@ -131,7 +131,7 @@ export const faqContent = {
       id: 'q5-llm-and-ai',
       question: 'What does the LLM in International Business Law actually contribute to the work, and is any content produced by AI?',
       answerParagraphs: [
-        "The credential is not a line on a pitch deck. It is the reason the team is structured the way it is and the reason the compliance review is substantive rather than cosmetic. An LLM in International Business Law from King's means the person overseeing every content strategy has read the SRA advertising code, the FCA financial promotion rules, the MHRA health claim guidance, and the cross-border advertising law governing content published across multiple jurisdictions simultaneously. That training is applied to every engagement.",
+        "The credential is not a line on a pitch deck. It is the reason the engagement is structured the way it is and the reason the compliance review is substantive rather than cosmetic. An LLM in International Business Law from King's means the person overseeing every content strategy has read the SRA advertising code, the FCA financial promotion rules, the MHRA health claim guidance, and the cross-border advertising law governing content published across multiple jurisdictions simultaneously. That training is applied to every engagement.",
         'On AI content: AI tools are used in research, keyword analysis, and competitive intelligence. Content published under your brand is written and reviewed by the founder before it reaches any search engine or AI system. In regulated sectors, AI-generated content that has not been reviewed by someone with legal training is a liability. Healthcare content written without expert review can contain medically inaccurate claims. Legal content can breach SRA advertising rules. Financial content can constitute an unauthorised financial promotion under Section 21 of the Financial Services and Markets Act 2000. Tamazia does not create any of these liabilities for clients.',
       ],
       chips: ['LLM · KCL', 'SRA Code', 'FCA COBS 4', 'MHRA', 'FSMA s.21'],

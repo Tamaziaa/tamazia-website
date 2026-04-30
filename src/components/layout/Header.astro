@@ -11,7 +11,7 @@ import { heroContent } from '../../content/hero';
     <a href="/" class="logo-wordmark">Tamazia</a>
   </div>
   <ul class="nav-items">
-    {heroContent.navItems.map(item => <li><a href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}>{item}</a></li>)}
+    {heroContent.headerNav.map(item => <li><a href={item.href}>{item.label}</a></li>)}
   </ul>
   <a class="nav-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
   {/* Phase B · mobile burger */}
@@ -33,9 +33,9 @@ import { heroContent } from '../../content/hero';
     </svg>
   </button>
   <ul class="drawer-items">
-    {heroContent.navItems.map(item => (
+    {heroContent.headerNav.map(item => (
       <li>
-        <a href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} class="drawer-link">{item}</a>
+        <a href={item.href} class="drawer-link">{item.label}</a>
       </li>
     ))}
   </ul>

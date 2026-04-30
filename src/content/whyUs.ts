@@ -1,4 +1,4 @@
-// Why Us / Proof section — verbatim live tamazia.in (TAMAZIA-13 snapshot §2)
+// Why Us / Proof section — verbatim live tamazia.co.uk (TAMAZIA-13 snapshot §2)
 // CRITICAL FIX: stats restored from invented "4× / 200+ / 4" to live-site values.
 
 export const whyUsContent = {
@@ -13,7 +13,7 @@ export const whyUsContent = {
 
   pullQuote: '{{International business law expertise at the core.}}',
 
-  // Verbatim from live tamazia.in. These are the canonical credibility numbers.
+  // Verbatim from live tamazia.co.uk. These are the canonical credibility numbers.
   // The "4× / 200+ / 4" in the prior rebuild was a credibility-damaging error.
   stats: [
     {

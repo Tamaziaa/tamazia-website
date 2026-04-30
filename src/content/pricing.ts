@@ -30,7 +30,7 @@ export const pricingContent = {
         },
         {
           headline: "Every word your brand publishes reviewed against your sector's legal framework before it goes live",
-          body: 'One compliance-reviewed content piece per month. UK: SRA Code Rules 8.7 and 8.9, MHRA Human Medicines Regulations 2012, FCA COBS 4. US: ABA Model Rules 7.1 to 7.3, HIPAA Privacy Rule 45 CFR 164.514, FTC Act Section 5. UAE: Federal Decree-Law No. 55 of 2023, MOHAP requirements, RERA Law No. 7 of 2013. Reviewed before Google sees it, before a regulator does.',
+          body: 'One compliance-reviewed content piece per month. UK: SRA Code Rules 8.7 and 8.9, MHRA Human Medicines Regulations 2012, FCA COBS 4. US: ABA Model Rules 7.1 to 7.3, HIPAA Privacy Rule 45 CFR 164.508 and 164.502, FTC Act Section 5. UAE: Federal Decree-Law No. 55 of 2023, MOHAP requirements, RERA Law No. 7 of 2013. Reviewed before Google sees it, before a regulator does.',
         },
         {
           headline: 'A complete technical audit with a prioritised fix document delivered to your development team',
@@ -166,7 +166,7 @@ export const pricingContent = {
           body: 'Managed audience development across both platforms for your brand and senior team. Follower growth engineered through sector-aligned engagement, building the professional visibility that enterprise buyers and referral partners evaluate before any conversation begins.',
         },
         {
-          headline: 'The compliance standard applied to a NYSE-listed company, across every jurisdiction',
+          headline: 'The compliance standard applied to a Nasdaq-listed company, across every jurisdiction',
           body: 'UK GDPR, FCA COBS 4, SRA Rules, HIPAA, MHRA, ASA, ABA Model Rules across all 50 US states, RERA, MOHAP, DFSA, UAE PDPL, and more. This is what produced zero compliance incidents on the largest regulatory stage.',
         },
         {

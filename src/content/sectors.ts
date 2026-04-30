@@ -87,8 +87,8 @@ export const sectorsContent = {
       index: '04',
       size: 'standard',
       headline: 'Real Estate, Finance and IPOs',
-      regulatoryShorthand: 'SEC Reg FD. FCA Listing Rules. RERA. Trakheesi. NYSE IPO. SEC disclosure on every word.',
-      body: 'Property developers. Luxury estate agents. Wealth managers. Fintech startups. Accountants. Investment firms and companies preparing for public markets. We managed digital coverage for NYSE-listed IPOs, resulting in shares nearly doubling, and SEC disclosure rules applied to every word published. Virtual tour SEO, international buyer targeting, FCA financial promotion compliance, and pre-IPO digital presence built to institutional standards.',
+      regulatoryShorthand: 'SEC Reg FD. FCA Listing Rules. RERA. Trakheesi. Nasdaq IPO. SEC disclosure on every word.',
+      body: 'Property developers. Luxury estate agents. Wealth managers. Fintech startups. Accountants. Investment firms and companies preparing for public markets. We managed digital coverage for exchange-listed IPOs, resulting in shares nearly doubling, and SEC disclosure rules applied to every word published. Virtual tour SEO, international buyer targeting, FCA financial promotion compliance, and pre-IPO digital presence built to institutional standards.',
       pullQuote: 'High transaction values demand high content standards.',
       cta: 'Audit my real estate →',
       tooltip: [

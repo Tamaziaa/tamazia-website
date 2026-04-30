@@ -114,7 +114,7 @@ export const heroContent = {
   clientRibbonPrefix: 'Trusted by',
   clientRibbonClients: [
     'KAMAT HOTELS (NSE)',
-    'CG ONCOLOGY (NYSE: CGON)',
+    'CG ONCOLOGY (Nasdaq: CGON)',
     'MERAAS (DUBAI HOLDING)',
   ],
   clientRibbonSuffix:
@@ -124,7 +124,7 @@ export const heroContent = {
   // Dates removed per filler-removal rule.
   tickerItems: [
     'KAMAT HOTELS GROUP · NSE-LISTED HOSPITALITY · DIRECT-BOOKING SHIFT',
-    'CG ONCOLOGY · NYSE: CGON · +96% AT IPO · VERIFIED PER SEC FILINGS',
+    'CG ONCOLOGY · Nasdaq: CGON · +96% AT IPO · VERIFIED PER SEC FILINGS',
     'MERAAS · DUBAI HOLDING SUBSIDIARY · SHEIKH MOHAMMED DIRECTIVE',
     '200+ LAWS REVIEWED PER CAMPAIGN',
     'FOUR CONTINENTS · LONDON · DUBAI · NEW YORK · PARIS',

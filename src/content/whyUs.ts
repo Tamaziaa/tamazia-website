@@ -47,7 +47,7 @@ export const whyUsContent = {
   microLine: 'TAMAZIA · Technology Partnership · TAMAZIA',
 
   // Zero-compliance-incident proof (B-38 fix · SWF allocator persona)
-  proofStrip: 'Zero compliance incidents · NYSE IPO listing · Dubai Holding standard · Verified per SEC filings + GA4',
+  proofStrip: 'Zero compliance incidents · Nasdaq IPO listing · Dubai Holding standard · Verified per SEC filings + GA4',
 
   cta: {
     label: 'Request SEO & Compliance Audit',

@@ -85,21 +85,128 @@
   to { stroke-dashoffset: 0; }
 }
 
-/* REDUCED MOTION DISCIPLINE */
+/* REDUCED MOTION DISCIPLINE — F.07
+   Comprehensive coverage: all animated elements in Hero + global continuous animations.
+   The * rule collapses duration to near-zero for all transitions/animations.
+   Named elements are additionally set to animation:none so infinite loops are fully halted. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+
+  /* Continuous/infinite animations — fully halted */
   .ribbon-column,
   .ticker-inner,
   .scroll-diamond,
   .monogram-t,
-  .fleuron-mark {
+  .fleuron-mark,
+  .hero-vignette,
+  .hero-monogram,
+  .hero-h1,
+  .hero-h1 .h1-line,
+  .sub-headline,
+  .compliance-para,
+  .hero-cta-group,
+  .primary-cta,
+  .client-ribbon,
+  .laws-strip,
+  .author-hairline,
+  .author-frame,
+  .author-credentials,
+  .signature-wrap,
+  .pull-quote-block,
+  .hero-dateline,
+  .reg-chip,
+  .emph,
+  .flourish-svg,
+  .hero-right-ribbon {
     animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
   }
+
+  /* Signature reveal */
   .signature {
     clip-path: none !important;
+  }
+
+  /* Remove transition on hero CTA to prevent any residual letter-spacing motion */
+  .primary-cta {
+    transition: none !important;
+  }
+}
+
+/* PRINT STYLESHEET — F.45
+   Ensures readable printed output with no dark backgrounds or animation artifacts. */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    color: #000 !important;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Hide decorative and interactive elements */
+  .header,
+  .footer,
+  nav,
+  .hero-right-ribbon,
+  .scroll-diamond,
+  .ribbon-column,
+  .ticker-inner,
+  .laws-strip,
+  .quickaudit,
+  .faq-nav,
+  .skip-link,
+  .hero-dateline,
+  button,
+  .primary-cta,
+  .cta,
+  .mandate-callout,
+  .calendly-section,
+  [aria-hidden="true"] {
+    display: none !important;
+  }
+
+  /* Show content cleanly */
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    color: #000 !important;
+  }
+
+  p, li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #555 !important;
+  }
+
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
   }
 }

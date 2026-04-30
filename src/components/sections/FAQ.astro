@@ -583,6 +583,24 @@ const { eyebrow, h2, intro, categories, timeline, questions, closingLine } = faq
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // F.39 · aria-expanded management for <details> FAQ items
+    // <details> native open attribute handles visual state; we mirror it to aria-expanded
+    // on each <summary> so assistive technologies announce the expanded/collapsed state.
+    const faqItems = document.querySelectorAll<HTMLDetailsElement>('.faq-item');
+
+    faqItems.forEach((item) => {
+      const summary = item.querySelector<HTMLElement>('summary.faq-question');
+      if (!summary) return;
+
+      // Set initial aria-expanded state
+      summary.setAttribute('aria-expanded', item.open ? 'true' : 'false');
+
+      // Use 'toggle' event (fires after open state changes) to keep aria-expanded in sync
+      item.addEventListener('toggle', () => {
+        summary.setAttribute('aria-expanded', item.open ? 'true' : 'false');
+      });
+    });
+
     // Scroll spy on nav
     const links = document.querySelectorAll<HTMLAnchorElement>('.faq-cat-link');
     const sections = Array.from(document.querySelectorAll<HTMLElement>('.faq-category'));

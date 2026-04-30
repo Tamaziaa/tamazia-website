@@ -15,6 +15,7 @@ html {
   text-rendering: optimizeLegibility;
   hanging-punctuation: first last;
   scroll-behavior: smooth;
+  color-scheme: light;
 }
 
 body {
@@ -105,11 +106,21 @@ input, textarea, select {
   top: 0;
 }
 
-/* Focus-visible outlines */
+/* Focus-visible outlines — F.36
+   Light backgrounds: 2px solid ink (oxblood-ink) for WCAG contrast.
+   Dark backgrounds (pricing, cases, footer sections): 2px solid gold. */
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--oxblood-ink);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/* Dark-background sections override */
+.pricing :focus-visible,
+.cases :focus-visible,
+.footer :focus-visible,
+.faq :focus-visible {
+  outline-color: var(--gold);
 }
 
 /* Screen reader only */
@@ -130,4 +141,18 @@ input, textarea, select {
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--container-padding);
+}
+
+/* Tabular numerals — F.30
+   Apply to any element displaying numeric data: stats, prices, percentages, dates. */
+.stat,
+.stat-value,
+.metric-value,
+.case-stat,
+.price,
+.numeral,
+.figure,
+[data-stat],
+.tier-price {
+  font-variant-numeric: tabular-nums;
 }

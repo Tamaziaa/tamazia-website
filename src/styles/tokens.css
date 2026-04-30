@@ -24,6 +24,9 @@
   /* Round-7 fix · accessible bronze for body-size gold accents on light bgs (passes 4.5:1 on ivory/linen/pearl/bisque) */
   --gold-text: #7B5520;
   --gold-text-strong: #5C3F18;
+  /* F.34 · WCAG-compliant eyebrow colour for light backgrounds (ivory/linen/pearl).
+     #6B5058 = 4.6:1 on #FAF7F2 · passes AA. Use instead of raw --gold on parchment. */
+  --eyebrow-light: #6B5058;
 
   /* Bug-fix #5: orange accent for action CTAs (audit + sector cards) */
   --accent-orange: #C76E2A;
@@ -96,7 +99,9 @@
   --container-max: 1440px;
   --container-padding: clamp(24px, 4vw, 80px);
 
-  /* MOTION */
+  /* MOTION — F.37: canonical duration vars. All component transitions must use these.
+     280ms/300ms raw values in components are acceptable aliases for --duration-micro.
+     Remove letter-spacing from all transition lists (F.38). */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-micro: 200ms;
@@ -105,6 +110,17 @@
   --duration-long: 900ms;
   --duration-extra-long: 1400ms;
   --duration-ambient: 60000ms;
+
+  /* Canonical transition shorthands (F.37) */
+  --t-color: color var(--duration-micro) ease;
+  --t-transform: transform var(--duration-short) var(--ease-out);
+  --t-opacity: opacity var(--duration-short) var(--ease-out);
+  --t-bg: background var(--duration-micro) ease;
+  --t-border: border-color var(--duration-micro) ease;
+  --t-shadow: box-shadow var(--duration-short) ease;
+
+  /* TYPOGRAPHY EXTRAS — F.30 */
+  --fvn-tabular: tabular-nums;   /* font-variant-numeric: use on all stat/number elements */
 }
 
 /* PRINT DEFAULTS (unused at launch but defined) */

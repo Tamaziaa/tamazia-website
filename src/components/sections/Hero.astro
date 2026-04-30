@@ -1,0 +1,1166 @@
+---
+import { heroContent, parseEmph } from '../../content/hero';
+
+const {
+  eyebrow,
+  subHeadline,
+  positioningLine,
+  complianceParagraph,
+  pullQuote,
+  h1,
+  authorFrame,
+  cta,
+  regulationFrameworks,
+  goldHighlightedFrameworks,
+  ribbonLabel,
+  tickerItems,
+  clientRibbonPrefix,
+  clientRibbonClients,
+  clientRibbonSuffix,
+  signature,
+} = heroContent as any;
+
+// Duplicate ribbon entries for seamless loop
+const ribbonDouble = [...regulationFrameworks, ...regulationFrameworks];
+// Duplicate ticker for seamless loop
+const tickerDouble = [...tickerItems, ...tickerItems];
+---
+<section class="hero" id="main" aria-labelledby="hero-h1">
+  <!-- Monogram watermark -->
+  <div class="monogram" aria-hidden="true">
+    <span class="monogram-t">T</span>
+  </div>
+
+  {/* Round-11 · Vertical right-side laws ribbon · all 200 frameworks scrolling top→bottom · 12 in gold-italic */}
+  <aside class="regulation-ribbon" aria-hidden="true">
+    <div class="ribbon-label">{ribbonLabel}</div>
+    <div class="ribbon-column">
+      {ribbonDouble.map((reg: string) => (
+        <span class={goldHighlightedFrameworks?.includes(reg) ? 'gold' : ''}>{reg}</span>
+      ))}
+    </div>
+  </aside>
+
+  <!-- Right margin hairline -->
+  <div class="margin-rule" aria-hidden="true"></div>
+
+  <!-- Main content · Round-9 reorder · H1 first, then credibility, then positioning+fleuron+pull-quote -->
+  <div class="hero-content">
+
+    {/* H1 · Round-11 typewriter restored · each row's `.line` types out left-to-right at 42 ms/char */}
+    <h1 class="hero-h1" id="hero-h1">
+      {h1.map((row: any) => (
+        <div class="h1-row">
+          <div class="line-wrap">
+            <span class="line" data-text={row.text}></span>
+            {row.subtext && <span class="h1-subtext">{row.subtext}</span>}
+          </div>
+        </div>
+      ))}
+    </h1>
+
+    {/* Sub-headline · "Led by a founder with an LLM…" — credibility paragraph after H1 */}
+    <p class="sub-headline" set:html={parseEmph(subHeadline)} />
+
+    {/* Positioning + fleuron + pull-quote · all three together as one tight block, lands after credibility */}
+    <div class="hero-quote-block">
+      {positioningLine && (
+        <p class="positioning-line" set:html={parseEmph(positioningLine)} />
+      )}
+      <div class="fleuron" aria-hidden="true">
+        <div class="fleuron-rule"></div>
+        <span class="fleuron-mark">&#10086;</span>
+        <div class="fleuron-rule"></div>
+      </div>
+      <blockquote class="pull-quote" set:html={parseEmph(pullQuote)} />
+    </div>
+
+    {complianceParagraph && (
+      <p class="compliance-paragraph" set:html={parseEmph(complianceParagraph)} />
+    )}
+
+    {/* Round-11 · CTA + signature inline · single flex row, both visible above the fold */}
+    <div class="cta-row">
+      <a class="primary-cta" href={cta.href}>
+        <span>{cta.label}</span>
+        <span class="cta-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+
+      <div class="signature-wrap" aria-label="Founder's signature">
+        <div class="vetted-by">{signature.vettedBy}</div>
+        <div class="signature">{signature.name}</div>
+        <div class="signature-flourish" aria-hidden="true">
+          <svg width="180" height="22" viewBox="0 0 180 22">
+            <path
+              d="M 2 10 C 20 4, 40 18, 60 12 C 80 6, 100 16, 130 10 C 150 6, 165 14, 178 10"
+              stroke="#C9A772"
+              stroke-width="1"
+              fill="none"
+              stroke-linecap="round"
+              style="stroke-dasharray: 220; stroke-dashoffset: 220; animation: flourish-draw 1400ms cubic-bezier(0.2, 0.8, 0.2, 1) 5900ms forwards;"
+            />
+          </svg>
+        </div>
+        <div class="signature-caption">
+          {signature.caption.map((c, i) => (
+            <>
+              {i > 0 && <span class="sep" aria-hidden="true">·</span>}
+              {c}
+            </>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {clientRibbonClients && (
+      <div class="client-ribbon">
+        <span class="client-ribbon-prefix">{clientRibbonPrefix}</span>
+        <span class="client-ribbon-clients">
+          {clientRibbonClients.map((c: string, i: number) => (
+            <>
+              {i > 0 && <span class="dot" aria-hidden="true">·</span>}
+              <strong>{c}</strong>
+            </>
+          ))}
+        </span>
+        <span class="client-ribbon-suffix">{clientRibbonSuffix}</span>
+      </div>
+    )}
+  </div>
+
+  {/* Scroll cue */}
+  <div class="scroll-cue" aria-hidden="true">
+    <div class="scroll-track">
+      <div class="scroll-diamond"></div>
+    </div>
+    <span>Continue</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    /* Round-10 · tighter padding · billionaire editorial standard (was 32-56 / 48-72 vertical) */
+    background: var(--grad-hero);
+    overflow: hidden;
+    padding: clamp(24px, 3vw, 40px) clamp(24px, 5vw, 80px) clamp(32px, 4vw, 48px);
+  }
+
+  /* Credentials top bar (Round-1 fix B-13) */
+  .credentials-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-bottom: 24px;
+    padding: 10px 16px;
+    background: var(--grad-oxblood-depth);
+    border-radius: 2px;
+    align-items: baseline;
+  }
+  .credentials-item {
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .credentials-sep {
+    color: var(--gold-pale);
+    opacity: 0.5;
+  }
+  @media (max-width: 720px) {
+    .credentials-bar {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Positioning line · sits between subhead and pull-quote (B-06 fix · sized down) */
+  .positioning-line {
+    font-family: var(--ff-display);
+    font-size: clamp(16px, 1.1vw + 0.3rem, 20px);
+    line-height: 1.35;
+    color: var(--oxblood-ink);
+    font-style: italic;
+    margin: 12px 0 6px;
+    max-width: 880px;
+  }
+
+  /* Compliance paragraph · institutional credentials list */
+  .compliance-paragraph {
+    font-family: var(--ff-body);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 720px;
+    /* Round-10 · tighter spacing */
+    margin: 16px 0 16px;
+  }
+
+  /* B-18 fix · inline regulator chips · Round-7 contrast fix · gold-text-strong (#5C3F18) on solid pearl bg passes ≥7:1 */
+  .compliance-paragraph :global(.reg-chip) {
+    display: inline-block;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-text-strong);
+    background: var(--pearl);
+    padding: 2px 8px;
+    margin: 0 2px;
+    border-radius: 2px;
+    border-bottom: 1px solid var(--gold);
+    line-height: 1.4;
+    vertical-align: 1px;
+  }
+
+  /* Client ribbon · authority signal above-fold · Round-10 tighter */
+  .client-ribbon {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: baseline;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gold-hairline);
+    font-family: var(--ff-body);
+    font-size: 12px;
+    letter-spacing: var(--ls-caps-micro);
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    max-width: 920px;
+  }
+
+  .client-ribbon-prefix {
+    /* Round-7 fix · 12px gold = 2.07:1 on ivory; deeper bronze passes 4.5:1 */
+    color: var(--gold-text);
+    font-weight: 600;
+  }
+
+  .client-ribbon-clients {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .client-ribbon-clients strong {
+    font-weight: 600;
+    color: var(--oxblood-ink);
+    letter-spacing: var(--ls-caps-micro);
+  }
+
+  .client-ribbon-clients .dot {
+    color: var(--gold);
+    margin: 0 4px;
+  }
+
+  .client-ribbon-suffix {
+    color: var(--ink-muted);
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 13px;
+    flex-basis: 100%;
+    margin-top: 6px;
+  }
+
+  /* Signature · capital-A protection + caps readability label (B-07) */
+  .signature-wrap {
+    padding-top: 0.4em;
+    overflow: visible;
+  }
+  .signature {
+    overflow: visible;
+    line-height: 1.2;
+  }
+  .signature-name-caps {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(201, 167, 114, 0.1) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 30% at 50% 100%, rgba(90, 26, 43, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation: vignette-in 2500ms var(--ease-out) forwards;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .margin-rule {
+    position: absolute;
+    right: 56px;
+    top: 80px;
+    bottom: 80px;
+    width: 1px;
+    background: var(--oxblood-hairline);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Round-11 · vertical right-side regulation ribbon · verbatim Phase-1 design (commit d209631) */
+  .regulation-ribbon {
+    position: absolute;
+    right: 4%;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 3;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  }
+
+  .ribbon-label {
+    position: absolute;
+    top: 100px;
+    right: 4px;
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    opacity: 0;
+    animation: fade-in-up 800ms var(--ease-out) 1000ms forwards;
+    font-weight: 500;
+    z-index: 4;
+  }
+
+  .ribbon-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 20px;
+    padding-top: 80px;
+    gap: 18px;
+    animation: ribbon-vertical 240s linear infinite;
+    font-family: var(--ff-display);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    font-weight: 500;
+  }
+
+  /* Each framework name: shrinks to text width, right-aligned within container */
+  .ribbon-column span {
+    white-space: nowrap;
+    display: block;
+    text-align: right;
+  }
+  .ribbon-column span.gold {
+    color: var(--gold-text);
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  /* Pause on hover for readability */
+  .regulation-ribbon:hover .ribbon-column { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon-column { animation-duration: 480s; }
+  }
+  @media (max-width: 1024px) {
+    .regulation-ribbon { width: 220px; right: 2%; opacity: 0.6; }
+  }
+  @media (max-width: 640px) {
+    .regulation-ribbon { display: none; }
+  }
+
+  .monogram {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .monogram-t {
+    font-family: var(--ff-display);
+    font-size: 680px;
+    font-weight: 400;
+    color: var(--oxblood);
+    line-height: 1;
+    opacity: 0.025;
+    animation: monogram-breath 8s ease-in-out infinite;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-content {
+    /* Round-11 · gutters match QuickAudit / WhyUs / Sectors etc. (was max-width: 980px which created 460px column-mismatch with the rest of the site) */
+    position: relative;
+    z-index: 4;
+    max-width: var(--container-max);
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+    /* Reserve space for vertical right-side ribbon so hero text doesn't run under it on desktop */
+    padding-right: clamp(24px, 5vw, 320px);
+  }
+  @media (max-width: 1024px) {
+    .hero-content { padding-right: var(--container-padding); }
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: var(--ls-caps-eyebrow);
+    text-transform: uppercase;
+    color: var(--oxblood);
+    font-weight: 500;
+    opacity: 0;
+    animation: fade-in-up 800ms var(--ease-out) 400ms forwards;
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    background: var(--oxblood);
+  }
+
+  .sub-headline {
+    /* Round-9 · lands AFTER H1 · Round-10 · tighter top margin */
+    margin-top: 20px;
+    font-family: var(--ff-body);
+    font-size: clamp(15px, 0.6vw + 0.7rem, 17px);
+    line-height: 1.55;
+    color: var(--ink-muted);
+    font-weight: 400;
+    max-width: 680px;
+    letter-spacing: 0.002em;
+    font-feature-settings: "kern", "liga";
+    opacity: 0;
+    animation: fade-in-up 800ms var(--ease-out) 1100ms forwards;
+  }
+
+  .sub-headline :global(.emph),
+  .pull-quote :global(.emph) {
+    color: var(--oxblood);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  /* Round-10 · positioning + fleuron + pull-quote — tighter spacing */
+  .hero-quote-block {
+    margin-top: 18px;
+    max-width: 720px;
+    opacity: 0;
+    animation: fade-in-up 1000ms var(--ease-out) 1500ms forwards;
+  }
+
+  .fleuron {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .fleuron-rule {
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.45;
+    flex: 0 0 80px;
+  }
+
+  .fleuron-mark {
+    font-size: 16px;
+    color: var(--gold);
+    line-height: 1;
+    font-family: var(--ff-display);
+    animation: fleuron-rotate 14s linear infinite;
+    display: inline-block;
+  }
+
+  .pull-quote {
+    /* Round-9 · sits inside .hero-quote-block (handles entrance), no separate animation */
+    position: relative;
+    padding: 4px 44px;
+    margin: 8px 0 0;
+    font-family: var(--ff-display);
+    font-size: clamp(18px, 1.4vw + 0.3rem, 21px);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.35;
+    letter-spacing: 0.003em;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    position: absolute;
+    top: -22px;
+    left: -2px;
+    font-family: var(--ff-display);
+    font-size: 72px;
+    font-style: normal;
+    color: var(--gold);
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  .pull-quote::after {
+    content: '\201D';
+    position: absolute;
+    bottom: -52px;
+    right: 20px;
+    font-family: var(--ff-display);
+    font-size: 72px;
+    font-style: normal;
+    color: var(--gold);
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  .h1-divider {
+    margin: 28px 0 20px;
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, var(--gold) 20%, var(--gold) 80%, transparent 100%);
+    opacity: 0;
+    max-width: 520px;
+    animation: hairline-draw 900ms var(--ease-out) 1800ms forwards;
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .hero-h1 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    /* Round-10 · was clamp 48-90 → 44-78 for tighter visual weight */
+    font-size: clamp(44px, 4.5vw + 0.5rem, 78px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "dlig", "lnum", "swsh";
+  }
+
+  .h1-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    position: relative;
+    padding-bottom: 4px;
+    margin-bottom: 0;
+    /* Round-11 · entrance handled by typewriter (per-character reveal at 42ms/char). No mask-reveal. */
+  }
+
+  /* B-04 fix · subtext under each H1 line replacing roman numerals · Round-11 · fades in once row gets `.complete` */
+  .h1-subtext {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: clamp(14px, 1vw + 0.3rem, 18px);
+    font-weight: 400;
+    color: var(--gold-text);
+    line-height: 1.3;
+    margin-top: -4px;
+    margin-left: 4px;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+  }
+  .h1-row.complete .h1-subtext {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .numeral {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--oxblood);
+    flex-shrink: 0;
+    width: 36px;
+    text-align: right;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+    line-height: 1;
+    align-self: flex-end;
+    padding-bottom: 22px;
+    letter-spacing: 0.02em;
+  }
+
+  .numeral.visible {
+    opacity: 0.9;
+    transform: translateX(0);
+  }
+
+  .line-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .line {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .line :global(.emph) {
+    color: var(--oxblood);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .line.typing::after {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 0.9em;
+    background: var(--oxblood);
+    margin-left: 4px;
+    vertical-align: -0.1em;
+    animation: blink 0.6s infinite;
+  }
+
+  .h1-row::after {
+    content: '';
+    position: absolute;
+    left: 68px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--oxblood);
+    opacity: 0.18;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 900ms var(--ease-out);
+  }
+
+  .h1-row.complete::after { transform: scaleX(1); }
+
+  .margin-note {
+    font-family: var(--ff-body);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out);
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: flex-end;
+    padding-bottom: 24px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .margin-note::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 12px;
+    height: 1px;
+    background: var(--oxblood);
+    opacity: 0.6;
+  }
+
+  .margin-note.visible {
+    opacity: 0.85;
+    transform: translateX(0);
+  }
+
+  /* Author frame · compressed (B-11) */
+  .author-frame {
+    position: relative;
+    margin-top: 24px;
+    max-width: 680px;
+    padding: 20px 24px;
+    border: 1px solid var(--gold);
+    background: rgba(201, 167, 114, 0.04);
+    opacity: 0;
+    animation: fade-in-up 1200ms var(--ease-out) 4600ms forwards;
+  }
+
+  .author-frame::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(201, 167, 114, 0.35);
+    pointer-events: none;
+  }
+
+  .corner {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background: var(--ivory);
+    border: 1px solid var(--gold);
+  }
+  .corner.tl { top: -6px; left: -6px; }
+  .corner.tr { top: -6px; right: -6px; }
+  .corner.bl { bottom: -6px; left: -6px; }
+  .corner.br { bottom: -6px; right: -6px; }
+
+  .author-eyebrow {
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .author-eyebrow .roman {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--oxblood);
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  .author-eyebrow .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+    max-width: 80px;
+  }
+
+  .author-title {
+    font-family: var(--ff-display);
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--oxblood);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -0.005em;
+  }
+
+  .author-text {
+    font-family: var(--ff-display);
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.65;
+    max-width: 580px;
+    letter-spacing: 0.002em;
+  }
+
+  .author-text :global(.emph) {
+    color: var(--oxblood);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .author-credentials {
+    margin-top: 20px;
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    /* Round-7 fix · 10px gold = 2.12:1 on ivory; deeper bronze passes 4.5:1 */
+    color: var(--gold-text);
+    font-weight: 500;
+  }
+
+  .author-credentials .sep { margin: 0 8px; opacity: 0.6; }
+
+  /* Primary CTA */
+  .primary-cta {
+    /* Round-10 · tighter top margin */
+    margin-top: 20px;
+    background: var(--oxblood);
+    color: var(--ivory);
+    border: 1px solid var(--gold);
+    height: 60px;
+    padding: 0 40px;
+    min-width: 360px;
+    font-family: var(--ff-display);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    opacity: 0;
+    animation: fade-in-up 900ms var(--ease-out) 5500ms forwards;
+    transition: transform var(--duration-short) var(--ease-out), background var(--duration-short) ease, border-color var(--duration-short) ease, box-shadow var(--duration-short) ease, letter-spacing var(--duration-short) ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+  }
+
+  .primary-cta .cta-arrow {
+    display: inline-block;
+    transition: transform var(--duration-short) var(--ease-out);
+    color: var(--gold);
+    font-family: var(--ff-body);
+    font-weight: 300;
+    font-size: 20px;
+  }
+
+  .primary-cta:hover {
+    background: var(--oxblood-warm);
+    border-color: var(--gold-warm);
+    box-shadow: 0 0 32px rgba(201, 167, 114, 0.25);
+    letter-spacing: 0.08em;
+  }
+
+  .primary-cta:hover .cta-arrow {
+    transform: translateX(6px);
+    color: var(--gold-warm);
+  }
+
+  /* Ticker */
+  .verified-ticker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 52px;
+    background: var(--obsidian);
+    border-top: 1px solid var(--gold);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    z-index: 6;
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 56px;
+    white-space: nowrap;
+    animation: marquee-horizontal 70s linear infinite;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-left: 80px;
+    font-weight: 500;
+  }
+
+  .ticker-inner span { flex-shrink: 0; }
+  .ticker-inner .ornament { color: var(--gold); opacity: 0.5; font-size: 10px; font-family: var(--ff-display); }
+
+  /* Round-11 · CTA + signature inline · single flex row, both visible above the fold */
+  .cta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(16px, 3vw, 48px);
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .cta-row .primary-cta { margin-top: 0; flex-shrink: 0; }
+
+  /* Signature · Round-11 · paired inline-right of primary CTA */
+  .signature-wrap {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+  @media (max-width: 640px) {
+    .cta-row { flex-direction: column; align-items: stretch; gap: 24px; }
+    .signature-wrap { align-items: center; text-align: center; }
+  }
+
+  .signature-wrap::before {
+    content: '';
+    display: block;
+    width: 64px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0;
+    margin-bottom: 12px;
+    align-self: flex-end;
+    /* Round-13 · transform-origin right anchors the scaleX draw to the right edge,
+       matching the previous width 0→64px behaviour (which grew leftward because the
+       parent has flex-end alignment). compositor-only animation. */
+    transform-origin: right center;
+    /* Round-9 · pulled timing forward to match new earlier H1 */
+    animation: line-draw 700ms var(--ease-out) 3800ms forwards;
+  }
+
+  .vetted-by {
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fade-in-up 600ms var(--ease-out) 4000ms forwards;
+    font-weight: 400;
+  }
+
+  .signature {
+    font-family: var(--ff-signature);
+    /* Round-11 · sized to pair with primary CTA height (~60px) */
+    font-size: 48px;
+    color: var(--oxblood);
+    line-height: 1.18;
+    letter-spacing: 0.01em;
+    padding: 6px 8px 10px;
+    /* Use mask-image reveal instead of clip-path for cleaner edge with cursive descenders */
+    -webkit-mask-image: linear-gradient(to right, black 0%, black 0%, transparent 0%);
+    mask-image: linear-gradient(to right, black 0%, black 0%, transparent 0%);
+    animation: signature-mask-reveal 1800ms cubic-bezier(0.3, 0.7, 0.3, 1) 4200ms forwards;
+    overflow: visible;
+  }
+
+  @keyframes signature-mask-reveal {
+    from {
+      -webkit-mask-image: linear-gradient(to right, black 0%, black 0%, transparent 0%);
+      mask-image: linear-gradient(to right, black 0%, black 0%, transparent 0%);
+    }
+    to {
+      -webkit-mask-image: linear-gradient(to right, black 0%, black 100%, transparent 100%);
+      mask-image: linear-gradient(to right, black 0%, black 100%, transparent 100%);
+    }
+  }
+
+  .signature-flourish {
+    margin-top: -4px;
+    margin-right: 20px;
+    align-self: flex-end;
+  }
+
+  .signature-flourish svg { display: block; overflow: visible; }
+
+  .signature-caption {
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    opacity: 0;
+    margin-top: 10px;
+    /* Round-9 · timing pulled forward */
+    animation: fade-in-up 600ms var(--ease-out) 6200ms forwards;
+    font-weight: 500;
+  }
+
+  .signature-caption .sep { margin: 0 6px; opacity: 0.7; color: var(--gold-text); }
+
+  /* Scroll cue · Round-9 · centered below signature in flow, not absolute */
+  .scroll-cue {
+    position: relative;
+    margin: 0 auto 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    z-index: 5;
+    opacity: 0;
+    animation: fade-in-up 1000ms var(--ease-out) 4500ms forwards;
+  }
+
+  .scroll-track {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent 0%, var(--oxblood) 30%, var(--oxblood) 70%, transparent 100%);
+    opacity: 0.45;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-diamond {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 5px;
+    height: 5px;
+    background: var(--oxblood);
+    transform: translateX(-50%) rotate(45deg);
+    animation: diamond-travel 3s ease-in-out infinite;
+  }
+
+  .scroll-cue span {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 1280px) {
+    .hero { padding: 48px 48px 80px; }
+    /* Keep ribbon as a right-side column — do NOT go full-width (full-width + right:auto causes
+       the absolute element to overshoot the hero overflow:hidden boundary, clipping all names) */
+    .regulation-ribbon { width: 220px; right: 2%; opacity: 0.8; }
+    .signature-wrap { right: 48px; }
+    .margin-rule { right: 28px; }
+  }
+
+  @media (max-width: 1024px) {
+    .hero { padding: 40px 32px 80px; flex-direction: column; }
+    .hero-content { width: 100%; }
+    .h1-row { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .h1-row::after { display: none; }
+    .line-wrap { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .regulation-ribbon { width: 180px; right: 1%; opacity: 0.6; }
+    .signature-wrap { right: 32px; bottom: 96px; }
+    .scroll-cue { display: none; }
+    .margin-rule { display: none; }
+    .primary-cta { min-width: 0; width: 100%; max-width: 420px; }
+    .ribbon-label { display: block; }
+  }
+
+  @media (max-width: 640px) {
+    /* Round-12 fix · mobile hero compressed (was 1451px, now ≤1100px) so audit CTA reaches above the fold */
+    .hero { padding: 24px 24px 64px; }
+    .sub-headline { font-size: 17px; margin-bottom: 14px; }
+    .hero-h1 { font-size: 36px; line-height: 1.08; }
+    .pull-quote { font-size: 16px; padding: 8px 22px; margin: 14px 0; }
+    .pull-quote::before { font-size: 44px; top: -8px; }
+    .pull-quote::after { font-size: 44px; bottom: -28px; }
+    .primary-cta { font-size: 13px; height: 52px; padding: 0 22px; }
+    .signature { font-size: 42px; padding: 4px 6px 6px; }
+    .signature-wrap { bottom: 84px; right: 24px; }
+    .regulation-ribbon { display: none; }
+    /* Round-12 fix · monogram T was LCP element on mobile (680px font-display block stalled at 3.7s).
+       Hidden on mobile — it's decorative ambience only and adds zero info on small screens. */
+    .monogram { display: none; }
+    .eyebrow { font-size: 10px; padding-left: 24px; margin-bottom: 16px; }
+    .fleuron-rule { flex: 0 0 32px; }
+    .author-frame { padding: 18px 16px; }
+    .author-title { font-size: 19px; }
+    .author-text { font-size: 14px; }
+    .compliance-para { font-size: 14px; line-height: 1.55; margin: 14px 0; }
+    .positioning-line { font-size: 12px; margin-bottom: 14px; }
+    .cta-row { gap: 18px; margin-top: 18px; }
+  }
+</style>
+
+<script>
+  // Typewriter for H1 lines
+  document.addEventListener('DOMContentLoaded', () => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduce) {
+      document.querySelectorAll<HTMLElement>('.line').forEach(line => {
+        line.innerHTML = parseEmph(line.dataset.text || '');
+      });
+      document.querySelectorAll('.margin-note, .numeral').forEach(el => el.classList.add('visible'));
+      document.querySelectorAll('.h1-row').forEach(row => row.classList.add('complete'));
+      return;
+    }
+
+    const rows = document.querySelectorAll<HTMLElement>('.h1-row');
+    let cumulativeDelay = 1200;
+
+    rows.forEach(row => {
+      const line = row.querySelector<HTMLElement>('.line');
+      /* Round-11 · removed `numeral` guard · numeral element no longer exists in markup */
+      if (!line) return;
+      const text = line.dataset.text || '';
+      const plainLength = text.replace(/\{\{|\}\}/g, '').length;
+      const speed = 42;
+
+      setTimeout(() => typeText(line, text, speed), cumulativeDelay);
+
+      const completeTime = cumulativeDelay + plainLength * speed + 100;
+      setTimeout(() => row.classList.add('complete'), completeTime);
+
+      cumulativeDelay += plainLength * speed + 300;
+    });
+
+    // Margin note staggered reveal
+    const noteDelays = [3400, 4000, 4500];
+    document.querySelectorAll<HTMLElement>('.margin-note').forEach((note, i) => {
+      setTimeout(() => note.classList.add('visible'), noteDelays[i] || 3500);
+    });
+  });
+
+  function parseEmph(text: string): string {
+    return text.replace(/\{\{([^}]+)\}\}/g, '<span class="emph">$1</span>');
+  }
+
+  function typeText(el: HTMLElement, text: string, speed: number) {
+    el.classList.add('typing');
+    const segments: { text: string; emph: boolean }[] = [];
+    let remaining = text;
+    while (remaining.length > 0) {
+      const start = remaining.indexOf('{{');
+      if (start === -1) {
+        segments.push({ text: remaining, emph: false });
+        break;
+      }
+      if (start > 0) segments.push({ text: remaining.substring(0, start), emph: false });
+      const end = remaining.indexOf('}}', start);
+      segments.push({ text: remaining.substring(start + 2, end), emph: true });
+      remaining = remaining.substring(end + 2);
+    }
+
+    let segIdx = 0;
+    let charIdx = 0;
+    const interval = setInterval(() => {
+      if (segIdx >= segments.length) {
+        clearInterval(interval);
+        el.classList.remove('typing');
+        return;
+      }
+      const seg = segments[segIdx];
+      charIdx++;
+      let html = '';
+      for (let j = 0; j < segIdx; j++) {
+        const s = segments[j];
+        html += s.emph ? `<span class="emph">${s.text}</span>` : s.text;
+      }
+      const partial = seg.text.substring(0, charIdx);
+      html += seg.emph ? `<span class="emph">${partial}</span>` : partial;
+      el.innerHTML = html;
+      if (charIdx >= seg.text.length) {
+        segIdx++;
+        charIdx = 0;
+      }
+    }, speed);
+  }
+</script>

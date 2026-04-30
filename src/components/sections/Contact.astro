@@ -1,0 +1,596 @@
+---
+import { contactContent } from '../../content/contact';
+
+const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl, confidentiality, successMessage } = contactContent;
+---
+<section class="contact" id="contact" aria-labelledby="contact-heading">
+  <!-- Monogram watermark -->
+  <div class="monogram" aria-hidden="true">
+    <span class="monogram-t">T</span>
+  </div>
+
+  <div class="container">
+    <div class="header-block">
+      <div class="eyebrow">{eyebrow}</div>
+      <h2 id="contact-heading" class="section-h2">{h2}</h2>
+      <p class="subline">{subline}</p>
+    </div>
+
+    <div class="grid">
+      <!-- B-51 fix · Cloudflare Pages Function form handler with inline success state -->
+      <form
+        class="contact-form"
+        id="briefing-form"
+        action="/api/contact"
+        method="POST"
+        aria-label="Briefing request form"
+      >
+        <p hidden>
+          <label>Do not fill this out: <input name="bot-field" /></label>
+        </p>
+
+        {fields.map((field: any) => {
+          const inputType = field.type === 'email' ? 'email' : 'text';
+          return (
+            <div class="field">
+              <label for={field.id}>{field.label}{field.required && <span class="required">*</span>}</label>
+              {(field.type === 'text' || field.type === 'email') && (
+                <input
+                  type={inputType}
+                  id={field.id}
+                  name={field.id}
+                  required={field.required}
+                  autocomplete={field.autocomplete}
+                />
+              )}
+              {field.type === 'select' && (
+                <select id={field.id} name={field.id} required={field.required}>
+                  <option value="">Select sector...</option>
+                  {field.options!.map((opt: string) => <option value={opt}>{opt}</option>)}
+                </select>
+              )}
+              {field.type === 'textarea' && (
+                <textarea
+                  id={field.id}
+                  name={field.id}
+                  rows={field.rows || 4}
+                  required={field.required}
+                ></textarea>
+              )}
+            </div>
+          );
+        })}
+
+        <button type="submit" class="submit-btn" id="briefing-submit">
+          <span>{submitLabel}</span>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </button>
+
+        <div class="form-status" id="form-status" hidden role="status" aria-live="polite"></div>
+      </form>
+
+      <div class="form-success" id="form-success" hidden role="alert">
+        <div class="success-mark">✓</div>
+        <h3 class="success-title">Your briefing request has been received.</h3>
+        <p class="success-body" id="success-body">The founder will be in touch within 12 hours.</p>
+        <a href="#" class="success-reset" id="success-reset">Submit another request</a>
+      </div>
+
+      <!-- Calendly embed placeholder (live iframe loads on CSR to keep LCP fast) -->
+      <aside class="calendly-pane" aria-label="Schedule directly">
+        <div class="calendly-heading">{calendlyHeading}</div>
+        <div class="calendly-divider"></div>
+        <div class="calendly-embed" id="calendly-embed" data-url={calendlyUrl}>
+          <a href={calendlyUrl} class="calendly-fallback" target="_blank" rel="noopener">
+            <div class="cal-icon">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <rect x="6" y="8" width="28" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                <line x1="6" y1="14" x2="34" y2="14" stroke="currentColor" stroke-width="1.2"/>
+                <line x1="12" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="28" y1="4" x2="28" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="12" cy="20" r="1.5" fill="currentColor"/>
+                <circle cx="20" cy="20" r="1.5" fill="currentColor"/>
+                <circle cx="28" cy="20" r="1.5" fill="currentColor"/>
+                <circle cx="12" cy="26" r="1.5" fill="currentColor"/>
+                <circle cx="20" cy="26" r="1.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="cal-text">
+              <div class="cal-label">Open the founder's calendar</div>
+              <div class="cal-note">calendly.com/tamazia</div>
+            </div>
+            <span class="cal-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Confidentiality -->
+    <div class="confidentiality-block">
+      <div class="confidentiality-rule" aria-hidden="true"></div>
+      <p class="confidentiality">{confidentiality}</p>
+    </div>
+  </div>
+</section>
+
+<!-- Hidden success state (revealed via JS on submit) -->
+<div class="success-state" id="success-state" hidden aria-live="polite">
+  <div class="success-inner">
+    <div class="success-checkmark">
+      <svg viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="var(--gold)" stroke-width="1.2"/>
+        <path d="M 12 20 L 18 26 L 28 14" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3>{successMessage.heading}</h3>
+    <p>{successMessage.body}</p>
+    <p class="success-note">{successMessage.note}</p>
+  </div>
+</div>
+
+<style>
+  .contact {
+    background: var(--obsidian);
+    color: var(--ivory);
+    padding-block: var(--section-padding-block);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .monogram {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .monogram-t {
+    font-family: var(--ff-display);
+    font-size: 680px;
+    color: var(--gold);
+    line-height: 1;
+    opacity: 0.02;
+    letter-spacing: -0.04em;
+  }
+
+  .container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-block {
+    text-align: center;
+    max-width: 720px;
+    margin-inline: auto;
+    margin-bottom: clamp(32px, 4vw, 48px); /* R10 · was 64-96 */
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: var(--ls-caps-eyebrow);
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 20px;
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-h2 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: var(--fs-h2);
+    color: var(--ivory);
+    margin-bottom: 16px;
+    letter-spacing: var(--ls-h2);
+  }
+
+  .subline {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--pearl);
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    max-width: 1200px;
+    margin-inline: auto;
+    align-items: start;
+  }
+
+  /* Form */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field label {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .required {
+    color: var(--gold);
+    margin-left: 4px;
+  }
+
+  .field input, .field select, .field textarea {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(201, 167, 114, 0.5);
+    color: var(--ivory);
+    padding: 12px 0;
+    font-family: var(--ff-display);
+    font-size: 17px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 300ms ease;
+    border-radius: 0;
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-bottom-color: var(--gold);
+    outline: none;
+  }
+
+  .field select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1 L6 6 L11 1' stroke='%23C9A772' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    padding-right: 24px;
+  }
+
+  .field select option {
+    background: var(--obsidian);
+    color: var(--ivory);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: var(--ff-body);
+    /* Round-8 fix · 16px prevents iOS Safari auto-zoom on focus */
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--oxblood);
+    color: var(--ivory);
+    border: 1px solid var(--gold);
+    height: 64px;
+    padding: 0 32px;
+    font-family: var(--ff-display);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 300ms ease, border-color 300ms ease,
+                box-shadow 300ms ease, letter-spacing 400ms var(--ease-out);
+    border-radius: 4px;
+  }
+
+  .submit-btn .arrow {
+    color: var(--gold);
+    font-size: 20px;
+    font-weight: 300;
+    transition: transform 400ms var(--ease-out);
+  }
+
+  .submit-btn:hover {
+    background: var(--oxblood-warm);
+    border-color: var(--gold-warm);
+    box-shadow: 0 0 32px rgba(201, 167, 114, 0.2);
+    letter-spacing: 0.12em;
+  }
+
+  .submit-btn:hover .arrow {
+    transform: translateX(6px);
+    color: var(--gold-warm);
+  }
+
+  /* Calendly pane */
+  .calendly-pane {
+    background: rgba(250, 247, 242, 0.04);
+    border: 1px solid rgba(201, 167, 114, 0.35);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .calendly-heading {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .calendly-divider {
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.4;
+    margin-bottom: 24px;
+  }
+
+  .calendly-embed { min-height: 400px; display: flex; align-items: center; justify-content: center; }
+
+  .calendly-fallback {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: var(--obsidian-deep);
+    border: 1px solid var(--gold);
+    border-color: rgba(201, 167, 114, 0.5);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--ivory);
+    width: 100%;
+    transition: border-color 300ms ease, transform 300ms ease;
+  }
+
+  .calendly-fallback:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .cal-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .cal-icon svg { width: 100%; height: 100%; }
+
+  .cal-text { flex: 1; min-width: 0; }
+
+  .cal-label {
+    font-family: var(--ff-display);
+    font-size: 17px;
+    color: var(--ivory);
+    font-weight: 500;
+  }
+
+  .cal-note {
+    font-family: var(--ff-body);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  .cal-arrow { color: var(--gold); font-size: 20px; }
+
+  /* Confidentiality */
+  .confidentiality-block {
+    margin-top: 80px;
+    text-align: center;
+  }
+
+  .confidentiality-rule {
+    height: 1px;
+    background: var(--gold);
+    width: 160px;
+    margin: 0 auto 24px;
+    opacity: 0.5;
+  }
+
+  .confidentiality {
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--pearl);
+    opacity: 0.7;
+    max-width: 640px;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+
+  /* Success state */
+  .success-state {
+    display: none;
+  }
+
+  .success-state.visible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Round-10 · was 80-128 → 40-64 */
+    padding-block: clamp(40px, 5vw, 64px);
+  }
+
+  .success-inner {
+    text-align: center;
+    max-width: 520px;
+  }
+
+  .success-checkmark {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 24px;
+  }
+
+  .success-state h3 {
+    font-family: var(--ff-display);
+    font-size: 28px;
+    color: var(--ivory);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .success-state p {
+    font-family: var(--ff-body);
+    font-size: 15px;
+    color: var(--pearl);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .success-note {
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--gold);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: 1fr; gap: 48px; }
+  }
+
+  @media (max-width: 640px) {
+    .calendly-pane { padding: 24px 20px; }
+    .calendly-fallback { flex-direction: column; align-items: flex-start; }
+    .submit-btn { font-size: 12px; letter-spacing: 0.08em; padding: 0 20px; }
+  }
+
+  /* B-51 fix · form status + inline success */
+  .form-status {
+    margin-top: 16px;
+    padding: 12px 16px;
+    font-family: var(--ff-body);
+    font-size: 13px;
+    line-height: 1.5;
+    border-radius: 4px;
+  }
+  .form-status.error {
+    background: rgba(178, 30, 50, 0.1);
+    color: #B21E32;
+    border: 1px solid #B21E32;
+  }
+  .form-status.loading {
+    background: rgba(201, 167, 114, 0.1);
+    color: var(--oxblood);
+    border: 1px solid var(--gold);
+  }
+  .form-success {
+    text-align: center;
+    padding: 64px 32px;
+    background: var(--ivory);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    animation: success-in 480ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes success-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .success-mark {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--gold); color: var(--ivory);
+    font-size: 32px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; font-weight: 700;
+  }
+  .success-title {
+    font-family: var(--ff-display); font-size: clamp(22px, 2vw + 0.5rem, 32px);
+    font-weight: 500; color: var(--oxblood-ink); margin-bottom: 12px;
+  }
+  .success-body {
+    font-family: var(--ff-body); font-size: 14px; color: var(--ink-muted);
+    margin-bottom: 24px; max-width: 480px; margin-inline: auto; line-height: 1.6;
+  }
+  .success-reset {
+    font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold); text-decoration: underline; font-weight: 600;
+  }
+</style>
+
+<script>
+  // B-51 · contact form AJAX submit with inline success state
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('briefing-form') as HTMLFormElement | null;
+    const submit = document.getElementById('briefing-submit') as HTMLButtonElement | null;
+    const status = document.getElementById('form-status') as HTMLElement | null;
+    const success = document.getElementById('form-success') as HTMLElement | null;
+    const successBody = document.getElementById('success-body') as HTMLElement | null;
+    const reset = document.getElementById('success-reset') as HTMLElement | null;
+    if (!form) return;
+
+    const setStatus = (cls: string, msg: string) => {
+      if (!status) return;
+      status.className = 'form-status ' + cls;
+      status.textContent = msg;
+      status.hidden = false;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submit) submit.disabled = true;
+      setStatus('loading', 'Sending your briefing request…');
+      const fd = new FormData(form);
+      const payload: any = {};
+      fd.forEach((v, k) => { payload[k] = v; });
+      try {
+        const r = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await r.json();
+        if (r.ok && data.ok) {
+          (form as HTMLElement).style.display = 'none';
+          if (status) status.hidden = true;
+          if (success) {
+            if (successBody && data.message) successBody.textContent = data.message;
+            success.hidden = false;
+          }
+        } else {
+          setStatus('error', data.error || 'Something went wrong. Please email us at realfamemedia@gmail.com.');
+          if (submit) submit.disabled = false;
+        }
+      } catch {
+        setStatus('error', 'Network error. Please email us at realfamemedia@gmail.com.');
+        if (submit) submit.disabled = false;
+      }
+    });
+
+    if (reset) reset.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (success) success.hidden = true;
+      if (form) { form.reset(); (form as HTMLElement).style.display = ''; }
+      if (submit) submit.disabled = false;
+    });
+  });
+</script>

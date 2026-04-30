@@ -1,0 +1,100 @@
+---
+// Round-11 · Horizontal 200-framework marquee below QuickAudit.
+// Reads from the same `regulationFrameworks` array in hero.ts that the vertical right-side hero ribbon uses.
+// "Vetted by Aman Pareek" mark removed (was Round-9, deleted per Round-11 directive).
+import { heroContent } from '../../content/hero';
+const frameworks = (heroContent as any).regulationFrameworks || [];
+const goldHighlighted = (heroContent as any).goldHighlightedFrameworks || [];
+
+// Doubled for seamless loop
+const ribbonDouble = [...frameworks, ...frameworks];
+---
+<section class="laws-strip" aria-label="Regulatory frameworks reviewed every campaign">
+  <div class="laws-label">200+ regulatory frameworks reviewed per campaign</div>
+  <div class="laws-band">
+    <div class="laws-track">
+      {ribbonDouble.map((reg: string) => (
+        <span class={goldHighlighted.includes(reg) ? 'gold' : ''}>{reg}</span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .laws-strip {
+    position: relative;
+    padding: 28px 0 32px;
+    background: linear-gradient(180deg, var(--ivory) 0%, var(--linen) 100%);
+    border-block: 1px solid var(--gold-hairline);
+    overflow: hidden;
+  }
+  .laws-label {
+    text-align: center;
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    /* Round-7 contrast fix · deeper bronze passes 4.5:1 */
+    color: var(--gold-text);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .laws-band {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  }
+  .laws-track {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 28px;
+    width: max-content;
+    /* Rightward scroll · items move toward the right edge of the page */
+    animation: laws-scroll-right 120s linear infinite;
+    font-family: var(--ff-display);
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    font-weight: 500;
+  }
+  .laws-track > span {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 0;
+  }
+  .laws-track > span:not(.gold)::after {
+    content: '·';
+    color: var(--gold);
+    margin-left: 28px;
+    opacity: 0.4;
+  }
+  .laws-track span.gold {
+    color: var(--gold-text);
+    font-style: italic;
+    font-weight: 600;
+  }
+  .laws-track span.gold::after {
+    content: '·';
+    color: var(--oxblood);
+    margin-left: 28px;
+    opacity: 0.4;
+  }
+
+  @keyframes laws-scroll-right {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0); }
+  }
+  /* Pause on hover for readability */
+  .laws-strip:hover .laws-track { animation-play-state: paused; }
+  /* Reduced motion · slower scroll */
+  @media (prefers-reduced-motion: reduce) {
+    .laws-track { animation-duration: 280s; }
+  }
+  @media (max-width: 720px) {
+    .laws-track { font-size: 12px; gap: 20px; }
+    .laws-label { font-size: 9px; letter-spacing: 0.24em; }
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Hero from '../components/sections/Hero.astro';
+import QuickAudit from '../components/sections/QuickAudit.astro';
+import LawsStrip from '../components/sections/LawsStrip.astro';
+import WhyUs from '../components/sections/WhyUs.astro';
+import Sectors from '../components/sections/Sectors.astro';
+import Interstitial from '../components/sections/Interstitial.astro';
+import CaseStudies from '../components/sections/CaseStudies.astro';
+import HowWeWork from '../components/sections/HowWeWork.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import FAQ from '../components/sections/FAQ.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+<BaseLayout>
+  <Header />
+  <main id="main">
+    <Hero />
+    <QuickAudit />
+    <LawsStrip />
+    <WhyUs />
+    <Sectors />
+    <Interstitial numeral="III." label="Case Studies" />
+    <CaseStudies />
+    <HowWeWork />
+    <Interstitial numeral="V." label="Engagement" />
+    <Pricing />
+    <Interstitial numeral="VI." label="Questions & Findings" />
+    <FAQ />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,83 @@
+---
+interface Props {
+  numeral: string;
+  label: string;
+}
+const { numeral, label } = Astro.props;
+---
+<div class="interstitial" aria-hidden="true">
+  <div class="container">
+    <div class="numeral">{numeral}</div>
+    <div class="rule"></div>
+    <div class="label">{label}</div>
+  </div>
+</div>
+
+<style>
+  .interstitial {
+    background: var(--ivory);
+    /* Round-10 · was 64px → 32px (interstitial is just a roman-numeral page-break, doesn't need 215px height) */
+    padding-block: 32px;
+    position: relative;
+  }
+
+  .container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .numeral {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  .rule {
+    height: 1px;
+    width: 120px;
+    background: var(--gold);
+    opacity: 0.55;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 900ms var(--ease-out);
+  }
+
+  .interstitial.in-view .rule {
+    transform: scaleX(1);
+  }
+
+  .label {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      document.querySelectorAll('.interstitial').forEach(el => el.classList.add('in-view'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.interstitial').forEach(el => observer.observe(el));
+  });
+</script>

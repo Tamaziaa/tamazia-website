@@ -57,7 +57,7 @@ export const faqContent = {
         },
         {
           name: 'Law Firms and Legal',
-          body: 'SRA Transparency Rules 2018, SRA Code of Conduct Rules 8.7 and 8.9, FCA financial promotion codes where financial elements are present, and Bar Association advertising rules across all 50 US states. Every practice area page, partner biography, case result page, and legal directory listing reviewed against the specific provision that applies.',
+          body: 'SRA Transparency Rules 2018, SRA Standards and Regulations (2019) Standards 8.7 and 8.9 (Code of Conduct for Solicitors, RELs and RFLs), FCA financial promotion codes where financial elements are present, and Bar Association advertising rules across all 50 US states. Every practice area page, partner biography, case result page, and legal directory listing reviewed against the specific provision that applies.',
         },
         {
           name: 'Healthcare and Medical',

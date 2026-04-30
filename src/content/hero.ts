@@ -99,10 +99,12 @@ export const heroContent = {
     'SOC 2', 'OECD AI Principles', 'LGPD', 'POPIA', 'PIPEDA', 'PIPL',
   ],
 
-  // 12 gold-italic highlighted picks · clients' daily-vocabulary names (most recognisable per Tamazia's primary buyer personas)
+  // 14 gold-italic highlighted picks · clients' daily-vocabulary names (most recognisable per Tamazia's primary buyer personas)
+  // C.13: expanded from 12 → 14 per Aman directive 2026-04-30
   goldHighlightedFrameworks: [
     'EU AI Act', 'GDPR', 'HIPAA', 'SEC Reg FD', 'SOX', 'MiFID II',
     'SRA Standards', 'ICC Rules', 'LCIA Rules', 'FDA Title 21', 'NYSE Listed Manual', 'CCPA',
+    'FCA COBS', 'ASA CAP',
   ],
 
   ribbonLabel: '200+ regulatory frameworks reviewed per campaign',

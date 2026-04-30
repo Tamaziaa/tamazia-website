@@ -3,6 +3,19 @@
 // Compliance-engineered. 200+ frameworks. Lawyer-led. King's College LLM.
 // v3  ·  SEO Score API primary · allorigins HTML fallback · Google Autosuggest
 
+// Phase C · Canonical regulator list per sector (mirrors src/data/sectorRegulators.js)
+const SECTOR_REGULATORS = {
+  legal:          ['SRA Standards', 'Bar Standards Board', 'CLC', 'CILEX', 'FCA (financial services law)', 'CCBE Code'],
+  healthcare:     ['CQC', 'MHRA', 'ABPI', 'ASA', 'HIPAA (US)', 'ICO', 'GMC GMP', 'NMC Code', 'EMA', 'MDR'],
+  hospitality:    ['CMA', 'ASA', 'GDPR/ICO', 'FHH', 'Tourism Authority (AE)', 'DTCM', 'SCTA Saudi', 'CAP Code'],
+  'real-estate':  ['RICS', 'TPO', 'NAEA', 'FCA', 'Land Registry', 'GDPR/ICO', 'RERA Dubai', 'REGA Saudi'],
+  finance:        ['FCA', 'PRA', 'FOS', 'GDPR/ICO', 'MiFID II', 'AMLD5', 'PRA Rulebook', 'FCA COBS', 'FSMA 2000'],
+  fb:             ['FSA', 'ASA CAP', 'GDPR/ICO', 'CMA', 'Allergen Regs (EU 1169/2011)', 'HMRC'],
+  education:      ['Ofsted', 'QAA', 'GDPR/ICO', 'FERPA (US)', 'COPPA', 'Equality Act 2010'],
+  default:        ['GDPR/UK GDPR', 'ASA CAP Code', 'Consumer Protection Regs 2008', 'Equality Act 2010'],
+};
+
+
 const SECTOR_KEYWORDS = {
   legal: [
     'sra', 'solicitor', 'barrister', 'law firm', 'chambers', 'partner', 'counsel',

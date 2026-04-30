@@ -1,0 +1,61 @@
+---
+// Phase C · Mobile-specific laws strip
+// Displayed below ≤768px where the full marquee is impractical
+// Shows a static grid of the 14 gold-highlighted frameworks + label
+import { heroContent } from '../../content/hero';
+const goldFrameworks = (heroContent as any).goldHighlightedFrameworks || [];
+---
+<section class="mobile-laws-strip" aria-label="Key regulatory frameworks reviewed" aria-hidden="true">
+  <div class="mobile-laws-label">200+ regulatory frameworks reviewed per campaign</div>
+  <div class="mobile-laws-grid">
+    {goldFrameworks.map((fw: string) => (
+      <span class="mobile-law-chip">{fw}</span>
+    ))}
+  </div>
+</section>
+
+<style>
+  .mobile-laws-strip {
+    display: none;
+    padding: 20px 16px 24px;
+    background: linear-gradient(180deg, var(--ivory) 0%, var(--linen) 100%);
+    border-block: 1px solid var(--gold-hairline);
+  }
+
+  @media (max-width: 768px) {
+    .mobile-laws-strip { display: block; }
+  }
+
+  .mobile-laws-label {
+    text-align: center;
+    font-family: var(--ff-body);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .mobile-laws-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .mobile-law-chip {
+    font-family: var(--ff-display);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+    font-weight: 600;
+    font-style: italic;
+    background: rgba(201, 167, 114, 0.08);
+    border: 1px solid rgba(201, 167, 114, 0.22);
+    border-radius: 2px;
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+</style>

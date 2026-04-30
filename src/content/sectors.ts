@@ -51,7 +51,7 @@ export const sectorsContent = {
       pullQuote: 'More private patients from search. No regulatory exposure in any direction.',
       cta: 'Audit my clinic →',
       tooltip: [
-        'HIPAA Privacy Rule 45 CFR 164.514',
+        'HIPAA Privacy Rule 45 CFR 164.508 and 164.502',
         'MHRA Human Medicines Regs 2012',
         'ASA CAP Code Section 12',
         'AMA Ethics Opinion 5.027',

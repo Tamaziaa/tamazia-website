@@ -61,7 +61,7 @@ export const faqContent = {
         },
         {
           name: 'Healthcare and Medical',
-          body: 'Google applies higher scrutiny to health content under E-E-A-T. Tamazia combines that with HIPAA Privacy Rule 45 CFR 164.514 for US clients, MHRA Human Medicines Regulations 2012 and ASA CAP codes for UK clients, CQC inspection-readiness reviews, patient testimonial consent documentation, and ADA accessibility compliance.',
+          body: 'Google applies higher scrutiny to health content under E-E-A-T. Tamazia combines that with HIPAA Privacy Rule 45 CFR 164.508 and 164.502 for US clients, MHRA Human Medicines Regulations 2012 and ASA CAP codes for UK clients, CQC inspection-readiness reviews, patient testimonial consent documentation, and ADA accessibility compliance.',
         },
         {
           name: 'Restaurants, Bars and F&B',

@@ -1,7 +1,7 @@
 ---
 import { footerContent } from '../../content/footer';
 
-const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, legalLinks, copyright } = footerContent;
+const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, briefingsConsent, legalLinks, copyright } = footerContent;
 const year = new Date().getFullYear();
 ---
 <footer class="footer" role="contentinfo">
@@ -75,7 +75,8 @@ const year = new Date().getFullYear();
           {/* Honeypot — hidden from real users; bots fill it and get silently 200'd */}
           <label class="sr-only" for="briefings-bot-field">Leave this field empty</label>
           <input type="text" id="briefings-bot-field" name="bot-field" tabindex="-1" autocomplete="off" aria-hidden="true" class="briefings-honeypot" />
-          <button type="submit" class="subscribe-btn" id="briefings-submit">{briefingsCta}</button>
+          <button type="submit" class="briefings-btn" id="briefings-submit">{briefingsCta}</button>
+          <p class="briefings-consent">{briefingsConsent}</p>
           <p class="briefings-status" id="briefings-status" role="status" aria-live="polite" hidden></p>
         </form>
       </div>
@@ -337,7 +338,7 @@ const year = new Date().getFullYear();
     border-bottom-color: var(--gold);
   }
 
-  .subscribe-btn {
+  .briefings-btn {
     height: 48px;
     background: var(--oxblood);
     color: var(--ivory);
@@ -351,12 +352,12 @@ const year = new Date().getFullYear();
     border-radius: 4px;
   }
 
-  .subscribe-btn:hover {
+  .briefings-btn:hover {
     background: var(--oxblood-warm);
     border-color: var(--gold-warm);
   }
 
-  .subscribe-btn[disabled] {
+  .briefings-btn[disabled] {
     opacity: 0.55;
     cursor: wait;
   }
@@ -371,6 +372,16 @@ const year = new Date().getFullYear();
     pointer-events: none !important;
     /* Round-12 fix · keeping ≥16px so L13 audit doesn't flag, but it's invisible */
     font-size: 16px;
+  }
+
+  /* GDPR consent microcopy */
+  .briefings-consent {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    color: var(--pearl);
+    opacity: 0.55;
+    line-height: 1.5;
+    margin: 0;
   }
 
   /* Status message under the form (success / error) */
@@ -540,7 +551,7 @@ const year = new Date().getFullYear();
       }
       const originalLabel = submitBtn.textContent;
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Subscribing…';
+      submitBtn.textContent = 'Submitting…';
       try {
         const res = await fetch('/api/briefings', {
           method: 'POST',
@@ -552,7 +563,7 @@ const year = new Date().getFullYear();
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.ok !== false) {
-          show(data.message || 'Subscribed. The first briefing will arrive within 7 days.', 'success');
+          show(data.message || 'Registered. The first briefing will arrive within 7 days.', 'success');
           form.reset();
         } else {
           show(data.error || 'Subscription failed. Please email realfamemedia@gmail.com directly.', 'error');

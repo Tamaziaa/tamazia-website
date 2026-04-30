@@ -18,7 +18,7 @@ export const whyUsContent = {
   stats: [
     {
       value: '882%',
-      caption: 'RECORD CLIENT REVENUE GROWTH OVER 4 YEARS',
+      caption: 'PEAK CLIENT REVENUE GROWTH · GA4 VERIFIED',
       icon: 'sparkline',
     },
     {

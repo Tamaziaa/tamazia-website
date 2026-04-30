@@ -5,7 +5,7 @@ export const pricingContent = {
   eyebrow: 'TAMAZIA · Pricing',
   h2: 'Pricing',
   // Legacy intro string (component reads single string). Full intro paragraphs available below.
-  intro: 'Every engagement begins with an SEO and compliance audit. Regulatory compliance review is included as standard across all tiers.',
+  intro: 'Three mandates. Each covers a defined compliance scope. Every engagement begins with an SEO and compliance audit included at no additional cost.',
   introParagraphs: [
     'Every engagement begins with an SEO and compliance audit. Regulatory review is standard across all tiers.',
     'Regulatory compliance review is included as standard across all tiers.',
@@ -18,7 +18,7 @@ export const pricingContent = {
       name: 'Foundation',
       price: 'From £2,500',
       priceUnit: '/month',
-      tagline: 'Best for single-location businesses building local search authority.',
+      tagline: 'Single-location businesses building local search authority and compliance defence.',
       idealClients:
         'Single-location hotels, clinics, restaurants, estate agents. Sole solicitors and practitioners. Financial advisers establishing local authority. Executives building professional visibility.',
       description: 'Single-location hotels, clinics, restaurants, estate agents. Sole solicitors and practitioners. Financial advisers establishing local authority. Executives building professional visibility.',
@@ -70,7 +70,7 @@ export const pricingContent = {
         'All work produced belongs to you once paid in full. No rights retained.',
         'No long term contracts. 90 day rolling.',
       ],
-      cta: 'Start with Foundation',
+      cta: 'Begin a Foundation enquiry →',
       ctaHref: '#contact',
       tier: 'standard',
       mostPopular: false,
@@ -80,7 +80,7 @@ export const pricingContent = {
       name: 'Authority',
       price: 'From £4,500',
       priceUnit: '/month',
-      tagline: 'Best for multi-location brands scaling organic growth across regions.',
+      tagline: 'Multi-location brands scaling organic growth across regions and jurisdictions.',
       idealClients:
         'Multi-location hotel groups. Law firms across practice areas and offices. Healthcare groups. Financial services firms competing nationally. Real estate developers with international buyers. F&B brands expanding beyond a single location.',
       description: 'Multi-location hotel groups. Law firms across practice areas and offices. Healthcare groups. Financial services firms competing nationally. Real estate developers with international buyers. F&B brands expanding beyond a single location.',
@@ -140,7 +140,7 @@ export const pricingContent = {
       microFooter: [
         'The team that works on your account does not rotate. The founder reviews every deliverable before it leaves.',
       ],
-      cta: 'Speak about Authority',
+      cta: 'Begin an Authority enquiry →',
       ctaHref: '#contact',
       tier: 'elevated',
       mostPopular: true,
@@ -150,7 +150,7 @@ export const pricingContent = {
       name: 'Enterprise',
       price: 'From £9,500',
       priceUnit: '/month',
-      tagline: 'Best for enterprise or regulated brands requiring full-stack SEO dominance.',
+      tagline: 'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
       idealClients:
         'International hotel groups. Multi-jurisdiction law firms. Listed companies and pre-IPO businesses. Healthcare groups with cross-border operations. Real estate developers targeting international buyers. Financial services enterprises regulated under FCA, DFSA, and SEC simultaneously.',
       description: 'International hotel groups. Multi-jurisdiction law firms. Listed companies and pre-IPO businesses. Healthcare groups with cross-border operations. Real estate developers targeting international buyers. Financial services enterprises regulated under FCA, DFSA, and SEC simultaneously.',
@@ -190,8 +190,8 @@ export const pricingContent = {
           body: 'Monitoring infrastructure, suppression strategy, and response architecture in place before any incident. Structural protection, not reactive PR.',
         },
         {
-          headline: 'Dedicated Regulatory Analyst with 24-hour notification',
-          body: 'One specialist tracking law changes across UK, UAE, USA and across all the countries you function in simultaneously. Content updated within one week.',
+          headline: 'Dedicated regulatory monitoring with 24-hour notification',
+          body: 'Law changes tracked across UK, UAE, USA and every country you operate in simultaneously. Content updated within one week.',
         },
         {
           headline: 'Transaction-level revenue attribution across every market',
@@ -207,7 +207,7 @@ export const pricingContent = {
         'Executive personal brand management: Wikipedia, knowledge panel, AI search, LinkedIn',
       ],
       microFooter: [],
-      cta: 'Request a private briefing with the founder',
+      cta: 'Begin an Enterprise enquiry →',
       ctaHref: '#contact',
       tier: 'enterprise',
       mostPopular: false,
@@ -217,7 +217,7 @@ export const pricingContent = {
   // Mandate callout (after Enterprise tier)
   mandateCallout:
     'FOR PRE-IPO PREPARATION, LISTED COMPANIES, AND INTERNATIONAL ENTERPRISE GROUPS, ENGAGEMENT IS STRUCTURED TO MANDATE. SPEAK WITH THE FOUNDER BEFORE ANY SCOPE IS AGREED.',
-  mandateCta: 'Connect with the founder.',
+  mandateCta: 'Request a private briefing →',
   mandateSignature: 'Aman Pareek',
 };
 

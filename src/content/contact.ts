@@ -13,6 +13,7 @@ export const contactContent = {
       type: 'text',
       required: true,
       autocomplete: 'name',
+      placeholder: 'Your full name',
     },
     {
       id: 'email',
@@ -20,6 +21,7 @@ export const contactContent = {
       type: 'email',
       required: true,
       autocomplete: 'email',
+      placeholder: 'you@firm.com',
     },
     {
       id: 'company',
@@ -27,6 +29,7 @@ export const contactContent = {
       type: 'text',
       required: true,
       autocomplete: 'organization',
+      placeholder: 'Company name',
     },
     {
       id: 'role',
@@ -34,6 +37,7 @@ export const contactContent = {
       type: 'text',
       required: true,
       autocomplete: 'organization-title',
+      placeholder: 'Managing Partner, CMO, General Counsel…',
     },
     {
       id: 'sector',
@@ -58,10 +62,11 @@ export const contactContent = {
     },
     {
       id: 'outcome',
-      label: 'What is the primary outcome you want to achieve?',
+      label: 'Primary objective',
       type: 'textarea',
       required: true,
       rows: 4,
+      placeholder: 'Describe the brief: sector, geography, and the outcome you need.',
     },
   ],
 

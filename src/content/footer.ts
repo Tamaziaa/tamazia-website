@@ -6,7 +6,7 @@ export const footerContent = {
 
   // Live site uses "International presence" label with locations + Worldwide
   presenceLabel: 'International presence',
-  locations: ['London', 'Dubai', 'New York', 'Paris', 'Worldwide'],
+  locations: ['London', 'Dubai', 'New York', 'EU', 'Worldwide'],
 
   // Verbatim credentials line from live site footer
   credentialsLine:
@@ -35,10 +35,12 @@ export const footerContent = {
   briefingsHeading: 'REGULATORY BRIEFINGS',
   briefingsBody:
     'Receive a quarterly briefing on regulatory developments affecting your sector. No marketing, no sales. Findings only.',
-  briefingsCta: 'Subscribe',
+  briefingsCta: 'Receive briefings →',
+  briefingsConsent: 'By submitting you consent to receive regulatory briefings from Tamazia. Unsubscribe at any time. No marketing or sales content.',
 
   legalLinks: [
-    { label: 'Terms & Privacy', href: '/terms' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Cookie Policy', href: '/cookie-policy' },
   ],
 

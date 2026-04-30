@@ -45,11 +45,10 @@ export const footerContent = {
   copyright: '© 2026 Tamazia. All rights reserved.',
 
   // Legacy field current Footer.astro reads
+  // Phase B: order LLM first, then CIArb, then ABA. Partner badges removed until verification confirmed (I.31).
   credentials: [
+    "LLM · KING'S COLLEGE LONDON",
     'MEMBER, CHARTERED INSTITUTE OF ARBITRATORS',
     'MEMBER, AMERICAN BAR ASSOCIATION',
-    "LLM · KING'S COLLEGE LONDON",
-    'GOOGLE PARTNER',
-    'META BUSINESS PARTNER',
   ],
 };

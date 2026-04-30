@@ -3,7 +3,7 @@
 
 // Legacy fields (consumed by current component until Gate D rewrite)
 const _legacyParagraph = 'SRA advertising rules. FCA financial promotion codes. MHRA health claim standards. GDPR. ASA. These govern every word your brand publishes. Most SEO agencies have never read them. Every unreviewed piece of content is exposure. It compounds. When a regulator notices, your agency does not share the liability. You do.';
-const _legacyPullQuote = 'Every unreviewed piece of content is {{exposure}}. It compounds. When a regulator notices, your agency does not share the liability. {{You do.}}';
+const _legacyPullQuote = 'A footnote at the end is not a {{defence}} at the {{start}}.';
 const _legacyRoles = [
   { id: 'regulatory',     title: 'Regulatory Analysts',         description: 'Tracking law changes across every jurisdiction you operate in.', icon: 'book' },
   { id: 'ai-search',      title: 'AI Search Engineers',         description: 'Placing your brand inside ChatGPT, Perplexity, and Google AI Overviews.', icon: 'signal' },

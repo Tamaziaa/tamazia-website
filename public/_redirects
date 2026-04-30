@@ -10,3 +10,9 @@
 
 # Legacy WordPress URL retired
 /home  /  301
+
+# Phase A · future route stubs (dormant until Phase G creates these pages)
+/privacy-notice/   /privacy-notice/  200
+/privacy-policy/   /privacy          301
+/privacy/          /privacy          200
+/cookie-policy/    /cookie-policy    200

@@ -11,9 +11,9 @@ export interface Props {
 
 const {
   title = 'Tamazia · International SEO for regulated enterprises',
-  description = 'Lawyer-led SEO and regulatory compliance firm. Every campaign passes through 200+ laws before anything goes live. Trusted by Kamat Hotels (NSE), CG Oncology (NYSE: CGON), Meraas (Dubai Holding).',
-  canonical = Astro.url.href,
-  ogImage = '/og-image.png',
+  description = 'Lawyer-led SEO and regulatory compliance firm. Every campaign passes through 200+ laws before anything goes live. Trusted by Kamat Hotels (NSE), CG Oncology (Nasdaq: CGON), Meraas (Dubai Holding).',
+  canonical = 'https://tamazia.co.uk',
+  ogImage = '/og-default.png',
   noindex = false,
 } = Astro.props;
 
@@ -22,9 +22,13 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'ProfessionalService',
-      '@id': 'https://tamazia.in/#organization',
+      '@id': 'https://tamazia.co.uk/#organization',
       name: 'Tamazia',
-      url: 'https://tamazia.in',
+      url: 'https://tamazia.co.uk',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://tamazia.co.uk/og-default.png',
+      },
       description: 'Lawyer-led SEO and regulatory compliance firm for regulated enterprises.',
       areaServed: ['United Kingdom', 'United Arab Emirates', 'United States', 'France', 'Global'],
       founder: {
@@ -43,10 +47,10 @@ const jsonLd = {
     },
     {
       '@type': 'WebSite',
-      '@id': 'https://tamazia.in/#website',
-      url: 'https://tamazia.in',
+      '@id': 'https://tamazia.co.uk/#website',
+      url: 'https://tamazia.co.uk',
       name: 'Tamazia',
-      publisher: { '@id': 'https://tamazia.in/#organization' },
+      publisher: { '@id': 'https://tamazia.co.uk/#organization' },
       inLanguage: 'en-GB',
     },
   ],
@@ -68,15 +72,16 @@ const jsonLd = {
     <meta property="og:locale" content="en_GB" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(ogImage, Astro.url).href} />
+    <meta property="og:url" content="https://tamazia.co.uk" />
+    <meta property="og:image" content="https://tamazia.co.uk/og-default.png" />
     <meta property="og:site_name" content="Tamazia" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@tamazia_co" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(ogImage, Astro.url).href} />
+    <meta name="twitter:image" content="https://tamazia.co.uk/og-default.png" />
 
     {/* Round-13 · fonts are now self-hosted from /public/fonts (latin + latin-ext WOFF2 subsets,
         loaded via @font-face declarations in src/styles/fonts.css). No cross-origin Google Fonts
@@ -84,9 +89,18 @@ const jsonLd = {
         Preloading the two LCP-critical faces. */}
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-400-normal-latin.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-500-normal-latin.woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin />
 
-    <!-- Favicon placeholder -->
+    <!-- Favicon set -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#5A1A2B" />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://api.resend.com" />
 
     <!-- Structured data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

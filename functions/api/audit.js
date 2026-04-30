@@ -1061,15 +1061,24 @@ export const onRequestPost = async ({ request, env }) => {
     const regScore = html ? regulatoryReadiness(html, sector) : 55;
 
     // Overall score: from API if available, else weighted average of our 3 metrics
+    // Phase A NaN guard: sector baselines prevent NaN propagating to gauge display
+    const SECTOR_BASELINE = {
+      legal: 42, healthcare: 44, hospitality: 46, financial: 40,
+      'real-estate': 43, retail: 45, tech: 47, default: 45,
+    };
+    const _safeSpeed       = isNaN(speedScore)       ? (SECTOR_BASELINE[sector] || 45) : speedScore;
+    const _safeFindability = isNaN(findabilityScore) ? (SECTOR_BASELINE[sector] || 45) : findabilityScore;
+    const _safeAi          = isNaN(aiScore)          ? (SECTOR_BASELINE[sector] || 45) : aiScore;
     const overallScore = seoData?.score
       ? Math.round(seoData.score)
-      : Math.round((speedScore * 0.30) + (findabilityScore * 0.40) + (aiScore * 0.30));
+      : Math.round((_safeSpeed * 0.30) + (_safeFindability * 0.40) + (_safeAi * 0.30));
+    const _safeOverall = isNaN(overallScore) ? (SECTOR_BASELINE[sector] || 45) : overallScore;
     const overallGrade = seoData?.grade
       ? seoData.grade
-      : overallScore >= 85 ? 'A' : overallScore >= 70 ? 'B' : overallScore >= 55 ? 'C' : overallScore >= 40 ? 'D' : 'F';
+      : _safeOverall >= 85 ? 'A' : _safeOverall >= 70 ? 'B' : _safeOverall >= 55 ? 'C' : _safeOverall >= 40 ? 'D' : 'F';
 
-    const observation = selectObservation(speedScore, findabilityScore, aiScore, sector, 'url');
-    const errors = errorsVsShouldBe(checks, sector, seoData, speedScore, findabilityScore);
+    const observation = selectObservation(_safeSpeed, _safeFindability, _safeAi, sector, 'url');
+    const errors = errorsVsShouldBe(checks, sector, seoData, _safeSpeed, _safeFindability);
     const upsell = buildUpsell('url', url, errors, sector);
 
     // Speed description  ·  uses source to give accurate context

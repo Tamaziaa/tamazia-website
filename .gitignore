@@ -6,3 +6,8 @@ zitYWXy7
 netlify/
 .netlify/
 deploy.sh
+
+# Environment files
+.env
+.env.*
+dist/

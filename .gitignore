@@ -6,5 +6,3 @@ zitYWXy7
 netlify/
 .netlify/
 deploy.sh
-.env
-.env.cloudflare

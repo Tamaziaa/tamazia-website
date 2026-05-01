@@ -12,7 +12,8 @@
   "dependencies": {
     "@astrojs/sitemap": "3.2.0",
     "astro": "^4.16.0",
-    "gsap": "^3.12.5"
+    "gsap": "^3.12.5",
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@netlify/functions": "^5.2.0",

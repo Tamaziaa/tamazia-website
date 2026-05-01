@@ -1,0 +1,261 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/layout/Header.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import { insightSectors, insightPosts } from '../../../content/insights';
+
+export function getStaticPaths() {
+  return insightPosts
+    .filter((p) => p.status === 'published')
+    .map((p) => ({ params: { sector: p.sectorSlug, slug: p.slug } }));
+}
+
+const { sector, slug } = Astro.params;
+const post = insightPosts.find((p) => p.sectorSlug === sector && p.slug === slug)!;
+const sectorMeta = insightSectors.find((s) => s.slug === sector)!;
+const related = insightPosts
+  .filter((p) => p.status === 'published' && p.sectorSlug === sector && p.slug !== slug)
+  .slice(0, 2);
+
+// Convert markdown-ish body (paragraphs separated by blank lines) into HTML paragraphs
+const bodyHtml = (post.body || '')
+  .split(/\n\n+/)
+  .map((p: string) => `<p>${p.trim().replace(/\n/g, ' ')}</p>`)
+  .join('\n');
+---
+<BaseLayout title={`${post.title} · Tamazia`} description={post.excerpt}>
+  <Header />
+  <main id="main">
+    <article class="article">
+      <header class="article-hero">
+        <div class="container narrow">
+          <a class="back-link" href={`/resources/${post.sectorSlug}/`}>← {sectorMeta.title}</a>
+          <div class="article-meta">
+            <span class="sector">{post.sector}</span>
+            <span class="dot">·</span>
+            <span class="regulator">{post.regulator}</span>
+            {post.readingTime && <><span class="dot">·</span><span class="reading">{post.readingTime}</span></>}
+          </div>
+          <h1>{post.title}</h1>
+          <p class="excerpt">{post.excerpt}</p>
+        </div>
+      </header>
+
+      <div class="article-body">
+        <div class="container narrow" set:html={bodyHtml} />
+      </div>
+
+      <section class="article-cta">
+        <div class="container narrow">
+          <h2>Want a compliance and SEO audit specific to your firm?</h2>
+          <p>Every engagement begins with a no-cost audit. Findings belong to you whether you proceed or not.</p>
+          <a class="cta-button" href="/#contact">Request your audit →</a>
+        </div>
+      </section>
+
+      {related.length > 0 && (
+        <section class="related">
+          <div class="container narrow">
+            <h3 class="related-h">Related insights in {sectorMeta.title}</h3>
+            <div class="related-grid">
+              {related.map((p) => (
+                <a class="related-card" href={`/resources/${p.sectorSlug}/${p.slug}/`}>
+                  <div class="related-meta">{p.regulator}</div>
+                  <h4>{p.title}</h4>
+                  <span class="related-link">Read →</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.title,
+  description: post.excerpt,
+  datePublished: post.publishedDate,
+  author: {
+    '@type': 'Person',
+    name: 'Aman Pareek',
+    jobTitle: 'Founder',
+    description: "LLM, International Business Law, King's College London. Member, Chartered Institute of Arbitrators. Member, American Bar Association.",
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Tamazia',
+    url: 'https://tamazia.co.uk',
+  },
+  about: {
+    '@type': 'Thing',
+    name: post.regulator,
+  },
+})} />
+
+<style>
+  .container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+  }
+  .container.narrow {
+    max-width: 760px;
+  }
+  .article-hero {
+    background: var(--grad-hero);
+    padding-block: clamp(64px, 8vw, 112px);
+  }
+  .back-link {
+    font-family: var(--ff-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    text-decoration: none;
+    font-weight: 600;
+    /* Round-13 fix · ≥44×44 touch target (was 19px tall) */
+    padding: 12px 6px;
+    margin: -12px -6px 16px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+  }
+  .back-link:hover { color: var(--gold); background: rgba(201, 167, 114, 0.08); }
+  .back-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .article-meta {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .article-meta .dot { margin: 0 8px; }
+  .article-meta .reading { color: var(--ink-muted); }
+  .article-hero h1 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(36px, 4vw + 0.5rem, 56px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--oxblood-ink);
+    margin-bottom: 18px;
+  }
+  .excerpt {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: clamp(18px, 1.4vw + 0.4rem, 22px);
+    line-height: 1.45;
+    color: var(--oxblood);
+    max-width: 660px;
+  }
+  .article-body {
+    background: var(--ivory);
+    padding-block: clamp(48px, 6vw, 96px);
+  }
+  .article-body :global(p) {
+    font-family: var(--ff-body);
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--oxblood-ink);
+    margin-bottom: 24px;
+    max-width: 720px;
+  }
+  .article-cta {
+    background: var(--grad-cases);
+    padding-block: clamp(48px, 6vw, 96px);
+    color: var(--ivory);
+    text-align: center;
+  }
+  .article-cta h2 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(24px, 2.4vw + 0.5rem, 36px);
+    line-height: 1.25;
+    color: var(--ivory);
+    margin-bottom: 16px;
+  }
+  .article-cta p {
+    font-family: var(--ff-body);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--pearl);
+    margin-bottom: 24px;
+  }
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    background: var(--grad-gold-shimmer);
+    color: var(--oxblood-ink);
+    text-decoration: none;
+    font-family: var(--ff-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: transform 240ms var(--ease-out);
+  }
+  .cta-button:hover { transform: translateX(2px); }
+  .related {
+    background: var(--grad-contact);
+    padding-block: clamp(48px, 6vw, 80px);
+  }
+  .related-h {
+    font-family: var(--ff-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--oxblood-ink);
+    margin-bottom: 24px;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: var(--ivory);
+    border: 1px solid var(--gold-hairline);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: border-color 240ms var(--ease-out);
+  }
+  .related-card:hover { border-color: var(--gold); }
+  .related-meta {
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .related-card h4 {
+    font-family: var(--ff-display);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--oxblood-ink);
+    margin-bottom: 14px;
+  }
+  .related-link {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-top: auto;
+  }
+</style>

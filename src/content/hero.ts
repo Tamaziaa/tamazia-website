@@ -11,18 +11,20 @@ export const heroContent = {
     "LLM, KING'S COLLEGE LONDON",
   ],
 
-  navItems: ['Why Us', 'Sectors', 'Cases', 'Process', 'Pricing', 'FAQ', 'Contact'],
+  navItems: ['Why Us', 'Services', 'Cases', 'Process', 'Pricing', 'FAQ', 'Resources', 'Contact'],
 
   // G.1/G.2/G.5 · Full nav with absolute paths for new deep pages
+  // NOTE: "About" removed from header — one-page site, About lives in footer only.
+  // "Insights" renamed to "Resources" sitewide.
   headerNav: [
-    { label: 'Why Us',       href: '/#why-us' },
-    { label: 'Services',     href: '/services/' },
-    { label: 'Cases',        href: '/case-studies/' },
-    { label: 'About',        href: '/about/' },
-    { label: 'Process',      href: '/#process' },
-    { label: 'Pricing',      href: '/#pricing' },
-    { label: 'FAQ',          href: '/#faq' },
-    { label: 'Contact',      href: '/#contact' },
+    { label: 'Why Us',    href: '/#why-us' },
+    { label: 'Services',  href: '/services/' },
+    { label: 'Cases',     href: '/case-studies/' },
+    { label: 'Process',   href: '/#process' },
+    { label: 'Pricing',   href: '/#pricing' },
+    { label: 'FAQ',       href: '/#faq' },
+    { label: 'Resources', href: '/resources/' },
+    { label: 'Contact',   href: '/#contact' },
   ],
 
   navCta: 'Request a Briefing',

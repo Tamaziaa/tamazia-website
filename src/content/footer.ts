@@ -30,7 +30,7 @@ export const footerContent = {
     { label: 'Pricing', href: '/#pricing' },
     { label: 'FAQ', href: '/#faq' },
     { label: 'Contact', href: '/#contact' },
-    { label: 'Insights', href: '/insights/' },
+    { label: 'Resources', href: '/resources/' },
   ],
 
   briefingsHeading: 'REGULATORY BRIEFINGS',

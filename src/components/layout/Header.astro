@@ -11,7 +11,25 @@ import { heroContent } from '../../content/hero';
     <a href="/" class="logo-wordmark">Tamazia</a>
   </div>
   <ul class="nav-items">
-    {heroContent.headerNav.map(item => <li><a href={item.href}>{item.label}</a></li>)}
+    {heroContent.headerNav.map(item => (
+      item.children ? (
+        <li class="has-dropdown">
+          <a href={item.href} class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+            {item.label}
+            <svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <ul class="dropdown" role="menu">
+            {item.children.map((child: { label: string; href: string }) => (
+              <li role="none"><a href={child.href} role="menuitem">{child.label}</a></li>
+            ))}
+          </ul>
+        </li>
+      ) : (
+        <li><a href={item.href}>{item.label}</a></li>
+      )
+    ))}
   </ul>
   <a class="nav-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
   {/* Phase B · mobile burger */}
@@ -34,9 +52,20 @@ import { heroContent } from '../../content/hero';
   </button>
   <ul class="drawer-items">
     {heroContent.headerNav.map(item => (
-      <li>
-        <a href={item.href} class="drawer-link">{item.label}</a>
-      </li>
+      item.children ? (
+        <li class="drawer-has-children">
+          <span class="drawer-group-label">{item.label}</span>
+          <ul class="drawer-sub">
+            {item.children.map((child: { label: string; href: string }) => (
+              <li><a href={child.href} class="drawer-link drawer-link--sub">{child.label}</a></li>
+            ))}
+          </ul>
+        </li>
+      ) : (
+        <li>
+          <a href={item.href} class="drawer-link">{item.label}</a>
+        </li>
+      )
     ))}
   </ul>
   <a class="drawer-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
@@ -82,7 +111,7 @@ import { heroContent } from '../../content/hero';
     z-index: 100;
   }
 
-  .logo-group { display: flex; align-items: center; }
+  .logo-group { display: flex; align-items: center; flex-shrink: 0; }
 
   .logo-crest {
     width: 46px;
@@ -309,9 +338,95 @@ import { heroContent } from '../../content/hero';
   }
   .drawer-cta:hover { background: var(--gold-warm); }
 
+  /* Dropdown styles */
+  .has-dropdown { position: relative; }
+
+  .dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .chevron {
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+  }
+
+  .has-dropdown:hover .chevron,
+  .has-dropdown:focus-within .chevron {
+    transform: rotate(180deg);
+  }
+
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ivory);
+    border: 1px solid var(--hairline);
+    border-top: 2px solid var(--oxblood);
+    list-style: none;
+    padding: 6px 0;
+    min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease, transform 160ms ease;
+    transform: translateX(-50%) translateY(-4px);
+    z-index: 200;
+  }
+
+  .has-dropdown:hover .dropdown,
+  .has-dropdown:focus-within .dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .dropdown li a {
+    display: block;
+    padding: 10px 20px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 150ms ease, background 150ms ease;
+    white-space: nowrap;
+  }
+
+  .dropdown li a:hover {
+    color: var(--oxblood);
+    background: rgba(107, 80, 88, 0.04);
+  }
+
+  /* Mobile drawer sub-items */
+  .drawer-group-label {
+    display: block;
+    font-family: var(--ff-display);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(201, 167, 114, 0.5);
+    text-transform: uppercase;
+    padding: 16px 0 4px;
+  }
+
+  .drawer-sub {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .drawer-link--sub {
+    font-size: 18px !important;
+    padding: 10px 0 10px 12px !important;
+    border-bottom: 1px solid rgba(201, 167, 114, 0.1) !important;
+  }
+
   .progress-bar {
     position: fixed;
-    top: 112px;
+    top: 76px;
     left: 0;
     height: 1px;
     background: var(--oxblood);
@@ -334,7 +449,7 @@ import { heroContent } from '../../content/hero';
     .logo-crest { width: 44px; height: 44px; }
     .logo-crest .t { font-size: 20px; }
     .logo-wordmark { font-size: 16px; margin-left: 10px; padding: 14px 0; line-height: 1; min-height: 44px; display: inline-flex; align-items: center; }
-    .progress-bar { top: 96px; }
+    .progress-bar { top: 64px; }
   }
 </style>
 

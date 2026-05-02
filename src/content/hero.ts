@@ -25,8 +25,8 @@ export const heroContent = {
       label: 'Resources',
       href: '/resources/',
       children: [
-        { label: 'Services',    href: '/services/' },
-        { label: 'Cases',       href: '/case-studies/' },
+        { label: 'Services',    href: '/#sectors' },
+        { label: 'Cases',       href: '/#cases' },
         { label: 'Resources',   href: '/resources/' },
       ],
     },

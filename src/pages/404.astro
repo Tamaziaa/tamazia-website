@@ -14,6 +14,7 @@ import Footer from '../components/layout/Footer.astro';
   <Header />
   <main id="main" class="not-found">
     <div class="container">
+      <img src="/tamazia-lockup-master.png" alt="Tamazia" class="brand-lockup-master" width="320" height="264" />
       <p class="numeral">404</p>
       <h1 class="heading">This page is not on file.</h1>
       <p class="lede">
@@ -99,5 +100,16 @@ import Footer from '../components/layout/Footer.astro';
   @media (max-width: 640px) {
     .not-found { padding: 64px 0 80px; }
     .quick-links { flex-direction: column; gap: 4px; }
+  }
+
+  .brand-lockup-master {
+    display: block;
+    margin: 0 auto 48px;
+    max-width: 280px;
+    height: auto;
+    border-radius: 16px;
+  }
+  @media (max-width: 640px) {
+    .brand-lockup-master { max-width: 200px; margin-bottom: 32px; }
   }
 </style>

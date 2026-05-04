@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
         <!-- Full lockup (crest + wordmark) -->
         <div class="brand-lockup">
           <div class="lockup-crest">
-            <span class="t">T</span>
+            <img src="/tamazia-mark-horse.png" alt="" class="lockup-mark-img" width="56" height="56" />
           </div>
           <div class="lockup-wordmark">{wordmark}</div>
         </div>
@@ -193,13 +193,12 @@ const year = new Date().getFullYear();
     border-radius: 50%;
   }
 
-  .lockup-crest .t {
-    font-family: var(--ff-display);
-    font-size: 28px;
-    color: var(--gold);
-    letter-spacing: 0.02em;
-    line-height: 1;
-    transform: translateY(-2px);
+  .lockup-mark-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
   }
 
   .lockup-wordmark {

@@ -4,12 +4,10 @@ import { heroContent } from '../../content/hero';
 {/* B-02 fix · top credentials strip removed per Aman directive */}
 
 <nav class="main-nav" aria-label="Primary">
-  <div class="logo-group">
-    <a href="/" class="logo-crest" aria-label="Tamazia home">
-      <span class="t">T</span>
-    </a>
-    <a href="/" class="logo-wordmark">Tamazia</a>
-  </div>
+  <a href="/" class="logo-lockup" aria-label="Tamazia home">
+    <img src="/tamazia-mark-horse.png" alt="" class="logo-mark" width="56" height="56" />
+    <span class="logo-text">TAMAZIA</span>
+  </a>
   <ul class="nav-items">
     {heroContent.headerNav.map(item => (
       <li><a href={item.href}>{item.label}</a></li>
@@ -82,57 +80,43 @@ import { heroContent } from '../../content/hero';
     z-index: 100;
   }
 
-  .logo-group { display: flex; align-items: center; flex-shrink: 0; }
+  /* Brand lockup · horse mark + TAMAZIA wordmark, horizontal */
+  .logo-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition: transform var(--duration-short) var(--ease-out);
+  }
 
-  .logo-crest {
-    width: 46px;
-    height: 46px;
+  .logo-mark {
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: var(--oxblood);
     border: 1px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
     box-shadow: 0 0 0 1px rgba(201, 167, 114, 0.1);
-    transition: transform var(--duration-short) var(--ease-out), box-shadow var(--duration-short) var(--ease-out);
-    text-decoration: none;
-    color: var(--gold);
+    object-fit: cover;
+    display: block;
+    transition: box-shadow var(--duration-short) var(--ease-out);
   }
 
-  .logo-crest::before {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border: 1px solid rgba(201, 167, 114, 0.3);
-    border-radius: 50%;
-  }
-
-  .logo-crest .t {
+  .logo-text {
     font-family: var(--ff-display);
     font-size: 22px;
     font-weight: 500;
-    color: var(--gold);
-    letter-spacing: 0.02em;
-    line-height: 1;
-    transform: translateY(-1px);
-  }
-
-  .logo-crest:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 4px rgba(201, 167, 114, 0.08);
-  }
-
-  .logo-wordmark {
-    margin-left: 14px;
-    font-family: var(--ff-display);
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     color: var(--ink);
     text-transform: uppercase;
-    text-decoration: none;
+    line-height: 1;
+  }
+
+  .logo-lockup:hover .logo-mark {
+    box-shadow: 0 0 0 4px rgba(201, 167, 114, 0.12);
+  }
+  .logo-lockup:hover .logo-text {
+    color: var(--oxblood);
   }
 
   .nav-items {
@@ -172,8 +156,7 @@ import { heroContent } from '../../content/hero';
   /* Round-12 fix · keyboard focus indicator */
   .nav-items li a:focus-visible,
   .nav-cta:focus-visible,
-  .logo-crest:focus-visible,
-  .logo-wordmark:focus-visible {
+  .logo-lockup:focus-visible {
     outline: 2px solid var(--gold);
     outline-offset: 4px;
     border-radius: 2px;
@@ -331,9 +314,9 @@ import { heroContent } from '../../content/hero';
   @media (max-width: 640px) {
     .top-strip { font-size: 8.5px; letter-spacing: 0.15em; }
     .main-nav { padding: 0 16px; height: 64px; }
-    .logo-crest { width: 44px; height: 44px; }
-    .logo-crest .t { font-size: 20px; }
-    .logo-wordmark { font-size: 16px; margin-left: 10px; padding: 14px 0; line-height: 1; min-height: 44px; display: inline-flex; align-items: center; }
+    .logo-mark { width: 44px; height: 44px; }
+    .logo-text { font-size: 17px; letter-spacing: 0.12em; }
+    .logo-lockup { gap: 10px; }
     .progress-bar { top: 64px; }
   }
 </style>

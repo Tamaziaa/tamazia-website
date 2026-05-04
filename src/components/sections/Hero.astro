@@ -88,10 +88,7 @@ const tickerDouble = [...tickerItems, ...tickerItems];
 
       <div class="signature-wrap" aria-label="Founder's signature">
         <div class="vetted-by">{signature.vettedBy}</div>
-        <div class="signature-row">
-          <img src="/tamazia-mark-horse.png" alt="" class="signature-seal" width="44" height="44" />
-          <div class="signature">{signature.name}</div>
-        </div>
+        <div class="signature signature-typewriter" data-name={signature.name}></div>
         <div class="signature-flourish" aria-hidden="true">
           <svg width="180" height="22" viewBox="0 0 180 22">
             <path
@@ -1085,26 +1082,23 @@ const tickerDouble = [...tickerItems, ...tickerItems];
     .cta-row { gap: 18px; margin-top: 18px; }
   }
 
-  /* Founder seal · horse mark beside Aman Pareek script signature */
-  .signature-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .signature-seal {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid var(--gold);
-    box-shadow: 0 0 0 1px rgba(201, 167, 114, 0.15);
-    object-fit: cover;
-    display: block;
+
+  /* Round-19 · signature character-by-character typewriter */
+  .signature-typewriter {
     opacity: 0;
-    animation: seal-fade-in 800ms ease-out 5500ms forwards;
+    transition: opacity 200ms ease;
+    min-height: 1.2em;
   }
-  @keyframes seal-fade-in {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+  .signature-typewriter.typing::after {
+    content: '|';
+    color: var(--gold);
+    margin-left: 2px;
+    animation: caret-blink 700ms steps(2, end) infinite;
+    font-weight: 100;
+  }
+  @keyframes caret-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 </style>
 
@@ -1192,4 +1186,26 @@ const tickerDouble = [...tickerItems, ...tickerItems];
       }
     }, speed);
   }
+
+  // Round-19 · Aman Pareek signature types character-by-character (cursive font, 80ms/char delay)
+  // Starts after the H1 sequence completes (~5500ms)
+  setTimeout(() => {
+    const sigEl = document.querySelector('.signature-typewriter') as HTMLElement | null;
+    if (!sigEl) return;
+    const name = sigEl.dataset.name || '';
+    sigEl.textContent = '';
+    sigEl.style.opacity = '1';
+    sigEl.classList.add('typing');
+    let i = 0;
+    const tick = setInterval(() => {
+      if (i >= name.length) {
+        clearInterval(tick);
+        sigEl.classList.remove('typing');
+        return;
+      }
+      sigEl.textContent = name.substring(0, i + 1);
+      i++;
+    }, 100);
+  }, 5500);
+
 </script>

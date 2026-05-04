@@ -22,6 +22,7 @@ const featureIcons: Record<string, string> = {
     <div class="currency-switcher" role="group" aria-label="Display currency">
       <button class="currency-btn active" data-currency="GBP" aria-pressed="true">GBP £</button>
       <button class="currency-btn" data-currency="USD" aria-pressed="false">USD $</button>
+      <button class="currency-btn" data-currency="EUR" aria-pressed="false">EUR €</button>
       <button class="currency-btn" data-currency="AED" aria-pressed="false">AED د.إ</button>
       <span class="currency-note">All engagements are invoiced in GBP</span>
     </div>
@@ -886,8 +887,8 @@ const featureIcons: Record<string, string> = {
 <script>
   // Currency switcher (rates GBP 1 : USD 1.27 : AED 4.67) + pilot engagement toggle
   (function () {
-    const RATES: Record<string, number> = { GBP: 1, USD: 1.27, AED: 4.67 };
-    const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', AED: 'د.إ' };
+    const RATES: Record<string, number> = { GBP: 1, USD: 1.27, EUR: 1.16, AED: 4.67 };
+    const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', EUR: '€', AED: 'د.إ' };
     const LS_CURRENCY = 'tamazia_currency';
     const LS_PILOT = 'tamazia_pilot'; // 'on' | 'off' (default 'on')
 

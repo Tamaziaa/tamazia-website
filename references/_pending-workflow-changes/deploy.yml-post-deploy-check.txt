@@ -1,0 +1,27 @@
+# Append this step to .github/workflows/deploy.yml after the
+# "Deploy to Cloudflare Pages" step:
+
+      - name: Post-deploy synthetic check
+        run: |
+          sleep 30
+          fail=0
+          for ep in /api/contact /api/audit /api/briefings; do
+            CODE=$(curl -sX POST -o /dev/null -w "%{http_code}" --max-time 10 \
+              -H 'Content-Type: application/json' -d '{}' \
+              "https://tamazia-website.pages.dev${ep}")
+            if [ "$CODE" = "404" ]; then
+              echo "FAIL: ${ep} returns 404"
+              fail=1
+            else
+              echo "OK ${ep} -> ${CODE}"
+            fi
+          done
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
+            "https://tamazia-website.pages.dev/api/health")
+          if [ "$CODE" != "200" ]; then
+            echo "FAIL: /api/health -> ${CODE}"
+            fail=1
+          else
+            echo "OK /api/health -> 200"
+          fi
+          exit $fail

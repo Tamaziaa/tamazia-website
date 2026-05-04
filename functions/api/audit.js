@@ -212,7 +212,7 @@ async function fetchSEOScore(url, apiKey) {
   if (!apiKey) return null;
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 14000);
+    const timeout = setTimeout(() => controller.abort(), 8000); // Phase 0 leftover: tightened from 14s · CF Pages 30s budget
     const res = await fetch(`https://seoscoreapi.com/audit?url=${encodeURIComponent(url)}`, {
       signal: controller.signal,
       headers: {
@@ -277,7 +277,7 @@ async function fetchPageSpeedData(url) {
       + '?url=' + encodeURIComponent(targetUrl)
       + '&strategy=mobile&category=performance&category=seo';
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 13000);
+    const timeout = setTimeout(() => controller.abort(), 9000); // Phase 0 leftover: tightened from 13s
     const res = await fetch(psiUrl, { signal: controller.signal });
     clearTimeout(timeout);
     if (!res.ok) return null;

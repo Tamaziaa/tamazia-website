@@ -1,0 +1,27 @@
+name: Weekly source backup
+on:
+  schedule:
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build sources zip
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          echo "DATE=$DATE" >> $GITHUB_ENV
+          zip -r sources-$DATE.zip . \
+            -x '*.git/*' '*.github/*' 'node_modules/*' 'dist/*' '.astro/*' '_archive/*'
+      - name: Create release with backup
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "backup-$DATE" \
+            --title "Weekly backup · $DATE" \
+            --notes "Automated weekly snapshot." \
+            "sources-$DATE.zip"

@@ -155,7 +155,7 @@ If you are paying OTA commission, you are funding your competitor's marketing. T
     excerpt: 'Pre-IPO content protocol for listings on NYSE, Nasdaq, LSE Main Market, and DFM. The 18-month digital-footprint timeline that produces zero-incident outcomes.',
     readingTime: '8 min read',
     publishedDate: '2026-04-24',
-    body: `A piece of digital content published at the wrong moment, with the wrong framing, is not an SEO mistake. It is an SEC Regulation FD violation. The same is true under FCA Listing Rules for UK-listed companies, FCA-MAR for any London-listed equity, and the Dubai Financial Services Authority Conduct of Business Module for DFM listings. Every content decision in the 18 months before a listing carries either the upside of a clean public debut or the downside of a regulatory inquiry that forces price-sensitive correction.
+    body: `A piece of digital content published at the wrong moment, with the wrong framing, is not an SEO mistake. It is an SEC Regulation FD violation. The same is true under FCA Listing Rules for UK-listed companies, FCA-MAR for any London-listed equity, and the Dubai Financial Services Authority Conduct of Business Module for DFM listings. Every content decision in the 18 months before a listing carries either the upside of a clean public debut or the downside of a regulatory enquiry that forces price-sensitive correction.
 
 The upside path is buildable. It requires structural discipline, not magic.
 
@@ -167,7 +167,7 @@ The content built during this phase covers science, operations, market context, 
 
 Months 12 to 6: silence-window discipline. As the prospectus drafting begins, every piece of new content must be reviewed against the FCA Listing Rules silence period and SEC Reg FD selective-disclosure prohibition. The team that wrote freely in months 18 to 12 now writes only what has been pre-cleared by counsel.
 
-The riskiest content surfaces in this window are LinkedIn posts from senior leadership, Instagram and Twitter activity from the founder personally, and any "thought leadership" article that drifts toward forward-looking statements. A single LinkedIn comment from a CFO about "expected ARR growth" can trigger an SEC inquiry. The protocol is: every public communication, including personal social media, passes through a pre-clearance review.
+The riskiest content surfaces in this window are LinkedIn posts from senior leadership, Instagram and Twitter activity from the founder personally, and any "thought leadership" article that drifts toward forward-looking statements. A single LinkedIn comment from a CFO about "expected ARR growth" can trigger an SEC enquiry. The protocol is: every public communication, including personal social media, passes through a pre-clearance review.
 
 Months 6 to 0: pre-prospectus through filing. Public communications are limited to pre-cleared, factually conservative content. Wikipedia presence is solidified, but only with verifiable, third-party-sourced facts. Knowledge panels are stabilised but not "managed" in any way that could read as orchestrated information disclosure.
 
@@ -177,7 +177,7 @@ The first 30 days post-listing are when most regulatory incidents happen. New le
 
 The technical infrastructure required.
 
-Three pieces of technical infrastructure support the protocol. First, a content register. Every piece of public-facing content, from blog posts to LinkedIn updates to interview transcripts, is logged with timestamp, author, pre-clearance status, and approving counsel. This register is the entity's primary defence in any subsequent SEC or FCA inquiry.
+Three pieces of technical infrastructure support the protocol. First, a content register. Every piece of public-facing content, from blog posts to LinkedIn updates to interview transcripts, is logged with timestamp, author, pre-clearance status, and approving counsel. This register is the entity's primary defence in any subsequent SEC or FCA enquiry.
 
 Second, a takedown architecture. If a content piece is identified post-publication as creating regulatory exposure, it must be removable within minutes, not hours. WordPress with manual review does not meet the standard. A purpose-built CMS with role-based publishing controls and instant-rollback does.
 

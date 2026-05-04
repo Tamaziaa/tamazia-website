@@ -8,10 +8,10 @@ export const whyUsContent = {
 
   paragraphs: [
     'Compliance is the foundation. We know the rules your content has to play by, and we rank you within them. Not a footnote we add at the end.',
-    'International business law expertise at the core. Traditional SEO, AI search, and Generative Engine Optimisation for law firms, healthcare, hotels, financial services, real estate, and every regulated sector.',
+    'International business law, AI search engineering, and regulatory content engineering applied to every campaign.',
   ],
 
-  pullQuote: '{{International business law expertise at the core.}}',
+  pullQuote: 'The {{lawyer}} reads it before the {{algorithm}} sees it.',
 
   // Verbatim from live tamazia.co.uk. These are the canonical credibility numbers.
   // The "4× / 200+ / 4" in the prior rebuild was a credibility-damaging error.

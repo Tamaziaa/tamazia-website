@@ -2,7 +2,7 @@
 import { howWeWorkContent } from '../../content/howWeWork';
 import { parseEmph } from '../../content/hero';
 
-const { eyebrow, h2, paragraph, pullQuote, roles, founderSignoff, cta } = howWeWorkContent;
+const { eyebrow, h2, paragraph, pullQuote, roles } = howWeWorkContent;
 
 const roleIcons: Record<string, string> = {
   book: `<g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -66,20 +66,6 @@ const roleIcons: Record<string, string> = {
       </div>
     </div>
 
-    <div class="founder-block">
-      <div class="founder-hairline" aria-hidden="true"></div>
-      <p class="founder-line" set:html={parseEmph(founderSignoff.line)} />
-      <div class="founder-credentials">
-        {founderSignoff.credentials.map((c, i) => (
-          <>
-            {i > 0 && <span class="sep">·</span>}
-            <span class="cred-item">{c}</span>
-          </>
-        ))}
-      </div>
-      <div class="founder-signature">{founderSignoff.signature}</div>
-      <a href="#contact" class="founder-cta">{cta}</a>
-    </div>
   </div>
 </section>
 

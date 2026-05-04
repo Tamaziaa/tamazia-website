@@ -38,7 +38,7 @@ export const heroContent = {
 
   // Subhead (above H1). Verbatim live site. Restored — was missing from prior rebuild.
   subHeadline:
-    "Led by a founder with an {{LLM in International Business Law}}, King's College London. Compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction. Working to a standard regulated enterprises cannot source elsewhere.",
+    "Led by a founder with an {{LLM in International Business Law}}, King's College London. Compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
 
   // Positioning line — restored verbatim.
   positioningLine: "Your SEO agency doesn't have a {{lawyer}}. Ours is run by {{one}}.",
@@ -51,7 +51,7 @@ export const heroContent = {
   h1: [
     { text: 'Outrank {{competitors.}}',  subtext: 'Search dominance, every market.' },
     { text: 'Master {{regulators.}}',    subtext: '200+ frameworks reviewed, every word.' },
-    { text: '{{One agency.}}',            subtext: 'Lawyer-led. Compliance-engineered.' },
+    { text: '{{One agency.}}',            subtext: 'Counsel-led, every campaign.' },
   ],
 
   // Compliance paragraph · regulator names wrapped as styled chips (B-18)
@@ -65,7 +65,7 @@ export const heroContent = {
     numeral: 'IV.',
     label: 'The Practice',
     title: 'Led by a founder. Run to a standard.',
-    body: "An {{LLM in International Business Law}}, King's College London, at the head of a practice delivering compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction {{working to a standard regulated enterprises cannot source elsewhere}}.",
+    body: "An {{LLM in International Business Law}}, King's College London, at the head of a practice delivering compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
     credentials: [
       "KING'S COLLEGE LONDON · LLM INTERNATIONAL BUSINESS LAW",
       'CHARTERED INSTITUTE OF ARBITRATORS',

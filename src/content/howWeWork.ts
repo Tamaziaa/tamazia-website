@@ -5,8 +5,8 @@
 // Specialist role titles (Regulatory Analysts, AI Search Engineers, Legal Content Strategists,
 // Technical SEO Architects, Revenue Attribution Analysts) removed from public-facing copy.
 // Reason: creates hiring/team-size expectations the firm cannot verify. Founder-direct is the brand.
-const _legacyParagraph = 'SRA advertising rules. FCA financial promotion codes. MHRA health claim standards. GDPR. ASA. These govern every word your brand publishes. Most SEO agencies have never read them. Every unreviewed piece of content is exposure. It compounds. When a regulator notices, your agency does not share the liability. You do.';
-const _legacyPullQuote = 'A footnote at the end is not a {{defence}} at the {{start}}.';
+const _legacyParagraph = 'Every engagement opens with a regulatory baseline before a keyword is touched. Your existing site is read against the rulebook of your sector and your operating jurisdictions. Exposure is mapped, gaps are catalogued, the rankings you already have are checked against the regulations they were written under. The first deliverable is not a content plan. It is the audit nobody else gives you.';
+const _legacyPullQuote = 'Compliance is the first {{deliverable}}, not the last review.';
 // E.01: Role cards now describe engagement capabilities, not internal job titles
 const _legacyRoles = [
   { id: 'regulatory',     title: 'Regulatory reading across every jurisdiction',  description: 'Law changes tracked across every market you operate in. Content reviewed before publication, not after.', icon: 'book' },
@@ -21,7 +21,6 @@ export const howWeWorkContent = {
   paragraph: _legacyParagraph,
   pullQuote: _legacyPullQuote,
   roles: _legacyRoles,
-  cta: 'Request your compliance and SEO audit →',
 
   eyebrow: 'TAMAZIA · How Tamazia works',
   h2: 'How Tamazia works.',
@@ -30,9 +29,9 @@ export const howWeWorkContent = {
   steps: [
     {
       numeral: '#1',
-      headline: 'Your agency ranks you. Nobody checks if it is legal.',
-      body: 'SRA advertising rules. FCA financial promotion codes. MHRA health claim standards. GDPR. ASA. These govern every word your brand publishes. Most SEO agencies have never read them. Every unreviewed piece of content is exposure. It compounds. When a regulator notices, your agency does not share the liability. You do.',
-      pullQuote: 'Every unreviewed piece of content is {{exposure}}. It compounds.',
+      headline: 'The audit comes before the keyword.',
+      body: 'Every engagement opens with a regulatory baseline before a keyword is touched. Your existing site is read against the rulebook of your sector and your operating jurisdictions. Exposure is mapped, gaps are catalogued, the rankings you already have are checked against the regulations they were written under. The first deliverable is not a content plan. It is the audit nobody else gives you.',
+      pullQuote: 'Compliance is the first {{deliverable}}, not the last review.',
     },
     {
       numeral: '#2',
@@ -80,14 +79,4 @@ export const howWeWorkContent = {
       ctaHref: '#contact',
     },
   ],
-
-  founderSignoff: {
-    line: 'Led by the founder.',
-    credentials: [
-      "LLM · KING'S COLLEGE LONDON",
-      'CHARTERED INSTITUTE OF ARBITRATORS',
-      'AMERICAN BAR ASSOCIATION',
-    ],
-    signature: 'Aman Pareek',
-  },
 };

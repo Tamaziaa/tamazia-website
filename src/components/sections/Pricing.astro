@@ -26,6 +26,12 @@ const featureIcons: Record<string, string> = {
       <span class="currency-note">All engagements are invoiced in GBP</span>
     </div>
 
+    {/* Pilot engagement toggle · first six-month engagement at preferential rate */}
+    <div class="pilot-toggle" role="group" aria-label="Engagement rate">
+      <button class="pilot-btn active" data-pilot="on" aria-pressed="true">Pilot engagement <span class="pilot-btn-sub">first six months</span></button>
+      <button class="pilot-btn" data-pilot="off" aria-pressed="false">Standard rate</button>
+    </div>
+
     <div class="tiers-grid">
       {tiers.map((t: any) => (
         <div class={`tier-card tier-${t.tier} ${t.mostPopular ? 'tier-most-popular' : ''}`} data-tier={t.name}>
@@ -34,10 +40,15 @@ const featureIcons: Record<string, string> = {
           <div class="tier-head">
             <span class="tier-numeral">{t.numeral}</span>
             <h3 class="tier-name">{t.name}</h3>
-            <div class="tier-price" data-gbp={t.priceGbp ?? (t.name === 'Foundation' ? 2500 : t.name === 'Growth' ? 4500 : 9500)}>
+            <div class="tier-price"
+              data-gbp={t.priceGbp}
+              data-gbp-standard={t.priceGbpStandard}
+              data-saves-gbp={t.savesGbp6}>
+              <span class="price-strike" aria-hidden="true"></span>
               <span class="price-display">{t.price}</span>
               {t.priceUnit && <span class="price-unit">{t.priceUnit}</span>}
             </div>
+            <p class="saves-line" aria-live="polite"></p>
             <p class="tier-tagline">{t.tagline}</p>
             <p class="tier-ideal-clients">{t.idealClients || t.description}</p>
           </div>
@@ -103,6 +114,8 @@ const featureIcons: Record<string, string> = {
           )}
 
           <a href="#contact" class={`tier-cta ${t.tier === 'enterprise' ? 'tier-cta-filled' : 'tier-cta-ghost'}`}>{t.cta} →</a>
+
+          <p class="pilot-microcopy">Pilot engagement rate available for new mandates.</p>
 
           {Array.isArray(t.microFooter) && t.microFooter.length > 0 && (
             <div class="tier-micro-footer">
@@ -753,29 +766,161 @@ const featureIcons: Record<string, string> = {
     .currency-switcher { gap: 6px; }
     .currency-note { display: none; }
   }
+
+  /* === Pilot engagement toggle === */
+  .pilot-toggle {
+    display: inline-flex;
+    align-items: stretch;
+    margin-bottom: 36px;
+    border: 1px solid var(--gold-hairline);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(201, 167, 114, 0.04);
+  }
+  .pilot-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 20px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 240ms ease, color 240ms ease;
+    opacity: 0.65;
+  }
+  .pilot-btn-sub {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    font-weight: 400;
+    font-style: italic;
+    text-transform: none;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+  .pilot-btn:hover { opacity: 1; }
+  .pilot-btn.active {
+    background: var(--oxblood);
+    color: var(--gold);
+    opacity: 1;
+  }
+  .pilot-btn.active .pilot-btn-sub { color: var(--gold); opacity: 0.85; }
+  .pilot-btn + .pilot-btn { border-left: 1px solid var(--gold-hairline); }
+
+  /* Strike-through standard rate (visible only when pilot is on) */
+  .price-strike {
+    display: none;
+    font-family: var(--ff-display);
+    font-size: 18px;
+    color: var(--ink-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    margin-right: 10px;
+    font-weight: 400;
+    letter-spacing: 0;
+    vertical-align: middle;
+    opacity: 0.65;
+  }
+  .tier-card.show-strike .price-strike { display: inline-block; }
+  .tier-card.tier-enterprise .price-strike { color: var(--pearl); opacity: 0.55; }
+
+  /* Saves £X over the first six months */
+  .saves-line {
+    display: none;
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--gold-text-strong);
+    margin: 6px 0 12px;
+    line-height: 1.4;
+  }
+  .tier-card.show-saves .saves-line { display: block; }
+  .tier-card.tier-enterprise .saves-line { color: var(--gold); }
+
+  /* Bottom microcopy: "Pilot engagement rate available for new mandates" */
+  .pilot-microcopy {
+    display: none;
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 14px;
+    line-height: 1.4;
+    text-align: center;
+    opacity: 0.75;
+  }
+  .tier-card.show-microcopy .pilot-microcopy { display: block; }
+  .tier-card.tier-enterprise .pilot-microcopy { color: var(--pearl); opacity: 0.7; }
+
+  @media (max-width: 640px) {
+    .pilot-toggle { width: 100%; }
+    .pilot-btn { flex: 1; padding: 10px 12px; font-size: 11px; }
+    .pilot-btn-sub { font-size: 8px; }
+    .price-strike { font-size: 16px; margin-right: 8px; }
+  }
 </style>
 
 <script>
-  // G.6 · Currency switcher · rates: GBP 1 : USD 1.27 : AED 4.67
+  // Currency switcher (rates GBP 1 : USD 1.27 : AED 4.67) + pilot engagement toggle
   (function () {
     const RATES: Record<string, number> = { GBP: 1, USD: 1.27, AED: 4.67 };
     const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', AED: 'د.إ' };
-    const LS_KEY = 'tamazia_currency';
+    const LS_CURRENCY = 'tamazia_currency';
+    const LS_PILOT = 'tamazia_pilot'; // 'on' | 'off' (default 'on')
 
-    function formatPrice(gbp: number, currency: string): string {
-      const converted = Math.round(gbp * RATES[currency] / 100) * 100;
-      return `From ${SYMBOLS[currency]}${converted.toLocaleString()}`;
+    function rounded(gbp: number, currency: string): number {
+      return Math.round(gbp * RATES[currency] / 100) * 100;
     }
 
-    function applyPrices(currency: string): void {
-      document.querySelectorAll<HTMLElement>('[data-gbp]').forEach((el) => {
-        const gbp = parseInt(el.getAttribute('data-gbp') ?? '0', 10);
-        const display = el.querySelector<HTMLElement>('.price-display');
-        if (display) display.textContent = formatPrice(gbp, currency);
+    function formatPrice(gbp: number, currency: string): string {
+      return `From ${SYMBOLS[currency]}${rounded(gbp, currency).toLocaleString()}`;
+    }
+
+    function formatPlain(gbp: number, currency: string): string {
+      return `${SYMBOLS[currency]}${rounded(gbp, currency).toLocaleString()}`;
+    }
+
+    function activeAttr(pilotOn: boolean): string {
+      return pilotOn ? 'data-gbp' : 'data-gbp-standard';
+    }
+
+    function applyAll(currency: string, pilotOn: boolean): void {
+      document.querySelectorAll<HTMLElement>('[data-gbp]').forEach((priceEl) => {
+        const card = priceEl.closest<HTMLElement>('.tier-card');
+        const headlineGbp = parseInt(priceEl.getAttribute(activeAttr(pilotOn)) ?? '0', 10);
+        const standardGbp = parseInt(priceEl.getAttribute('data-gbp-standard') ?? '0', 10);
+        const savesGbp = parseInt(priceEl.getAttribute('data-saves-gbp') ?? '0', 10);
+
+        // Headline price
+        const display = priceEl.querySelector<HTMLElement>('.price-display');
+        if (display) display.textContent = formatPrice(headlineGbp, currency);
+
+        // Strike-through standard rate (only visible when pilot is on)
+        const strike = priceEl.querySelector<HTMLElement>('.price-strike');
+        if (strike) strike.textContent = formatPlain(standardGbp, currency);
+
+        // Saves line (only visible when pilot is on)
+        if (card) {
+          const savesEl = card.querySelector<HTMLElement>('.saves-line');
+          if (savesEl) {
+            savesEl.textContent = `Saves ${formatPlain(savesGbp, currency)} over the first six months.`;
+          }
+          card.classList.toggle('show-strike', pilotOn);
+          card.classList.toggle('show-saves', pilotOn);
+          card.classList.toggle('show-microcopy', !pilotOn);
+        }
       });
     }
 
-    function activateButton(currency: string): void {
+    function activateCurrencyButton(currency: string): void {
       document.querySelectorAll<HTMLButtonElement>('.currency-btn').forEach((btn) => {
         const isActive = btn.dataset.currency === currency;
         btn.classList.toggle('active', isActive);
@@ -783,25 +928,48 @@ const featureIcons: Record<string, string> = {
       });
     }
 
-    function setCurrency(currency: string): void {
-      try { localStorage.setItem(LS_KEY, currency); } catch (_) { /* private browsing */ }
-      activateButton(currency);
-      applyPrices(currency);
+    function activatePilotButton(pilotOn: boolean): void {
+      document.querySelectorAll<HTMLButtonElement>('.pilot-btn').forEach((btn) => {
+        const isActive = (btn.dataset.pilot === 'on') === pilotOn;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
     }
 
-    // Init: respect localStorage override, otherwise default to GBP
-    let initial = 'GBP';
-    try { initial = localStorage.getItem(LS_KEY) ?? 'GBP'; } catch (_) {}
-    if (!RATES[initial]) initial = 'GBP';
+    let currentCurrency = 'GBP';
+    let currentPilot = true; // default ON
+
+    function setCurrency(currency: string): void {
+      currentCurrency = RATES[currency] ? currency : 'GBP';
+      try { localStorage.setItem(LS_CURRENCY, currentCurrency); } catch (_) {}
+      activateCurrencyButton(currentCurrency);
+      applyAll(currentCurrency, currentPilot);
+    }
+
+    function setPilot(on: boolean): void {
+      currentPilot = on;
+      try { localStorage.setItem(LS_PILOT, on ? 'on' : 'off'); } catch (_) {}
+      activatePilotButton(currentPilot);
+      applyAll(currentCurrency, currentPilot);
+    }
+
+    // Init from localStorage with safe defaults
+    try {
+      const lsCurrency = localStorage.getItem(LS_CURRENCY);
+      if (lsCurrency && RATES[lsCurrency]) currentCurrency = lsCurrency;
+      const lsPilot = localStorage.getItem(LS_PILOT);
+      if (lsPilot === 'off') currentPilot = false;
+    } catch (_) {}
 
     document.querySelectorAll<HTMLButtonElement>('.currency-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const currency = btn.dataset.currency ?? 'GBP';
-        setCurrency(currency);
-      });
+      btn.addEventListener('click', () => setCurrency(btn.dataset.currency ?? 'GBP'));
+    });
+    document.querySelectorAll<HTMLButtonElement>('.pilot-btn').forEach((btn) => {
+      btn.addEventListener('click', () => setPilot(btn.dataset.pilot === 'on'));
     });
 
-    // Apply on load
-    setCurrency(initial);
+    activateCurrencyButton(currentCurrency);
+    activatePilotButton(currentPilot);
+    applyAll(currentCurrency, currentPilot);
   })();
 </script>

@@ -18,6 +18,9 @@ export const pricingContent = {
       name: 'Foundation',
       price: 'From £2,500',
       priceUnit: '/month',
+      priceGbp: 2500,
+      priceGbpStandard: 3300,
+      savesGbp6: 4800,
       tagline: 'Single-location businesses building local search authority and compliance defence.',
       idealClients:
         'Single-location hotels, clinics, restaurants, estate agents. Sole solicitors and practitioners. Financial advisers establishing local authority. Executives building professional visibility.',
@@ -80,6 +83,9 @@ export const pricingContent = {
       name: 'Authority',
       price: 'From £4,500',
       priceUnit: '/month',
+      priceGbp: 4500,
+      priceGbpStandard: 6000,
+      savesGbp6: 9000,
       tagline: 'Multi-location brands scaling organic growth across regions and jurisdictions.',
       idealClients:
         'Multi-location hotel groups. Law firms across practice areas and offices. Healthcare groups. Financial services firms competing nationally. Real estate developers with international buyers. F&B brands expanding beyond a single location.',
@@ -150,6 +156,9 @@ export const pricingContent = {
       name: 'Enterprise',
       price: 'From £9,500',
       priceUnit: '/month',
+      priceGbp: 9500,
+      priceGbpStandard: 12700,
+      savesGbp6: 19200,
       tagline: 'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
       idealClients:
         'International hotel groups. Multi-jurisdiction law firms. Listed companies and pre-IPO businesses. Healthcare groups with cross-border operations. Real estate developers targeting international buyers. Financial services enterprises regulated under FCA, DFSA, and SEC simultaneously.',

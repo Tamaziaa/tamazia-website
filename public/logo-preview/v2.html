@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Tamazia Logo · Unified Lockups · Desktop + Mobile</title>
+<style>
+  :root {
+    --gold: #C9A772;
+    --gold-deep: #8B7349;
+    --gold-mid: #AA8C5A;
+    --oxblood: #5A1A2B;
+    --oxblood-deep: #4A1422;
+    --ink: #271A1E;
+    --ink-muted: #4A3A40;
+    --ivory: #F5F1E8;
+    --hairline: rgba(39, 26, 30, 0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #16161A;
+    color: #DCDCDC;
+    font-family: -apple-system, system-ui, sans-serif;
+    padding: 40px 0 60px;
+  }
+  h1 { color: var(--gold); font-weight: 300; font-size: 22px; padding: 0 40px 8px; }
+  p.intro { color: #999; font-size: 13px; padding: 0 40px 32px; max-width: 920px; line-height: 1.55; }
+
+  .option {
+    margin-bottom: 56px;
+    padding: 0 40px;
+  }
+  .option-label {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: var(--gold-mid);
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-weight: 600;
+    align-self: center;
+  }
+  .title { color: #FFF; font-size: 16px; font-weight: 500; }
+  .meta { color: #888; font-size: 12px; font-style: italic; }
+  .notes { color: #999; font-size: 12px; margin-top: 10px; line-height: 1.55; max-width: 1100px; }
+
+  /* Desktop + Mobile side by side */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .label-axis {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 6px;
+  }
+
+  /* Desktop header strip */
+  .desktop-header {
+    height: 76px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    border-bottom: 1px solid var(--hairline);
+    overflow: hidden;
+  }
+  .desktop-cream { background: var(--ivory); }
+  .desktop-oxblood { background: var(--oxblood); border-bottom: 1px solid rgba(201,167,114,0.2); }
+
+  /* Mobile header strip */
+  .mobile-frame {
+    width: 380px;
+    height: 200px;
+    border: 1px solid #333;
+    background: var(--ivory);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-frame.oxblood-bg { background: var(--oxblood); }
+  .mobile-frame.oxblood-bg .mobile-content { color: var(--gold); }
+  .mobile-frame.oxblood-bg .mobile-content::before {
+    background: rgba(255,255,255,0.04);
+  }
+  .mobile-header {
+    height: 64px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .mobile-frame.oxblood-bg .mobile-header { border-bottom-color: rgba(201,167,114,0.2); }
+  .mobile-content {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #999;
+    font-size: 11px;
+    font-style: italic;
+    padding-top: 16px;
+    position: relative;
+  }
+  .mobile-content::before {
+    content: 'mobile preview · 64px header';
+  }
+  .burger {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+  }
+  .mobile-frame.oxblood-bg .burger { color: var(--gold); }
+  .burger svg { width: 22px; height: 16px; }
+
+  /* Logo lockups */
+  .logo-link {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+  .logo-link img { display: block; width: auto; }
+  .desktop-img { height: 56px; }
+  .mobile-img { height: 40px; }
+  .desktop-img-tall { height: 60px; }
+
+  /* Desktop nav */
+  .nav-items {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    list-style: none;
+    flex-wrap: nowrap;
+  }
+  .nav-items a {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .desktop-oxblood .nav-items a { color: var(--gold); }
+  .cta {
+    background: var(--oxblood);
+    color: var(--ivory);
+    border: 1px solid var(--gold);
+    height: 44px;
+    padding: 0 22px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    margin-left: 22px;
+    text-decoration: none;
+  }
+  .desktop-oxblood .cta {
+    background: var(--gold);
+    color: var(--oxblood);
+    border-color: var(--gold);
+  }
+
+  /* Inline tabular caption */
+  .insight-table {
+    width: 100%;
+    margin-top: 16px;
+    border-top: 1px solid #333;
+    padding-top: 14px;
+    color: #ccc;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .insight-row { display: flex; gap: 14px; margin-bottom: 4px; }
+  .insight-row .key { color: var(--gold-mid); min-width: 130px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 10px; }
+
+  hr.sep { border: 0; border-top: 1px solid #2A2A30; margin: 60px 40px; }
+</style>
+</head>
+<body>
+
+<h1>Tamazia Logo · Unified Lockups · Desktop + Mobile · v2</h1>
+<p class="intro">
+  Three options refined to address the unity, click-target, and mobile concerns. Each lockup is now ONE clickable element (not two). A subtle gold rule beneath connects horse and wordmark visually. Mobile views shown alongside desktop at the actual 380px iPhone-class width with a 64px header height.
+</p>
+
+<!-- ========== A-tuned ========== -->
+<div class="option">
+  <div class="option-label">
+    <span class="badge">A-tuned</span>
+    <span class="title">Brighter gold on cream + unifying rule</span>
+    <span class="meta">muted brand expression · subtle</span>
+  </div>
+
+  <div class="preview-grid">
+    <div>
+      <div class="label-axis">Desktop · 1568px</div>
+      <div class="desktop-header desktop-cream">
+        <a href="#" class="logo-link"><img src="logo-A-tuned.png" alt="Tamazia" class="desktop-img"></a>
+        <ul class="nav-items">
+          <li><a>Why Us</a></li><li><a>Sectors</a></li><li><a>Cases</a></li><li><a>Process</a></li><li><a>Pricing</a></li><li><a>FAQ</a></li><li><a>Contact</a></li><li><a>Resources</a></li>
+        </ul>
+        <a class="cta">Request a Briefing</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="label-axis">Mobile · 380px</div>
+      <div class="mobile-frame">
+        <div class="mobile-header">
+          <a href="#" class="logo-link"><img src="logo-A-tuned.png" class="mobile-img"></a>
+          <button class="burger"><svg viewBox="0 0 22 16"><rect y="0" width="22" height="2" rx="1" fill="currentColor"/><rect y="7" width="22" height="2" rx="1" fill="currentColor"/><rect y="14" width="22" height="2" rx="1" fill="currentColor"/></svg></button>
+        </div>
+        <div class="mobile-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-table">
+    <div class="insight-row"><span class="key">Theme fit</span><span>Mismatched · introduces a third color register that doesn't appear elsewhere on the site</span></div>
+    <div class="insight-row"><span class="key">Brand fidelity</span><span>Lower · master gold is bright, A's tuned gold is the midpoint #AA8C5A</span></div>
+    <div class="insight-row"><span class="key">Mobile</span><span>Acceptable · 40px tall, fits within 64px header with breathing room</span></div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ========== D-final ========== -->
+<div class="option">
+  <div class="option-label">
+    <span class="badge">D-final</span>
+    <span class="title">Bright gold horse + oxblood wordmark + unifying rule</span>
+    <span class="meta">recommended for cream-header path · matches site's two-tone discipline</span>
+  </div>
+
+  <div class="preview-grid">
+    <div>
+      <div class="label-axis">Desktop · 1568px</div>
+      <div class="desktop-header desktop-cream">
+        <a href="#" class="logo-link"><img src="logo-D-final.png" alt="Tamazia" class="desktop-img"></a>
+        <ul class="nav-items">
+          <li><a>Why Us</a></li><li><a>Sectors</a></li><li><a>Cases</a></li><li><a>Process</a></li><li><a>Pricing</a></li><li><a>FAQ</a></li><li><a>Contact</a></li><li><a>Resources</a></li>
+        </ul>
+        <a class="cta">Request a Briefing</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="label-axis">Mobile · 380px</div>
+      <div class="mobile-frame">
+        <div class="mobile-header">
+          <a href="#" class="logo-link"><img src="logo-D-final.png" class="mobile-img"></a>
+          <button class="burger"><svg viewBox="0 0 22 16"><rect y="0" width="22" height="2" rx="1" fill="currentColor"/><rect y="7" width="22" height="2" rx="1" fill="currentColor"/><rect y="14" width="22" height="2" rx="1" fill="currentColor"/></svg></button>
+        </div>
+        <div class="mobile-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-table">
+    <div class="insight-row"><span class="key">Theme fit</span><span>Strongest · directly applies the site's two-tone grammar (gold accent + dark typography)</span></div>
+    <div class="insight-row"><span class="key">Brand fidelity</span><span>Medium · wordmark color flips between header (oxblood) and footer/404/OG (gold). Defensible as "contextual wordmark" — Vogue, Economist do this</span></div>
+    <div class="insight-row"><span class="key">Click target</span><span>Whole lockup is one anchor link · no ambiguity · cursor pointer over every pixel</span></div>
+    <div class="insight-row"><span class="key">Mobile</span><span>Strong · gold rule still visible at 40px scale · horse + wordmark balance preserved</span></div>
+    <div class="insight-row"><span class="key">Unity</span><span>Solved · gold rule beneath both elements + tight 18px gap = reads as one mark</span></div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ========== E-final ========== -->
+<div class="option">
+  <div class="option-label">
+    <span class="badge">E-final</span>
+    <span class="title">Full oxblood masthead with master lockup</span>
+    <span class="meta">recommended for institutional register · biggest visual change</span>
+  </div>
+
+  <div class="preview-grid">
+    <div>
+      <div class="label-axis">Desktop · 1568px · oxblood masthead</div>
+      <div class="desktop-header desktop-oxblood">
+        <a href="#" class="logo-link"><img src="logo-E-final-transparent.png" alt="Tamazia" class="desktop-img-tall"></a>
+        <ul class="nav-items">
+          <li><a>Why Us</a></li><li><a>Sectors</a></li><li><a>Cases</a></li><li><a>Process</a></li><li><a>Pricing</a></li><li><a>FAQ</a></li><li><a>Contact</a></li><li><a>Resources</a></li>
+        </ul>
+        <a class="cta">Request a Briefing</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="label-axis">Mobile · 380px · oxblood masthead</div>
+      <div class="mobile-frame oxblood-bg">
+        <div class="mobile-header">
+          <a href="#" class="logo-link"><img src="logo-E-final-transparent.png" class="mobile-img"></a>
+          <button class="burger"><svg viewBox="0 0 22 16"><rect y="0" width="22" height="2" rx="1" fill="currentColor"/><rect y="7" width="22" height="2" rx="1" fill="currentColor"/><rect y="14" width="22" height="2" rx="1" fill="currentColor"/></svg></button>
+        </div>
+        <div class="mobile-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-table">
+    <div class="insight-row"><span class="key">Theme fit</span><span>Strong · extends the dark/cream alternation that already structures the site (Hero cream, Sectors dark, How cream, Footer dark) · header becomes the first dark spread</span></div>
+    <div class="insight-row"><span class="key">Brand fidelity</span><span>Highest · master gold-on-oxblood ground preserved exactly · no recolouring</span></div>
+    <div class="insight-row"><span class="key">Click target</span><span>Whole lockup is one anchor link · no ambiguity</span></div>
+    <div class="insight-row"><span class="key">Mobile</span><span>Cleanest · masthead and drawer (already oxblood) read as one architecture · no register shift</span></div>
+    <div class="insight-row"><span class="key">Unity</span><span>Total · master lockup is one image asset on its native ground · cannot read as two separate elements</span></div>
+    <div class="insight-row"><span class="key">Strategic</span><span>Matches Tamazia's institutional positioning exactly · Patek/Hermès/Coutts/Pictet all use saturated mastheads</span></div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ========== Same options at narrow desktop (1280px) for stress testing ========== -->
+<div class="option">
+  <div class="option-label">
+    <span class="badge">Stress test</span>
+    <span class="title">All three at 1280px desktop · the tightest desktop width before mobile breakpoint</span>
+    <span class="meta">verifying nothing wraps · everything fits cleanly</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 18px;">
+    <div class="desktop-header desktop-cream" style="padding: 0 32px; max-width: 1280px;">
+      <a href="#" class="logo-link"><img src="logo-A-tuned.png" class="desktop-img"></a>
+      <ul class="nav-items">
+        <li><a>Why Us</a></li><li><a>Sectors</a></li><li><a>Cases</a></li><li><a>Process</a></li><li><a>Pricing</a></li><li><a>FAQ</a></li><li><a>Contact</a></li><li><a>Resources</a></li>
+      </ul>
+      <a class="cta">Request a Briefing</a>
+    </div>
+    <div class="desktop-header desktop-cream" style="padding: 0 32px; max-width: 1280px;">
+      <a href="#" class="logo-link"><img src="logo-D-final.png" class="desktop-img"></a>
+      <ul class="nav-items">
+        <li><a>Why Us</a></li><li><a>Sectors</a></li><li><a>Cases</a></li><li><a>Process</a></li><li><a>Pricing</a></li><li><a>FAQ</a></li><li><a>Contact</a></li><li><a>Resources</a></li>
+      </ul>
+      <a class="cta">Request a Briefing</a>
+    </div>
+    <div class="desktop-header desktop-oxblood" style="padding: 0 32px; max-width: 1280px;">
+      <a href="#" class="logo-link"><img src="logo-E-final-transparent.png" class="desktop-img-tall"></a>
+      <ul class="nav-items">
+        <li><a>Why Us</a></li><li><a>Sectors</a></li><li><a>Cases</a></li><li><a>Process</a></li><li><a>Pricing</a></li><li><a>FAQ</a></li><li><a>Contact</a></li><li><a>Resources</a></li>
+      </ul>
+      <a class="cta">Request a Briefing</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

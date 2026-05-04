@@ -51,19 +51,19 @@ code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/humans.txt")
 check "8. humans.txt 200" "$code" "200"
 
 # 9. CAA records present on tamazia.co.uk
-caa=$(dig +short CAA tamazia.co.uk | wc -l)
+caa=$(dig +short CAA tamazia.co.uk @1.1.1.1 | wc -l)
 check "9. CAA records on co.uk (>=5)" "$([[ $caa -ge 5 ]] && echo OK || echo FAIL)" "OK"
 
 # 10. CAA records present on tamazia.in
-caa=$(dig +short CAA tamazia.in | wc -l)
+caa=$(dig +short CAA tamazia.in @1.1.1.1 | wc -l)
 check "10. CAA records on .in (>=5)" "$([[ $caa -ge 5 ]] && echo OK || echo FAIL)" "OK"
 
 # 11. DMARC includes Postmark rua on co.uk
-dm=$(dig +short TXT _dmarc.tamazia.co.uk | grep -c postmarkapp.com || true)
+dm=$(dig +short TXT _dmarc.tamazia.co.uk @1.1.1.1 | grep -c postmarkapp.com || true)
 check "11. DMARC postmarkapp on co.uk" "$dm" "1"
 
 # 12. DMARC includes Postmark rua on .in
-dm=$(dig +short TXT _dmarc.tamazia.in | grep -c postmarkapp.com || true)
+dm=$(dig +short TXT _dmarc.tamazia.in @1.1.1.1 | grep -c postmarkapp.com || true)
 check "12. DMARC postmarkapp on .in" "$dm" "1"
 
 # 13. /robots.txt blocks GPTBot

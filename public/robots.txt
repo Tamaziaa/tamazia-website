@@ -4,7 +4,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /csp-report
+Disallow: /api/csp-report
 
 # AI training opt-outs · we permit search but withhold training data
 User-agent: GPTBot

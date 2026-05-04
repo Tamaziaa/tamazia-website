@@ -346,98 +346,7 @@ const iconPaths: Record<string, string> = {
     opacity: 1;
   }
 
-  /* Per-sector hover animations · drives inner SVG class targets */
-
-  /* LEGAL · scales of justice teeter */
-  .sector-card[data-sector="legal"] .card-3d svg .scales-beam { transform-origin: 50px 30px; transform-box: fill-box; }
-  .sector-card[data-sector="legal"]:hover .card-3d svg .scales-beam {
-    animation: scales-teeter 3.4s ease-in-out infinite;
-  }
-  @keyframes scales-teeter {
-    0%, 100% { transform: rotate(0deg); }
-    25%      { transform: rotate(-8deg); }
-    75%      { transform: rotate(8deg); }
-  }
-
-  /* HEALTHCARE · stethoscope ECG pulse trace */
-  .sector-card[data-sector="healthcare"] .card-3d svg .ecg-line path {
-    stroke-dasharray: 60;
-    stroke-dashoffset: 60;
-  }
-  .sector-card[data-sector="healthcare"]:hover .card-3d svg .ecg-line path {
-    animation: ecg-trace 1.8s ease-in-out infinite;
-  }
-  @keyframes ecg-trace {
-    0%   { stroke-dashoffset: 60; }
-    55%  { stroke-dashoffset: 0; }
-    100% { stroke-dashoffset: -60; }
-  }
-
-  /* HOSPITALITY · champagne bubbles rising */
-  .sector-card[data-sector="hospitality"] .card-3d svg .bubble { opacity: 0; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .bubble {
-    animation: bubble-rise 2.6s ease-out infinite;
-  }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b1 { animation-delay: 0s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b2 { animation-delay: 0.5s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b3 { animation-delay: 1.0s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b4 { animation-delay: 1.5s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b5 { animation-delay: 2.0s; }
-  @keyframes bubble-rise {
-    0%   { opacity: 0; transform: translateY(0); }
-    20%  { opacity: 1; }
-    80%  { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-22px); }
-  }
-
-  /* REAL ESTATE / IPO · skyline windows lighting up sequentially */
-  .sector-card[data-sector="real-estate"] .card-3d svg .window {
-    fill: transparent;
-    opacity: 0.45;
-    transition: fill 200ms ease, opacity 200ms ease;
-  }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .window {
-    animation: window-light 4.5s ease-in-out infinite;
-  }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w1  { animation-delay: 0s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w2  { animation-delay: 0.3s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w3  { animation-delay: 0.6s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w4  { animation-delay: 0.9s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w5  { animation-delay: 1.2s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w6  { animation-delay: 1.5s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w7  { animation-delay: 1.8s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w8  { animation-delay: 2.1s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w9  { animation-delay: 2.4s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w10 { animation-delay: 2.7s; }
-  @keyframes window-light {
-    0%, 70%, 100% { fill: transparent; opacity: 0.45; }
-    15%, 55%      { fill: currentColor; opacity: 1; }
-  }
-
-  /* F&B · cocktail olive swirling around glass */
-  .sector-card[data-sector="fb"] .card-3d svg .olive-stir { transform-origin: 50px 26px; transform-box: fill-box; }
-  .sector-card[data-sector="fb"]:hover .card-3d svg .olive-stir {
-    animation: olive-swirl 3.4s linear infinite;
-  }
-  @keyframes olive-swirl {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* EVERY SECTOR · compass full rotation */
-  .sector-card[data-sector="every-sector"] .card-3d svg .compass-body { transform-origin: 50px 50px; transform-box: fill-box; }
-  .sector-card[data-sector="every-sector"]:hover .card-3d svg .compass-body {
-    animation: compass-rotate 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-  @keyframes compass-rotate {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* Reduced motion · halt animations only at the OS-level preference */
-  @media (prefers-reduced-motion: reduce) {
-    .sector-card .card-3d svg * { animation: none !important; }
-  }
+  
 
   .card-eyebrow {
     font-family: var(--ff-body);
@@ -667,6 +576,113 @@ const iconPaths: Record<string, string> = {
   }
 
   </style>
+<style is:global>
+  /* Per-sector hover animations · drives inner SVG class targets */
+
+  /* LEGAL · scales of justice teeter */
+  .sector-card[data-sector="legal"] .card-3d svg .scales-beam { transform-origin: 50px 30px; transform-box: fill-box; }
+  .sector-card[data-sector="legal"]:hover .card-3d svg .scales-beam {
+    animation: scales-teeter 3.4s ease-in-out infinite;
+  }
+  @keyframes scales-teeter {
+    0%, 100% { transform: rotate(0deg); }
+    25%      { transform: rotate(-8deg); }
+    75%      { transform: rotate(8deg); }
+  }
+
+  /* HEALTHCARE · stethoscope ECG pulse trace */
+  .sector-card[data-sector="healthcare"] .card-3d svg .ecg-line path {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+  }
+  .sector-card[data-sector="healthcare"]:hover .card-3d svg .ecg-line path {
+    animation: ecg-trace 1.8s ease-in-out infinite;
+  }
+  @keyframes ecg-trace {
+    0%   { stroke-dashoffset: 60; }
+    55%  { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -60; }
+  }
+
+  /* HOSPITALITY · champagne bubbles rising */
+  .sector-card[data-sector="hospitality"] .card-3d svg .bubble { opacity: 0; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .bubble {
+    animation: bubble-rise 2.6s ease-out infinite;
+  }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b1 { animation-delay: 0s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b2 { animation-delay: 0.5s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b3 { animation-delay: 1.0s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b4 { animation-delay: 1.5s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b5 { animation-delay: 2.0s; }
+  @keyframes bubble-rise {
+    0%   { opacity: 0; transform: translateY(0); }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-22px); }
+  }
+
+  /* REAL ESTATE / IPO · skyline windows lighting up sequentially */
+  .sector-card[data-sector="real-estate"] .card-3d svg .window {
+    fill: transparent;
+    opacity: 0.45;
+    transition: fill 200ms ease, opacity 200ms ease;
+  }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .window {
+    animation: window-light 4.5s ease-in-out infinite;
+  }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w1  { animation-delay: 0s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w2  { animation-delay: 0.3s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w3  { animation-delay: 0.6s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w4  { animation-delay: 0.9s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w5  { animation-delay: 1.2s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w6  { animation-delay: 1.5s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w7  { animation-delay: 1.8s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w8  { animation-delay: 2.1s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w9  { animation-delay: 2.4s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w10 { animation-delay: 2.7s; }
+  @keyframes window-light {
+    0%, 70%, 100% { fill: transparent; opacity: 0.45; }
+    15%, 55%      { fill: currentColor; opacity: 1; }
+  }
+
+  /* F&B · cocktail olive swirling around glass */
+  .sector-card[data-sector="fb"] .card-3d svg .olive-stir { transform-origin: 50px 26px; transform-box: fill-box; }
+  .sector-card[data-sector="fb"]:hover .card-3d svg .olive-stir {
+    animation: olive-swirl 3.4s linear infinite;
+  }
+  @keyframes olive-swirl {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* EVERY SECTOR · compass full rotation */
+  .sector-card[data-sector="every-sector"] .card-3d svg .compass-body { transform-origin: 50px 50px; transform-box: fill-box; }
+  .sector-card[data-sector="every-sector"]:hover .card-3d svg .compass-body {
+    animation: compass-rotate 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @keyframes compass-rotate {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Reduced motion · halt animations only at the OS-level preference */
+  @media (prefers-reduced-motion: reduce) {
+    .sector-card .card-3d svg * { animation: none !important; }
+  }
+
+  .cta-arrow {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 1.1em;
+    line-height: 1;
+    transition: transform 240ms ease;
+    font-weight: normal;
+  }
+  .tier-cta:hover .cta-arrow {
+    transform: translate(2px, -2px);
+  }
+</style>
+
 
 <script>
   // Sequential fade-in reveal on scroll-into-view

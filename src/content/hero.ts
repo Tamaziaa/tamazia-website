@@ -76,23 +76,24 @@ export const heroContent = {
   // Indian-jurisdiction laws explicitly excluded (Tamazia does not serve the Indian market — see TAMAZIA-22-PROJECT-HANDOFF §3).
   // Single source of truth for both the vertical right ribbon (Hero) and the horizontal LawsStrip (below QuickAudit).
   regulationFrameworks: [
-    'GDPR', 'SRA Standards', 'HIPAA', 'ICC Rules', 'SEC Reg FD', 'RERA',
-    'FCA COBS 4', 'ASA CAP', 'EU AI Act', 'UK GDPR', 'ABA Model Rules', 'Trakheesi',
-    'NYSE Listed Manual', 'MHRA', 'DIFC Court Rules', 'PECR', 'DSA', 'CQC',
-    'Nasdaq Rule 5000', 'CCPA', 'Schema.org Hotel', 'Bribery Act 2010', 'SIAC Rules', 'E-E-A-T',
-    'SOX', 'DFSA', 'BSB Handbook', 'LCIA Rules', 'NIS2', 'UAE PDPL 2021',
-    'MAR', 'Modern Slavery Act', 'ADGM', 'DTCM', 'Equality Act 2010', 'ASA Health Code',
-    'FINRA 2210', 'Schema.org Restaurant', 'Defamation Act', 'Saudi PDPL 2022',
-    'CPRA', 'Consumer Rights Act 2015', 'DMA', 'DORA', 'DPA 2018', 'CSRD',
-    'e-Commerce Directive', 'Online Safety Act', 'FTC §5', 'ePrivacy',
+    'GDPR', 'SRA Standards 2019', 'HIPAA Privacy Rule', 'ASA CAP Code', 'FCA COBS 4',
+    'SEC Reg FD', 'RERA', 'Google E-E-A-T', 'ABA Model Rules 7.1-7.3', 'EU AI Act',
+    'CAP Code Section 12', 'Trakheesi', 'NYSE Listed Manual', 'MHRA', 'PECR',
+    'CCPA', 'FINRA Rule 2210', 'UK GDPR', 'Schema.org Hotel', 'SRA Transparency Rules',
+    'FTC Endorsement Guides', 'Children\'s Code', 'DFSA', 'BSB Handbook', 'Nasdaq Rule 5250',
+    'Food Information Regs', 'Consumer Rights Act 2015', 'DPA 2018', 'ASA Health Code', 'DTCM',
+    'Defamation Act 2013', 'e-Commerce Directive', 'CPRA', 'FCA MAR', 'BCAP Code',
+    'ePrivacy Regulation', 'ICC Rules', 'DTRs UK', 'CQC', 'Schema.org Restaurant',
+    'GDPR Art. 17', 'SEC Reg G', 'ADGM', 'SAMA Banking', 'DSA',
+    'FDA 21 CFR 202', 'AMA Ethics 5.027', 'SEC Rule 10b-5', 'Wikipedia Notability', 'FTC §5',
   ],
 
   // 14 gold-italic highlighted picks · clients' daily-vocabulary names (most recognisable per Tamazia's primary buyer personas)
   // C.13: expanded from 12 → 14 per Aman directive 2026-04-30
   goldHighlightedFrameworks: [
-    'GDPR', 'HIPAA', 'SRA Standards', 'ASA CAP', 'SEC Reg FD', 'FCA COBS 4',
-    'EU AI Act', 'ICC Rules', 'RERA', 'E-E-A-T', 'NYSE Listed Manual', 'CCPA',
-    'MHRA', 'ABA Model Rules',
+    'GDPR', 'HIPAA Privacy Rule', 'SRA Standards 2019', 'ASA CAP Code', 'FCA COBS 4',
+    'SEC Reg FD', 'EU AI Act', 'RERA', 'Google E-E-A-T', 'ABA Model Rules 7.1-7.3',
+    'NYSE Listed Manual', 'CCPA', 'MHRA', 'Trakheesi',
   ],
 
   ribbonLabel: '200+ regulatory frameworks reviewed per campaign',

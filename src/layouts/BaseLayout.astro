@@ -125,8 +125,8 @@ const jsonLd = {
         <a href="/privacy-notice/" class="cookie-link">privacy notice</a>.
       </p>
       <div class="cookie-actions">
-        <button type="button" class="cookie-btn cookie-btn--reject" id="cookie-reject">Reject non-essential</button>
-        <button type="button" class="cookie-btn cookie-btn--accept" id="cookie-accept">Accept all</button>
+        <button type="button" class="cookie-btn cookie-btn--reject" id="cookie-reject" onclick="window.__tamaziaCookieDismiss && window.__tamaziaCookieDismiss('denied', event)">Reject non-essential</button>
+        <button type="button" class="cookie-btn cookie-btn--accept" id="cookie-accept" onclick="window.__tamaziaCookieDismiss && window.__tamaziaCookieDismiss('granted', event)">Accept all</button>
       </div>
     </div>
 
@@ -208,8 +208,23 @@ const jsonLd = {
     <script is:inline>
       // Round-12 · cookie strip with explicit Accept / Reject (UK GDPR + EU PECR equal-prominence)
       (() => {
+        const KEY = 'tamazia-cookie-consent';
+
+        // Expose dismiss globally so inline onclick attributes always work,
+        // regardless of when this IIFE runs or whether listeners attached.
+        window.__tamaziaCookieDismiss = function(decision, ev) {
+          if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(_){} }
+          try { localStorage.setItem(KEY, decision); } catch(_){}
+          const strip = document.getElementById('cookie-strip');
+          if (strip) {
+            strip.style.display = 'none';
+            strip.setAttribute('hidden', '');
+            strip.setAttribute('aria-hidden', 'true');
+          }
+          try { window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { decision } })); } catch(_){}
+        };
+
         try {
-          const KEY = 'tamazia-cookie-consent';
           let current = null;
           try { current = localStorage.getItem(KEY); } catch (_) {}
           if (current === 'granted' || current === 'denied') return;
@@ -219,26 +234,6 @@ const jsonLd = {
           strip.hidden = false;
           strip.removeAttribute('hidden');
           strip.style.display = 'flex';
-
-          function dismiss(decision, ev) {
-            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
-            try { localStorage.setItem(KEY, decision); } catch (_) {}
-            strip.style.display = 'none';
-            strip.setAttribute('hidden', '');
-            strip.setAttribute('aria-hidden', 'true');
-            window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { decision } }));
-          }
-
-          const acceptBtn = document.getElementById('cookie-accept');
-          const rejectBtn = document.getElementById('cookie-reject');
-          if (acceptBtn) {
-            acceptBtn.addEventListener('click', (e) => dismiss('granted', e));
-            acceptBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
-          }
-          if (rejectBtn) {
-            rejectBtn.addEventListener('click', (e) => dismiss('denied', e));
-            rejectBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
-          }
         } catch (e) { /* swallow */ }
       })();
 

@@ -1,0 +1,174 @@
+---
+// Phase 0 · /contact/ · standalone landing page rendering the Contact section.
+// Captures bottom-of-funnel intent search ("tamazia contact") into an indexable page
+// distinct from the homepage anchor. Routes to the same form handler at /api/contact.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Contact from '../components/sections/Contact.astro';
+
+const canonicalUrl = 'https://tamazia.co.uk/contact/';
+const pageTitle = 'Contact · Begin a regulatory enquiry · Tamazia';
+const pageDescription = 'Begin a regulatory enquiry with Tamazia. Lawyer-led SEO and compliance content for regulated enterprises. 200+ frameworks reviewed every campaign. Reply within one working day.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ContactPage',
+      '@id': `${canonicalUrl}#contactpage`,
+      url: canonicalUrl,
+      name: pageTitle,
+      description: pageDescription,
+      isPartOf: { '@id': 'https://tamazia.co.uk/#website' },
+      mainEntity: { '@id': 'https://tamazia.co.uk/#organization' },
+      inLanguage: 'en-GB',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tamazia.co.uk/' },
+        { '@type': 'ListItem', position: 2, name: 'Contact', item: canonicalUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <Header />
+
+  <main id="main">
+    <section class="contact-intro">
+      <div class="contact-intro-inner">
+        <p class="eyebrow">CONTACT · TAMAZIA</p>
+        <h1 class="contact-h1">Begin a regulatory enquiry.</h1>
+        <p class="contact-lede">
+          Every engagement begins with a conversation. Tell us the brief and the markets.
+          A reply lands in your inbox within one working day, UK time.
+        </p>
+        <ul class="contact-bullets">
+          <li>Confirmation in 60 seconds.</li>
+          <li>Reply within one working day.</li>
+          <li>Optional 30-minute strategy call.</li>
+        </ul>
+        <p class="contact-foot">
+          Processed under UK GDPR Article 6(1)(f) Legitimate Interest. Opt out at any time.
+        </p>
+      </div>
+    </section>
+
+    <Contact />
+
+    <section class="contact-after">
+      <div class="contact-after-inner">
+        <a href="/case-studies/" class="contact-cta">See verified mandates &rarr;</a>
+        <a href="/about/" class="contact-cta">Read about the founder &rarr;</a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .contact-intro {
+    background: #FAF7F2;
+    padding: 96px 24px 32px;
+    border-bottom: 1px solid #E5DDCB;
+  }
+  .contact-intro-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .eyebrow {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: #5A1A2B;
+    margin-bottom: 18px;
+  }
+  .contact-h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(36px, 6vw, 56px);
+    color: #2A0C14;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+  }
+  .contact-lede {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    line-height: 1.55;
+    color: #4A1625;
+    max-width: 680px;
+    margin: 0 auto 22px;
+  }
+  .contact-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    color: #5C4047;
+    text-align: left;
+  }
+  .contact-bullets li::before {
+    content: '·';
+    color: #C9A772;
+    margin-right: 10px;
+    font-weight: 700;
+  }
+  .contact-foot {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px;
+    color: #5C4047;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+  .contact-after {
+    background: #FAF7F2;
+    padding: 32px 24px 80px;
+    text-align: center;
+  }
+  .contact-after-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: inline-flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .contact-cta {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: #5A1A2B;
+    text-decoration: none;
+    border-bottom: 1px solid #C9A772;
+    padding: 6px 2px;
+    transition: color 220ms ease, border-color 220ms ease;
+  }
+  .contact-cta:hover {
+    color: #2A0C14;
+    border-bottom-color: #5A1A2B;
+  }
+  @media (max-width: 640px) {
+    .contact-intro { padding: 72px 18px 24px; }
+    .contact-after { padding: 24px 18px 56px; }
+  }
+</style>

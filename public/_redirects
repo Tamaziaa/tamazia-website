@@ -1,16 +1,20 @@
 # Redirects evaluated top-to-bottom · most specific first.
-# (B-30 fix · /home is the lowest-priority rule — it would only fire if no other
-#  /home-* route caught the request first. We have no /insights/home-* routes today,
-#  but the comment is here so future authors know not to add a rule that could be
-#  shadowed by /home.)
+#
+# Phase 0 cleanup (2026-05-04):
+#  · Collapsed /resources/ tree into /insights/ (institutional register canonical).
+#  · Folded duplicate sitemap pointer.
+#  · No em-dashes in this file (deploy gate enforces).
 
-# Round-12 · @astrojs/sitemap emits sitemap-index.xml + sitemap-0.xml. Make /sitemap.xml
-# transparently serve the index so search engines + crawlers find it at the canonical path.
+# Sitemap canonical alias · @astrojs/sitemap emits sitemap-index.xml + sitemap-0.xml.
 /sitemap.xml  /sitemap-index.xml  200
 
-# Legacy WordPress URL retired
+# Phase 0 · /resources/ tree consolidates to /insights/ to remove duplicate-content dilution.
+# Path-preserving so /resources/healthcare/ becomes /insights/healthcare/.
+/resources/*  /insights/:splat  301
+
+# Legacy WordPress URL retired.
 /home  /  301
 
-# Legacy aliases — both pages now exist as static routes
+# Legacy aliases · both pages exist as static routes.
 /privacy-policy/   /privacy-notice/  301
 /privacy/          /privacy/         200

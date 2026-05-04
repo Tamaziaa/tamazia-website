@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /csp-report
 
-# Generated sitemap (chunked) and the canonical alias
+# Phase 0 cleanup (2026-05-04) · single canonical sitemap pointer
 Sitemap: https://tamazia.co.uk/sitemap-index.xml
-Sitemap: https://tamazia.co.uk/sitemap.xml

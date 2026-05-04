@@ -1,99 +1,177 @@
 #!/usr/bin/env node
 /**
- * patch-dist.js  —  Tamazia dist/ post-build patcher
- * ─────────────────────────────────────────────────────────────────
- * Runs AFTER `npm run build` and BEFORE Wrangler deploy.
- * Reads tgcs-master.css and injects it as the inline <style id="_tgcs">
- * block in dist/index.html, replacing whatever Astro generated.
+ * patch-dist.js · Tamazia dist/ post-build patcher + brand-register deploy gate.
  *
- * Usage (called automatically by deploy script):
- *   node patch-dist.js
+ * Phase 0 (2026-05-04) rewrite:
+ *  · Inject _tgcs CSS block (unchanged).
+ *  · Run 14 verification checks across ALL dist/HTML files (was: index.html only).
+ *  · Each check exits non-zero on first failure, naming the file.
  *
- * To add new persistent CSS patches, edit tgcs-master.css only.
- * Never edit dist/ directly — this script overwrites it on every deploy.
+ * To add new persistent CSS patches, edit tgcs-master.css.
+ * Never edit dist/ directly · this script overwrites it on every deploy.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { join, dirname, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname  = dirname(fileURLToPath(import.meta.url));
 const ROOT       = __dirname;
 const MASTER_CSS = join(ROOT, 'tgcs-master.css');
-const INDEX_HTML = join(ROOT, 'dist', 'index.html');
+const DIST_DIR   = join(ROOT, 'dist');
+const INDEX_HTML = join(DIST_DIR, 'index.html');
 
-// ── Verify files exist ──────────────────────────────────────────────
 if (!existsSync(MASTER_CSS)) {
   console.error('[patch-dist] ERROR: tgcs-master.css not found at', MASTER_CSS);
   process.exit(1);
 }
 if (!existsSync(INDEX_HTML)) {
-  console.error('[patch-dist] ERROR: dist/index.html not found — run `npm run build` first.');
+  console.error('[patch-dist] ERROR: dist/index.html not found · run `npm run build` first.');
   process.exit(1);
 }
 
-// ── Read and minify master CSS ──────────────────────────────────────
 const rawCSS = readFileSync(MASTER_CSS, 'utf8');
-
-// Strip comments, collapse whitespace to single line
 const minified = rawCSS
-  .replace(/\/\*[\s\S]*?\*\//g, '')        // remove block comments
-  .replace(/\s*\n\s*/g, '')                // collapse newlines
-  .replace(/\s{2,}/g, ' ')                 // collapse spaces
-  .replace(/\s*([{}:;,>~+])\s*/g, '$1')   // tighten around syntax chars
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/\s*\n\s*/g, '')
+  .replace(/\s{2,}/g, ' ')
+  .replace(/\s*([{}:;,>~+])\s*/g, '$1')
   .trim();
 
-// ── Read dist/index.html ────────────────────────────────────────────
 let html = readFileSync(INDEX_HTML, 'utf8');
-
-// ── Strategy A: replace existing _tgcs block ────────────────────────
 const TGCS_RE = /(<style[^>]*id="_tgcs"[^>]*>)[^<]*(<\/style>)/;
 
 if (TGCS_RE.test(html)) {
   html = html.replace(TGCS_RE, `$1${minified}$2`);
-  console.log('[patch-dist] ✓ Replaced existing _tgcs block');
+  console.log('[patch-dist] OK  Replaced existing _tgcs block in dist/index.html');
 } else {
-  // ── Strategy B: inject before </head> ──────────────────────────────
   const INJECT = `<style id="_tgcs">${minified}</style>`;
   if (html.includes('</head>')) {
     html = html.replace('</head>', `${INJECT}\n</head>`);
-    console.log('[patch-dist] ✓ Injected new _tgcs block before </head>');
+    console.log('[patch-dist] OK  Injected _tgcs block before </head>');
   } else {
-    console.error('[patch-dist] ERROR: Could not find _tgcs block or </head> — index.html structure unexpected.');
+    console.error('[patch-dist] ERROR: Could not find _tgcs block or </head> · structure unexpected.');
     process.exit(1);
   }
 }
-
-// ── Write back ──────────────────────────────────────────────────────
 writeFileSync(INDEX_HTML, html, 'utf8');
 
-// ── Verification ────────────────────────────────────────────────────
-const verify = readFileSync(INDEX_HTML, 'utf8');
-const checks = [
-  ['_tgcs block present',   verify.includes('id="_tgcs"')],
-  ['upsell-framing gold',   verify.includes('#upsell-framing{color:#C9A772')],
-  ['ribbon keyframe',       verify.includes('@keyframes ribbon-vertical')],
-  ['errors-table hidden',   verify.includes('.errors-table{display:none')],
-  ['gauge-card present',    verify.includes('.gauge-card{')],
-  // Strip em dashes that are: (a) lone JS placeholders >—<, (b) inside HTML comments.
-  // These are valid — runtime UI placeholders and dev comments are not copy violations.
-  ['no em dashes (dist)',   (() => {
-    const stripped = verify
-      .replace(/>—</g, '><')              // lone JS placeholder values
-      .replace(/<!--[\s\S]*?-->/g, '');   // HTML comments
-    return !stripped.includes('\u2014') && !stripped.includes('—');
-  })()],
-];
+function walkHtml(dir) {
+  const out = [];
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry);
+    const s = statSync(p);
+    if (s.isDirectory()) out.push(...walkHtml(p));
+    else if (s.isFile() && p.endsWith('.html')) out.push(p);
+  }
+  return out;
+}
+const allHtml = walkHtml(DIST_DIR);
+console.log(`[patch-dist] Scanning ${allHtml.length} HTML files in dist/`);
 
-let allOk = true;
-for (const [label, ok] of checks) {
-  console.log(`[patch-dist]   ${ok ? '✓' : '✗'} ${label}`);
-  if (!ok) allOk = false;
+function stripSafeZones(s) {
+  return s
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/>\s*—\s*</g, '><');
 }
 
-if (!allOk) {
-  console.error('[patch-dist] PATCH VERIFICATION FAILED — check tgcs-master.css');
+function checkAcross(label, predicate) {
+  for (const file of allHtml) {
+    const content = readFileSync(file, 'utf8');
+    const result = predicate(content);
+    if (result !== true) {
+      const rel = relative(ROOT, file);
+      console.log(`[patch-dist]   FAIL ${label} · ${rel} · ${result}`);
+      return { ok: false, file: rel, detail: result };
+    }
+  }
+  console.log(`[patch-dist]   PASS ${label}`);
+  return { ok: true };
+}
+
+function checkIndex(label, predicate) {
+  const content = readFileSync(INDEX_HTML, 'utf8');
+  const result = predicate(content);
+  if (result !== true) {
+    console.log(`[patch-dist]   FAIL ${label} · ${result}`);
+    return { ok: false, detail: result };
+  }
+  console.log(`[patch-dist]   PASS ${label}`);
+  return { ok: true };
+}
+
+const results = [];
+
+results.push(checkIndex('1. _tgcs block present', c => c.includes('id="_tgcs"') || 'missing _tgcs marker'));
+results.push(checkIndex('2. upsell-framing gold', c => c.includes('#upsell-framing{color:#C9A772') || 'upsell colour token missing'));
+results.push(checkIndex('3. ribbon keyframe', c => c.includes('@keyframes ribbon-vertical') || 'ribbon keyframe missing'));
+results.push(checkIndex('4. errors-table hidden', c => c.includes('.errors-table{display:none') || 'errors-table not hidden'));
+results.push(checkIndex('5. gauge-card present', c => c.includes('.gauge-card{') || 'gauge-card CSS missing'));
+
+results.push(checkAcross('6. no em-dashes (any HTML)', c => {
+  const stripped = stripSafeZones(c);
+  return !stripped.includes('—') || 'em-dash found';
+}));
+
+results.push(checkAcross('7. no Subscribe (any HTML)', c => {
+  const stripped = stripSafeZones(c);
+  return !/\bSubscribe\b/i.test(stripped) || 'Subscribe found';
+}));
+
+results.push(checkAcross('8. no pages.dev (any HTML)', c => {
+  const stripped = stripSafeZones(c);
+  return !stripped.includes('pages.dev') || 'pages.dev found';
+}));
+
+results.push(checkIndex('9. 200+ count >= 4 (index.html)', c => {
+  const matches = c.match(/200\+/g) || [];
+  return matches.length >= 4 || `count was ${matches.length}, expected >= 4`;
+}));
+
+const aboutHtml = join(DIST_DIR, 'about', 'index.html');
+if (existsSync(aboutHtml)) {
+  const c = readFileSync(aboutHtml, 'utf8');
+  if (c.includes('Aman Pareek')) {
+    console.log('[patch-dist]   PASS 10. Aman Pareek capitalised (about)');
+    results.push({ ok: true });
+  } else {
+    console.log('[patch-dist]   FAIL 10. Aman Pareek capitalised (about) · not found');
+    results.push({ ok: false });
+  }
+} else {
+  console.log('[patch-dist]   SKIP 10. Aman Pareek check · /about/index.html missing');
+  results.push({ ok: true });
+}
+
+results.push(checkAcross('11. no Indian regulators', c => {
+  const stripped = stripSafeZones(c);
+  const banned = [/\bIBC\s*2016\b/, /\bTRAI\b/, /\bSEBI\b/, /\bRBI\b/, /\bDPDP\b/, /\bMeitY\b/, /\bIRDAI\b/];
+  for (const re of banned) {
+    if (re.test(stripped)) return `matched ${re}`;
+  }
+  return true;
+}));
+
+results.push(checkAcross('12. British English · no inquiry', c => {
+  const stripped = stripSafeZones(c);
+  return !/\binquiry\b/i.test(stripped) || 'inquiry found · use enquiry';
+}));
+
+results.push(checkAcross('13. ticker · no NYSE: CGON', c => {
+  const stripped = stripSafeZones(c);
+  return !/NYSE:\s*CGON/.test(stripped) || 'NYSE: CGON found · should be Nasdaq: CGON';
+}));
+
+results.push(checkAcross('14. case studies label · no Selected mandates', c => {
+  const stripped = stripSafeZones(c);
+  return !/Selected mandates/i.test(stripped) || 'Selected mandates found · should be Verified mandates';
+}));
+
+const failed = results.filter(r => !r.ok);
+if (failed.length > 0) {
+  console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);
   process.exit(1);
 }
-
-console.log('[patch-dist] ✓ All checks passed. dist/index.html is patched and ready.');
+console.log(`[patch-dist] OK  All ${results.length} checks passed. dist/ is patched and ready.`);

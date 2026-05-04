@@ -72,8 +72,8 @@ const jsonLd = {
     <meta property="og:locale" content="en_GB" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://tamazia.co.uk" />
-    <meta property="og:image" content="https://tamazia.co.uk/og-default.png" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage.startsWith("http") ? ogImage : `https://tamazia.co.uk${ogImage}`} />
     <meta property="og:site_name" content="Tamazia" />
 
     <!-- Twitter -->
@@ -81,7 +81,7 @@ const jsonLd = {
     <meta name="twitter:site" content="@tamazia_co" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://tamazia.co.uk/og-default.png" />
+    <meta name="twitter:image" content={ogImage.startsWith("http") ? ogImage : `https://tamazia.co.uk${ogImage}`} />
 
     {/* Round-13 · fonts are now self-hosted from /public/fonts (latin + latin-ext WOFF2 subsets,
         loaded via @font-face declarations in src/styles/fonts.css). No cross-origin Google Fonts

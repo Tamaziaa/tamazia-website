@@ -1,0 +1,20 @@
+# Tamazia codebase ownership
+# Aman owns everything for now since the team is small.
+
+* @amanpareek
+
+# Phase E branding · CLO has explicit approval rights on legal copy
+/src/pages/privacy.astro                 @amanpareek
+/src/pages/privacy-notice.astro          @amanpareek
+/src/pages/terms.astro                   @amanpareek
+/src/pages/cookie-policy.astro           @amanpareek
+/src/pages/security-policy.astro         @amanpareek
+/src/pages/security-acknowledgments.astro @amanpareek
+/src/pages/modern-slavery-statement.astro @amanpareek
+/src/pages/complaints.astro              @amanpareek
+/src/pages/acceptable-use.astro          @amanpareek
+
+# Deploy pipeline · Aman approves all changes
+/.github/workflows/                      @amanpareek
+/patch-dist.js                           @amanpareek
+/wrangler.toml                           @amanpareek

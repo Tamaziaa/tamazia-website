@@ -39,7 +39,7 @@ code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/api/health")
 check "5. /api/health 200" "$code" "200"
 
 # 6. CSP report endpoint accepts POST
-code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/csp-report' -d '{"csp-report":{}}' "$BASE/csp-report")
+code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/csp-report' -d '{"csp-report":{}}' "$BASE/api/csp-report")
 check "6. /csp-report 200" "$code" "200"
 
 # 7. /.well-known/security.txt resolves

@@ -209,24 +209,37 @@ const jsonLd = {
       // Round-12 · cookie strip with explicit Accept / Reject (UK GDPR + EU PECR equal-prominence)
       (() => {
         try {
-          const KEY = 'tamazia-cookie-consent'; // values: 'granted' | 'denied' | null
-          const current = localStorage.getItem(KEY);
+          const KEY = 'tamazia-cookie-consent';
+          let current = null;
+          try { current = localStorage.getItem(KEY); } catch (_) {}
           if (current === 'granted' || current === 'denied') return;
 
           const strip = document.getElementById('cookie-strip');
           if (!strip) return;
           strip.hidden = false;
+          strip.removeAttribute('hidden');
+          strip.style.display = 'flex';
 
-          function dismiss(decision) {
-            try { localStorage.setItem(KEY, decision); } catch {}
+          function dismiss(decision, ev) {
+            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+            try { localStorage.setItem(KEY, decision); } catch (_) {}
             strip.style.display = 'none';
-            // Broadcast for any future analytics shim that needs to know
+            strip.setAttribute('hidden', '');
+            strip.setAttribute('aria-hidden', 'true');
             window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { decision } }));
           }
 
-          document.getElementById('cookie-accept')?.addEventListener('click', () => dismiss('granted'));
-          document.getElementById('cookie-reject')?.addEventListener('click', () => dismiss('denied'));
-        } catch {}
+          const acceptBtn = document.getElementById('cookie-accept');
+          const rejectBtn = document.getElementById('cookie-reject');
+          if (acceptBtn) {
+            acceptBtn.addEventListener('click', (e) => dismiss('granted', e));
+            acceptBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+          }
+          if (rejectBtn) {
+            rejectBtn.addEventListener('click', (e) => dismiss('denied', e));
+            rejectBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+          }
+        } catch (e) { /* swallow */ }
       })();
 
       /* Round-10 global safety net · reveal every scroll-triggered element after 4s

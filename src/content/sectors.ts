@@ -28,7 +28,7 @@ export const sectorsContent = {
       body: 'Solicitors. Barristers. Chambers. Law firms. Personal injury practices. Criminal defence. Family law. Corporate and M&A. Immigration. Employment. Estate planning. We rank every area of legal practice while staying within SRA advertising rules, Bar Association guidelines across all 50 US states, DIFC regulations, EU AI Act, your country-specific laws and GDPR. Practice area pages, legal directory listings, partner biographies, and crisis reputation management.',
       // Per-card pull-quote · the 6th unique element
       pullQuote: '2 million legal professionals. None can afford a compliance breach.',
-      cta: 'Legal audit enquiry →',
+      cta: 'Legal audit enquiry',
       tooltip: [
         'SRA Code of Conduct Rules 8.7 & 8.9',
         'SRA Transparency Rules 2018',
@@ -49,7 +49,7 @@ export const sectorsContent = {
       regulatoryShorthand: 'E-E-A-T. HIPAA. MHRA. ASA. CQC. GMC. ADA. Medical content under the hardest scrutiny.',
       body: 'Private GPs. Dermatologists. Dental practices. Cosmetic clinics. Mental health providers. Plastic surgeons. Medical tourism. Google scrutinises medical content harder than any other sector. We build E-E-A-T-compliant authority, HIPAA-safe contact forms, MHRA-cleared health claims, ADA- and AMA-guideline adherence, patient-journey content, and before-and-after gallery optimisation.',
       pullQuote: 'More private patients from search. No regulatory exposure in any direction.',
-      cta: 'Healthcare audit enquiry →',
+      cta: 'Healthcare audit enquiry',
       tooltip: [
         'HIPAA Privacy Rule 45 CFR 164.508 and 164.502',
         'MHRA Human Medicines Regs 2012',
@@ -70,7 +70,7 @@ export const sectorsContent = {
       regulatoryShorthand: 'OTA dependency eliminated. Direct bookings built. Revenue followed.',
       body: 'Boutique hotels. Luxury resorts. Hotel groups. Heritage properties. Independent properties are losing 15 to 25% of every booking to Booking.com and Expedia. We build direct booking visibility through Google Maps dominance, 50 to 100 location-specific landing pages, international traffic targeting, and AI search indexing so guests book direct.',
       pullQuote: '£50,000 to £80,000 saved annually on a 100-room property at 70% occupancy.',
-      cta: 'Hospitality audit enquiry →',
+      cta: 'Hospitality audit enquiry',
       tooltip: [
         'Schema.org Hotel structured data',
         'Google Business Profile policy',
@@ -90,7 +90,7 @@ export const sectorsContent = {
       regulatoryShorthand: 'SEC Reg FD. FCA Listing Rules. RERA. Trakheesi. Nasdaq IPO. SEC disclosure on every word.',
       body: 'Property developers. Luxury estate agents. Wealth managers. Fintech startups. Accountants. Investment firms and companies preparing for public markets. We managed digital coverage for exchange-listed IPOs, resulting in shares nearly doubling, and SEC disclosure rules applied to every word published. Virtual tour SEO, international buyer targeting, FCA financial promotion compliance, and pre-IPO digital presence built to institutional standards.',
       pullQuote: 'High transaction values demand high content standards.',
-      cta: 'Real estate audit enquiry →',
+      cta: 'Real estate audit enquiry',
       tooltip: [
         'SEC Regulation FD',
         'FCA COBS 4 financial promotion',
@@ -111,7 +111,7 @@ export const sectorsContent = {
       regulatoryShorthand: '30,000 to 40,000 map citations. Google Maps dominance. Deliveroo dependency cut.',
       body: 'Restaurants. Pubs. Bars. Cafes. Fine dining. Nightclubs. Dark kitchens. We dominate Google Maps through 30,000 to 40,000 map citations per property, menu schema markup for rich snippets, Reserve a Table integration, review generation with incentive systems, food directory listings across 25+ platforms, and event calendar SEO.',
       pullQuote: 'Reduce Deliveroo and Uber Eats dependency the same way we reduce OTA dependency for hotels.',
-      cta: 'F&B audit enquiry →',
+      cta: 'F&B audit enquiry',
       tooltip: [
         'Schema.org Restaurant markup',
         'Google Maps citation architecture',
@@ -131,7 +131,7 @@ export const sectorsContent = {
       regulatoryShorthand: 'Schools. E-commerce. Automotive. Gyms. Executives. If it needs to rank, we build it.',
       body: 'Private schools. Universities. E-commerce brands. Luxury retailers. Car dealerships. Gyms. Spas. Wellness studios. Personal trainers. Executives and founders who need to control what Google says about them. Automotive groups. Fashion brands. If your business needs search visibility, we build it. If your industry has a rulebook, we have read it. If it does not, we make you rank faster than anyone else.',
       pullQuote: 'If your industry has a regulator, we have already studied their guidelines.',
-      cta: 'Brand audit enquiry →',
+      cta: 'Brand audit enquiry',
       tooltip: [
         'ASA CAP Code (UK)',
         'FTC Act Section 5 (US)',

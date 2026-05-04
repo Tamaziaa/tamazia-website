@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Generated sitemap (chunked) and the canonical alias
+Sitemap: https://tamazia.co.uk/sitemap-index.xml
+Sitemap: https://tamazia.co.uk/sitemap.xml

@@ -51,7 +51,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
     gap: 28px;
     width: max-content;
     /* Rightward scroll · items move toward the right edge of the page */
-    animation: laws-scroll-right 120s linear infinite;
+    animation: laws-scroll-right 240s linear infinite;
     font-family: var(--ff-display);
     font-size: 14px;
     letter-spacing: 0.14em;
@@ -91,7 +91,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .laws-strip:hover .laws-track { animation-play-state: paused; }
   /* Reduced motion · slower scroll */
   @media (prefers-reduced-motion: reduce) {
-    .laws-track { animation-duration: 280s; }
+    .laws-track { animation-duration: 360s; }
   }
   @media (max-width: 720px) {
     .laws-track { font-size: 12px; gap: 20px; }

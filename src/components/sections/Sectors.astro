@@ -4,75 +4,87 @@ import { parseEmph } from '../../content/hero';
 
 const { eyebrow, h2, subline, sectors, closingLine } = sectorsContent;
 
-// SVG icon map for each sector. Each icon contains an inner class that drives
-// per-sector hover animations. Stroke 1.5 base, 1.6-2.4 for emphasis lines.
+// SVG icon map for each sector. Inner classes drive per-sector hover animations.
 const iconPaths: Record<string, string> = {
-  // Legal · refined gavel with sound block + impact lines on strike
+  // Legal · Scales of Justice with balance-teeter
   gavel: `<g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <g class="gavel-body">
-      <ellipse cx="62" cy="30" rx="14" ry="6.5" transform="rotate(-30 62 30)" stroke-width="1.6"/>
-      <line x1="50" y1="40" x2="76" y2="20" stroke-width="2.4"/>
-      <line x1="48" y1="42" x2="22" y2="68" stroke-width="2.4"/>
-      <circle cx="22" cy="68" r="2.5" fill="currentColor"/>
+    <circle cx="50" cy="13" r="2" fill="currentColor"/>
+    <line x1="50" y1="15" x2="50" y2="78" stroke-width="2"/>
+    <g class="scales-beam">
+      <line x1="20" y1="30" x2="80" y2="30" stroke-width="1.8"/>
+      <line x1="22" y1="30" x2="22" y2="48"/>
+      <line x1="78" y1="30" x2="78" y2="48"/>
+      <ellipse cx="22" cy="50" rx="10" ry="2.4" fill="rgba(0,0,0,0)"/>
+      <path d="M 12 50 Q 22 58 32 50"/>
+      <ellipse cx="78" cy="50" rx="10" ry="2.4" fill="rgba(0,0,0,0)"/>
+      <path d="M 68 50 Q 78 58 88 50"/>
     </g>
-    <rect x="30" y="78" width="40" height="6" rx="1.5"/>
-    <ellipse cx="50" cy="86" rx="26" ry="3.5"/>
-    <g class="impact-lines" opacity="0">
-      <line x1="50" y1="74" x2="50" y2="68"/>
-      <line x1="58" y1="75" x2="62" y2="70"/>
-      <line x1="42" y1="75" x2="38" y2="70"/>
-      <line x1="64" y1="78" x2="69" y2="76"/>
-      <line x1="36" y1="78" x2="31" y2="76"/>
-    </g>
+    <path d="M 38 78 L 50 68 L 62 78 Z"/>
+    <line x1="32" y1="82" x2="68" y2="82" stroke-width="1.8"/>
   </g>`,
-  // Healthcare · DNA double helix · rotateY for 3D-illusion spin
-  caduceus: `<g class="dna-helix" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 30 15 Q 70 27, 30 39 Q 70 51, 30 63 Q 70 75, 30 87"/>
-    <path d="M 70 15 Q 30 27, 70 39 Q 30 51, 70 63 Q 30 75, 70 87"/>
-    <line x1="38" y1="20" x2="62" y2="20" stroke-width="1"/>
-    <line x1="38" y1="33" x2="62" y2="33" stroke-width="1"/>
-    <line x1="38" y1="46" x2="62" y2="46" stroke-width="1"/>
-    <line x1="38" y1="58" x2="62" y2="58" stroke-width="1"/>
-    <line x1="38" y1="69" x2="62" y2="69" stroke-width="1"/>
-    <line x1="38" y1="82" x2="62" y2="82" stroke-width="1"/>
-  </g>`,
-  // Hospitality · concierge key in keyhole · 90° turn animation
-  bell: `<g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="50" cy="50" r="38" stroke-width="1" stroke-dasharray="2,4" opacity="0.5"/>
-    <g class="key-body">
-      <circle cx="50" cy="25" r="10"/>
-      <circle cx="50" cy="25" r="5"/>
-      <line x1="50" y1="35" x2="50" y2="74" stroke-width="2.4"/>
-      <line x1="50" y1="56" x2="58" y2="56" stroke-width="1.8"/>
-      <line x1="50" y1="62" x2="56" y2="62" stroke-width="1.8"/>
-      <line x1="50" y1="68" x2="60" y2="68" stroke-width="1.8"/>
+  // Healthcare · Stethoscope with ECG pulse trace
+  caduceus: `<g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="26" cy="14" r="2.5" fill="currentColor"/>
+    <circle cx="74" cy="14" r="2.5" fill="currentColor"/>
+    <path d="M 26 16 Q 26 38 38 50 Q 48 60 50 65"/>
+    <path d="M 74 16 Q 74 38 62 50 Q 52 60 50 65"/>
+    <circle cx="50" cy="78" r="13" stroke-width="1.6"/>
+    <circle cx="50" cy="78" r="9" stroke-width="0.9" opacity="0.6"/>
+    <g class="ecg-line">
+      <path d="M 39 78 L 44 78 L 46 72 L 48 84 L 50 70 L 52 84 L 54 78 L 61 78" stroke-width="1.4"/>
     </g>
   </g>`,
-  // Real estate / IPO · brass bell with three orbital rings
-  'opening-bell': `<g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <ellipse class="ring-outer"  cx="50" cy="50" rx="46" ry="14" stroke-width="0.8" opacity="0.4"/>
-    <ellipse class="ring-middle" cx="50" cy="50" rx="42" ry="11" stroke-width="0.8" opacity="0.5"  transform="rotate(60 50 50)"/>
-    <ellipse class="ring-inner"  cx="50" cy="50" rx="38" ry="8"  stroke-width="0.8" opacity="0.6"  transform="rotate(-60 50 50)"/>
-    <g class="bell-body">
-      <line x1="50" y1="18" x2="50" y2="26" stroke-width="1.8"/>
-      <circle cx="50" cy="16" r="3" fill="currentColor"/>
-      <path d="M 32 56 Q 32 30, 50 26 Q 68 30, 68 56 L 72 66 L 28 66 Z" stroke-width="1.8"/>
-      <line x1="26" y1="66" x2="74" y2="66" stroke-width="1.8"/>
-      <circle cx="50" cy="58" r="2.5" fill="currentColor"/>
+  // Hospitality · Champagne flute with rising bubbles (luxury)
+  bell: `<g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 39 14 L 39 24 Q 39 50 50 56 Q 61 50 61 24 L 61 14 Z"/>
+    <ellipse cx="50" cy="14" rx="11" ry="1.8" stroke-width="1.2"/>
+    <line x1="41" y1="38" x2="59" y2="38" stroke-width="0.8" opacity="0.55"/>
+    <line x1="50" y1="56" x2="50" y2="82" stroke-width="1.5"/>
+    <ellipse cx="50" cy="84" rx="13" ry="2.4" stroke-width="1.4"/>
+    <g class="bubbles">
+      <circle class="bubble b1" cx="46" cy="50" r="1.2" fill="currentColor"/>
+      <circle class="bubble b2" cx="50" cy="48" r="1.4" fill="currentColor"/>
+      <circle class="bubble b3" cx="54" cy="52" r="1.0" fill="currentColor"/>
+      <circle class="bubble b4" cx="48" cy="54" r="1.3" fill="currentColor"/>
+      <circle class="bubble b5" cx="52" cy="46" r="0.9" fill="currentColor"/>
     </g>
   </g>`,
-  // F&B · decanter with continuous swirl arc
+  // Real Estate / IPO · Skyline with sequential window-light animation
+  'opening-bell': `<g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="10" y1="86" x2="90" y2="86" stroke-width="1.2"/>
+    <rect x="12" y="50" width="14" height="36" stroke-width="1.4"/>
+    <rect x="28" y="38" width="14" height="48" stroke-width="1.4"/>
+    <rect x="44" y="26" width="14" height="60" stroke-width="1.5"/>
+    <line x1="51" y1="26" x2="51" y2="17" stroke-width="0.9"/>
+    <circle cx="51" cy="15" r="1.4" fill="currentColor"/>
+    <rect x="60" y="44" width="14" height="42" stroke-width="1.4"/>
+    <rect x="76" y="56" width="12" height="30" stroke-width="1.4"/>
+    <g class="windows">
+      <rect class="window w1" x="15.5" y="55" width="3" height="3"/>
+      <rect class="window w2" x="20" y="63" width="3" height="3"/>
+      <rect class="window w3" x="31" y="44" width="3" height="3"/>
+      <rect class="window w4" x="36" y="54" width="3" height="3"/>
+      <rect class="window w5" x="47" y="34" width="3" height="3"/>
+      <rect class="window w6" x="52" y="44" width="3" height="3"/>
+      <rect class="window w7" x="47" y="56" width="3" height="3"/>
+      <rect class="window w8" x="63" y="50" width="3" height="3"/>
+      <rect class="window w9" x="68" y="62" width="3" height="3"/>
+      <rect class="window w10" x="79" y="62" width="3" height="3"/>
+    </g>
+  </g>`,
+  // F&B · Cocktail glass with olive-on-toothpick swirl
   cloche: `<g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <ellipse cx="50" cy="20" rx="11" ry="3"/>
-    <line x1="42" y1="22" x2="42" y2="36"/>
-    <line x1="58" y1="22" x2="58" y2="36"/>
-    <path d="M 42 36 Q 26 44, 24 62 Q 24 84, 50 86 Q 76 84, 76 62 Q 74 44, 58 36"/>
-    <g class="swirl">
-      <path d="M 32 65 A 18 18 0 1 1 67 65" stroke-width="1.4"/>
-      <circle cx="32" cy="65" r="1.6" fill="currentColor"/>
+    <ellipse cx="50" cy="22" rx="22" ry="3" stroke-width="1.4"/>
+    <path d="M 28 22 L 50 56 L 72 22"/>
+    <line x1="36" y1="32" x2="64" y2="32" stroke-width="0.8" opacity="0.55"/>
+    <line x1="50" y1="56" x2="50" y2="82" stroke-width="1.5"/>
+    <ellipse cx="50" cy="84" rx="12" ry="2.4" stroke-width="1.4"/>
+    <g class="olive-stir">
+      <line x1="48" y1="20" x2="56" y2="38" stroke-width="0.9"/>
+      <circle cx="56" cy="40" r="3" fill="currentColor"/>
     </g>
   </g>`,
-  // Every sector · compass · kept from prior build
+  // Every Sector · compass with full-rotation animation
   compass: `<g class="compass-body" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="50" cy="50" r="32"/>
     <circle cx="50" cy="50" r="26"/>
@@ -122,7 +134,7 @@ const iconPaths: Record<string, string> = {
             <div class="card-shorthand">{sector.regulatoryShorthand}</div>
             <p class="card-body">{sector.body}</p>
             {sector.pullQuote && <blockquote class="card-pullquote">{sector.pullQuote}</blockquote>}
-            <a href="#contact" class="card-cta">{sector.cta}</a>
+            <a href="#contact" class="card-cta">{sector.cta} <span class="cta-arrow">↗</span></a>
 
             <!-- Tooltip regulation detail (appears on hover) -->
             <div class="card-tooltip" aria-hidden="true">
@@ -314,13 +326,14 @@ const iconPaths: Record<string, string> = {
 
   .card-3d {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    width: 120px;
-    height: 120px;
+    top: 8px;
+    right: 8px;
+    width: 88px;
+    height: 88px;
     color: var(--gold);
-    opacity: 0.85;
+    opacity: 0.92;
     transition: transform 600ms var(--ease-out), opacity 600ms var(--ease-out);
+    pointer-events: none;
   }
 
   .card-3d svg {
@@ -335,83 +348,93 @@ const iconPaths: Record<string, string> = {
 
   /* Per-sector hover animations · drives inner SVG class targets */
 
-  /* Legal · gavel strike with impact-line flash */
-  .sector-card[data-sector="legal"] .card-3d svg .gavel-body { transform-origin: 22px 68px; }
-  .sector-card[data-sector="legal"]:hover .card-3d svg .gavel-body {
-    animation: gavel-strike 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  /* LEGAL · scales of justice teeter */
+  .sector-card[data-sector="legal"] .card-3d svg .scales-beam { transform-origin: 50px 30px; transform-box: fill-box; }
+  .sector-card[data-sector="legal"]:hover .card-3d svg .scales-beam {
+    animation: scales-teeter 3.4s ease-in-out infinite;
   }
-  .sector-card[data-sector="legal"]:hover .card-3d svg .impact-lines {
-    animation: impact-flash 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-  @keyframes gavel-strike {
-    0%, 100% { transform: rotate(-26deg); }
-    30%      { transform: rotate(2deg); }
-    40%      { transform: rotate(-4deg); }
-    60%      { transform: rotate(-12deg); }
-    80%      { transform: rotate(-26deg); }
-  }
-  @keyframes impact-flash {
-    0%, 28% { opacity: 0; }
-    32%     { opacity: 1; }
-    50%     { opacity: 0; }
-    100%    { opacity: 0; }
-  }
-
-  /* Healthcare · DNA double-helix rotateY spin */
-  .sector-card[data-sector="healthcare"] .card-3d svg .dna-helix { transform-origin: 50px 50px; transform-style: preserve-3d; }
-  .sector-card[data-sector="healthcare"]:hover .card-3d svg .dna-helix {
-    animation: dna-spin 2.4s linear infinite;
-  }
-  @keyframes dna-spin {
-    0%   { transform: rotateY(0deg); }
-    100% { transform: rotateY(360deg); }
-  }
-
-  /* Hospitality · concierge key 90° turn */
-  .sector-card[data-sector="hospitality"] .card-3d svg .key-body { transform-origin: 50px 50px; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .key-body {
-    animation: key-turn 1.8s ease-in-out infinite;
-  }
-  @keyframes key-turn {
+  @keyframes scales-teeter {
     0%, 100% { transform: rotate(0deg); }
-    40%      { transform: rotate(90deg); }
-    60%      { transform: rotate(90deg); }
+    25%      { transform: rotate(-8deg); }
+    75%      { transform: rotate(8deg); }
   }
 
-  /* Real estate · orbital rings + bell pulse */
-  .sector-card[data-sector="real-estate"] .card-3d svg .ring-outer,
-  .sector-card[data-sector="real-estate"] .card-3d svg .ring-middle,
-  .sector-card[data-sector="real-estate"] .card-3d svg .ring-inner,
-  .sector-card[data-sector="real-estate"] .card-3d svg .bell-body { transform-origin: 50px 50px; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .ring-outer  { animation: ring-spin-cw  4s linear infinite; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .ring-middle { animation: ring-spin-ccw 3s linear infinite; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .ring-inner  { animation: ring-spin-cw  2s linear infinite; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .bell-body   { animation: bell-pulse    2s ease-in-out infinite; }
-  @keyframes ring-spin-cw  { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes ring-spin-ccw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-  @keyframes bell-pulse    { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-
-  /* F&B · decanter swirl */
-  .sector-card[data-sector="fb"] .card-3d svg .swirl { transform-origin: 50px 65px; }
-  .sector-card[data-sector="fb"]:hover .card-3d svg .swirl {
-    animation: decanter-swirl 2.2s linear infinite;
+  /* HEALTHCARE · stethoscope ECG pulse trace */
+  .sector-card[data-sector="healthcare"] .card-3d svg .ecg-line path {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
   }
-  @keyframes decanter-swirl {
+  .sector-card[data-sector="healthcare"]:hover .card-3d svg .ecg-line path {
+    animation: ecg-trace 1.8s ease-in-out infinite;
+  }
+  @keyframes ecg-trace {
+    0%   { stroke-dashoffset: 60; }
+    55%  { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -60; }
+  }
+
+  /* HOSPITALITY · champagne bubbles rising */
+  .sector-card[data-sector="hospitality"] .card-3d svg .bubble { opacity: 0; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .bubble {
+    animation: bubble-rise 2.6s ease-out infinite;
+  }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b1 { animation-delay: 0s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b2 { animation-delay: 0.5s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b3 { animation-delay: 1.0s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b4 { animation-delay: 1.5s; }
+  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b5 { animation-delay: 2.0s; }
+  @keyframes bubble-rise {
+    0%   { opacity: 0; transform: translateY(0); }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-22px); }
+  }
+
+  /* REAL ESTATE / IPO · skyline windows lighting up sequentially */
+  .sector-card[data-sector="real-estate"] .card-3d svg .window {
+    fill: transparent;
+    opacity: 0.45;
+    transition: fill 200ms ease, opacity 200ms ease;
+  }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .window {
+    animation: window-light 4.5s ease-in-out infinite;
+  }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w1  { animation-delay: 0s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w2  { animation-delay: 0.3s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w3  { animation-delay: 0.6s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w4  { animation-delay: 0.9s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w5  { animation-delay: 1.2s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w6  { animation-delay: 1.5s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w7  { animation-delay: 1.8s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w8  { animation-delay: 2.1s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w9  { animation-delay: 2.4s; }
+  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w10 { animation-delay: 2.7s; }
+  @keyframes window-light {
+    0%, 70%, 100% { fill: transparent; opacity: 0.45; }
+    15%, 55%      { fill: currentColor; opacity: 1; }
+  }
+
+  /* F&B · cocktail olive swirling around glass */
+  .sector-card[data-sector="fb"] .card-3d svg .olive-stir { transform-origin: 50px 26px; transform-box: fill-box; }
+  .sector-card[data-sector="fb"]:hover .card-3d svg .olive-stir {
+    animation: olive-swirl 3.4s linear infinite;
+  }
+  @keyframes olive-swirl {
     0%   { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
 
-  /* Every sector · compass full rotation */
-  .sector-card[data-sector="every-sector"] .card-3d svg .compass-body { transform-origin: 50px 50px; }
+  /* EVERY SECTOR · compass full rotation */
+  .sector-card[data-sector="every-sector"] .card-3d svg .compass-body { transform-origin: 50px 50px; transform-box: fill-box; }
   .sector-card[data-sector="every-sector"]:hover .card-3d svg .compass-body {
-    animation: compass-rotate 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: compass-rotate 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
   @keyframes compass-rotate {
     0%   { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
 
-  /* Reduced motion: halt every per-sector animation */
+  /* Reduced motion · halt animations only at the OS-level preference */
   @media (prefers-reduced-motion: reduce) {
     .sector-card .card-3d svg * { animation: none !important; }
   }
@@ -423,9 +446,9 @@ const iconPaths: Record<string, string> = {
     text-transform: uppercase;
     color: var(--gold);
     font-weight: 500;
-    margin-top: 48px;
+    margin-top: 32px;
     margin-bottom: 16px;
-    max-width: 60%;
+    padding-right: 96px;
   }
 
   .card-headline {
@@ -435,7 +458,7 @@ const iconPaths: Record<string, string> = {
     line-height: 1.15;
     letter-spacing: -0.01em;
     margin-bottom: 12px;
-    max-width: 85%;
+    padding-right: 96px;
   }
 
   .sector-large .card-headline { font-size: 32px; }
@@ -636,7 +659,14 @@ const iconPaths: Record<string, string> = {
       padding-block: 16px;
     }
   }
-</style>
+
+  @media (max-width: 768px) {
+    .card-3d { width: 64px; height: 64px; top: 12px; right: 12px; }
+    .card-eyebrow { padding-right: 72px; margin-top: 24px; }
+    .card-headline { padding-right: 72px; }
+  }
+
+  </style>
 
 <script>
   // Sequential fade-in reveal on scroll-into-view

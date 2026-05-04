@@ -54,5 +54,4 @@ export const whyUsContent = {
     href: '#contact',
   },
 
-  scrollPrompt: 'Continue to sectors →',
 };

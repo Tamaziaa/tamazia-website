@@ -73,7 +73,7 @@ export const pricingContent = {
         'All work produced belongs to you once paid in full. No rights retained.',
         'No long term contracts. 90 day rolling.',
       ],
-      cta: 'Begin a Foundation enquiry →',
+      cta: 'Begin a Foundation enquiry',
       ctaHref: '#contact',
       tier: 'standard',
       mostPopular: false,
@@ -146,7 +146,7 @@ export const pricingContent = {
       microFooter: [
         'The team that works on your account does not rotate. The founder reviews every deliverable before it leaves.',
       ],
-      cta: 'Begin an Authority enquiry →',
+      cta: 'Begin an Authority enquiry',
       ctaHref: '#contact',
       tier: 'elevated',
       mostPopular: true,
@@ -216,7 +216,7 @@ export const pricingContent = {
         'Executive personal brand management: Wikipedia, knowledge panel, AI search, LinkedIn',
       ],
       microFooter: [],
-      cta: 'Begin an Enterprise enquiry →',
+      cta: 'Begin an Enterprise enquiry',
       ctaHref: '#contact',
       tier: 'enterprise',
       mostPopular: false,
@@ -226,7 +226,7 @@ export const pricingContent = {
   // Mandate callout (after Enterprise tier)
   mandateCallout:
     'FOR PRE-IPO PREPARATION, LISTED COMPANIES, AND INTERNATIONAL ENTERPRISE GROUPS, ENGAGEMENT IS STRUCTURED TO MANDATE. SPEAK WITH THE FOUNDER BEFORE ANY SCOPE IS AGREED.',
-  mandateCta: 'Request a private briefing →',
+  mandateCta: 'Request a private briefing',
   mandateSignature: 'Aman Pareek',
 };
 

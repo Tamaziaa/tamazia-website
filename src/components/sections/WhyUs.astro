@@ -2,7 +2,7 @@
 import { whyUsContent } from '../../content/whyUs';
 import { parseEmph } from '../../content/hero';
 
-const { eyebrow, h2, paragraphs, pullQuote, stats, credentialStripHeading, credentials, scrollPrompt } = whyUsContent;
+const { eyebrow, h2, paragraphs, pullQuote, stats, credentialStripHeading, credentials } = whyUsContent;
 const microLine = (whyUsContent as any).microLine;
 const proofStrip = (whyUsContent as any).proofStrip;
 ---
@@ -79,8 +79,6 @@ const proofStrip = (whyUsContent as any).proofStrip;
       <div class="micro-line" aria-hidden="true">{microLine}</div>
     )}
 
-    <!-- Scroll prompt -->
-    <a href="#sectors" class="scroll-prompt">{scrollPrompt}</a>
   </div>
 </section>
 

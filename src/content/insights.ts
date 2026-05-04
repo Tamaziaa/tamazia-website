@@ -59,7 +59,7 @@ Fifth, conditional fee arrangement (CFA) and damages-based agreement (DBA) adver
 
 What Google does with the information.
 
-The Search Quality Evaluator Guidelines (December 2024 update) elevated regulated-services E-E-A-T to the highest tier of scrutiny. For YMYL-classified pages — legal services are explicitly listed — Google now expects to see regulator membership stated, regulator number publicly displayed, and complaints procedure linked from the page. Where these are absent, the Quality Rater is instructed to assess the page as low-quality regardless of other ranking signals.
+The Search Quality Evaluator Guidelines (December 2024 update) elevated regulated-services E-E-A-T to the highest tier of scrutiny. For YMYL-classified pages (legal services are explicitly listed), Google now expects to see regulator membership stated, regulator number publicly displayed, and complaints procedure linked from the page. Where these are absent, the Quality Rater is instructed to assess the page as low-quality regardless of other ranking signals.
 
 The result is that an SRA-non-compliant practice-area page is doubly penalised: regulatory exposure plus ranking suppression. The page that breaches Rule 8.9 is also the page Google will down-rank under its E-E-A-T framework.
 
@@ -73,7 +73,7 @@ If your firm has not run an SRA Transparency audit in 2026, run one this quarter
   { slug: 'icc-lcia-siac-arbitration-seo', title: 'The ICC, LCIA and SIAC: Where Arbitration SEO Lives in 2026',                     sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'ICC · LCIA · SIAC',     status: 'in-preparation', excerpt: 'Confidentiality and content authority in international arbitration practice marketing.' },
   { slug: 'difc-vs-adgm-jurisdictions',    title: 'DIFC vs ADGM: Which Dubai Jurisdiction Ranks for English-Language Search',        sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'DIFC · ADGM',           status: 'in-preparation', excerpt: 'Cross-jurisdiction search visibility map for UAE-based legal practitioners.' },
   { slug: 'investment-treaty-content',     title: 'Investment Treaty Arbitration Content: Where E-E-A-T Meets Confidentiality',      sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'ICSID · UNCITRAL',      status: 'in-preparation', excerpt: 'Publishing in a confidentiality-bound practice without breaching the rules.' },
-  { slug: 'chambers-legal-500-directory',  title: 'Chambers, Legal 500, WWL: Directory Listing SEO Beyond Submissions',              sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'Directory editorial',   status: 'in-preparation', excerpt: 'Why submission alone does not guarantee directory ranking — and what does.' },
+  { slug: 'chambers-legal-500-directory',  title: 'Chambers, Legal 500, WWL: Directory Listing SEO Beyond Submissions',              sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'Directory editorial',   status: 'in-preparation', excerpt: 'Why submission alone does not guarantee directory ranking. And what does.' },
   { slug: 'ai-legal-content-section-21',   title: 'AI-Generated Legal Content: The Section 21 FSMA Exposure Nobody Talks About',     sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'FSMA Section 21',       status: 'in-preparation', excerpt: 'When unreviewed AI content becomes an unauthorised financial promotion.' },
   { slug: 'pi-ppc-vs-seo-uk',              title: 'Personal Injury PPC vs SEO in the UK: What the SRA Actually Lets You Say',        sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'SRA Code 8.7',          status: 'in-preparation', excerpt: 'Compliance boundaries on solicitor advertising claims, sector-specific.' },
   { slug: 'us-state-bar-advertising-map',  title: 'US State Bar Association Advertising: A Jurisdiction Map for Multi-State Firms',  sector: 'Legal & Arbitration', sectorSlug: 'legal', regulator: 'ABA Model Rules 7.1-7.3', status: 'in-preparation', excerpt: '50-state ad-rule comparison map for firms operating across multiple jurisdictions.' },
@@ -107,25 +107,25 @@ The Asia Pacific hotel group at the centre of this case study (anonymised at cli
 
 The math of the displacement.
 
-Direct booking economics work because the marginal cost of an organic visitor is essentially zero once the SEO infrastructure is built. The infrastructure cost is fixed and amortised across every reservation that arrives via organic. Once the breakeven point is crossed — typically four to six months for a multi-property group — every subsequent direct booking is pure margin.
+Direct booking economics work because the marginal cost of an organic visitor is essentially zero once the SEO infrastructure is built. The infrastructure cost is fixed and amortised across every reservation that arrives via organic. Once the breakeven point is crossed, typically four to six months for a multi-property group, every subsequent direct booking is pure margin.
 
 For this group, the breakeven arrived in month four. By month six, organic search had become the largest single booking channel, ahead of both OTAs combined.
 
 What was actually built.
 
-First, multi-property location pages. Every property in the portfolio received a city-level landing page targeting both branded and unbranded queries. "Hotel in Mumbai near BKC", "Boutique hotel Pune", "Heritage hotel Goa" — 240 pages across the portfolio, each compliance-reviewed and schema-marked.
+First, multi-property location pages. Every property in the portfolio received a city-level landing page targeting both branded and unbranded queries. "Hotel in Mumbai near BKC", "Boutique hotel Pune", "Heritage hotel Goa". 240 pages across the portfolio, each compliance-reviewed and schema-marked.
 
 Second, Google Maps citation architecture. The group's properties collectively held roughly 4,200 directory citations at engagement start. The campaign brought each property to 30,000 to 40,000 citations within four months, with consistent Name-Address-Phone formatting across every platform. This is the foundation of Google Business Profile prominence and is the single most under-invested ranking asset in the hospitality vertical.
 
-Third, AI-search visibility. Generative Engine Optimisation (GEO) for destination queries. Content was restructured for AI citation eligibility — schema density, entity-anchored headings, Wikipedia presence for the brand entity. By month five, the group's properties were appearing in Perplexity, ChatGPT and Google AI Overviews for destination-level queries the OTAs traditionally owned.
+Third, AI-search visibility. Generative Engine Optimisation (GEO) for destination queries. Content was restructured for AI citation eligibility: schema density, entity-anchored headings, Wikipedia presence for the brand entity. By month five, the group's properties were appearing in Perplexity, ChatGPT and Google AI Overviews for destination-level queries the OTAs traditionally owned.
 
 Fourth, a review-management programme calibrated to TripAdvisor and Booking.com policies. Sustained 4.5+ aggregate ratings across 12 of the 14 properties. Reviews drive booking conversion at the rate of approximately 1% incremental conversion per 0.1 increase in aggregate rating, per industry data from STR Global.
 
 The OTA-substitution mechanic.
 
-When a guest searches for accommodation in a destination, the search journey usually traverses three to five touchpoints before booking. The OTAs win when they are present at the early information-gathering touchpoints — destination guides, "best hotels in [city]", review aggregation. They lose when the property's own brand appears at every touchpoint with a faster path to a direct reservation.
+When a guest searches for accommodation in a destination, the search journey usually traverses three to five touchpoints before booking. The OTAs win when they are present at the early information-gathering touchpoints: destination guides, "best hotels in [city]", review aggregation. They lose when the property's own brand appears at every touchpoint with a faster path to a direct reservation.
 
-The displacement is not aggressive. It is structural. The group's website became the lower-friction option compared to navigating through Booking.com's funnel. Direct booking incentives — best-rate guarantee, room-upgrade probability, late-checkout policy — closed the conversion gap.
+The displacement is not aggressive. It is structural. The group's website became the lower-friction option compared to navigating through Booking.com's funnel. Direct booking incentives (best-rate guarantee, room-upgrade probability, late-checkout policy) closed the conversion gap.
 
 The economics, restated.
 
@@ -161,7 +161,7 @@ The upside path is buildable. It requires structural discipline, not magic.
 
 The 18-month pre-IPO content protocol.
 
-Months 18 to 12 before the prospectus filing window: brand-foundation phase. The objective is to establish the entity's digital existence as a credible operating business across every relevant search surface — Google, Bing, ChatGPT, Perplexity, Google AI Overviews, and Wikipedia — without making any forward-looking claim that might constitute a financial promotion.
+Months 18 to 12 before the prospectus filing window: brand-foundation phase. The objective is to establish the entity's digital existence as a credible operating business across every relevant search surface (Google, Bing, ChatGPT, Perplexity, Google AI Overviews, and Wikipedia), without making any forward-looking claim that might constitute a financial promotion.
 
 The content built during this phase covers science, operations, market context, and team. None of it is forward-looking. None of it makes a price-sensitive claim. The compliance review is light because the content is purely descriptive. The SEO objective is breadth: become the canonical online source about the entity's domain, products, and leadership.
 
@@ -169,11 +169,11 @@ Months 12 to 6: silence-window discipline. As the prospectus drafting begins, ev
 
 The riskiest content surfaces in this window are LinkedIn posts from senior leadership, Instagram and Twitter activity from the founder personally, and any "thought leadership" article that drifts toward forward-looking statements. A single LinkedIn comment from a CFO about "expected ARR growth" can trigger an SEC inquiry. The protocol is: every public communication, including personal social media, passes through a pre-clearance review.
 
-Months 6 to 0: pre-prospectus through filing. Public communications are limited to pre-cleared, factually conservative content. Wikipedia presence is solidified — but only with verifiable, third-party-sourced facts. Knowledge panels are stabilised but not "managed" in any way that could read as orchestrated information disclosure.
+Months 6 to 0: pre-prospectus through filing. Public communications are limited to pre-cleared, factually conservative content. Wikipedia presence is solidified, but only with verifiable, third-party-sourced facts. Knowledge panels are stabilised but not "managed" in any way that could read as orchestrated information disclosure.
 
 The post-listing window: 30-day quiet period.
 
-The first 30 days post-listing are when most regulatory incidents happen. New leadership wants to celebrate. Marketing teams want to amplify. The discipline is to keep all communications within the pre-cleared boundary set out in the listing prospectus. The 96% IPO performance of CG Oncology — verified per SEC filings, Tamazia client — was achieved with a content programme that maintained the same compliance discipline post-listing as it did pre-listing. Zero compliance incidents. The discipline is the result.
+The first 30 days post-listing are when most regulatory incidents happen. New leadership wants to celebrate. Marketing teams want to amplify. The discipline is to keep all communications within the pre-cleared boundary set out in the listing prospectus. The 96% IPO performance of CG Oncology, verified per SEC filings (Tamazia client), was achieved with a content programme that maintained the same compliance discipline post-listing as it did pre-listing. Zero compliance incidents. The discipline is the result.
 
 The technical infrastructure required.
 

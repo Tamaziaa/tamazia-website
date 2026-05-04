@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+const lastUpdated = '4 May 2026';
+---
+<BaseLayout
+  title="Modern Slavery Statement · Tamazia"
+  description="Tamazia's voluntary statement on modern slavery and human trafficking, prepared in line with the spirit of the UK Modern Slavery Act 2015."
+  canonical="https://tamazia.co.uk/modern-slavery-statement/"
+>
+  <Header />
+  <main id="main" class="legal">
+    <article class="legal-inner">
+      <p class="eyebrow">MODERN SLAVERY · STATEMENT</p>
+      <h1>Modern slavery and human trafficking statement</h1>
+      <p class="updated">Last updated {lastUpdated}.</p>
+
+      <p>Tamazia is below the £36 million annual turnover threshold of section 54 of the UK Modern Slavery Act 2015 and therefore not legally required to publish this statement. We publish it voluntarily because clients in regulated sectors evaluate suppliers on these grounds and because the practice scales with the business.</p>
+
+      <h2>Who we are</h2>
+      <p>Tamazia is a lawyer-led SEO and compliance content advisory operating across the UK, EU, US, and Middle East. The founding team is based in London and Mumbai. Engagements are delivered by a small permanent team and a vetted network of freelance contributors.</p>
+
+      <h2>Our supply chain</h2>
+      <p>Our supply chain is short. The principal categories are software-as-a-service (Cloudflare, Resend, Google Workspace, GitHub, Cal.com), professional services (legal, accounting), and freelance content contributors. We do not operate any physical supply chain involving manufacturing, raw materials, agriculture, hospitality staff, or construction.</p>
+
+      <h2>Our policies</h2>
+      <p>We require all freelance contributors to confirm they are working voluntarily, are aged 18 or over, and are not subject to any restriction on their movement or income. Payment is made directly to the individual into a bank account in their own name within 14 days of invoice. We do not engage agencies that mark up labour or hold contributor identification documents.</p>
+
+      <h2>Risk assessment</h2>
+      <p>The principal risks in our footprint are concentrated in the freelance contributor pool, particularly contributors based in jurisdictions with weaker labour protections. We mitigate this by paying directly, using digital signatures, and avoiding sub-contracting layers.</p>
+
+      <h2>Effectiveness</h2>
+      <p>We measure effectiveness by tracking three indicators each year: the proportion of contributors paid directly versus through agencies (target 100%), the proportion of contributors invoicing in their own legal name (target 100%), and the average payment cycle (target less than 14 days).</p>
+
+      <h2>Approval</h2>
+      <p>This statement is approved annually by Aman Pareek as the responsible officer for the Tamazia operating entity.</p>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal { background: var(--ivory); color: var(--oxblood-ink); padding: 88px 24px 120px; }
+  .legal-inner { max-width: 760px; margin: 0 auto; }
+  .eyebrow { font-family: var(--ff-sans); font-size: 11px; letter-spacing: 0.16em; color: var(--oxblood); margin-bottom: 14px; }
+  .legal h1 { font-family: var(--ff-display); font-weight: 500; font-size: clamp(34px, 5vw, 52px); margin: 0 0 8px; }
+  .updated { font-family: var(--ff-sans); font-size: 13px; color: var(--ink-muted); margin-bottom: 32px; }
+  .legal h2 { font-family: var(--ff-display); font-weight: 500; font-size: 24px; margin: 36px 0 12px; }
+  .legal p { font-family: Georgia, serif; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+</style>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+const lastUpdated = '4 May 2026';
+---
+<BaseLayout
+  title="Complaints · Tamazia"
+  description="How to make a complaint to Tamazia, including escalation paths to the UK Information Commissioner's Office and other regulators."
+  canonical="https://tamazia.co.uk/complaints/"
+>
+  <Header />
+  <main id="main" class="legal">
+    <article class="legal-inner">
+      <p class="eyebrow">COMPLAINTS</p>
+      <h1>Making a complaint</h1>
+      <p class="updated">Last updated {lastUpdated}.</p>
+
+      <p>If you are unhappy with any aspect of how Tamazia has handled your work, your data, or your interaction with our team, we want to hear from you and to fix it.</p>
+
+      <h2>Step 1 · Contact us directly</h2>
+      <p>Write to founder@tamazia.co.uk with the subject line beginning "[Complaint]". Describe what happened, what outcome you would consider fair, and any relevant correspondence. We acknowledge receipt within 2 working days. We return a substantive response within 14 working days. If a matter requires more time we tell you so and give you a revised timetable.</p>
+
+      <h2>Step 2 · Escalation inside Tamazia</h2>
+      <p>If our first response does not resolve the matter, ask for the complaint to be escalated to the Chief Legal Officer. The CLO reviews the file and responds within a further 14 working days.</p>
+
+      <h2>Step 3 · External escalation for data protection matters</h2>
+      <p>If your complaint concerns the handling of personal data and you do not consider Tamazia's response satisfactory, you have the right to lodge a complaint with the relevant supervisory authority. In the United Kingdom this is the Information Commissioner's Office at <a href="https://ico.org.uk/make-a-complaint/" rel="noopener" target="_blank">ico.org.uk/make-a-complaint</a> or by calling 0303 123 1113. In the European Union it is the supervisory authority of the Member State where you live or work. In the United Arab Emirates it is the relevant data office under the PDPL Federal Decree-Law 45/2021. In California it is the California Privacy Protection Agency.</p>
+
+      <h2>Step 4 · Other regulators</h2>
+      <p>For complaints unrelated to data protection that touch advertising standards in the United Kingdom, the Advertising Standards Authority is at <a href="https://www.asa.org.uk/make-a-complaint.html" rel="noopener" target="_blank">asa.org.uk/make-a-complaint</a>. For solicitor-side complaints touching arbitration counsel introductions, the relevant local bar regulator handles the matter.</p>
+
+      <h2>Records</h2>
+      <p>We keep records of all complaints for six years to identify recurring issues and trends, in line with the retention period in our privacy notice.</p>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal { background: var(--ivory); color: var(--oxblood-ink); padding: 88px 24px 120px; }
+  .legal-inner { max-width: 760px; margin: 0 auto; }
+  .eyebrow { font-family: var(--ff-sans); font-size: 11px; letter-spacing: 0.16em; color: var(--oxblood); margin-bottom: 14px; }
+  .legal h1 { font-family: var(--ff-display); font-weight: 500; font-size: clamp(34px, 5vw, 52px); margin: 0 0 8px; }
+  .updated { font-family: var(--ff-sans); font-size: 13px; color: var(--ink-muted); margin-bottom: 32px; }
+  .legal h2 { font-family: var(--ff-display); font-weight: 500; font-size: 24px; margin: 36px 0 12px; }
+  .legal p { font-family: Georgia, serif; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .legal a { color: var(--oxblood); border-bottom: 1px solid var(--gold-soft); }
+</style>

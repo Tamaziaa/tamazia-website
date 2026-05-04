@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+const lastUpdated = '4 May 2026';
+---
+<BaseLayout
+  title="Security Policy · Tamazia"
+  description="How to report a security vulnerability to Tamazia. Coordinated disclosure, response timelines, and acknowledgements."
+  canonical="https://tamazia.co.uk/security-policy/"
+>
+  <Header />
+  <main id="main" class="legal">
+    <article class="legal-inner">
+      <p class="eyebrow">SECURITY · POLICY</p>
+      <h1>Reporting a vulnerability</h1>
+      <p class="updated">Last updated {lastUpdated}.</p>
+
+      <h2>Scope</h2>
+      <p>This policy covers tamazia.co.uk, tamazia.in, and any subdomain of either. It also covers Cloudflare Pages Functions deployed at the same hostnames. It does not cover third-party platforms we use such as Cal.com, Resend, or Cloudflare itself, which carry their own programs.</p>
+
+      <h2>Coordinated disclosure</h2>
+      <p>If you believe you have found a security vulnerability, write to founder@tamazia.co.uk with the subject line beginning "[Security]". Provide a clear reproduction path. We acknowledge receipt within 48 hours, return a triage decision within 7 days, and aim to remediate confirmed material issues within 30 days. We ask that you do not publicly disclose details for 90 days from acknowledgement, or until the issue is fixed, whichever is earlier.</p>
+
+      <h2>Out of scope</h2>
+      <p>The following are not eligible for coordinated handling because they reflect intended behaviour or third-party policy: missing CSP headers on third-party domains we link to; rate-limit responses; CAPTCHA challenges; CORS misconfiguration on cross-origin endpoints we do not own; volumetric denial-of-service; social engineering of staff; physical access attempts.</p>
+
+      <h2>Safe harbour</h2>
+      <p>Good-faith research conducted under this policy will not be subject to legal action by Tamazia provided you avoid privacy violations, data exfiltration beyond proof-of-concept, service degradation, and access to data belonging to others.</p>
+
+      <h2>Acknowledgements</h2>
+      <p>Researchers who follow this policy are listed at <a href="/security-acknowledgments/">/security-acknowledgments/</a> with their consent.</p>
+
+      <h2>Machine-readable</h2>
+      <p>The same contact and policy URL is published at <a href="/.well-known/security.txt">/.well-known/security.txt</a> per RFC 9116.</p>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal { background: var(--ivory); color: var(--oxblood-ink); padding: 88px 24px 120px; }
+  .legal-inner { max-width: 760px; margin: 0 auto; }
+  .eyebrow { font-family: var(--ff-sans); font-size: 11px; letter-spacing: 0.16em; color: var(--oxblood); margin-bottom: 14px; }
+  .legal h1 { font-family: var(--ff-display); font-weight: 500; font-size: clamp(34px, 5vw, 52px); margin: 0 0 8px; }
+  .updated { font-family: var(--ff-sans); font-size: 13px; color: var(--ink-muted); margin-bottom: 32px; }
+  .legal h2 { font-family: var(--ff-display); font-weight: 500; font-size: 24px; margin: 36px 0 12px; }
+  .legal p { font-family: Georgia, serif; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .legal a { color: var(--oxblood); border-bottom: 1px solid var(--gold-soft); }
+</style>

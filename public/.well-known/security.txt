@@ -1,0 +1,6 @@
+Contact: mailto:founder@tamazia.co.uk
+Expires: 2027-05-04T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://tamazia.co.uk/.well-known/security.txt
+Policy: https://tamazia.co.uk/security-policy/
+Acknowledgments: https://tamazia.co.uk/security-acknowledgments/

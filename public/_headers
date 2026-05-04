@@ -1,16 +1,31 @@
+# Tamazia _headers · Phase 0 perfection sweep 2026-05-04
+# Stack: COOP+COEP+CORP isolation, full Permissions-Policy, HSTS preload-ready,
+# CSP with documented allowlist, X-Robots-Tag on /api/*
+
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
+  X-XSS-Protection: 0
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(self), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(self), xr-spatial-tracking=(), interest-cohort=(), browsing-topics=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Resource-Policy: same-origin
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com; font-src 'self' data:; img-src 'self' data: https: https://*.google-analytics.com https://www.google-analytics.com; connect-src 'self' https://api.resend.com https://app.cal.com https://embed.cal.com https://script.google.com https://script.googleusercontent.com https://cloudflareinsights.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com; frame-src 'self' https://app.cal.com https://cal.com https://embed.cal.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Cross-Origin-Embedder-Policy: credentialless
+  Cross-Origin-Resource-Policy: same-site
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com; font-src 'self' data:; img-src 'self' data: https: https://*.google-analytics.com https://www.google-analytics.com; connect-src 'self' https://api.resend.com https://app.cal.com https://embed.cal.com https://script.google.com https://script.googleusercontent.com https://cloudflareinsights.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://challenges.cloudflare.com; frame-src 'self' https://app.cal.com https://cal.com https://embed.cal.com https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests; report-uri /csp-report; report-to csp-endpoint
+  Reporting-Endpoints: csp-endpoint="/csp-report"
+  Server: Tamazia
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
 /api/*
-  Cache-Control: no-store
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
   Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, X-Tamazia-HMAC
+
+/.well-known/*
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8

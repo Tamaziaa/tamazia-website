@@ -1,0 +1,3 @@
+We honour Do Not Track signals. When DNT=1 is present, no analytics cookies are set, no third-party fingerprinting runs, and no Cloudflare Analytics beacon is fired beyond what Cloudflare's edge collects automatically for security telemetry.
+
+Last updated 2026-05-04.

@@ -2,6 +2,7 @@
 #
 # Phase 0 cleanup (2026-05-04):
 #  · Collapsed /resources/ tree into /insights/ (institutional register canonical).
+#  · /privacy/ canonicalises to /privacy-notice/ (Phase G named asset).
 #  · Folded duplicate sitemap pointer.
 #  · No em-dashes in this file (deploy gate enforces).
 
@@ -9,12 +10,13 @@
 /sitemap.xml  /sitemap-index.xml  200
 
 # Phase 0 · /resources/ tree consolidates to /insights/ to remove duplicate-content dilution.
-# Path-preserving so /resources/healthcare/ becomes /insights/healthcare/.
 /resources/*  /insights/:splat  301
+
+# Phase 0 · /privacy/ canonicalises to /privacy-notice/ (was duplicate content).
+/privacy/  /privacy-notice/  301
 
 # Legacy WordPress URL retired.
 /home  /  301
 
-# Legacy aliases · both pages exist as static routes.
+# Legacy alias · privacy-policy slug 301 to canonical.
 /privacy-policy/   /privacy-notice/  301
-/privacy/          /privacy/         200

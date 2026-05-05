@@ -31,7 +31,12 @@ export const onRequestPost = async ({ request, env }) => {
     cal_end_time: payload.endTime || payload.end_time || ''
   };
 
+  // Idempotency check · Cal.com retries 5xx for up to 30 days
   if (env.FORM_SUBMISSIONS) {
+    const existing = await env.FORM_SUBMISSIONS.get(`bookings:${record.request_id}`);
+    if (existing) {
+      return new Response(JSON.stringify({ ok: true, request_id: record.request_id, deduped: true }), { status: 200, headers: baseHeaders });
+    }
     await env.FORM_SUBMISSIONS.put(`bookings:${record.request_id}`, JSON.stringify(record), {
       expirationTtl: 60 * 60 * 24 * 365 * 2
     });

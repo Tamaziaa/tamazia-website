@@ -77,6 +77,19 @@ const jsonLd = {
   description="Aman Pareek is the founder of Tamazia. LLM in International Business Law, King's College London. Member, Chartered Institute of Arbitrators. Member, American Bar Association. Lawyer-led SEO for regulated enterprises."
   canonical={canonicalUrl}
 >
+<script slot="head" type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://tamazia.co.uk/about/#aman',
+  name: 'Aman Pareek',
+  jobTitle: 'Founder, Tamazia',
+  url: 'https://tamazia.co.uk/about/',
+  image: 'https://tamazia.co.uk/og-default.png',
+  alumniOf: { '@type': 'EducationalOrganization', name: "King's College London", url: 'https://www.kcl.ac.uk/' },
+  knowsAbout: ['International arbitration', 'Business law', 'Search engine optimisation', 'Regulatory compliance', 'Content marketing'],
+  memberOf: [{ '@type': 'Organization', name: 'Chartered Institute of Arbitrators' }, { '@type': 'Organization', name: 'American Bar Association' }],
+  worksFor: { '@id': 'https://tamazia.co.uk/#organization' }
+})} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
 
   <Header />

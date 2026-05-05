@@ -1,0 +1,14 @@
+---
+const { name, description, sector, url } = Astro.props;
+const json = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name,
+  description,
+  serviceType: sector,
+  provider: { '@id': 'https://tamazia.co.uk/#organization' },
+  areaServed: ['United Kingdom', 'United Arab Emirates', 'United States', 'France', 'Singapore', 'Hong Kong'],
+  url
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(json)} />

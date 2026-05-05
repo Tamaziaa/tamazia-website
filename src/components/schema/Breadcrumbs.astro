@@ -1,0 +1,16 @@
+---
+// Renders Schema.org BreadcrumbList JSON-LD for inner pages
+// Usage: <Breadcrumbs items={[{name: 'Home', url: '/'}, {name: 'About', url: '/about/'}]} />
+const { items = [] } = Astro.props;
+const breadcrumbList = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((it: any, i: number) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: it.name,
+    item: it.url.startsWith('http') ? it.url : `https://tamazia.co.uk${it.url}`
+  }))
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbList)} />

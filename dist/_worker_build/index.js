@@ -1498,6 +1498,10 @@ var onRequestPost3 = /* @__PURE__ */ __name(async ({ request, env }) => {
     cal_end_time: payload.endTime || payload.end_time || ""
   };
   if (env.FORM_SUBMISSIONS) {
+    const existing = await env.FORM_SUBMISSIONS.get(`bookings:${record.request_id}`);
+    if (existing) {
+      return new Response(JSON.stringify({ ok: true, request_id: record.request_id, deduped: true }), { status: 200, headers: baseHeaders });
+    }
     await env.FORM_SUBMISSIONS.put(`bookings:${record.request_id}`, JSON.stringify(record), {
       expirationTtl: 60 * 60 * 24 * 365 * 2
     });
@@ -1722,8 +1726,49 @@ var onRequestGet3 = /* @__PURE__ */ __name(async ({ env, request }) => {
   });
 }, "onRequestGet");
 
-// api/list-unsubscribe.js
+// api/indexnow.js
+var INDEXNOW_KEY = "a8c7e0d2f6b4490fbda115c6d23e8740";
 var onRequestPost6 = /* @__PURE__ */ __name(async ({ request, env }) => {
+  const baseHeaders = { "Content-Type": "application/json", "Cache-Control": "no-store" };
+  const auth = request.headers.get("x-indexnow-secret");
+  if (env.INDEXNOW_TRIGGER_SECRET && auth !== env.INDEXNOW_TRIGGER_SECRET) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: baseHeaders });
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(JSON.stringify({ error: "invalid_json" }), { status: 400, headers: baseHeaders });
+  }
+  const urls = Array.isArray(body.urls) ? body.urls.slice(0, 1e4) : [];
+  if (!urls.length) return new Response(JSON.stringify({ error: "no_urls" }), { status: 400, headers: baseHeaders });
+  const payload = {
+    host: "tamazia.co.uk",
+    key: INDEXNOW_KEY,
+    keyLocation: `https://tamazia.co.uk/${INDEXNOW_KEY}.txt`,
+    urlList: urls
+  };
+  const r = await fetch("https://api.indexnow.org/IndexNow", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  return new Response(JSON.stringify({
+    ok: r.ok,
+    status: r.status,
+    submitted: urls.length,
+    indexnow_response: r.status
+  }), { status: r.ok ? 200 : 502, headers: baseHeaders });
+}, "onRequestPost");
+var onRequestGet4 = /* @__PURE__ */ __name(async () => new Response(JSON.stringify({
+  service: "indexnow-trigger",
+  key: INDEXNOW_KEY,
+  keyLocation: `https://tamazia.co.uk/${INDEXNOW_KEY}.txt`,
+  usage: "POST { urls: [...] } with x-indexnow-secret header"
+}), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } }), "onRequestGet");
+
+// api/list-unsubscribe.js
+var onRequestPost7 = /* @__PURE__ */ __name(async ({ request, env }) => {
   let body;
   try {
     body = await request.formData();
@@ -1751,7 +1796,7 @@ var onRequestPost6 = /* @__PURE__ */ __name(async ({ request, env }) => {
   }
   return new Response("", { status: 200, headers: { "Cache-Control": "no-store" } });
 }, "onRequestPost");
-var onRequestGet4 = /* @__PURE__ */ __name(async ({ request, env }) => {
+var onRequestGet5 = /* @__PURE__ */ __name(async ({ request, env }) => {
   const id = new URL(request.url).searchParams.get("id") || "unknown";
   const html = `<!doctype html><meta charset="utf-8"><title>Unsubscribed \xB7 Tamazia</title>
 <style>body{font-family:Georgia,serif;color:#2A0C14;background:#FAF7F2;padding:64px 24px;text-align:center}h1{font-weight:500}</style>
@@ -1784,7 +1829,7 @@ async function hmacHex(message, secret) {
 }
 __name(hmacHex, "hmacHex");
 
-// ../.wrangler/tmp/pages-9Tk75x/functionsRoutes-0.6839885091418507.mjs
+// ../.wrangler/tmp/pages-joYoWR/functionsRoutes-0.09252850773433918.mjs
 var routes = [
   {
     routePath: "/api/admin-submissions",
@@ -1871,18 +1916,32 @@ var routes = [
     modules: [onRequestGet3]
   },
   {
-    routePath: "/api/list-unsubscribe",
+    routePath: "/api/indexnow",
     mountPath: "/api",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet4]
   },
   {
-    routePath: "/api/list-unsubscribe",
+    routePath: "/api/indexnow",
     mountPath: "/api",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost6]
+  },
+  {
+    routePath: "/api/list-unsubscribe",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet5]
+  },
+  {
+    routePath: "/api/list-unsubscribe",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost7]
   }
 ];
 

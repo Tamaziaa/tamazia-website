@@ -1,0 +1,13 @@
+# Cloudflare Pages config · Phase 5 perfection
+# KV binding is set via Pages dashboard Settings → Functions → KV bindings
+# (cross-account constraint blocks declaring it here statically until namespace
+#  is on the same account as Pages project).
+name = "tamazia-website"
+compatibility_date = "2026-05-04"
+pages_build_output_dir = "dist"
+
+[vars]
+RESEND_FROM_ALERT = "Tamazia Forms <forms@tamazia.in>"
+RESEND_FROM_ACK = "Tamazia <founder@tamazia.in>"
+RESEND_REPLY_TO = "founder@tamazia.co.uk"
+ALERT_TO = "realfamemedia@gmail.com"

@@ -72,3 +72,4 @@ Disallow: /
 
 # Single canonical sitemap pointer
 Sitemap: https://tamazia.co.uk/sitemap-index.xml
+Sitemap: https://tamazia.co.uk/insights/feed.xml

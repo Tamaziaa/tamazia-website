@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+const lastUpdated = '5 May 2026';
+---
+<BaseLayout
+  title="Status · Tamazia"
+  description="Live operational status of tamazia.co.uk · auto-refresh every 60 seconds"
+  canonical="https://tamazia.co.uk/status/"
+>
+  <Header />
+  <main id="main" class="status">
+    <header class="status-head">
+      <p class="eyebrow">STATUS · TAMAZIA</p>
+      <h1>Operational status</h1>
+      <p class="subtitle">Auto-refreshes every 60 seconds. Last verified {lastUpdated}.</p>
+    </header>
+
+    <section id="cards" class="cards">
+      <div class="card" data-key="kv">
+        <span class="dot" data-state="loading"></span>
+        <span class="lbl">Form submissions store (KV)</span>
+        <span class="val">…</span>
+      </div>
+      <div class="card" data-key="resend">
+        <span class="dot" data-state="loading"></span>
+        <span class="lbl">Transactional email (Resend)</span>
+        <span class="val">…</span>
+      </div>
+      <div class="card" data-key="forms_writable">
+        <span class="dot" data-state="loading"></span>
+        <span class="lbl">Forms write path</span>
+        <span class="val">…</span>
+      </div>
+    </section>
+
+    <section class="endpoints">
+      <h2>Endpoints</h2>
+      <ul id="endpoints-list">
+        <li>tamazia.co.uk · <span class="endpoint-state" data-url="https://tamazia.co.uk/">…</span></li>
+        <li>/api/health · <span class="endpoint-state" data-url="https://tamazia.co.uk/api/health">…</span></li>
+        <li>/api/contact · <span class="endpoint-state" data-url="https://tamazia.co.uk/api/contact" data-method="OPTIONS">…</span></li>
+        <li>/insights/feed.xml · <span class="endpoint-state" data-url="https://tamazia.co.uk/insights/feed.xml">…</span></li>
+        <li>/.well-known/security.txt · <span class="endpoint-state" data-url="https://tamazia.co.uk/.well-known/security.txt">…</span></li>
+      </ul>
+    </section>
+
+    <p class="meta">For incident reports write to <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>. We respond to operational issues within 4 working hours, UK time.</p>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .status { padding: 96px 24px 120px; max-width: 880px; margin: 0 auto; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; }
+  .status h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: clamp(36px, 6vw, 56px); margin: 8px 0 6px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.16em; color: #5A1A2B; margin: 0; }
+  .subtitle { color: #5C4047; font-size: 14px; margin: 0 0 32px; }
+  .cards { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 48px; }
+  .card { display: flex; align-items: center; gap: 12px; padding: 16px 18px; background: #FAF7F2; border: 1px solid #E5DDCB; border-radius: 4px; font-size: 14px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #C4C4C4; flex-shrink: 0; }
+  .dot[data-state="ok"] { background: #28a745; }
+  .dot[data-state="error"], .dot[data-state="unbound"] { background: #d33; }
+  .lbl { flex: 1; }
+  .val { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #5C4047; }
+  .endpoints h2 { font-family: var(--ff-display); font-weight: 500; font-size: 22px; margin: 0 0 12px; }
+  .endpoints ul { list-style: none; padding: 0; margin: 0 0 32px; font-size: 14px; }
+  .endpoints li { padding: 8px 0; border-bottom: 1px solid #E5DDCB; }
+  .endpoint-state { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #5C4047; }
+  .meta { color: #5C4047; font-size: 13px; }
+  .meta a { color: #5A1A2B; border-bottom: 1px solid #C9A772; }
+</style>
+
+<script is:inline>
+  (function () {
+    async function refresh() {
+      try {
+        const r = await fetch('/api/health');
+        const data = await r.json();
+        ['kv', 'resend', 'forms_writable'].forEach(key => {
+          const el = document.querySelector('[data-key="' + key + '"]');
+          if (!el) return;
+          const v = data[key] || 'unknown';
+          el.querySelector('.dot').dataset.state = (v === 'ok') ? 'ok' : (v === 'unbound' ? 'unbound' : (v.startsWith('error') ? 'error' : 'unbound'));
+          el.querySelector('.val').textContent = v;
+        });
+      } catch (e) { /* network failure shows yellow */ }
+
+      document.querySelectorAll('.endpoint-state').forEach(async el => {
+        try {
+          const r = await fetch(el.dataset.url, { method: el.dataset.method || 'GET' });
+          el.textContent = r.status;
+          el.style.color = r.ok ? '#28a745' : '#d33';
+        } catch (e) { el.textContent = 'down'; el.style.color = '#d33'; }
+      });
+    }
+    refresh();
+    setInterval(refresh, 60000);
+  })();
+</script>

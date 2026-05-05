@@ -1,0 +1,70 @@
+---
+// Phase 7 · Sub-processor list per Article 28(2) GDPR
+// Updated when sub-processors change.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const updated = '5 May 2026';
+const url = 'https://tamazia.co.uk/legal/sub-processors/';
+
+const subProcessors = [
+  { name: 'Cloudflare, Inc.', purpose: 'Edge delivery, CF Workers, KV storage, Web Analytics, Email Routing, Pages hosting, Turnstile', country: 'United States · United Kingdom · India · Singapore', transfer: 'UK IDTA + EU SCC' },
+  { name: 'Resend Co.', purpose: 'Transactional email (auto-acknowledgement and internal alerts)', country: 'United States', transfer: 'UK IDTA + EU SCC' },
+  { name: 'Cal.com, Inc.', purpose: 'Booking and scheduling management', country: 'United States · Germany', transfer: 'UK IDTA + EU SCC + EEA' },
+  { name: 'Postmark', purpose: 'DMARC report aggregation', country: 'United States', transfer: 'UK IDTA + EU SCC' },
+  { name: 'Google LLC', purpose: 'Analytics (consent-gated), Postmaster Tools, Search Console', country: 'United States', transfer: 'UK IDTA + EU SCC + adequacy (UK Extension to EU-US Data Privacy Framework)' },
+  { name: 'Microsoft Corporation', purpose: 'Bing Webmaster Tools, SNDS reputation', country: 'United States', transfer: 'UK IDTA + EU SCC + adequacy (UK Extension to EU-US Data Privacy Framework)' },
+  { name: 'ZeroBounce LLC', purpose: 'Email validation prior to persistence', country: 'United States', transfer: 'UK IDTA + EU SCC' },
+  { name: 'Hunter SAS', purpose: 'Email validation prior to persistence', country: 'France', transfer: 'EEA' },
+  { name: 'NeverBounce, Inc.', purpose: 'Email validation prior to persistence', country: 'United States', transfer: 'UK IDTA + EU SCC' },
+  { name: 'GitHub, Inc.', purpose: 'Source repository, CI build for static deployment', country: 'United States', transfer: 'UK IDTA + EU SCC + adequacy (UK Extension to EU-US Data Privacy Framework)' },
+  { name: 'Bigrock Solutions Ltd', purpose: 'Domain registrar for tamazia.in', country: 'India', transfer: 'Adequacy (India is not adequate · UK SCC + Indian DPDPA 2023 cross-reference)' },
+];
+---
+<BaseLayout
+  title="Sub-processors · Tamazia"
+  description="Current list of sub-processors used by Tamazia in the delivery of services, with country of processing and the international transfer instrument relied on."
+  canonical={url}
+>
+  <main id="main" class="legal">
+    <header>
+      <p class="eyebrow">Updated {updated}</p>
+      <h1>Sub-processors</h1>
+      <p class="lede">This page lists the sub-processors engaged by Tamazia in the delivery of its services. Changes to this list are notified to the controller no less than thirty days in advance under clause 6 of the Data Processing Agreement.</p>
+    </header>
+
+    <section>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Purpose</th><th>Country of processing</th><th>Transfer instrument</th></tr>
+        </thead>
+        <tbody>
+          {subProcessors.map(s => (
+            <tr>
+              <td><strong>{s.name}</strong></td>
+              <td>{s.purpose}</td>
+              <td>{s.country}</td>
+              <td>{s.transfer}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Notification</h2>
+      <p>To receive sub-processor change notices, write to <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a> with the subject line "Sub-processor notice list" and the email used for the notification register.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 920px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.65; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .legal h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 40px 0 12px; }
+  .legal .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .legal .lede { font-size: 17px; color: #2A0C14; }
+  .legal section { border-top: 1px solid #E5DDCB; padding-top: 24px; margin-top: 24px; }
+  .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+  .legal table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .legal th, .legal td { padding: 12px 10px; border-bottom: 1px solid #E5DDCB; vertical-align: top; text-align: left; }
+  .legal th { background: #F4F0E8; font-weight: 600; }
+</style>

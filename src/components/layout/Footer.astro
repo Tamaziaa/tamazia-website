@@ -96,8 +96,11 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     <!-- Small print -->
     <div class="small-print">
       <div class="copyright">{copyright.replace('2026', year.toString())}</div>
-        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController}</p>
+        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact} · {legalEntity?.icoRegistration}</p>
         <ul class="extra-legal-links" aria-label="Legal disclosures">
+          <li><a href={legalEntity?.dataProtectionNoticeHref || '/legal/data-protection/'}>Data Protection Notice</a></li>
+          <li><a href={legalEntity?.dpaHref || '/legal/dpa/'}>DPA</a></li>
+          <li><a href={legalEntity?.subProcessorsHref || '/legal/sub-processors/'}>Sub-processors</a></li>
           <li><a href={modernSlaveryHref}>Modern Slavery Statement</a></li>
           <li><a href={complaintsHref}>Complaints</a></li>
           <li><a href={acceptableUseHref}>Acceptable Use</a></li>

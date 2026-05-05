@@ -1,0 +1,88 @@
+---
+// Phase 7 · Data Processing Agreement template (controller-to-controller and controller-to-processor)
+// Linked from legal nav. Downloadable as PDF on request.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const updated = '5 May 2026';
+const url = 'https://tamazia.co.uk/legal/dpa/';
+---
+<BaseLayout
+  title="Data processing agreement · Tamazia"
+  description="Standard terms for the processing of personal data between Tamazia and clients · UK GDPR Article 28 + EU GDPR Article 28 compliant."
+  canonical={url}
+>
+  <main id="main" class="legal">
+    <header>
+      <p class="eyebrow">Last reviewed {updated}</p>
+      <h1>Data processing agreement</h1>
+      <p class="lede">This page sets out the standard terms on which Tamazia processes personal data on behalf of clients in its capacity as a processor under UK GDPR Article 28 and EU GDPR Article 28. The terms are countersigned and form part of every paid engagement.</p>
+      <p><a class="cta" href="mailto:founder@tamazia.co.uk?subject=DPA%20request">Request the executable copy</a></p>
+    </header>
+
+    <section>
+      <h2>1. Definitions</h2>
+      <p>Terms not defined here carry the meaning given in UK GDPR or EU GDPR as the case may be. The "Data Protection Laws" means the UK GDPR, the Data Protection Act 2018, the EU General Data Protection Regulation, the Privacy and Electronic Communications Regulations 2003, and any subordinate or amending legislation.</p>
+    </section>
+
+    <section>
+      <h2>2. Subject matter and duration</h2>
+      <p>The subject matter is the processing carried out by the processor on the documented instructions of the controller in connection with the services described in the underlying statement of work or engagement letter. The duration is the term of that underlying contract plus any retention period mandated by law.</p>
+    </section>
+
+    <section>
+      <h2>3. Nature and purpose of processing</h2>
+      <p>The processing is the organisation, retrieval, consultation, use, disclosure by transmission, alignment, restriction, erasure, and destruction of personal data carried out for the delivery of marketing, search engine optimisation, content production, briefing dissemination, scheduling, and reporting services to the controller. No processing is carried out for any purpose other than the documented instructions of the controller and the obligations imposed by law.</p>
+    </section>
+
+    <section>
+      <h2>4. Categories of data subject and personal data</h2>
+      <p>Categories of data subject are the controller's customers, prospects, suppliers, employees, contractors, and website visitors. Categories of personal data are identification data, contact data, employment data, technical data, transaction data, marketing preferences, and any further categories listed in Schedule 1 of the underlying contract. No special categories of personal data within the meaning of Article 9 UK GDPR are processed unless explicitly agreed in writing in advance.</p>
+    </section>
+
+    <section>
+      <h2>5. Obligations of the processor</h2>
+      <ul>
+        <li>To process personal data only on the documented instructions of the controller, including with regard to transfers of personal data to a third country, unless required by law to do so.</li>
+        <li>To ensure that persons authorised to process the personal data have committed themselves to confidentiality.</li>
+        <li>To take all measures required pursuant to Article 32 UK GDPR, including the encryption of personal data in transit and at rest, the pseudonymisation of personal data where appropriate, the maintenance of confidentiality, integrity, availability, and resilience of processing systems, the ability to restore the availability and access to personal data in a timely manner in the event of a physical or technical incident, and a process for regularly testing, assessing, and evaluating the effectiveness of the technical and organisational measures.</li>
+        <li>To assist the controller, by appropriate technical and organisational measures, in the fulfilment of its obligation to respond to requests for the exercise of the data subject's rights.</li>
+        <li>To assist the controller in ensuring compliance with Articles 32 to 36 UK GDPR taking into account the nature of processing and the information available to the processor.</li>
+        <li>At the choice of the controller, to delete or return all personal data to the controller after the end of the provision of services relating to processing, and to delete existing copies unless retention is required by law.</li>
+        <li>To make available to the controller all information necessary to demonstrate compliance with the obligations laid down in Article 28 UK GDPR and to allow for and contribute to audits, including inspections, conducted by the controller or another auditor mandated by the controller.</li>
+        <li>To notify the controller without undue delay and in any event within twenty-four hours of becoming aware of a personal data breach.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Sub-processors</h2>
+      <p>The controller grants a general written authorisation for the processor to engage sub-processors. The processor maintains a current list of sub-processors at <a href="/legal/sub-processors/">tamazia.co.uk/legal/sub-processors</a>. The processor will inform the controller of any intended changes to that list with no less than thirty days' notice, giving the controller the opportunity to object to such changes. Where the controller objects on reasonable grounds, the parties will negotiate in good faith. Where the processor engages a sub-processor it imposes the same data protection obligations as set out in this agreement.</p>
+    </section>
+
+    <section>
+      <h2>7. International transfers</h2>
+      <p>Where personal data is transferred from the United Kingdom or the European Economic Area to a third country that is not the subject of an adequacy decision, the parties have entered into the United Kingdom International Data Transfer Addendum and the EU Standard Contractual Clauses (Module 2 controller-to-processor or Module 3 processor-to-processor as applicable) which form part of this agreement. Supplementary technical and organisational measures are documented in Schedule 2.</p>
+    </section>
+
+    <section>
+      <h2>8. Liability and indemnity</h2>
+      <p>The liability of each party arising out of or in connection with this agreement is governed by the underlying contract. Nothing in this agreement excludes or limits any liability that cannot be excluded or limited by law, including liability for death or personal injury caused by negligence, fraud, or fraudulent misrepresentation.</p>
+    </section>
+
+    <section>
+      <h2>9. Governing law and jurisdiction</h2>
+      <p>This agreement and any dispute or claim arising out of or in connection with it or its subject matter is governed by and construed in accordance with the law of England and Wales for engagements with United Kingdom and European Economic Area clients, and the law of India for engagements with Indian clients. The parties irrevocably agree that the courts of England and Wales (or, as the case may be, of the relevant Indian state) have exclusive jurisdiction to settle any such dispute or claim.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.65; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .legal h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 40px 0 12px; }
+  .legal .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .legal .lede { font-size: 17px; color: #2A0C14; }
+  .legal .cta { display: inline-block; margin-top: 16px; padding: 12px 22px; background: #2A0C14; color: #FAF7F2; text-decoration: none; font-size: 14px; letter-spacing: 0.06em; }
+  .legal section { border-top: 1px solid #E5DDCB; padding-top: 24px; margin-top: 24px; }
+  .legal ul { padding-left: 22px; }
+  .legal li { margin-bottom: 6px; }
+  .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+</style>

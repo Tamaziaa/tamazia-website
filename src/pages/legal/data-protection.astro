@@ -1,0 +1,117 @@
+---
+// Phase 7 · UK GDPR Article 13 + 14 disclosure + Article 27 Representative status
+// Linked from footer + cookie-policy.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const updated = '5 May 2026';
+const url = 'https://tamazia.co.uk/legal/data-protection/';
+---
+<BaseLayout
+  title="Data protection notice · Tamazia"
+  description="Article 13 + 14 disclosure under UK GDPR · controller, lawful basis, retention, rights, transfer mechanisms, complaints route."
+  canonical={url}
+>
+  <main id="main" class="legal">
+    <header>
+      <p class="eyebrow">Last reviewed {updated}</p>
+      <h1>Data protection notice</h1>
+      <p class="lede">This notice is the statutory disclosure under UK GDPR Articles 13 and 14, the Data Protection Act 2018, and the EU GDPR Articles 13 and 14 for visitors and clients reachable by Tamazia from any jurisdiction.</p>
+    </header>
+
+    <section>
+      <h2>Controller identity and contact</h2>
+      <p>Tamazia is operated by Aman Pareek, sole proprietor, registered for the conduct of its business in India. The work address for written correspondence on data protection matters is published at <a href="/contact/">tamazia.co.uk/contact</a>.</p>
+      <p>The controller's contact for data protection enquiries is <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>. Subject access requests, rectification, erasure, restriction, portability, and objection requests are routed through this address and acknowledged within seventy-two hours.</p>
+    </section>
+
+    <section>
+      <h2>UK Representative under Article 27 UK GDPR</h2>
+      <p>As a controller established outside the United Kingdom that offers services to data subjects in the United Kingdom, Tamazia falls within the scope of Article 27 UK GDPR. The appointment of a UK Representative is in progress; the appointment will be published at this section once the contract is executed. Until that point, all UK data subject communications should be addressed to <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>, which is monitored by the controller daily.</p>
+    </section>
+
+    <section>
+      <h2>EU Representative under Article 27 GDPR</h2>
+      <p>As a controller established outside the European Union that offers services to data subjects in the EEA, Tamazia falls within the scope of Article 27 GDPR. The appointment of an EU Representative is in progress and will be published at this section once executed.</p>
+    </section>
+
+    <section>
+      <h2>Categories of personal data processed</h2>
+      <ul>
+        <li>Identification data: name, business email address, employer name, role title, business country.</li>
+        <li>Contact data: telephone number where supplied, scheduled meeting times, the content of messages sent through the contact form, the briefings form, the audit form, or by direct email to a Tamazia inbox.</li>
+        <li>Technical data: truncated IP address (final octet redacted), country derived from the IP address, user agent string, referring URL, the request identifier issued at submission.</li>
+        <li>Marketing data: source of arrival where supplied through UTM parameters, the subscription status to the regulatory briefings list.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Sources of personal data</h2>
+      <p>The data is collected directly from the data subject through the website, by email, or in scheduled meetings. Where personal data is enriched through public registers, professional directories, or commercial enrichment platforms (Apollo, ZoomInfo, Hunter, Common Room) the source is recorded against the subject's record. Article 14 disclosure to the data subject is provided on first contact through the email signature line and at this notice.</p>
+    </section>
+
+    <section>
+      <h2>Lawful basis</h2>
+      <ul>
+        <li>Performance of a contract or steps requested by the data subject prior to entering into a contract under Article 6(1)(b) UK GDPR for clients and prospects who have requested a proposal, a strategy call, or a briefing.</li>
+        <li>Legitimate interests under Article 6(1)(f) UK GDPR for the operation of the website, the security of the systems, the prevention of fraud, the management of the briefings list, the response to enquiries, and outbound research-led contact made to senior commercial decision-makers within Tamazia's stated target sectors.</li>
+        <li>Consent under Article 6(1)(a) UK GDPR for the optional analytics cookies, the regulatory briefings subscription, and any direct marketing communications outside the legitimate-interests scope.</li>
+        <li>Compliance with a legal obligation under Article 6(1)(c) UK GDPR for tax, accounting, anti-money-laundering, and statutory record retention.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Recipients of personal data</h2>
+      <p>The data is processed by Tamazia and the following processors acting on Tamazia's documented instructions:</p>
+      <ul>
+        <li>Cloudflare, Inc. for content delivery, edge functions, KV storage, web analytics, email routing, and security services.</li>
+        <li>Resend Co. for the transactional acknowledgement and the internal alert email.</li>
+        <li>Cal.com, Inc. for scheduling and booking management.</li>
+        <li>Postmark (for DMARC reporting), Google LLC (for analytics where consent is granted), and Microsoft Corporation (for inbox routing where used).</li>
+        <li>Email validators ZeroBounce, Hunter, and NeverBounce for the verification of submitted email addresses prior to persistence.</li>
+        <li>Professional advisers under contractual confidentiality where required for accounting, tax, or legal advice.</li>
+      </ul>
+      <p>A current Article 30 record of processing activities is maintained by the controller and is supplied to the supervisory authority on request.</p>
+    </section>
+
+    <section>
+      <h2>International transfers</h2>
+      <p>Personal data may be transferred to processors located outside the United Kingdom and the European Economic Area, including the United States, India, and Singapore. Each such transfer is governed by either an adequacy decision, the United Kingdom International Data Transfer Addendum to the European Commission Standard Contractual Clauses, or the EU Standard Contractual Clauses with appropriate supplementary measures. Copies of the executed transfer instruments are available to data subjects on written request.</p>
+    </section>
+
+    <section>
+      <h2>Retention</h2>
+      <p>The default retention for form submissions held in Cloudflare KV is twenty-four months from the date of submission, after which the record is automatically deleted by the platform's TTL. Bookings and meeting notes are retained for the duration of the engagement plus the statutory retention period for tax and accounting records of seven years. The briefings list retains the subscription record for as long as the subscription is active and for thirteen months after unsubscribe to evidence the unsubscribe.</p>
+    </section>
+
+    <section>
+      <h2>Rights</h2>
+      <p>Data subjects in the United Kingdom and the European Economic Area have the right to access their personal data, to obtain rectification of inaccurate data, to obtain erasure where the lawful basis no longer applies, to restrict processing, to object to processing, to data portability where the lawful basis is consent or contract, to withdraw consent at any time without affecting prior lawful processing, and to lodge a complaint with the supervisory authority in their place of residence or work. The supervisory authority for the United Kingdom is the Information Commissioner's Office at <a href="https://ico.org.uk">ico.org.uk</a>.</p>
+    </section>
+
+    <section>
+      <h2>Automated decision-making</h2>
+      <p>Tamazia does not engage in automated decision-making producing legal or similarly significant effects on data subjects within the meaning of Article 22 UK GDPR.</p>
+    </section>
+
+    <section>
+      <h2>Cookies and analytics</h2>
+      <p>Cookies and the Consent Mode v2 deployment are described at <a href="/cookie-policy/">tamazia.co.uk/cookie-policy</a>. Analytics cookies are not set unless the data subject grants consent through the cookie banner. The consent record is retained for thirteen months in accordance with Information Commissioner's Office guidance and is then re-prompted.</p>
+    </section>
+
+    <section>
+      <h2>Complaints</h2>
+      <p>Concerns about Tamazia's processing should first be raised with <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>. If the response is unsatisfactory, the data subject is entitled to lodge a complaint with the Information Commissioner's Office (United Kingdom), the supervisory authority of the data subject's habitual residence (European Economic Area), or any other competent supervisory authority.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.65; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .legal h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 40px 0 12px; }
+  .legal .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .legal .lede { font-size: 17px; color: #2A0C14; }
+  .legal section { border-top: 1px solid #E5DDCB; padding-top: 24px; margin-top: 24px; }
+  .legal ul { padding-left: 22px; }
+  .legal li { margin-bottom: 6px; }
+  .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+</style>

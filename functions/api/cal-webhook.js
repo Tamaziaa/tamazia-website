@@ -26,14 +26,14 @@ const REPLAY_WINDOW_MS = 5 * 60 * 1000;
 
 export const onRequestPost = async ({ request, env }) => {
   const t0 = Date.now();
-  const baseHeaders = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
+  const baseHeaders = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'Vary': 'Origin' };
   const log = (outcome, extra = {}) => {
     try { console.log(JSON.stringify({ component: 'cal-webhook', outcome, duration_ms: Date.now() - t0, ...extra })); } catch {}
   };
 
   const expected = env.CAL_WEBHOOK_SECRET || '';
   if (!expected) {
-    log('webhook_secret_unbound', { request_id: 'cal:unset' });
+    log('webhook_secret_unbound', { request_id: 'cal:unset', trigger: 'config_error' });
     return new Response(JSON.stringify({ error: 'webhook_secret_unbound' }), { status: 503, headers: baseHeaders });
   }
 
@@ -41,7 +41,7 @@ export const onRequestPost = async ({ request, env }) => {
   // read the underlying stream and throw early if it overruns.
   const reader = request.body?.getReader();
   if (!reader) {
-    log('no_body', { request_id: 'cal:unset' });
+    log('no_body', { request_id: 'cal:unset', trigger: 'bad_request' });
     return new Response(JSON.stringify({ error: 'no_body' }), { status: 400, headers: baseHeaders });
   }
   const chunks = [];
@@ -51,7 +51,7 @@ export const onRequestPost = async ({ request, env }) => {
     if (done) break;
     total += value.byteLength;
     if (total > MAX_BODY_BYTES) {
-      log('body_too_large', { size: total, request_id: 'cal:unset' });
+      log('body_too_large', { size: total, request_id: 'cal:unset', trigger: 'bad_request' });
       return new Response(JSON.stringify({ error: 'body_too_large' }), { status: 413, headers: baseHeaders });
     }
     chunks.push(value);
@@ -64,13 +64,16 @@ export const onRequestPost = async ({ request, env }) => {
   const sigHeader = request.headers.get('x-cal-signature-256') || '';
   const computed = await hmacSha256Hex(expected, rawBody);
   if (!sigHeader || !timingSafeEqual(sigHeader, computed)) {
-    log('invalid_signature', { request_id: 'cal:sig-fail' });
+    const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+    const ipHash = await sha256Hex(ip).then(h => h.slice(0, 8));
+    const sigPrefix = (sigHeader || 'absent').slice(0, 8);
+    log('invalid_signature', { request_id: `cal:sig-fail:${ipHash}:${sigPrefix}`, trigger: 'invalid_signature' });
     return new Response(JSON.stringify({ error: 'invalid_signature' }), { status: 401, headers: baseHeaders });
   }
 
   let body;
   try { body = JSON.parse(rawBody); } catch {
-    log('invalid_json', { request_id: 'cal:bad-json' });
+    log('invalid_json', { request_id: 'cal:bad-json', trigger: 'bad_request' });
     return new Response(JSON.stringify({ error: 'invalid_json' }), { status: 400, headers: baseHeaders });
   }
 
@@ -83,8 +86,8 @@ export const onRequestPost = async ({ request, env }) => {
     if (Number.isFinite(eventTime)) {
       const skew = Date.now() - eventTime;
       if (skew > REPLAY_WINDOW_MS) {
-        log('replay_window_exceeded', { skew_ms: skew, request_id: 'cal:replay' });
-        return new Response(JSON.stringify({ error: 'event_too_old' }), { status: 503, headers: baseHeaders });
+        log('replay_window_exceeded', { skew_ms: skew, request_id: 'cal:replay', trigger: 'stale_event' });
+        return new Response(JSON.stringify({ ok: true, stale: true, skew_ms: skew }), { status: 200, headers: baseHeaders });
       }
     }
   }
@@ -96,6 +99,9 @@ export const onRequestPost = async ({ request, env }) => {
   const record = {
     tab_source: 'bookings',
     request_id: 'cal:' + request_id,
+    cal_uid: payload.uid || '',
+    cal_booking_id: payload.bookingId || '',
+    cal_ical_uid: payload.iCalUID || '',
     submitted_at: new Date().toISOString(),
     name: payload.attendees?.[0]?.name || payload.attendee?.name || '',
     email: payload.attendees?.[0]?.email || payload.attendee?.email || '',
@@ -173,6 +179,12 @@ function lifecycleStatus(trigger) {
 function humanTrigger(trigger) {
   return String(trigger).replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 }
+async function sha256Hex(data) {
+  const enc = new TextEncoder();
+  const sig = await crypto.subtle.digest('SHA-256', enc.encode(data));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function hmacSha256Hex(secret, data) {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey('raw', enc.encode(secret),

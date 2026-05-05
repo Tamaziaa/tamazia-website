@@ -1,0 +1,22 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .eyebrow { font: 600 18px/1 'Inter', sans-serif; letter-spacing: 0.18em; fill: #5A1A2B; }
+      .title { font: 500 56px/1.05 'Playfair Display', Georgia, serif; fill: #2A0C14; }
+      .subtitle { font: 400 26px/1.4 'Inter', sans-serif; fill: #4A1625; }
+      .accent { font: italic 600 22px/1 'Playfair Display', serif; fill: #5A1A2B; }
+      .lockup { font: 700 28px/1 'Playfair Display', serif; letter-spacing: 0.06em; fill: #2A0C14; }
+      .url { font: 500 16px/1 'Inter', sans-serif; letter-spacing: 0.08em; fill: #5A1A2B; }
+    </style>
+  </defs>
+  <rect width="1200" height="630" fill="#FAF7F2"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#5A1A2B"/>
+  <rect x="60" y="60" width="1080" height="510" fill="none" stroke="#E5DDCB" stroke-width="1"/>
+  <text x="100" y="120" class="lockup">TAMAZIA</text>
+  <line x1="100" y1="140" x2="180" y2="140" stroke="#C9A772" stroke-width="1.5"/>
+  <text x="100" y="180" class="eyebrow">INSIGHT · TAMAZIA</text>
+  <text x="100" y="280" class="title">Why Your Law Firm&apos;s SRA Transparency Page Is Probably Non…</text>
+  <text x="100" y="360" class="subtitle">Legal &amp; Arbitration · SRA Transparency Rules 2018</text>
+  <text x="100" y="540" class="accent">tamazia.co.uk</text>
+  <text x="1100" y="540" class="url" text-anchor="end">tamazia.co.uk</text>
+</svg>

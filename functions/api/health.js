@@ -3,6 +3,13 @@ export const onRequestGet = async ({ env, request }) => {
   const checks = {
     version: '2026-05-05-phase4',
     timestamp: new Date().toISOString(),
+    format_valid: {
+      RESEND_API_KEY: /^re_[A-Za-z0-9_]{16,}$/.test(env.RESEND_API_KEY || ''),
+      CAL_WEBHOOK_SECRET: /^[a-f0-9]{32,128}$/.test(env.CAL_WEBHOOK_SECRET || ''),
+      INDEXNOW_KEY: /^[a-f0-9]{32}$/.test(env.INDEXNOW_KEY || ''),
+      SHEETS_HMAC_SECRET: (env.SHEETS_HMAC_SECRET || '').length >= 16,
+      ALERT_TO: /@/.test(env.ALERT_TO || env.CONTACT_TO || ''),
+    },
     env_present: {
       RESEND_API_KEY: !!env.RESEND_API_KEY,
       ADMIN_SECRET: !!env.ADMIN_SECRET,

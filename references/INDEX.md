@@ -32,4 +32,10 @@ Auto-maintained. Every runbook in `references/` is catalogued here. New docs MUS
 | [resend-domain-verify.md](resend-domain-verify.md) | 3 | Resend tamazia.in DNS verification |
 | [workflow-pat-rotation.md](workflow-pat-rotation.md) | 0 | GitHub PAT scope rotation procedure |
 
+## Staged directories
+
+- `references/_pending-workflow-changes/` · 4 GitHub Actions workflow YAMLs (codeql, lighthouse-pa11y, synthetic-check, weekly-backup) · pushed to repo once `workflow` PAT scope is granted (see workflow-pat-rotation.md)
+- `references/_secrets/` · gitignored secret storage · cal-webhook.txt currently held here
+- `references/_pending-cross-account-fix.md` · Cloudflare account-split documentation
+
 Last updated 2026-05-04.

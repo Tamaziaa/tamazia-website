@@ -19,7 +19,7 @@ export const onRequestGet = async ({ request, env }) => {
 
   const url = new URL(request.url);
   const tab = url.searchParams.get('tab') || '';
-  const ALLOWED_TABS = ['', 'contact', 'briefings', 'audit', 'bookings'];
+  const ALLOWED_TABS = ['', 'contact', 'briefings', 'audit', 'bookings', 'nel'];
   if (!ALLOWED_TABS.includes(tab)) {
     return new Response(JSON.stringify({ error: 'invalid_tab', allowed: ALLOWED_TABS.filter(t => t) }), {
       status: 400, headers: { 'Content-Type': 'application/json' }

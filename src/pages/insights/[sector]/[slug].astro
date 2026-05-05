@@ -24,7 +24,7 @@ const bodyHtml = (post.body || '')
   .map((p: string) => `<p>${p.trim().replace(/\n/g, ' ')}</p>`)
   .join('\n');
 ---
-<BaseLayout title={`${post.title} · Tamazia`} description={post.excerpt}>
+<BaseLayout title={`${post.title} · Tamazia`} description={post.excerpt} ogImage={`/og/insight-${post.sectorSlug}.png`}>
   <ArticleSchema slot="head" title={post.title} description={post.excerpt} url={`https://tamazia.co.uk/insights/${post.sectorSlug}/${post.slug}/`} sector={post.sector} datePublished={post.publishedDate || '2026-05-04'} dateModified={post.publishedDate || '2026-05-04'} />
   <Header />
   <main id="main">

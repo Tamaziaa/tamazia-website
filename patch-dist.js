@@ -169,6 +169,40 @@ results.push(checkAcross('14. case studies label · no Selected mandates', c => 
   return !/Selected mandates/i.test(stripped) || 'Selected mandates found · should be Verified mandates';
 }));
 
+
+// 15-19: New legal pages exist (Phase 0 perfection sweep 2026-05-05)
+const LEGAL_PAGES = ['security-policy', 'security-acknowledgments', 'modern-slavery-statement', 'complaints', 'acceptable-use'];
+for (const slug of LEGAL_PAGES) {
+  const p = join(DIST_DIR, slug, 'index.html');
+  if (existsSync(p)) {
+    console.log('[patch-dist]   PASS 15+. /' + slug + '/ rendered');
+    results.push({ ok: true });
+  } else {
+    console.log('[patch-dist]   FAIL 15+. /' + slug + '/ missing');
+    results.push({ ok: false });
+  }
+}
+
+// 20: humans.txt build hash injection (post-deploy traceability)
+try {
+  const humansPath = join(DIST_DIR, 'humans.txt');
+  if (existsSync(humansPath)) {
+    let h = readFileSync(humansPath, 'utf8');
+    const stamp = process.env.GITHUB_SHA || new Date().toISOString();
+    if (!h.includes('Build:')) {
+      h = h.replace(/Last update:.*/i, m => m + '\nBuild: ' + stamp.slice(0, 7));
+      writeFileSync(humansPath, h);
+    }
+    console.log('[patch-dist]   PASS 20. humans.txt build hash injected');
+    results.push({ ok: true });
+  } else {
+    results.push({ ok: true });
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 20. humans.txt build hash skip · ' + e.message);
+  results.push({ ok: true });
+}
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

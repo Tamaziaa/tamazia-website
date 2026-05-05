@@ -18,7 +18,7 @@ check() {
   fi
 }
 
-echo "=== Phase 3 14-level bug test against $BASE ==="
+echo "=== Phase 3+4 21-level bug test against $BASE ==="
 
 # 1. Honeypot-only POST to /api/contact
 code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"bot-field":"spam","name":"x","email":"x@x.x","company":"x","sector":"x"}' "$BASE/api/contact")
@@ -32,7 +32,9 @@ code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -d 'id=test' "$BASE/api/l
 check "3. list-unsubscribe POST returns 200" "$code" "200"
 
 # 4. Wrong HMAC · skip until SHEETS_WEBHOOK_URL is wired
-echo "SKIP · 4. wrong HMAC (needs Apps Script deployed)"
+# 4. Admin auth required
+code=$(curl -sS -o /dev/null -w "%{http_code}" "$BASE/api/admin-submissions")
+check "4. admin-submissions requires auth (401)" "$code" "401"
 
 # 5. /api/health returns 200
 code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/api/health")
@@ -77,3 +79,33 @@ check "14. COOP+COEP headers present (=2)" "$hd" "2"
 echo ""
 echo "Result: $PASS passed, $FAIL failed."
 [[ $FAIL -eq 0 ]] || exit 1
+
+# 15. /admin/submissions HTML page exists (Phase 4 admin)
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/admin/submissions/")
+check "15. /admin/submissions/ 200" "$code" "200"
+
+# 16. /api/health includes kv field
+hc=$(curl -sS "$BASE/api/health" | grep -c '"kv"' || true)
+check "16. /api/health KV probe field present" "$hc" "1"
+
+# 17. New legal pages render
+for slug in security-policy security-acknowledgments modern-slavery-statement complaints acceptable-use; do
+  code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/$slug/")
+  check "17.$slug rendered" "$code" "200"
+done
+
+# 18. Cookie banner Consent Mode v2 default present in HTML
+cm=$(curl -sS "$BASE/" | grep -c "consent.*default" || true)
+check "18. cookie banner Consent Mode v2 default" "$cm" "1"
+
+# 19. /api/list-unsubscribe GET returns HTML
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/api/list-unsubscribe?id=test")
+check "19. /api/list-unsubscribe GET 200" "$code" "200"
+
+# 20. patch-dist 15+ checks pass (this is checked in deploy gate, just verify dist HTML)
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/humans.txt")
+check "20. humans.txt accessible" "$code" "200"
+
+# 21. /.well-known/dnt-policy.txt accessible
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/.well-known/dnt-policy.txt")
+check "21. dnt-policy.txt accessible" "$code" "200"

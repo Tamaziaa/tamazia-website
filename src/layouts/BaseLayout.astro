@@ -210,6 +210,19 @@ const jsonLd = {
       // Round-12 · cookie strip with explicit Accept / Reject (UK GDPR + EU PECR equal-prominence)
       (() => {
         const KEY = 'tamazia-cookie-consent';
+        // Consent Mode v2 default · denied until user accepts
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'ad_user_data': 'denied',
+          'ad_personalization': 'denied',
+          'analytics_storage': 'denied',
+          'functionality_storage': 'granted',
+          'security_storage': 'granted',
+          'wait_for_update': 500
+        });
+        window.__tamaziaGtag = gtag;
 
         // Expose dismiss globally so inline onclick attributes always work,
         // regardless of when this IIFE runs or whether listeners attached.

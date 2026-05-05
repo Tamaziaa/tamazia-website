@@ -18,7 +18,7 @@ check() {
   fi
 }
 
-echo "=== Phase 0-4 28-level bug test against $BASE ==="
+echo "=== Phase 0-4 35-level bug test against $BASE ==="
 
 # 1. Honeypot-only POST to /api/contact
 code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"bot-field":"spam","name":"x","email":"x@x.x","company":"x","sector":"x"}' "$BASE/api/contact")
@@ -137,3 +137,31 @@ check "27. /api/health resend probe field" "$hr" "1"
 # 28. Contact form HTML carries ts_form_open hidden input
 ts=$(curl -sS "$BASE/" | grep -c 'ts_form_open' || true)
 check "28. contact form ts_form_open hidden input (>=1)" "$([[ $ts -ge 1 ]] && echo OK || echo FAIL)" "OK"
+
+# 29. /status/ public page renders
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/status/")
+check "29. /status/ page 200" "$code" "200"
+
+# 30. /api/cal-webhook stub responds (503 when secret unbound is correct)
+code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' "$BASE/api/cal-webhook")
+check "30. /api/cal-webhook 503 (no secret) or 400/401 (has secret)" "$([[ $code == "503" || $code == "400" || $code == "401" ]] && echo OK || echo FAIL)" "OK"
+
+# 31. /robots.txt lists RSS feed as sitemap
+rs=$(curl -sS "$BASE/robots.txt" | grep -c "feed.xml" || true)
+check "31. robots.txt RSS sitemap pointer" "$rs" "1"
+
+# 32. footer Status link
+fs=$(curl -sS "$BASE/" | grep -c '"/status/"' || true)
+check "32. footer Status link present" "$fs" "1"
+
+# 33. footer RSS link with correct rel and type
+fr=$(curl -sS "$BASE/" | grep -c 'rel="alternate" type="application/rss' || true)
+check "33. footer RSS rel+type alternate link" "$([[ $fr -ge 1 ]] && echo OK || echo FAIL)" "OK"
+
+# 34. /status/ page references /api/health
+sh=$(curl -sS "$BASE/status/" | grep -c "/api/health" || true)
+check "34. /status/ page polls /api/health" "$([[ $sh -ge 1 ]] && echo OK || echo FAIL)" "OK"
+
+# 35. /api/health JSON parseable + has timestamp
+ts=$(curl -sS "$BASE/api/health" | python3 -c "import sys, json; print(1 if json.load(sys.stdin).get('timestamp') else 0)" 2>/dev/null)
+check "35. /api/health has timestamp field" "$ts" "1"

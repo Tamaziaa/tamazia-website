@@ -94,6 +94,13 @@ const year = new Date().getFullYear();
     <!-- Small print -->
     <div class="small-print">
       <div class="copyright">{copyright.replace('2026', year.toString())}</div>
+        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController}</p>
+        <ul class="extra-legal-links" aria-label="Legal disclosures">
+          <li><a href={modernSlaveryHref}>Modern Slavery Statement</a></li>
+          <li><a href={complaintsHref}>Complaints</a></li>
+          <li><a href={acceptableUseHref}>Acceptable Use</a></li>
+          <li><a href={securityHref}>Security</a></li>
+        </ul>
       <div class="legal-links">
         {legalLinks.map((link, i) => (
           <>

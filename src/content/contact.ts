@@ -73,7 +73,7 @@ export const contactContent = {
   submitLabel: 'Begin the conversation →',
 
   calendlyHeading: 'Or schedule directly using the calendar below.',
-  calendlyUrl: 'https://cal.com/tamazia',
+  calendlyUrl: '/book/',
 
   confidentiality: 'All briefings are conducted under NDA on request. The founder reviews every enquiry.',
 

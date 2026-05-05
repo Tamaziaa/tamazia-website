@@ -19,8 +19,8 @@ navItems:
   - FAQ
   - Contact
 
-navCta: Request a Briefing
-navCtaUrl: https://cal.com/tamazia
+navCta: Book a Strategy Call
+navCtaUrl: /book/
 
 eyebrow: "The Brief · 2026"
 

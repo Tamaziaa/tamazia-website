@@ -1,0 +1,293 @@
+---
+// Phase 5 · /book/ · standalone landing page for the 30-min Strategy Call.
+// Embeds the Cal.com inline widget bound to the strategy-call event type
+// at cal.com/tamazia/strategy-call. Brand colours align with Tamazia tokens.
+// Booking events flow through the Cal.com webhook to /api/cal-webhook
+// where they are persisted to KV and (optionally) forwarded to Sheets.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+
+const canonicalUrl = 'https://tamazia.co.uk/book/';
+const pageTitle = 'Book a 30-minute strategy call · Tamazia';
+const pageDescription = 'Direct line to Aman Pareek, founder of Tamazia. Thirty minutes to map your growth picture, scope of work, and the shape of an engagement. No deck, no sales motion.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: pageTitle,
+      description: pageDescription,
+      isPartOf: { '@id': 'https://tamazia.co.uk/#website' },
+      inLanguage: 'en-GB',
+    },
+    {
+      '@type': 'Service',
+      '@id': `${canonicalUrl}#service`,
+      name: '30-minute strategy call',
+      description: pageDescription,
+      provider: { '@id': 'https://tamazia.co.uk/#organization' },
+      areaServed: ['United Kingdom', 'European Union', 'United Arab Emirates', 'United States'],
+      serviceType: 'Consultation',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'GBP',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tamazia.co.uk/' },
+        { '@type': 'ListItem', position: 2, name: 'Book a strategy call', item: canonicalUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <link slot="head" rel="preconnect" href="https://app.cal.com" crossorigin />
+  <link slot="head" rel="preconnect" href="https://cal.com" crossorigin />
+
+  <Header />
+
+  <main id="main">
+    <section class="book-intro">
+      <div class="book-intro-inner">
+        <p class="eyebrow">CALL · 30 MINUTES · NO COST</p>
+        <h1 class="book-h1">Book a strategy call.</h1>
+        <p class="book-lede">
+          Direct line to Aman Pareek, founder of Tamazia. Thirty minutes. We map your
+          growth picture, the scope of work that fits, and the shape of an engagement.
+          No deck, no sales motion. Bring the question that is keeping you up at night.
+        </p>
+        <ul class="book-bullets">
+          <li>Calendar shown in your local timezone.</li>
+          <li>Confirmation lands in your inbox in seconds.</li>
+          <li>Reschedule and cancel from the same email.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="book-embed-wrap">
+      <div class="book-embed-inner">
+        <div id="my-cal-inline-strategy-call" class="cal-inline" aria-label="Cal.com booking calendar"></div>
+      </div>
+    </section>
+
+    <section class="book-after">
+      <div class="book-after-inner">
+        <p class="book-after-note">
+          Cannot find a time that works? <a href="/contact/">Send a brief instead</a> and we will reply within one working day, UK time.
+        </p>
+        <div class="book-after-ctas">
+          <a href="/case-studies/" class="book-cta">See verified mandates &rarr;</a>
+          <a href="/about/" class="book-cta">Read about the founder &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script is:inline>
+  // Cal inline embed code begins
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal;
+      let ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement('script')).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ['initNamespace', namespace]);
+        } else {
+          p(cal, ar);
+        }
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+  Cal('init', 'strategy-call', { origin: 'https://app.cal.com' });
+
+  Cal.ns['strategy-call']('inline', {
+    elementOrSelector: '#my-cal-inline-strategy-call',
+    config: { layout: 'month_view', theme: 'light' },
+    calLink: 'tamazia/strategy-call',
+  });
+
+  Cal.ns['strategy-call']('ui', {
+    theme: 'light',
+    cssVarsPerTheme: {
+      light: {
+        'cal-brand': '#5A1A2B',
+        'cal-text': '#2A0C14',
+        'cal-text-emphasis': '#2A0C14',
+        'cal-bg': '#FAF7F2',
+        'cal-bg-emphasis': '#F1EADC',
+        'cal-border': '#E5DDCB',
+      },
+      dark: {
+        'cal-brand': '#C9A772',
+        'cal-text': '#FAF7F2',
+        'cal-text-emphasis': '#FAF7F2',
+        'cal-bg': '#2A0C14',
+        'cal-bg-emphasis': '#3A1622',
+        'cal-border': '#5A1A2B',
+      },
+    },
+    hideEventTypeDetails: false,
+    layout: 'month_view',
+  });
+  // Cal inline embed code ends
+</script>
+
+<style>
+  .book-intro {
+    background: #FAF7F2;
+    padding: 96px 24px 24px;
+    border-bottom: 1px solid #E5DDCB;
+  }
+  .book-intro-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .eyebrow {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: #5A1A2B;
+    margin-bottom: 18px;
+  }
+  .book-h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(36px, 6vw, 56px);
+    color: #2A0C14;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+  }
+  .book-lede {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #4A1625;
+    max-width: 720px;
+    margin: 0 auto 22px;
+  }
+  .book-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    color: #5C4047;
+    text-align: left;
+  }
+  .book-bullets li::before {
+    content: '·';
+    color: #C9A772;
+    margin-right: 10px;
+    font-weight: 700;
+  }
+  .book-embed-wrap {
+    background: #FAF7F2;
+    padding: 24px 24px 64px;
+  }
+  .book-embed-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border: 1px solid #E5DDCB;
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 720px;
+  }
+  .cal-inline {
+    width: 100%;
+    min-height: 720px;
+    overflow: auto;
+  }
+  .book-after {
+    background: #FAF7F2;
+    padding: 16px 24px 80px;
+    text-align: center;
+  }
+  .book-after-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .book-after-note {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    color: #5C4047;
+    margin-bottom: 22px;
+  }
+  .book-after-note a {
+    color: #5A1A2B;
+    border-bottom: 1px solid #C9A772;
+    padding: 0 0 1px;
+    text-decoration: none;
+  }
+  .book-after-note a:hover {
+    color: #2A0C14;
+    border-bottom-color: #5A1A2B;
+  }
+  .book-after-ctas {
+    display: inline-flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .book-cta {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: #5A1A2B;
+    text-decoration: none;
+    border-bottom: 1px solid #C9A772;
+    padding: 6px 2px;
+    transition: color 220ms ease, border-color 220ms ease;
+  }
+  .book-cta:hover {
+    color: #2A0C14;
+    border-bottom-color: #5A1A2B;
+  }
+  @media (max-width: 640px) {
+    .book-intro { padding: 72px 18px 18px; }
+    .book-embed-inner { min-height: 640px; }
+    .cal-inline { min-height: 640px; }
+    .book-after { padding: 12px 18px 56px; }
+  }
+</style>

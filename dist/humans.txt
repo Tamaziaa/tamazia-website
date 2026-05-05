@@ -1,0 +1,15 @@
+/* TEAM */
+Founder · Aman Pareek · UK · LLM King's College London
+Senior Advisor · Manuel Penadés Fons · ICC/LCIA arbitration
+Chief Legal Officer · Danish Khatri
+
+/* THANKS */
+ICC Paris, LCIA London, SIAC Singapore, DIAC Dubai
+King's College London accelerator
+
+/* SITE */
+Last update: 2026-05-04
+Build: 2026-05
+Standards: HTML5, CSS3, ES2023
+Components: Astro, Cloudflare Pages, Cloudflare Functions, Resend, Google Apps Script
+Software: Astro 4.16, Wrangler, GitHub Actions

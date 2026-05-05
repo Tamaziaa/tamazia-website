@@ -57,7 +57,6 @@ export async function handleSubmission(request, env, tab) {
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';
   return json({ ok: true, request_id, message: 'Brief received. Reply within one working day.' }, 200, baseHeaders);
 }
-}
 
 async function fireAlert(env, tab, body, request_id) {
   const html = `<h2 style="font-family:Georgia,serif">New ${tab} submission</h2>

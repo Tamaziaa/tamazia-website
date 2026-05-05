@@ -24,11 +24,12 @@ export const heroContent = {
     { label: 'Pricing',   href: '/#pricing' },
     { label: 'FAQ',       href: '/#faq' },
     { label: 'Contact',   href: '/#contact' },
+    { label: 'Book',      href: '/book/' },
     { label: 'Resources', href: '/resources/' },
   ],
 
-  navCta: 'Request a Briefing',
-  navCtaUrl: '/#contact',
+  navCta: 'Book a Strategy Call',
+  navCtaUrl: '/book/',
 
   // Subhead (above H1). Verbatim live site. Restored — was missing from prior rebuild.
   subHeadline:

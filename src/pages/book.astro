@@ -84,6 +84,11 @@ const jsonLd = {
     <section class="book-embed-wrap">
       <div class="book-embed-inner">
         <div id="my-cal-inline-strategy-call" class="cal-inline" aria-label="Cal.com booking calendar"></div>
+        <noscript>
+          <div class="cal-fallback">
+            <p>The booking calendar requires JavaScript. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a> or <a href="/contact/">send a brief instead</a>.</p>
+          </div>
+        </noscript>
       </div>
     </section>
 
@@ -138,12 +143,12 @@ const jsonLd = {
 
   Cal.ns['strategy-call']('inline', {
     elementOrSelector: '#my-cal-inline-strategy-call',
-    config: { layout: 'month_view', theme: 'light' },
+    config: { layout: 'month_view' },
     calLink: 'tamazia/strategy-call',
   });
 
   Cal.ns['strategy-call']('ui', {
-    theme: 'light',
+    theme: 'auto',
     cssVarsPerTheme: {
       light: {
         'cal-brand': '#5A1A2B',
@@ -166,6 +171,39 @@ const jsonLd = {
     layout: 'month_view',
   });
   // Cal inline embed code ends
+
+  // Embed-load failure detection · if the embed iframe never appears within 8s,
+  // show the fallback CTA so the visitor is never stranded.
+  setTimeout(() => {
+    const wrap = document.getElementById('my-cal-inline-strategy-call');
+    if (wrap && !wrap.querySelector('iframe')) {
+      wrap.innerHTML = '<div class="cal-fallback"><p>The booking calendar did not load. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a> or <a href="/contact/">send a brief instead</a>.</p></div>';
+    }
+  }, 8000);
+
+  // GA4 client-side event when embed iframe attaches.
+  (function watchEmbed() {
+    const wrap = document.getElementById('my-cal-inline-strategy-call');
+    if (!wrap) return;
+    const obs = new MutationObserver((muts, o) => {
+      if (wrap.querySelector('iframe')) {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cal_embed_loaded', { event_category: 'booking', event_label: 'strategy-call' });
+        }
+        o.disconnect();
+      }
+    });
+    obs.observe(wrap, { childList: true, subtree: true });
+  })();
+
+  // Listen for Cal.com booking-confirmed messages and fire conversion.
+  window.addEventListener('message', (ev) => {
+    if (ev?.data?.type === 'booking-successful' || ev?.data?.action === 'bookingSuccessful') {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', { event_category: 'booking', event_label: 'strategy-call', value: 1 });
+      }
+    }
+  });
 </script>
 
 <style>
@@ -220,6 +258,26 @@ const jsonLd = {
     color: #C9A772;
     margin-right: 10px;
     font-weight: 700;
+  }
+  .cal-fallback {
+    padding: 32px 24px;
+    text-align: center;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #5C4047;
+  }
+  .cal-fallback a {
+    color: #5A1A2B;
+    border-bottom: 1px solid #C9A772;
+    text-decoration: none;
+    padding: 0 0 1px;
+  }
+  .book-availability {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: #5C4047;
+    margin: 0 auto 14px;
+    max-width: 560px;
   }
   .book-embed-wrap {
     background: #FAF7F2;

@@ -30,6 +30,8 @@ export const footerContent = {
     { label: 'Pricing', href: '/#pricing' },
     { label: 'FAQ', href: '/#faq' },
     { label: 'Contact', href: '/#contact' },
+    { label: 'Book a strategy call', href: '/book/' },
+    { label: 'Press', href: '/press/' },
     { label: 'Resources', href: '/resources/' },
   ],
 

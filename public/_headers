@@ -28,4 +28,9 @@
 
 /.well-known/*
   Cache-Control: public, max-age=86400
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Referrer-Policy: no-referrer
   Content-Type: text/plain; charset=utf-8

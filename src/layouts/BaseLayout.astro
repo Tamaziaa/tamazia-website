@@ -32,28 +32,55 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'ProfessionalService',
+      '@type': 'LegalService',
       '@id': 'https://tamazia.co.uk/#organization',
       name: 'Tamazia',
+      alternateName: 'Tamazia · International SEO for regulated enterprises',
       url: 'https://tamazia.co.uk',
       logo: {
         '@type': 'ImageObject',
         url: 'https://tamazia.co.uk/og-default.png',
       },
-      description: 'Lawyer-led SEO and regulatory compliance firm for regulated enterprises.',
-      areaServed: ['United Kingdom', 'United Arab Emirates', 'United States', 'France', 'Global'],
+      image: 'https://tamazia.co.uk/og-default.png',
+      description: 'Lawyer-led SEO and regulatory compliance firm for regulated enterprises. Every campaign passes through 200+ frameworks before anything goes live.',
+      slogan: 'Ranking is only valuable if it is legal.',
+      areaServed: ['United Kingdom', 'European Union', 'United Arab Emirates', 'United States', 'France', 'Global'],
+      knowsAbout: [
+        'Search engine optimisation',
+        'Regulatory compliance',
+        'International arbitration',
+        'Business law',
+        'Healthcare advertising law',
+        'Financial services regulation',
+        'Real estate marketing compliance',
+        'Hospitality marketing compliance',
+      ],
+      sameAs: [
+        'https://linkedin.com/company/tamazia',
+        'https://instagram.com/tamazia',
+      ],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer support',
+        email: 'founder@tamazia.co.uk',
+        url: 'https://tamazia.co.uk/contact/',
+        availableLanguage: ['English'],
+      },
       founder: {
         '@type': 'Person',
         name: 'Aman Pareek',
         jobTitle: 'Founder',
+        sameAs: [
+          'https://linkedin.com/in/amanpareek',
+        ],
         alumniOf: {
           '@type': 'EducationalOrganization',
           name: "King's College London",
         },
       },
       memberOf: [
-        { '@type': 'Organization', name: 'Chartered Institute of Arbitrators' },
-        { '@type': 'Organization', name: 'American Bar Association' },
+        { '@type': 'Organization', name: 'Chartered Institute of Arbitrators', url: 'https://www.ciarb.org' },
+        { '@type': 'Organization', name: 'American Bar Association', url: 'https://www.americanbar.org' },
       ],
     },
     {
@@ -243,24 +270,56 @@ const jsonLd = {
         });
         window.__tamaziaGtag = gtag;
 
-        // Expose dismiss globally so inline onclick attributes always work,
-        // regardless of when this IIFE runs or whether listeners attached.
+        // Phase 6 · Consent Mode v2 schema:
+        // { v: 2, analytics: boolean, ad: false, ts: <unix-ms> }
+        // Sliding 13-month expiry per ICO guidance triggers re-prompt.
+        // Advertising consent stays denied permanently per founder decision.
         window.__tamaziaCookieDismiss = function(decision, ev) {
           if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(_){} }
-          try { localStorage.setItem(KEY, decision); } catch(_){}
+          var analytics = decision === 'granted';
+          var record = { v: 2, analytics: analytics, ad: false, ts: Date.now() };
+          try { localStorage.setItem(KEY, JSON.stringify(record)); } catch(_){}
+          try {
+            gtag('consent', 'update', {
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+              analytics_storage: analytics ? 'granted' : 'denied'
+            });
+          } catch(_){}
           const strip = document.getElementById('cookie-strip');
           if (strip) {
             strip.style.display = 'none';
             strip.setAttribute('hidden', '');
             strip.setAttribute('aria-hidden', 'true');
           }
-          try { window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { decision } })); } catch(_){}
+          try { window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { decision: decision, analytics: analytics } })); } catch(_){}
         };
 
         try {
-          let current = null;
-          try { current = localStorage.getItem(KEY); } catch (_) {}
-          if (current === 'granted' || current === 'denied') return;
+          var raw = null;
+          try { raw = localStorage.getItem(KEY); } catch (_) {}
+          var THIRTEEN_MONTHS = 13 * 30 * 86400000;
+          if (raw) {
+            // Accept v2 JSON or legacy string. Legacy string promotes to v2 silently.
+            var parsed = null;
+            try { parsed = JSON.parse(raw); } catch (_) {}
+            if (parsed && parsed.v === 2 && (Date.now() - parsed.ts) < THIRTEEN_MONTHS) {
+              if (parsed.analytics) {
+                try { gtag('consent', 'update', { analytics_storage: 'granted' }); } catch(_){}
+              }
+              return;
+            }
+            if (typeof raw === 'string' && (raw === 'granted' || raw === 'denied')) {
+              // Legacy migrate
+              var migrated = { v: 2, analytics: raw === 'granted', ad: false, ts: Date.now() };
+              try { localStorage.setItem(KEY, JSON.stringify(migrated)); } catch(_){}
+              if (migrated.analytics) {
+                try { gtag('consent', 'update', { analytics_storage: 'granted' }); } catch(_){}
+              }
+              return;
+            }
+          }
 
           const strip = document.getElementById('cookie-strip');
           if (!strip) return;

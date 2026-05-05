@@ -2,7 +2,33 @@
 import { faqContent } from '../../content/faq';
 
 const { eyebrow, h2, intro, categories, timeline, questions, closingLine } = faqContent;
+
+// Phase 6 · FAQPage JSON-LD for the homepage FAQ section.
+// Flatten answer paragraphs and sectorBreakdown into single answer strings per Q.
+function flattenAnswer(q: any): string {
+  const parts: string[] = [];
+  if (Array.isArray(q.answerParagraphs)) parts.push(...q.answerParagraphs);
+  if (Array.isArray(q.sectorBreakdown)) {
+    for (const sec of q.sectorBreakdown) {
+      parts.push(sec.name + ': ' + sec.body);
+    }
+  }
+  if (q.answer && typeof q.answer === 'string') parts.push(q.answer);
+  return parts.join(' ').slice(0, 2000);
+}
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': 'https://tamazia.co.uk/#faq',
+  inLanguage: 'en-GB',
+  mainEntity: questions.map((q: any) => ({
+    '@type': 'Question',
+    name: q.question,
+    acceptedAnswer: { '@type': 'Answer', text: flattenAnswer(q) },
+  })),
+};
 ---
+<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline></script>
 <section class="faq" id="faq" aria-labelledby="faq-heading">
   <div class="container">
     <div class="header-block">

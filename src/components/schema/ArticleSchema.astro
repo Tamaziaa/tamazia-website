@@ -1,0 +1,46 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  url: string;
+  datePublished?: string;
+  dateModified?: string;
+  authorName?: string;
+  image?: string;
+  sector?: string;
+}
+const {
+  title, description, url,
+  datePublished = '2026-05-04',
+  dateModified = '2026-05-04',
+  authorName = 'Aman Pareek',
+  image = 'https://tamazia.co.uk/og-default.png',
+  sector,
+} = Astro.props as Props;
+
+const json = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${url}#article`,
+  headline: title,
+  description,
+  url,
+  image: { '@type': 'ImageObject', url: image },
+  datePublished,
+  dateModified,
+  inLanguage: 'en-GB',
+  isAccessibleForFree: true,
+  author: {
+    '@type': 'Person',
+    name: authorName,
+    url: 'https://tamazia.co.uk/about/',
+    jobTitle: 'Founder',
+    sameAs: ['https://linkedin.com/in/amanpareek'],
+  },
+  publisher: { '@id': 'https://tamazia.co.uk/#organization' },
+  isPartOf: { '@id': 'https://tamazia.co.uk/#website' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  ...(sector ? { articleSection: sector } : {}),
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(json)} />

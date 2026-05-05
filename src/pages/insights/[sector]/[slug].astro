@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/layout/Header.astro';
 import Footer from '../../../components/layout/Footer.astro';
 import { insightSectors, insightPosts } from '../../../content/insights';
+import ArticleSchema from '../../../components/schema/ArticleSchema.astro';
 
 export function getStaticPaths() {
   return insightPosts
@@ -24,6 +25,7 @@ const bodyHtml = (post.body || '')
   .join('\n');
 ---
 <BaseLayout title={`${post.title} · Tamazia`} description={post.excerpt}>
+  <ArticleSchema slot="head" title={post.title} description={post.excerpt} url={`https://tamazia.co.uk/insights/${post.sectorSlug}/${post.slug}/`} sector={post.sector} datePublished={post.datePublished || '2026-05-04'} dateModified={post.dateModified || post.datePublished || '2026-05-04'} />
   <Header />
   <main id="main">
     <article class="article">

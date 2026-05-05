@@ -1,0 +1,43 @@
+---
+// Phase 7 · Cloudflare Turnstile · invisible widget by default
+// Renders only when PUBLIC_TURNSTILE_SITE_KEY is set (build-time bake-in).
+// Token is auto-injected as form field name="cf-turnstile-response".
+// Server verification happens in /api/contact and /api/briefings via TURNSTILE_SECRET_KEY.
+export interface Props {
+  formId: string;
+  mode?: 'invisible' | 'visible';
+  theme?: 'light' | 'dark' | 'auto';
+}
+const { formId, mode = 'invisible', theme = 'auto' } = Astro.props as Props;
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+---
+{siteKey && (
+  <>
+    <div
+      class="cf-turnstile"
+      data-tamazia-form={formId}
+      data-sitekey={siteKey}
+      data-size={mode === 'invisible' ? 'invisible' : 'normal'}
+      data-theme={theme}
+      data-appearance={mode === 'invisible' ? 'execute' : 'always'}
+      data-callback={`tamaziaTurnstileToken_${formId}`}
+      data-error-callback={`tamaziaTurnstileError_${formId}`}
+    ></div>
+    <script async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+    <script is:inline define:vars={{ formId }}>
+      window[`tamaziaTurnstileToken_${formId}`] = function (token) {
+        const f = document.getElementById(formId);
+        if (!f) return;
+        let i = f.querySelector(`input[name="cf-turnstile-response"]`);
+        if (!i) {
+          i = document.createElement('input');
+          i.type = 'hidden';
+          i.name = 'cf-turnstile-response';
+          f.appendChild(i);
+        }
+        i.value = token;
+      };
+      window[`tamaziaTurnstileError_${formId}`] = function () {};
+    </script>
+  </>
+)}

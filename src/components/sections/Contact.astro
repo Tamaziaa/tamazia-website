@@ -1,5 +1,6 @@
 ---
 import { contactContent } from '../../content/contact';
+import TurnstileWidget from '../security/TurnstileWidget.astro';
 
 const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl, confidentiality, successMessage } = contactContent;
 ---
@@ -62,6 +63,7 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
             </div>
           );
         })}
+        <TurnstileWidget formId="briefing-form" mode="invisible" />
 
         <button type="submit" class="submit-btn" id="briefing-submit">
           <span>{submitLabel}</span>

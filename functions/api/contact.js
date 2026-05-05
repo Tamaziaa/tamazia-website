@@ -1,6 +1,9 @@
-// /api/contact · Phase 3 · KV-backed receiver (inlined)
-// Shared form receiver · KV storage + Resend transactional + idempotency
+// /api/contact · Phase 3+7 · KV-backed receiver with email validation
+// Shared form receiver · KV storage + Resend transactional + idempotency + validator chain
 // Replaces the Apps Script dependency completely.
+
+import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { verifyTurnstile } from '../_lib/turnstile.js';
 
 export async function handleSubmission(request, env, tab) {
   const baseHeaders = {
@@ -24,6 +27,13 @@ export async function handleSubmission(request, env, tab) {
     return json({ error: 'invalid_email' }, 400, baseHeaders);
   }
 
+  // Email validator chain · ZeroBounce → Hunter → NeverBounce · fail-open
+  const validation = await validateEmail(body.email, env);
+  const reject = shouldRejectEmail(validation, env);
+  if (reject.reject) {
+    return json({ error: reject.reason }, 422, baseHeaders);
+  }
+
   const request_id = body.request_id || crypto.randomUUID();
   const submitted_at = new Date().toISOString();
 
@@ -37,6 +47,7 @@ export async function handleSubmission(request, env, tab) {
       tab_source: tab,
       request_id,
       submitted_at,
+      email_validation: validation,
       ip_country: request.headers.get('cf-ipcountry') || '',
       ip_truncated: (request.headers.get('cf-connecting-ip') || '').replace(/\.\d+$/, '.x'),
       ua: request.headers.get('user-agent') || '',

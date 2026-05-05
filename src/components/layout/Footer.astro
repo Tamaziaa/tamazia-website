@@ -3,6 +3,7 @@ import { footerContent } from '../../content/footer';
 
 const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, briefingsConsent, legalLinks, copyright, legalEntity, modernSlaveryHref, complaintsHref, acceptableUseHref, securityHref } = footerContent as any;
 const year = new Date().getFullYear();
+import TurnstileWidget from '../security/TurnstileWidget.astro';
 ---
 <footer class="footer" role="contentinfo">
   <!-- Monogram watermark -->
@@ -82,6 +83,7 @@ const year = new Date().getFullYear();
           <label class="sr-only" for="briefings-bot-field">Leave this field empty</label>
           <input type="text" id="briefings-bot-field" name="bot-field" tabindex="-1" autocomplete="off" aria-hidden="true" class="briefings-honeypot" />
           <p class="briefings-consent">{briefingsConsent}</p>
+          <TurnstileWidget formId="briefings-form" mode="invisible" />
           <button type="submit" class="briefings-btn" id="briefings-submit">{briefingsCta}</button>
           <p class="briefings-status" id="briefings-status" role="status" aria-live="polite" hidden></p>
         </form>

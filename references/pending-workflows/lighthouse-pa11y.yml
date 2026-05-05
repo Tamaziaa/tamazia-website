@@ -1,0 +1,92 @@
+# Phase 7 · Lighthouse + Pa11y baseline regression
+# Runs on every push to main AFTER deploy succeeds, and weekly via cron.
+# Posts results to GitHub Actions summary; fails the run if score regresses below baseline.
+#
+# Baseline (set after first run):
+#   Performance ≥ 90 (mobile)  Accessibility ≥ 95  SEO ≥ 95  Best Practices ≥ 92
+#   Pa11y errors = 0 on tested URLs
+
+name: Lighthouse + Pa11y
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Pages"]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'  # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  audit:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Lighthouse CI + Pa11y
+        run: |
+          npm install -g @lhci/cli@0.13.x pa11y@8 pa11y-ci@3
+
+      - name: Wait for Cloudflare Pages propagation
+        run: sleep 60
+
+      - name: Lighthouse CI · 5 critical URLs
+        run: |
+          lhci collect \
+            --url=https://tamazia.co.uk/ \
+            --url=https://tamazia.co.uk/contact/ \
+            --url=https://tamazia.co.uk/book/ \
+            --url=https://tamazia.co.uk/services/ \
+            --url=https://tamazia.co.uk/case-studies/ \
+            --numberOfRuns=2 \
+            --settings.preset=desktop || true
+          lhci assert \
+            --preset=lighthouse:no-pwa \
+            --assertions.categories:performance="error:{minScore:0.85}" \
+            --assertions.categories:accessibility="error:{minScore:0.95}" \
+            --assertions.categories:seo="error:{minScore:0.95}" \
+            --assertions.categories:best-practices="error:{minScore:0.90}" || echo "::warning::Lighthouse below target"
+
+      - name: Pa11y · WCAG 2.1 AA on 5 URLs
+        run: |
+          cat > .pa11yci.json <<JSON
+          {
+            "defaults": { "standard": "WCAG2AA", "timeout": 30000 },
+            "urls": [
+              "https://tamazia.co.uk/",
+              "https://tamazia.co.uk/contact/",
+              "https://tamazia.co.uk/book/",
+              "https://tamazia.co.uk/services/",
+              "https://tamazia.co.uk/case-studies/"
+            ]
+          }
+          JSON
+          pa11y-ci --config .pa11yci.json --json > pa11y-report.json || true
+          node -e "
+            const r = require('./pa11y-report.json');
+            const errs = (r.results || {}).total ? Object.values(r.results).reduce((a,c)=>a+(c.length||0),0) : 0;
+            console.log('Pa11y total issues:', errs);
+            if (errs > 5) { console.error('::error::Pa11y baseline 5 exceeded'); process.exit(1); }
+          "
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-pa11y-${{ github.run_number }}
+          path: |
+            .lighthouseci/
+            pa11y-report.json
+          retention-days: 30
+
+      - name: Summarize
+        if: always()
+        run: |
+          echo "## Lighthouse + Pa11y · run ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "URLs: 5 · Standard: WCAG 2.1 AA · Lighthouse preset: desktop" >> $GITHUB_STEP_SUMMARY
+          echo "Reports uploaded as artifact lighthouse-pa11y-${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY

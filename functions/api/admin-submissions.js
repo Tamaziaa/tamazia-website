@@ -10,6 +10,19 @@ export const onRequestGet = async ({ request, env }) => {
     });
   }
 
+  // Per-access audit log
+  if (env.FORM_SUBMISSIONS) {
+    const auditKey = `admin-access:${Date.now()}:${crypto.randomUUID().slice(0,8)}`;
+    await env.FORM_SUBMISSIONS.put(auditKey, JSON.stringify({
+      at: new Date().toISOString(),
+      ip_country: request.headers.get('cf-ipcountry') || '',
+      ip_truncated: (request.headers.get('cf-connecting-ip') || '').replace(/\.\d+$/, '.x'),
+      ua: (request.headers.get('user-agent') || '').slice(0, 200),
+      auth_via: request.headers.get('x-admin-secret') ? 'header' : 'query',
+      tab: new URL(request.url).searchParams.get('tab') || 'all'
+    }), { expirationTtl: 60 * 60 * 24 * 365 }).catch(() => {});
+  }
+
   if (!env.FORM_SUBMISSIONS) {
     return new Response(JSON.stringify({ error: 'kv_not_bound' }), {
       status: 503,
@@ -19,7 +32,7 @@ export const onRequestGet = async ({ request, env }) => {
 
   const url = new URL(request.url);
   const tab = url.searchParams.get('tab') || '';
-  const ALLOWED_TABS = ['', 'contact', 'briefings', 'audit', 'bookings', 'nel'];
+  const ALLOWED_TABS = ['', 'contact', 'briefings', 'audit', 'bookings', 'nel', 'csp'];
   if (!ALLOWED_TABS.includes(tab)) {
     return new Response(JSON.stringify({ error: 'invalid_tab', allowed: ALLOWED_TABS.filter(t => t) }), {
       status: 400, headers: { 'Content-Type': 'application/json' }
@@ -45,7 +58,8 @@ export const onRequestGet = async ({ request, env }) => {
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'no-store',
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': 'https://tamazia.co.uk',
+      'Vary': 'Origin'
     }
   });
 };

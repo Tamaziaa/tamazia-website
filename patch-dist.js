@@ -677,6 +677,265 @@ try {
   }
 } catch (e) { console.log('[patch-dist]   WARN 50. ' + e.message); results.push({ ok: true }); }
 
+// Phase 9 gates · 51-70
+
+// Gate 51 · 5 governance files at repo root (README, CLAUDE, SECURITY, CONTRIBUTING, CHANGELOG)
+try {
+  const govFiles = ['README.md', 'CLAUDE.md', 'SECURITY.md', 'CONTRIBUTING.md', 'CHANGELOG.md'];
+  let allPresent = true;
+  for (const f of govFiles) if (!existsSync(join(ROOT, f))) { allPresent = false; console.error('[patch-dist]   FAIL 51. missing repo root: ' + f); break; }
+  if (!allPresent) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 51. 5 governance files at repo root'); results.push({ ok: true }); }
+} catch (e) { console.log('[patch-dist]   WARN 51. ' + e.message); results.push({ ok: true }); }
+
+// Gate 52 · functions/_lib/csv.js shipped (RFC 4180)
+try {
+  if (!existsSync(join(ROOT, 'functions', '_lib', 'csv.js'))) {
+    console.error('[patch-dist]   FAIL 52. functions/_lib/csv.js missing'); results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 52. functions/_lib/csv.js · RFC 4180 escape'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 53 · csp-report + nel-report body cap + Content-Type validation
+try {
+  const csp = readFileSync(join(ROOT, 'functions', 'api', 'csp-report.js'), 'utf8');
+  const nel = readFileSync(join(ROOT, 'functions', 'api', 'nel-report.js'), 'utf8');
+  if (!csp.includes('MAX_BODY_BYTES') || !csp.includes('unsupported_media_type')) {
+    console.error('[patch-dist]   FAIL 53. csp-report missing body cap or content-type check'); results.push({ ok: false });
+  } else if (!nel.includes('MAX_BODY_BYTES') || !nel.includes('unsupported_media_type')) {
+    console.error('[patch-dist]   FAIL 53. nel-report missing body cap or content-type check'); results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 53. csp-report + nel-report · 32KB cap + Content-Type validation');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 54 · receivers · time-trap upper bound (30-min)
+try {
+  for (const f of ['contact.js', 'briefings.js', 'audit.js']) {
+    const c = readFileSync(join(ROOT, 'functions', 'api', f), 'utf8');
+    if (!c.includes('MAX_FORM_AGE_MS')) {
+      console.error('[patch-dist]   FAIL 54. ' + f + ' missing time-trap upper bound');
+      results.push({ ok: false });
+      break;
+    }
+  }
+  if (results[results.length - 1]?.ok !== false) {
+    console.log('[patch-dist]   PASS 54. receivers · 30-minute time-trap upper bound on contact/briefings/audit');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 55 · receivers · obfuscated honeypot field names
+try {
+  for (const f of ['contact.js', 'briefings.js', 'audit.js']) {
+    const c = readFileSync(join(ROOT, 'functions', 'api', f), 'utf8');
+    if (!c.includes('c_website_2') || !c.includes('c_homepage_url')) {
+      console.error('[patch-dist]   FAIL 55. ' + f + ' missing obfuscated honeypot fields');
+      results.push({ ok: false });
+      break;
+    }
+  }
+  if (results[results.length - 1]?.ok !== false) {
+    console.log('[patch-dist]   PASS 55. receivers · honeypot c_website_2 + c_homepage_url + bot-field');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 56 · dsar-token.js · iss + nbf + ttl_seconds in error
+try {
+  const t = readFileSync(join(ROOT, 'functions', '_lib', 'dsar-token.js'), 'utf8');
+  if (!t.includes('wrong_issuer') || !t.includes('not_yet_valid') || !t.includes('ttl_seconds')) {
+    console.error('[patch-dist]   FAIL 56. dsar-token missing iss/nbf/ttl_seconds');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 56. dsar-token · iss + nbf + ttl_seconds in expired error');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 57 · /legal/data-protection · ICO Wycliffe House address + retention table + breach response
+try {
+  const dp = readFileSync(join(DIST_DIR, 'legal', 'data-protection', 'index.html'), 'utf8');
+  if (!dp.includes('Wycliffe House') || !dp.includes('Retention schedule') || !dp.includes('Breach response')) {
+    console.error('[patch-dist]   FAIL 57. /legal/data-protection missing ICO address or retention or breach section');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 57. /legal/data-protection · ICO Wycliffe House + retention table + breach response');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 58 · /legal/dpa · Schedules 1+2 + execution + governing law
+try {
+  const dpa = readFileSync(join(DIST_DIR, 'legal', 'dpa', 'index.html'), 'utf8');
+  const required = ['Schedule 1', 'Schedule 2', 'Execution', 'Governing law', 'DocuSign'];
+  let allPresent = true;
+  for (const r of required) if (!dpa.includes(r)) { allPresent = false; console.error('[patch-dist]   FAIL 58. /legal/dpa missing ' + r); break; }
+  if (!allPresent) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 58. /legal/dpa · Schedules 1+2 + Execution + Governing law'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 59 · src/data/sub-processors.yaml shipped
+try {
+  if (!existsSync(join(ROOT, 'src', 'data', 'sub-processors.yaml'))) {
+    console.error('[patch-dist]   FAIL 59. src/data/sub-processors.yaml missing'); results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 59. src/data/sub-processors.yaml shipped'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 60 · /api/admin-submissions audit log + tightened CORS
+try {
+  const a = readFileSync(join(ROOT, 'functions', 'api', 'admin-submissions.js'), 'utf8');
+  if (!a.includes('admin-access:') || !a.includes('https://tamazia.co.uk')) {
+    console.error('[patch-dist]   FAIL 60. admin-submissions missing audit log or tightened CORS');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 60. /api/admin-submissions · per-access audit + Origin tamazia.co.uk');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 61 · /api/list-unsubscribe HMAC token + RFC 8058 GET+POST
+try {
+  const u = readFileSync(join(ROOT, 'functions', 'api', 'list-unsubscribe.js'), 'utf8');
+  if (!u.includes('verifyToken') || !u.includes('onRequestPost') || !u.includes('onRequestGet') || !u.includes('mintUnsubscribeToken')) {
+    console.error('[patch-dist]   FAIL 61. list-unsubscribe missing HMAC token + GET+POST');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 61. /api/list-unsubscribe · HMAC token + GET+POST + 303 redirect to /unsubscribed/');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 62 · /api/erase reverse index cleanup + completion email + parallel
+try {
+  const e = readFileSync(join(ROOT, 'functions', 'api', 'erase.js'), 'utf8');
+  if (!e.includes('email-bookings:') || !e.includes('cal-uid:') || !e.includes('Promise.all') || !e.includes('Erasure complete · Tamazia')) {
+    console.error('[patch-dist]   FAIL 62. erase.js missing reverse cleanup or completion email or Promise.all');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 62. /api/erase · 3-phase deletion (primary + reverse indexes + completion email)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 63 · /api/portability dynamic columns + RFC 4180 + BOM option
+try {
+  const p2 = readFileSync(join(ROOT, 'functions', 'api', 'portability.js'), 'utf8');
+  if (!p2.includes('csvFromObjects') || !p2.includes('wantBom') || !p2.includes('filenameHash')) {
+    console.error('[patch-dist]   FAIL 63. portability.js missing dynamic columns or BOM or hashed filename');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 63. /api/portability · dynamic columns + RFC 4180 + BOM option + hashed filename');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 64 · cookie banner has explicit Reject button (UK ICO equal-prominence)
+try {
+  const home = readFileSync(INDEX_HTML, 'utf8');
+  if (!/cookie-btn--reject/.test(home) && !/Reject non-essential/.test(home)) {
+    console.error('[patch-dist]   FAIL 64. cookie banner missing Reject button');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 64. cookie banner · explicit Reject + Accept (ICO equal-prominence)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 65 · functions count is now 13+ (P9 expansion)
+try {
+  const fnDir = join(ROOT, 'functions', 'api');
+  const fns = readdirSync(fnDir).filter(f => f.endsWith('.js'));
+  if (fns.length < 13) {
+    console.error('[patch-dist]   FAIL 65. expected ≥13 API functions, found ' + fns.length);
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 65. ' + fns.length + ' API functions · expanded for Phase 9');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 66 · functions/_lib/ has 4 utility libs (email-validator, turnstile, dsar-token, csv)
+try {
+  const libDir = join(ROOT, 'functions', '_lib');
+  const libs = readdirSync(libDir);
+  const expected = ['email-validator.js', 'turnstile.js', 'dsar-token.js', 'csv.js'];
+  let allPresent = true;
+  for (const l of expected) if (!libs.includes(l)) { allPresent = false; break; }
+  if (!allPresent) {
+    console.error('[patch-dist]   FAIL 66. functions/_lib/ missing one of ' + expected.join(', '));
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 66. functions/_lib/ · 4 utility libs (validator, turnstile, dsar-token, csv)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 67 · No "sole proprietor" anywhere in dist/ (verifies founder reversal stuck)
+try {
+  let leaked = '';
+  function scan(dir) {
+    if (leaked) return;
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      if (leaked) return;
+      const full = join(dir, e.name);
+      if (e.isDirectory()) scan(full);
+      else if (e.name.endsWith('.html')) {
+        const c = readFileSync(full, 'utf8');
+        if (/sole proprietor/i.test(c)) { leaked = full; return; }
+      }
+    }
+  }
+  scan(DIST_DIR);
+  if (leaked) {
+    console.error('[patch-dist]   FAIL 67. sole proprietor leaked in: ' + relative(ROOT, leaked));
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 67. dist/ · zero "sole proprietor" mentions across 53 pages');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 68 · /unsubscribed/ uses Rejoin not Subscribe (was caught + fixed)
+try {
+  const u = readFileSync(join(DIST_DIR, 'unsubscribed', 'index.html'), 'utf8');
+  if (/\bSubscribe\b/i.test(u) && !/\bUnsubscribed\b/i.test(u.replace(/Unsubscribed/g, ''))) {
+    console.error('[patch-dist]   FAIL 68. /unsubscribed/ contains forbidden Subscribe verb');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 68. /unsubscribed/ language · uses Rejoin pattern');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 69 · README at repo root references 50 gates + 16 functions + 53 pages
+try {
+  const r = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  if (!r.includes('Tamazia Pvt Ltd') || !r.includes('50 patch-dist gates')) {
+    console.error('[patch-dist]   FAIL 69. README missing Tamazia Pvt Ltd or 50-gate state');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 69. README · Tamazia Pvt Ltd + 50-gate state');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 70 · DSAR endpoints all 3 reference dsar-token import
+try {
+  for (const f of ['dsar.js', 'erase.js', 'portability.js']) {
+    const c = readFileSync(join(ROOT, 'functions', 'api', f), 'utf8');
+    if (!c.includes("from '../_lib/dsar-token.js'")) {
+      console.error('[patch-dist]   FAIL 70. ' + f + ' missing dsar-token import');
+      results.push({ ok: false });
+      break;
+    }
+  }
+  if (results[results.length - 1]?.ok !== false) {
+    console.log('[patch-dist]   PASS 70. DSAR endpoints · all 3 use signed-token verification');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

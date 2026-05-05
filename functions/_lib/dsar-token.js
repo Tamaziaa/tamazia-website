@@ -59,8 +59,16 @@ export async function verifyToken(token, env) {
   if (!ok) return { ok: false, reason: 'bad_signature' };
   let payload;
   try { payload = b64uDecode(head); } catch { return { ok: false, reason: 'bad_payload' }; }
-  if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
-    return { ok: false, reason: 'expired' };
+  const now = Math.floor(Date.now() / 1000);
+  if (payload.exp && payload.exp < now) {
+    return { ok: false, reason: 'expired', issued_at: payload.iat, expired_at: payload.exp, ttl_seconds: 7 * 24 * 60 * 60 };
+  }
+  if (payload.nbf && payload.nbf > now) {
+    return { ok: false, reason: 'not_yet_valid' };
+  }
+  // Domain isolation: only honour tokens minted for tamazia.co.uk
+  if (payload.iss && payload.iss !== 'tamazia.co.uk') {
+    return { ok: false, reason: 'wrong_issuer' };
   }
   return { ok: true, payload };
 }

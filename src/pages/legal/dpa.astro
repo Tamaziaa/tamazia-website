@@ -68,7 +68,41 @@ const url = 'https://tamazia.co.uk/legal/dpa/';
     </section>
 
     <section>
-      <h2>9. Governing law and jurisdiction</h2>
+      <h2>9. Schedule 1 · categories of personal data</h2>
+      <p>The categories of personal data processed under this agreement are listed at <a href="/legal/data-protection/">/legal/data-protection/</a> Section "Categories of personal data processed". Where the underlying contract specifies further categories, those categories are added to this schedule by reference and form part of this agreement.</p>
+    </section>
+
+    <section>
+      <h2>10. Schedule 2 · technical and organisational measures</h2>
+      <p>The processor implements appropriate technical and organisational measures to ensure a level of security appropriate to the risk, including:</p>
+      <ul>
+        <li>Encryption of personal data in transit (TLS 1.2 minimum) and at rest (Cloudflare Workers KV at-rest encryption).</li>
+        <li>HMAC-SHA256 verification on all inbound webhooks (Cal.com booking lifecycle).</li>
+        <li>Bot mitigation (Cloudflare Turnstile, honeypot fields, time-trap windows of 2 seconds minimum and 30 minutes maximum).</li>
+        <li>Email validator chain (ZeroBounce, Hunter, NeverBounce) with optional reject mode for invalid or disposable addresses.</li>
+        <li>Per-IP rate limiting at Cloudflare WAF for form receivers (5 requests per minute) and admin endpoint (30 requests per minute).</li>
+        <li>Truncation of source IP addresses (final octet redacted) before persistence.</li>
+        <li>Cloudflare Access policy on /admin/* paths (zero-trust enrolment).</li>
+        <li>Two-step HMAC-signed token verification for data subject rights endpoints (/api/dsar, /api/erase, /api/portability) with a 7-day token TTL.</li>
+        <li>Audit logging of every data subject erasure request, retained for seven years to evidence compliance with Article 17.</li>
+        <li>Automated 24-month TTL on all KV form submission records.</li>
+        <li>Cloudflare Web Application Firewall managed rulesets at default sensitivity, plus 5 custom rules covering scraper user-agents, geographic enforcement on /admin/*, method enforcement on receivers, and List-Unsubscribe POST allowlist.</li>
+        <li>HTTP Strict-Transport-Security with max-age 63,072,000 seconds (2 years), includeSubDomains, and the preload directive submitted to the Chromium HSTS preload list.</li>
+        <li>A Content Security Policy that constrains script-src, style-src, img-src, connect-src, frame-src, and object-src; reports to /api/csp-report.</li>
+        <li>Network Error Logging at 5 per cent sample rate; reports to /api/nel-report.</li>
+        <li>Quarterly key rotation for ADMIN_SECRET, CAL_WEBHOOK_SECRET, and Resend API key.</li>
+        <li>Annual rotation for DKIM signing keys.</li>
+        <li>Cloudflare Pages deployment via wrangler with patch-dist 50-gate post-build verification, including JSON-LD validity, image dimension presence (CLS-safe), CSP enforcement, and presence of all compliance pages.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>11. Execution</h2>
+      <p>This agreement is executed by countersignature in writing or by electronic signature through a recognised provider (DocuSign, Adobe Sign, or HelloSign), or by click-through acceptance via a unique signing link issued by Tamazia to the controller's authorised representative. The agreement enters into force on the later of the date of signature by the last party to sign or the start date of the underlying contract.</p>
+    </section>
+
+    <section>
+      <h2>12. Governing law and jurisdiction</h2>
       <p>This agreement and any dispute or claim arising out of or in connection with it or its subject matter is governed by and construed in accordance with the law of England and Wales for engagements with United Kingdom and European Economic Area clients, and the law of India for engagements with Indian clients. The parties irrevocably agree that the courts of England and Wales (or, as the case may be, of the relevant Indian state) have exclusive jurisdiction to settle any such dispute or claim.</p>
     </section>
   </main>

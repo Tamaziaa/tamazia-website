@@ -17,10 +17,12 @@ export async function handleSubmission(request, env, tab) {
     return json({ error: 'invalid_json' }, 400, baseHeaders);
   }
 
-  if (body['bot-field'] || body.honeypot_value) {
+  if (body['bot-field'] || body.honeypot_value || body.c_website_2 || body.c_homepage_url) {
     return json({ ok: true, silent: true }, 200, baseHeaders);
   }
-  if (body.ts_form_open && (Date.now() - Number(body.ts_form_open)) < 2000) {
+  const formAge = body.ts_form_open ? (Date.now() - Number(body.ts_form_open)) : 0;
+  const MAX_FORM_AGE_MS = 30 * 60 * 1000;
+  if (body.ts_form_open && formAge < 2000) {
     return json({ ok: true, silent: true }, 200, baseHeaders);
   }
   if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {

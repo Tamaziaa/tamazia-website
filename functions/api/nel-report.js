@@ -1,43 +1,35 @@
-// /api/nel-report · Phase 7 · Network Error Logging endpoint
-// Browsers post NEL violations here per the NEL header in _headers.
-// Stored in KV under `nel:<timestamp>:<request_id>` with 30-day TTL.
+// /api/nel-report · Phase 9 hardened · Network Error Logging receiver
+// Body-size cap 32KB · Content-Type validation · 30-day KV TTL · IP truncated.
+
+const MAX_BODY_BYTES = 32 * 1024;
 
 export const onRequestPost = async ({ request, env }) => {
-  const ct = request.headers.get('content-type') || '';
-  if (!ct.includes('application/reports+json') && !ct.includes('application/json')) {
-    return new Response(null, { status: 204 });
+  const cl = parseInt(request.headers.get('content-length') || '0', 10);
+  if (cl > MAX_BODY_BYTES) return new Response('payload_too_large', { status: 413 });
+  const ctype = (request.headers.get('content-type') || '').toLowerCase();
+  if (ctype && !/(application\/reports\+json|application\/json)/.test(ctype)) {
+    return new Response('unsupported_media_type', { status: 415 });
   }
-  let reports = [];
-  try { reports = await request.json(); } catch { return new Response(null, { status: 204 }); }
-  if (!Array.isArray(reports)) reports = [reports];
-
-  const ts = Date.now();
+  let body;
+  try {
+    const text = await request.text();
+    if (text.length > MAX_BODY_BYTES) return new Response('payload_too_large', { status: 413 });
+    body = JSON.parse(text);
+  } catch {
+    return new Response('invalid_json', { status: 400 });
+  }
   const ip = request.headers.get('cf-connecting-ip') || '';
-  const ua = request.headers.get('user-agent') || '';
-
-  for (const r of reports.slice(0, 10)) {
-    const key = `nel:${ts}:${crypto.randomUUID()}`;
-    const record = {
-      received_at: new Date(ts).toISOString(),
-      type: r.type || 'unknown',
-      url: r.url || '',
-      body: r.body || {},
-      ip_truncated: ip.replace(/\.\d+$/, '.0').replace(/:[^:]+$/, ':0'),
-      ua: ua.slice(0, 200),
-    };
-    if (env.FORM_SUBMISSIONS) {
-      try {
-        await env.FORM_SUBMISSIONS.put(key, JSON.stringify(record), {
-          expirationTtl: 60 * 60 * 24 * 30
-        });
-      } catch {}
-    }
+  const ip_truncated = ip.replace(/\.\d+$/, '.x').replace(/:[\da-f]+$/i, ':x');
+  if (env.FORM_SUBMISSIONS) {
+    const key = `nel:${Date.now()}:${crypto.randomUUID().slice(0,8)}`;
+    await env.FORM_SUBMISSIONS.put(key, JSON.stringify({
+      at: new Date().toISOString(),
+      ip_truncated,
+      ip_country: request.headers.get('cf-ipcountry') || '',
+      reports: Array.isArray(body) ? body.slice(0, 50) : body
+    }), { expirationTtl: 60 * 60 * 24 * 30 });
   }
-  try { console.log(JSON.stringify({ component: 'nel-report', count: reports.length, outcome: 'persisted' })); } catch {}
   return new Response(null, { status: 204 });
 };
 
-export const onRequest = async () => new Response(null, {
-  status: 405,
-  headers: { 'Allow': 'POST' }
-});
+export const onRequestOptions = () => new Response(null, { status: 204 });

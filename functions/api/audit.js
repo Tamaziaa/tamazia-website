@@ -925,11 +925,16 @@ export const onRequestPost = async ({ request, env }) => {
   }
 
   // Honeypot + time-trap (silent accept)
-  if (body['bot-field'] || body.honeypot_value || body.c_website_2) {
+  if (body['bot-field'] || body.honeypot_value || body.c_website_2 || body.c_homepage_url) {
     return new Response(JSON.stringify({ ok: true, silent: true }), { status: 200, headers: baseHeaders });
   }
-  if (body.ts_form_open && (Date.now() - Number(body.ts_form_open)) < 2000) {
+  const formAge = body.ts_form_open ? (Date.now() - Number(body.ts_form_open)) : 0;
+  const MAX_FORM_AGE_MS = 30 * 60 * 1000;
+  if (body.ts_form_open && formAge < 2000) {
     return new Response(JSON.stringify({ ok: true, silent: true }), { status: 200, headers: baseHeaders });
+  }
+  if (body.ts_form_open && formAge > MAX_FORM_AGE_MS) {
+    return new Response(JSON.stringify({ error: 'form_expired', reason: 'submit_window_30min' }), { status: 422, headers: baseHeaders });
   }
 
   // Cloudflare Turnstile · skip if no secret bound

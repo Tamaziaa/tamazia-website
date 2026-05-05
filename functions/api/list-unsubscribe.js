@@ -1,68 +1,105 @@
-// /api/list-unsubscribe · RFC 8058 One-Click Unsubscribe
-// 2024 Bulk Sender Compliance · Gmail and Yahoo enforce
-// Returns 200 with empty body on POST · idempotent
-
-export const onRequestPost = async ({ request, env }) => {
-  let body;
-  try {
-    body = await request.formData();
-  } catch {
-    body = null;
-  }
-  const id = body?.get('id') || new URL(request.url).searchParams.get('id') || 'unknown';
-
-  // Forward to Apps Script for sheet append (errors tab + suppression list)
-  if (env.SHEETS_WEBHOOK_URL && env.SHEETS_HMAC_SECRET) {
-    const payload = JSON.stringify({
-      tab_source: 'errors',
-      request_id: id,
-      notes: 'List-Unsubscribe One-Click triggered',
-      consent_legal_basis: 'withdrawn',
-      consent_timestamp: new Date().toISOString()
-    });
-    const sig = await hmacHex(payload, env.SHEETS_HMAC_SECRET);
-    try {
-      await fetch(env.SHEETS_WEBHOOK_URL + '?sig=' + sig, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload
-      });
-    } catch { /* fire-and-forget */ }
-  }
-
-  return new Response('', { status: 200, headers: { 'Cache-Control': 'no-store' } });
-};
+// /api/list-unsubscribe · Phase 9 hardened · RFC 8058 + HMAC-signed tokens
+// Accepts both GET (List-Unsubscribe browser click) and POST (one-click).
+// Token format: dsar-token signed payload { email, action: 'unsubscribe', request_id }
+// Legacy support: ?id=<request_id> query parameter still honoured for emails
+// already in the wild from before Phase 9.
+import { mintToken, verifyToken } from '../_lib/dsar-token.js';
 
 export const onRequestGet = async ({ request, env }) => {
-  // Browser-friendly fallback · RFC 8058 also requires List-Unsubscribe URL to work via GET
-  const id = new URL(request.url).searchParams.get('id') || 'unknown';
-  const html = `<!doctype html><meta charset="utf-8"><title>Unsubscribed · Tamazia</title>
-<style>body{font-family:Georgia,serif;color:#2A0C14;background:#FAF7F2;padding:64px 24px;text-align:center}h1{font-weight:500}</style>
-<h1>You have been unsubscribed.</h1><p>Reference <code>${id.slice(0,8)}</code>.</p><p>If this was unintentional, write to <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>.</p>`;
-  // Also log
-  if (env.SHEETS_WEBHOOK_URL && env.SHEETS_HMAC_SECRET) {
-    const payload = JSON.stringify({
-      tab_source: 'errors',
-      request_id: id,
-      notes: 'List-Unsubscribe via GET',
-      consent_legal_basis: 'withdrawn',
-      consent_timestamp: new Date().toISOString()
-    });
-    const sig = await hmacHex(payload, env.SHEETS_HMAC_SECRET);
-    try {
-      await fetch(env.SHEETS_WEBHOOK_URL + '?sig=' + sig, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload
-      });
-    } catch { /* fire-and-forget */ }
-  }
-  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+  const url = new URL(request.url);
+  const token = url.searchParams.get('token');
+  const id = url.searchParams.get('id');
+  return await unsubscribe(request, env, { token, id });
 };
 
-async function hmacHex(message, secret) {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+export const onRequestPost = async ({ request, env }) => {
+  // RFC 8058 §3 · One-Click POST with body "List-Unsubscribe=One-Click"
+  const url = new URL(request.url);
+  let token = url.searchParams.get('token');
+  let id = url.searchParams.get('id');
+  // Some MUAs send the body URL-encoded
+  try {
+    const text = await request.text();
+    if (text && text.includes('List-Unsubscribe=One-Click')) {
+      // Honour as per RFC; token already from URL params
+    }
+  } catch {}
+  return await unsubscribe(request, env, { token, id });
+};
+
+async function unsubscribe(request, env, { token, id }) {
+  const headers = { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' };
+  if (!env.FORM_SUBMISSIONS) {
+    return Response.redirect('https://tamazia.co.uk/unsubscribed/?status=error&reason=kv_unbound', 303);
+  }
+  let email = null;
+  let request_id = null;
+  if (token) {
+    const v = await verifyToken(token, env);
+    if (!v.ok) {
+      return Response.redirect(`https://tamazia.co.uk/unsubscribed/?status=error&reason=${encodeURIComponent(v.reason)}`, 303);
+    }
+    if (v.payload.action !== 'unsubscribe') {
+      return Response.redirect('https://tamazia.co.uk/unsubscribed/?status=error&reason=wrong_action', 303);
+    }
+    email = v.payload.email;
+    request_id = v.payload.request_id;
+  } else if (id) {
+    // Legacy path · find KV record by request_id and delete
+    request_id = id;
+    const list = await env.FORM_SUBMISSIONS.list({ prefix: 'briefings:' });
+    for (const k of list.keys) {
+      if (k.name.endsWith(':' + request_id)) {
+        const v = await env.FORM_SUBMISSIONS.get(k.name);
+        try { email = JSON.parse(v).email; } catch {}
+        await env.FORM_SUBMISSIONS.delete(k.name);
+        break;
+      }
+    }
+  } else {
+    return Response.redirect('https://tamazia.co.uk/unsubscribed/?status=error&reason=missing_token', 303);
+  }
+
+  // Audit log of unsubscribe (13-month retention per ICO guidance evidence)
+  const auditKey = `unsub-log:${Date.now()}:${crypto.randomUUID().slice(0,8)}`;
+  await env.FORM_SUBMISSIONS.put(auditKey, JSON.stringify({
+    email_hash: email ? await hashEmail(email) : null,
+    request_id,
+    at: new Date().toISOString(),
+    via: token ? 'token' : 'legacy_id',
+    method: request.method
+  }), { expirationTtl: 60 * 60 * 24 * 30 * 13 }).catch(() => {});
+
+  // If we have email, delete from briefings list
+  if (email) {
+    const list = await env.FORM_SUBMISSIONS.list({ prefix: 'briefings:' });
+    for (const k of list.keys) {
+      const v = await env.FORM_SUBMISSIONS.get(k.name);
+      if (!v) continue;
+      try {
+        const r = JSON.parse(v);
+        if ((r.email || '').toLowerCase() === email.toLowerCase()) {
+          await env.FORM_SUBMISSIONS.delete(k.name);
+        }
+      } catch {}
+    }
+  }
+
+  return Response.redirect('https://tamazia.co.uk/unsubscribed/', 303);
 }
+
+async function hashEmail(email) {
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(email.toLowerCase()));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+}
+
+// Helper · mint a fresh unsubscribe token (used by auto-ack)
+export async function mintUnsubscribeToken(email, request_id, env) {
+  return mintToken({ email, action: 'unsubscribe', request_id }, env, 365 * 24 * 60 * 60);
+}
+
+export const onRequestOptions = () => new Response(null, {
+  status: 204,
+  headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
+});

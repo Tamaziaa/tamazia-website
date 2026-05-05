@@ -54,19 +54,68 @@ export const onRequestGet = async ({ request, env }) => {
 
   const email = v.payload.email;
   let deleted = 0;
+
+  // Phase 1 · primary records across 4 tabs · parallel inside each tab
   for (const tab of ['contact', 'briefings', 'audit', 'bookings']) {
     const list = await env.FORM_SUBMISSIONS.list({ prefix: tab + ':', limit: 1000 });
-    for (const k of list.keys) {
-      const value = await env.FORM_SUBMISSIONS.get(k.name);
+    const matches = [];
+    const checks = await Promise.all(list.keys.map(k => env.FORM_SUBMISSIONS.get(k.name).then(v => ({ k, v }))));
+    for (const { k, v: value } of checks) {
       if (!value) continue;
       try {
         const r = JSON.parse(value);
-        if ((r.email || '').toLowerCase() === email) {
-          await env.FORM_SUBMISSIONS.delete(k.name);
-          deleted++;
-        }
+        if ((r.email || '').toLowerCase() === email) matches.push(k.name);
       } catch {}
     }
+    if (matches.length) {
+      await Promise.all(matches.map(name => env.FORM_SUBMISSIONS.delete(name)));
+      deleted += matches.length;
+    }
+  }
+
+  // Phase 2 · clean reverse indexes (cal-uid, cal-bid, cal-ical, email-bookings)
+  const emailBookings = await env.FORM_SUBMISSIONS.list({ prefix: `email-bookings:${email}:`, limit: 1000 });
+  await Promise.all(emailBookings.keys.map(k => env.FORM_SUBMISSIONS.delete(k.name)));
+
+  // The cal-uid/bid/ical reverse keys point at bookings:* records that are now deleted.
+  // Sweep them by iterating the namespaces and checking if the target still exists.
+  for (const prefix of ['cal-uid:', 'cal-bid:', 'cal-ical:']) {
+    const list = await env.FORM_SUBMISSIONS.list({ prefix, limit: 1000 });
+    const sweeps = await Promise.all(list.keys.map(async k => {
+      const v = await env.FORM_SUBMISSIONS.get(k.name);
+      if (!v) return null;
+      try {
+        const r = JSON.parse(v);
+        const target = r.kv_key;
+        if (target && target.startsWith('bookings:')) {
+          const exists = await env.FORM_SUBMISSIONS.get(target);
+          if (!exists) return k.name;  // dangling reverse index
+        }
+      } catch {}
+      return null;
+    }));
+    const toDelete = sweeps.filter(Boolean);
+    if (toDelete.length) await Promise.all(toDelete.map(name => env.FORM_SUBMISSIONS.delete(name)));
+  }
+
+  // Phase 3 · send completion email if Resend bound
+  if (env.RESEND_API_KEY && email) {
+    fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: env.RESEND_FROM_ALERT || 'Tamazia DPO <dpo@tamazia.in>',
+        to: [email],
+        reply_to: 'dpo@tamazia.co.uk',
+        subject: 'Erasure complete · Tamazia',
+        html: `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
+          <p>Hello,</p>
+          <p>Your erasure request under UK GDPR Article 17 is complete. Tamazia has deleted ${deleted} records associated with your email address.</p>
+          <p>Tamazia retains an audit log of this erasure (without your email content) for seven years to evidence compliance with the regulation.</p>
+          <p>Tamazia Pvt Ltd · Data Protection Office<br>dpo@tamazia.co.uk</p>
+        </div>`
+      })
+    }).catch(() => {});
   }
 
   // Audit-log the erasure (separate KV key, not deletable by user)

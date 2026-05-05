@@ -93,13 +93,35 @@ const url = 'https://tamazia.co.uk/legal/data-protection/';
     </section>
 
     <section>
+      <h2>Retention schedule</h2>
+      <table class="retention">
+        <thead><tr><th>Category</th><th>Retention</th><th>Lawful basis</th></tr></thead>
+        <tbody>
+          <tr><td>Contact form submissions (KV)</td><td>24 months</td><td>Article 6(1)(b) and (f)</td></tr>
+          <tr><td>Briefings list subscriptions (KV)</td><td>active + 13 months</td><td>Article 6(1)(a)</td></tr>
+          <tr><td>Audit form submissions (KV)</td><td>24 months</td><td>Article 6(1)(b)</td></tr>
+          <tr><td>Booking records (KV)</td><td>24 months · client engagements 7 years</td><td>Article 6(1)(b) and (c)</td></tr>
+          <tr><td>NEL + CSP violation reports (KV)</td><td>30 days</td><td>Article 6(1)(f)</td></tr>
+          <tr><td>Erasure audit log (KV)</td><td>7 years</td><td>Article 6(1)(c) compliance evidence</td></tr>
+          <tr><td>Outbound research (CRM)</td><td>36 months from last interaction</td><td>Article 6(1)(f)</td></tr>
+          <tr><td>Tax and accounting records</td><td>7 years from end of accounting period</td><td>Companies Act 2006 + HMRC</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Breach response</h2>
+      <p>In the event of a personal data breach, Tamazia will notify the Information Commissioner's Office without undue delay and, where feasible, not later than seventy-two hours after becoming aware of the breach, in accordance with UK GDPR Article 33. Where the breach is likely to result in a high risk to the rights and freedoms of data subjects, Tamazia will communicate the breach to the affected data subjects without undue delay, in accordance with Article 34. The breach record is maintained at <code>references/breach-register.md</code> internally.</p>
+    </section>
+
+    <section>
       <h2>Cookies and analytics</h2>
       <p>Cookies and the Consent Mode v2 deployment are described at <a href="/cookie-policy/">tamazia.co.uk/cookie-policy</a>. Analytics cookies are not set unless the data subject grants consent through the cookie banner. The consent record is retained for thirteen months in accordance with Information Commissioner's Office guidance and is then re-prompted.</p>
     </section>
 
     <section>
       <h2>Complaints</h2>
-      <p>Concerns about Tamazia's processing should first be raised with <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>. If the response is unsatisfactory, the data subject is entitled to lodge a complaint with the Information Commissioner's Office (United Kingdom), the supervisory authority of the data subject's habitual residence (European Economic Area), or any other competent supervisory authority.</p>
+      <p>Concerns about Tamazia's processing should first be raised with <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>. If the response is unsatisfactory, the data subject is entitled to lodge a complaint with the Information Commissioner's Office at Wycliffe House, Water Lane, Wilmslow, Cheshire, SK9 5AF, United Kingdom (telephone +44 303 123 1113, online at <a href="https://ico.org.uk/make-a-complaint/">ico.org.uk/make-a-complaint</a>); the Commission Nationale de l'Informatique et des Libertés (France); the Garante per la Protezione dei Dati Personali (Italy); the Agencia Española de Protección de Datos (Spain); or the supervisory authority of the data subject's habitual residence within the European Economic Area.</p>
     </section>
   </main>
 </BaseLayout>
@@ -114,4 +136,13 @@ const url = 'https://tamazia.co.uk/legal/data-protection/';
   .legal ul { padding-left: 22px; }
   .legal li { margin-bottom: 6px; }
   .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+  .legal table.retention { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+  .legal table.retention th, .legal table.retention td { padding: 10px 12px; border-bottom: 1px solid #E5DDCB; vertical-align: top; text-align: left; }
+  .legal table.retention th { background: #F4F0E8; font-weight: 600; }
+  @media (max-width: 640px) {
+    .legal table.retention thead { display: none; }
+    .legal table.retention tr { display: block; padding: 10px 0; border-bottom: 1px solid #E5DDCB; }
+    .legal table.retention td { display: block; padding: 4px 0; border: none; }
+    .legal table.retention td::before { content: attr(data-label) ': '; font-weight: 600; }
+  }
 </style>

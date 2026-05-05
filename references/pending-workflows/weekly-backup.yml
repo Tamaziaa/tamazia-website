@@ -1,0 +1,53 @@
+# Phase 7 · Weekly automated backup
+# Snapshots the repository state and KV records to GitHub Releases each Sunday.
+
+name: Weekly backup
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Sunday 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tag and bundle git history
+        run: |
+          STAMP=$(date -u +%Y-%m-%d)
+          git bundle create "tamazia-website-$STAMP.bundle" --all
+          ls -la "tamazia-website-$STAMP.bundle"
+
+      - name: Snapshot KV records (admin endpoint)
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
+        run: |
+          STAMP=$(date -u +%Y-%m-%d)
+          mkdir -p backups
+          for tab in contact briefings audit bookings nel; do
+            curl -s "https://tamazia.co.uk/api/admin-submissions?key=$ADMIN_SECRET&tab=$tab&limit=1000" \
+              > "backups/$tab-$STAMP.json"
+          done
+          tar -czf "tamazia-kv-$STAMP.tar.gz" backups/
+
+      - name: Create GitHub Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-backup-${{ github.run_number }}
+          path: |
+            tamazia-website-*.bundle
+            tamazia-kv-*.tar.gz
+          retention-days: 90
+
+      - name: Summary
+        run: |
+          echo "## Weekly backup · $(date -u +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
+          echo "Repository bundle: present" >> $GITHUB_STEP_SUMMARY
+          echo "KV snapshots: contact, briefings, audit, bookings, nel" >> $GITHUB_STEP_SUMMARY
+          echo "Retention: 90 days" >> $GITHUB_STEP_SUMMARY

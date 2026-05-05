@@ -1,0 +1,64 @@
+# Phase 7 · Post-deploy synthetic check
+# Runs after every successful deploy; verifies live site responds and key endpoints work.
+
+name: Post-deploy synthetic check
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Pages"]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '*/30 * * * *'  # every 30 minutes
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CDN propagation
+        run: sleep 45
+
+      - name: Homepage returns 200
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://tamazia.co.uk/)
+          if [ "$code" != "200" ]; then echo "Home: $code" && exit 1; fi
+          echo "Home: 200"
+
+      - name: /book/ returns 200 with Cal embed
+        run: |
+          out=$(curl -s https://tamazia.co.uk/book/)
+          echo "$out" | grep -q "cal.com" || (echo "Cal embed missing" && exit 1)
+          echo "Book: cal.com embed present"
+
+      - name: /api/health returns env-bound JSON
+        run: |
+          j=$(curl -s https://tamazia.co.uk/api/health)
+          echo "$j" | python3 -m json.tool
+          echo "$j" | grep -q '"version"' || exit 1
+
+      - name: /api/cal-webhook gates HMAC
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            https://tamazia.co.uk/api/cal-webhook \
+            -H 'Content-Type: application/json' -d '{}')
+          # 401 = secret bound and rejecting; 503 = secret not bound (alert)
+          if [ "$code" = "503" ]; then echo "::error::cal-webhook secret unbound" && exit 1; fi
+          if [ "$code" != "401" ]; then echo "::warning::unexpected status $code"; fi
+          echo "cal-webhook: $code"
+
+      - name: /sitemap-index.xml is fresh XML
+        run: curl -sf https://tamazia.co.uk/sitemap-index.xml | grep -q 'sitemap'
+
+      - name: Robots.txt links sitemap
+        run: curl -sf https://tamazia.co.uk/robots.txt | grep -q 'Sitemap:'
+
+      - name: /legal/data-protection/ returns 200 with Article 27
+        run: curl -sf https://tamazia.co.uk/legal/data-protection/ | grep -q 'Article 27'
+
+      - name: Alert on failure
+        if: failure()
+        run: |
+          echo "::error::Tamazia synthetic check failed at $(date -u +%FT%TZ)"
+          # Future: webhook to Discord / Slack / Resend

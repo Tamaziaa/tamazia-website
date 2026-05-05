@@ -6,6 +6,7 @@
 // Why two-step: prevents anyone from enumerating someone else's data by guessing.
 // Token signed with HMAC + ADMIN_SECRET, 7-day TTL.
 import { mintToken, verifyToken } from '../_lib/dsar-token.js';
+import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 
 export const onRequestPost = async ({ request, env }) => {
   const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
@@ -15,7 +16,13 @@ export const onRequestPost = async ({ request, env }) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return new Response(JSON.stringify({ error: 'invalid_email' }), { status: 400, headers });
   }
-  if (!env.ADMIN_SECRET) {
+  // Phase 10 · email validator gate (reject disposable on DSAR endpoints to prevent abuse)
+  const validation = await validateEmail(email, env);
+  const reject = shouldRejectEmail(validation, env);
+  if (reject.reject) {
+    return new Response(JSON.stringify({ error: 'email_check_failed', reason: reject.reason }), { status: 422, headers });
+  }
+  if (!env.ADMIN_SECRET && !env.DSAR_SIGNING_SECRET) {
     return new Response(JSON.stringify({ error: 'admin_secret_unbound' }), { status: 503, headers });
   }
   const token = await mintToken({ email, action: 'access' }, env);
@@ -72,7 +79,11 @@ export const onRequestGet = async ({ request, env }) => {
       if (!value) continue;
       try {
         const r = JSON.parse(value);
-        if ((r.email || '').toLowerCase() === email) records.push({ ...r, _kv_key: k.name });
+        if ((r.email || '').toLowerCase() === email) {
+          // Filter internal _kv_key field; data subject doesn't need namespace structure
+          const { _kv_key, ...sanitised } = r;
+          records.push(sanitised);
+        }
       } catch {}
     }
   }

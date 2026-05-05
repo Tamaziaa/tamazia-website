@@ -9,8 +9,9 @@ export const footerContent = {
   locations: ['London', 'Dubai', 'New York', 'EU', 'Worldwide'],
 
   // Verbatim credentials line from live site footer
+  // Phase 10 founder decision · ABA line removed pending verification (credibility risk)
   credentialsLine:
-    'London · Dubai · New York · EU | Member, Chartered Institute of Arbitrators | Member, American Bar Association',
+    'London · Dubai · New York · EU | Member, Chartered Institute of Arbitrators',
 
   // Optional partner badges (kept but not in main credentials line)
   partnerBadges: ['GOOGLE PARTNER', 'META BUSINESS PARTNER'],
@@ -74,6 +75,6 @@ export const footerContent = {
   credentials: [
     "LLM · KING'S COLLEGE LONDON",
     'MEMBER, CHARTERED INSTITUTE OF ARBITRATORS',
-    'MEMBER, AMERICAN BAR ASSOCIATION',
+    // ABA membership line removed Phase 10 pending verification
   ],
 };

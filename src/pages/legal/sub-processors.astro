@@ -2,28 +2,20 @@
 // Phase 7 · Sub-processor list per Article 28(2) GDPR
 // Updated when sub-processors change.
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/schema/Breadcrumbs.astro';
 const updated = '5 May 2026';
 const url = 'https://tamazia.co.uk/legal/sub-processors/';
 
-const subProcessors = [
-  { name: 'Cloudflare, Inc.', purpose: 'Edge delivery, CF Workers, KV storage, Web Analytics, Email Routing, Pages hosting, Turnstile', country: 'United States · United Kingdom · India · Singapore', transfer: 'UK IDTA + EU SCC' },
-  { name: 'Resend Co.', purpose: 'Transactional email (auto-acknowledgement and internal alerts)', country: 'United States', transfer: 'UK IDTA + EU SCC' },
-  { name: 'Cal.com, Inc.', purpose: 'Booking and scheduling management', country: 'United States · Germany', transfer: 'UK IDTA + EU SCC + EEA' },
-  { name: 'Postmark', purpose: 'DMARC report aggregation', country: 'United States', transfer: 'UK IDTA + EU SCC' },
-  { name: 'Google LLC', purpose: 'Analytics (consent-gated), Postmaster Tools, Search Console', country: 'United States', transfer: 'UK IDTA + EU SCC + adequacy (UK Extension to EU-US Data Privacy Framework)' },
-  { name: 'Microsoft Corporation', purpose: 'Bing Webmaster Tools, SNDS reputation', country: 'United States', transfer: 'UK IDTA + EU SCC + adequacy (UK Extension to EU-US Data Privacy Framework)' },
-  { name: 'ZeroBounce LLC', purpose: 'Email validation prior to persistence', country: 'United States', transfer: 'UK IDTA + EU SCC' },
-  { name: 'Hunter SAS', purpose: 'Email validation prior to persistence', country: 'France', transfer: 'EEA' },
-  { name: 'NeverBounce, Inc.', purpose: 'Email validation prior to persistence', country: 'United States', transfer: 'UK IDTA + EU SCC' },
-  { name: 'GitHub, Inc.', purpose: 'Source repository, CI build for static deployment', country: 'United States', transfer: 'UK IDTA + EU SCC + adequacy (UK Extension to EU-US Data Privacy Framework)' },
-  { name: 'Bigrock Solutions Ltd', purpose: 'Domain registrar for tamazia.in', country: 'India', transfer: 'Adequacy (India is not adequate · UK SCC + Indian DPDPA 2023 cross-reference)' },
-];
+// Single source of truth: src/data/sub-processors.json
+import data from '../../data/sub-processors.json';
+const subProcessors = data.sub_processors;
 ---
 <BaseLayout
   title="Sub-processors · Tamazia"
   description="Current list of sub-processors used by Tamazia in the delivery of services, with country of processing and the international transfer instrument relied on."
   canonical={url}
 >
+  <Breadcrumbs items={[{name: "Home", url: "/"}, {name: "Legal", url: "/legal/data-protection/"}, {name: "Sub-processors", url: "/legal/sub-processors/"}]} />
   <main id="main" class="legal">
     <header>
       <p class="eyebrow">Updated {updated}</p>

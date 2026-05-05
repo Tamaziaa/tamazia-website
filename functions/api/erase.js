@@ -1,6 +1,7 @@
 // /api/erase · Phase 8 · UK GDPR Article 17 + EU GDPR Article 17 right to erasure
 // Two-step: POST { email } → email signed link · GET ?token=... → deletes all matching records
 import { mintToken, verifyToken } from '../_lib/dsar-token.js';
+import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 
 export const onRequestPost = async ({ request, env }) => {
   const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
@@ -10,7 +11,13 @@ export const onRequestPost = async ({ request, env }) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return new Response(JSON.stringify({ error: 'invalid_email' }), { status: 400, headers });
   }
-  if (!env.ADMIN_SECRET) {
+  // Phase 10 · email validator gate (reject disposable on DSAR endpoints to prevent abuse)
+  const validation = await validateEmail(email, env);
+  const reject = shouldRejectEmail(validation, env);
+  if (reject.reject) {
+    return new Response(JSON.stringify({ error: 'email_check_failed', reason: reject.reason }), { status: 422, headers });
+  }
+  if (!env.ADMIN_SECRET && !env.DSAR_SIGNING_SECRET) {
     return new Response(JSON.stringify({ error: 'admin_secret_unbound' }), { status: 503, headers });
   }
   const token = await mintToken({ email, action: 'erase' }, env);
@@ -53,50 +60,64 @@ export const onRequestGet = async ({ request, env }) => {
   }
 
   const email = v.payload.email;
+
+  // LEGAL_HOLD env list · halt erasure for emails on hold (Article 17(3)(b) defence of legal claims)
+  const legalHold = (env.LEGAL_HOLD_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  if (legalHold.includes(email)) {
+    return Response.redirect('https://tamazia.co.uk/erased/?status=error&reason=legal_hold', 303);
+  }
+
   let deleted = 0;
 
-  // Phase 1 · primary records across 4 tabs · parallel inside each tab
-  for (const tab of ['contact', 'briefings', 'audit', 'bookings']) {
-    const list = await env.FORM_SUBMISSIONS.list({ prefix: tab + ':', limit: 1000 });
-    const matches = [];
-    const checks = await Promise.all(list.keys.map(k => env.FORM_SUBMISSIONS.get(k.name).then(v => ({ k, v }))));
-    for (const { k, v: value } of checks) {
-      if (!value) continue;
-      try {
-        const r = JSON.parse(value);
-        if ((r.email || '').toLowerCase() === email) matches.push(k.name);
-      } catch {}
-    }
-    if (matches.length) {
-      await Promise.all(matches.map(name => env.FORM_SUBMISSIONS.delete(name)));
-      deleted += matches.length;
-    }
-  }
+  // Phase 1 · primary records across 4 tabs · parallel ACROSS tabs and within
+  const tabResults = await Promise.all(['contact', 'briefings', 'audit', 'bookings'].map(async tab => {
+    let cursor = null;
+    let tabMatches = [];
+    do {
+      const list = await env.FORM_SUBMISSIONS.list({ prefix: tab + ':', limit: 1000, cursor });
+      const checks = await Promise.all(list.keys.map(k => env.FORM_SUBMISSIONS.get(k.name).then(v => ({ k, v }))));
+      for (const { k, v: value } of checks) {
+        if (!value) continue;
+        try {
+          const r = JSON.parse(value);
+          if ((r.email || '').toLowerCase() === email) tabMatches.push(k.name);
+        } catch {}
+      }
+      cursor = list.list_complete ? null : list.cursor;
+    } while (cursor);
+    if (tabMatches.length) await Promise.all(tabMatches.map(name => env.FORM_SUBMISSIONS.delete(name)));
+    return tabMatches.length;
+  }));
+  deleted = tabResults.reduce((a, n) => a + n, 0);
 
   // Phase 2 · clean reverse indexes (cal-uid, cal-bid, cal-ical, email-bookings)
   const emailBookings = await env.FORM_SUBMISSIONS.list({ prefix: `email-bookings:${email}:`, limit: 1000 });
   await Promise.all(emailBookings.keys.map(k => env.FORM_SUBMISSIONS.delete(k.name)));
 
   // The cal-uid/bid/ical reverse keys point at bookings:* records that are now deleted.
-  // Sweep them by iterating the namespaces and checking if the target still exists.
-  for (const prefix of ['cal-uid:', 'cal-bid:', 'cal-ical:']) {
-    const list = await env.FORM_SUBMISSIONS.list({ prefix, limit: 1000 });
-    const sweeps = await Promise.all(list.keys.map(async k => {
-      const v = await env.FORM_SUBMISSIONS.get(k.name);
-      if (!v) return null;
-      try {
-        const r = JSON.parse(v);
-        const target = r.kv_key;
-        if (target && target.startsWith('bookings:')) {
-          const exists = await env.FORM_SUBMISSIONS.get(target);
-          if (!exists) return k.name;  // dangling reverse index
-        }
-      } catch {}
-      return null;
-    }));
-    const toDelete = sweeps.filter(Boolean);
-    if (toDelete.length) await Promise.all(toDelete.map(name => env.FORM_SUBMISSIONS.delete(name)));
-  }
+  // Sweep with cursor pagination so all entries are checked even beyond 1000.
+  await Promise.all(['cal-uid:', 'cal-bid:', 'cal-ical:'].map(async prefix => {
+    let cursor = null;
+    do {
+      const list = await env.FORM_SUBMISSIONS.list({ prefix, limit: 1000, cursor });
+      const sweeps = await Promise.all(list.keys.map(async k => {
+        const v = await env.FORM_SUBMISSIONS.get(k.name);
+        if (!v) return null;
+        try {
+          const r = JSON.parse(v);
+          const target = r.kv_key;
+          if (target && target.startsWith('bookings:')) {
+            const exists = await env.FORM_SUBMISSIONS.get(target);
+            if (!exists) return k.name;  // dangling reverse index
+          }
+        } catch {}
+        return null;
+      }));
+      const toDelete = sweeps.filter(Boolean);
+      if (toDelete.length) await Promise.all(toDelete.map(name => env.FORM_SUBMISSIONS.delete(name)));
+      cursor = list.list_complete ? null : list.cursor;
+    } while (cursor);
+  }));
 
   // Phase 3 · send completion email if Resend bound
   if (env.RESEND_API_KEY && email) {

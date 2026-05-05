@@ -29,7 +29,7 @@ export const onRequestPost = async ({ request, env }) => {
     body_summary: summarize(body)
   }));
   if (env.FORM_SUBMISSIONS) {
-    const key = `csp:${Date.now()}:${crypto.randomUUID().slice(0,8)}`;
+    const key = `csp:${Date.now()}:${crypto.randomUUID().slice(0,16)}`;
     await env.FORM_SUBMISSIONS.put(key, JSON.stringify({
       at: new Date().toISOString(),
       ip_country: request.headers.get('cf-ipcountry') || '',

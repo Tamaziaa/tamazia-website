@@ -7,7 +7,7 @@ export const heroContent = {
   // Desktop: all shown in one line. Mobile: rotates every 5s.
   dateline: [
     'MEMBER, CHARTERED INSTITUTE OF ARBITRATORS',
-    'MEMBER, AMERICAN BAR ASSOCIATION',
+    // 'AMERICAN BAR ASSOCIATION' line removed Phase 10 pending verification
     "LLM, KING'S COLLEGE LONDON",
   ],
 
@@ -64,7 +64,7 @@ export const heroContent = {
     credentials: [
       "KING'S COLLEGE LONDON · LLM INTERNATIONAL BUSINESS LAW",
       'CHARTERED INSTITUTE OF ARBITRATORS',
-      'AMERICAN BAR ASSOCIATION',
+    // 'AMERICAN BAR ASSOCIATION' line removed Phase 10 pending verification
     ],
   },
 

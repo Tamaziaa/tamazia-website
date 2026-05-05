@@ -1,41 +1,49 @@
-# References · Master Index
+# References · Tamazia Pvt Ltd · operator runbooks
 
-Auto-maintained. Every runbook in `references/` is catalogued here. New docs MUST be added on creation.
+Last regenerated: 2026-05-05 · 43 entries
 
-| Doc | Phase | Purpose |
-|---|---|---|
-| [admin-access.md](admin-access.md) | 6 | 3-layer defence model for `/admin/*` (CF Access + secret + X-Robots-Tag) |
-| [article-14-notice-template.md](article-14-notice-template.md) | 7 | UK GDPR Article 14 notice template |
-| [bimi-prep.md](bimi-prep.md) | 2 | BIMI logo prep + DKIM precondition |
-| [branch-protection.md](branch-protection.md) | 0/7 | `main` branch protection rules + rationale |
-| [brand-register.md](brand-register.md) | site | Verbatim brand voice + positioning register |
-| [cal-setup.md](cal-setup.md) | 5 | Cal.com event-type + webhook + secret rotation |
-| [consent-event-contract.md](consent-event-contract.md) | 6 | `tamazia:consent` event payload schema |
-| [deploy-runbook.md](deploy-runbook.md) | 0 | GitHub Actions → Cloudflare Pages deploy flow |
-| [devops.md](devops.md) | 0 | DevOps toolchain inventory |
-| [dkim-rotation-cadence.md](dkim-rotation-cadence.md) | 2 | Annual DKIM rotation procedure (13 months) |
-| [dmarc-timeline.md](dmarc-timeline.md) | 2 | DMARC progression p=none → quarantine → reject |
-| [dpa-template.md](dpa-template.md) | 7 | UK GDPR Data Processing Addendum template + sub-processor schedule |
-| [dpo-assessment.md](dpo-assessment.md) | 7 | Data Protection Officer obligation assessment |
-| [email-dmarc-monitoring.md](email-dmarc-monitoring.md) | 2 | DMARC report monitoring (Postmark Digests) |
-| [email-reply-to-strategy.md](email-reply-to-strategy.md) | 2 | Reply-To routing flow |
-| [email-send-as.md](email-send-as.md) | 2 | Gmail Send-As setup for 5 personas |
-| [env-vars.md](env-vars.md) | all | Cloudflare Pages env-var registry |
-| [full-remaining-roadmap.md](full-remaining-roadmap.md) | all | Master multi-phase roadmap |
-| [incident-response.md](incident-response.md) | site | Incident response runbook |
-| [phase-0-3-perfection-spec.md](phase-0-3-perfection-spec.md) | 0-3 | Phase 0-3 perfection spec |
-| [phase-2-snapshot.md](phase-2-snapshot.md) | 2 | Phase 2 closure snapshot |
-| [phase-3-roadmap.md](phase-3-roadmap.md) | 3 | Phase 3 roadmap |
-| [phase-4-perfection-spec.md](phase-4-perfection-spec.md) | 4 | Phase 4 perfection spec |
-| [phase-4-roadmap.md](phase-4-roadmap.md) | 4 | Phase 4 roadmap |
-| [phase-5-perfection-spec.md](phase-5-perfection-spec.md) | 5 | Phase 5 perfection spec |
-| [resend-domain-verify.md](resend-domain-verify.md) | 3 | Resend tamazia.in DNS verification |
-| [workflow-pat-rotation.md](workflow-pat-rotation.md) | 0 | GitHub PAT scope rotation procedure |
+## Contents
 
-## Staged directories
-
-- `references/_pending-workflow-changes/` · 4 GitHub Actions workflow YAMLs (codeql, lighthouse-pa11y, synthetic-check, weekly-backup) · pushed to repo once `workflow` PAT scope is granted (see workflow-pat-rotation.md)
-- `references/_secrets/` · gitignored secret storage · cal-webhook.txt currently held here
-- `references/_pending-cross-account-fix.md` · Cloudflare account-split documentation
-
-Last updated 2026-05-04.
+- **100-gap-closure-tracker.md** · 100-gap closure tracker · final summary as of 2026-05-05
+- **INDEX.md** · References · Master Index
+- **_deploy-stamp.md** · tiny
+- **_pending-cross-account-fix.md** · Cross-account constraint · KV binding blocker
+- **_pending-workflow-changes/** · (folder)
+- **_secrets/** · (folder)
+- **admin-access.md** · /admin/* Access Policy
+- **article-14-notice-template.md** · Article 14 Notice Template · 2026-05-05
+- **article-30-ropa.md** · Article 30 UK GDPR · Records of Processing Activities
+- **bimi-prep.md** · BIMI Preparation Reference
+- **branch-protection-pending.md** · Branch protection · pending PAT scope upgrade
+- **branch-protection.md** · Branch Protection · `main` runbook
+- **brand-register.md** · Brand Register · 14 Deploy-Time Checks
+- **breach-register.md** · Personal data breach register
+- **cal-setup.md** · Cal.com Setup · 30-min Strategy Call
+- **case-study-permission-letters.md** · Case study permission letters · drafts
+- **cloudflare-waf-rate-limit.md** · Cloudflare WAF + Rate Limit · Tamazia · Phase 7
+- **consent-event-contract.md** · `tamazia:consent` event contract
+- **deploy-runbook.md** · Deploy Runbook
+- **devops.md** · DevOps Reference
+- **dkim-rotation-cadence.md** · DKIM Rotation Cadence · 2026-05-05
+- **dmarc-timeline.md** · DMARC Progression Timeline · Tamazia 2026
+- **dpa-template.md** · Data Processing Agreement Template · 2026-05-05
+- **dpo-assessment.md** · DPO Assessment · 2026-05-05
+- **email-dmarc-monitoring.md** · DMARC Monitoring · Postmark DMARC Digests
+- **email-reply-to-strategy.md** · Email Reply-To Strategy · Tamazia 2026
+- **email-send-as.md** · Gmail Send-As Setup · 5 Tamazia Personas
+- **email-validators.md** · Email Validators · API keys captured · 2026-05-05
+- **env-vars.md** · Cloudflare Pages Environment Variables
+- **full-remaining-roadmap.md** · Full Remaining Roadmap · 2026-05-05
+- **incident-response.md** · Incident Response Runbook
+- **jmrp-blocked.md** · JMRP (Microsoft) · architectural block · 2026-05-05
+- **pending-workflows/** · (folder)
+- **phase-0-3-perfection-spec.md** · Phase 0/1/2/3 Perfection Spec · 2026-05-04
+- **phase-2-snapshot.md** · Phase 2 Status Snapshot · 2026-05-04
+- **phase-3-roadmap.md** · Phase 3 Deep Roadmap · Forms Infrastructure End-to-End
+- **phase-4-perfection-spec.md** · Phase 4 Perfection Spec · 2026-05-05
+- **phase-4-roadmap.md** · Phase 4 Deep Roadmap · Production Hardening + Observability · 2026-05-05
+- **phase-5-perfection-spec.md** · Phase 5 Perfection Spec · 2026-05-05
+- **phase-7-final-verification.md** · Phase 7 · Final verification gate · Tamazia
+- **resend-domain-verify.md** · Resend domain verify · tamazia.in · 2026-05-05
+- **user-actions-required.md** · User-Actions-Required · Master runbook
+- **workflow-pat-rotation.md** · Workflow PAT Rotation · Unblock 4 staged GitHub Actions workflows

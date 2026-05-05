@@ -34,8 +34,15 @@ function b64uDecode(s) {
   return JSON.parse(atob(padded));
 }
 
-export async function mintToken({ email, action, request_id }, env, ttlSeconds = 7 * 24 * 60 * 60) {
-  if (!env.ADMIN_SECRET) throw new Error('ADMIN_SECRET unbound · cannot mint DSAR tokens');
+export async function mintToken({ email, action, request_id }, env, ttlSeconds) {
+  // DSAR_SIGNING_SECRET preferred · falls back to ADMIN_SECRET for transition
+  const secret = env.DSAR_SIGNING_SECRET || env.ADMIN_SECRET;
+  if (!secret) throw new Error('signing secret unbound · cannot mint DSAR tokens');
+  // Configurable default TTL via env, else 7 days
+  if (!ttlSeconds) {
+    const envTtl = parseInt(env.DSAR_TOKEN_TTL_SECONDS || '0', 10);
+    ttlSeconds = envTtl > 0 ? envTtl : 7 * 24 * 60 * 60;
+  }
   const payload = {
     email: (email || '').toLowerCase().trim(),
     action,
@@ -45,17 +52,18 @@ export async function mintToken({ email, action, request_id }, env, ttlSeconds =
     iat: Math.floor(Date.now() / 1000)
   };
   const head = b64uEncode(payload);
-  const sig = await sign(head, env.ADMIN_SECRET);
+  const sig = await sign(head, secret);
   return `${head}.${sig}`;
 }
 
 export async function verifyToken(token, env) {
-  if (!env.ADMIN_SECRET) return { ok: false, reason: 'admin_secret_unbound' };
+  const secret = env.DSAR_SIGNING_SECRET || env.ADMIN_SECRET;
+  if (!secret) return { ok: false, reason: 'signing_secret_unbound' };
   if (!token || typeof token !== 'string' || !token.includes('.')) {
     return { ok: false, reason: 'malformed_token' };
   }
   const [head, sig] = token.split('.');
-  const ok = await verify(head, sig, env.ADMIN_SECRET);
+  const ok = await verify(head, sig, secret);
   if (!ok) return { ok: false, reason: 'bad_signature' };
   let payload;
   try { payload = b64uDecode(head); } catch { return { ok: false, reason: 'bad_payload' }; }

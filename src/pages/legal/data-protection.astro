@@ -2,6 +2,7 @@
 // Phase 7 · UK GDPR Article 13 + 14 disclosure + Article 27 Representative status
 // Linked from footer + cookie-policy.
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/schema/Breadcrumbs.astro';
 const updated = '5 May 2026';
 const url = 'https://tamazia.co.uk/legal/data-protection/';
 ---
@@ -10,6 +11,7 @@ const url = 'https://tamazia.co.uk/legal/data-protection/';
   description="Article 13 + 14 disclosure under UK GDPR · controller, lawful basis, retention, rights, transfer mechanisms, complaints route."
   canonical={url}
 >
+  <Breadcrumbs items={[{name: "Home", url: "/"}, {name: "Legal", url: "/legal/data-protection/"}, {name: "Data Protection", url: "/legal/data-protection/"}]} />
   <main id="main" class="legal">
     <header>
       <p class="eyebrow">Last reviewed {updated}</p>

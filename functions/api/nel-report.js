@@ -21,7 +21,7 @@ export const onRequestPost = async ({ request, env }) => {
   const ip = request.headers.get('cf-connecting-ip') || '';
   const ip_truncated = ip.replace(/\.\d+$/, '.x').replace(/:[\da-f]+$/i, ':x');
   if (env.FORM_SUBMISSIONS) {
-    const key = `nel:${Date.now()}:${crypto.randomUUID().slice(0,8)}`;
+    const key = `nel:${Date.now()}:${crypto.randomUUID().slice(0,16)}`;
     await env.FORM_SUBMISSIONS.put(key, JSON.stringify({
       at: new Date().toISOString(),
       ip_truncated,

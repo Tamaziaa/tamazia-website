@@ -38,7 +38,7 @@ export const whyUsContent = {
   credentials: [
     "LLM · KING'S COLLEGE LONDON",
     'CHARTERED INSTITUTE OF ARBITRATORS',
-    'AMERICAN BAR ASSOCIATION',
+    // 'AMERICAN BAR ASSOCIATION' line removed Phase 10 pending verification
     'GOOGLE PARTNER',
     'META BUSINESS PARTNER',
   ],

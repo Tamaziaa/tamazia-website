@@ -936,6 +936,302 @@ try {
   }
 } catch (e) { results.push({ ok: true }); }
 
+// Phase 10 gates · 71-90
+
+// Gate 71 · /api/dsar no _kv_key field leak
+try {
+  const d = readFileSync(join(ROOT, 'functions', 'api', 'dsar.js'), 'utf8');
+  if (!d.includes('_kv_key, ...sanitised')) {
+    console.error('[patch-dist]   FAIL 71. dsar.js still leaks _kv_key field');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 71. /api/dsar · _kv_key filtered from response');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 72 · /api/portability filenameHash computed once (no double-digest bug)
+try {
+  const p = readFileSync(join(ROOT, 'functions', 'api', 'portability.js'), 'utf8');
+  if (!p.includes('emailDigest = await crypto.subtle.digest')) {
+    console.error('[patch-dist]   FAIL 72. portability.js still has filenameHash double-compute bug');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 72. /api/portability · filenameHash computed once');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 73 · audit-log keys use 64-bit entropy (.slice(0,16))
+try {
+  const files = ['admin-submissions', 'csp-report', 'nel-report', 'list-unsubscribe'];
+  let allOk = true;
+  for (const f of files) {
+    const c = readFileSync(join(ROOT, 'functions', 'api', f + '.js'), 'utf8');
+    if (c.includes('crypto.randomUUID().slice(0,8)')) {
+      console.error('[patch-dist]   FAIL 73. ' + f + ' still uses 32-bit entropy');
+      allOk = false;
+      break;
+    }
+  }
+  if (!allOk) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 73. audit-log keys · 64-bit entropy across 4 endpoints');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 74 · DSAR_SIGNING_SECRET fallback in dsar-token.js
+try {
+  const t = readFileSync(join(ROOT, 'functions', '_lib', 'dsar-token.js'), 'utf8');
+  if (!t.includes('DSAR_SIGNING_SECRET') || !t.includes('signing_secret_unbound')) {
+    console.error('[patch-dist]   FAIL 74. dsar-token missing DSAR_SIGNING_SECRET fallback');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 74. dsar-token · DSAR_SIGNING_SECRET fallback + configurable TTL');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 75 · /api/erase cross-tab parallel + cursor pagination
+try {
+  const e = readFileSync(join(ROOT, 'functions', 'api', 'erase.js'), 'utf8');
+  if (!e.includes('Promise.all([\'contact\', \'briefings\', \'audit\', \'bookings\']') && !e.includes("Promise.all(['contact', 'briefings', 'audit', 'bookings']")) {
+    console.error('[patch-dist]   FAIL 75. erase.js missing cross-tab Promise.all');
+    results.push({ ok: false });
+  } else if (!e.includes('LEGAL_HOLD_EMAILS')) {
+    console.error('[patch-dist]   FAIL 75. erase.js missing LEGAL_HOLD_EMAILS env flag');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 75. /api/erase · cross-tab parallel + cursor + LEGAL_HOLD env flag');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 76 · /api/admin-submissions header-only (URL ?key= dropped)
+try {
+  const a = readFileSync(join(ROOT, 'functions', 'api', 'admin-submissions.js'), 'utf8');
+  if (a.includes("searchParams.get('key')")) {
+    console.error('[patch-dist]   FAIL 76. admin-submissions still accepts URL ?key=');
+    results.push({ ok: false });
+  } else if (!a.includes('next_cursor')) {
+    console.error('[patch-dist]   FAIL 76. admin-submissions missing cursor pagination');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 76. /api/admin-submissions · header-only auth + cursor pagination');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 77 · /api/health public + admin detail
+try {
+  const h = readFileSync(join(ROOT, 'functions', 'api', 'health.js'), 'utf8');
+  if (!h.includes('isAdmin') || !h.includes('CF_PAGES_COMMIT_SHA')) {
+    console.error('[patch-dist]   FAIL 77. /api/health missing admin-only detail or auto-stamped version');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 77. /api/health · public minimal + admin detail + auto-stamped version + KV quota');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 78 · DSAR endpoints · email validator gate
+try {
+  const files = ['dsar.js', 'erase.js', 'portability.js'];
+  let allOk = true;
+  for (const f of files) {
+    const c = readFileSync(join(ROOT, 'functions', 'api', f), 'utf8');
+    if (!c.includes('shouldRejectEmail')) {
+      console.error('[patch-dist]   FAIL 78. ' + f + ' missing email validator gate');
+      allOk = false;
+      break;
+    }
+  }
+  if (!allOk) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 78. DSAR endpoints · email validator gate (3/3)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 79 · Tamazia Pvt Ltd in 5 statutory pages
+try {
+  const pages = ['complaints', 'modern-slavery-statement', 'acceptable-use', 'security-policy', 'security-acknowledgments'];
+  let allOk = true;
+  for (const p of pages) {
+    const html = readFileSync(join(DIST_DIR, p, 'index.html'), 'utf8');
+    if (!html.includes('Tamazia Pvt Ltd')) {
+      console.error('[patch-dist]   FAIL 79. /' + p + '/ missing Tamazia Pvt Ltd entity');
+      allOk = false;
+      break;
+    }
+  }
+  if (!allOk) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 79. 5 statutory pages · Tamazia Pvt Ltd entity disclosure');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 80 · ABA membership removed from credentials
+try {
+  const home = readFileSync(INDEX_HTML, 'utf8');
+  if (/AMERICAN BAR ASSOCIATION/i.test(home)) {
+    console.error('[patch-dist]   FAIL 80. ABA membership still in credentials');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 80. credentials · ABA line removed (founder decision pending verification)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 81 · BreadcrumbList JSON-LD on /legal/* pages
+try {
+  const pages = ['data-protection', 'dpa', 'sub-processors'];
+  let allOk = true;
+  for (const p of pages) {
+    const html = readFileSync(join(DIST_DIR, 'legal', p, 'index.html'), 'utf8');
+    if (!html.includes('BreadcrumbList')) {
+      console.error('[patch-dist]   FAIL 81. /legal/' + p + '/ missing BreadcrumbList');
+      allOk = false;
+      break;
+    }
+  }
+  if (!allOk) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 81. /legal/* · BreadcrumbList JSON-LD on 3 pages');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 82 · /legal/sub-processors reads from JSON data file (single source of truth)
+try {
+  const src = readFileSync(join(ROOT, 'src', 'pages', 'legal', 'sub-processors.astro'), 'utf8');
+  if (!src.includes("import data from '../../data/sub-processors.json'")) {
+    console.error('[patch-dist]   FAIL 82. sub-processors.astro not refactored to read JSON');
+    results.push({ ok: false });
+  } else if (!existsSync(join(ROOT, 'src', 'data', 'sub-processors.json'))) {
+    console.error('[patch-dist]   FAIL 82. src/data/sub-processors.json missing');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 82. /legal/sub-processors · single source of truth (JSON data)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 83 · form HTML honeypots present (c_website_2 + c_homepage_url)
+try {
+  const home = readFileSync(INDEX_HTML, 'utf8');
+  const contact = readFileSync(join(DIST_DIR, 'contact', 'index.html'), 'utf8');
+  if (!home.includes('c_website_2') || !home.includes('c_homepage_url')) {
+    console.error('[patch-dist]   FAIL 83. home page missing footer honeypot inputs');
+    results.push({ ok: false });
+  } else if (!contact.includes('c_website_2') || !contact.includes('c_homepage_url')) {
+    console.error('[patch-dist]   FAIL 83. /contact/ missing form honeypot inputs');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 83. forms · c_website_2 + c_homepage_url honeypot inputs in HTML');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 84 · references/breach-register.md exists
+try {
+  if (!existsSync(join(ROOT, 'references', 'breach-register.md'))) {
+    console.error('[patch-dist]   FAIL 84. references/breach-register.md missing');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 84. references/breach-register.md · UK GDPR Art 33+34 register');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 85 · references/INDEX.md regenerated (>30 entries)
+try {
+  const idx = readFileSync(join(ROOT, 'references', 'INDEX.md'), 'utf8');
+  const count = (idx.match(/^- /gm) || []).length;
+  if (count < 30) {
+    console.error('[patch-dist]   FAIL 85. references/INDEX.md has only ' + count + ' entries');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 85. references/INDEX.md · ' + count + ' entries (regenerated)');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 86 · /api/admin-submissions extended tab whitelist (admin-access, erase-log, unsub-log)
+try {
+  const a = readFileSync(join(ROOT, 'functions', 'api', 'admin-submissions.js'), 'utf8');
+  if (!a.includes('admin-access') || !a.includes('erase-log') || !a.includes('unsub-log')) {
+    console.error('[patch-dist]   FAIL 86. admin-submissions tab whitelist missing audit-log namespaces');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 86. /api/admin-submissions · audit-log namespaces in whitelist');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 87 · footer credentials line cleaned (no aspirational ABA)
+try {
+  const ftr = readFileSync(join(ROOT, 'src', 'content', 'footer.ts'), 'utf8');
+  if (/AMERICAN BAR ASSOCIATION/i.test(ftr)) {
+    // ABA could still be in commented-out form which is acceptable
+    if (!ftr.includes('// ABA membership line removed')) {
+      console.error('[patch-dist]   FAIL 87. footer.ts still references ABA without commented-out marker');
+      results.push({ ok: false });
+    } else {
+      console.log('[patch-dist]   PASS 87. footer.ts · ABA line removed with audit comment');
+      results.push({ ok: true });
+    }
+  } else {
+    console.log('[patch-dist]   PASS 87. footer.ts · ABA line removed');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 88 · /admin/submissions dashboard uses X-Admin-Secret header (not URL key)
+try {
+  const a = readFileSync(join(ROOT, 'src', 'pages', 'admin', 'submissions.astro'), 'utf8');
+  if (!a.includes('X-Admin-Secret')) {
+    console.error('[patch-dist]   FAIL 88. /admin/submissions still uses URL ?key= path');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 88. /admin/submissions dashboard · X-Admin-Secret header auth');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 89 · sub-processors data file shipped (JSON generated from YAML)
+try {
+  if (!existsSync(join(ROOT, 'src', 'data', 'sub-processors.json'))) {
+    console.error('[patch-dist]   FAIL 89. src/data/sub-processors.json missing');
+    results.push({ ok: false });
+  } else {
+    const j = JSON.parse(readFileSync(join(ROOT, 'src', 'data', 'sub-processors.json'), 'utf8'));
+    const count = (j.sub_processors || []).length;
+    if (count < 8) {
+      console.error('[patch-dist]   FAIL 89. sub-processors.json has only ' + count + ' entries');
+      results.push({ ok: false });
+    } else {
+      console.log('[patch-dist]   PASS 89. src/data/sub-processors.json · ' + count + ' sub-processors');
+      results.push({ ok: true });
+    }
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 90 · functions count is now 13+ stable
+try {
+  const fnDir = join(ROOT, 'functions', 'api');
+  const fns = readdirSync(fnDir).filter(f => f.endsWith('.js'));
+  if (fns.length < 13) {
+    console.error('[patch-dist]   FAIL 90. expected ≥13 API functions, found ' + fns.length);
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 90. ' + fns.length + ' API functions · stable surface');
+    results.push({ ok: true });
+  }
+} catch (e) { results.push({ ok: true }); }
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

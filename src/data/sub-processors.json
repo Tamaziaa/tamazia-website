@@ -1,0 +1,74 @@
+{
+  "sub_processors": [
+    {
+      "name": "Cloudflare, Inc.",
+      "purpose": "Edge delivery, CF Workers, KV storage, Web Analytics, Email Routing, Pages hosting, Turnstile",
+      "country": "United States \u00b7 United Kingdom \u00b7 India \u00b7 Singapore",
+      "transfer": "UK IDTA + EU SCC",
+      "contract": "https://www.cloudflare.com/cloudflare-customer-dpa/"
+    },
+    {
+      "name": "Resend Co.",
+      "purpose": "Transactional email (auto-acknowledgement and internal alerts and DSAR confirmation)",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC",
+      "contract": "https://resend.com/legal/dpa"
+    },
+    {
+      "name": "Cal.com, Inc.",
+      "purpose": "Booking and scheduling management",
+      "country": "United States \u00b7 Germany",
+      "transfer": "UK IDTA + EU SCC + EEA establishment in Germany",
+      "contract": "https://cal.com/dpa"
+    },
+    {
+      "name": "Postmark",
+      "purpose": "DMARC report aggregation",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC"
+    },
+    {
+      "name": "Google LLC",
+      "purpose": "Analytics (consent-gated), Postmaster Tools, Search Console",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC + UK Extension to EU-US Data Privacy Framework",
+      "contract": "https://privacy.google.com/businesses/processorterms/"
+    },
+    {
+      "name": "Microsoft Corporation",
+      "purpose": "Bing Webmaster Tools, SNDS reputation",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC + UK Extension to EU-US Data Privacy Framework"
+    },
+    {
+      "name": "ZeroBounce LLC",
+      "purpose": "Email validation prior to persistence",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC"
+    },
+    {
+      "name": "Hunter SAS",
+      "purpose": "Email validation prior to persistence",
+      "country": "France",
+      "transfer": "EEA establishment"
+    },
+    {
+      "name": "NeverBounce, Inc.",
+      "purpose": "Email validation prior to persistence",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC"
+    },
+    {
+      "name": "GitHub, Inc.",
+      "purpose": "Source repository, CI build for static deployment",
+      "country": "United States",
+      "transfer": "UK IDTA + EU SCC + UK Extension to EU-US Data Privacy Framework"
+    },
+    {
+      "name": "Bigrock Solutions Ltd",
+      "purpose": "Domain registrar for tamazia.in",
+      "country": "India",
+      "transfer": "UK SCC + Indian DPDPA 2023 cross-reference"
+    }
+  ]
+}

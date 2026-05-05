@@ -95,10 +95,10 @@ const lastUpdated = '5 May 2026';
 
     async function load() {
       const tab = $('tab').value;
-      const url = '/api/admin-submissions?key=' + encodeURIComponent(KEY) + (tab ? '&tab=' + tab : '');
+      const url = '/api/admin-submissions' + (tab ? '?tab=' + tab : '');
       $('status').textContent = 'Loading...';
       try {
-        const r = await fetch(url, { credentials: 'omit' });
+        const r = await fetch(url, { credentials: 'omit', headers: { 'X-Admin-Secret': KEY } });
         if (r.status === 401) {
           $('status').textContent = 'Authentication failed.';
           $('login-form').hidden = false;

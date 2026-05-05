@@ -61,7 +61,7 @@ async function unsubscribe(request, env, { token, id }) {
   }
 
   // Audit log of unsubscribe (13-month retention per ICO guidance evidence)
-  const auditKey = `unsub-log:${Date.now()}:${crypto.randomUUID().slice(0,8)}`;
+  const auditKey = `unsub-log:${Date.now()}:${crypto.randomUUID().slice(0,16)}`;
   await env.FORM_SUBMISSIONS.put(auditKey, JSON.stringify({
     email_hash: email ? await hashEmail(email) : null,
     request_id,

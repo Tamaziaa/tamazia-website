@@ -127,6 +127,20 @@ export const onRequestPost = async ({ request, env }) => {
     await env.FORM_SUBMISSIONS.put(`bookings:${record.request_id}`, JSON.stringify(record), {
       expirationTtl: 60 * 60 * 24 * 365 * 2
     });
+    // Bidirectional indexes — operator can lookup by Cal IDs without scan
+    const indexValue = JSON.stringify({ kv_key: `bookings:${record.request_id}`, indexed_at: new Date().toISOString() });
+    if (payload.uid) {
+      await env.FORM_SUBMISSIONS.put(`cal-uid:${payload.uid}`, indexValue, { expirationTtl: 60 * 60 * 24 * 365 * 2 });
+    }
+    if (payload.bookingId) {
+      await env.FORM_SUBMISSIONS.put(`cal-bid:${payload.bookingId}`, indexValue, { expirationTtl: 60 * 60 * 24 * 365 * 2 });
+    }
+    if (payload.iCalUID) {
+      await env.FORM_SUBMISSIONS.put(`cal-ical:${payload.iCalUID}`, indexValue, { expirationTtl: 60 * 60 * 24 * 365 * 2 });
+    }
+    if (record.email) {
+      await env.FORM_SUBMISSIONS.put(`email-bookings:${record.email.toLowerCase()}:${record.request_id}`, indexValue, { expirationTtl: 60 * 60 * 24 * 365 * 2 });
+    }
   }
 
   if (env.RESEND_API_KEY && record.email) {
@@ -172,8 +186,13 @@ export const onRequest = async () => new Response(JSON.stringify({ error: 'metho
 
 function lifecycleStatus(trigger) {
   if (trigger === 'BOOKING_CANCELLED' || trigger === 'BOOKING_CANCELED') return 'CANCELLED';
+  if (trigger === 'BOOKING_REJECTED') return 'REJECTED';
+  if (trigger === 'BOOKING_REQUESTED') return 'REQUESTED';
+  if (trigger === 'BOOKING_PAID' || trigger === 'BOOKING_PAYMENT_INITIATED') return 'PAID';
   if (trigger === 'BOOKING_NO_SHOW_UPDATED') return 'NO_SHOW';
+  if (trigger === 'MEETING_STARTED') return 'IN_PROGRESS';
   if (trigger === 'MEETING_ENDED') return 'COMPLETED';
+  if (trigger === 'FORM_SUBMITTED' || trigger === 'FORM_SUBMITTED_NO_EVENT') return 'FORM';
   return 'CONFIRMED';
 }
 function humanTrigger(trigger) {

@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const url = 'https://tamazia.co.uk/erased/';
+---
+<BaseLayout
+  title="Data erasure complete · Tamazia"
+  description="Confirmation that your personal data has been erased from Tamazia systems."
+  canonical={url}
+  noindex={true}
+>
+  <main id="main" class="legal">
+    <h1>Erasure complete</h1>
+    <p class="lede" id="message">Loading...</p>
+    <p>You may also wish to remove the original confirmation email from your inbox. Tamazia keeps an audit log of the erasure (without your email content) for seven years to evidence compliance with UK GDPR Article 17.</p>
+    <p><a href="/">Return to tamazia.co.uk</a></p>
+  </main>
+  <script is:inline>
+    (function() {
+      const p = new URLSearchParams(location.search);
+      const m = document.getElementById('message');
+      if (p.get('status') === 'success') {
+        m.textContent = `Your data has been erased. ${p.get('deleted') || '0'} records removed.`;
+      } else {
+        m.textContent = `Erasure could not be completed. Reason: ${p.get('reason') || 'unknown'}. Please contact dpo@tamazia.co.uk.`;
+      }
+    })();
+  </script>
+</BaseLayout>
+<style>
+  .legal { max-width: 640px; margin: 80px auto; padding: 0 24px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.6; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; }
+  .legal .lede { font-size: 17px; }
+</style>

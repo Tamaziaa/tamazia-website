@@ -52,11 +52,11 @@ export const footerContent = {
   // Companies Act 2006 s.82 + Companies (Trading Disclosures) Regs 2008 compliance
   // Plus voluntary identity disclosure for investor and client trust signals
   legalEntity: {
-    name: 'Tamazia · operated by Aman Pareek (sole proprietor)',
+    name: 'Tamazia Pvt Ltd',
     registeredOffice: 'Mumbai, Maharashtra, India',
-    cin: 'Indian sole proprietorship',
+    cin: 'Indian private limited company',
     contactEmail: 'founder@tamazia.co.uk',
-    dataController: 'Aman Pareek',
+    dataController: 'Tamazia Pvt Ltd',
     dpoContact: 'dpo@tamazia.co.uk',
     icoRegistration: 'Article 27 UK Representative · appointment in progress',
     dataProtectionNoticeHref: '/legal/data-protection/',

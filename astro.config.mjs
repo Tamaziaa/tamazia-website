@@ -9,7 +9,7 @@ export default defineConfig({
       // _redirects path-301s every /resources/* request to /insights/:splat,
       // so even though the pages build into dist/, search engines see only the
       // canonical /insights/ tree.
-      filter: (page) => !page.includes('/resources/') && !page.includes('/admin/') && !page.endsWith('/privacy/') && !page.endsWith('/privacy'),
+      filter: (page) => !page.includes('/resources/') && !page.includes('/admin/') && !page.endsWith('/privacy/') && !page.endsWith('/privacy') && !page.endsWith('/erased/') && !page.endsWith('/unsubscribed/') && !page.endsWith('/dsar-confirm/'),
       serialize(item) {
         // Phase 6 · per-route priority + changefreq
         const url = item.url;

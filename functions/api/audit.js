@@ -880,6 +880,12 @@ function buildUpsell(type, input, errors, sector) {
 
 // ─── Cloudflare Pages Function entry points ───
 
+
+import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { verifyTurnstile } from '../_lib/turnstile.js';
+
+const MAX_BODY_BYTES = 64 * 1024;
+
 export const onRequestOptions = async () => {
   return new Response(null, {
     status: 204,
@@ -905,11 +911,31 @@ export const onRequestPost = async ({ request, env }) => {
     'Access-Control-Allow-Headers': 'Content-Type',
   };
 
+  // Body-size cap (DoS guard)
+  const cl = parseInt(request.headers.get('content-length') || '0', 10);
+  if (cl > MAX_BODY_BYTES) {
+    return new Response(JSON.stringify({ error: 'payload_too_large' }), { status: 413, headers: baseHeaders });
+  }
+
   let body;
   try {
     body = await request.json();
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: baseHeaders });
+  }
+
+  // Honeypot + time-trap (silent accept)
+  if (body['bot-field'] || body.honeypot_value || body.c_website_2) {
+    return new Response(JSON.stringify({ ok: true, silent: true }), { status: 200, headers: baseHeaders });
+  }
+  if (body.ts_form_open && (Date.now() - Number(body.ts_form_open)) < 2000) {
+    return new Response(JSON.stringify({ ok: true, silent: true }), { status: 200, headers: baseHeaders });
+  }
+
+  // Cloudflare Turnstile · skip if no secret bound
+  const ts = await verifyTurnstile(request, body, env);
+  if (!ts.ok) {
+    return new Response(JSON.stringify({ error: 'challenge_required', reason: ts.reason }), { status: 403, headers: baseHeaders });
   }
 
   const input = (body.input || '').toString().trim();
@@ -929,6 +955,16 @@ export const onRequestPost = async ({ request, env }) => {
       JSON.stringify({ error: 'A work email is required to deliver your findings.' }),
       { status: 400, headers: baseHeaders }
     );
+  }
+
+  // Email validator chain · ZeroBounce → Hunter → NeverBounce · fail-open
+  let emailValidation = { skipped: true, reason: 'no_email' };
+  if (emailValid) {
+    emailValidation = await validateEmail(email, env);
+    const reject = shouldRejectEmail(emailValidation, env);
+    if (reject.reject) {
+      return new Response(JSON.stringify({ error: reject.reason }), { status: 422, headers: baseHeaders });
+    }
   }
   if (!sectorChoice && body.demo !== true) {
     return new Response(

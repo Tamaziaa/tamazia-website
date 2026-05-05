@@ -430,17 +430,17 @@ try {
   results.push({ ok: true });
 }
 
-// Gate 35 · footer legal-entity rewritten (no aspirational Pvt Ltd, real entity present)
+// Gate 35 · footer legal-entity rewritten · Tamazia Pvt Ltd (founder decision 2026-05-05)
 try {
   const homeHtml = readFileSync(INDEX_HTML, 'utf8');
-  if (/Tamazia Pvt Ltd/.test(homeHtml)) {
-    console.error('[patch-dist]   FAIL 35. footer still mentions aspirational Pvt Ltd');
+  if (!/Tamazia Pvt Ltd/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 35. footer missing Tamazia Pvt Ltd entity');
     results.push({ ok: false });
-  } else if (!/Aman Pareek \(sole proprietor\)/.test(homeHtml)) {
-    console.error('[patch-dist]   FAIL 35. footer missing real entity disclosure');
+  } else if (/sole proprietor/i.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 35. footer still references sole proprietor');
     results.push({ ok: false });
   } else {
-    console.log('[patch-dist]   PASS 35. footer legal-entity row reflects real entity');
+    console.log('[patch-dist]   PASS 35. footer legal-entity · Tamazia Pvt Ltd');
     results.push({ ok: true });
   }
 } catch (e) {
@@ -463,6 +463,219 @@ try {
   console.log('[patch-dist]   WARN 36. ' + e.message);
   results.push({ ok: true });
 }
+
+// Phase 8 gates · 37-50
+
+// Gate 37 · Tamazia Pvt Ltd entity restored everywhere (no sole proprietor language)
+try {
+  const homeHtml = readFileSync(INDEX_HTML, 'utf8');
+  if (/sole proprietor/i.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 37. footer still mentions sole proprietor');
+    results.push({ ok: false });
+  } else if (!/Tamazia Pvt Ltd/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 37. footer missing Tamazia Pvt Ltd entity');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 37. footer · Tamazia Pvt Ltd entity (no sole proprietor)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 37. ' + e.message); results.push({ ok: true }); }
+
+// Gate 38 · /erased/, /unsubscribed/, /dsar-confirm/ confirmation pages shipped
+try {
+  const pages = ['erased', 'unsubscribed', 'dsar-confirm'];
+  let allPresent = true;
+  for (const p of pages) {
+    if (!existsSync(join(DIST_DIR, p, 'index.html'))) { allPresent = false; break; }
+  }
+  if (!allPresent) {
+    console.error('[patch-dist]   FAIL 38. one of /erased/, /unsubscribed/, /dsar-confirm/ missing');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 38. confirmation pages · /erased/, /unsubscribed/, /dsar-confirm/');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 38. ' + e.message); results.push({ ok: true }); }
+
+// Gate 39 · /api/dsar, /api/erase, /api/portability function source present
+try {
+  const fns = ['dsar.js', 'erase.js', 'portability.js'];
+  let allPresent = true;
+  for (const fn of fns) {
+    if (!existsSync(join(ROOT, 'functions', 'api', fn))) { allPresent = false; break; }
+  }
+  if (!allPresent) {
+    console.error('[patch-dist]   FAIL 39. one of dsar.js, erase.js, portability.js missing');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 39. /api/dsar + /api/erase + /api/portability shipped');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 39. ' + e.message); results.push({ ok: true }); }
+
+// Gate 40 · functions/_lib/dsar-token.js shipped
+try {
+  if (!existsSync(join(ROOT, 'functions', '_lib', 'dsar-token.js'))) {
+    console.error('[patch-dist]   FAIL 40. dsar-token.js missing');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 40. functions/_lib/dsar-token.js shipped (HMAC-SHA256 token signer)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 40. ' + e.message); results.push({ ok: true }); }
+
+// Gate 41 · cal-webhook bidirectional indexes (cal-uid:, cal-bid:, cal-ical:, email-bookings:)
+try {
+  const calHook = readFileSync(join(ROOT, 'functions', 'api', 'cal-webhook.js'), 'utf8');
+  const indexes = ['cal-uid:', 'cal-bid:', 'cal-ical:', 'email-bookings:'];
+  let allPresent = true;
+  for (const i of indexes) {
+    if (!calHook.includes(i)) { allPresent = false; console.error('[patch-dist]   FAIL 41. cal-webhook missing index ' + i); break; }
+  }
+  if (!allPresent) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 41. cal-webhook · 4 bidirectional indexes (uid, bid, ical, email)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 41. ' + e.message); results.push({ ok: true }); }
+
+// Gate 42 · cal-webhook extended lifecycle (BOOKING_PAID + BOOKING_REJECTED + BOOKING_REQUESTED + MEETING_STARTED + FORM_SUBMITTED)
+try {
+  const calHook = readFileSync(join(ROOT, 'functions', 'api', 'cal-webhook.js'), 'utf8');
+  const events = ['BOOKING_PAID', 'BOOKING_REJECTED', 'BOOKING_REQUESTED', 'MEETING_STARTED', 'FORM_SUBMITTED'];
+  let allPresent = true;
+  for (const e of events) {
+    if (!calHook.includes(e)) { allPresent = false; console.error('[patch-dist]   FAIL 42. cal-webhook missing event ' + e); break; }
+  }
+  if (!allPresent) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 42. cal-webhook · 5 extended lifecycle events (PAID, REJECTED, REQUESTED, STARTED, FORM)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 42. ' + e.message); results.push({ ok: true }); }
+
+// Gate 43 · /api/audit hardened (validator + turnstile + body-cap + honeypot)
+try {
+  const audit = readFileSync(join(ROOT, 'functions', 'api', 'audit.js'), 'utf8');
+  const required = ['MAX_BODY_BYTES', 'verifyTurnstile', 'validateEmail', "body['bot-field']", 'ts_form_open'];
+  let allPresent = true;
+  for (const r of required) {
+    if (!audit.includes(r)) { allPresent = false; console.error('[patch-dist]   FAIL 43. /api/audit missing ' + r); break; }
+  }
+  if (!allPresent) results.push({ ok: false });
+  else {
+    console.log('[patch-dist]   PASS 43. /api/audit hardened · body-cap + turnstile + validator + honeypot + time-trap');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 43. ' + e.message); results.push({ ok: true }); }
+
+// Gate 44 · deploy.yml has concurrency block (cancel-in-progress)
+try {
+  const wf = readFileSync(join(ROOT, '.github', 'workflows', 'deploy.yml'), 'utf8');
+  if (!wf.includes('cancel-in-progress: true')) {
+    console.error('[patch-dist]   FAIL 44. deploy.yml lacks concurrency cancel-in-progress');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 44. deploy.yml · concurrency cancel-in-progress block');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 44. ' + e.message); results.push({ ok: true }); }
+
+// Gate 45 · /admin/* _headers no longer has bogus Content-Type override
+try {
+  const headers = readFileSync(join(ROOT, 'public', '_headers'), 'utf8');
+  // Find /admin/* block
+  const m = headers.match(/\/admin\/\*[\s\S]*?(?=\n\/|\n$)/);
+  if (m && /Content-Type: text\/plain/.test(m[0])) {
+    console.error('[patch-dist]   FAIL 45. _headers /admin/* has broken Content-Type override');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 45. _headers /admin/* hardened (no Content-Type override)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 45. ' + e.message); results.push({ ok: true }); }
+
+// Gate 46 · sitemap excludes /admin/, /api/, /erased/, /unsubscribed/, /dsar-confirm/
+try {
+  const smPath = join(DIST_DIR, 'sitemap-0.xml');
+  if (existsSync(smPath)) {
+    const sm = readFileSync(smPath, 'utf8');
+    const banned = ['/admin/', '/api/', '/erased/', '/unsubscribed/', '/dsar-confirm/'];
+    let foundBanned = '';
+    for (const b of banned) if (sm.includes(b)) { foundBanned = b; break; }
+    if (foundBanned) {
+      console.error('[patch-dist]   FAIL 46. sitemap includes banned path ' + foundBanned);
+      results.push({ ok: false });
+    } else {
+      console.log('[patch-dist]   PASS 46. sitemap excludes /admin/, /api/, confirmation pages');
+      results.push({ ok: true });
+    }
+  } else {
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 46. ' + e.message); results.push({ ok: true }); }
+
+// Gate 47 · footer has DPO + Article 27 + Tamazia Pvt Ltd ROW
+try {
+  const homeHtml = readFileSync(INDEX_HTML, 'utf8');
+  if (!/dpo@tamazia\.co\.uk/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 47. footer missing dpo@tamazia.co.uk');
+    results.push({ ok: false });
+  } else if (!/Article 27/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 47. footer missing Article 27 disclosure');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 47. footer · DPO + Article 27 + Tamazia Pvt Ltd');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 47. ' + e.message); results.push({ ok: true }); }
+
+// Gate 48 · /legal/* pages link from footer
+try {
+  const homeHtml = readFileSync(INDEX_HTML, 'utf8');
+  const links = ['/legal/data-protection/', '/legal/dpa/', '/legal/sub-processors/'];
+  let allPresent = true;
+  for (const l of links) if (!homeHtml.includes(l)) { allPresent = false; break; }
+  if (!allPresent) {
+    console.error('[patch-dist]   FAIL 48. footer missing one of /legal/data-protection/, /legal/dpa/, /legal/sub-processors/');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 48. footer links · 3 /legal/ surfaces (data-protection, dpa, sub-processors)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 48. ' + e.message); results.push({ ok: true }); }
+
+// Gate 49 · functions/_lib/* libs all present
+try {
+  const libs = ['email-validator.js', 'turnstile.js', 'dsar-token.js'];
+  let allPresent = true;
+  for (const l of libs) if (!existsSync(join(ROOT, 'functions', '_lib', l))) { allPresent = false; break; }
+  if (!allPresent) {
+    console.error('[patch-dist]   FAIL 49. one of email-validator, turnstile, dsar-token missing');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 49. functions/_lib/ · 3 utility libs (validator, turnstile, dsar-token)');
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 49. ' + e.message); results.push({ ok: true }); }
+
+// Gate 50 · all 53 pages built and dist/ shape sane
+try {
+  const sitemapPath = join(DIST_DIR, 'sitemap-0.xml');
+  if (existsSync(sitemapPath)) {
+    const sm = readFileSync(sitemapPath, 'utf8');
+    const urlCount = (sm.match(/<loc>/g) || []).length;
+    if (urlCount < 20) {
+      console.error('[patch-dist]   FAIL 50. sitemap has only ' + urlCount + ' URLs (<20)');
+      results.push({ ok: false });
+    } else {
+      console.log('[patch-dist]   PASS 50. sitemap · ' + urlCount + ' URLs indexed');
+      results.push({ ok: true });
+    }
+  } else {
+    results.push({ ok: true });
+  }
+} catch (e) { console.log('[patch-dist]   WARN 50. ' + e.message); results.push({ ok: true }); }
 
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {

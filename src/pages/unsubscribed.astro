@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const url = 'https://tamazia.co.uk/unrejoind/';
+---
+<BaseLayout
+  title="Unsubscribed · Tamazia"
+  description="You are unrejoind from Tamazia regulatory briefings."
+  canonical={url}
+  noindex={true}
+>
+  <main id="main" class="legal">
+    <h1>Unsubscribed</h1>
+    <p class="lede">You are unrejoind from the Tamazia regulatory briefings list. No further messages will be sent.</p>
+    <p>Tamazia retains the unrejoin record for thirteen months to evidence consent withdrawal under PECR Reg 22 and UK GDPR Article 7.</p>
+    <p>If this was a mistake, you can rejoin at <a href="/#footer-briefings">tamazia.co.uk</a>.</p>
+    <p><a href="/">Return to tamazia.co.uk</a></p>
+  </main>
+</BaseLayout>
+<style>
+  .legal { max-width: 640px; margin: 80px auto; padding: 0 24px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.6; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; }
+  .legal .lede { font-size: 17px; }
+</style>

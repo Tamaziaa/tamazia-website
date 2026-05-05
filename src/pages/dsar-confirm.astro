@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const url = 'https://tamazia.co.uk/dsar-confirm/';
+---
+<BaseLayout
+  title="DSAR confirmation · Tamazia"
+  description="Confirmation of your data subject access request."
+  canonical={url}
+  noindex={true}
+>
+  <main id="main" class="legal">
+    <h1>Confirmation sent</h1>
+    <p class="lede">A confirmation email has been sent to the address you provided. Click the link in that email within seven days to complete your data subject request.</p>
+    <p>If you do not see the email within five minutes, check your spam folder. If still missing, write directly to <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>.</p>
+    <p><a href="/legal/data-protection/">Read the full data protection notice</a></p>
+  </main>
+</BaseLayout>
+<style>
+  .legal { max-width: 640px; margin: 80px auto; padding: 0 24px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.6; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; }
+  .legal .lede { font-size: 17px; }
+</style>

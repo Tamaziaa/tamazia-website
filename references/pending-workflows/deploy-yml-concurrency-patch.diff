@@ -1,0 +1,36 @@
+# Patch for .github/workflows/deploy.yml · adds concurrency block + repository_dispatch trigger
+# Apply via GitHub UI: edit deploy.yml directly to add the lines at the top.
+#
+# Before:
+#   on:
+#     push:
+#       branches: [main]
+#     workflow_dispatch:
+#
+#   jobs:
+#     deploy:
+#       runs-on: ubuntu-latest
+#       steps:
+#
+# After:
+#   on:
+#     push:
+#       branches: [main]
+#     workflow_dispatch:
+#     repository_dispatch:
+#       types: [tamazia-deploy]
+#
+#   concurrency:
+#     group: deploy-main
+#     cancel-in-progress: true
+#
+#   jobs:
+#     deploy:
+#       runs-on: ubuntu-latest
+#       timeout-minutes: 10
+#       steps:
+#
+# Why: this single change unblocks the queue because new deploys will cancel
+# older queued ones. Without it, every push adds another stuck queued run that
+# eventually times out at 15 minutes.
+

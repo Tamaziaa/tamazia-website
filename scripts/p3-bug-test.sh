@@ -18,7 +18,7 @@ check() {
   fi
 }
 
-echo "=== Phase 3+4 21-level bug test against $BASE ==="
+echo "=== Phase 0-4 28-level bug test against $BASE ==="
 
 # 1. Honeypot-only POST to /api/contact
 code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"bot-field":"spam","name":"x","email":"x@x.x","company":"x","sector":"x"}' "$BASE/api/contact")
@@ -109,3 +109,31 @@ check "20. humans.txt accessible" "$code" "200"
 # 21. /.well-known/dnt-policy.txt accessible
 code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/.well-known/dnt-policy.txt")
 check "21. dnt-policy.txt accessible" "$code" "200"
+
+# 22. Footer renders Tamazia Pvt Ltd legal entity
+le=$(curl -sS "$BASE/" | grep -c 'Tamazia Pvt Ltd' || true)
+check "22. footer legal entity (Tamazia Pvt Ltd)" "$le" "1"
+
+# 23. modern-slavery-statement footer link present
+ms=$(curl -sS "$BASE/" | grep -c 'modern-slavery-statement' || true)
+check "23. footer modern-slavery link" "$ms" "1"
+
+# 24. RSS feed renders
+code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/insights/feed.xml")
+check "24. /insights/feed.xml RSS 200" "$code" "200"
+
+# 25. msapplication-TileColor present
+tc=$(curl -sS "$BASE/" | grep -c 'TileColor' || true)
+check "25. msapplication-TileColor in head" "$tc" "1"
+
+# 26. apple-mobile-web-app metas present
+amw=$(curl -sS "$BASE/" | grep -c 'apple-mobile-web-app' || true)
+check "26. apple-mobile-web-app metas (>=1)" "$([[ $amw -ge 1 ]] && echo OK || echo FAIL)" "OK"
+
+# 27. /api/health includes resend status field
+hr=$(curl -sS "$BASE/api/health" | grep -c '"resend"' || true)
+check "27. /api/health resend probe field" "$hr" "1"
+
+# 28. Contact form HTML carries ts_form_open hidden input
+ts=$(curl -sS "$BASE/" | grep -c 'ts_form_open' || true)
+check "28. contact form ts_form_open hidden input (>=1)" "$([[ $ts -ge 1 ]] && echo OK || echo FAIL)" "OK"

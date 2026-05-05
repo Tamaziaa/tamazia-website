@@ -105,8 +105,9 @@ export const onRequestPost = async ({ request, env }) => {
     submitted_at: new Date().toISOString(),
     name: payload.attendees?.[0]?.name || payload.attendee?.name || '',
     email: payload.attendees?.[0]?.email || payload.attendee?.email || '',
+    attendees: Array.isArray(payload.attendees) ? payload.attendees.map(a => ({ name: a.name || '', email: a.email || '', timeZone: a.timeZone || '' })).slice(0, 10) : [],
     intent_text: triggerEvent + ' · ' + (payload.title || ''),
-    notes: JSON.stringify(payload).slice(0, 2000),
+    notes: smartTruncate(payload, 2000),
     cal_event_type: payload.eventType?.title || payload.eventType?.slug || '',
     cal_start_time: payload.startTime || payload.start_time || '',
     cal_end_time: payload.endTime || payload.end_time || '',
@@ -183,6 +184,20 @@ export const onRequest = async () => new Response(JSON.stringify({ error: 'metho
   status: 405,
   headers: { 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS' }
 });
+
+function smartTruncate(payload, maxBytes) {
+  // Phase 11 · keep top-level keys whole; truncate the value of the largest key first
+  const keep = ['title', 'eventType', 'startTime', 'endTime', 'status', 'metadata', 'description', 'location', 'uid', 'bookingId', 'iCalUID'];
+  const out = {};
+  for (const k of keep) if (payload[k] !== undefined) out[k] = payload[k];
+  let s = JSON.stringify(out);
+  if (s.length <= maxBytes) return s;
+  // Drop description first (often the largest)
+  if (out.description) { delete out.description; s = JSON.stringify(out); }
+  if (s.length <= maxBytes) return s;
+  // Final hard cut at byte boundary, then JSON-end-cap fallback
+  return s.slice(0, maxBytes - 12) + '..."truncated"';
+}
 
 function lifecycleStatus(trigger) {
   if (trigger === 'BOOKING_CANCELLED' || trigger === 'BOOKING_CANCELED') return 'CANCELLED';

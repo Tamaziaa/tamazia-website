@@ -19,6 +19,19 @@ export const onRequestPost = async ({ request, env }) => {
   const urls = Array.isArray(body.urls) ? body.urls.slice(0, 10000) : [];
   if (!urls.length) return new Response(JSON.stringify({ error: 'no_urls' }), { status: 400, headers: baseHeaders });
 
+  // Phase 11 · daily rate-limit (Bing IndexNow allows 10k URLs/day)
+  if (env.FORM_SUBMISSIONS) {
+    const today = new Date().toISOString().slice(0, 10);
+    const counterKey = `indexnow-daily:${today}`;
+    const existingRaw = await env.FORM_SUBMISSIONS.get(counterKey);
+    const existing = existingRaw ? Number(existingRaw) : 0;
+    if (existing + urls.length > 9000) {
+      return new Response(JSON.stringify({ error: 'daily_quota_exceeded', sent_today: existing, would_send: urls.length }), { status: 429, headers: baseHeaders });
+    }
+    // Update counter atomically (eventual consistency acceptable for daily quota)
+    await env.FORM_SUBMISSIONS.put(counterKey, String(existing + urls.length), { expirationTtl: 60 * 60 * 36 });
+  }
+
   const payload = {
     host: 'tamazia.co.uk',
     key: INDEXNOW_KEY,

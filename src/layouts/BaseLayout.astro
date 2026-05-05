@@ -169,8 +169,56 @@ const jsonLd = {
     <!-- Named slot for page-level JSON-LD and additional head tags -->
     <slot name="head" />
   <HeadAnalytics bingVerify={bingVerify} />
-  </head>
+  
+<style is:global>
+/* Phase 11 a11y · global media queries */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (prefers-contrast: more) {
+  :root {
+    --ink: #000000;
+    --ink-muted: #1a1a1a;
+    --bg: #ffffff;
+  }
+  a, button { outline: 2px solid currentColor; outline-offset: 2px; }
+}
+@media (forced-colors: active) {
+  /* Windows High Contrast Mode · let system colours through */
+  button, .cookie-btn, .contact-form button { border: 2px solid ButtonText; }
+}
+:focus-visible {
+  outline: 2px solid #C9A772;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Skip-to-main link · WCAG 2.4.1 bypass blocks */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 9999;
+  padding: 12px 20px;
+  background: #2A0C14;
+  color: #FAF7F2;
+  text-decoration: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+.skip-to-main:focus {
+  left: 12px;
+  top: 12px;
+}
+</style>
+</head>
   <body>
+<a href="#main" class="skip-to-main">Skip to main content</a>
     <a href="#main" class="skip-link">Skip to main content</a>
     <slot />
 

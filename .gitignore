@@ -9,3 +9,11 @@ deploy.sh
 .env
 .env.cloudflare
 .env.*
+humans.txt.deploy-trigger
+
+# Phase 11 hygiene
+_worker.bundle
+dist/_worker_build/
+*.bak
+.vscode/
+.idea/

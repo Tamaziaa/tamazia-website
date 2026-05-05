@@ -573,7 +573,7 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (submit) submit.disabled = true;
+      if (submit) { submit.disabled = true; submit.setAttribute('aria-busy', 'true'); }
       setStatus('loading', 'Sending your briefing request…');
       const fd = new FormData(form);
       const payload: any = {};
@@ -594,11 +594,11 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
           }
         } else {
           setStatus('error', data.error || 'Something went wrong. Please email us at realfamemedia@gmail.com.');
-          if (submit) submit.disabled = false;
+          if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
         }
       } catch {
         setStatus('error', 'Network error. Please email us at realfamemedia@gmail.com.');
-        if (submit) submit.disabled = false;
+        if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
       }
     });
 

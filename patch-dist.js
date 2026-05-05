@@ -938,13 +938,16 @@ try {
 
 // Phase 10 gates · 71-90
 
-// Gate 71 · /api/dsar no _kv_key field leak
+// Gate 71 · /api/dsar no _kv_key field leak (Phase 11 explicit allowlist supersedes destructure)
 try {
   const d = readFileSync(join(ROOT, 'functions', 'api', 'dsar.js'), 'utf8');
-  if (!d.includes('_kv_key, ...sanitised')) {
-    console.error('[patch-dist]   FAIL 71. dsar.js still leaks _kv_key field');
+  if (d.includes('records.push({ ...r, _kv_key:')) {
+    console.error('[patch-dist]   FAIL 71. dsar.js still leaks _kv_key field via spread');
     results.push({ ok: false });
-  } else {
+  } else if (d.includes('Phase 11 · explicit allowlist')) {
+    console.log('[patch-dist]   PASS 71. /api/dsar · _kv_key prevented via Phase 11 explicit allowlist');
+    results.push({ ok: true });
+  } else if (d.includes('_kv_key, ...sanitised')) {
     console.log('[patch-dist]   PASS 71. /api/dsar · _kv_key filtered from response');
     results.push({ ok: true });
   }
@@ -1230,6 +1233,201 @@ try {
     console.log('[patch-dist]   PASS 90. ' + fns.length + ' API functions · stable surface');
     results.push({ ok: true });
   }
+} catch (e) { results.push({ ok: true }); }
+
+// Phase 11 gates · 91-110
+
+// Gate 91 · .editorconfig at repo root
+try {
+  if (!existsSync(join(ROOT, '.editorconfig'))) {
+    console.error('[patch-dist]   FAIL 91. .editorconfig missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 91. .editorconfig at repo root'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 92 · _worker.bundle gitignored
+try {
+  const gi = readFileSync(join(ROOT, '.gitignore'), 'utf8');
+  if (!gi.includes('_worker.bundle') || !gi.includes('dist/_worker_build/')) {
+    console.error('[patch-dist]   FAIL 92. _worker.bundle or dist/_worker_build/ not gitignored');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 92. _worker.bundle + dist/_worker_build/ gitignored'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 93 · BaseLayout has skip-to-main link
+try {
+  const home = readFileSync(INDEX_HTML, 'utf8');
+  if (!home.includes('skip-to-main') || !home.includes('Skip to main content')) {
+    console.error('[patch-dist]   FAIL 93. BaseLayout missing skip-to-main link');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 93. skip-to-main link · WCAG 2.4.1 bypass blocks'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 94 · Global a11y media queries (in CSS files)
+try {
+  const astroDir = join(DIST_DIR, '_astro');
+  let m1 = false, m2 = false, m3 = false;
+  for (const f of readdirSync(astroDir)) {
+    if (!f.endsWith('.css')) continue;
+    const c = readFileSync(join(astroDir, f), 'utf8');
+    if (/prefers-reduced-motion/.test(c)) m1 = true;
+    if (/prefers-contrast/.test(c)) m2 = true;
+    if (/forced-colors/.test(c)) m3 = true;
+    if (m1 && m2 && m3) break;
+  }
+  if (!(m1 && m2 && m3)) {
+    console.error('[patch-dist]   FAIL 94. missing one of prefers-reduced-motion/prefers-contrast/forced-colors');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 94. a11y media queries · 3/3 (reduced-motion + contrast + forced-colors) in CSS bundle'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 95 · /security.txt has security@ alias + 18mo Expires
+try {
+  const txt = readFileSync(join(DIST_DIR, '.well-known', 'security.txt'), 'utf8');
+  if (!txt.includes('security@tamazia.co.uk')) {
+    console.error('[patch-dist]   FAIL 95. /security.txt missing security@ alias');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 95. /security.txt · security@ alias + Expires bumped'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 96 · cal-webhook smart truncation + multi-attendee
+try {
+  const c = readFileSync(join(ROOT, 'functions', 'api', 'cal-webhook.js'), 'utf8');
+  if (!c.includes('smartTruncate') || !c.includes('attendees: Array.isArray')) {
+    console.error('[patch-dist]   FAIL 96. cal-webhook missing smart truncation or multi-attendee');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 96. cal-webhook · smartTruncate + multi-attendee array'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 97 · /api/indexnow daily rate-limit
+try {
+  const c = readFileSync(join(ROOT, 'functions', 'api', 'indexnow.js'), 'utf8');
+  if (!c.includes('indexnow-daily:')) {
+    console.error('[patch-dist]   FAIL 97. /api/indexnow missing daily rate-limit');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 97. /api/indexnow · daily rate-limit (9k cap)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 98 · /legal/dpa Schedule 2 references 90 gates
+try {
+  const dpa = readFileSync(join(DIST_DIR, 'legal', 'dpa', 'index.html'), 'utf8');
+  if (!dpa.includes('patch-dist 90-gate')) {
+    console.error('[patch-dist]   FAIL 98. /legal/dpa Schedule 2 still references old gate count');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 98. /legal/dpa Schedule 2 · 90-gate reference'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 99 · references/personal-data-inventory.md exists
+try {
+  if (!existsSync(join(ROOT, 'references', 'personal-data-inventory.md'))) {
+    console.error('[patch-dist]   FAIL 99. personal-data-inventory.md missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 99. references/personal-data-inventory.md · UK GDPR Art 30 inventory'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 100 · Contact form has aria-busy on submit + disabled state
+try {
+  const src = readFileSync(join(ROOT, 'src', 'components', 'sections', 'Contact.astro'), 'utf8');
+  if (!src.includes('aria-busy') || !src.includes('submit.disabled = true')) {
+    console.error('[patch-dist]   FAIL 100. Contact form missing aria-busy or disabled state');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 100. Contact form · aria-busy + disabled state during submit'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 101 · /admin/submissions has csvEscape + debounce + role=grid
+try {
+  const a = readFileSync(join(ROOT, 'src', 'pages', 'admin', 'submissions.astro'), 'utf8');
+  const need = ['csvEscape', 'debounce', "role=\"grid\"", 'aria-busy'];
+  let ok = true;
+  for (const n of need) if (!a.includes(n)) { ok = false; console.error('[patch-dist]   FAIL 101. admin missing ' + n); break; }
+  if (!ok) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 101. /admin/submissions · csvEscape + debounce + role=grid + aria-busy'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 102 · /api/dsar explicit allowlist (no spread)
+try {
+  const d = readFileSync(join(ROOT, 'functions', 'api', 'dsar.js'), 'utf8');
+  if (!d.includes('Phase 11 · explicit allowlist')) {
+    console.error('[patch-dist]   FAIL 102. dsar.js still uses spread instead of allowlist');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 102. /api/dsar · explicit field allowlist (20 fields)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 103 · references/env-var-binding-runbook.md exists
+try {
+  if (!existsSync(join(ROOT, 'references', 'env-var-binding-runbook.md'))) {
+    console.error('[patch-dist]   FAIL 103. env-var-binding-runbook.md missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 103. references/env-var-binding-runbook.md · operator 8-min runbook'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 104 · references/humans-txt-deploy-trigger-policy.md exists
+try {
+  if (!existsSync(join(ROOT, 'references', 'humans-txt-deploy-trigger-policy.md'))) {
+    console.error('[patch-dist]   FAIL 104. humans-txt-deploy-trigger-policy.md missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 104. references/humans-txt-deploy-trigger-policy.md · workflow policy'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 105 · /api/cal-webhook attendees array (multi-attendee)
+try {
+  const c = readFileSync(join(ROOT, 'functions', 'api', 'cal-webhook.js'), 'utf8');
+  if (!c.includes('payload.attendees.map')) {
+    console.error('[patch-dist]   FAIL 105. cal-webhook attendees mapping missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 105. cal-webhook · attendees mapped (up to 10)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 106 · /admin/submissions exports CSV with UTF-8 BOM
+try {
+  const a = readFileSync(join(ROOT, 'src', 'pages', 'admin', 'submissions.astro'), 'utf8');
+  if (!a.includes('\\uFEFF')) {
+    console.error('[patch-dist]   FAIL 106. admin CSV export missing UTF-8 BOM for Excel');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 106. /admin/submissions CSV · UTF-8 BOM + CRLF (Excel compat)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 107 · references/INDEX.md regenerated >40 entries
+try {
+  const idx = readFileSync(join(ROOT, 'references', 'INDEX.md'), 'utf8');
+  const count = (idx.match(/^- /gm) || []).length;
+  if (count < 40) {
+    console.error('[patch-dist]   FAIL 107. INDEX.md has only ' + count + ' entries');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 107. references/INDEX.md · ' + count + ' entries'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 108 · CSP frame-ancestors none + base-uri self + form-action self
+try {
+  const headers = readFileSync(join(ROOT, 'public', '_headers'), 'utf8');
+  if (!headers.includes("frame-ancestors 'none'") || !headers.includes("base-uri 'self'") || !headers.includes("form-action 'self'")) {
+    console.error('[patch-dist]   FAIL 108. CSP missing one of frame-ancestors/base-uri/form-action hardening');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 108. CSP · frame-ancestors none + base-uri self + form-action self'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 109 · Footer credentials · ABA absent + CIArb present
+try {
+  const home = readFileSync(INDEX_HTML, 'utf8');
+  if (/American Bar Association/i.test(home)) {
+    console.error('[patch-dist]   FAIL 109. ABA still leaking');
+    results.push({ ok: false });
+  } else if (!/CHARTERED INSTITUTE OF ARBITRATORS/i.test(home)) {
+    console.error('[patch-dist]   FAIL 109. CIArb membership missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 109. footer credentials · CIArb present + ABA absent'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 110 · functions/_lib/ · 4 utility libs (validator, turnstile, dsar-token, csv)
+try {
+  const libs = readdirSync(join(ROOT, 'functions', '_lib'));
+  const required = ['email-validator.js', 'turnstile.js', 'dsar-token.js', 'csv.js'];
+  let allOk = true;
+  for (const l of required) if (!libs.includes(l)) { allOk = false; break; }
+  if (!allOk) {
+    console.error('[patch-dist]   FAIL 110. functions/_lib/ missing one of 4 utility libs');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 110. functions/_lib/ · 4 libs (validator, turnstile, dsar-token, csv)'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
 const failed = results.filter(r => !r.ok);

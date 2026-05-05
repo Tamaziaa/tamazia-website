@@ -80,9 +80,29 @@ export const onRequestGet = async ({ request, env }) => {
       try {
         const r = JSON.parse(value);
         if ((r.email || '').toLowerCase() === email) {
-          // Filter internal _kv_key field; data subject doesn't need namespace structure
-          const { _kv_key, ...sanitised } = r;
-          records.push(sanitised);
+          // Phase 11 · explicit allowlist (no spread) prevents future field leaks
+          records.push({
+            submitted_at: r.submitted_at,
+            tab_source: r.tab_source,
+            request_id: r.request_id,
+            name: r.name,
+            email: r.email,
+            company: r.company,
+            role: r.role,
+            country: r.country,
+            intent_text: r.intent_text,
+            utm_source: r.utm_source,
+            utm_medium: r.utm_medium,
+            utm_campaign: r.utm_campaign,
+            ip_country: r.ip_country,
+            email_validation: r.email_validation,
+            cal_event_type: r.cal_event_type,
+            cal_start_time: r.cal_start_time,
+            cal_end_time: r.cal_end_time,
+            cal_status: r.cal_status,
+            cal_trigger: r.cal_trigger,
+            attendees: r.attendees
+          });
         }
       } catch {}
     }

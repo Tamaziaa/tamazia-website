@@ -387,6 +387,83 @@ try {
   results.push({ ok: true });
 }
 
+// Gate 33 · /legal/data-protection/ shipped with Article 27 + DPO email
+try {
+  const dpPath = join(DIST_DIR, 'legal', 'data-protection', 'index.html');
+  if (existsSync(dpPath)) {
+    const html = readFileSync(dpPath, 'utf8');
+    if (!/Article 27/.test(html) || !/dpo@tamazia\.co\.uk/.test(html)) {
+      console.error('[patch-dist]   FAIL 33. /legal/data-protection/ missing Art 27 or DPO email');
+      results.push({ ok: false });
+    } else {
+      console.log('[patch-dist]   PASS 33. /legal/data-protection/ rendered with Art 27 + DPO');
+      results.push({ ok: true });
+    }
+  } else {
+    console.error('[patch-dist]   FAIL 33. /legal/data-protection/index.html missing');
+    results.push({ ok: false });
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 33. ' + e.message);
+  results.push({ ok: true });
+}
+
+// Gate 34 · /legal/dpa/ + /legal/sub-processors/ shipped
+try {
+  const dpaPath = join(DIST_DIR, 'legal', 'dpa', 'index.html');
+  const subPath = join(DIST_DIR, 'legal', 'sub-processors', 'index.html');
+  if (!existsSync(dpaPath) || !existsSync(subPath)) {
+    console.error('[patch-dist]   FAIL 34. /legal/dpa/ or /legal/sub-processors/ missing');
+    results.push({ ok: false });
+  } else {
+    const subHtml = readFileSync(subPath, 'utf8');
+    if (!/Cloudflare/.test(subHtml) || !/UK IDTA/.test(subHtml)) {
+      console.error('[patch-dist]   FAIL 34. sub-processors page missing CF or UK IDTA reference');
+      results.push({ ok: false });
+    } else {
+      console.log('[patch-dist]   PASS 34. /legal/dpa/ + /legal/sub-processors/ shipped (UK IDTA referenced)');
+      results.push({ ok: true });
+    }
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 34. ' + e.message);
+  results.push({ ok: true });
+}
+
+// Gate 35 · footer legal-entity rewritten (no aspirational Pvt Ltd, real entity present)
+try {
+  const homeHtml = readFileSync(INDEX_HTML, 'utf8');
+  if (/Tamazia Pvt Ltd/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 35. footer still mentions aspirational Pvt Ltd');
+    results.push({ ok: false });
+  } else if (!/Aman Pareek \(sole proprietor\)/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 35. footer missing real entity disclosure');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 35. footer legal-entity row reflects real entity');
+    results.push({ ok: true });
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 35. ' + e.message);
+  results.push({ ok: true });
+}
+
+// Gate 36 · email validator + Turnstile libs in functions/_lib/
+try {
+  const emailLib = join(ROOT, 'functions', '_lib', 'email-validator.js');
+  const tsLib = join(ROOT, 'functions', '_lib', 'turnstile.js');
+  if (!existsSync(emailLib) || !existsSync(tsLib)) {
+    console.error('[patch-dist]   FAIL 36. functions/_lib/ missing email-validator or turnstile lib');
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 36. functions/_lib/email-validator.js + turnstile.js shipped');
+    results.push({ ok: true });
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 36. ' + e.message);
+  results.push({ ok: true });
+}
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

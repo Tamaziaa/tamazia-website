@@ -55,6 +55,17 @@ const jsonLd = {
         'Real estate marketing compliance',
         'Hospitality marketing compliance',
       ],
+      priceRange: '££',
+      openingHoursSpecification: [{
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '09:00',
+        closes: '18:00',
+      }],
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'GB',
+      },
       sameAs: [
         'https://linkedin.com/company/tamazia',
         'https://instagram.com/tamazia',
@@ -256,18 +267,11 @@ const jsonLd = {
       // Round-12 · cookie strip with explicit Accept / Reject (UK GDPR + EU PECR equal-prominence)
       (() => {
         const KEY = 'tamazia-cookie-consent';
-        // Consent Mode v2 default · denied until user accepts
+        // Consent Mode v2 default is set in BodyAnalytics.astro (single source).
+        // Define gtag here as a no-op fallback so dismiss handler doesn't throw
+        // if BodyAnalytics hasn't loaded yet.
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'ad_user_data': 'denied',
-          'ad_personalization': 'denied',
-          'analytics_storage': 'denied',
-          'functionality_storage': 'granted',
-          'security_storage': 'granted',
-          'wait_for_update': 500
-        });
         window.__tamaziaGtag = gtag;
 
         // Phase 6 · Consent Mode v2 schema:
@@ -295,6 +299,13 @@ const jsonLd = {
           }
           try { window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { decision: decision, analytics: analytics } })); } catch(_){}
         };
+
+        // QA · ?force-reconsent=1 clears stored consent and re-shows the banner
+        try {
+          if (location.search.indexOf('force-reconsent=1') !== -1) {
+            try { localStorage.removeItem(KEY); } catch(_){}
+          }
+        } catch(_){}
 
         try {
           var raw = null;

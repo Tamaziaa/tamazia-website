@@ -51,6 +51,11 @@ Tamazia signs a DPA when a client commissions services in which Tamazia receives
 | Resend | Transactional email | US |
 | Google LLC | Gmail (until founder@tamazia.co.uk routed via CFER) | EU/US |
 | Cloudflare Email Routing | Inbound email forwarding | global |
+| Cal.com Inc. | Meeting booking infrastructure (strategy-call event) | US (DPF) |
+| Google LLC (Analytics) | GA4 measurement (loaded on consent only) | US/EU (DPF) |
+| Google LLC (Search Console) | Search-console verification only | US (DPF) |
+| Microsoft Corporation (Bing Webmaster) | Search-console verification only | US (DPF) |
+| ImprovMX | Backup MX (inbound failover) | EU |
 | Postmark (ActiveCampaign) | DMARC report aggregation | US |
 
 ## How to use

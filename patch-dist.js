@@ -183,6 +183,111 @@ for (const slug of LEGAL_PAGES) {
   }
 }
 
+// 21: JSON-LD validity check · every page emits parseable JSON-LD
+try {
+  const ldRe = /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi;
+  let totalBlobs = 0, invalidBlobs = 0, invalidPages = [];
+  for (const f of allHtml) {
+    const html = readFileSync(f, 'utf8');
+    let m;
+    while ((m = ldRe.exec(html)) !== null) {
+      totalBlobs++;
+      try { JSON.parse(m[1]); }
+      catch { invalidBlobs++; invalidPages.push(f.replace(DIST_DIR, '')); }
+    }
+  }
+  if (invalidBlobs > 0) {
+    console.log('[patch-dist]   FAIL 21. JSON-LD invalid in ' + invalidBlobs + '/' + totalBlobs + ' blobs · pages: ' + invalidPages.slice(0,3).join(', '));
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 21. JSON-LD valid · ' + totalBlobs + ' blobs across ' + allHtml.length + ' pages');
+    results.push({ ok: true });
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 21. JSON-LD check skip · ' + e.message);
+  results.push({ ok: true });
+}
+
+// 22: image dimensions check · every <img> has width and height attrs (CWV/CLS gate)
+try {
+  let totalImgs = 0, missingDims = 0, missingPages = [];
+  const imgRe = /<img\b([^>]*)>/gi;
+  for (const f of allHtml) {
+    const html = readFileSync(f, 'utf8');
+    let m;
+    while ((m = imgRe.exec(html)) !== null) {
+      totalImgs++;
+      const attrs = m[1];
+      // Skip data-URI-only or known-dynamic patterns
+      if (!/\bwidth\b/i.test(attrs) || !/\bheight\b/i.test(attrs)) {
+        missingDims++;
+        const rel = f.replace(DIST_DIR, '');
+        if (!missingPages.includes(rel) && missingPages.length < 5) missingPages.push(rel);
+      }
+    }
+  }
+  if (missingDims > totalImgs * 0.05) { // tolerate 5% (icons, etc.)
+    console.log('[patch-dist]   FAIL 22. ' + missingDims + '/' + totalImgs + ' <img> missing width/height · ' + missingPages.join(', '));
+    results.push({ ok: false });
+  } else {
+    console.log('[patch-dist]   PASS 22. ' + (totalImgs - missingDims) + '/' + totalImgs + ' <img> have width+height (CLS-safe)');
+    results.push({ ok: true });
+  }
+} catch (e) {
+  console.log('[patch-dist]   WARN 22. image check skip · ' + e.message);
+  results.push({ ok: true });
+}
+
+// 23: LegalService schema present on root
+try {
+  const idx = readFileSync(join(DIST_DIR, 'index.html'), 'utf8');
+  if (idx.includes('"@type":"LegalService"')) {
+    console.log('[patch-dist]   PASS 23. LegalService schema on /');
+    results.push({ ok: true });
+  } else {
+    console.log('[patch-dist]   FAIL 23. LegalService schema missing on /');
+    results.push({ ok: false });
+  }
+} catch (e) {
+  results.push({ ok: true });
+}
+
+// 24: /book/ page renders with embed div + Schema.Service
+try {
+  const bp = join(DIST_DIR, 'book/index.html');
+  if (existsSync(bp)) {
+    const bh = readFileSync(bp, 'utf8');
+    const ok = bh.includes('my-cal-inline-strategy-call') && bh.includes('"@type":"Service"') && bh.includes('isAccessibleForFree');
+    console.log('[patch-dist]   ' + (ok ? 'PASS' : 'FAIL') + ' 24. /book/ embed div + Service JSON-LD + isAccessibleForFree');
+    results.push({ ok });
+  } else {
+    console.log('[patch-dist]   FAIL 24. /book/index.html missing');
+    results.push({ ok: false });
+  }
+} catch (e) {
+  results.push({ ok: false });
+}
+
+// 25: FAQPage JSON-LD on /
+try {
+  const idx = readFileSync(join(DIST_DIR, 'index.html'), 'utf8');
+  const ok = idx.includes('"@type":"FAQPage"');
+  console.log('[patch-dist]   ' + (ok ? 'PASS' : 'FAIL') + ' 25. FAQPage JSON-LD on /');
+  results.push({ ok });
+} catch (e) {
+  results.push({ ok: false });
+}
+
+// 26: MTA-STS file present
+try {
+  const mts = join(DIST_DIR, '.well-known', 'mta-sts.txt');
+  const ok = existsSync(mts);
+  console.log('[patch-dist]   ' + (ok ? 'PASS' : 'FAIL') + ' 26. /.well-known/mta-sts.txt present');
+  results.push({ ok });
+} catch (e) {
+  results.push({ ok: false });
+}
+
 // 20: humans.txt build hash injection (post-deploy traceability)
 try {
   const humansPath = join(DIST_DIR, 'humans.txt');

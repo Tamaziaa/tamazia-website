@@ -8,7 +8,13 @@ export const onRequestGet = async ({ env, request }) => {
       ADMIN_SECRET: !!env.ADMIN_SECRET,
       FORM_SUBMISSIONS_kv: !!env.FORM_SUBMISSIONS,
       CONTACT_FROM: !!env.CONTACT_FROM,
-      CONTACT_TO: !!env.CONTACT_TO
+      CONTACT_TO: !!env.CONTACT_TO,
+      CAL_WEBHOOK_SECRET: !!env.CAL_WEBHOOK_SECRET,
+      INDEXNOW_KEY: !!env.INDEXNOW_KEY,
+      SHEETS_WEBHOOK_URL: !!env.SHEETS_WEBHOOK_URL,
+      SHEETS_HMAC_SECRET: !!env.SHEETS_HMAC_SECRET,
+      RESEND_FROM_ALERT: !!env.RESEND_FROM_ALERT,
+      RESEND_FROM_ACK: !!env.RESEND_FROM_ACK
     },
     kv: 'unknown',
     forms_writable: 'unknown'

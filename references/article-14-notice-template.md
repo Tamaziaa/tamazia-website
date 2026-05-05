@@ -34,3 +34,8 @@ Tamazia
 Every cold outreach email from a Tamazia persona that uses third-party-sourced data must carry this notice in the first contact. After the first contact, ongoing communications are governed by the recipient's response.
 
 Last updated 5 May 2026.
+
+
+## Cal.com booking flow
+
+When you book a strategy call via /book/, the booking calendar is provided by Cal.com Inc. (US, DPF-certified). Cal.com receives your name, email, optional notes, and chosen time-slot. Cal.com is a sub-processor under our DPA and is bound to UK GDPR Standard Contractual Clauses for the international transfer. The booking record is forwarded to Tamazia's Cloudflare Workers KV store via signed webhook (HMAC-SHA256). Retention: 2 years from booking date. You may request deletion at any time via founder@tamazia.co.uk.

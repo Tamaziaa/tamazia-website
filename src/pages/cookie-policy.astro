@@ -43,15 +43,45 @@ const lastUpdated = '28 April 2026';
             <tr>
               <td><code>tamazia-cookie-consent</code></td>
               <td>Local storage</td>
-              <td>Remembers whether you accepted or rejected non-essential cookies on the consent banner.</td>
-              <td>Persistent until cleared</td>
+              <td>Remembers your consent decision and timestamp under Consent Mode v2 schema.</td>
+              <td>13 months sliding (re-prompts after expiry)</td>
               <td>First party</td>
+            </tr>
+            <tr>
+              <td><code>_ga</code></td>
+              <td>Cookie</td>
+              <td>Google Analytics 4 user identification. Loaded only after analytics consent. IP truncated by GA4 default.</td>
+              <td>2 years</td>
+              <td>Third party (Google LLC)</td>
+            </tr>
+            <tr>
+              <td><code>_ga_&lt;CONTAINER-ID&gt;</code></td>
+              <td>Cookie</td>
+              <td>GA4 session state. Loaded only after analytics consent.</td>
+              <td>2 years</td>
+              <td>Third party (Google LLC)</td>
+            </tr>
+            <tr>
+              <td><code>__cf_bm</code></td>
+              <td>Cookie</td>
+              <td>Cloudflare bot management. Strictly necessary for security and DDoS protection.</td>
+              <td>30 minutes (rolling)</td>
+              <td>First party (set by Cloudflare on our behalf)</td>
+            </tr>
+            <tr>
+              <td><code>cf_chl_*</code></td>
+              <td>Cookie</td>
+              <td>Cloudflare Turnstile challenge. Strictly necessary when bot-defence challenge is triggered.</td>
+              <td>Session</td>
+              <td>First party (set by Cloudflare on our behalf)</td>
             </tr>
           </tbody>
         </table>
         <p>
-          That is the complete list at the time of writing. If we ever add analytics or any other category
-          of cookie, this page will be updated and the consent banner will request fresh consent.
+          The site uses Consent Mode v2: until you accept analytics, Google Analytics is loaded but
+          fires no measurement calls. After accept, GA4 records a single <code>page_view</code> event
+          and continues to record subsequent navigation. We do not run advertising cookies of any kind.
+          The 13-month sliding expiry on your consent decision is set per ICO guidance (PECR Reg 6).
         </p>
       </section>
 

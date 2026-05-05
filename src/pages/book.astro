@@ -33,11 +33,17 @@ const jsonLd = {
       provider: { '@id': 'https://tamazia.co.uk/#organization' },
       areaServed: ['United Kingdom', 'European Union', 'United Arab Emirates', 'United States'],
       serviceType: 'Consultation',
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'GBP',
-        availability: 'https://schema.org/InStock',
+      isAccessibleForFree: true,
+      hoursAvailable: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '09:00',
+        closes: '18:00',
+      },
+      availableChannel: {
+        '@type': 'ServiceChannel',
+        serviceUrl: 'https://tamazia.co.uk/book/',
+        availableLanguage: 'en-GB',
       },
     },
     {
@@ -86,7 +92,7 @@ const jsonLd = {
         <div id="my-cal-inline-strategy-call" class="cal-inline" aria-label="Cal.com booking calendar"></div>
         <noscript>
           <div class="cal-fallback">
-            <p>The booking calendar requires JavaScript. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a> or <a href="/contact/">send a brief instead</a>.</p>
+            <p>The booking calendar requires JavaScript. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a>, <a href="/contact/">send a brief instead</a>, or email <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>.</p>
           </div>
         </noscript>
       </div>
@@ -177,9 +183,9 @@ const jsonLd = {
   setTimeout(() => {
     const wrap = document.getElementById('my-cal-inline-strategy-call');
     if (wrap && !wrap.querySelector('iframe')) {
-      wrap.innerHTML = '<div class="cal-fallback"><p>The booking calendar did not load. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a> or <a href="/contact/">send a brief instead</a>.</p></div>';
+      wrap.innerHTML = '<div class="cal-fallback"><p>The booking calendar did not load. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a>, <a href="/contact/">send a brief instead</a>, or email <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>.</p></div>';
     }
-  }, 8000);
+  }, 15000);
 
   // GA4 client-side event when embed iframe attaches.
   (function watchEmbed() {

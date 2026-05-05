@@ -33,7 +33,7 @@ export const onRequestPost = async ({ request, env }) => {
 
   const expected = env.CAL_WEBHOOK_SECRET || '';
   if (!expected) {
-    log('webhook_secret_unbound');
+    log('webhook_secret_unbound', { request_id: 'cal:unset' });
     return new Response(JSON.stringify({ error: 'webhook_secret_unbound' }), { status: 503, headers: baseHeaders });
   }
 
@@ -41,7 +41,7 @@ export const onRequestPost = async ({ request, env }) => {
   // read the underlying stream and throw early if it overruns.
   const reader = request.body?.getReader();
   if (!reader) {
-    log('no_body');
+    log('no_body', { request_id: 'cal:unset' });
     return new Response(JSON.stringify({ error: 'no_body' }), { status: 400, headers: baseHeaders });
   }
   const chunks = [];
@@ -51,7 +51,7 @@ export const onRequestPost = async ({ request, env }) => {
     if (done) break;
     total += value.byteLength;
     if (total > MAX_BODY_BYTES) {
-      log('body_too_large', { size: total });
+      log('body_too_large', { size: total, request_id: 'cal:unset' });
       return new Response(JSON.stringify({ error: 'body_too_large' }), { status: 413, headers: baseHeaders });
     }
     chunks.push(value);
@@ -64,34 +64,34 @@ export const onRequestPost = async ({ request, env }) => {
   const sigHeader = request.headers.get('x-cal-signature-256') || '';
   const computed = await hmacSha256Hex(expected, rawBody);
   if (!sigHeader || !timingSafeEqual(sigHeader, computed)) {
-    log('invalid_signature');
+    log('invalid_signature', { request_id: 'cal:sig-fail' });
     return new Response(JSON.stringify({ error: 'invalid_signature' }), { status: 401, headers: baseHeaders });
   }
 
   let body;
   try { body = JSON.parse(rawBody); } catch {
-    log('invalid_json');
+    log('invalid_json', { request_id: 'cal:bad-json' });
     return new Response(JSON.stringify({ error: 'invalid_json' }), { status: 400, headers: baseHeaders });
   }
 
   // Replay-window enforcement. Cal.com sends `createdAt` ISO timestamp on the
   // outer envelope. If the event is older than REPLAY_WINDOW_MS, treat it as a
   // replay regardless of valid signature.
-  const createdAt = body.createdAt || body.created_at;
+  const createdAt = body.createdAt || body.created_at || body.payload?.createdAt || body.payload?.created_at;
   if (createdAt) {
     const eventTime = Date.parse(createdAt);
     if (Number.isFinite(eventTime)) {
       const skew = Date.now() - eventTime;
       if (skew > REPLAY_WINDOW_MS) {
-        log('replay_window_exceeded', { skew_ms: skew });
-        return new Response(JSON.stringify({ error: 'event_too_old' }), { status: 409, headers: baseHeaders });
+        log('replay_window_exceeded', { skew_ms: skew, request_id: 'cal:replay' });
+        return new Response(JSON.stringify({ error: 'event_too_old' }), { status: 503, headers: baseHeaders });
       }
     }
   }
 
   const triggerEvent = body.triggerEvent || body.event || 'unknown';
   const payload = body.payload || body.data || {};
-  const request_id = payload.uid || payload.id || crypto.randomUUID();
+  const request_id = payload.uid || payload.bookingId || payload.iCalUID || payload.id || crypto.randomUUID();
 
   const record = {
     tab_source: 'bookings',
@@ -113,6 +113,10 @@ export const onRequestPost = async ({ request, env }) => {
     if (existing && triggerEvent === 'BOOKING_CREATED') {
       log('deduped', { trigger: triggerEvent, request_id: record.request_id });
       return new Response(JSON.stringify({ ok: true, request_id: record.request_id, deduped: true }), { status: 200, headers: baseHeaders });
+    }
+    // Orphan-detect: RESCHEDULED/CANCELLED on a uid we never saw CREATED for
+    if (!existing && (triggerEvent === 'BOOKING_RESCHEDULED' || triggerEvent === 'BOOKING_CANCELLED' || triggerEvent === 'BOOKING_CANCELED')) {
+      record.cal_orphan = true;
     }
     await env.FORM_SUBMISSIONS.put(`bookings:${record.request_id}`, JSON.stringify(record), {
       expirationTtl: 60 * 60 * 24 * 365 * 2
@@ -144,9 +148,20 @@ export const onRequestPost = async ({ request, env }) => {
   });
 };
 
+export const onRequestOptions = async () => new Response(null, {
+  status: 204,
+  headers: {
+    'Access-Control-Allow-Origin': 'https://app.cal.com',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Cal-Signature-256',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin'
+  }
+});
+
 export const onRequest = async () => new Response(JSON.stringify({ error: 'method_not_allowed' }), {
   status: 405,
-  headers: { 'Content-Type': 'application/json', 'Allow': 'POST' }
+  headers: { 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS' }
 });
 
 function lifecycleStatus(trigger) {

@@ -1,7 +1,8 @@
 ---
-// /admin/submissions · Phase 3 perfection · KV-backed dashboard
-// Auth: ADMIN_SECRET via query string (?key=) or X-Admin-Secret header.
+// /admin/submissions · Phase 8 hardened · KV-backed dashboard
+// Auth: ADMIN_SECRET via login form (in-memory only, never sessionStorage).
 // Reads /api/admin-submissions then renders.
+// noindex via _headers + meta robots.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const lastUpdated = '5 May 2026';
 ---
@@ -15,89 +16,202 @@ const lastUpdated = '5 May 2026';
     <header class="admin-head">
       <h1>Form Submissions</h1>
       <p class="updated">Last verified {lastUpdated}.</p>
-      <div class="filters">
-        <label>Tab <select id="tab"><option value="">all</option><option>contact</option><option>briefings</option><option>audit</option><option>bookings</option><option>errors</option></select></label>
-        <input id="search" placeholder="Search email or company" />
-        <button id="reload">Reload</button>
-        <button id="export">Export CSV</button>
+      <form id="login-form" class="login" autocomplete="off">
+        <label for="adminkey">Admin secret</label>
+        <input id="adminkey" type="password" autocomplete="off" placeholder="ADMIN_SECRET" />
+        <button type="submit">Authenticate</button>
+      </form>
+      <div id="dashboard" hidden>
+        <div class="filters">
+          <label>Tab
+            <select id="tab"><option value="">all</option><option>contact</option><option>briefings</option><option>audit</option><option>bookings</option><option>nel</option></select>
+          </label>
+          <input id="search" placeholder="Search email, company, or request_id" />
+          <input id="from" type="date" aria-label="From date" />
+          <input id="to" type="date" aria-label="To date" />
+          <button id="reload" type="button">Reload</button>
+          <button id="export" type="button">Export CSV</button>
+          <button id="signout" type="button">Sign out</button>
+        </div>
       </div>
     </header>
 
-    <section id="status" class="status">Loading…</section>
-    <table id="grid">
-      <thead><tr><th>Submitted</th><th>Tab</th><th>Name</th><th>Email</th><th>Company</th><th>Intent</th><th>UTM</th><th>Country</th></tr></thead>
+    <section id="status" class="status"></section>
+    <table id="grid" hidden>
+      <thead>
+        <tr>
+          <th>Submitted</th>
+          <th>Tab</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Email check</th>
+          <th>Company</th>
+          <th>Intent</th>
+          <th>UTM</th>
+          <th>Country</th>
+          <th>Request ID</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </main>
 </BaseLayout>
 
 <style>
-  .admin { padding: 32px 24px 96px; max-width: 1280px; margin: 0 auto; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; }
+  .admin { padding: 32px 24px 96px; max-width: 1320px; margin: 0 auto; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; }
   .admin h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 36px; margin: 0; }
   .updated { font-size: 12px; color: #5C4047; margin: 4px 0 16px; }
+  .login { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .login label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .login input, .filters input, .filters select, .login button, .filters button {
+    font: inherit; padding: 8px 10px; border: 1px solid #C9A772; background: #FAF7F2;
+  }
+  .login input { min-width: 240px; }
+  .login button, .filters button { cursor: pointer; background: #2A0C14; color: #FAF7F2; border-color: #2A0C14; }
   .filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
-  .filters input, .filters select, .filters button { font: inherit; padding: 6px 10px; border: 1px solid #C9A772; background: #FAF7F2; }
-  .filters button { cursor: pointer; }
   .status { font-size: 13px; color: #5C4047; margin-bottom: 12px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 8px 10px; border-bottom: 1px solid #E5DDCB; vertical-align: top; text-align: left; }
   th { background: #F4F0E8; font-weight: 600; position: sticky; top: 0; }
   tr:hover td { background: #FAF7F2; }
+  .tag-valid { color: #1F6B3A; font-weight: 600; }
+  .tag-invalid { color: #B30A0A; font-weight: 600; }
+  .tag-disposable { color: #B30A0A; font-weight: 600; }
+  .tag-skipped { color: #5C4047; }
+  .tag-risky, .tag-accept_all, .tag-unknown { color: #C9A772; font-weight: 600; }
 </style>
 
 <script is:inline>
   (function () {
-    const params = new URLSearchParams(location.search);
-    const KEY = params.get('key') || sessionStorage.getItem('tamazia-admin-key') || prompt('Admin secret');
-    if (KEY) sessionStorage.setItem('tamazia-admin-key', KEY);
+    let KEY = ''; // In-memory only, never persisted.
     let cache = [];
 
+    const $ = (id) => document.getElementById(id);
+
+    function safeText(s) {
+      // Set as textContent later, never innerHTML; this returns the safe escaped string for fallback.
+      return String(s == null ? '' : s);
+    }
+
     async function load() {
-      const tab = document.getElementById('tab').value;
+      const tab = $('tab').value;
       const url = '/api/admin-submissions?key=' + encodeURIComponent(KEY) + (tab ? '&tab=' + tab : '');
-      document.getElementById('status').textContent = 'Loading…';
+      $('status').textContent = 'Loading...';
       try {
-        const r = await fetch(url);
+        const r = await fetch(url, { credentials: 'omit' });
+        if (r.status === 401) {
+          $('status').textContent = 'Authentication failed.';
+          $('login-form').hidden = false;
+          $('dashboard').hidden = true;
+          $('grid').hidden = true;
+          return;
+        }
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const data = await r.json();
         cache = data.submissions || [];
+        $('grid').hidden = false;
         render();
       } catch (e) {
-        document.getElementById('status').textContent = 'Error: ' + e.message;
+        $('status').textContent = 'Error: ' + e.message;
       }
     }
 
     function render() {
-      const q = document.getElementById('search').value.trim().toLowerCase();
-      const rows = cache.filter(s => !q || (s.email||'').toLowerCase().includes(q) || (s.company||'').toLowerCase().includes(q));
-      document.getElementById('status').textContent = rows.length + ' rows';
-      const tbody = document.querySelector('#grid tbody');
+      const q = $('search').value.trim().toLowerCase();
+      const from = $('from').value;
+      const to = $('to').value;
+      let rows = cache;
+      if (q) {
+        rows = rows.filter(s =>
+          (s.email||'').toLowerCase().includes(q) ||
+          (s.company||'').toLowerCase().includes(q) ||
+          (s.request_id||'').toLowerCase().includes(q)
+        );
+      }
+      if (from) {
+        rows = rows.filter(s => (s.submitted_at||'').slice(0,10) >= from);
+      }
+      if (to) {
+        rows = rows.filter(s => (s.submitted_at||'').slice(0,10) <= to);
+      }
+      $('status').textContent = rows.length + ' rows · ' + cache.length + ' total in cache';
+      const tbody = $('grid').querySelector('tbody');
       tbody.innerHTML = '';
+      const fields = ['submitted_at','tab_source','name','email','email_validation','company','intent_text','utm_source','ip_country','request_id'];
       for (const s of rows) {
         const tr = document.createElement('tr');
-        tr.innerHTML = ['submitted_at','tab_source','name','email','company','intent_text','utm_source','ip_country']
-          .map(k => '<td>' + esc(s[k] || '') + '</td>').join('');
+        for (const f of fields) {
+          const td = document.createElement('td');
+          if (f === 'email_validation') {
+            const v = s.email_validation || {};
+            const status = v.skipped ? 'skipped' : (v.status || 'unknown');
+            td.className = 'tag-' + status;
+            td.textContent = (v.provider || 'none') + ' · ' + status;
+          } else if (f === 'request_id') {
+            td.textContent = (s[f] || '').slice(0,8);
+            td.title = s[f] || '';
+          } else {
+            td.textContent = safeText(s[f]);
+          }
+          tr.appendChild(td);
+        }
         tbody.appendChild(tr);
       }
     }
 
-    function esc(s) { return String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
-
     function exportCsv() {
-      const headers = ['submitted_at','tab_source','request_id','name','email','company','intent_text','utm_source','utm_medium','ip_country'];
-      const rows = [headers.join(',')];
-      for (const s of cache) rows.push(headers.map(h => JSON.stringify(s[h] || '')).join(','));
-      const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+      const headers = ['submitted_at','tab_source','request_id','name','email','email_validation_status','company','intent_text','utm_source','utm_medium','ip_country'];
+      const csvRows = [headers.join(',')];
+      for (const s of cache) {
+        const row = headers.map(h => {
+          if (h === 'email_validation_status') {
+            const v = s.email_validation || {};
+            return JSON.stringify(v.skipped ? 'skipped' : (v.status || 'unknown'));
+          }
+          return JSON.stringify(s[h] == null ? '' : String(s[h]));
+        });
+        csvRows.push(row.join(','));
+      }
+      const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'tamazia-submissions-' + new Date().toISOString().slice(0,10) + '.csv';
       a.click();
     }
 
-    document.getElementById('tab').addEventListener('change', load);
-    document.getElementById('search').addEventListener('input', render);
-    document.getElementById('reload').addEventListener('click', load);
-    document.getElementById('export').addEventListener('click', exportCsv);
-    load();
+    function signOut() {
+      KEY = '';
+      cache = [];
+      $('login-form').hidden = false;
+      $('dashboard').hidden = true;
+      $('grid').hidden = true;
+      $('status').textContent = 'Signed out. Memory cleared.';
+      $('adminkey').value = '';
+    }
+
+    $('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      KEY = $('adminkey').value || '';
+      if (!KEY) return;
+      $('login-form').hidden = true;
+      $('dashboard').hidden = false;
+      $('adminkey').value = ''; // Don't leave in DOM.
+      load();
+    });
+
+    $('tab').addEventListener('change', load);
+    $('search').addEventListener('input', render);
+    $('from').addEventListener('change', render);
+    $('to').addEventListener('change', render);
+    $('reload').addEventListener('click', load);
+    $('export').addEventListener('click', exportCsv);
+    $('signout').addEventListener('click', signOut);
+
+    // Drop key from memory if tab is hidden for >5 minutes (passive auto-signout).
+    let hideStart = null;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) hideStart = Date.now();
+      else if (hideStart && (Date.now() - hideStart) > 5 * 60 * 1000) signOut();
+    });
   })();
 </script>

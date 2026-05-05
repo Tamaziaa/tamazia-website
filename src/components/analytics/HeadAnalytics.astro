@@ -1,0 +1,4 @@
+---
+const bingVerify = (Astro.props as any).bingVerify || '';
+---
+{bingVerify && <meta name="msvalidate.01" content={bingVerify} />}

@@ -1,4 +1,15 @@
 ---
+import HeadAnalytics from '../components/analytics/HeadAnalytics.astro';
+import BodyAnalytics from '../components/analytics/BodyAnalytics.astro';
+
+// Tamazia analytics tokens · replace empty strings with actual values when provider properties are created.
+// Cloudflare Web Analytics token: replace '' with the token from CF dashboard.
+// GA4 Measurement ID: replace '' with G-XXXXXXX from GA4 property.
+// Bing site verification: replace '' with the verification value from Bing Webmaster.
+const bingVerify = '';
+const cfBeacon = '';
+const ga4Id = '';
+
 import '../styles/global.css';
 
 export interface Props {
@@ -120,6 +131,7 @@ const jsonLd = {
 
     <!-- Named slot for page-level JSON-LD and additional head tags -->
     <slot name="head" />
+  <HeadAnalytics bingVerify={bingVerify} />
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
@@ -271,5 +283,6 @@ const jsonLd = {
         }, 4000);
       });
     </script>
+  <BodyAnalytics cfBeacon={cfBeacon} ga4Id={ga4Id} />
   </body>
 </html>

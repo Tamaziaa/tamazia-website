@@ -25,6 +25,8 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
         method="POST"
         aria-label="Briefing request form"
       >
+    <input type="hidden" name="ts_form_open" value="" data-tamazia="ts" />
+    <input type="text" name="bot-field" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
         <p hidden>
           <label>Do not fill this out: <input name="bot-field" /></label>
         </p>
@@ -603,4 +605,14 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
       if (submit) submit.disabled = false;
     });
   });
+</script>
+
+
+<script is:inline>
+  // ts_form_open hydration · Phase 4 perfection 2026-05-05
+  (function(){
+    document.querySelectorAll('input[data-tamazia="ts"]').forEach(el => {
+      el.value = String(Date.now());
+    });
+  })();
 </script>

@@ -47,6 +47,22 @@ export const footerContent = {
 
   copyright: '© 2026 Tamazia. All rights reserved.',
 
+  // Companies Act 2006 s.82 + Companies (Trading Disclosures) Regs 2008 compliance
+  // Plus voluntary identity disclosure for investor and client trust signals
+  legalEntity: {
+    name: 'Tamazia Pvt Ltd',
+    registeredOffice: 'Mumbai, Maharashtra, India',
+    cin: 'TBD · pending UK Ltd incorporation',
+    contactEmail: 'founder@tamazia.co.uk',
+    dataController: 'Aman Pareek',
+    icoRegistration: 'TBD · pending registration at ico.org.uk',
+  },
+
+  modernSlaveryHref: '/modern-slavery-statement/',
+  complaintsHref: '/complaints/',
+  acceptableUseHref: '/acceptable-use/',
+  securityHref: '/security-policy/',
+
   // Legacy field current Footer.astro reads
   // Phase B: order LLM first, then CIArb, then ABA. Partner badges removed until verification confirmed (I.31).
   credentials: [

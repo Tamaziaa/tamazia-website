@@ -1622,6 +1622,18 @@ var onRequestGet3 = /* @__PURE__ */ __name(async ({ env, request }) => {
     kv: "unknown",
     forms_writable: "unknown"
   };
+  if (env.RESEND_API_KEY) {
+    try {
+      const r = await fetch("https://api.resend.com/domains", {
+        headers: { "Authorization": "Bearer " + env.RESEND_API_KEY }
+      });
+      checks.resend = r.ok ? "ok" : "http_" + r.status;
+    } catch (e) {
+      checks.resend = "error:" + e.message;
+    }
+  } else {
+    checks.resend = "unbound";
+  }
   if (env.FORM_SUBMISSIONS) {
     try {
       const probeKey = "__health_probe__";
@@ -1710,7 +1722,7 @@ async function hmacHex(message, secret) {
 }
 __name(hmacHex, "hmacHex");
 
-// ../.wrangler/tmp/pages-ug8nYD/functionsRoutes-0.5589543659879368.mjs
+// ../.wrangler/tmp/pages-7DBgYr/functionsRoutes-0.7143474198855224.mjs
 var routes = [
   {
     routePath: "/api/admin-submissions",

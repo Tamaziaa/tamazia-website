@@ -14,6 +14,20 @@ export const onRequestGet = async ({ env, request }) => {
     forms_writable: 'unknown'
   };
 
+  // Resend auth probe (HEAD on /domains for low cost)
+  if (env.RESEND_API_KEY) {
+    try {
+      const r = await fetch('https://api.resend.com/domains', {
+        headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY }
+      });
+      checks.resend = r.ok ? 'ok' : ('http_' + r.status);
+    } catch (e) {
+      checks.resend = 'error:' + e.message;
+    }
+  } else {
+    checks.resend = 'unbound';
+  }
+
   // KV write+read round-trip probe
   if (env.FORM_SUBMISSIONS) {
     try {

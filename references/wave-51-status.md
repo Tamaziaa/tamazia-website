@@ -1,73 +1,44 @@
-# Wave 51 status · operator action drive · 2026-05-06
+# Wave 51 final · zone-side hardening complete · 2026-05-06
 
-## Completed in this session
+## Done end-to-end
 
-### GitHub PAT scope rotation
-- Sudo verification cleared (code 35267314 from realfamemedia@gmail.com inbox)
-- Token `tamazia-deploy-phases` updated:
-  - Actions: Read+Write
-  - Administration: Read+Write
-  - Workflows: Read+Write
-  - Contents: Read+Write (already)
-  - Metadata: Read-only (required, mandatory)
+### GitHub
+- PAT sudo verification cleared
+- Token `tamazia-deploy-phases` upgraded: Workflows + Administration + Actions to Read+Write
+- 5 workflows shipped in `745dd8f`: deploy.yml (concurrency + post-deploy synthetic check), lighthouse-pa11y.yml, synthetic-check.yml, weekly-backup.yml, codeql.yml
+- Branch protection on main: no force-push, no deletion, admin override allowed
 
-### Deferred workflows pushed
-Commit `745dd8f` Wave 51:
-- `.github/workflows/deploy.yml` updated · concurrency block + post-deploy synthetic check
-- `.github/workflows/lighthouse-pa11y.yml` created
-- `.github/workflows/synthetic-check.yml` created
-- `.github/workflows/weekly-backup.yml` created
-- `.github/workflows/codeql.yml` created
+### Cloudflare DNS (zone-holding account 78c7941714fccce82e777108db054961)
+- DMARC reject move on tamazia.co.uk (was p=none, now p=reject sp=reject pct=100)
+- DMARC reject move on tamazia.in (was p=none, now p=reject sp=reject pct=100)
+- MTA-STS TXT on _mta-sts.tamazia.co.uk (v=STSv1; id=20260506)
+- MTA-STS TXT on _mta-sts.tamazia.in (v=STSv1; id=20260506)
+- TLS-RPT TXT on _smtp._tls.tamazia.co.uk (rua to Postmark + Aman)
+- TLS-RPT TXT on _smtp._tls.tamazia.in (rua to Postmark + Aman)
+- Resend tamazia.in records auto-published earlier; domain Verified May 5
 
-### Branch protection on main
-Applied via API:
-- `allow_force_pushes`: false
-- `allow_deletions`: false
-- `enforce_admins`: false (admin override allowed)
-- `required_pull_request_reviews`: null (single-dev workflow)
-- `required_status_checks`: null
+### Cloudflare WAF · 5 custom rules on tamazia.co.uk zone
+1. Block known bad bots and scanners (sqlmap, nikto, masscan, nmap, acunetix, dirbuster, gobuster, wpscan, empty UA)
+2. Managed challenge for /admin/ and /api/admin from non-allowlist countries (allow GB IN US AE DE FR NL IE ES IT)
+3. Block WordPress/PHP probe paths (we are not WordPress)
+4. Managed challenge for POST to forms with empty or short user-agent
+5. Block content scrapers (AhrefsBot, SemrushBot, DotBot, MJ12bot, PetalBot, DataForSeoBot)
 
-### Live deploy verified
-- `https://tamazia.co.uk/api/health` → 200
-- `https://tamazia-website.pages.dev/api/health` → 200
-- version: `745dd8f`
-- KV: bound · Resend: configured · Cal webhook: configured
+### Cloudflare Rate Limit · free-tier ceiling
+- 1 rule (free max): 5 POSTs / 10s per IP across /api/contact /api/briefings /api/audit /api/dsar /api/erase /api/portability /api/admin
 
-## Hard blocker · zone-holding Cloudflare login required
+### Cloudflare Bot Fight Mode
+- Toggled ON via UI (free tier, JS detections enabled)
 
-The remaining 6 tasks require the Cloudflare account that owns zones
-`tamazia.co.uk` and `tamazia.in`. That zone-holding login is **not**
-the same as the realfamemedia@gmail.com login currently in browser.
+### Cloudflare Access policy on /admin
+- Zero Trust Free plan provisioned (50 seats, $0/seat/month)
+- Team domain: tamazia-pvt-ltd.cloudflareaccess.com
+- Application: "Tamazia Admin Dashboard" id=e4ab6f71-08d4-4d76-ba37-b22777477d93 protecting tamazia.co.uk/admin
+- Policy: id=12cd08bf-6f4e-4aa1-af62-e7867fea766e allow-listing amanpareek.pareek@gmail.com, realfamemedia@gmail.com, founder@tamazia.co.uk
+- Session duration: 24h
 
-Verified: `curl /zones?per_page=50` against the new API token
-`cfut_REDACTED` returns
-`total=0` because the realfamemedia login owns 0 zones.
-
-The zones are in a separate Cloudflare login (likely
-amanpareek.pareek@gmail.com or a third email) that needs to be
-either:
-- A) logged into this browser tab, or
-- B) used to mint a Cloudflare API token with Zone:DNS:Edit + Zone Settings:Edit + WAF:Edit + Bot Management:Edit, then that token pasted here
-
-### Tasks blocked on zone access
-1. DMARC reject move on `_dmarc.tamazia.co.uk` and `_dmarc.tamazia.in` (TXT update)
-2. MTA-STS TXT records on `_mta-sts.tamazia.co.uk` and `_mta-sts.tamazia.in`
-3. TLS-RPT TXT records on `_smtp._tls.tamazia.co.uk` and `_smtp._tls.tamazia.in`
-4. Resend 3 records on tamazia.in (rs1._domainkey, rs2._domainkey, send)
-5. Cloudflare WAF · 5 custom rules on tamazia.co.uk zone
-6. Cloudflare Rate Limit · 3 rules on tamazia.co.uk zone
-7. Cloudflare Bot Fight Mode toggle on tamazia.co.uk zone
-8. Cloudflare Access policy on `/admin/*` (zone-level binding)
-
-### Once unblocked
-
-Run from this repo:
-```
-CF_TOKEN="<new-token-from-zone-account>"
-ZONE_CO_UK=$(curl -s "https://api.cloudflare.com/client/v4/zones?name=tamazia.co.uk" -H "Authorization: Bearer $CF_TOKEN" | python3 -c "import sys,json;print(json.load(sys.stdin)['result'][0]['id'])")
-ZONE_IN=$(curl -s "https://api.cloudflare.com/client/v4/zones?name=tamazia.in" -H "Authorization: Bearer $CF_TOKEN" | python3 -c "import sys,json;print(json.load(sys.stdin)['result'][0]['id'])")
-# Then run scripts/cf-dns-bulk-apply.sh (to be created with the discovered IDs)
-```
-
-A bulk-apply script will be drafted once zone IDs are available so the
-6 zone-side tasks complete in one round-trip.
+## Live verification
+- /api/health on tamazia.co.uk returns 200, version 745dd8f
+- KV bound, Resend configured, Cal webhook configured, all 16 env vars present
+- Forms tested live (/api/contact returns request_id JSON)
+- 130 patch-dist gates passing on every deploy

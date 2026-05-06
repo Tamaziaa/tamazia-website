@@ -10,6 +10,10 @@ RESEND_FROM_ALERT = "Tamazia Forms <forms@tamazia.in>"
 RESEND_FROM_ACK = "Tamazia <founder@tamazia.in>"
 RESEND_REPLY_TO = "founder@tamazia.co.uk"
 ALERT_TO = "realfamemedia@gmail.com"
+CONTACT_FROM = "Tamazia Pvt Ltd · Forms <forms@tamazia.in>"
+CONTACT_TO = "founder@tamazia.co.uk"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADJy0G6mQ9At9Hk4"
+EMAIL_VALIDATION_MODE = "tag"
 
 [[kv_namespaces]]
 binding = "FORM_SUBMISSIONS"

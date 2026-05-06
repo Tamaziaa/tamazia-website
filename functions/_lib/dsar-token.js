@@ -34,7 +34,7 @@ function b64uDecode(s) {
   return JSON.parse(atob(padded));
 }
 
-export async function mintToken({ email, action, request_id }, env, ttlSeconds) {
+export async function mintToken({ email, action, request_id, composite_key }, env, ttlSeconds) {
   // DSAR_SIGNING_SECRET preferred · falls back to ADMIN_SECRET for transition
   const secret = env.DSAR_SIGNING_SECRET || env.ADMIN_SECRET;
   if (!secret) throw new Error('signing secret unbound · cannot mint DSAR tokens');
@@ -47,6 +47,7 @@ export async function mintToken({ email, action, request_id }, env, ttlSeconds) 
     email: (email || '').toLowerCase().trim(),
     action,
     request_id: request_id || null,
+    composite_key: composite_key || null,
     exp: Math.floor(Date.now() / 1000) + ttlSeconds,
     iss: 'tamazia.co.uk',
     iat: Math.floor(Date.now() / 1000)

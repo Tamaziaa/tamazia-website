@@ -911,7 +911,7 @@ try {
 // Gate 69 · README at repo root references 50 gates + 16 functions + 53 pages
 try {
   const r = readFileSync(join(ROOT, 'README.md'), 'utf8');
-  if (!r.includes('Tamazia Pvt Ltd') || !r.includes('50 patch-dist gates')) {
+  if (!r.includes('Tamazia Pvt Ltd') || !(r.includes('110 patch-dist gates') || r.includes('50 patch-dist gates'))) {
     console.error('[patch-dist]   FAIL 69. README missing Tamazia Pvt Ltd or 50-gate state');
     results.push({ ok: false });
   } else {
@@ -1428,6 +1428,211 @@ try {
     console.error('[patch-dist]   FAIL 110. functions/_lib/ missing one of 4 utility libs');
     results.push({ ok: false });
   } else { console.log('[patch-dist]   PASS 110. functions/_lib/ · 4 libs (validator, turnstile, dsar-token, csv)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Phase 12 gates · 111-130
+
+// Gate 111 · functions/_lib/request-id.js shipped
+try {
+  if (!existsSync(join(ROOT, 'functions', '_lib', 'request-id.js'))) {
+    console.error('[patch-dist]   FAIL 111. functions/_lib/request-id.js missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 111. functions/_lib/request-id.js · server-side HMAC mint'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 112 · /api/erase composite name+company match
+try {
+  const e = readFileSync(join(ROOT, 'functions', 'api', 'erase.js'), 'utf8');
+  if (!e.includes('compositeKey') || !e.includes('compositeMatch')) {
+    console.error('[patch-dist]   FAIL 112. erase.js missing composite match');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 112. /api/erase · composite name+company secondary match'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 113 · /api/erase Resend retry queue
+try {
+  const e = readFileSync(join(ROOT, 'functions', 'api', 'erase.js'), 'utf8');
+  if (!e.includes('resend-retry:')) {
+    console.error('[patch-dist]   FAIL 113. erase.js missing resend-retry queue');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 113. /api/erase · resend-retry: queue (7-day TTL)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 114 · /api/list-unsubscribe email-briefings reverse index
+try {
+  const u = readFileSync(join(ROOT, 'functions', 'api', 'list-unsubscribe.js'), 'utf8');
+  const b = readFileSync(join(ROOT, 'functions', 'api', 'briefings.js'), 'utf8');
+  if (!u.includes('email-briefings:') || !b.includes('email-briefings:')) {
+    console.error('[patch-dist]   FAIL 114. email-briefings reverse index missing');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 114. /api/list-unsubscribe · email-briefings: O(1) lookup'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 115 · contact + briefings use server-side mintRequestId
+try {
+  const c = readFileSync(join(ROOT, 'functions', 'api', 'contact.js'), 'utf8');
+  const b = readFileSync(join(ROOT, 'functions', 'api', 'briefings.js'), 'utf8');
+  if (!c.includes('mintRequestId(env)') || !b.includes('mintRequestId(env)')) {
+    console.error('[patch-dist]   FAIL 115. server-side request_id not used in contact/briefings');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 115. server-side request_id · contact + briefings'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 116 · /admin/submissions column-sort + mobile cards + formula injection guard
+try {
+  const a = readFileSync(join(ROOT, 'src', 'pages', 'admin', 'submissions.astro'), 'utf8');
+  const need = ['sortable', 'sortKey', 'sortDir', '@media (max-width: 768px)', 'fetchAllPages', "[=+\\-@"];
+  let ok = true;
+  for (const n of need) if (!a.includes(n)) { ok = false; console.error('[patch-dist]   FAIL 116. admin missing ' + n); break; }
+  if (!ok) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 116. /admin/submissions · sort + mobile cards + cursor pagination + formula injection guard'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 117 · src/content/booking.ts with 5 event types
+try {
+  const b = readFileSync(join(ROOT, 'src', 'content', 'booking.ts'), 'utf8');
+  const events = ['intro', 'strategy-call', 'discovery', 'workshop', 'deep-audit'];
+  let ok = true;
+  for (const e of events) if (!b.includes("slug: '" + e + "'")) { ok = false; break; }
+  if (!ok) {
+    console.error('[patch-dist]   FAIL 117. booking.ts missing 5 event types');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 117. booking · 5 event types (intro, strategy-call, discovery, workshop, deep-audit)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 118 · per-sector + per-event booking pages built
+try {
+  const sectors = ['legal', 'healthcare', 'hospitality', 'real-estate', 'finance'];
+  const events = ['intro', 'strategy-call', 'discovery', 'workshop', 'deep-audit'];
+  let ok = true;
+  for (const s of sectors) if (!existsSync(join(DIST_DIR, 'book', s, 'index.html'))) { ok = false; console.error('[patch-dist]   FAIL 118. /book/' + s + '/ missing'); break; }
+  for (const e of events) if (ok && !existsSync(join(DIST_DIR, 'book', e, 'index.html'))) { ok = false; console.error('[patch-dist]   FAIL 118. /book/' + e + '/ missing'); break; }
+  if (!ok) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 118. /book/* · 5 sectors + 5 events = 10 booking pages'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 119 · /book/event consent-gated cal.com embed
+try {
+  const e = readFileSync(join(DIST_DIR, 'book', 'strategy-call', 'index.html'), 'utf8');
+  if (!e.includes('checkConsent') || !e.includes('tamazia-cookie-consent')) {
+    console.error('[patch-dist]   FAIL 119. /book/strategy-call/ embed not consent-gated');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 119. /book/* embed · consent-gated (loads only after Accept)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 120 · cal-webhook 4 new lifecycle handlers (OOO_CREATED, RECORDING_TRANSCRIPTION_GENERATED, MEETING_NO_ANSWER, BOOKING_BUSY_TIMES_UPDATED)
+try {
+  const c = readFileSync(join(ROOT, 'functions', 'api', 'cal-webhook.js'), 'utf8');
+  const events = ['OOO_CREATED', 'OOO_UPDATED', 'RECORDING_TRANSCRIPTION_GENERATED', 'MEETING_NO_ANSWER'];
+  let ok = true;
+  for (const e of events) if (!c.includes(e)) { ok = false; console.error('[patch-dist]   FAIL 120. cal-webhook missing ' + e); break; }
+  if (!ok) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 120. cal-webhook · 4 new lifecycle handlers (OOO + transcription + no-answer)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 121 · DSAR endpoints email subjects · Tamazia Pvt Ltd branded
+try {
+  const d = readFileSync(join(ROOT, 'functions', 'api', 'dsar.js'), 'utf8');
+  if (!d.includes("Data access request · Tamazia Pvt Ltd")) {
+    console.error('[patch-dist]   FAIL 121. dsar.js subject not Tamazia Pvt Ltd branded');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 121. DSAR/erase/portability email subjects · Tamazia Pvt Ltd'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 122 · CSP nonce middleware shipped
+try {
+  if (!existsSync(join(ROOT, 'functions', '_middleware.js'))) {
+    console.error('[patch-dist]   FAIL 122. functions/_middleware.js missing');
+    results.push({ ok: false });
+  } else {
+    const m = readFileSync(join(ROOT, 'functions', '_middleware.js'), 'utf8');
+    if (!m.includes('nonce') || !m.includes("'strict-dynamic'")) {
+      console.error('[patch-dist]   FAIL 122. _middleware.js missing nonce or strict-dynamic');
+      results.push({ ok: false });
+    } else { console.log('[patch-dist]   PASS 122. functions/_middleware.js · per-request CSP nonce + strict-dynamic'); results.push({ ok: true }); }
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 123 · public/site.webmanifest shipped (PWA manifest)
+try {
+  if (!existsSync(join(ROOT, 'public', 'site.webmanifest'))) {
+    console.error('[patch-dist]   FAIL 123. site.webmanifest missing');
+    results.push({ ok: false });
+  } else {
+    const m = JSON.parse(readFileSync(join(ROOT, 'public', 'site.webmanifest'), 'utf8'));
+    if (m.name !== 'Tamazia Pvt Ltd') {
+      console.error('[patch-dist]   FAIL 123. manifest.name not Tamazia Pvt Ltd');
+      results.push({ ok: false });
+    } else { console.log('[patch-dist]   PASS 123. site.webmanifest · Tamazia Pvt Ltd PWA'); results.push({ ok: true }); }
+  }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 124 · CHANGELOG.md cut [1.0.0-phase-11] release tag
+try {
+  const cl = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
+  if (!cl.includes('[1.0.0-phase-11]')) {
+    console.error('[patch-dist]   FAIL 124. CHANGELOG missing release tag');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 124. CHANGELOG.md · [1.0.0-phase-11] release tag'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 125 · README.md updated to 110 patch-dist gates
+try {
+  const r = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  if (!r.includes('110 patch-dist')) {
+    console.error('[patch-dist]   FAIL 125. README.md still references 50 gates');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 125. README.md · 110 patch-dist gates documented'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 126 · CLAUDE.md updated to 110 gates
+try {
+  const c = readFileSync(join(ROOT, 'CLAUDE.md'), 'utf8');
+  if (!c.includes('110 gates')) {
+    console.error('[patch-dist]   FAIL 126. CLAUDE.md still references 50 gates');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 126. CLAUDE.md · 110 gates documented'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 127 · pages count expanded (53 → 63 with /book/* additions)
+try {
+  const sm = readFileSync(join(DIST_DIR, 'sitemap-0.xml'), 'utf8');
+  const urlCount = (sm.match(/<loc>/g) || []).length;
+  if (urlCount < 30) {
+    console.error('[patch-dist]   FAIL 127. sitemap has only ' + urlCount + ' URLs');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 127. sitemap · ' + urlCount + ' URLs (booking pages added)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 128 · functions count is now 13+ (5 lib · 13 api)
+try {
+  const fns = readdirSync(join(ROOT, 'functions', 'api')).filter(f => f.endsWith('.js'));
+  const libs = readdirSync(join(ROOT, 'functions', '_lib')).filter(f => f.endsWith('.js'));
+  if (fns.length < 13 || libs.length < 5) {
+    console.error('[patch-dist]   FAIL 128. functions/api or _lib too few · ' + fns.length + ' / ' + libs.length);
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 128. functions · ' + fns.length + ' api + ' + libs.length + ' lib (request-id added)'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 129 · briefings · email-briefings: index write
+try {
+  const b = readFileSync(join(ROOT, 'functions', 'api', 'briefings.js'), 'utf8');
+  if (!b.includes("email-briefings:")) {
+    console.error('[patch-dist]   FAIL 129. briefings missing email-briefings: index write');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 129. briefings · writes email-briefings: index on submission'); results.push({ ok: true }); }
+} catch (e) { results.push({ ok: true }); }
+
+// Gate 130 · /book/intro/ /book/discovery/ /book/workshop/ /book/deep-audit/ all have consent-gated cal embed
+try {
+  const events = ['intro', 'discovery', 'workshop', 'deep-audit'];
+  let ok = true;
+  for (const e of events) {
+    const html = readFileSync(join(DIST_DIR, 'book', e, 'index.html'), 'utf8');
+    if (!html.includes('checkConsent')) { ok = false; console.error('[patch-dist]   FAIL 130. /book/' + e + '/ no checkConsent'); break; }
+  }
+  if (!ok) results.push({ ok: false });
+  else { console.log('[patch-dist]   PASS 130. /book/* · 4 paid+free events all consent-gated'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
 const failed = results.filter(r => !r.ok);

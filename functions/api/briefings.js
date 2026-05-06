@@ -3,6 +3,7 @@
 // Replaces the Apps Script dependency completely.
 
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { mintRequestId } from '../_lib/request-id.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
 
 export async function handleSubmission(request, env, tab) {
@@ -36,7 +37,8 @@ export async function handleSubmission(request, env, tab) {
     return json({ error: reject.reason }, 422, baseHeaders);
   }
 
-  const request_id = body.request_id || crypto.randomUUID();
+  // Phase 12 · server-mints request_id (ignores client-supplied to prevent spoof)
+  const request_id = await mintRequestId(env);
   const submitted_at = new Date().toISOString();
 
   if (env.FORM_SUBMISSIONS) {
@@ -58,6 +60,14 @@ export async function handleSubmission(request, env, tab) {
     await env.FORM_SUBMISSIONS.put(`${tab}:${request_id}`, JSON.stringify(record), {
       expirationTtl: 60 * 60 * 24 * 365 * 2
     });
+    // Phase 12 · email-briefings: reverse index for O(1) unsubscribe lookup
+    if (record.email) {
+      await env.FORM_SUBMISSIONS.put(
+        `email-briefings:${record.email.toLowerCase()}:${request_id}`,
+        JSON.stringify({ kv_key: `${tab}:${request_id}`, indexed_at: new Date().toISOString() }),
+        { expirationTtl: 60 * 60 * 24 * 365 * 2 }
+      );
+    }
   }
 
   const sideEffects = [];

@@ -61,7 +61,7 @@ patch-dist.js               Post-build verification (50 gates)
 
 ## Verification
 
-50 patch-dist gates run on every build. Local run:
+110 patch-dist gates run on every build. Local run:
 ```
 npm run build && node patch-dist.js
 ```

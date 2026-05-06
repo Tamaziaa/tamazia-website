@@ -207,7 +207,12 @@ function lifecycleStatus(trigger) {
   if (trigger === 'BOOKING_NO_SHOW_UPDATED') return 'NO_SHOW';
   if (trigger === 'MEETING_STARTED') return 'IN_PROGRESS';
   if (trigger === 'MEETING_ENDED') return 'COMPLETED';
+  if (trigger === 'MEETING_NO_ANSWER') return 'NO_ANSWER';
   if (trigger === 'FORM_SUBMITTED' || trigger === 'FORM_SUBMITTED_NO_EVENT') return 'FORM';
+  if (trigger === 'OOO_CREATED') return 'OOO_CREATED';
+  if (trigger === 'OOO_UPDATED') return 'OOO_UPDATED';
+  if (trigger === 'RECORDING_TRANSCRIPTION_GENERATED') return 'TRANSCRIPTION';
+  if (trigger === 'BOOKING_BUSY_TIMES_UPDATED') return 'BUSY_TIMES_UPDATED';
   return 'CONFIRMED';
 }
 function humanTrigger(trigger) {

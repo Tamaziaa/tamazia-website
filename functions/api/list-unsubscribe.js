@@ -70,10 +70,24 @@ async function unsubscribe(request, env, { token, id }) {
     method: request.method
   }), { expirationTtl: 60 * 60 * 24 * 30 * 13 }).catch(() => {});
 
-  // If we have email, delete from briefings list
+  // Phase 12 · O(1) lookup via email-briefings reverse index (legacy prefix scan as fallback)
   if (email) {
-    const list = await env.FORM_SUBMISSIONS.list({ prefix: 'briefings:' });
-    for (const k of list.keys) {
+    // Try reverse index first
+    const idxList = await env.FORM_SUBMISSIONS.list({ prefix: `email-briefings:${email.toLowerCase()}:`, limit: 100 });
+    if (idxList.keys.length) {
+      for (const k of idxList.keys) {
+        const v = await env.FORM_SUBMISSIONS.get(k.name);
+        if (!v) continue;
+        try {
+          const r = JSON.parse(v);
+          if (r.kv_key) await env.FORM_SUBMISSIONS.delete(r.kv_key);
+        } catch {}
+        await env.FORM_SUBMISSIONS.delete(k.name);
+      }
+    } else {
+      // Fallback for pre-Phase-12 records that have no reverse index
+      const list = await env.FORM_SUBMISSIONS.list({ prefix: 'briefings:' });
+      for (const k of list.keys) {
       const v = await env.FORM_SUBMISSIONS.get(k.name);
       if (!v) continue;
       try {
@@ -82,6 +96,7 @@ async function unsubscribe(request, env, { token, id }) {
           await env.FORM_SUBMISSIONS.delete(k.name);
         }
       } catch {}
+      }
     }
   }
 

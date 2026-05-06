@@ -31,7 +31,7 @@ export const onRequestPost = async ({ request, env }) => {
         from: env.RESEND_FROM_ALERT || 'Tamazia DPO <dpo@tamazia.in>',
         to: [email],
         reply_to: 'dpo@tamazia.co.uk',
-        subject: 'Data erasure request · Tamazia',
+        subject: 'Data erasure request · Tamazia Pvt Ltd',
         html: `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
           <p>Hello,</p>
           <p>Tamazia received your data erasure request under UK GDPR Article 17. To complete the request, click the link below within seven days. <strong>This action is irreversible.</strong></p>
@@ -70,6 +70,9 @@ export const onRequestGet = async ({ request, env }) => {
   let deleted = 0;
 
   // Phase 1 · primary records across 4 tabs · parallel ACROSS tabs and within
+  // Phase 12 · also matches name+company composite (handles same-person multiple-emails case)
+  const compositeKey = v.payload.composite_key || null;  // {name_norm, company_norm}
+  function normalise(s) { return (s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
   const tabResults = await Promise.all(['contact', 'briefings', 'audit', 'bookings'].map(async tab => {
     let cursor = null;
     let tabMatches = [];
@@ -80,7 +83,13 @@ export const onRequestGet = async ({ request, env }) => {
         if (!value) continue;
         try {
           const r = JSON.parse(value);
-          if ((r.email || '').toLowerCase() === email) tabMatches.push(k.name);
+          const emailMatch = (r.email || '').toLowerCase() === email;
+          const compositeMatch = compositeKey
+            && normalise(r.name) === compositeKey.name_norm
+            && normalise(r.company) === compositeKey.company_norm
+            && compositeKey.name_norm
+            && compositeKey.company_norm;
+          if (emailMatch || compositeMatch) tabMatches.push(k.name);
         } catch {}
       }
       cursor = list.list_complete ? null : list.cursor;
@@ -119,24 +128,47 @@ export const onRequestGet = async ({ request, env }) => {
     } while (cursor);
   }));
 
-  // Phase 3 · send completion email if Resend bound
+  // Phase 3 · send completion email if Resend bound · Phase 12 · failure → retry queue
   if (env.RESEND_API_KEY && email) {
     fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: env.RESEND_FROM_ALERT || 'Tamazia DPO <dpo@tamazia.in>',
+        from: env.RESEND_FROM_ALERT || 'Tamazia Pvt Ltd · DPO <dpo@tamazia.in>',
         to: [email],
         reply_to: 'dpo@tamazia.co.uk',
-        subject: 'Erasure complete · Tamazia',
+        subject: 'Erasure complete · Tamazia Pvt Ltd',
         html: `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
           <p>Hello,</p>
-          <p>Your erasure request under UK GDPR Article 17 is complete. Tamazia has deleted ${deleted} records associated with your email address.</p>
-          <p>Tamazia retains an audit log of this erasure (without your email content) for seven years to evidence compliance with the regulation.</p>
+          <p>Your erasure request under UK GDPR Article 17 is complete. Tamazia Pvt Ltd has deleted ${deleted} records associated with your email address.</p>
+          <p>Tamazia Pvt Ltd retains an audit log of this erasure (without your email content) for seven years to evidence compliance with the regulation.</p>
           <p>Tamazia Pvt Ltd · Data Protection Office<br>dpo@tamazia.co.uk</p>
         </div>`
       })
-    }).catch(() => {});
+    }).then(r => {
+      if (!r.ok) {
+        // Phase 12 · queue retry record
+        const retryKey = `resend-retry:${Date.now()}:${crypto.randomUUID().slice(0,16)}`;
+        env.FORM_SUBMISSIONS.put(retryKey, JSON.stringify({
+          at: new Date().toISOString(),
+          context: 'erase_completion',
+          email_hash: hashEmailSync(email),
+          deleted,
+          http_status: r.status,
+          retries: 0
+        }), { expirationTtl: 60 * 60 * 24 * 7 }).catch(() => {});
+      }
+    }).catch(err => {
+      const retryKey = `resend-retry:${Date.now()}:${crypto.randomUUID().slice(0,16)}`;
+      env.FORM_SUBMISSIONS.put(retryKey, JSON.stringify({
+        at: new Date().toISOString(),
+        context: 'erase_completion',
+        email_hash_pending: true,
+        deleted,
+        error: String(err).slice(0, 200),
+        retries: 0
+      }), { expirationTtl: 60 * 60 * 24 * 7 }).catch(() => {});
+    });
   }
 
   // Audit-log the erasure (separate KV key, not deletable by user)
@@ -151,6 +183,8 @@ export const onRequestGet = async ({ request, env }) => {
 
   return Response.redirect(`https://tamazia.co.uk/erased/?status=success&deleted=${deleted}`, 302);
 };
+
+function hashEmailSync(email) { return (email || '').toLowerCase().slice(0, 16); }
 
 async function hashEmail(email) {
   const enc = new TextEncoder();

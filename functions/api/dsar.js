@@ -37,7 +37,7 @@ export const onRequestPost = async ({ request, env }) => {
         from: env.RESEND_FROM_ALERT || 'Tamazia DPO <dpo@tamazia.in>',
         to: [email],
         reply_to: 'dpo@tamazia.co.uk',
-        subject: 'Data access request · Tamazia',
+        subject: 'Data access request · Tamazia Pvt Ltd',
         html: `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
           <p>Hello,</p>
           <p>Tamazia received your data access request under UK GDPR Article 15. To complete the request, click the link below within seven days.</p>

@@ -3,6 +3,7 @@
 // Replaces the Apps Script dependency completely.
 
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { mintRequestId } from '../_lib/request-id.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
 
 export async function handleSubmission(request, env, tab) {
@@ -36,7 +37,8 @@ export async function handleSubmission(request, env, tab) {
     return json({ error: reject.reason }, 422, baseHeaders);
   }
 
-  const request_id = body.request_id || crypto.randomUUID();
+  // Phase 12 · server-mints request_id (ignores client-supplied to prevent spoof)
+  const request_id = await mintRequestId(env);
   const submitted_at = new Date().toISOString();
 
   if (env.FORM_SUBMISSIONS) {

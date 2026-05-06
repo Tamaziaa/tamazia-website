@@ -1,0 +1,78 @@
+---
+// Phase 12 · per-event booking pages · /book/intro/, /book/discovery/ etc.
+// Embeds Cal.com inline widget bound to cal.com/tamazia/<event-slug>.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import { BOOKING_EVENTS } from '../../content/booking';
+
+export function getStaticPaths() {
+  return BOOKING_EVENTS.map(e => ({ params: { event: e.slug }, props: { event: e } }));
+}
+
+const { event } = Astro.props as any;
+const canonicalUrl = `https://tamazia.co.uk/book/${event.slug}/`;
+const pageTitle = `${event.title} · Tamazia Pvt Ltd`;
+const pageDescription = `${event.description.slice(0, 150)}`;
+const calLink = `tamazia/${event.slug}`;
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalUrl}>
+  <Header />
+  <main id="main" class="book-event">
+    <section class="hero">
+      <p class="eyebrow">{event.audience}</p>
+      <h1>{event.title}{event.price ? ` · ${event.price}` : ''}</h1>
+      <p class="lede">{event.description}</p>
+    </section>
+    <section class="cal-embed">
+      <div id="my-cal-inline" data-cal-namespace={event.slug} data-cal-link={calLink} aria-label="Cal.com booking widget" hidden>
+        <p>Loading the booking calendar...</p>
+      </div>
+      <p class="consent-note" id="cal-consent-note" hidden>
+        <strong>Cookie consent required.</strong> The booking widget loads from Cal.com which sets cross-site cookies. Click "Accept all" on the cookie banner to load the widget.
+      </p>
+    </section>
+  </main>
+  <Footer />
+  <script is:inline define:vars={{ calLink, eventSlug: event.slug }}>
+    (function() {
+      // Phase 12 · consent-gated Cal.com embed
+      function loadCal() {
+        const el = document.getElementById('my-cal-inline');
+        if (el) el.hidden = false;
+        const note = document.getElementById('cal-consent-note');
+        if (note) note.hidden = true;
+        // Cal.com embed loader
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", eventSlug, {origin:"https://cal.com"});
+        Cal.ns[eventSlug]("inline", { elementOrSelector:"#my-cal-inline", config: {"layout":"month_view","theme":"light"}, calLink: calLink });
+      }
+
+      function checkConsent() {
+        try {
+          const c = JSON.parse(localStorage.getItem('tamazia-cookie-consent') || 'null');
+          return c && c.analytics === true;
+        } catch { return false; }
+      }
+
+      if (checkConsent()) {
+        loadCal();
+      } else {
+        const note = document.getElementById('cal-consent-note');
+        if (note) note.hidden = false;
+        // Listen for consent change
+        window.addEventListener('tamazia:consent', e => {
+          if (e.detail && e.detail.decision === 'granted') loadCal();
+        });
+      }
+    })();
+  </script>
+</BaseLayout>
+<style>
+  .book-event { max-width: 1080px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; }
+  .book-event h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .book-event .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .book-event .lede { font-size: 18px; max-width: 720px; line-height: 1.5; }
+  .book-event .cal-embed { margin-top: 48px; min-height: 600px; }
+  .book-event .consent-note { padding: 16px 20px; background: #F4E8C4; border-left: 4px solid #C9A772; font-size: 14px; line-height: 1.55; }
+</style>

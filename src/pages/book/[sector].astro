@@ -1,0 +1,51 @@
+---
+// Phase 12 · per-sector booking pages · /book/legal/, /book/healthcare/ etc.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import { BOOKING_EVENTS, BOOKING_SECTORS } from '../../content/booking';
+
+export function getStaticPaths() {
+  return BOOKING_SECTORS.map(s => ({ params: { sector: s.slug }, props: { sector: s } }));
+}
+
+const { sector } = Astro.props as any;
+const canonicalUrl = `https://tamazia.co.uk/book/${sector.slug}/`;
+const pageTitle = `Book a ${sector.name.toLowerCase()} call · Tamazia Pvt Ltd`;
+const pageDescription = `Schedule a call with Tamazia Pvt Ltd specifically focused on ${sector.name.toLowerCase()} (${sector.regulator}). Five durations available, paid options included.`;
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalUrl}>
+  <Header />
+  <main id="main" class="book-sector">
+    <section class="hero">
+      <p class="eyebrow">Book a call · {sector.name}</p>
+      <h1>Tamazia Pvt Ltd · {sector.name} engagement scoping</h1>
+      <p class="lede">Tamazia operates against the {sector.regulator} regulatory map. Pick the duration that matches what you want from this conversation.</p>
+    </section>
+    <section class="events">
+      {BOOKING_EVENTS.map(e => (
+        <article class="event-card">
+          <header>
+            <h2>{e.title}{e.price ? ` · ${e.price}` : ''}</h2>
+            <p class="audience">{e.audience}</p>
+          </header>
+          <p class="description">{e.description}</p>
+          <a class="cta" href={`/book/${e.slug}/?sector=${sector.slug}`}>Book {e.duration}</a>
+        </article>
+      ))}
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+<style>
+  .book-sector { max-width: 1080px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; }
+  .book-sector h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .book-sector .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .book-sector .lede { font-size: 18px; max-width: 720px; }
+  .book-sector .events { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-top: 48px; }
+  .book-sector .event-card { padding: 28px; border: 1px solid #E5DDCB; background: #FAF7F2; }
+  .book-sector .event-card h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 0 0 4px; }
+  .book-sector .event-card .audience { font-size: 13px; color: #5C4047; margin: 0 0 12px; }
+  .book-sector .event-card .description { font-size: 14px; line-height: 1.55; margin: 0 0 20px; }
+  .book-sector .event-card .cta { display: inline-block; padding: 12px 22px; background: #2A0C14; color: #FAF7F2; text-decoration: none; font-size: 13px; letter-spacing: 0.06em; }
+</style>

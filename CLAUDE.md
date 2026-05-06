@@ -20,7 +20,7 @@ Cloudflare Pages + Functions. KV-backed receivers (replaced Apps Script in W8-1)
 
 ## Verification
 
-`npm run build && node patch-dist.js` runs 50 gates. Live verification: `references/phase-7-final-verification.md`.
+`npm run build && node patch-dist.js` runs 110 gates. Live verification: `references/phase-7-final-verification.md`.
 
 ## What works locally
 
@@ -45,7 +45,7 @@ Cloudflare Pages + Functions. KV-backed receivers (replaced Apps Script in W8-1)
 7-level bug test:
 1. Source-tree integrity (page count, function count, schema components)
 2. Build sanity (npm run build · 53 pages)
-3. patch-dist (50 gates)
+3. patch-dist (110 gates)
 4. Function syntax (16 .js files)
 5. Live API state (curl /api/health, /api/cal-webhook etc.)
 6. Static surface checks (footer entity, /legal/, confirmation pages, sitemap)

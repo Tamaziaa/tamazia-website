@@ -1,0 +1,19 @@
+# Stage for .github/workflows/synthetic-check.yml
+# Post-deploy synthetic check · runs the 56-level bug test against live site
+
+name: Post-deploy synthetic check
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Pages"]
+    types: [completed]
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'schedule' }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/p3-bug-test.sh https://tamazia.co.uk

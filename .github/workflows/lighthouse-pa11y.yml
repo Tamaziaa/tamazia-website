@@ -1,0 +1,23 @@
+# Stage for .github/workflows/lighthouse-pa11y.yml
+# Lighthouse + Pa11y baseline regression on every push to main + PR
+
+name: Lighthouse + Pa11y
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npx -y @lhci/cli@0.13 collect --url=https://tamazia.co.uk/ --url=https://tamazia.co.uk/contact --url=https://tamazia.co.uk/briefings --url=https://tamazia.co.uk/case-studies/cg-oncology/ --upload.target=temporary-public-storage
+      - run: npx -y pa11y https://tamazia.co.uk/ --threshold 0
+      - run: npx -y pa11y https://tamazia.co.uk/contact --threshold 0
+      - run: npx -y pa11y https://tamazia.co.uk/briefings --threshold 0

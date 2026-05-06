@@ -1,0 +1,25 @@
+# Stage for .github/workflows/weekly-backup.yml
+
+name: Weekly automated backup
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Bundle the repo
+        run: |
+          git bundle create tamazia-website-$(date +%F).bundle --all
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: backup-$(date +%F)
+          name: "Weekly backup $(date +%F)"
+          files: tamazia-website-*.bundle
+          make_latest: false

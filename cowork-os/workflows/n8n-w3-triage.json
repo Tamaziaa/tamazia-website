@@ -1,0 +1,100 @@
+{
+  "name": "W3 · IMAP Triage + Slack route",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {"interval": [{"field": "minutes", "minutesInterval": 5}]}
+      },
+      "id": "cron",
+      "name": "Cron · every 5 min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "protocol": "imap",
+        "options": {"customEmailRules": ""}
+      },
+      "id": "imap-fetch",
+      "name": "IMAP fetch founder@",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [400, 300],
+      "credentials": {"imap": {"id": "1", "name": "Zoho IMAP founder@"}}
+    },
+    {
+      "parameters": {
+        "jsCode": "// Classify each email\nconst items = $input.all();\nconst out = [];\nfor (const item of items) {\n  const msg = item.json;\n  const subject = (msg.subject || '').toLowerCase();\n  const body = (msg.text || '').toLowerCase();\n  const from = (msg.from?.value?.[0]?.address || '').toLowerCase();\n  let kind = 'unknown';\n  if (from.includes('mailer-daemon') || body.includes('5.1.1') || body.includes('user unknown')) kind = 'hard_bounce';\n  else if (body.includes('4.7.1') || body.includes('temporarily deferred')) kind = 'soft_bounce';\n  else if (subject.includes('unsubscribe') || body.includes('unsubscribe')) kind = 'unsubscribe';\n  else if (subject.includes('out of office') || subject.includes('automatic reply')) kind = 'ooo';\n  else if (from.endsWith('@tamazia.co.uk') || from.endsWith('@tamazia.in')) kind = 'warmup';\n  else kind = 'warm';\n  out.push({json: {...msg, classification: kind}});\n}\nreturn out;"
+      },
+      "id": "classifier",
+      "name": "Classifier (heuristics)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "rules": {"values": [
+          {"conditions": {"any": [{"value1": "={{$json.classification}}", "operation": "equal", "value2": "warm"}]}, "outputKey": "warm"},
+          {"conditions": {"any": [{"value1": "={{$json.classification}}", "operation": "equal", "value2": "hard_bounce"}]}, "outputKey": "bounce"},
+          {"conditions": {"any": [{"value1": "={{$json.classification}}", "operation": "equal", "value2": "unsubscribe"}]}, "outputKey": "unsub"}
+        ]}
+      },
+      "id": "switch",
+      "name": "Switch by Classification",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "method": "POST",
+        "sendBody": true,
+        "bodyContentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({text: ':incoming_envelope: *Warm reply from* ' + $json.from?.value?.[0]?.address + '\\n\\n*Subject*: ' + $json.subject + '\\n\\n>>> ' + ($json.text || '').substring(0,400)}) }}"
+      },
+      "id": "slack-post-warm",
+      "name": "Post to Slack (warm)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO suppression (email, reason) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING"
+      },
+      "id": "suppress-bounce",
+      "name": "Suppress (bounce)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1000, 400]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO suppression (email, reason) VALUES ($1, 'unsubscribe') ON CONFLICT (email) DO NOTHING"
+      },
+      "id": "suppress-unsub",
+      "name": "Suppress (unsubscribe)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1000, 500]
+    }
+  ],
+  "connections": {
+    "Cron · every 5 min": {"main": [[{"node": "IMAP fetch founder@", "type": "main", "index": 0}]]},
+    "IMAP fetch founder@": {"main": [[{"node": "Classifier (heuristics)", "type": "main", "index": 0}]]},
+    "Classifier (heuristics)": {"main": [[{"node": "Switch by Classification", "type": "main", "index": 0}]]},
+    "Switch by Classification": {"main": [
+      [{"node": "Post to Slack (warm)", "type": "main", "index": 0}],
+      [{"node": "Suppress (bounce)", "type": "main", "index": 0}],
+      [{"node": "Suppress (unsubscribe)", "type": "main", "index": 0}]
+    ]}
+  },
+  "settings": {"executionOrder": "v1"}
+}

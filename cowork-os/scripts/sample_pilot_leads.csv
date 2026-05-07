@@ -1,0 +1,6 @@
+id,company,domain,sector,contact_first,contact_last,contact_title,email,city,product_line
+PILOT-001,The Standard London,standardhotels.com,hospitality,Marcus,Pemberton,Director of Marketing,REPLACE_BEFORE_USE,London,boutique luxury
+PILOT-002,Beaumont Mayfair,thebeaumont.com,hospitality,Helena,Hartford,General Manager,REPLACE_BEFORE_USE,London,boutique luxury
+PILOT-003,Knight Frank Private Office,knightfrank.com,real_estate,Imogen,Westwood,Head of International Buyer Acquisition,REPLACE_BEFORE_USE,London,prime residential
+PILOT-004,Macfarlanes,macfarlanes.com,law,Daniel,Cavendish,Marketing Partner,REPLACE_BEFORE_USE,London,corporate law
+PILOT-005,Pictet Wealth Management UK,pictet.com,finance,Jean Paul,Renaud,UK Head of Marketing,REPLACE_BEFORE_USE,London,wealth management

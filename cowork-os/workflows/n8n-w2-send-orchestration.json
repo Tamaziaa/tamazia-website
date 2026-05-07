@@ -1,0 +1,116 @@
+{
+  "name": "W2 · Send Orchestration",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tamazia-send",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook · /tamazia-send",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT 1 FROM suppression WHERE email = $1 LIMIT 1",
+        "additionalFields": {"queryReplacement": "={{ $json.recipient }}"}
+      },
+      "id": "check-suppression",
+      "name": "Check Suppression List",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($input.first().json.length > 0) { return [{json: {skip: true, reason: 'suppressed'}}]; } return [{json: {skip: false, ...$input.first().json}}];"
+      },
+      "id": "suppression-gate",
+      "name": "Suppression Gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT name, daily_quota, sent_today, weight FROM smtp_relays WHERE healthy = true AND sent_today < daily_quota ORDER BY weight DESC, RANDOM() LIMIT 1"
+      },
+      "id": "pick-relay",
+      "name": "Pick Best SMTP Relay",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Route to relay-specific HTTP request based on chosen relay name\nconst relay = $input.first().json.name;\nconst lead = $('Webhook · /tamazia-send').first().json;\nreturn [{json: {...lead, relay}}];"
+      },
+      "id": "route",
+      "name": "Branch by Relay",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.brevo.com/v3/smtp/email",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "api-key", "value": "={{ $env.BREVO_API_KEY }}"},
+            {"name": "Content-Type", "value": "application/json"}
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({sender: {email: $json.from_email, name: $json.from_name}, to: [{email: $json.recipient, name: $json.contact_first}], subject: $json.subject, htmlContent: '<p>'+$json.body.replace(/\\n/g,'<br>')+'</p>', textContent: $json.body, replyTo: {email: 'founder@tamazia.co.uk'}}) }}"
+      },
+      "id": "send-brevo",
+      "name": "Send via Brevo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO sends (alias_id, lead_id, recipient, smtp_relay, subject, message_id, kind, sequence_step, sent_at, delivery_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), 'sent')"
+      },
+      "id": "log-send",
+      "name": "Log Send",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1400, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE smtp_relays SET sent_today = sent_today + 1 WHERE name = $1"
+      },
+      "id": "increment-relay",
+      "name": "Increment Relay Counter",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1600, 300]
+    }
+  ],
+  "connections": {
+    "Webhook · /tamazia-send": {"main": [[{"node": "Check Suppression List", "type": "main", "index": 0}]]},
+    "Check Suppression List": {"main": [[{"node": "Suppression Gate", "type": "main", "index": 0}]]},
+    "Suppression Gate": {"main": [[{"node": "Pick Best SMTP Relay", "type": "main", "index": 0}]]},
+    "Pick Best SMTP Relay": {"main": [[{"node": "Branch by Relay", "type": "main", "index": 0}]]},
+    "Branch by Relay": {"main": [[{"node": "Send via Brevo", "type": "main", "index": 0}]]},
+    "Send via Brevo": {"main": [[{"node": "Log Send", "type": "main", "index": 0}]]},
+    "Log Send": {"main": [[{"node": "Increment Relay Counter", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"}
+}

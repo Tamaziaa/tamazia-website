@@ -1,0 +1,116 @@
+{
+  "name": "W1 · Warmup loop",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Cron · every 30 min 0700-2200 UK",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Determine UK hour, return early if outside 0700-2200\nconst now = new Date();\nconst london = new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',hour12:false}).format(now);\nconst hour = parseInt(london, 10);\nif (hour < 7 || hour >= 22) {\n  return [{json:{skip:true, reason:'outside warmup hours', hour}}];\n}\nreturn [{json:{skip:false, hour}}];"
+      },
+      "id": "hour-check",
+      "name": "Within UK warmup hours",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT a.id, a.email, a.warmup_day, a.day_quota, COALESCE(s.sent_today, 0) as sent_today FROM aliases a LEFT JOIN (SELECT alias_id, COUNT(*) as sent_today FROM sends WHERE sent_at::date = CURRENT_DATE AND kind = 'warmup' GROUP BY alias_id) s ON s.alias_id = a.id WHERE a.status = 'active' ORDER BY RANDOM() LIMIT 5"
+      },
+      "id": "pick-source-aliases",
+      "name": "Pick 5 source aliases under quota",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// For each source alias, pick a different destination alias and a corpus line\nconst aliases = $input.all().map(i => i.json);\nconst corpus = ['Quick note', 'Following up on', 'Reading on this', 'Worth a thought', 'Just sharing', 'Saw this', 'For your weekend', 'Briefly', 'A point worth flagging', 'On reflection'];\nconst out = [];\nfor (const src of aliases) {\n  // pick a destination not equal to source\n  const candidates = aliases.filter(a => a.id !== src.id);\n  if (candidates.length === 0) continue;\n  const dst = candidates[Math.floor(Math.random() * candidates.length)];\n  const subject = corpus[Math.floor(Math.random() * corpus.length)];\n  out.push({json: {\n    from_alias_id: src.id,\n    from_email: src.email,\n    to_alias_id: dst.id,\n    to_email: dst.email,\n    subject,\n    body: `${subject}.\\n\\nThis is a routine internal continuity check. Not actioned.\\n\\nTeam`,\n    kind: 'warmup'\n  }});\n}\nreturn out;"
+      },
+      "id": "compose-pairs",
+      "name": "Compose source-dest pairs + body",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "api-key", "value": "={{ $env.BREVO_API_KEY }}"},
+            {"name": "Content-Type", "value": "application/json"}
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {"name": "sender", "value": "={{ {email: $json.from_email, name: $json.from_email.split('@')[0]} }}"},
+            {"name": "to", "value": "={{ [{email: $json.to_email}] }}"},
+            {"name": "subject", "value": "={{ $json.subject }}"},
+            {"name": "textContent", "value": "={{ $json.body }}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-via-brevo",
+      "name": "Send via Brevo SMTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO sends (alias_id, recipient, smtp_relay, subject, message_id, sent_at, kind, delivery_status) VALUES ($1, $2, 'brevo', $3, $4, NOW(), 'warmup', 'sent')",
+        "additionalFields": {
+          "queryReplacement": "={{ $json.from_alias_id }},={{ $json.to_email }},={{ $json.subject }},={{ $json.messageId || 'none' }}"
+        }
+      },
+      "id": "log-send",
+      "name": "Log to sends table",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Cron · every 30 min 0700-2200 UK": {
+      "main": [[{"node": "Within UK warmup hours", "type": "main", "index": 0}]]
+    },
+    "Within UK warmup hours": {
+      "main": [[{"node": "Pick 5 source aliases under quota", "type": "main", "index": 0}]]
+    },
+    "Pick 5 source aliases under quota": {
+      "main": [[{"node": "Compose source-dest pairs + body", "type": "main", "index": 0}]]
+    },
+    "Compose source-dest pairs + body": {
+      "main": [[{"node": "Send via Brevo SMTP", "type": "main", "index": 0}]]
+    },
+    "Send via Brevo SMTP": {
+      "main": [[{"node": "Log to sends table", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

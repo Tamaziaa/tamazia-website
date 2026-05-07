@@ -1,0 +1,63 @@
+{
+  "name": "W5 · Bounce Kill Switch",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tamazia-killswitch",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook",
+      "name": "Triggered by W4",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE aliases SET status = 'killed' WHERE id = ANY($1::int[])"
+      },
+      "id": "kill-aliases",
+      "name": "Kill bad aliases",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [400, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE smtp_relays SET healthy = false, last_failure_at = NOW() WHERE name = ANY($1::text[])"
+      },
+      "id": "kill-relays",
+      "name": "Kill bad relays",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [400, 400]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "method": "POST",
+        "sendBody": true,
+        "bodyContentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({text: ':rotating_light: *Kill switch fired*\\n\\nBad aliases: ' + ($json.aliases || []).join(', ') + '\\nBad relays: ' + ($json.relays || []).join(', ')}) }}"
+      },
+      "id": "alert",
+      "name": "Slack HIGH alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 300]
+    }
+  ],
+  "connections": {
+    "Triggered by W4": {"main": [[
+      {"node": "Kill bad aliases", "type": "main", "index": 0},
+      {"node": "Kill bad relays", "type": "main", "index": 0}
+    ]]},
+    "Kill bad aliases": {"main": [[{"node": "Slack HIGH alert", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"}
+}

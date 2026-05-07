@@ -1,0 +1,726 @@
+{
+  "total": 90,
+  "distribution_per_user": 18,
+  "aliases": [
+    {
+      "alias": "oliver",
+      "persona_name": "Oliver",
+      "first_name": "Oliver",
+      "user_owner": "founder",
+      "email": "oliver@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "james.clark",
+      "persona_name": "James Clark",
+      "first_name": "James",
+      "user_owner": "hello",
+      "email": "james.clark@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "william.edwards",
+      "persona_name": "William Edwards",
+      "first_name": "William",
+      "user_owner": "sales",
+      "email": "william.edwards@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "henry",
+      "persona_name": "Henry",
+      "first_name": "Henry",
+      "user_owner": "support",
+      "email": "henry@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "noah",
+      "persona_name": "Noah",
+      "first_name": "Noah",
+      "user_owner": "legal",
+      "email": "noah@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "liam",
+      "persona_name": "Liam",
+      "first_name": "Liam",
+      "user_owner": "founder",
+      "email": "liam@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "lucas",
+      "persona_name": "Lucas",
+      "first_name": "Lucas",
+      "user_owner": "hello",
+      "email": "lucas@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "george.taylor",
+      "persona_name": "George Taylor",
+      "first_name": "George",
+      "user_owner": "sales",
+      "email": "george.taylor@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "jack.robinson",
+      "persona_name": "Jack Robinson",
+      "first_name": "Jack",
+      "user_owner": "support",
+      "email": "jack.robinson@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "harry",
+      "persona_name": "Harry",
+      "first_name": "Harry",
+      "user_owner": "legal",
+      "email": "harry@tamazia.co.uk",
+      "warmup_phase": "active"
+    },
+    {
+      "alias": "arthur.russell",
+      "persona_name": "Arthur Russell",
+      "first_name": "Arthur",
+      "user_owner": "founder",
+      "email": "arthur.russell@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "theo",
+      "persona_name": "Theo",
+      "first_name": "Theo",
+      "user_owner": "hello",
+      "email": "theo@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "leo.harrison",
+      "persona_name": "Leo Harrison",
+      "first_name": "Leo",
+      "user_owner": "sales",
+      "email": "leo.harrison@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "oscar",
+      "persona_name": "Oscar",
+      "first_name": "Oscar",
+      "user_owner": "support",
+      "email": "oscar@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "charlie",
+      "persona_name": "Charlie",
+      "first_name": "Charlie",
+      "user_owner": "legal",
+      "email": "charlie@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "max.palmer",
+      "persona_name": "Max Palmer",
+      "first_name": "Max",
+      "user_owner": "founder",
+      "email": "max.palmer@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "daniel.collins",
+      "persona_name": "Daniel Collins",
+      "first_name": "Daniel",
+      "user_owner": "hello",
+      "email": "daniel.collins@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "samuel",
+      "persona_name": "Samuel",
+      "first_name": "Samuel",
+      "user_owner": "sales",
+      "email": "samuel@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "benjamin.wood",
+      "persona_name": "Benjamin Wood",
+      "first_name": "Benjamin",
+      "user_owner": "support",
+      "email": "benjamin.wood@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "mason.robinson",
+      "persona_name": "Mason Robinson",
+      "first_name": "Mason",
+      "user_owner": "legal",
+      "email": "mason.robinson@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "ethan",
+      "persona_name": "Ethan",
+      "first_name": "Ethan",
+      "user_owner": "founder",
+      "email": "ethan@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "logan",
+      "persona_name": "Logan",
+      "first_name": "Logan",
+      "user_owner": "hello",
+      "email": "logan@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "owen",
+      "persona_name": "Owen",
+      "first_name": "Owen",
+      "user_owner": "sales",
+      "email": "owen@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "jacob.carter",
+      "persona_name": "Jacob Carter",
+      "first_name": "Jacob",
+      "user_owner": "support",
+      "email": "jacob.carter@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "michael",
+      "persona_name": "Michael",
+      "first_name": "Michael",
+      "user_owner": "legal",
+      "email": "michael@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "david",
+      "persona_name": "David",
+      "first_name": "David",
+      "user_owner": "founder",
+      "email": "david@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "paul.morgan",
+      "persona_name": "Paul Morgan",
+      "first_name": "Paul",
+      "user_owner": "hello",
+      "email": "paul.morgan@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "ben",
+      "persona_name": "Ben",
+      "first_name": "Ben",
+      "user_owner": "sales",
+      "email": "ben@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "felix",
+      "persona_name": "Felix",
+      "first_name": "Felix",
+      "user_owner": "support",
+      "email": "felix@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "finn",
+      "persona_name": "Finn",
+      "first_name": "Finn",
+      "user_owner": "legal",
+      "email": "finn@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "hugo.clark",
+      "persona_name": "Hugo Clark",
+      "first_name": "Hugo",
+      "user_owner": "founder",
+      "email": "hugo.clark@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "louis",
+      "persona_name": "Louis",
+      "first_name": "Louis",
+      "user_owner": "hello",
+      "email": "louis@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "luca.palmer",
+      "persona_name": "Luca Palmer",
+      "first_name": "Luca",
+      "user_owner": "sales",
+      "email": "luca.palmer@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "matteo.russell",
+      "persona_name": "Matteo Russell",
+      "first_name": "Matteo",
+      "user_owner": "support",
+      "email": "matteo.russell@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "marco.carter",
+      "persona_name": "Marco Carter",
+      "first_name": "Marco",
+      "user_owner": "legal",
+      "email": "marco.carter@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "leon",
+      "persona_name": "Leon",
+      "first_name": "Leon",
+      "user_owner": "founder",
+      "email": "leon@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "pablo.cooper",
+      "persona_name": "Pablo Cooper",
+      "first_name": "Pablo",
+      "user_owner": "hello",
+      "email": "pablo.cooper@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "diego.roberts",
+      "persona_name": "Diego Roberts",
+      "first_name": "Diego",
+      "user_owner": "sales",
+      "email": "diego.roberts@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "asher.hughes",
+      "persona_name": "Asher Hughes",
+      "first_name": "Asher",
+      "user_owner": "support",
+      "email": "asher.hughes@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "levi.thomas",
+      "persona_name": "Levi Thomas",
+      "first_name": "Levi",
+      "user_owner": "legal",
+      "email": "levi.thomas@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "jackson.white",
+      "persona_name": "Jackson White",
+      "first_name": "Jackson",
+      "user_owner": "founder",
+      "email": "jackson.white@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "sebastian.reed",
+      "persona_name": "Sebastian Reed",
+      "first_name": "Sebastian",
+      "user_owner": "hello",
+      "email": "sebastian.reed@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "archie.baker",
+      "persona_name": "Archie Baker",
+      "first_name": "Archie",
+      "user_owner": "sales",
+      "email": "archie.baker@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "alfie.watson",
+      "persona_name": "Alfie Watson",
+      "first_name": "Alfie",
+      "user_owner": "support",
+      "email": "alfie.watson@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "freddie",
+      "persona_name": "Freddie",
+      "first_name": "Freddie",
+      "user_owner": "legal",
+      "email": "freddie@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "olivia.hughes",
+      "persona_name": "Olivia Hughes",
+      "first_name": "Olivia",
+      "user_owner": "founder",
+      "email": "olivia.hughes@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "emma.reed",
+      "persona_name": "Emma Reed",
+      "first_name": "Emma",
+      "user_owner": "hello",
+      "email": "emma.reed@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "amelia.morris",
+      "persona_name": "Amelia Morris",
+      "first_name": "Amelia",
+      "user_owner": "sales",
+      "email": "amelia.morris@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "charlotte",
+      "persona_name": "Charlotte",
+      "first_name": "Charlotte",
+      "user_owner": "support",
+      "email": "charlotte@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "sophia.hill",
+      "persona_name": "Sophia Hill",
+      "first_name": "Sophia",
+      "user_owner": "legal",
+      "email": "sophia.hill@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "mia.ross",
+      "persona_name": "Mia Ross",
+      "first_name": "Mia",
+      "user_owner": "founder",
+      "email": "mia.ross@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "isabella.morris",
+      "persona_name": "Isabella Morris",
+      "first_name": "Isabella",
+      "user_owner": "hello",
+      "email": "isabella.morris@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "ava.clark",
+      "persona_name": "Ava Clark",
+      "first_name": "Ava",
+      "user_owner": "sales",
+      "email": "ava.clark@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "evelyn",
+      "persona_name": "Evelyn",
+      "first_name": "Evelyn",
+      "user_owner": "support",
+      "email": "evelyn@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "harper",
+      "persona_name": "Harper",
+      "first_name": "Harper",
+      "user_owner": "legal",
+      "email": "harper@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "luna.jackson",
+      "persona_name": "Luna Jackson",
+      "first_name": "Luna",
+      "user_owner": "founder",
+      "email": "luna.jackson@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "ella.thompson",
+      "persona_name": "Ella Thompson",
+      "first_name": "Ella",
+      "user_owner": "hello",
+      "email": "ella.thompson@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "lily",
+      "persona_name": "Lily",
+      "first_name": "Lily",
+      "user_owner": "sales",
+      "email": "lily@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "grace.thomas",
+      "persona_name": "Grace Thomas",
+      "first_name": "Grace",
+      "user_owner": "support",
+      "email": "grace.thomas@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "emily.moore",
+      "persona_name": "Emily Moore",
+      "first_name": "Emily",
+      "user_owner": "legal",
+      "email": "emily.moore@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "hannah",
+      "persona_name": "Hannah",
+      "first_name": "Hannah",
+      "user_owner": "founder",
+      "email": "hannah@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "sophie.morgan",
+      "persona_name": "Sophie Morgan",
+      "first_name": "Sophie",
+      "user_owner": "hello",
+      "email": "sophie.morgan@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "ruby.davies",
+      "persona_name": "Ruby Davies",
+      "first_name": "Ruby",
+      "user_owner": "sales",
+      "email": "ruby.davies@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "evie.murray",
+      "persona_name": "Evie Murray",
+      "first_name": "Evie",
+      "user_owner": "support",
+      "email": "evie.murray@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "freya",
+      "persona_name": "Freya",
+      "first_name": "Freya",
+      "user_owner": "legal",
+      "email": "freya@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "alice.brown",
+      "persona_name": "Alice Brown",
+      "first_name": "Alice",
+      "user_owner": "founder",
+      "email": "alice.brown@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "florence.gray",
+      "persona_name": "Florence Gray",
+      "first_name": "Florence",
+      "user_owner": "hello",
+      "email": "florence.gray@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "rose.evans",
+      "persona_name": "Rose Evans",
+      "first_name": "Rose",
+      "user_owner": "sales",
+      "email": "rose.evans@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "eva.roberts",
+      "persona_name": "Eva Roberts",
+      "first_name": "Eva",
+      "user_owner": "support",
+      "email": "eva.roberts@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "eleanor",
+      "persona_name": "Eleanor",
+      "first_name": "Eleanor",
+      "user_owner": "legal",
+      "email": "eleanor@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "daisy.mitchell",
+      "persona_name": "Daisy Mitchell",
+      "first_name": "Daisy",
+      "user_owner": "founder",
+      "email": "daisy.mitchell@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "poppy.johnson",
+      "persona_name": "Poppy Johnson",
+      "first_name": "Poppy",
+      "user_owner": "hello",
+      "email": "poppy.johnson@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "phoebe.howard",
+      "persona_name": "Phoebe Howard",
+      "first_name": "Phoebe",
+      "user_owner": "sales",
+      "email": "phoebe.howard@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "anna.bennett",
+      "persona_name": "Anna Bennett",
+      "first_name": "Anna",
+      "user_owner": "support",
+      "email": "anna.bennett@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "clara",
+      "persona_name": "Clara",
+      "first_name": "Clara",
+      "user_owner": "legal",
+      "email": "clara@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "chloe",
+      "persona_name": "Chloe",
+      "first_name": "Chloe",
+      "user_owner": "founder",
+      "email": "chloe@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "lea",
+      "persona_name": "Lea",
+      "first_name": "Lea",
+      "user_owner": "hello",
+      "email": "lea@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "sara.hill",
+      "persona_name": "Sara Hill",
+      "first_name": "Sara",
+      "user_owner": "sales",
+      "email": "sara.hill@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "elena",
+      "persona_name": "Elena",
+      "first_name": "Elena",
+      "user_owner": "support",
+      "email": "elena@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "giulia.lewis",
+      "persona_name": "Giulia Lewis",
+      "first_name": "Giulia",
+      "user_owner": "legal",
+      "email": "giulia.lewis@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "aurora",
+      "persona_name": "Aurora",
+      "first_name": "Aurora",
+      "user_owner": "founder",
+      "email": "aurora@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "lina",
+      "persona_name": "Lina",
+      "first_name": "Lina",
+      "user_owner": "hello",
+      "email": "lina@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "mila",
+      "persona_name": "Mila",
+      "first_name": "Mila",
+      "user_owner": "sales",
+      "email": "mila@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "nora",
+      "persona_name": "Nora",
+      "first_name": "Nora",
+      "user_owner": "support",
+      "email": "nora@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "stella",
+      "persona_name": "Stella",
+      "first_name": "Stella",
+      "user_owner": "legal",
+      "email": "stella@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "violet.taylor",
+      "persona_name": "Violet Taylor",
+      "first_name": "Violet",
+      "user_owner": "founder",
+      "email": "violet.taylor@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "hazel",
+      "persona_name": "Hazel",
+      "first_name": "Hazel",
+      "user_owner": "hello",
+      "email": "hazel@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "penelope",
+      "persona_name": "Penelope",
+      "first_name": "Penelope",
+      "user_owner": "sales",
+      "email": "penelope@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "lara.clarke",
+      "persona_name": "Lara Clarke",
+      "first_name": "Lara",
+      "user_owner": "support",
+      "email": "lara.clarke@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    },
+    {
+      "alias": "ellie",
+      "persona_name": "Ellie",
+      "first_name": "Ellie",
+      "user_owner": "legal",
+      "email": "ellie@tamazia.co.uk",
+      "warmup_phase": "reserve"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "tamazia-cowork-os",
+  "version": "1.0.0",
+  "displayName": "Tamazia Cowork OS",
+  "description": "Permanent plug-and-play skill bundle for the Tamazia cold outreach pipeline: 8 engines (sourcing, enrichment, research, proposals, sequences, triage, warmup, orchestration) plus deployment, sector-pitch, brand-voice, health, suppression, and master launchpad.",
+  "author": "Aman Pareek (Tamazia)",
+  "license": "Proprietary",
+  "homepage": "https://tamazia.co.uk",
+  "skills": [
+    "launchpad",
+    "sourcing",
+    "enrichment",
+    "research",
+    "proposals",
+    "sequences",
+    "triage",
+    "warmup",
+    "orchestration",
+    "sector-pitch",
+    "health",
+    "suppression",
+    "deploy",
+    "brand-voice"
+  ],
+  "tags": ["sales", "outreach", "regulated-sectors", "tamazia"],
+  "tested_with": "Cowork mode (Claude Code)"
+}

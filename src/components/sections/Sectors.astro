@@ -253,7 +253,7 @@ const iconPaths: Record<string, string> = {
     align-items: stretch;
   }
 
-  /* α-02 · cascade collapse · single custom property defeats specificity battles */
+  /* α-02 · literal-value pattern · custom-prop pattern did not fire transitions (var() change does not trigger transition; declared value stays var(--in)) */
   .sector-card {
     container-type: inline-size;
     position: relative;
@@ -266,15 +266,18 @@ const iconPaths: Record<string, string> = {
     height: 100%;
     transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out),
                 border-color 400ms var(--ease-out), box-shadow 400ms var(--ease-out);
-    --in: 0;
-    opacity: var(--in);
-    transform: translateY(calc((1 - var(--in)) * 20px));
+    opacity: 0;
+    transform: translateY(20px);
     will-change: opacity, transform;
   }
 
-  .sector-card.in-view { --in: 1; }
+  /* !important defeats any specificity override (suspected scoped-CSS hash drift) */
+  .sector-card.in-view {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .sector-card { --in: 1; transition: none; }
+    .sector-card { opacity: 1 !important; transform: none !important; transition: none; }
   }
 
   /* All sectors equal weight (Aman directive: no dominant card) */

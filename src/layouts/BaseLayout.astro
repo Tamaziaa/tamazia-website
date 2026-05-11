@@ -230,8 +230,8 @@ const jsonLd = {
         <a href="/privacy-notice/" class="cookie-link">privacy notice</a>.
       </p>
       <div class="cookie-actions">
-        <button type="button" class="cookie-btn cookie-btn--reject" id="cookie-reject" onclick="window.__tamaziaCookieDismiss && window.__tamaziaCookieDismiss('denied', event)">Reject non-essential</button>
-        <button type="button" class="cookie-btn cookie-btn--accept" id="cookie-accept" onclick="window.__tamaziaCookieDismiss && window.__tamaziaCookieDismiss('granted', event)">Accept all</button>
+        <button type="button" class="cookie-btn cookie-btn--reject" id="cookie-reject">Reject non-essential</button>
+        <button type="button" class="cookie-btn cookie-btn--accept" id="cookie-accept">Accept all</button>
       </div>
     </div>
 
@@ -385,6 +385,30 @@ const jsonLd = {
           strip.removeAttribute('hidden');
           strip.style.display = 'flex';
         } catch (e) { /* swallow */ }
+
+        // CSP-safe handler binding · Cloudflare edge injects strict-dynamic CSP
+        // which blocks all inline event-handler attributes (onclick=, onsubmit=).
+        // Bind inside this nonced script so dismiss() actually fires when buttons
+        // are clicked. Use both click and touchstart for iOS safety.
+        function bindCookieHandler(id, decision) {
+          var el = document.getElementById(id);
+          if (!el || el.__tamaziaBound) return;
+          el.__tamaziaBound = true;
+          var handler = function(ev) {
+            try { window.__tamaziaCookieDismiss(decision, ev); }
+            catch(_) {}
+          };
+          el.addEventListener('click', handler, { passive: false });
+        }
+        function wireCookieButtons() {
+          bindCookieHandler('cookie-accept', 'granted');
+          bindCookieHandler('cookie-reject', 'denied');
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', wireCookieButtons);
+        } else {
+          wireCookieButtons();
+        }
       })();
 
       /* Round-10 global safety net · reveal every scroll-triggered element after 4s

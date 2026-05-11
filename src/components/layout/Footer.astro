@@ -70,9 +70,9 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
         <p class="briefings-body">{briefingsBody}</p>
 
         <form class="briefings-form" id="briefings-form" action="/api/briefings" method="POST" novalidate>
-          <input type="text" name="bot-field" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
-          <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
-          <input type="url" name="c_homepage_url" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
+          <input type="text" name="bot-field" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
+          <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
+          <input type="url" name="c_homepage_url" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
           <label class="sr-only" for="briefings-email">Email address</label>
           <input
             type="email"

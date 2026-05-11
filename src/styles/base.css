@@ -156,3 +156,38 @@ input, textarea, select {
 .tier-price {
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Honeypot hide (α-01 · 2026-05-12) ──
+   Inline style="..." attributes are silently dropped by the Cloudflare-edge
+   strict-nonce CSP: when style-src declares a nonce, 'unsafe-inline' is
+   ignored per CSP3 spec, and inline style attributes (which cannot carry a
+   nonce) get blocked. Class-based rule survives because base.css ships as a
+   nonced <link rel="stylesheet">. Visible-blank honeypots gone. */
+.tamz-hp {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* ── Hero signature flourish draw animation (α-01b · 2026-05-12) ──
+   Was inline style; CSP killed it. Now class-based. */
+.signature-flourish-path {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: flourish-draw 1400ms cubic-bezier(0.2, 0.8, 0.2, 1) 5900ms forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .signature-flourish-path {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}

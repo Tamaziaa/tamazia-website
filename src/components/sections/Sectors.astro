@@ -273,7 +273,7 @@ const iconPaths: Record<string, string> = {
   }
 
   .sector-card.in-view { --in: 1; }
-   (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: reduce) {
     .sector-card { --in: 1; transition: none; }
   }
 

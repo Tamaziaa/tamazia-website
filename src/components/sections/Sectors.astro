@@ -160,7 +160,7 @@ const iconPaths: Record<string, string> = {
     position: relative;
     background: var(--obsidian);
     padding-block: var(--section-padding-block);
-    overflow: hidden;
+    overflow: clip; /* α-02 · was hidden; clip allows hover lift to overflow */
     color: var(--ivory);
   }
 
@@ -253,6 +253,7 @@ const iconPaths: Record<string, string> = {
     align-items: stretch;
   }
 
+  /* α-02 · cascade collapse · single custom property defeats specificity battles */
   .sector-card {
     container-type: inline-size;
     position: relative;
@@ -260,21 +261,20 @@ const iconPaths: Record<string, string> = {
     border: 1px solid rgba(201, 167, 114, 0.3);
     border-radius: 16px;
     padding: 32px 32px 36px;
-    overflow: visible; /* B-03: allow content to flow naturally */
+    overflow: visible;
     min-width: 0;
     height: 100%;
-    transition: transform 400ms var(--ease-out),
-                border-color 400ms var(--ease-out),
-                box-shadow 400ms var(--ease-out);
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .sector-card.in-view {
-    opacity: 1;
-    transform: translateY(0);
     transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out),
                 border-color 400ms var(--ease-out), box-shadow 400ms var(--ease-out);
+    --in: 0;
+    opacity: var(--in);
+    transform: translateY(calc((1 - var(--in)) * 20px));
+    will-change: opacity, transform;
+  }
+
+  .sector-card.in-view { --in: 1; }
+   (prefers-reduced-motion: reduce) {
+    .sector-card { --in: 1; transition: none; }
   }
 
   /* All sectors equal weight (Aman directive: no dominant card) */

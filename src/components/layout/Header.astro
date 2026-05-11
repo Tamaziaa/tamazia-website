@@ -13,15 +13,18 @@ import { heroContent } from '../../content/hero';
     ))}
   </ul>
   <a class="nav-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
-  {/* Phase B · mobile burger */}
+  {/* A-06 · burger with morph-to-X via .open class on click */}
   <button class="burger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
-    <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
-      <rect y="0"  width="22" height="2" rx="1" fill="currentColor"/>
-      <rect y="7"  width="22" height="2" rx="1" fill="currentColor"/>
-      <rect y="14" width="22" height="2" rx="1" fill="currentColor"/>
-    </svg>
+    <span class="burger-icon" aria-hidden="true">
+      <span class="burger-line burger-line-1"></span>
+      <span class="burger-line burger-line-2"></span>
+      <span class="burger-line burger-line-3"></span>
+    </span>
   </button>
 </nav>
+
+{/* A-10b · backdrop overlay; click closes drawer */}
+<div class="drawer-backdrop" id="drawer-backdrop" hidden aria-hidden="true"></div>
 
 {/* Phase B · mobile drawer */}
 <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" hidden>
@@ -32,8 +35,8 @@ import { heroContent } from '../../content/hero';
     </svg>
   </button>
   <ul class="drawer-items">
-    {heroContent.headerNav.map(item => (
-      <li><a href={item.href} class="drawer-link">{item.label}</a></li>
+    {heroContent.headerNav.map((item, i) => (
+      <li style={`--i: ${i}`}><a href={item.href} class="drawer-link">{item.label}</a></li>
     ))}
   </ul>
   <a class="drawer-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
@@ -92,6 +95,8 @@ import { heroContent } from '../../content/hero';
     height: 50px;
     width: auto;
     display: block;
+    /* α-G06 · prefer crisp rendering on retina until SVG ships */
+    image-rendering: -webkit-optimize-contrast;
   }
   .logo-lockup:hover { opacity: 0.88; }
   .logo-lockup:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
@@ -169,7 +174,7 @@ import { heroContent } from '../../content/hero';
     box-shadow: 0 0 0 3px rgba(201, 167, 114, 0.18);
   }
 
-  /* Phase B · burger button */
+  /* A-06 · Burger with morph-to-X animation */
   .burger {
     display: none;
     align-items: center;
@@ -187,6 +192,48 @@ import { heroContent } from '../../content/hero';
   }
   .burger:hover { color: #F5F1E8; }
   .burger:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .burger-icon {
+    position: relative;
+    width: 22px;
+    height: 16px;
+    display: block;
+  }
+  .burger-line {
+    position: absolute;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 1px;
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease;
+    transform-origin: center;
+  }
+  .burger-line-1 { top: 0; }
+  .burger-line-2 { top: 7px; }
+  .burger-line-3 { top: 14px; }
+
+  /* When drawer is open, morph 3 lines to X */
+  .burger[aria-expanded="true"] .burger-line-1 { transform: translateY(7px) rotate(45deg); }
+  .burger[aria-expanded="true"] .burger-line-2 { opacity: 0; transform: scaleX(0); }
+  .burger[aria-expanded="true"] .burger-line-3 { transform: translateY(-7px) rotate(-45deg); }
+
+  /* A-10b · Backdrop click-to-close behind drawer */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 12, 20, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 190;
+    opacity: 0;
+    transition: opacity 280ms ease;
+    pointer-events: none;
+  }
+  .drawer-backdrop:not([hidden]) {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   /* Phase B · mobile drawer */
   .mobile-drawer {
@@ -238,6 +285,19 @@ import { heroContent } from '../../content/hero';
     padding: 0;
   }
 
+  /* A-09 · stagger fade-in entrance for drawer items */
+  .drawer-items li {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  .mobile-drawer:not([hidden]) .drawer-items li {
+    animation: drawer-item-in 380ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(180ms + var(--i, 0) * 50ms);
+  }
+  @keyframes drawer-item-in {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
   .drawer-link {
     display: block;
     font-family: var(--ff-display);
@@ -270,6 +330,14 @@ import { heroContent } from '../../content/hero';
     align-items: center;
     border-radius: 2px;
     transition: background var(--duration-short) ease;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .mobile-drawer:not([hidden]) .drawer-cta {
+    animation: drawer-cta-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 480ms forwards;
+  }
+  @keyframes drawer-cta-in {
+    to { opacity: 1; transform: translateY(0); }
   }
   .drawer-cta:hover { background: var(--gold-warm); }
 
@@ -283,6 +351,19 @@ import { heroContent } from '../../content/hero';
     transition: width 120ms linear;
     z-index: 99;
     opacity: 0.85;
+  }
+
+  /* Reduced motion · halt drawer slide + stagger */
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-drawer { transition: none !important; }
+    .drawer-items li,
+    .drawer-cta {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .burger-line { transition: none !important; }
+    .drawer-backdrop { transition: none !important; }
   }
 
   @media (max-width: 1024px) {
@@ -312,34 +393,64 @@ import { heroContent } from '../../content/hero';
     });
   }
 
-  // Phase B · burger menu toggle
+  // Phase B · burger menu toggle + A-09/A-10/A-10b/A-11 drawer behaviour
   const burger = document.querySelector('.burger') as HTMLButtonElement | null;
   const drawer = document.getElementById('mobile-drawer') as HTMLElement | null;
+  const backdrop = document.getElementById('drawer-backdrop') as HTMLElement | null;
   const drawerClose = document.querySelector('.drawer-close') as HTMLButtonElement | null;
   const drawerLinks = document.querySelectorAll('.drawer-link, .drawer-cta');
 
+  // Focus-trap helpers
+  let lastFocused: HTMLElement | null = null;
+  function getFocusable(root: HTMLElement): HTMLElement[] {
+    return Array.from(root.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    ));
+  }
+
   function openDrawer() {
     if (!drawer || !burger) return;
+    lastFocused = document.activeElement as HTMLElement;
     drawer.hidden = false;
+    if (backdrop) backdrop.hidden = false;
     burger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
-    (drawerClose as HTMLButtonElement)?.focus();
+    // Defer focus until paint (drawer entrance animation begins)
+    requestAnimationFrame(() => (drawerClose as HTMLButtonElement)?.focus());
   }
 
   function closeDrawer() {
     if (!drawer || !burger) return;
     drawer.hidden = true;
+    if (backdrop) backdrop.hidden = true;
     burger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
-    burger.focus();
+    (lastFocused || burger).focus();
   }
 
   burger?.addEventListener('click', openDrawer);
   drawerClose?.addEventListener('click', closeDrawer);
+  backdrop?.addEventListener('click', closeDrawer);
   drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
 
-  // Close on Escape
+  // Close on Escape + focus trap (Tab and Shift+Tab cycle within drawer)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawer && !drawer.hidden) closeDrawer();
+    if (!drawer || drawer.hidden) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); return; }
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusable(drawer);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
+
+  // A-10c · swipe-right to close drawer (touch devices)
+  let touchStartX = 0;
+  drawer?.addEventListener('touchstart', (e: TouchEvent) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  drawer?.addEventListener('touchend', (e: TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (dx > 64) closeDrawer();
+  }, { passive: true });
 </script>

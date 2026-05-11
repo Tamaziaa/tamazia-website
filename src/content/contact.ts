@@ -70,7 +70,7 @@ export const contactContent = {
     },
   ],
 
-  submitLabel: 'Begin the conversation →',
+  submitLabel: 'Begin the conversation',
 
   calendlyHeading: 'Or schedule directly using the calendar below.',
   calendlyUrl: '/book/',

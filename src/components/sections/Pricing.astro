@@ -69,7 +69,7 @@ const featureIcons: Record<string, string> = {
                 <ul class="rich-features">
                   {topFeats.map((feat: any) => (
                     <li class="rich-feature">
-                      <span class="feature-bullet" aria-hidden="true">▸</span>
+                      <span class="feature-bullet" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M3 2 L7 5 L3 8 Z"/></svg></span>
                       <div>
                         <h4 class="feature-headline">{feat.headline}</h4>
                         <p class="feature-body">{feat.body}</p>
@@ -86,7 +86,7 @@ const featureIcons: Record<string, string> = {
                     <ul class="rich-features">
                       {restFeats.map((feat: any) => (
                         <li class="rich-feature">
-                          <span class="feature-bullet" aria-hidden="true">▸</span>
+                          <span class="feature-bullet" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M3 2 L7 5 L3 8 Z"/></svg></span>
                           <div>
                             <h4 class="feature-headline">{feat.headline}</h4>
                             <p class="feature-body">{feat.body}</p>
@@ -114,7 +114,7 @@ const featureIcons: Record<string, string> = {
             </details>
           )}
 
-          <a href="#contact" class={`tier-cta ${t.tier === 'enterprise' ? 'tier-cta-filled' : 'tier-cta-ghost'}`}>{t.cta} <span class="cta-arrow">↗</span></a>
+          <a href="#contact" class={`tier-cta ${t.tier === 'enterprise' ? 'tier-cta-filled' : 'tier-cta-ghost'}`}>{t.cta} <span class="cta-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10 L10 4 M5 4 H10 V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
 
           <p class="pilot-microcopy">Pilot engagement rate available for new mandates.</p>
 
@@ -263,35 +263,10 @@ const featureIcons: Record<string, string> = {
 
   /* B1-B4 fix · Enterprise dark tier · light text */
   .tier-card.tier-enterprise {
-    background: var(--grad-oxblood-depth);
+    background: var(--obsidian-deep, var(--oxblood-ink));
     color: var(--ivory);
-  }
-  .tier-card.tier-enterprise .tier-numeral { color: var(--gold); }
-  .tier-card.tier-enterprise .tier-name { color: var(--ivory); }
-  .tier-card.tier-enterprise .tier-price { color: var(--gold); }
-  .tier-card.tier-enterprise .price-unit { color: var(--pearl); }
-  .tier-card.tier-enterprise .tier-tagline { color: var(--pearl); }
-  .tier-card.tier-enterprise .tier-ideal-clients { color: var(--pearl); border-top-color: var(--gold-hairline); }
-  .tier-card.tier-enterprise .tier-includes-prior { color: var(--gold); border-top-color: var(--gold-hairline); }
-  .tier-card.tier-enterprise .features-heading { color: var(--gold); }
-  .tier-card.tier-enterprise .feature-headline { color: var(--ivory); }
-  .tier-card.tier-enterprise .feature-body { color: rgba(232, 228, 220, 0.78); }
-  .tier-card.tier-enterprise .rich-feature { border-bottom-color: var(--gold-hairline); }
-  .tier-card.tier-enterprise .feature-bullet { color: var(--gold); }
-  .tier-card.tier-enterprise .additional-block { border-top-color: var(--gold-hairline-strong); }
-  .tier-card.tier-enterprise .additional-summary { color: var(--gold); }
-  .tier-card.tier-enterprise .additional-item { color: rgba(232, 228, 220, 0.85); border-bottom-color: rgba(201, 167, 114, 0.2); }
-  .tier-card.tier-enterprise .features-collapse-summary {
-    /* Round-7 fix · solid dark bg ensures gold passes contrast (was 0.08 transparent reading as gold-on-gold-tint) */
-    background: rgba(42, 12, 20, 0.6);
-    color: var(--gold);
-    border-color: var(--gold-hairline);
-  }
-  .tier-card.tier-enterprise .tier-micro-footer {
-    color: rgba(232, 228, 220, 0.7);
-    border-top-color: rgba(201, 167, 114, 0.2);
-  }
-
+    border: 1px solid var(--gold);
+    }
   /* Bug-fix B-03 · main features collapsible (top 3 visible, rest collapsed) */
   .features-collapse {
     margin-bottom: 16px;
@@ -835,8 +810,6 @@ const featureIcons: Record<string, string> = {
     opacity: 0.65;
   }
   .tier-card.show-strike .price-strike { display: inline-block; }
-  .tier-card.tier-enterprise .price-strike { color: var(--pearl); opacity: 0.55; }
-
   /* Saves £X over the first six months */
   .saves-line {
     display: none;
@@ -849,8 +822,6 @@ const featureIcons: Record<string, string> = {
     line-height: 1.4;
   }
   .tier-card.show-saves .saves-line { display: block; }
-  .tier-card.tier-enterprise .saves-line { color: var(--gold); }
-
   /* Bottom microcopy: "Pilot engagement rate available for new mandates" */
   .pilot-microcopy {
     display: none;
@@ -864,8 +835,6 @@ const featureIcons: Record<string, string> = {
     opacity: 0.75;
   }
   .tier-card.show-microcopy .pilot-microcopy { display: block; }
-  .tier-card.tier-enterprise .pilot-microcopy { color: var(--pearl); opacity: 0.7; }
-
   @media (max-width: 640px) {
     .pilot-toggle { width: 100%; }
     .pilot-btn { flex: 1; padding: 10px 12px; font-size: 11px; }

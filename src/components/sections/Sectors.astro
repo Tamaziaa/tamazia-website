@@ -607,13 +607,49 @@ const iconPaths: Record<string, string> = {
       max-height: 640px;
     }
   }
+
+  /* FIX · Sector card mobile overflow containment */
+  @media (max-width: 720px) {
+    .sector-card {
+      overflow: hidden;
+      contain: layout;
+    }
+    .sector-card * {
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+    .sector-card .card-cta {
+      width: 100%;
+      text-align: center;
+    }
+    .sector-card .card-tooltip {
+      position: static;
+      width: 100%;
+      transform: none;
+    }
+    /* Pagination dots beneath the scroll-snap row */
+    .bento-grid::after {
+      content: 'Swipe →';
+      position: absolute;
+      bottom: -6px;
+      right: 16px;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+      animation: anim-float-y-4 2.2s ease-in-out infinite;
+    }
+    .sectors { position: relative; }
+  }
   </style>
 <style is:global>
   /* Per-sector hover animations · drives inner SVG class targets */
 
   /* LEGAL · scales of justice teeter */
   .sector-card[data-sector="legal"] .card-3d svg .scales-beam { transform-origin: 50px 30px; transform-box: fill-box; }
-  .sector-card[data-sector="legal"]:hover .card-3d svg .scales-beam {
+  .sector-card[data-sector="legal"] .card-3d svg .scales-beam {
     animation: scales-teeter 3.4s ease-in-out infinite;
   }
   @keyframes scales-teeter {
@@ -627,7 +663,7 @@ const iconPaths: Record<string, string> = {
     stroke-dasharray: 60;
     stroke-dashoffset: 60;
   }
-  .sector-card[data-sector="healthcare"]:hover .card-3d svg .ecg-line path {
+  .sector-card[data-sector="healthcare"] .card-3d svg .ecg-line path {
     animation: ecg-trace 1.8s ease-in-out infinite;
   }
   @keyframes ecg-trace {
@@ -638,14 +674,14 @@ const iconPaths: Record<string, string> = {
 
   /* HOSPITALITY · champagne bubbles rising */
   .sector-card[data-sector="hospitality"] .card-3d svg .bubble { opacity: 0; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .bubble {
+  .sector-card[data-sector="hospitality"] .card-3d svg .bubble {
     animation: bubble-rise 2.6s ease-out infinite;
   }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b1 { animation-delay: 0s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b2 { animation-delay: 0.5s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b3 { animation-delay: 1.0s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b4 { animation-delay: 1.5s; }
-  .sector-card[data-sector="hospitality"]:hover .card-3d svg .b5 { animation-delay: 2.0s; }
+  .sector-card[data-sector="hospitality"] .card-3d svg .b1 { animation-delay: 0s; }
+  .sector-card[data-sector="hospitality"] .card-3d svg .b2 { animation-delay: 0.5s; }
+  .sector-card[data-sector="hospitality"] .card-3d svg .b3 { animation-delay: 1.0s; }
+  .sector-card[data-sector="hospitality"] .card-3d svg .b4 { animation-delay: 1.5s; }
+  .sector-card[data-sector="hospitality"] .card-3d svg .b5 { animation-delay: 2.0s; }
   @keyframes bubble-rise {
     0%   { opacity: 0; transform: translateY(0); }
     20%  { opacity: 1; }
@@ -659,19 +695,19 @@ const iconPaths: Record<string, string> = {
     opacity: 0.45;
     transition: fill 200ms ease, opacity 200ms ease;
   }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .window {
+  .sector-card[data-sector="real-estate"] .card-3d svg .window {
     animation: window-light 4.5s ease-in-out infinite;
   }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w1  { animation-delay: 0s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w2  { animation-delay: 0.3s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w3  { animation-delay: 0.6s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w4  { animation-delay: 0.9s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w5  { animation-delay: 1.2s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w6  { animation-delay: 1.5s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w7  { animation-delay: 1.8s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w8  { animation-delay: 2.1s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w9  { animation-delay: 2.4s; }
-  .sector-card[data-sector="real-estate"]:hover .card-3d svg .w10 { animation-delay: 2.7s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w1  { animation-delay: 0s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w2  { animation-delay: 0.3s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w3  { animation-delay: 0.6s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w4  { animation-delay: 0.9s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w5  { animation-delay: 1.2s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w6  { animation-delay: 1.5s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w7  { animation-delay: 1.8s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w8  { animation-delay: 2.1s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w9  { animation-delay: 2.4s; }
+  .sector-card[data-sector="real-estate"] .card-3d svg .w10 { animation-delay: 2.7s; }
   @keyframes window-light {
     0%, 70%, 100% { fill: transparent; opacity: 0.45; }
     15%, 55%      { fill: currentColor; opacity: 1; }
@@ -679,7 +715,7 @@ const iconPaths: Record<string, string> = {
 
   /* F&B · cocktail olive swirling around glass */
   .sector-card[data-sector="fb"] .card-3d svg .olive-stir { transform-origin: 50px 26px; transform-box: fill-box; }
-  .sector-card[data-sector="fb"]:hover .card-3d svg .olive-stir {
+  .sector-card[data-sector="fb"] .card-3d svg .olive-stir {
     animation: olive-swirl 3.4s linear infinite;
   }
   @keyframes olive-swirl {
@@ -689,7 +725,7 @@ const iconPaths: Record<string, string> = {
 
   /* EVERY SECTOR · compass full rotation */
   .sector-card[data-sector="every-sector"] .card-3d svg .compass-body { transform-origin: 50px 50px; transform-box: fill-box; }
-  .sector-card[data-sector="every-sector"]:hover .card-3d svg .compass-body {
+  .sector-card[data-sector="every-sector"] .card-3d svg .compass-body {
     animation: compass-rotate 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
   @keyframes compass-rotate {

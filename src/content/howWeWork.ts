@@ -22,7 +22,7 @@ export const howWeWorkContent = {
   pullQuote: _legacyPullQuote,
   roles: _legacyRoles,
 
-  eyebrow: 'TAMAZIA · How Tamazia works',
+  eyebrow: 'The Process',
   h2: 'How Tamazia works.',
   intro: 'Three steps. Audit your exposure. Build compliant visibility. Protect it as laws change.',
 

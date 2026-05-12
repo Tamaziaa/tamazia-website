@@ -48,12 +48,11 @@ import { heroContent } from '../../content/hero';
 <style>
   /* Hardening · ensure outer <header> landmark is always visible above any sticky/floating element */
   .site-header {
-    position: relative;
-    z-index: 110;
-    display: block;
-    visibility: visible;
-    opacity: 1;
+    /* Use display:contents so the outer <header> is a landmark only;
+       sticky positioning lives on inner .main-nav and sticks to viewport. */
+    display: contents;
   }
+  .site-header[hidden] { display: none; }
 
 
   .main-nav {

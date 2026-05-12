@@ -92,7 +92,7 @@
   --ls-caps-ticker: 0.22em;
 
   /* SPACING RHYTHM · Round-10 · tightened to institutional-editorial standard (was 2.5-4.5x viewport on most sections) */
-  --section-padding-block: clamp(72px, 7vw, 112px);  /* ε-03 · editorial raise from 32-64 */
+  --section-padding-block: clamp(56px, 6vw, 96px);  /* tuned · 72-112 was too airy, 32-64 was too cramped */
   --section-gap: clamp(20px, 2.5vw, 36px);
   --block-gap: clamp(20px, 2.5vw, 32px);
   --element-gap: clamp(14px, 1.5vw, 20px);

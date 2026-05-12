@@ -238,6 +238,9 @@ del, s, .strike, .tier-strike {
               letter-spacing 200ms ease;
   transform-origin: left top;
 }
+.field-float > select:invalid:not(:focus) + label { /* nothing — keep label in default position */ }
+.field-float > select:valid + label,
+.field-float > select:focus + label,
 .field-float > input:not(:placeholder-shown) + label,
 .field-float > input:focus + label,
 .field-float > textarea:not(:placeholder-shown) + label,
@@ -283,15 +286,28 @@ del, s, .strike, .tier-strike {
   align-items: center;
   gap: 14px;
   text-decoration: none;
-  padding: 10px 16px 10px 12px;
-  background: rgba(250, 247, 242, 0.6);
-  border: 1px solid var(--gold-hairline);
+  padding: 14px 20px 14px 14px;
+  background: linear-gradient(135deg, rgba(250,247,242,0.95) 0%, rgba(244,240,232,0.85) 100%);
+  border: 1px solid var(--gold);
   border-radius: 999px;
-  transition: background 280ms ease, border-color 280ms ease, transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: background 280ms ease, border-color 280ms ease, transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 280ms ease;
   color: var(--ink);
   font-family: var(--ff-body);
   line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(42,12,20,0.04), 0 12px 28px -12px rgba(201,167,114,0.4);
+  position: relative;
+  overflow: hidden;
 }
+.founder-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(201,167,114,0.10) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 700ms cubic-bezier(0.2,0.8,0.2,1);
+  pointer-events: none;
+}
+.founder-link:hover::before { transform: translateX(100%); }
 .founder-link:hover {
   background: var(--ivory);
   border-color: var(--gold);
@@ -305,16 +321,19 @@ del, s, .strike, .tier-strike {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--oxblood);
+  background: linear-gradient(135deg, var(--oxblood) 0%, var(--oxblood-deep) 100%);
   color: var(--gold);
   font-family: var(--ff-display);
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: -0.02em;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.04em;
   flex-shrink: 0;
+  border: 2px solid var(--gold);
+  box-shadow: inset 0 0 0 1px rgba(250,247,242,0.1);
 }
 .founder-text {
   display: flex;
@@ -363,4 +382,67 @@ del, s, .strike, .tier-strike {
 
 @media (prefers-reduced-motion: reduce) {
   .founder-link { transition: none; }
+}
+
+
+/* GLOBAL CTA · curved edges + auto-fit text + permanent reduced-motion-safe transitions
+   Applies to every CTA-like element across the site. Sectional rules can still override
+   border-radius for specific brand looks, but the default is now editorial-rounded. */
+.btn-primary,
+.btn-secondary,
+.primary-cta,
+.nav-cta,
+.drawer-cta,
+.tier-cta,
+.tier-cta-ghost,
+.tier-cta-filled,
+.mandate-cta,
+.submit-btn,
+.audit-submit,
+.briefings-btn,
+.msc-cta,
+.cookie-btn,
+button[type="submit"],
+.calendar-cta,
+.cal-cta {
+  border-radius: 999px !important;
+  padding-inline: clamp(18px, 3vw, 28px);
+  min-height: 44px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  /* Auto-shrink text via font-size clamp so longer labels never overflow at small viewports */
+  font-size: clamp(11px, 2.2vw, 13px);
+  letter-spacing: 0.16em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* When a CTA wraps with text + arrow + extra content, allow grid layout so contents stay aligned */
+.btn-primary > svg, .tier-cta > svg, .submit-btn > svg, .mandate-cta > svg,
+.nav-cta > svg, .drawer-cta > svg, .msc-cta > svg, .cookie-btn > svg {
+  flex-shrink: 0;
+}
+
+/* CTA text inside a span should not bleed */
+.btn-primary > span, .tier-cta > span, .submit-btn > span, .mandate-cta > span,
+.nav-cta > span, .drawer-cta > span, .primary-cta > span, .msc-cta > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hero CTA is a special tier — give it slightly more padding */
+.primary-cta {
+  padding-block: 14px;
+  font-size: clamp(12px, 2.2vw, 14px);
+}
+
+/* Submit buttons get explicit padding-y */
+button[type="submit"], .submit-btn, .audit-submit, .briefings-btn {
+  padding-block: 14px;
 }

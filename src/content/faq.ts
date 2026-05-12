@@ -2,7 +2,7 @@
 // Structure: 6 top-level Q&As. Sub-content (sector breakdowns) handled within Q2 answer.
 
 export const faqContent = {
-  eyebrow: 'FAQ',  /* A5 · was 'TAMAZIA · FAQ' */
+  eyebrow: '',  /* A5 · was 'TAMAZIA · FAQ' */
   h2: 'FAQ',
   intro: 'Questions we hear from managing partners, hotel group CMOs, and general counsel before every engagement.',
 

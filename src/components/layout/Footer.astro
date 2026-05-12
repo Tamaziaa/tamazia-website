@@ -559,15 +559,16 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     flex-wrap: wrap;
   }
   .partner-badge {
-    height: 36px;
+    height: 40px;
     width: auto;
     object-fit: contain;
-    opacity: 0.65;
-    /* Monochrome treatment · brightness 0 + sepia + hue-rotate gives a gold tint */
-    filter: brightness(0) saturate(100%) invert(75%) sepia(36%) saturate(379%) hue-rotate(7deg) brightness(89%) contrast(86%);
-    transition: opacity 200ms ease, filter 200ms ease;
+    opacity: 0.95;
+    background: rgba(250, 247, 242, 0.92);  /* light card so original colour badges remain readable on burgundy footer */
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: opacity 200ms ease, transform 200ms ease, background 200ms ease;
   }
-  .partner-badge:hover { opacity: 0.92; filter: brightness(0) saturate(100%) invert(85%) sepia(36%) saturate(379%) hue-rotate(7deg) brightness(100%) contrast(86%); }
+  .partner-badge:hover { opacity: 1; transform: translateY(-1px); background: var(--ivory); }
 
   .legal-entity { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; color: var(--ink-muted, #5C4047); margin-top: 6px; line-height: 1.55; }
   .extra-legal-links { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 14px; font-family: 'Inter', system-ui, sans-serif; font-size: 11px; }

@@ -243,7 +243,7 @@ const jsonLd = {
         right: 0;
         z-index: 1000;
         background: linear-gradient(180deg, #2A0C14 0%, #1F0810 100%);
-        color: #E8E4DC;
+        color: var(--pearl);
         padding: 14px 24px;
         display: flex;
         gap: 18px;
@@ -274,7 +274,7 @@ const jsonLd = {
         flex-wrap: wrap;
       }
       .cookie-btn {
-        border: 1px solid #C9A772;
+        border: 1px solid var(--gold);
         font-family: inherit;
         font-size: 11px;
         font-weight: 600;
@@ -289,19 +289,19 @@ const jsonLd = {
         min-width: 168px;
       }
       .cookie-btn--accept {
-        background: #C9A772;
-        color: #2A0C14;
+        background: var(--gold);
+        color: var(--oxblood-ink);
       }
-      .cookie-btn--accept:hover { background: #D4B787; }
+      .cookie-btn--accept:hover { background: var(--gold-warm); }
       .cookie-btn--reject {
         background: transparent;
-        color: #E8E4DC;
+        color: var(--pearl);
       }
       .cookie-btn--reject:hover {
-        background: rgba(232, 228, 220, 0.1);
-        border-color: #D4B787;
+        background: rgba(232, 228, 220, 0.1);  /* pearl 10% */
+        border-color: var(--gold-warm);
       }
-      .cookie-btn:focus-visible { outline: 2px solid #D4B787; outline-offset: 2px; }
+      .cookie-btn:focus-visible { outline: 2px solid var(--gold-warm); outline-offset: 2px; }
       @media (max-width: 640px) {
         .cookie-strip { font-size: 11px; padding: 12px 16px; gap: 12px; flex-direction: column; }
         .cookie-text { text-align: center; }

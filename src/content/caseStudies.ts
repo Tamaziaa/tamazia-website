@@ -17,6 +17,7 @@ const orchidMetrics = [
 const meraasMetrics = [
   { value: 'Dubai Holding Group', label: 'Sheikh Mohammed directive', note: '' },
   { value: 'Zero',                label: 'Compliance incidents',      note: '' },
+  { value: 'RERA · Trakheesi',    label: 'Verified regulatory standard', note: 'UAE real estate compliance.' },
 ];
 
 const cgoncMetrics = [

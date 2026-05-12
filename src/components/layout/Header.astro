@@ -5,7 +5,7 @@ import { heroContent } from '../../content/hero';
 <header class="site-header">
 <nav class="main-nav" aria-label="Primary">
   <a href="/" class="logo-lockup" aria-label="Tamazia home">
-    <img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="logo-img" width="343" height="64" />
+    <img src="/tamazia-lockup-masthead-transparent.png" alt="" class="logo-img" width="343" height="64" />
   </a>
   <ul class="nav-items">
     {heroContent.headerNav.map(item => (
@@ -46,30 +46,6 @@ import { heroContent } from '../../content/hero';
 </header>
 
 <style>
-  .top-strip {
-    height: 36px;
-    background: var(--ivory);
-    border-bottom: 1px solid var(--hairline);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10.5px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ink);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    font-weight: 400;
-    padding: 0 16px;
-  }
-
-  .top-strip .dot {
-    color: var(--gold);
-    margin: 0 10px;
-    opacity: 0.85;
-  }
-
   .main-nav {
     height: 76px;
     background: var(--oxblood);
@@ -136,7 +112,7 @@ import { heroContent } from '../../content/hero';
   }
 
   .nav-items li a:hover::after { width: 100%; }
-  .nav-items li a:hover { color: #F5F1E8; opacity: 1; }
+  .nav-items li a:hover { color: var(--ivory); opacity: 1; }
 
   /* Round-12 fix · keyboard focus indicator */
   .nav-items li a:focus-visible,
@@ -169,8 +145,8 @@ import { heroContent } from '../../content/hero';
   }
 
   .nav-cta:hover {
-    background: #D4B787;
-    border-color: #D4B787;
+    background: var(--gold-warm);
+    border-color: var(--gold-warm);
     box-shadow: 0 0 0 3px rgba(201, 167, 114, 0.18);
   }
 
@@ -190,7 +166,7 @@ import { heroContent } from '../../content/hero';
     border-radius: 2px;
     transition: color var(--duration-short) ease;
   }
-  .burger:hover { color: #F5F1E8; }
+  .burger:hover { color: var(--ivory); }
   .burger:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
   .burger-icon {
@@ -256,7 +232,9 @@ import { heroContent } from '../../content/hero';
     display: flex;
     transform: translateX(100%);
     pointer-events: none;
+    visibility: hidden;
   }
+  .mobile-drawer:not([hidden]) { visibility: visible; }
 
   .drawer-close {
     align-self: flex-end;
@@ -294,14 +272,14 @@ import { heroContent } from '../../content/hero';
     animation: drawer-item-in 380ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     animation-delay: 180ms;
   }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(2) { animation-delay: 230ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(3) { animation-delay: 280ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(4) { animation-delay: 330ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(5) { animation-delay: 380ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(6) { animation-delay: 430ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(7) { animation-delay: 480ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(8) { animation-delay: 530ms; }
-  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(9) { animation-delay: 580ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(2) { animation-delay: 215ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(3) { animation-delay: 250ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(4) { animation-delay: 285ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(5) { animation-delay: 320ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(6) { animation-delay: 355ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(7) { animation-delay: 390ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(8) { animation-delay: 425ms; }
+  .mobile-drawer:not([hidden]) .drawer-items li:nth-child(9) { animation-delay: 460ms; }
   @keyframes drawer-item-in {
     to { opacity: 1; transform: translateX(0); }
   }
@@ -316,9 +294,9 @@ import { heroContent } from '../../content/hero';
     text-decoration: none;
     padding: 16px 0;
     border-bottom: 1px solid rgba(201, 167, 114, 0.18);
-    transition: color var(--duration-short) ease, padding-left var(--duration-short) ease;
+    transition: color var(--duration-short) ease, transform var(--duration-short) ease;
   }
-  .drawer-link:hover { color: var(--ivory); padding-left: 8px; }
+  .drawer-link:hover { color: var(--ivory); transform: translateX(8px); }
   .drawer-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
   .drawer-cta {
@@ -342,7 +320,7 @@ import { heroContent } from '../../content/hero';
     transform: translateY(12px);
   }
   .mobile-drawer:not([hidden]) .drawer-cta {
-    animation: drawer-cta-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 480ms forwards;
+    animation: drawer-cta-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 520ms forwards;
   }
   @keyframes drawer-cta-in {
     to { opacity: 1; transform: translateY(0); }

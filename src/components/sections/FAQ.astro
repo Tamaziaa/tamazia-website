@@ -203,9 +203,10 @@ const faqJsonLd = {
   }
 
   .faq-cat-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    column-gap: 12px;
     font-family: var(--ff-body);
     font-size: 12px;
     letter-spacing: 0.15em;
@@ -218,6 +219,8 @@ const faqJsonLd = {
     text-decoration: none;
     transition: color 300ms ease, border-color 300ms ease;
   }
+  .faq-cat-link > :first-child { min-width: 0; overflow-wrap: anywhere; }
+  .faq-cat-link .cat-count { white-space: nowrap; }
 
   .faq-cat-link:hover,
   .faq-cat-link.active {
@@ -605,6 +608,30 @@ const faqJsonLd = {
     .faq-answer { font-size: 13px; padding: 0 20px 20px; }
     .timeline-wrap { padding: 24px 20px; }
   }
+
+  .faq-question {
+    position: relative;
+    padding-right: 40px !important;
+  }
+  .faq-question::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-right: 1.5px solid var(--gold-text);
+    border-bottom: 1.5px solid var(--gold-text);
+    transform: translateY(-65%) rotate(45deg);
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .faq-item[open] > .faq-question::after {
+    transform: translateY(-25%) rotate(-135deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-question::after { transition: none; }
+  }
+
 </style>
 
 <script>

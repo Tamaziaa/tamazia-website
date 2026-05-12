@@ -15,6 +15,7 @@ html {
   text-rendering: optimizeLegibility;
   hanging-punctuation: first last;
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h, 76px);
   color-scheme: light;
 }
 
@@ -27,7 +28,7 @@ body {
   font-weight: 400;
   font-feature-settings: "kern", "liga", "clig", "calt";
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 ::selection {
@@ -190,4 +191,12 @@ input, textarea, select {
     stroke-dashoffset: 0;
     animation: none;
   }
+}
+
+/* strike-through · gold-shadow instead of default black */
+del, s, .strike, .tier-strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--gold-shadow);
+  text-decoration-thickness: 1px;
+  opacity: 0.6;
 }

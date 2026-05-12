@@ -6,12 +6,14 @@
   /* PALETTE · gradient journey from ivory daylight to oxblood-ink (no pure black) */
   --ivory: #FAF7F2;
   --ivory-warm: #F4F0E8;
+  /* DEPRECATED · alias for --ivory-warm. Use --ivory-warm in new code. */
   --linen: #F4F0E8;
   --pearl: #E8E4DC;
   --bisque: #E0D9CA;
 
   --oxblood: #5A1A2B;
   --oxblood-warm: #6D2037;
+  /* DEPRECATED · alias for --oxblood-warm. Use --oxblood-warm in new code. */
   --oxblood-mist: #6D2037;
   --oxblood-wine: #4A1625;
   --oxblood-deep: #3A0F1C;
@@ -19,6 +21,7 @@
 
   --gold: #C9A772;
   --gold-warm: #D4B787;
+  /* DEPRECATED · alias for --gold-warm. Use --gold-warm in new code. */
   --gold-pale: #D4B787;
   --gold-shadow: #B28A56;
   /* Round-7 fix · accessible bronze for body-size gold accents on light bgs (passes 4.5:1 on ivory/linen/pearl/bisque) */

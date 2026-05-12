@@ -138,20 +138,28 @@ import { heroContent } from '../../content/hero';
     color: var(--oxblood);
     border: 1px solid var(--gold);
     height: 44px;
-    padding: 0 clamp(14px, 1.4vw, 22px);
+    padding: 0 clamp(12px, 1.2vw, 22px);
     font-family: var(--ff-body);
     font-size: clamp(10px, 0.78vw, 11px);
     font-weight: 600;
-    letter-spacing: clamp(0.08em, 0.18vw, 0.14em);
+    letter-spacing: clamp(0.06em, 0.14vw, 0.14em);
     text-transform: uppercase;
     white-space: nowrap;
     cursor: pointer;
-    margin-left: clamp(12px, 1.6vw, 22px);
+    margin-left: clamp(8px, 1.4vw, 22px);
     transition: background var(--duration-short) ease, border-color var(--duration-short) ease, box-shadow var(--duration-short) ease;
     display: inline-flex;
     align-items: center;
     text-decoration: none;
     border-radius: 999px;
+  }
+  /* Narrow-desktop band (1024-1366): label compresses; below that the burger takes over. */
+  @media (min-width: 901px) and (max-width: 1366px) {
+    .nav-cta {
+      padding: 0 12px;
+      letter-spacing: 0.06em;
+      font-size: 10px;
+    }
   }
 
   .nav-cta:hover {

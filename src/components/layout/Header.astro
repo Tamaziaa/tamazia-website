@@ -5,7 +5,7 @@ import { heroContent } from '../../content/hero';
 <header class="site-header">
 <nav class="main-nav" aria-label="Primary">
   <a href="/" class="logo-lockup" aria-label="Tamazia home">
-    <img src="/tamazia-lockup-masthead-transparent.png" alt="" class="logo-img" width="343" height="64" />
+    <img src="/tamazia-lockup-masthead-transparent.png" alt="" class="logo-img" width="343" height="64" loading="eager" decoding="async" fetchpriority="high" />
   </a>
   <ul class="nav-items">
     {heroContent.headerNav.map(item => (

@@ -69,7 +69,7 @@ const tickerDouble = [...tickerItems, ...tickerItems];
         <div class="h1-row">
           <div class="line-wrap">
             <span class="line" data-text={row.text}></span>
-            {row.subtext && <span class="h1-subtext">{row.subtext}</span>}
+            {row.subtext && <span class="h1-subtext" aria-hidden="true">{row.subtext}</span>}
           </div>
         </div>
       ))}

@@ -1,7 +1,6 @@
 ---
 import FounderLink from '../atoms/FounderLink.astro';
 import FleuronDivider from '../atoms/FleuronDivider.astro';
-import WaxSeal from '../atoms/WaxSeal.astro';
 import { pricingContent } from '../../content/pricing';
 
 const { eyebrow, h2, intro, tiers, mandateCallout, mandateCta, mandateSignature, microNote } = pricingContent;
@@ -137,7 +136,6 @@ const featureIcons: Record<string, string> = {
       <p class="mandate-text">{mandateCallout}</p>
       <div class="mandate-actions">
         <a href="#contact" class="mandate-cta">{mandateCta}</a>
-        <WaxSeal size={64} monogram="T" label="Tamazia mandate seal" />
         <a href="/book/" class="mandate-calendar" aria-label="Open the founder's calendar">Open the founder's calendar <span class="calendar-arrow" aria-hidden="true">↗</span></a>
       </div>
       <div class="mandate-rule" aria-hidden="true"></div>

@@ -17,7 +17,7 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
   <!-- Three alternating case panels -->
   {cases.map((c: any, i: number) => (
     <article
-      class={`case-panel bg-${c.background}`}
+      class={`case-panel anim-fade-up bg-${c.background}`}
       data-case={c.id}
       data-index={i}
       aria-label={`${c.numeral} ${c.client || c.meta}`}

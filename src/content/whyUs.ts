@@ -4,7 +4,7 @@
 export const whyUsContent = {
   eyebrow: 'WHY US',
 
-  h2: "Any agency can rank you. {{Not every agency has read your sector's laws.}}",
+  h2: "Any agency can rank you.<br/>{{Not every agency has read your sector's laws.}}",
 
   paragraphs: [
     'Compliance is the foundation. We know the rules your content has to play by, and we rank you within them. Not a footnote we add at the end.',

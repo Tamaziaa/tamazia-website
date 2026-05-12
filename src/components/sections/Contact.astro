@@ -545,6 +545,26 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.18em;
     text-transform: uppercase; color: var(--gold); text-decoration: underline; font-weight: 600;
   }
+
+  /* Sector form · spacing between floating label and Select sector placeholder */
+  .field-float label {
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .field-float select {
+    padding-top: 18px;
+    padding-bottom: 14px;
+    min-height: 56px;
+    line-height: 1.4;
+  }
+  .field-float select option:first-child {
+    color: var(--ink-muted);
+  }
+  @media (max-width: 720px) {
+    .field-float { margin-bottom: 6px; }
+    .field-float label { font-size: 11px; }
+    .field-float select { min-height: 52px; padding-top: 20px; }
+  }
 </style>
 
 <script>

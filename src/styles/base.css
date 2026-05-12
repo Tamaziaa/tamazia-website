@@ -450,3 +450,52 @@ button[type="submit"],
 button[type="submit"], .submit-btn, .audit-submit, .briefings-btn {
   padding-block: 14px;
 }
+
+/* GLOBAL MOBILE CTA CURVE GUARANTEE · belt-and-braces over the global CTA rule.
+   On phones, every button/CTA-like element must be a pill, never sharp-cornered.
+   Targets even .card-cta and .run-btn that have their own border-radius declarations. */
+@media (max-width: 720px) {
+  .btn-primary,
+  .btn-secondary,
+  .primary-cta,
+  .nav-cta,
+  .tier-cta,
+  .tier-cta-ghost,
+  .tier-cta-filled,
+  .mandate-cta,
+  .mandate-calendar,
+  .submit-btn,
+  .audit-submit,
+  .run-btn,
+  .card-cta,
+  .briefings-btn,
+  .msc-cta,
+  .cookie-btn,
+  button[type="submit"],
+  .calendar-cta,
+  .cal-cta,
+  .submit-btn,
+  .drawer-cta,
+  .nav-burger,
+  .pilot-btn,
+  .currency-tab,
+  .reach-out-cta,
+  a.btn,
+  button.btn {
+    border-radius: 999px !important;
+    min-height: 48px;
+    padding-inline: clamp(16px, 4vw, 26px) !important;
+    font-size: clamp(11px, 3vw, 13px) !important;
+    letter-spacing: 0.12em !important;
+    white-space: normal;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    /* Never clip CTA text. If too long for a single line, allow wrap on mobile (still pill-shaped). */
+    overflow: visible;
+    line-height: 1.25;
+  }
+  /* Buttons that explicitly need single-line at all costs (use this class) */
+  .btn-noWrap, .nav-cta.btn-noWrap { white-space: nowrap; }
+}
+

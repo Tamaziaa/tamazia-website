@@ -1193,6 +1193,49 @@ const tickerDouble = [...tickerItems, ...tickerItems];
       padding-top: 20px;
     }
   }
+
+  /* Mobile pull-quote glyph reflow · keeps the two quote marks visually tied to the text on small screens */
+  @media (max-width: 720px) {
+    .pull-quote::before {
+      font-size: 48px;
+      top: -10px;
+      left: 4px;
+    }
+    .pull-quote::after {
+      font-size: 48px;
+      bottom: -32px;
+      right: 8px;
+    }
+    .pull-quote {
+      padding: 8px 18px 8px 22px;
+    }
+    /* Apostrophe consistency · force curly quotes everywhere */
+    .sub-headline, .positioning-line, .pull-quote, .hero-h1, .ribbon-label {
+      font-feature-settings: 'kern', 'liga', 'clig', 'calt';
+      quotes: '\201C' '\201D' '\2018' '\2019';
+    }
+    /* Unique mobile-only ornaments to make hero stand out */
+    .hero[data-astro-cid-anhloy43] .sub-headline::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 10px;
+      opacity: 0.85;
+    }
+    .hero[data-astro-cid-anhloy43] .positioning-line {
+      position: relative;
+      padding-left: 14px;
+    }
+    .hero[data-astro-cid-anhloy43] .positioning-line::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 6px; bottom: 6px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+    }
+  }
 </style>
 
 <script>

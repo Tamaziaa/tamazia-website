@@ -1,12 +1,12 @@
 ---
 /**
  * FounderLink · canonical Aman Pareek treatment.
- * Replaces every .signature-wrap / .mandate-signature script-text instance
- * with a clean LinkedIn-linked card. One consistent treatment everywhere.
+ * Renders a LinkedIn-linked card with either a portrait image (when public/aman-portrait.jpg
+ * is present) or the "AP" monogram fallback. One consistent treatment everywhere.
  *
  * Props:
- *   variant: 'light' (default) | 'dark' — applies .on-dark CSS variant
- *   compact: boolean — hides the title line, just name + LinkedIn icon
+ *   variant: 'light' (default) | 'dark'
+ *   compact: boolean (hides the title line)
  */
 interface Props {
   variant?: 'light' | 'dark';
@@ -15,6 +15,8 @@ interface Props {
 }
 const { variant = 'light', compact = false, className = '' } = Astro.props;
 const cls = `founder-link${variant === 'dark' ? ' on-dark' : ''}${className ? ' ' + className : ''}`;
+// Portrait file: drop a 200x200+ image at /public/aman-portrait.jpg to swap the AP monogram for a real photo.
+const portraitSrc = '/aman-portrait.jpg';
 ---
 <a
   href="https://www.linkedin.com/in/amanpareekk/"
@@ -23,7 +25,19 @@ const cls = `founder-link${variant === 'dark' ? ' on-dark' : ''}${className ? ' 
   class={cls}
   aria-label="Aman Pareek, Founder of Tamazia, on LinkedIn (opens in new tab)"
 >
-  <span class="founder-avatar" aria-hidden="true">AP</span>
+  <span class="founder-avatar" aria-hidden="true">
+    <img
+      class="founder-portrait"
+      src={portraitSrc}
+      alt=""
+      width="56"
+      height="56"
+      loading="lazy"
+      decoding="async"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+    />
+    <span class="founder-initials">AP</span>
+  </span>
   <span class="founder-text">
     <strong class="founder-name">Aman Pareek</strong>
     {!compact && <span class="founder-title">Founder · LLM, King’s College London</span>}
@@ -39,3 +53,38 @@ const cls = `founder-link${variant === 'dark' ? ' on-dark' : ''}${className ? ' 
     <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V9.97H5.67v8.37h2.67zM7 8.77a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zM18.34 18.34V13.7c0-2.48-1.32-3.63-3.09-3.63-1.43 0-2.07.79-2.43 1.34V9.97h-2.67v8.37h2.67v-4.55c0-.27.02-.55.1-.74.22-.55.72-1.11 1.55-1.11 1.1 0 1.54.83 1.54 2.05v4.35h2.33z"/>
   </svg>
 </a>
+
+<style>
+  .founder-avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--oxblood);
+    color: var(--gold);
+    font-family: var(--ff-display);
+    font-size: 16px;
+    font-weight: 500;
+    overflow: hidden;
+    border: 1px solid var(--gold-hairline);
+  }
+  .founder-portrait {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+  .founder-initials {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    letter-spacing: -0.02em;
+  }
+  /* When portrait image fails to load, the inline onerror swaps display:none -> flex */
+</style>

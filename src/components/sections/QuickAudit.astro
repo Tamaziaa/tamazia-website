@@ -89,10 +89,10 @@
 
         <!-- Microcopy lives outside the form (not a flex item) -->
         <p class="audit-microcopy">
-          <span class="microcopy-lock" aria-hidden="true">◈</span>
+          <span class="microcopy-lock" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" class="svg-diamond-inline"><path d="M5 1 L9 5 L5 9 L1 5 Z" stroke="currentColor" stroke-width="0.8" fill="none"/></svg></span>
           Used only to deliver your findings. Never sold or shared.
         </p>
-        <button type="button" class="sample-link" id="sample-link">View a sample audit ↗</button>
+        <button type="button" class="sample-link" id="sample-link">View a sample audit <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="svg-arrow-inline"><path d="M4 10 L10 4 M5 4 H10 V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
 
       <!-- LOADING STATE -->
@@ -165,7 +165,7 @@
             <p class="upsell-microfooter" id="upsell-microfooter">—</p>
             <a href="#contact" class="upsell-cta" id="upsell-cta">
               <span id="upsell-cta-label">Speak with the founder about Authority</span>
-              <span class="cta-arrow" aria-hidden="true">&rarr;</span>
+              <span class="cta-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="svg-arrow-inline"><path d="M2 7 H12 M8 3 L12 7 L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a>
           </div>
 
@@ -173,7 +173,7 @@
 
           <a href="#contact" class="full-audit-cta" id="full-audit-cta">
             <span>Request your full Tamazia audit</span>
-            <span class="cta-arrow" aria-hidden="true">&rarr;</span>
+            <span class="cta-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="svg-arrow-inline"><path d="M2 7 H12 M8 3 L12 7 L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a>
 
           <p class="findings-note">Findings belong to you whether you proceed or not. Full report sent to your email.</p>
@@ -189,6 +189,7 @@
 </section>
 
 <style>
+  .svg-arrow-inline,.svg-diamond-inline { display: inline-block; vertical-align: middle; margin-left: 4px; }
   /* ── Instrument wrapper ── */
   .instrument-wrap {
     max-width: 560px;

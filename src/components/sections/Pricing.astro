@@ -869,6 +869,11 @@ const featureIcons: Record<string, string> = {
     line-height: 1.4;
   }
   .tier-card.show-saves .saves-line { display: block; }
+  /* Enterprise tier on dark burgundy: gold caption to keep contrast (was rendering as gold-text-strong dark on dark = unreadable). */
+  .tier-card.tier-enterprise .saves-line,
+  .tier-card[data-tier="enterprise"] .saves-line {
+    color: var(--gold) !important;
+  }
   /* Bottom microcopy: "Pilot engagement rate available for new mandates" */
   .pilot-microcopy {
     display: none;

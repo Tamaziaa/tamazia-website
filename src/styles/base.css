@@ -17,6 +17,9 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h, 76px);
   color-scheme: light;
+  /* Clip fixed-position descendants (mobile drawer translated off-screen) so they don't widen the document. */
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 body {
@@ -29,6 +32,7 @@ body {
   font-feature-settings: "kern", "liga", "clig", "calt";
   min-height: 100vh;
   overflow-x: clip;
+  max-width: 100vw;
 }
 
 ::selection {

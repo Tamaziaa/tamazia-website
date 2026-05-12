@@ -232,6 +232,9 @@ import { heroContent } from '../../content/hero';
     padding: 32px 28px 48px;
     transform: translateX(100%);
     transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* Hard-clip so the off-screen drawer cannot widen the document on any browser. */
+    contain: layout paint;
+    will-change: transform;
   }
   .mobile-drawer:not([hidden]) {
     display: flex;
@@ -244,6 +247,13 @@ import { heroContent } from '../../content/hero';
     visibility: hidden;
   }
   .mobile-drawer:not([hidden]) { visibility: visible; }
+  /* On desktop the drawer is functionally unused — remove from layout entirely. */
+  @media (min-width: 901px) {
+    .mobile-drawer,
+    .drawer-backdrop {
+      display: none !important;
+    }
+  }
 
   .drawer-close {
     align-self: flex-end;

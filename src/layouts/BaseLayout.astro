@@ -103,6 +103,25 @@ const jsonLd = {
     },
   ],
 };
+
+// K3 · BreadcrumbList auto-derived from canonical path on non-home routes
+const _path = canonical.replace('https://tamazia.co.uk', '').replace(/\/$/, '');
+const _segs = _path.split('/').filter(Boolean);
+if (_segs.length > 0) {
+  (jsonLd['@graph'] as any[]).push({
+    '@type': 'BreadcrumbList',
+    '@id': canonical + '#breadcrumb',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Tamazia', item: 'https://tamazia.co.uk/' },
+      ..._segs.map((seg, i) => ({
+        '@type': 'ListItem',
+        position: i + 2,
+        name: seg.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+        item: 'https://tamazia.co.uk/' + _segs.slice(0, i + 1).join('/') + '/',
+      })),
+    ],
+  });
+}
 ---
 <!DOCTYPE html>
 <html lang="en-GB">

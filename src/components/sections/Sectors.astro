@@ -581,6 +581,32 @@ const iconPaths: Record<string, string> = {
     .card-headline { padding-right: 72px; }
   }
 
+
+  /* F-03 · Mobile horizontal scroll-snap carousel for sector cards */
+  @media (max-width: 720px) {
+    .bento-grid {
+      display: flex !important;
+      grid-template-columns: none !important;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      gap: 16px !important;
+      padding: 0 16px 24px;
+      scroll-padding-inline-start: 16px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .bento-grid::-webkit-scrollbar { display: none; }
+    .sector-card {
+      flex: 0 0 86vw;
+      grid-column: auto !important;
+      grid-row: auto !important;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      min-height: 520px;
+      max-height: 640px;
+    }
+  }
   </style>
 <style is:global>
   /* Per-sector hover animations · drives inner SVG class targets */

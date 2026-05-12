@@ -1,0 +1,15 @@
+{
+  "ci": {
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "performance": ["warn", { "minScore": 0.9 }],
+        "accessibility": ["error", { "minScore": 1.0 }],
+        "best-practices": ["error", { "minScore": 0.95 }],
+        "seo": ["error", { "minScore": 0.95 }],
+        "categories:pwa": "off",
+        "uses-text-compression": "off"
+      }
+    }
+  }
+}

@@ -46,12 +46,12 @@ const roleIcons: Record<string, string> = {
         <div class="eyebrow">{eyebrow}</div>
         <h2 id="howwework-heading" class="section-h2">{h2}</h2>
         <p class="body">{paragraph}</p>
-        <blockquote class="pull-quote" set:html={parseEmph(pullQuote)} />
+        <blockquote class="pull-quote anim-quote-in" set:html={parseEmph(pullQuote)} />
       </div>
 
       <div class="right-col">
         {roles.map((role) => (
-          <div class="role-card" data-role={role.id}>
+          <div class="role-card anim-fade-up" data-role={role.id}>
             <div class="role-icon">
               <svg viewBox="0 0 48 48">
                 <Fragment set:html={roleIcons[role.icon]} />

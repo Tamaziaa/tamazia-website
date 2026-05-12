@@ -1,23 +1,32 @@
-# Stage for .github/workflows/lighthouse-pa11y.yml
-# Lighthouse + Pa11y baseline regression on every push to main + PR
-
-name: Lighthouse + Pa11y
-
+# Method B · Lighthouse CI + axe + Pa11y combined gate
+# Mobile + Desktop Lighthouse, axe-core a11y, Pa11y WCAG 2.2 AA
+name: lighthouse-pa11y
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
-
+  workflow_dispatch:
 jobs:
-  audit:
+  qa:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: '20' }
       - run: npm ci
-      - run: npx -y @lhci/cli@0.13 collect --url=https://tamazia.co.uk/ --url=https://tamazia.co.uk/contact --url=https://tamazia.co.uk/briefings --url=https://tamazia.co.uk/case-studies/cg-oncology/ --upload.target=temporary-public-storage
-      - run: npx -y pa11y https://tamazia.co.uk/ --threshold 0
-      - run: npx -y pa11y https://tamazia.co.uk/contact --threshold 0
-      - run: npx -y pa11y https://tamazia.co.uk/briefings --threshold 0
+      - run: npm run build
+      - name: Start preview
+        run: npm run preview &
+      - run: sleep 4
+      - name: Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --collect.url=http://localhost:4321 \
+            --collect.url=http://localhost:4321/pricing \
+            --collect.url=http://localhost:4321/contact \
+            --upload.target=temporary-public-storage \
+            --assert.assertions.performance=warn \
+            --assert.assertions.accessibility=error
+      - name: Pa11y CI
+        run: |
+          npm install -g pa11y-ci
+          pa11y-ci --config .pa11yci

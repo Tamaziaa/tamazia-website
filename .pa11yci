@@ -1,0 +1,19 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "timeout": 30000,
+    "wait": 1500,
+    "chromeLaunchConfig": { "args": ["--no-sandbox"] },
+    "ignore": []
+  },
+  "urls": [
+    "http://localhost:4321/",
+    "http://localhost:4321/pricing",
+    "http://localhost:4321/contact",
+    "http://localhost:4321/case-studies/cg-oncology",
+    "http://localhost:4321/case-studies/meraas-dubai",
+    "http://localhost:4321/case-studies/major-hotel-group",
+    "http://localhost:4321/services",
+    "http://localhost:4321/about"
+  ]
+}

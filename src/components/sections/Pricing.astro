@@ -452,6 +452,7 @@ const featureIcons: Record<string, string> = {
     transition: transform 400ms var(--ease-out), box-shadow 400ms var(--ease-out),
                 border-color 400ms var(--ease-out);
   }
+  .tier-card.tier-foundation { background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory-warm) 100%); }
 
   .tier-standard {
     background: var(--pearl);
@@ -936,7 +937,20 @@ const featureIcons: Record<string, string> = {
 </style>
 
 <script>
-  // Currency switcher (rates GBP 1 : USD 1.27 : AED 4.67) + pilot engagement toggle
+  
+  // Currency tween · interpolate displayed price over 600ms easeOutQuart
+  function countUpTween(el, fromN, toN, dur, formatter) {
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 4);
+      const val = Math.round(fromN + (toN - fromN) * eased);
+      el.textContent = formatter(val);
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+// Currency switcher (rates GBP 1 : USD 1.27 : AED 4.67) + pilot engagement toggle
   (function () {
     const RATES: Record<string, number> = { GBP: 1, USD: 1.27, EUR: 1.16, AED: 4.67 };
     const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', EUR: '€', AED: 'د.إ' };

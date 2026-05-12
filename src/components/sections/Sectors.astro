@@ -793,4 +793,30 @@ const iconPaths: Record<string, string> = {
       });
     }
   });
+
+  /* Mobile carousel auto-scroll hint · 800ms forward, 600ms back, runs once when grid first scrolls into view */
+  (function mobileCarouselHint() {
+    if (!window.matchMedia('(max-width: 720px)').matches) return;
+    const grid = document.querySelector('.bento-grid');
+    if (!grid) return;
+    let demoFired = false;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || demoFired) return;
+        demoFired = true;
+        const card1 = grid.querySelector('.sector-card');
+        if (!card1) return;
+        const dx = Math.round(card1.offsetWidth * 0.35);
+        try {
+          grid.scrollTo({ left: dx, behavior: 'smooth' });
+          setTimeout(() => { grid.scrollTo({ left: 0, behavior: 'smooth' }); }, 900);
+        } catch (e) {
+          grid.scrollLeft = dx;
+          setTimeout(() => { grid.scrollLeft = 0; }, 900);
+        }
+        obs.unobserve(grid);
+      });
+    }, { threshold: 0.5 });
+    obs.observe(grid);
+  })();
 </script>

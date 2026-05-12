@@ -1,0 +1,27 @@
+# Method A · Visual regression + per-breakpoint DOM-overflow audit
+# Runs on every PR; fails if any element has scrollWidth > clientWidth (overflow bug)
+# OR if any screenshot diff > 0.5% from baseline.
+name: visual-regression
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build site
+        run: npm run build
+      - name: Run visual + overflow audit
+        run: npx playwright test tests/visual/ --reporter=list
+      - name: Upload diff artefacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: test-results/

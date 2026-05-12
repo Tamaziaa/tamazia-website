@@ -70,7 +70,7 @@ const faqJsonLd = {
 
         {categories.map((cat) => (
           <div class="faq-category" id={`faq-${cat.id}`}>
-            <h3 class="category-heading">{cat.label}</h3>
+            <h3 class="category-heading anim-fade-up">{cat.label}</h3>
             {questions.filter(q => q.category === cat.id).map((q, i) => (
               <details class="faq-item" data-q={i}>
                 <summary class="faq-question">

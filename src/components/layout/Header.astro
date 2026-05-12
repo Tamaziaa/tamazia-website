@@ -46,6 +46,16 @@ import { heroContent } from '../../content/hero';
 </header>
 
 <style>
+  /* Hardening · ensure outer <header> landmark is always visible above any sticky/floating element */
+  .site-header {
+    position: relative;
+    z-index: 110;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+  }
+
+
   .main-nav {
     height: 76px;
     background: var(--oxblood);

@@ -34,9 +34,11 @@ const { numeral, label } = Astro.props;
   .numeral {
     font-family: var(--ff-display);
     font-style: italic;
-    font-size: 20px;
+    font-size: 22px;
     color: var(--ink);
-    letter-spacing: 0.02em;
+    letter-spacing: -0.02em;
+    font-feature-settings: "kern" 1;
+    font-kerning: normal;
   }
 
   .rule {

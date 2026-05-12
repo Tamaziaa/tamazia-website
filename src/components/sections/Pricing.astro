@@ -1,4 +1,5 @@
 ---
+import FounderLink from '../atoms/FounderLink.astro';
 import { pricingContent } from '../../content/pricing';
 
 const { eyebrow, h2, intro, tiers, mandateCallout, mandateCta, mandateSignature, microNote } = pricingContent;
@@ -132,7 +133,7 @@ const featureIcons: Record<string, string> = {
       <p class="mandate-text">{mandateCallout}</p>
       <div class="mandate-actions">
         <a href="#contact" class="mandate-cta">{mandateCta}</a>
-        <div class="mandate-signature">{mandateSignature}</div>
+        <FounderLink variant="dark" />
       </div>
       <div class="mandate-rule" aria-hidden="true"></div>
     </div>

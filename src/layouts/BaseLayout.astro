@@ -105,7 +105,7 @@ const jsonLd = {
 };
 
 // K3 · BreadcrumbList auto-derived from canonical path on non-home routes
-const _path = canonical.replace('https://tamazia.co.uk', '').replace(/\/$/, '');
+const _path = (canonical || 'https://tamazia.co.uk/').replace('https://tamazia.co.uk', '').replace(/\/$/, '');
 const _segs = _path.split('/').filter(Boolean);
 if (_segs.length > 0) {
   (jsonLd['@graph'] as any[]).push({

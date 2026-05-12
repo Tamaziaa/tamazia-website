@@ -1,0 +1,41 @@
+---
+/**
+ * FounderLink · canonical Aman Pareek treatment.
+ * Replaces every .signature-wrap / .mandate-signature script-text instance
+ * with a clean LinkedIn-linked card. One consistent treatment everywhere.
+ *
+ * Props:
+ *   variant: 'light' (default) | 'dark' — applies .on-dark CSS variant
+ *   compact: boolean — hides the title line, just name + LinkedIn icon
+ */
+interface Props {
+  variant?: 'light' | 'dark';
+  compact?: boolean;
+  className?: string;
+}
+const { variant = 'light', compact = false, className = '' } = Astro.props;
+const cls = `founder-link${variant === 'dark' ? ' on-dark' : ''}${className ? ' ' + className : ''}`;
+---
+<a
+  href="https://www.linkedin.com/in/amanpareekk/"
+  target="_blank"
+  rel="noopener noreferrer"
+  class={cls}
+  aria-label="Aman Pareek, Founder of Tamazia, on LinkedIn (opens in new tab)"
+>
+  <span class="founder-avatar" aria-hidden="true">AP</span>
+  <span class="founder-text">
+    <strong class="founder-name">Aman Pareek</strong>
+    {!compact && <span class="founder-title">Founder · LLM, King’s College London</span>}
+  </span>
+  <svg
+    class="founder-linkedin"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V9.97H5.67v8.37h2.67zM7 8.77a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zM18.34 18.34V13.7c0-2.48-1.32-3.63-3.09-3.63-1.43 0-2.07.79-2.43 1.34V9.97h-2.67v8.37h2.67v-4.55c0-.27.02-.55.1-.74.22-.55.72-1.11 1.55-1.11 1.1 0 1.54.83 1.54 2.05v4.35h2.33z"/>
+  </svg>
+</a>

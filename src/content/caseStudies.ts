@@ -27,7 +27,7 @@ const cgoncMetrics = [
 ];
 
 export const caseStudiesContent = {
-  eyebrow: 'TAMAZIA · Case Studies',
+  eyebrow: 'Case Studies',  /* A5 · was 'TAMAZIA · Case Studies' */
   h2: 'Case Studies',
   subline: 'Three clients. Three regulators. Every number below is verified.',
 

@@ -123,7 +123,7 @@ export const heroContent = {
   // Signature · capital A per BD-4 fix (was lowercase "aman pareek").
   // Fonts: Great Vibes cursive, gold.
   signature: {
-    vettedBy: 'Vetted by',
+    vettedBy: 'Signed by',  /* A3 · was 'Vetted by' which read backwards */
     name: 'Aman Pareek',
     caption: ['Founder', "LLM, King’s College London"],
   },

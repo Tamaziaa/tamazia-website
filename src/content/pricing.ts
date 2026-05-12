@@ -2,7 +2,7 @@
 // Full feature lists restored. Authority "Most popular" ribbon. Enterprise mandate callout.
 
 export const pricingContent = {
-  eyebrow: 'TAMAZIA · Pricing',
+  eyebrow: 'Pricing',  /* A5 · was 'TAMAZIA · Pricing'; Interstitial supplies numeral + theme */
   h2: 'Pricing',
   // Legacy intro string (component reads single string). Full intro paragraphs available below.
   intro: 'Three mandates. Each covers a defined compliance scope. Every engagement begins with an SEO and compliance audit included at no additional cost.',

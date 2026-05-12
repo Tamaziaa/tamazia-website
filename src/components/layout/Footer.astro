@@ -242,7 +242,12 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     text-transform: uppercase;
     color: var(--pearl);
     margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 0;
   }
+  .locations .location { white-space: nowrap; }
 
   .locations .sep {
     color: var(--gold);

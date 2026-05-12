@@ -44,7 +44,7 @@ export const whyUsContent = {
   ],
 
   // Footer line after credentials, matches live site micro-framing (B-46 fix)
-  microLine: 'TAMAZIA · Technology Partnership · TAMAZIA',
+  microLine: '',  /* P1-012 · removed orphan filler line. Re-enable when named partner is announced. */
 
   // Zero-compliance-incident proof (B-38 fix · SWF allocator persona)
   proofStrip: 'Zero compliance incidents · Nasdaq IPO listing · Dubai Holding standard · Verified per SEC filings + GA4',

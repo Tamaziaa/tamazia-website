@@ -159,7 +159,7 @@ const iconPaths: Record<string, string> = {
   .sectors {
     position: relative;
     background: var(--obsidian);
-    padding-block: var(--section-padding-block);
+    padding-block: clamp(72px, 7vw, 112px);
     overflow: clip; /* α-02 · was hidden; clip allows hover lift to overflow */
     color: var(--ivory);
   }

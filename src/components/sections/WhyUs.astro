@@ -256,14 +256,22 @@ const proofStrip = (whyUsContent as any).proofStrip;
 
   .stat-value {
     font-family: var(--ff-display);
-    font-size: clamp(80px, 8vw + 1rem, 128px);
+    /* clamp tuned so $110M+ (~6 chars at heavy weight) fits the narrowest grid cell (~270px) */
+    font-size: clamp(56px, 6.2vw, 96px);
     font-weight: 500;
     color: var(--gold);
     line-height: 1;
     letter-spacing: -0.02em;
     font-feature-settings: 'lnum', 'tnum';
     margin-bottom: 16px;
+    /* Allow shrinking inside grid cells when content is wider than allotted column */
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: keep-all;
   }
+  /* Defend the parent grid cell from being forced wide by an oversized stat */
+  .stat-card { min-width: 0; }
 
   .stat-caption {
     font-family: var(--ff-body);

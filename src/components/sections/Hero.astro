@@ -1,6 +1,7 @@
 ---
 import { heroContent, parseEmph } from '../../content/hero';
 import FounderLink from '../atoms/FounderLink.astro';
+import LuxuryBrackets from '../atoms/LuxuryBrackets.astro';
 
 const {
   eyebrow,
@@ -105,6 +106,7 @@ const tickerDouble = [...tickerItems, ...tickerItems];
     </div>
 
     <div class="hero-founder-band">
+      <LuxuryBrackets size={20} />
       <FounderLink />
     </div>
 
@@ -1050,7 +1052,8 @@ const tickerDouble = [...tickerItems, ...tickerItems];
     .signature-wrap { right: 32px; bottom: 96px; }
     .scroll-cue { display: none; }
     .margin-rule { display: none; }
-    .primary-cta { min-width: 0; width: 100%; max-width: 420px; }
+    .primary-cta { min-width: 0; width: auto; max-width: 100%; padding: 0 28px; font-size: 14px; height: 56px; gap: 12px; }
+    .primary-cta > span:first-child { min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .ribbon-label { display: block; }
   }
 
@@ -1170,12 +1173,18 @@ const tickerDouble = [...tickerItems, ...tickerItems];
   }
 
   .hero-founder-band {
+    position: relative;
     display: flex;
     justify-content: flex-start;
+    align-items: center;
     margin-top: 24px;
-    padding-top: 24px;
+    padding: 18px 22px 14px;
     border-top: 1px solid var(--gold-hairline);
     max-width: 720px;
+    isolation: isolate;
+  }
+  .hero-founder-band > .lux-brackets {
+    inset: 6px -2px 0 -2px;
   }
   @media (max-width: 720px) {
     .hero-founder-band {

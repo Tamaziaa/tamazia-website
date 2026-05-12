@@ -1,0 +1,87 @@
+---
+/**
+ * WaxSeal · oxblood-and-gold mandate seal motif.
+ */
+interface Props {
+  size?: number;
+  monogram?: string;
+  label?: string;
+}
+const { size = 76, monogram = 'T', label = 'Tamazia mandate seal' } = Astro.props as Props;
+---
+
+<button class="wax-seal" type="button" aria-label={label} style={`--ws-size:${size}px;`}>
+  <span class="ws-ring" aria-hidden="true"></span>
+  <span class="ws-beading" aria-hidden="true">
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="44" stroke="var(--gold)" stroke-width="0.8" stroke-dasharray="2 4" opacity="0.7" />
+      <circle cx="50" cy="50" r="39" stroke="var(--gold)" stroke-width="0.5" opacity="0.4" />
+    </svg>
+  </span>
+  <span class="ws-body" aria-hidden="true">
+    <span class="ws-monogram">{monogram}</span>
+    <span class="ws-tagline">EST · 2024</span>
+  </span>
+  <span class="ws-shine" aria-hidden="true"></span>
+</button>
+
+<style>
+  .wax-seal {
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    width: var(--ws-size); height: var(--ws-size); border-radius: 50%;
+    border: 0; padding: 0; cursor: pointer; background: transparent;
+    isolation: isolate;
+    transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .wax-seal:hover { transform: scale(0.96) rotate(-2deg); }
+  .wax-seal:active { transform: scale(0.93) rotate(-3deg); }
+  .ws-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 1px solid var(--gold); opacity: 0.7;
+    transition: opacity 280ms ease;
+  }
+  .wax-seal:hover .ws-ring { opacity: 1; }
+  .ws-beading {
+    position: absolute; inset: 4px; pointer-events: none;
+    animation: ws-rotate 32s linear infinite;
+  }
+  .ws-beading svg { width: 100%; height: 100%; display: block; }
+  .ws-body {
+    position: relative; z-index: 1;
+    width: calc(var(--ws-size) - 16px); height: calc(var(--ws-size) - 16px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%,
+      color-mix(in oklab, var(--oxblood) 88%, #000) 0%,
+      var(--oxblood) 38%,
+      color-mix(in oklab, var(--oxblood) 80%, #000) 100%);
+    box-shadow: inset 0 1px 1px rgba(255,235,200,0.18), inset 0 -2px 4px rgba(0,0,0,0.32), 0 1px 2px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  }
+  .ws-monogram {
+    font-family: var(--ff-display); font-size: calc(var(--ws-size) * 0.42);
+    font-weight: 500; color: var(--gold); line-height: 1; letter-spacing: -0.02em;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.45);
+  }
+  .ws-tagline {
+    font-family: var(--ff-body); font-size: calc(var(--ws-size) * 0.085);
+    font-weight: 600; letter-spacing: 0.18em; color: var(--gold);
+    opacity: 0.78; text-transform: uppercase;
+  }
+  .ws-shine {
+    position: absolute; inset: 0; border-radius: 50%; overflow: hidden; pointer-events: none;
+  }
+  .ws-shine::before {
+    content: ''; position: absolute; top: -50%; left: -120%; width: 60%; height: 200%;
+    background: linear-gradient(115deg, transparent 0%, rgba(255, 235, 200, 0) 35%, rgba(255, 235, 200, 0.4) 50%, rgba(255, 235, 200, 0) 65%, transparent 100%);
+    transform: rotate(8deg);
+    transition: left 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .wax-seal:hover .ws-shine::before { left: 120%; }
+  @keyframes ws-rotate { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .wax-seal, .ws-ring, .ws-beading, .ws-shine::before {
+      animation: none !important; transition: none !important;
+    }
+    .wax-seal:hover { transform: none; }
+  }
+</style>

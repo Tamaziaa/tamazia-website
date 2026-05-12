@@ -1,0 +1,46 @@
+---
+/**
+ * LuxuryBrackets · Cartier-inspired hairline gold corner ornaments.
+ * Four 28x28 SVG L-brackets that draw on via stroke-dasharray on intersection.
+ */
+interface Props {
+  tone?: 'gold' | 'pearl';
+  size?: number;
+  ariaLabel?: string;
+}
+const { tone = 'gold', size = 28, ariaLabel } = Astro.props as Props;
+const stroke = tone === 'pearl' ? 'var(--pearl)' : 'var(--gold)';
+---
+
+<span class={`lux-brackets lux-tone-${tone}`} aria-hidden={ariaLabel ? undefined : 'true'} aria-label={ariaLabel} style={`--lb-size:${size}px;--lb-stroke:${stroke};`}>
+  <svg class="lb-tl" viewBox="0 0 28 28" fill="none"><path d="M2 14 V2 H14" stroke="var(--lb-stroke)" stroke-width="1" stroke-linecap="square" /></svg>
+  <svg class="lb-tr" viewBox="0 0 28 28" fill="none"><path d="M14 2 H26 V14" stroke="var(--lb-stroke)" stroke-width="1" stroke-linecap="square" /></svg>
+  <svg class="lb-bl" viewBox="0 0 28 28" fill="none"><path d="M2 14 V26 H14" stroke="var(--lb-stroke)" stroke-width="1" stroke-linecap="square" /></svg>
+  <svg class="lb-br" viewBox="0 0 28 28" fill="none"><path d="M14 26 H26 V14" stroke="var(--lb-stroke)" stroke-width="1" stroke-linecap="square" /></svg>
+</span>
+
+<style>
+  .lux-brackets { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .lux-brackets svg { position: absolute; width: var(--lb-size); height: var(--lb-size); overflow: visible; }
+  .lux-brackets .lb-tl { top: 0; left: 0; }
+  .lux-brackets .lb-tr { top: 0; right: 0; }
+  .lux-brackets .lb-bl { bottom: 0; left: 0; }
+  .lux-brackets .lb-br { bottom: 0; right: 0; }
+  .lux-brackets path {
+    stroke-dasharray: 38;
+    stroke-dashoffset: 38;
+    animation: lux-bracket-draw 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  .lux-brackets .lb-tl path { animation-delay: 60ms; }
+  .lux-brackets .lb-tr path { animation-delay: 180ms; }
+  .lux-brackets .lb-br path { animation-delay: 300ms; }
+  .lux-brackets .lb-bl path { animation-delay: 420ms; }
+  @keyframes lux-bracket-draw {
+    0% { stroke-dashoffset: 38; opacity: 0; }
+    20% { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lux-brackets path { stroke-dasharray: none; stroke-dashoffset: 0; animation: none; }
+  }
+</style>

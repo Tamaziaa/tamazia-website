@@ -1,0 +1,68 @@
+---
+/**
+ * FleuronDivider · house-monogram inline ornament for section transitions.
+ * Hairline gold trefoil drawn with stroke-dasharray, flanked by two thin rules
+ * that grow outward from the centre on intersection.
+ */
+interface Props {
+  width?: number;
+  inverted?: boolean;
+  ariaLabel?: string;
+}
+const { width = 180, inverted = false, ariaLabel } = Astro.props as Props;
+const stroke = inverted ? 'var(--pearl)' : 'var(--gold)';
+---
+
+<div class={`fleuron-divider ${inverted ? 'inverted' : ''}`} role={ariaLabel ? 'img' : 'presentation'} aria-label={ariaLabel} style={`--fd-width:${width}px;--fd-stroke:${stroke};`}>
+  <span class="fd-rule fd-rule-l" aria-hidden="true"></span>
+  <svg class="fd-mark" viewBox="0 0 36 24" fill="none" aria-hidden="true">
+    <path class="fd-drop" d="M18 4 Q22 12 18 20 Q14 12 18 4 Z" stroke="var(--fd-stroke)" stroke-width="1" />
+    <path class="fd-leaf fd-leaf-l" d="M18 12 Q10 8 4 12" stroke="var(--fd-stroke)" stroke-width="1" />
+    <path class="fd-leaf fd-leaf-r" d="M18 12 Q26 8 32 12" stroke="var(--fd-stroke)" stroke-width="1" />
+    <circle class="fd-dot" cx="18" cy="12" r="1.2" fill="var(--fd-stroke)" />
+  </svg>
+  <span class="fd-rule fd-rule-r" aria-hidden="true"></span>
+</div>
+
+<style>
+  .fleuron-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; margin: 0 auto; width: 100%;
+    max-width: var(--fd-width); padding: 14px 0;
+  }
+  .fleuron-divider .fd-rule {
+    flex: 1 1 auto; height: 1px;
+    background: var(--fd-stroke); opacity: 0.42;
+    transform-origin: var(--fd-origin, center);
+    transform: scaleX(0);
+    animation: fd-rule-grow 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms forwards;
+  }
+  .fleuron-divider .fd-rule-l { --fd-origin: right center; }
+  .fleuron-divider .fd-rule-r { --fd-origin: left center; }
+  .fleuron-divider .fd-mark {
+    width: 36px; height: 24px; flex: 0 0 auto; overflow: visible;
+  }
+  .fleuron-divider .fd-mark path {
+    stroke-dasharray: 64; stroke-dashoffset: 64; fill: none;
+    animation: fd-stroke-draw 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) 450ms forwards;
+  }
+  .fleuron-divider .fd-leaf-l { animation-delay: 700ms; }
+  .fleuron-divider .fd-leaf-r { animation-delay: 700ms; }
+  .fleuron-divider .fd-dot {
+    opacity: 0; transform-origin: center; transform: scale(0.4);
+    animation: fd-dot-pulse 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 1150ms forwards;
+  }
+  @keyframes fd-rule-grow { to { transform: scaleX(1); } }
+  @keyframes fd-stroke-draw { to { stroke-dashoffset: 0; } }
+  @keyframes fd-dot-pulse {
+    0% { opacity: 0; transform: scale(0.4); }
+    60% { opacity: 1; transform: scale(1.3); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fleuron-divider .fd-rule, .fleuron-divider .fd-mark path, .fleuron-divider .fd-dot {
+      animation: none; stroke-dashoffset: 0; transform: none; opacity: 1;
+    }
+    .fleuron-divider .fd-rule { transform: scaleX(1); }
+  }
+</style>

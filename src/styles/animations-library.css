@@ -1,0 +1,196 @@
+/* TAMAZIA · ANIMATIONS LIBRARY
+ * Curated keyframes + utility classes covering the V2 Phase 7 catalogue.
+ * Single source of truth — import once in BaseLayout, use everywhere.
+ *
+ * Easing tokens used: --ease-out, --ease-out-expo, --ease-luxury, --ease-out-back
+ * Duration tokens:    --duration-micro 200ms, --duration-short 400ms,
+ *                     --duration-mid 600ms, --duration-long 900ms
+ *
+ * Reduced motion: blanket halt at end of file.
+ */
+
+:root {
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-luxury: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ── CATEGORY 01 · ENTRANCE FADE ─────────────────────────────────── */
+@keyframes anim-fade-in       { from { opacity: 0 } to { opacity: 1 } }
+@keyframes anim-fade-up-4     { from { opacity: 0; transform: translateY(4px)  } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-up-8     { from { opacity: 0; transform: translateY(8px)  } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-up-12    { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-up-16    { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-up-24    { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-up-32    { from { opacity: 0; transform: translateY(32px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-down-8   { from { opacity: 0; transform: translateY(-8px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-fade-left-8   { from { opacity: 0; transform: translateX(8px)  } to { opacity: 1; transform: translateX(0) } }
+@keyframes anim-fade-right-8  { from { opacity: 0; transform: translateX(-8px) } to { opacity: 1; transform: translateX(0) } }
+@keyframes anim-fade-scale-95 { from { opacity: 0; transform: scale(0.95) } to { opacity: 1; transform: scale(1) } }
+@keyframes anim-fade-scale-90 { from { opacity: 0; transform: scale(0.90) } to { opacity: 1; transform: scale(1) } }
+@keyframes anim-fade-blur-4   { from { opacity: 0; filter: blur(4px) } to { opacity: 1; filter: blur(0) } }
+@keyframes anim-fade-rotate-3 { from { opacity: 0; transform: rotate(3deg)  } to { opacity: 1; transform: rotate(0) } }
+@keyframes anim-fade-rotate-neg-3 { from { opacity: 0; transform: rotate(-3deg) } to { opacity: 1; transform: rotate(0) } }
+
+/* ── CATEGORY 02 · REVEAL MASK ───────────────────────────────────── */
+@keyframes anim-clip-up        { from { clip-path: inset(100% 0 0 0) } to { clip-path: inset(0) } }
+@keyframes anim-clip-down      { from { clip-path: inset(0 0 100% 0) } to { clip-path: inset(0) } }
+@keyframes anim-clip-left      { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0) } }
+@keyframes anim-clip-right     { from { clip-path: inset(0 0 0 100%) } to { clip-path: inset(0) } }
+@keyframes anim-clip-circle    { from { clip-path: circle(0 at 50% 50%) } to { clip-path: circle(150% at 50% 50%) } }
+@keyframes anim-hairline-grow  { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes anim-hairline-grow-y { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+@keyframes anim-bracket-fade   { from { opacity: 0; transform: scale(0.85) } to { opacity: 1; transform: scale(1) } }
+
+/* ── CATEGORY 03 · TYPEWRITER + TEXT ────────────────────────────── */
+@keyframes anim-cursor-blink   { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+@keyframes anim-letter-rise    { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-letter-blur    { from { opacity: 0; filter: blur(6px) } to { opacity: 1; filter: blur(0) } }
+@keyframes anim-text-shift-x   { from { opacity: 0; transform: translateX(-12px) } to { opacity: 1; transform: translateX(0) } }
+@keyframes anim-text-shift-y   { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-underline-grow { from { transform: scaleX(0); transform-origin: left } to { transform: scaleX(1); transform-origin: left } }
+@keyframes anim-letter-fade    { from { opacity: 0 } to { opacity: 1 } }
+
+/* ── CATEGORY 04-08 · HOVER + OVERLAY ──────────────────────────── */
+@keyframes anim-pulse-soft     { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.02) } }
+@keyframes anim-pulse-strong   { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.04) } }
+@keyframes anim-shake-x-2      { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-2px) } 75% { transform: translateX(2px) } }
+@keyframes anim-shake-x-4      { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-4px) } 75% { transform: translateX(4px) } }
+@keyframes anim-glow-pulse     { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,167,114,0) } 50% { box-shadow: 0 0 0 8px rgba(201,167,114,0.18) } }
+@keyframes anim-light-sweep-lr { 0% { background-position: -100% 0 } 100% { background-position: 200% 0 } }
+@keyframes anim-tilt-mild      { 0%, 100% { transform: rotate(0) } 50% { transform: rotate(1.2deg) } }
+
+/* ── CATEGORY 09-13 · SCROLL + PARALLAX (manual triggers) ───────── */
+@keyframes anim-scroll-reveal  { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes anim-scroll-fade    { from { opacity: 0 } to { opacity: 1 } }
+@keyframes anim-scroll-zoom    { from { opacity: 0; transform: scale(1.04) } to { opacity: 1; transform: scale(1) } }
+
+/* ── CATEGORY 14 · MARQUEE ──────────────────────────────────────── */
+@keyframes anim-marquee-left   { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+@keyframes anim-marquee-right  { from { transform: translateX(-50%) } to { transform: translateX(0) } }
+@keyframes anim-marquee-up     { from { transform: translateY(0) } to { transform: translateY(-50%) } }
+@keyframes anim-marquee-down   { from { transform: translateY(-50%) } to { transform: translateY(0) } }
+
+/* ── CATEGORY 15 · COUNTER (JS-driven; placeholder fade) ────────── */
+@keyframes anim-count-ready    { from { opacity: 0.5 } to { opacity: 1 } }
+
+/* ── CATEGORY 16 · CONTINUOUS LOOPS ─────────────────────────────── */
+@keyframes anim-breath         { 0%, 100% { opacity: 0.025; transform: scale(1) } 50% { opacity: 0.04; transform: scale(1.01) } }
+@keyframes anim-rotate-slow    { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+@keyframes anim-float-y-4      { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+@keyframes anim-float-y-8      { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+@keyframes anim-shimmer-gold   { 0%, 100% { filter: brightness(1) } 50% { filter: brightness(1.06) } }
+
+/* ── CATEGORY 17 · SVG PATH DRAW ────────────────────────────────── */
+@keyframes anim-path-draw      { from { stroke-dashoffset: var(--draw-len, 220) } to { stroke-dashoffset: 0 } }
+@keyframes anim-path-erase     { from { stroke-dashoffset: 0 } to { stroke-dashoffset: var(--draw-len, 220) } }
+
+/* ── CATEGORY 18 · MORPH ICONS ──────────────────────────────────── */
+@keyframes anim-chevron-rotate-down { from { transform: rotate(0) } to { transform: rotate(180deg) } }
+@keyframes anim-chevron-rotate-up   { from { transform: rotate(180deg) } to { transform: rotate(0) } }
+@keyframes anim-plus-to-x      { from { transform: rotate(0) } to { transform: rotate(45deg) } }
+@keyframes anim-x-to-plus      { from { transform: rotate(45deg) } to { transform: rotate(0) } }
+
+/* ── CATEGORY 19 · PARTICLES (placeholder for JS) ───────────────── */
+@keyframes anim-confetti-up    { from { opacity: 1; transform: translateY(0) rotate(0) } to { opacity: 0; transform: translateY(-32px) rotate(180deg) } }
+@keyframes anim-sparkle        { 0%, 100% { opacity: 0; transform: scale(0) } 50% { opacity: 1; transform: scale(1) } }
+
+/* ── CATEGORY 20 · 3D TRANSFORMS ───────────────────────────────── */
+@keyframes anim-flip-y-180     { from { transform: rotateY(0) } to { transform: rotateY(180deg) } }
+@keyframes anim-flip-x-180     { from { transform: rotateX(0) } to { transform: rotateX(180deg) } }
+@keyframes anim-tilt-perspective { from { transform: perspective(800px) rotateY(0) } to { transform: perspective(800px) rotateY(8deg) } }
+
+/* ── CATEGORY 21 · PAGE TRANSITIONS ─────────────────────────────── */
+@keyframes anim-page-fade-in   { from { opacity: 0 } to { opacity: 1 } }
+@keyframes anim-page-slide-l   { from { transform: translateX(-24px); opacity: 0 } to { transform: translateX(0); opacity: 1 } }
+@keyframes anim-page-slide-r   { from { transform: translateX(24px); opacity: 0 } to { transform: translateX(0); opacity: 1 } }
+
+/* ── CATEGORY 24 · FORM MICRO ──────────────────────────────────── */
+@keyframes anim-field-valid-check { from { opacity: 0; transform: scale(0.6) } to { opacity: 1; transform: scale(1) } }
+@keyframes anim-field-shake      { 0%, 100% { transform: translateX(0) } 20%, 60% { transform: translateX(-4px) } 40%, 80% { transform: translateX(4px) } }
+@keyframes anim-success-flip    { from { transform: rotateY(0) } to { transform: rotateY(180deg) } }
+@keyframes anim-spinner         { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+@keyframes anim-toast-slide-in  { from { opacity: 0; transform: translateX(120%) } to { opacity: 1; transform: translateX(0) } }
+@keyframes anim-toast-slide-out { from { opacity: 1; transform: translateX(0) } to { opacity: 0; transform: translateX(120%) } }
+
+/* ── CATEGORY 25 · BRAND SIGNATURES ────────────────────────────── */
+@keyframes anim-monogram-breath { 0%, 100% { opacity: 0.04; transform: scale(1) } 50% { opacity: 0.06; transform: scale(1.01) } }
+@keyframes anim-signature-clip  { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0) } }
+@keyframes anim-bracket-quad-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes anim-quote-mark-in   { from { opacity: 0; transform: scale(0.6) rotate(-6deg) } to { opacity: 0.55; transform: scale(1) rotate(0) } }
+@keyframes anim-stamp-rotate    { from { opacity: 0; transform: rotate(-12deg) scale(0.85) } to { opacity: 1; transform: rotate(0) scale(1) } }
+@keyframes anim-flourish-draw   { to { stroke-dashoffset: 0 } }
+@keyframes anim-verdict-frame-in { from { opacity: 0; transform: scale(0.92) } to { opacity: 1; transform: scale(1) } }
+
+/* ── UTILITY CLASSES ─────────────────────────────────────────────
+ * Apply directly to elements via class. Defaults to forward fill so
+ * the end state holds after the animation. */
+
+.anim, [class^="anim-"], [class*=" anim-"] { animation-fill-mode: forwards; }
+
+.anim-fade-in       { animation: anim-fade-in       700ms var(--ease-out) forwards; }
+.anim-fade-up       { animation: anim-fade-up-12    700ms var(--ease-out-expo) forwards; }
+.anim-fade-up-strong { animation: anim-fade-up-24   800ms var(--ease-out-expo) forwards; }
+.anim-fade-down     { animation: anim-fade-down-8   600ms var(--ease-out-expo) forwards; }
+.anim-fade-left     { animation: anim-fade-left-8   600ms var(--ease-out-expo) forwards; }
+.anim-fade-right    { animation: anim-fade-right-8  600ms var(--ease-out-expo) forwards; }
+.anim-fade-scale    { animation: anim-fade-scale-95 700ms var(--ease-out-expo) forwards; }
+.anim-fade-blur     { animation: anim-fade-blur-4   700ms var(--ease-out) forwards; }
+
+.anim-stamp         { animation: anim-stamp-rotate  900ms var(--ease-out-back) forwards; }
+.anim-quote-in      { animation: anim-quote-mark-in 800ms var(--ease-out-expo) forwards; }
+.anim-bracket-in    { animation: anim-bracket-quad-in 700ms var(--ease-out) forwards; }
+.anim-signature     { animation: anim-signature-clip 1800ms var(--ease-out-quart) forwards; }
+.anim-monogram      { animation: anim-monogram-breath 8s ease-in-out infinite; }
+
+.anim-marquee-l     { animation: anim-marquee-left 60s linear infinite; }
+.anim-marquee-r     { animation: anim-marquee-right 60s linear infinite; }
+.anim-marquee-u     { animation: anim-marquee-up 90s linear infinite; }
+.anim-marquee-d     { animation: anim-marquee-down 90s linear infinite; }
+.anim-marquee-pause:hover { animation-play-state: paused; }
+
+.anim-float         { animation: anim-float-y-4 4s ease-in-out infinite; }
+.anim-rotate-slow   { animation: anim-rotate-slow 32s linear infinite; }
+.anim-glow-pulse    { animation: anim-glow-pulse 2.4s ease-in-out infinite; }
+
+.anim-shake         { animation: anim-shake-x-4 360ms ease-in-out; }
+.anim-spinner       { animation: anim-spinner 800ms linear infinite; }
+
+/* Staggered children · use .anim-stagger as parent, children get .anim-stagger-child */
+.anim-stagger > .anim-stagger-child:nth-child(1)  { animation-delay: 0ms; }
+.anim-stagger > .anim-stagger-child:nth-child(2)  { animation-delay: 80ms; }
+.anim-stagger > .anim-stagger-child:nth-child(3)  { animation-delay: 160ms; }
+.anim-stagger > .anim-stagger-child:nth-child(4)  { animation-delay: 240ms; }
+.anim-stagger > .anim-stagger-child:nth-child(5)  { animation-delay: 320ms; }
+.anim-stagger > .anim-stagger-child:nth-child(6)  { animation-delay: 400ms; }
+.anim-stagger > .anim-stagger-child:nth-child(7)  { animation-delay: 480ms; }
+.anim-stagger > .anim-stagger-child:nth-child(8)  { animation-delay: 560ms; }
+.anim-stagger > .anim-stagger-child:nth-child(9)  { animation-delay: 640ms; }
+.anim-stagger > .anim-stagger-child:nth-child(10) { animation-delay: 720ms; }
+
+/* In-view trigger · pair with intersection-observer JS that adds .in-view */
+.anim-on-view             { animation-play-state: paused; opacity: 0; }
+.anim-on-view.in-view     { animation-play-state: running; }
+.anim-on-view.in-view.anim-fade-up { animation: anim-fade-up-12 700ms var(--ease-out-expo) forwards; opacity: 1; }
+
+/* ── REDUCED MOTION · BLANKET HALT ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [class^="anim-"],
+  [class*=" anim-"] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+}

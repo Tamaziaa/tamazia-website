@@ -468,6 +468,17 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
   @media (min-width: 721px) {
     .case-card .case-toggle { display: none; }
   }
+
+  /* Case panel slow fade-in override · was 0.7s (too fast to notice), now 1.6s eased */
+  .case-panel.anim-fade-up {
+    animation-duration: 1600ms !important;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  /* Stagger each case panel so they appear sequentially as the user scrolls */
+  .case-panel.anim-fade-up:nth-of-type(1) { animation-delay: 0ms; }
+  .case-panel.anim-fade-up:nth-of-type(2) { animation-delay: 200ms; }
+  .case-panel.anim-fade-up:nth-of-type(3) { animation-delay: 380ms; }
+  .case-panel.anim-fade-up:nth-of-type(4) { animation-delay: 560ms; }
 </style>
 
 <script>

@@ -179,14 +179,10 @@ const jsonLd = {
   });
   // Cal inline embed code ends
 
-  // Embed-load failure detection · if the embed iframe never appears within 8s,
-  // show the fallback CTA so the visitor is never stranded.
-  setTimeout(() => {
-    const wrap = document.getElementById('my-cal-inline-strategy-call');
-    if (wrap && !wrap.querySelector('iframe')) {
-      wrap.innerHTML = '<div class="cal-fallback"><p>The booking calendar did not load. <a href="https://cal.com/tamazia/strategy-call" rel="noopener">Open the Cal.com page directly</a>, <a href="/contact/">send a brief instead</a>, or email <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>.</p></div>';
-    }
-  }, 15000);
+  // Embed-load notification removed · used to inject a fallback message after 15s
+  // if no iframe appeared, but it created a confusing 'something went wrong' moment.
+  // Cal.com errors are now shown by Cal itself; the <noscript> path already covers
+  // JS-off visitors, and the .book-after CTAs below the embed give an always-visible escape route.
 
   // GA4 client-side event when embed iframe attaches.
   (function watchEmbed() {

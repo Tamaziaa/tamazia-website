@@ -285,7 +285,7 @@ const featureIcons: Record<string, string> = {
   .tier-card.tier-enterprise .tier-includes-prior { color: var(--gold); border-top-color: rgba(201,167,114,0.35); }
   .tier-card.tier-enterprise .features-heading { color: var(--gold); }
   .tier-card.tier-enterprise .feature-headline { color: var(--ivory); }
-  .tier-card.tier-enterprise .feature-body { color: rgba(232,228,220,0.92); font-size: clamp(13px, 1.4vw, 15px); line-height: 1.55; }
+  .tier-card.tier-enterprise .feature-body { color: rgba(232,228,220,0.92); line-height: 1.55; }
   .tier-card.tier-enterprise .rich-feature { border-bottom-color: rgba(201,167,114,0.25); }
   .tier-card.tier-enterprise .feature-bullet { color: var(--gold); }
   .tier-card.tier-enterprise .additional-block { border-top-color: rgba(201,167,114,0.5); }
@@ -919,9 +919,8 @@ const featureIcons: Record<string, string> = {
       opacity: 0;
       transition: max-height 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 280ms ease;
     }
-    .rich-feature.expanded .feature-body,
-    .rich-feature:focus-within .feature-body {
-      max-height: 400px;
+    .rich-feature.expanded .feature-body {
+      max-height: 800px;
       opacity: 1;
     }
     .rich-feature .feature-headline {
@@ -942,6 +941,37 @@ const featureIcons: Record<string, string> = {
     }
     .rich-feature.expanded .feature-headline::after { transform: translateY(-25%) rotate(-135deg); }
   }
+
+  /* Rich-feature accordion · cross-viewport (desktop and mobile both collapse by default
+     and expand only on click/tap). */
+  .rich-feature .feature-body {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 360ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 300ms ease;
+  }
+  .rich-feature.expanded .feature-body {
+    max-height: 800px;
+    opacity: 1;
+  }
+  .rich-feature .feature-headline {
+    cursor: pointer;
+    position: relative;
+    padding-right: 28px;
+    user-select: none;
+  }
+  .rich-feature .feature-headline::after {
+    content: '';
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    width: 8px; height: 8px;
+    border-right: 1.5px solid var(--gold-text-strong);
+    border-bottom: 1.5px solid var(--gold-text-strong);
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform 240ms ease;
+  }
+  .rich-feature.expanded .feature-headline::after { transform: translateY(-30%) rotate(-135deg); }
 </style>
 
 <script>
@@ -1081,22 +1111,54 @@ const featureIcons: Record<string, string> = {
     applyAll(currentCurrency, currentPilot);
   })();
 
-  /* Mobile inclusion tap-to-expand · adds .expanded on tap of .feature-headline */
-  if (window.matchMedia('(max-width: 640px)').matches) {
-    document.querySelectorAll('.rich-feature').forEach((rf) => {
-      const headline = rf.querySelector('.feature-headline');
-      if (!headline) return;
-      headline.setAttribute('role', 'button');
-      headline.setAttribute('tabindex', '0');
-      headline.setAttribute('aria-expanded', 'false');
-      const toggle = () => {
-        const isOpen = rf.classList.toggle('expanded');
-        headline.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      };
-      headline.addEventListener('click', toggle);
-      headline.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  /* Pricing inclusion accordion · works on desktop AND mobile.
+     Default state: all <details> closed (no [open] attribute in markup).
+     Behavior: opening one <details> inside a tier card closes any other open
+     <details> in the same card. Also, the mobile per-feature expander uses a
+     single-open-at-a-time policy per card. */
+  (function () {
+    function attachAccordion(scope) {
+      const detailsList = Array.from(scope.querySelectorAll(':scope > .features-collapse, :scope > .additional-block'));
+      detailsList.forEach((d) => {
+        d.addEventListener('toggle', () => {
+          if (d.open) {
+            detailsList.forEach((other) => {
+              if (other !== d && other.open) other.open = false;
+            });
+          }
+        });
+      });
+    }
+    document.querySelectorAll('.tier-card').forEach(attachAccordion);
+
+    /* Mobile rich-feature inclusion tap-to-expand · single-open-at-a-time within each tier card */
+    document.querySelectorAll('.tier-card').forEach((card) => {
+      const features = Array.from(card.querySelectorAll('.rich-feature'));
+      features.forEach((rf) => {
+        const headline = rf.querySelector('.feature-headline');
+        if (!headline) return;
+        headline.setAttribute('role', 'button');
+        headline.setAttribute('tabindex', '0');
+        headline.setAttribute('aria-expanded', 'false');
+        const toggle = () => {
+          const willOpen = !rf.classList.contains('expanded');
+          if (willOpen) {
+            features.forEach((other) => {
+              if (other !== rf) {
+                other.classList.remove('expanded');
+                const oh = other.querySelector('.feature-headline');
+                if (oh) oh.setAttribute('aria-expanded', 'false');
+              }
+            });
+          }
+          rf.classList.toggle('expanded', willOpen);
+          headline.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        };
+        headline.addEventListener('click', (e) => { e.preventDefault(); toggle(); });
+        headline.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        });
       });
     });
-  }
+  })();
 </script>

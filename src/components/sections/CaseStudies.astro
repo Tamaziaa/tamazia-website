@@ -435,6 +435,39 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
     .case-stat-caption { font-size: 10px; }
     .section-h2 { font-size: 36px; }
   }
+
+  /* Cases mobile tap-to-expand · cards collapse on first paint then expand on tap */
+  @media (max-width: 720px) {
+    .case-stats { display: none; }
+    .case-card.expanded .case-stats { display: flex; }
+    .case-card .case-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      background: transparent;
+      border: 0;
+      color: var(--gold-text-strong);
+      font-family: var(--ff-body);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .case-card .case-toggle::after {
+      content: '';
+      width: 10px; height: 10px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 280ms ease;
+    }
+    .case-card.expanded .case-toggle::after { transform: rotate(-135deg); }
+  }
+  @media (min-width: 721px) {
+    .case-card .case-toggle { display: none; }
+  }
 </style>
 
 <script>

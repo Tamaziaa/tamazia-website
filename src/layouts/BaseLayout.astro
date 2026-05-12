@@ -18,6 +18,8 @@ export interface Props {
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
+  /* Optional: per-route Service or Article schema to append to JSON-LD graph */
+  extraSchema?: Record<string, any> | Record<string, any>[];
 }
 
 const {
@@ -26,7 +28,8 @@ const {
   canonical = 'https://tamazia.co.uk/',
   ogImage = '/og-default.png',
   noindex = false,
-} = Astro.props;
+  extraSchema = null,
+} = Astro.props as any;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -107,6 +110,13 @@ const jsonLd = {
 // K3 · BreadcrumbList auto-derived from canonical path on non-home routes
 const _path = (canonical || 'https://tamazia.co.uk/').replace('https://tamazia.co.uk', '').replace(/\/$/, '');
 const _segs = _path.split('/').filter(Boolean);
+if (extraSchema) {
+  const items = Array.isArray(extraSchema) ? extraSchema : [extraSchema];
+  for (const item of items) {
+    (jsonLd['@graph'] as any[]).push(item);
+  }
+}
+
 if (_segs.length > 0) {
   (jsonLd['@graph'] as any[]).push({
     '@type': 'BreadcrumbList',

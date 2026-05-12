@@ -854,6 +854,40 @@ const featureIcons: Record<string, string> = {
   .tier-cta:hover .cta-arrow {
     transform: translate(2px, -2px);
   }
+
+  /* Mobile inclusion collapse · at <=640px each rich-feature shows H4 only,
+     paragraph body collapses behind a tap. Toggle handled via :target or
+     a future details/summary refactor. CSS-only first-pass: hide body. */
+  @media (max-width: 640px) {
+    .rich-feature .feature-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 280ms ease;
+    }
+    .rich-feature.expanded .feature-body,
+    .rich-feature:focus-within .feature-body {
+      max-height: 400px;
+      opacity: 1;
+    }
+    .rich-feature .feature-headline {
+      cursor: pointer;
+      position: relative;
+      padding-right: 28px;
+    }
+    .rich-feature .feature-headline::after {
+      content: '';
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      width: 8px; height: 8px;
+      border-right: 1.5px solid var(--gold-text-strong);
+      border-bottom: 1.5px solid var(--gold-text-strong);
+      transform: translateY(-65%) rotate(45deg);
+      transition: transform 240ms ease;
+    }
+    .rich-feature.expanded .feature-headline::after { transform: translateY(-25%) rotate(-135deg); }
+  }
 </style>
 
 <script>

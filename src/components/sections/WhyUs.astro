@@ -314,6 +314,15 @@ const proofStrip = (whyUsContent as any).proofStrip;
   }
 
   .verified-pill {
+    position: relative;
+    padding: 4px 14px;
+    display: inline-block;
+    font-family: var(--ff-body);
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold-text-strong);
+    margin-top: 8px;
     display: inline-block;
     padding: 3px 10px;
     border: 1px solid var(--gold);
@@ -323,7 +332,22 @@ const proofStrip = (whyUsContent as any).proofStrip;
     text-transform: uppercase;
     color: var(--oxblood);
     font-weight: 500;
+  
   }
+  /* bracket frame · corner brackets [ ] around the verified pill */
+  .verified-pill::before,
+  .verified-pill::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 8px;
+    border-color: var(--gold);
+    border-style: solid;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .verified-pill::before { left: 0; border-width: 1px 0 1px 1px; }
+  .verified-pill::after { right: 0; border-width: 1px 1px 1px 0; }
 
   /* Credential strip */
   .credential-strip {

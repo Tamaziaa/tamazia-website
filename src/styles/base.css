@@ -48,7 +48,19 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink);
   letter-spacing: var(--ls-h2);
   line-height: 1.1;
+  /* Editorial typography: balance multi-line headings; auto-hyphenation off */
+  text-wrap: balance;
+  hyphens: manual;
 }
+
+/* Body paragraphs: prefer 'pretty' wrap in Chromium 117+. Falls back gracefully. */
+p, li, blockquote {
+  text-wrap: pretty;
+}
+
+/* Long URLs / regulator codes: allow break anywhere */
+.reg-chip, code, .url-break { overflow-wrap: anywhere; }
+
 
 h1 { font-size: var(--fs-h1); letter-spacing: var(--ls-h1-display); }
 h2 { font-size: var(--fs-h2); }

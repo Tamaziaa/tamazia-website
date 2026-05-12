@@ -980,9 +980,28 @@ const featureIcons: Record<string, string> = {
         const standardGbp = parseInt(priceEl.getAttribute('data-gbp-standard') ?? '0', 10);
         const savesGbp = parseInt(priceEl.getAttribute('data-saves-gbp') ?? '0', 10);
 
-        // Headline price
+        // Headline price · tween between previous and new value over 600ms
         const display = priceEl.querySelector<HTMLElement>('.price-display');
-        if (display) display.textContent = formatPrice(headlineGbp, currency);
+        if (display) {
+          const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (reduce) {
+            display.textContent = formatPrice(headlineGbp, currency);
+          } else {
+            const fromN = parseInt((display.dataset.lastVal || '0'), 10);
+            const toN = headlineGbp * (RATES[currency] || 1);
+            const dur = 600;
+            const start = performance.now();
+            const tick = (now: number) => {
+              const t = Math.min((now - start) / dur, 1);
+              const eased = 1 - Math.pow(1 - t, 4);
+              const v = Math.round(fromN + (toN - fromN) * eased);
+              display.textContent = formatPrice(Math.round(v / (RATES[currency] || 1)), currency);
+              if (t < 1) requestAnimationFrame(tick);
+              else { display.textContent = formatPrice(headlineGbp, currency); display.dataset.lastVal = String(toN); }
+            };
+            requestAnimationFrame(tick);
+          }
+        }
 
         // Strike-through standard rate (only visible when pilot is on)
         const strike = priceEl.querySelector<HTMLElement>('.price-strike');

@@ -1,0 +1,34 @@
+---
+/* Method C · Sentry browser SDK (free tier 5k events/mo)
+   Provide SENTRY_DSN env var to activate. When unset, this is a no-op. */
+const dsn = import.meta.env.SENTRY_DSN || '';
+---
+{dsn && (
+  <script is:inline define:vars={{ dsn }}>
+    {`
+      window.__SentryReady = false;
+      const script = document.createElement('script');
+      script.src = 'https://browser.sentry-cdn.com/8.0.0/bundle.tracing.min.js';
+      script.crossOrigin = 'anonymous';
+      script.async = true;
+      script.onload = () => {
+        if (window.Sentry) {
+          window.Sentry.init({
+            dsn: dsn,
+            tracesSampleRate: 0.1,
+            replaysSessionSampleRate: 0.05,
+            replaysOnErrorSampleRate: 1.0,
+            environment: 'production',
+            beforeSend(event) {
+              // Drop noise: ignore expected 404s
+              if (event.exception?.values?.[0]?.value?.includes('NotFoundError')) return null;
+              return event;
+            },
+          });
+          window.__SentryReady = true;
+        }
+      };
+      document.head.appendChild(script);
+    `}
+  </script>
+)}

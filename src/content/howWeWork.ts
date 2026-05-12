@@ -69,7 +69,7 @@ export const howWeWorkContent = {
           icon: 'chart',
         },
       ],
-      founderLine: "Led by the founder, {{LLM in International Business Law}}, King's College London.",
+      founderLine: "Led by the founder, {{LLM in International Business Law}}, King’s College London.",
     },
     {
       numeral: '#3',

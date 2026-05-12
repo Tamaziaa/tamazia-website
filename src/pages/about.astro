@@ -2,7 +2,7 @@
 // G.2 · About page · /about/
 // JSON-LD: ProfilePage + Person
 // Pull quote: "Ranking is only valuable if it is legal."
-// Credentials: LLM King's College London, CIArb, ABA, Supreme Court of India internship
+// Credentials: LLM King’s College London, CIArb, ABA, Supreme Court of India internship
 // One-sentence LexQuity reference
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -32,7 +32,7 @@ const jsonLd = {
       alumniOf: [
         {
           '@type': 'EducationalOrganization',
-          name: "King's College London",
+          name: "King’s College London",
           url: 'https://www.kcl.ac.uk',
         },
       ],
@@ -69,7 +69,7 @@ const jsonLd = {
 
 <BaseLayout
   title="About · Aman Pareek · Founder, Tamazia"
-  description="Aman Pareek is the founder of Tamazia. LLM in International Business Law, King's College London. Member, Chartered Institute of Arbitrators. Lawyer-led SEO for regulated enterprises."
+  description="Aman Pareek is the founder of Tamazia. LLM in International Business Law, King’s College London. Member, Chartered Institute of Arbitrators. Lawyer-led SEO for regulated enterprises."
   canonical={canonicalUrl}
 >
 <script slot="head" type="application/ld+json" set:html={JSON.stringify({
@@ -80,7 +80,7 @@ const jsonLd = {
   jobTitle: 'Founder, Tamazia',
   url: 'https://tamazia.co.uk/about/',
   image: 'https://tamazia.co.uk/og-default.png',
-  alumniOf: { '@type': 'EducationalOrganization', name: "King's College London", url: 'https://www.kcl.ac.uk/' },
+  alumniOf: { '@type': 'EducationalOrganization', name: "King’s College London", url: 'https://www.kcl.ac.uk/' },
   knowsAbout: ['International arbitration', 'Business law', 'Search engine optimisation', 'Regulatory compliance', 'Content marketing'],
   memberOf: [{ '@type': 'Organization', name: 'Chartered Institute of Arbitrators' }],
   worksFor: { '@id': 'https://tamazia.co.uk/#organization' }
@@ -106,7 +106,7 @@ const jsonLd = {
           <h1 id="about-h1" class="about-h1">Aman Pareek</h1>
           <p class="about-title-line">Founder, Tamazia</p>
           <p class="about-credentials-line">
-            LLM, International Business Law · King's College London<br />
+            LLM, International Business Law · King’s College London<br />
             Member, Chartered Institute of Arbitrators<br />
             <!-- ABA membership line removed Phase 10 pending verification -->
           </p>
@@ -130,7 +130,7 @@ const jsonLd = {
             Tamazia was built on a specific observation: regulated enterprises face a compliance gap that generic SEO agencies cannot close. Every piece of content, every service page, every case study, every blog post, touches a regulatory framework. Most agencies treat compliance as a constraint. Tamazia treats it as the methodology.
           </p>
           <p>
-            The firm is led by a founder with an LLM in International Business Law from King's College London, with a specialism in business law and international arbitration. Membership of the Chartered Institute of Arbitrators provides access to institutional frameworks and practitioner networks that inform how Tamazia approaches regulated content.
+            The firm is led by a founder with an LLM in International Business Law from King’s College London, with a specialism in business law and international arbitration. Membership of the Chartered Institute of Arbitrators provides access to institutional frameworks and practitioner networks that inform how Tamazia approaches regulated content.
           </p>
           <p>
             Earlier exposure to the Supreme Court of India's constitutional chambers, and work across ICC and LCIA arbitration proceedings, established the discipline that underpins Tamazia's compliance review process: the same rigour applied to a legal argument applies to a published webpage. What is written in public becomes the record.
@@ -149,7 +149,7 @@ const jsonLd = {
         <ul class="credentials-list" role="list">
           <li class="credential-item">
             <span class="credential-label">Education</span>
-            <span class="credential-value">LLM, International Business Law · King's College London</span>
+            <span class="credential-value">LLM, International Business Law · King’s College London</span>
           </li>
           <li class="credential-item">
             <span class="credential-label">Specialism</span>

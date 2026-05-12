@@ -33,10 +33,10 @@ export const heroContent = {
 
   // Subhead (above H1). Verbatim live site. Restored — was missing from prior rebuild.
   subHeadline:
-    "Led by a founder with an {{LLM in International Business Law}}, King's College London. Compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
+    "Led by a founder with an {{LLM in International Business Law}}, King’s College London. Compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
 
   // Positioning line — restored verbatim.
-  positioningLine: "Your SEO agency doesn't have a {{lawyer}}. Ours is run by {{one}}.",
+  positioningLine: "Your SEO agency doesn’t have a {{lawyer}}. Ours is run by {{one}}.",
 
   // Pull quote (closing line above client ribbon). Verbatim.
   pullQuote: 'Ranking is only valuable if it is {{legal}}.',
@@ -60,7 +60,7 @@ export const heroContent = {
     numeral: 'IV.',
     label: 'The Practice',
     title: 'Led by a founder. Run to a standard.',
-    body: "An {{LLM in International Business Law}}, King's College London, at the head of a practice delivering compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
+    body: "An {{LLM in International Business Law}}, King’s College London, at the head of a practice delivering compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
     credentials: [
       "KING'S COLLEGE LONDON · LLM INTERNATIONAL BUSINESS LAW",
       'CHARTERED INSTITUTE OF ARBITRATORS',
@@ -125,7 +125,7 @@ export const heroContent = {
   signature: {
     vettedBy: 'Vetted by',
     name: 'Aman Pareek',
-    caption: ['Founder', "LLM, King's College London"],
+    caption: ['Founder', "LLM, King’s College London"],
   },
 };
 

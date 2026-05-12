@@ -133,7 +133,7 @@ For this group, the saved commission load against the campaign cost is the simpl
 
 For a property at 70% occupancy doing 100 rooms, a 10% shift from OTA to direct saves £50,000 to £80,000 annually. For a multi-property group, the saving scales linearly. The largest hospitality groups in our portfolio are running this displacement at a £6M to £12M annual recovery against the OTA commission line.
 
-If you are paying OTA commission, you are funding your competitor's marketing. The structural fix is not a discount strategy or a loyalty programme. It is direct search visibility, built once, sustained for compounding return.`,
+If you are paying OTA commission, you are funding your competitor’s marketing. The structural fix is not a discount strategy or a loyalty programme. It is direct search visibility, built once, sustained for compounding return.`,
   },
   { slug: 'booking-com-2026-economics',     title: "Booking.com's 2026 Commission Structure: The Real Economics at 70% Occupancy",   sector: 'Hotels and Hospitality', sectorSlug: 'hotels', regulator: 'Booking economics', status: 'in-preparation', excerpt: 'A unit-economics breakdown of OTA commission for a 100-room property.' },
   { slug: 'gbp-hotel-portfolio',            title: 'Google Business Profile for Hotel Groups: One Property Cap or Portfolio?',         sector: 'Hotels and Hospitality', sectorSlug: 'hotels', regulator: 'Google GBP policy',  status: 'in-preparation', excerpt: 'Multi-property GBP architecture without triggering Google policy violations.' },

@@ -42,10 +42,10 @@ export const caseStudiesContent = {
         'A nationally recognised hotel group was paying Booking.com and Expedia 15 to 25% of every reservation. The guests were theirs. The revenue was not.',
         'We built direct search visibility across every property simultaneously. Organic search became the primary booking channel within a single six-month campaign.',
       ],
-      closingVerdict: "If you are paying OTA commission, you are funding your competitor's marketing.",
+      closingVerdict: "If you are paying OTA commission, you are funding your competitor’s marketing.",
 
       // Legacy schema (consumed by current component)
-      pullQuote: "If you are paying OTA commission, you are funding your competitor's marketing.",
+      pullQuote: "If you are paying OTA commission, you are funding your competitor’s marketing.",
       body: 'A nationally recognised hotel group was paying Booking.com and Expedia 15 to 25% of every reservation. The guests were theirs. The revenue was not. We built direct search visibility across every property simultaneously. Organic search became the primary booking channel within a single six-month campaign.',
       stat: '840%',
       statCaption: 'ORGANIC USER GROWTH · SIX-MONTH CAMPAIGN · GA4 VERIFIED',

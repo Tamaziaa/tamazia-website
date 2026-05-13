@@ -322,12 +322,14 @@ if (_segs.length > 0) {
         bottom: 0;
         left: 0;
         right: 0;
-        z-index: 1000;
+        width: 100%;
+        box-sizing: border-box;
+        z-index: 9999;
         background: linear-gradient(180deg, #2A0C14 0%, #1F0810 100%);
         color: var(--pearl);
-        padding: 14px 24px;
+        padding: 10px 20px;
         display: flex;
-        gap: 18px;
+        gap: 12px;
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
@@ -355,9 +357,11 @@ if (_segs.length > 0) {
         flex-wrap: wrap;
       }
       .cookie-btn {
+        position: relative;
+        z-index: 1;
         border: 1px solid var(--gold);
         font-family: inherit;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 600;
         letter-spacing: 0.18em;
         text-transform: uppercase;
@@ -365,9 +369,8 @@ if (_segs.length > 0) {
         cursor: pointer;
         transition: background 240ms ease, color 240ms ease, border-color 240ms ease;
         /* Round-12 · equal visual weight for Accept and Reject; both ≥44px tap target */
-        padding: 14px 20px;
-        min-height: 44px;
-        min-width: 168px;
+        padding: 8px 16px;
+        min-height: 36px;
       }
       .cookie-btn--accept {
         background: var(--gold);
@@ -385,7 +388,7 @@ if (_segs.length > 0) {
       .cookie-btn:focus-visible { outline: 2px solid var(--gold-warm); outline-offset: 2px; }
       @media (max-width: 640px) {
         .cookie-strip {
-          font-size: 11px; padding: 14px 16px 16px; gap: 12px;
+          font-size: 11px; padding: 8px 14px; gap: 12px;
           flex-direction: column;
           z-index: 2000;
           /* Float above the sticky bottom CTA bar so taps actually reach the buttons. */
@@ -395,7 +398,7 @@ if (_segs.length > 0) {
         .cookie-text { text-align: center; }
         .cookie-actions { width: 100%; justify-content: stretch; }
         .cookie-btn {
-          flex: 1 1 auto; min-width: 0; padding: 14px 14px; min-height: 48px;
+          flex: 1 1 auto; min-width: 0; padding: 10px 12px; min-height: 48px;
           border-radius: 999px;
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;

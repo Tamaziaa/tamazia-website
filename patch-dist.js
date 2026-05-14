@@ -430,17 +430,17 @@ try {
   results.push({ ok: true });
 }
 
-// Gate 35 · footer legal-entity rewritten · Tamazia Pvt Ltd (founder decision 2026-05-05)
+// Gate 35 · footer legal-entity rewritten · Tamazia Ltd (founder decision 2026-05-05)
 try {
   const homeHtml = readFileSync(INDEX_HTML, 'utf8');
-  if (!/Tamazia Pvt Ltd/.test(homeHtml)) {
-    console.error('[patch-dist]   FAIL 35. footer missing Tamazia Pvt Ltd entity');
+  if (!/Tamazia Ltd/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 35. footer missing Tamazia Ltd entity');
     results.push({ ok: false });
   } else if (/sole proprietor/i.test(homeHtml)) {
     console.error('[patch-dist]   FAIL 35. footer still references sole proprietor');
     results.push({ ok: false });
   } else {
-    console.log('[patch-dist]   PASS 35. footer legal-entity · Tamazia Pvt Ltd');
+    console.log('[patch-dist]   PASS 35. footer legal-entity · Tamazia Ltd');
     results.push({ ok: true });
   }
 } catch (e) {
@@ -466,17 +466,17 @@ try {
 
 // Phase 8 gates · 37-50
 
-// Gate 37 · Tamazia Pvt Ltd entity restored everywhere (no sole proprietor language)
+// Gate 37 · Tamazia Ltd entity restored everywhere (no sole proprietor language)
 try {
   const homeHtml = readFileSync(INDEX_HTML, 'utf8');
   if (/sole proprietor/i.test(homeHtml)) {
     console.error('[patch-dist]   FAIL 37. footer still mentions sole proprietor');
     results.push({ ok: false });
-  } else if (!/Tamazia Pvt Ltd/.test(homeHtml)) {
-    console.error('[patch-dist]   FAIL 37. footer missing Tamazia Pvt Ltd entity');
+  } else if (!/Tamazia Ltd/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 37. footer missing Tamazia Ltd entity');
     results.push({ ok: false });
   } else {
-    console.log('[patch-dist]   PASS 37. footer · Tamazia Pvt Ltd entity (no sole proprietor)');
+    console.log('[patch-dist]   PASS 37. footer · Tamazia Ltd entity (no sole proprietor)');
     results.push({ ok: true });
   }
 } catch (e) { console.log('[patch-dist]   WARN 37. ' + e.message); results.push({ ok: true }); }
@@ -615,7 +615,7 @@ try {
   }
 } catch (e) { console.log('[patch-dist]   WARN 46. ' + e.message); results.push({ ok: true }); }
 
-// Gate 47 · footer has DPO + Article 27 + Tamazia Pvt Ltd ROW
+// Gate 47 · footer has DPO + Article 27 + Tamazia Ltd ROW
 try {
   const homeHtml = readFileSync(INDEX_HTML, 'utf8');
   if (!/dpo@tamazia\.co\.uk/.test(homeHtml)) {
@@ -625,7 +625,7 @@ try {
     console.error('[patch-dist]   FAIL 47. footer missing Article 27 disclosure');
     results.push({ ok: false });
   } else {
-    console.log('[patch-dist]   PASS 47. footer · DPO + Article 27 + Tamazia Pvt Ltd');
+    console.log('[patch-dist]   PASS 47. footer · DPO + Article 27 + Tamazia Ltd');
     results.push({ ok: true });
   }
 } catch (e) { console.log('[patch-dist]   WARN 47. ' + e.message); results.push({ ok: true }); }
@@ -906,11 +906,11 @@ try {
 // Gate 69 · README at repo root references 50 gates + 16 functions + 53 pages
 try {
   const r = readFileSync(join(ROOT, 'README.md'), 'utf8');
-  if (!r.includes('Tamazia Pvt Ltd') || !(r.includes('110 patch-dist gates') || r.includes('50 patch-dist gates'))) {
-    console.error('[patch-dist]   FAIL 69. README missing Tamazia Pvt Ltd or 50-gate state');
+  if (!r.includes('Tamazia Ltd') || !(r.includes('110 patch-dist gates') || r.includes('50 patch-dist gates'))) {
+    console.error('[patch-dist]   FAIL 69. README missing Tamazia Ltd or 50-gate state');
     results.push({ ok: false });
   } else {
-    console.log('[patch-dist]   PASS 69. README · Tamazia Pvt Ltd + 50-gate state');
+    console.log('[patch-dist]   PASS 69. README · Tamazia Ltd + 50-gate state');
     results.push({ ok: true });
   }
 } catch (e) { results.push({ ok: true }); }
@@ -1052,21 +1052,21 @@ try {
   }
 } catch (e) { results.push({ ok: true }); }
 
-// Gate 79 · Tamazia Pvt Ltd in 5 statutory pages
+// Gate 79 · Tamazia Ltd in 5 statutory pages
 try {
   const pages = ['complaints', 'modern-slavery-statement', 'acceptable-use', 'security-policy', 'security-acknowledgments'];
   let allOk = true;
   for (const p of pages) {
     const html = readFileSync(join(DIST_DIR, p, 'index.html'), 'utf8');
-    if (!html.includes('Tamazia Pvt Ltd')) {
-      console.error('[patch-dist]   FAIL 79. /' + p + '/ missing Tamazia Pvt Ltd entity');
+    if (!html.includes('Tamazia Ltd')) {
+      console.error('[patch-dist]   FAIL 79. /' + p + '/ missing Tamazia Ltd entity');
       allOk = false;
       break;
     }
   }
   if (!allOk) results.push({ ok: false });
   else {
-    console.log('[patch-dist]   PASS 79. 5 statutory pages · Tamazia Pvt Ltd entity disclosure');
+    console.log('[patch-dist]   PASS 79. 5 statutory pages · Tamazia Ltd entity disclosure');
     results.push({ ok: true });
   }
 } catch (e) { results.push({ ok: true }); }
@@ -1525,13 +1525,13 @@ try {
   else { console.log('[patch-dist]   PASS 120. cal-webhook · 4 new lifecycle handlers (OOO + transcription + no-answer)'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
-// Gate 121 · DSAR endpoints email subjects · Tamazia Pvt Ltd branded
+// Gate 121 · DSAR endpoints email subjects · Tamazia Ltd branded
 try {
   const d = readFileSync(join(ROOT, 'functions', 'api', 'dsar.js'), 'utf8');
-  if (!d.includes("Data access request · Tamazia Pvt Ltd")) {
-    console.error('[patch-dist]   FAIL 121. dsar.js subject not Tamazia Pvt Ltd branded');
+  if (!d.includes("Data access request · Tamazia Ltd")) {
+    console.error('[patch-dist]   FAIL 121. dsar.js subject not Tamazia Ltd branded');
     results.push({ ok: false });
-  } else { console.log('[patch-dist]   PASS 121. DSAR/erase/portability email subjects · Tamazia Pvt Ltd'); results.push({ ok: true }); }
+  } else { console.log('[patch-dist]   PASS 121. DSAR/erase/portability email subjects · Tamazia Ltd'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
 // Gate 122 · CSP nonce middleware shipped
@@ -1555,10 +1555,10 @@ try {
     results.push({ ok: false });
   } else {
     const m = JSON.parse(readFileSync(join(ROOT, 'public', 'site.webmanifest'), 'utf8'));
-    if (m.name !== 'Tamazia Pvt Ltd') {
-      console.error('[patch-dist]   FAIL 123. manifest.name not Tamazia Pvt Ltd');
+    if (m.name !== 'Tamazia Ltd') {
+      console.error('[patch-dist]   FAIL 123. manifest.name not Tamazia Ltd');
       results.push({ ok: false });
-    } else { console.log('[patch-dist]   PASS 123. site.webmanifest · Tamazia Pvt Ltd PWA'); results.push({ ok: true }); }
+    } else { console.log('[patch-dist]   PASS 123. site.webmanifest · Tamazia Ltd PWA'); results.push({ ok: true }); }
   }
 } catch (e) { results.push({ ok: true }); }
 

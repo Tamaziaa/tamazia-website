@@ -31,7 +31,7 @@ export const onRequestPost = async ({ request, env }) => {
         from: env.RESEND_FROM_ALERT || 'Tamazia DPO <dpo@tamazia.in>',
         to: [email],
         reply_to: 'dpo@tamazia.co.uk',
-        subject: 'Data portability request · Tamazia Pvt Ltd',
+        subject: 'Data portability request · Tamazia Ltd',
         html: `<p>Click within 7 days to receive a structured machine-readable export under UK GDPR Article 20: <a href="${link}">${link}</a></p>`
       })
     });

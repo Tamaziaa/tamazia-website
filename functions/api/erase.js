@@ -31,7 +31,7 @@ export const onRequestPost = async ({ request, env }) => {
         from: env.RESEND_FROM_ALERT || 'Tamazia DPO <dpo@tamazia.in>',
         to: [email],
         reply_to: 'dpo@tamazia.co.uk',
-        subject: 'Data erasure request · Tamazia Pvt Ltd',
+        subject: 'Data erasure request · Tamazia Ltd',
         html: `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
           <p>Hello,</p>
           <p>Tamazia received your data erasure request under UK GDPR Article 17. To complete the request, click the link below within seven days. <strong>This action is irreversible.</strong></p>
@@ -134,15 +134,15 @@ export const onRequestGet = async ({ request, env }) => {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: env.RESEND_FROM_ALERT || 'Tamazia Pvt Ltd · DPO <dpo@tamazia.in>',
+        from: env.RESEND_FROM_ALERT || 'Tamazia Ltd · DPO <dpo@tamazia.in>',
         to: [email],
         reply_to: 'dpo@tamazia.co.uk',
-        subject: 'Erasure complete · Tamazia Pvt Ltd',
+        subject: 'Erasure complete · Tamazia Ltd',
         html: `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
           <p>Hello,</p>
-          <p>Your erasure request under UK GDPR Article 17 is complete. Tamazia Pvt Ltd has deleted ${deleted} records associated with your email address.</p>
-          <p>Tamazia Pvt Ltd retains an audit log of this erasure (without your email content) for seven years to evidence compliance with the regulation.</p>
-          <p>Tamazia Pvt Ltd · Data Protection Office<br>dpo@tamazia.co.uk</p>
+          <p>Your erasure request under UK GDPR Article 17 is complete. Tamazia Ltd has deleted ${deleted} records associated with your email address.</p>
+          <p>Tamazia Ltd retains an audit log of this erasure (without your email content) for seven years to evidence compliance with the regulation.</p>
+          <p>Tamazia Ltd · Data Protection Office<br>dpo@tamazia.co.uk</p>
         </div>`
       })
     }).then(r => {

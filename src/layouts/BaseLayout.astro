@@ -221,7 +221,7 @@ if (_segs.length > 0) {
 }
 @media (forced-colors: active) {
   /* Windows High Contrast Mode · let system colours through */
-  button, .cookie-btn, .contact-form button { border: 2px solid ButtonText; }
+  button, .contact-form button { border: 2px solid ButtonText; }
 }
 :focus-visible {
   outline: 2px solid #C9A772;
@@ -303,196 +303,8 @@ if (_segs.length > 0) {
     <a href="#main" class="skip-link">Skip to main content</a>
     <slot />
 
-    {/* Cookie consent strip — UK GDPR + EU PECR */}
-    <div id="cookie-strip" class="cookie-strip" role="region" aria-label="Cookie consent" hidden>
-      <p class="cookie-text">
-        We use only essential cookies for site functionality. No third-party tracking. No marketing pixels.
-        Read the <a href="/cookie-policy/" class="cookie-link">cookie policy</a> or the
-        <a href="/privacy-notice/" class="cookie-link">privacy notice</a>.
-      </p>
-      <div class="cookie-actions">
-        <button type="button" class="cookie-btn cookie-btn--reject" id="cookie-reject">Reject non-essential</button>
-        <button type="button" class="cookie-btn cookie-btn--accept" id="cookie-accept">Accept all</button>
-      </div>
-    </div>
-
-    <style>
-      .cookie-strip {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        box-sizing: border-box;
-        z-index: 9999;
-        background: linear-gradient(180deg, #2A0C14 0%, #1F0810 100%);
-        color: var(--pearl);
-        padding: 10px 20px;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        border-top: 1px solid #C9A772;
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: 12px;
-        letter-spacing: 0.04em;
-        animation: cookie-up 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-      @keyframes cookie-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
-      .cookie-text { margin: 0; max-width: 720px; line-height: 1.5; }
-      .cookie-link {
-        color: #C9A772;
-        text-decoration: underline;
-        margin-left: 6px;
-        padding: 6px 4px;
-        display: inline-block;
-        line-height: 1.6;
-      }
-      .cookie-actions {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-      .cookie-btn {
-        position: relative;
-        z-index: 10000;
-        border: 1px solid var(--gold);
-        font-family: inherit;
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        border-radius: 2px;
-        cursor: pointer;
-        transition: background 240ms ease, color 240ms ease, border-color 240ms ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        pointer-events: auto !important;
-        user-select: none;
-        -webkit-user-select: none;
-        padding: 8px 16px;
-        min-height: 36px;
-      }
-      .cookie-btn--accept {
-        background: var(--gold);
-        color: var(--oxblood-ink);
-      }
-      .cookie-btn--accept:hover { background: var(--gold-warm); }
-      .cookie-btn--reject {
-        background: transparent;
-        color: var(--pearl);
-      }
-      .cookie-btn--reject:hover {
-        background: rgba(232, 228, 220, 0.1);
-        border-color: var(--gold-warm);
-      }
-      .cookie-btn:focus-visible { outline: 2px solid var(--gold-warm); outline-offset: 2px; }
-      @media (max-width: 640px) {
-        .cookie-strip {
-          font-size: 11px; padding: 8px 14px; gap: 12px;
-          flex-direction: column;
-          z-index: 2000;
-          bottom: 64px;
-          border-bottom: 1px solid var(--gold-hairline);
-        }
-        .cookie-text { text-align: center; }
-        .cookie-actions { width: 100%; justify-content: stretch; }
-        .cookie-btn {
-          flex: 1 1 auto; min-width: 0; padding: 10px 12px; min-height: 48px;
-          border-radius: 999px;
-          touch-action: manipulation;
-          -webkit-tap-highlight-color: transparent;
-          pointer-events: auto !important;
-          font-size: 12px;
-        }
-      }
-    </style>
-
     <script is:inline data-cfasync="false">
-      (function() {
-        var KEY = 'tamazia-cookie-consent';
-        var TTMS = 13 * 30 * 86400000; // 13 months in ms
-
-        // --- Check existing valid consent ---
-        try {
-          var raw = localStorage.getItem(KEY);
-          if (raw) {
-            // v2 JSON schema: { v:2, analytics:bool, ad:false, ts:unixMs }
-            var c = null;
-            try { c = JSON.parse(raw); } catch(_) {}
-            if (c && c.v === 2 && typeof c.analytics === 'boolean' && (Date.now() - c.ts) < TTMS) {
-              return; // valid — do not show banner
-            }
-            // Legacy string migration
-            if (raw === 'granted' || raw === 'denied') {
-              try { localStorage.setItem(KEY, JSON.stringify({ v: 2, analytics: raw === 'granted', ad: false, ts: Date.now() })); } catch(_) {}
-              return;
-            }
-          }
-        } catch(_) {}
-
-        // --- QA override: ?force-reconsent=1 re-shows the banner ---
-        try { if (location.search.indexOf('force-reconsent=1') !== -1) localStorage.removeItem(KEY); } catch(_) {}
-
-        // --- Dismiss: save consent, update Google, hide banner ---
-        function dismiss(analytics) {
-          var strip = document.getElementById('cookie-strip');
-          // Idempotency guard: if strip is already hidden, do nothing
-          if (!strip || strip.hasAttribute('hidden')) return;
-          // Hide first so rapid taps are safe
-          strip.style.display = 'none';
-          strip.setAttribute('hidden', '');
-          strip.setAttribute('aria-hidden', 'true');
-          // Persist consent record
-          try { localStorage.setItem(KEY, JSON.stringify({ v: 2, analytics: analytics, ad: false, ts: Date.now() })); } catch(_) {}
-          // Update Google Consent Mode v2 if gtag has loaded
-          try {
-            if (typeof window.gtag === 'function') {
-              window.gtag('consent', 'update', {
-                analytics_storage: analytics ? 'granted' : 'denied',
-                ad_storage: 'denied',
-                ad_user_data: 'denied',
-                ad_personalization: 'denied'
-              });
-            }
-          } catch(_) {}
-          // Notify other listeners
-          try { window.dispatchEvent(new CustomEvent('tamazia:consent', { detail: { analytics: analytics } })); } catch(_) {}
-        }
-
-        // --- Show banner ---
-        function showStrip() {
-          var strip = document.getElementById('cookie-strip');
-          if (!strip) return;
-          strip.removeAttribute('hidden');
-          strip.removeAttribute('aria-hidden');
-          strip.style.display = 'flex';
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', showStrip);
-        } else {
-          showStrip();
-        }
-
-        // --- Capture-phase click delegation ---
-        // Fires before any child handler, immune to Rocket Loader timing.
-        // Walks up DOM to handle any nested child elements inside the button.
-        document.addEventListener('click', function(ev) {
-          var t = ev.target;
-          while (t && t !== document) {
-            if (t.id === 'cookie-accept') { dismiss(true); return; }
-            if (t.id === 'cookie-reject') { dismiss(false); return; }
-            t = t.parentNode;
-          }
-        }, true);
-
-      }());
-
-      /* Safety net: reveal scroll-triggered elements 4s after load in case IntersectionObserver
-         never fired (deep-link, JS race, unsupported browser) */
+      /* Safety net: reveal scroll-triggered elements 4s after load */
       window.addEventListener('load', function() {
         setTimeout(function() {
           var els = document.querySelectorAll(
@@ -505,6 +317,7 @@ if (_segs.length > 0) {
         }, 4000);
       });
     </script>
+
 
   <BodyAnalytics cfBeacon={cfBeacon} ga4Id={ga4Id} />
 

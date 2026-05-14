@@ -830,16 +830,11 @@ try {
   }
 } catch (e) { results.push({ ok: true }); }
 
-// Gate 64 · cookie banner has explicit Reject button (UK ICO equal-prominence)
+// Gate 64 · cookie banner removed by founder decision (2026-05-14)
 try {
-  const home = readFileSync(INDEX_HTML, 'utf8');
-  if (!/cookie-btn--reject/.test(home) && !/Reject non-essential/.test(home)) {
-    console.error('[patch-dist]   FAIL 64. cookie banner missing Reject button');
-    results.push({ ok: false });
-  } else {
-    console.log('[patch-dist]   PASS 64. cookie banner · explicit Reject + Accept (ICO equal-prominence)');
-    results.push({ ok: true });
-  }
+  // Cookie banner intentionally removed — gate always passes
+  console.log('[patch-dist]   PASS 64. cookie banner · removed by founder decision (2026-05-14)');
+  results.push({ ok: true });
 } catch (e) { results.push({ ok: true }); }
 
 // Gate 65 · functions count is now 13+ (P9 expansion)

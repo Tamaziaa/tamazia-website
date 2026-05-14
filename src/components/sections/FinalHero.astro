@@ -8,16 +8,15 @@ const frameworks = (heroContent as any).regulationFrameworks || [];
 const ribbonDouble = [...frameworks, ...frameworks];
 ---
 
-<section class="tz-mhero" aria-label="Tamazia sector compass hero">
-
-  <!-- Laws ribbon - right side vertical marquee -->
-  <div class="tz-laws-ribbon" aria-hidden="true">
-    <div class="tz-laws-ribbon-track">
-      {ribbonDouble.map((reg: string) => (
-        <span>{reg}</span>
-      ))}
-    </div>
+<div class="tz-hero-wrap">
+<aside class="tz-laws-ribbon" aria-hidden="true">
+  <div class="tz-laws-ribbon-track">
+    {ribbonDouble.map((reg: string) => (
+      <span>{reg}</span>
+    ))}
   </div>
+</aside>
+<section class="tz-mhero" aria-label="Tamazia sector compass hero">
 
   <div class="tz-rail" data-reveal="fade">
     <span>§ I</span>
@@ -173,6 +172,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
   </div>
 
 </section>
+</div><!-- /.tz-hero-wrap -->
 
 <style is:global>
   /* ===== FinalHero - Sextant component ===== */
@@ -660,17 +660,24 @@ const ribbonDouble = [...frameworks, ...frameworks];
     #tz-fine { font-size: 7.5px; }
   }
 
+  /* Wrapper: full-width, positions ribbon outside hero box */
+  .tz-hero-wrap {
+    position: relative;
+    width: 100%;
+  }
+
   /* Laws ribbon - right side vertical marquee (desktop only) */
   .tz-laws-ribbon {
     display: none;
     position: absolute;
-    right: 0;
     top: 0;
     bottom: 0;
-    width: 28px;
+    width: 26px;
     overflow: hidden;
-    border-left: 1px solid rgba(201, 167, 114, 0.18);
-    background: linear-gradient(180deg, transparent 0%, rgba(201,167,114,0.03) 50%, transparent 100%);
+    border-left: 1px solid rgba(201, 167, 114, 0.22);
+    background: linear-gradient(180deg, transparent 0%, rgba(201,167,114,0.04) 50%, transparent 100%);
+    /* Sit just outside hero right edge: hero is max-width 860px at 1024+, centered */
+    left: calc(50% + 430px + 2px);
   }
   .tz-laws-ribbon-track {
     display: flex;
@@ -705,8 +712,11 @@ const ribbonDouble = [...frameworks, ...frameworks];
     to   { transform: rotate(180deg) translateY(-50%); }
   }
   @media (min-width: 1024px) {
-    .tz-mhero { position: relative; }
     .tz-laws-ribbon { display: block; }
+  }
+  @media (min-width: 1280px) {
+    /* hero max-width 980px at 1280+ */
+    .tz-laws-ribbon { left: calc(50% + 490px + 2px); }
   }
   @media (prefers-reduced-motion: reduce) {
     .tz-laws-ribbon-track { animation-duration: 360s; }
@@ -732,7 +742,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
       { name: "Professional", abbr: "PRO", laws: ["FRC ES", "ABA MR 7.1", "ICAEW CoE", "LCIA Art.14"],       fine: 'FRC · £21M · audit independence · <em>2024</em>' }
     ];
     const N = SECTORS.length;
-    const STEP_MS = 4000;
+    const STEP_MS = 2000;
     const SWAP_MS = 240;
 
     const root = document.querySelector('.tz-mhero');
@@ -824,7 +834,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
       return { start, stop };
     })();
 
-    // ---- 4. Pause cycle when offscreen / on hover ----
+    // ---- 4. Auto-start when in view, no hover pause ----
     (() => {
       const panel = root.querySelector(".tz-panel");
       if (!panel) return;
@@ -832,10 +842,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
       const io = new IntersectionObserver(([e]) => {
         inView = e.isIntersecting;
         inView ? Compass.start() : Compass.stop();
-      }, { threshold: 0.25 });
+      }, { threshold: 0.15 });
       io.observe(panel);
-      panel.addEventListener("mouseenter", () => Compass.stop());
-      panel.addEventListener("mouseleave", () => { if (inView) Compass.start(); });
+      // Tab hide/show
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) Compass.stop();
         else if (inView) Compass.start();

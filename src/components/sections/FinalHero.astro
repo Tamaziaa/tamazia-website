@@ -714,15 +714,18 @@ const ribbonDouble = [...frameworks, ...frameworks];
     font-style: italic;
     font-weight: 600;
   }
-  /* Show at 1180px: (1180-860)/2=160px gutter, ribbon 160px → exact fit */
+  /* Ribbon breakpoints — wider at large viewports so long law names aren't clipped */
   @media (min-width: 1180px) {
     .tz-laws-ribbon { display: block; width: 160px; }
   }
   @media (min-width: 1280px) {
-    .tz-laws-ribbon { width: 200px; }
+    .tz-laws-ribbon { width: 220px; }
   }
   @media (min-width: 1440px) {
-    .tz-laws-ribbon { width: 220px; }
+    .tz-laws-ribbon { width: 280px; }
+  }
+  @media (min-width: 1600px) {
+    .tz-laws-ribbon { width: 340px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .tz-laws-ribbon-track { animation-duration: 480s; }
@@ -792,8 +795,29 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-founder-cta-row .tz-cta-arr {
     align-self: center;
   }
+  /* Mobile: stack founder + CTA vertically at ≤600px so CTA isn't oversized */
+  @media (max-width: 600px) {
+    .tz-founder-cta-row {
+      flex-direction: column;
+      padding: 12px 16px 6px;
+      gap: 8px;
+    }
+    .tz-founder-cta-row .tz-founder { flex: none; }
+    .tz-founder-cta-row .tz-cta-wrap {
+      flex: none;
+      padding: 0;
+    }
+    .tz-founder-cta-row .tz-cta-wrap .tz-cta {
+      font-size: 10px;
+      padding: 12px 16px;
+      letter-spacing: 0.12em;
+      border-radius: 10px;
+      gap: 8px;
+      min-height: 48px;
+    }
+  }
   @media (max-width: 380px) {
-    .tz-founder-cta-row { flex-direction: column; padding: 12px 16px 4px; }
+    .tz-founder-cta-row { padding: 10px 14px 4px; }
   }
   @media (min-width: 1024px) {
     .tz-founder-cta-row { padding: 16px 28px 8px; gap: 14px; }

@@ -6,7 +6,7 @@ export const footerContent = {
 
   // Live site uses "International presence" label with locations + Worldwide
   presenceLabel: 'International presence',
-  locations: ['London', 'Dubai', 'New York', 'EU', 'Worldwide'],
+  locations: ['London', 'Dubai', 'New York', 'EU', 'orldwide'],
 
   // Verbatim credentials line from live site footer
   // Phase 10 founder decision · ABA line removed pending verification (credibility risk)
@@ -53,11 +53,11 @@ export const footerContent = {
   // Companies Act 2006 s.82 + Companies (Trading Disclosures) Regs 2008 compliance
   // Plus voluntary identity disclosure for investor and client trust signals
   legalEntity: {
-    name: 'Tamazia Pvt Ltd',
-    registeredOffice: 'Mumbai, Maharashtra, India',
-    cin: 'Indian private limited company',
+    name: 'Tamazia Ltd',
+    registeredOffice: 'Registered in England and Wales',
+    cin: 'Registration in progress',
     contactEmail: 'founder@tamazia.co.uk',
-    dataController: 'Tamazia Pvt Ltd',
+    dataController: 'Tamazia Ltd',
     dpoContact: 'dpo@tamazia.co.uk',
     icoRegistration: 'Article 27 UK Representative · appointment in progress',
     dataProtectionNoticeHref: '/legal/data-protection/',

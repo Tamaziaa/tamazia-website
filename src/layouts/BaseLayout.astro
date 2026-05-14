@@ -368,6 +368,8 @@ if (_segs.length > 0) {
         border-radius: 2px;
         cursor: pointer;
         transition: background 240ms ease, color 240ms ease, border-color 240ms ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
         /* Round-12 · equal visual weight for Accept and Reject; both ≥44px tap target */
         padding: 8px 16px;
         min-height: 36px;
@@ -423,8 +425,7 @@ if (_segs.length > 0) {
         // { v: 2, analytics: boolean, ad: false, ts: <unix-ms> }
         // Sliding 13-month expiry per ICO guidance triggers re-prompt.
         // Advertising consent stays denied permanently per founder decision.
-        window.__tamaziaCookieDismiss = function(decision, ev) {
-          if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(_){} }
+        window.__tamaziaCookieDismiss = function(decision) {
           var analytics = decision === 'granted';
           var record = { v: 2, analytics: analytics, ad: false, ts: Date.now() };
           try { localStorage.setItem(KEY, JSON.stringify(record)); } catch(_){}
@@ -492,14 +493,9 @@ if (_segs.length > 0) {
           var el = document.getElementById(id);
           if (!el || el.__tamaziaBound) return;
           el.__tamaziaBound = true;
-          var handler = function(ev) {
-            try { window.__tamaziaCookieDismiss(decision, ev); }
-            catch(_) {}
-          };
-          el.addEventListener('click', handler, { passive: false });
-          // Mobile fix: pointerdown captures the tap before any 300ms click-delay or overlay interception.
-          el.addEventListener('pointerdown', handler, { passive: false });
-          el.addEventListener('touchend', function(ev){ try{ ev.preventDefault(); handler(ev); }catch(_){} }, { passive: false });
+          el.addEventListener('click', function() {
+            try { window.__tamaziaCookieDismiss(decision); } catch(_) {}
+          });
         }
         function wireCookieButtons() {
           bindCookieHandler('cookie-accept', 'granted');

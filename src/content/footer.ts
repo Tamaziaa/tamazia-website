@@ -73,8 +73,7 @@ export const footerContent = {
   // Legacy field current Footer.astro reads
   // Phase B: order LLM first, then CIArb, then ABA. Partner badges removed until verification confirmed (I.31).
   credentials: [
-    "LLM · KING'S COLLEGE LONDON",
-    'MEMBER, CHARTERED INSTITUTE OF ARBITRATORS',
-    // ABA membership line removed Phase 10 pending verification
+    'GOOGLE PARTNER',
+    'META BUSINESS PARTNER',
   ],
 };

@@ -144,20 +144,10 @@ const ribbonDouble = [...frameworks, ...frameworks];
     </div>
   </aside>
 
-  <aside class="tz-trusted" data-reveal="lift">
-    <div class="tz-trusted-rule"><span></span><em>Trusted by</em><span></span></div>
-    <div class="tz-trusted-row">
-      <span class="tz-trusted-co">KAMAT HOTELS <i>(NSE)</i></span>
-      <span class="tz-trusted-dot">·</span>
-      <span class="tz-trusted-co">CG ONCOLOGY <i>(NASDAQ: CGON)</i></span>
-      <span class="tz-trusted-dot">·</span>
-      <span class="tz-trusted-co">MERAAS <i>(DUBAI HOLDING)</i></span>
-    </div>
-    <p class="tz-trusted-foot"><em>and regulated enterprises</em> across London, Dubai, New York and four continents.</p>
-  </aside>
+
 
   <div class="tz-cta-wrap" data-reveal="lift">
-    <a href="#audit" class="tz-cta">
+    <a href="#contact" class="tz-cta">
       <span>Request your compliance &amp; SEO audit</span>
       <span class="tz-cta-arr" aria-hidden="true">→</span>
     </a>
@@ -660,7 +650,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
     #tz-fine { font-size: 7.5px; }
   }
 
-  /* Wrapper: full-width, positions ribbon outside hero box */
+  /* Wrapper: full-width, positions ribbon at right edge of viewport */
   .tz-hero-wrap {
     position: relative;
     width: 100%;
@@ -672,12 +662,12 @@ const ribbonDouble = [...frameworks, ...frameworks];
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 26px;
+    right: 0;
+    width: 28px;
     overflow: hidden;
-    border-left: 1px solid rgba(201, 167, 114, 0.22);
-    background: linear-gradient(180deg, transparent 0%, rgba(201,167,114,0.04) 50%, transparent 100%);
-    /* Sit just outside hero right edge: hero is max-width 860px at 1024+, centered */
-    left: calc(50% + 430px + 2px);
+    border-left: 1px solid rgba(201, 167, 114, 0.4);
+    background: linear-gradient(180deg, rgba(201,167,114,0.06) 0%, rgba(201,167,114,0.1) 50%, rgba(201,167,114,0.06) 100%);
+    z-index: 10;
   }
   .tz-laws-ribbon-track {
     display: flex;
@@ -693,7 +683,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
     font-size: 8px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(26, 26, 29, 0.28);
+    color: rgba(90, 26, 43, 0.45);
     font-weight: 500;
     padding: 20px 0;
     transform: rotate(180deg);
@@ -713,10 +703,6 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
   @media (min-width: 1024px) {
     .tz-laws-ribbon { display: block; }
-  }
-  @media (min-width: 1280px) {
-    /* hero max-width 980px at 1280+ */
-    .tz-laws-ribbon { left: calc(50% + 490px + 2px); }
   }
   @media (prefers-reduced-motion: reduce) {
     .tz-laws-ribbon-track { animation-duration: 360s; }

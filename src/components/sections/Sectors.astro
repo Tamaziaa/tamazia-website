@@ -135,6 +135,7 @@ const iconPaths: Record<string, string> = {
             <div class="card-shorthand">{sector.regulatoryShorthand}</div>
             <p class="card-body">{sector.body}</p>
             {sector.pullQuote && <blockquote class="card-pullquote">{sector.pullQuote}</blockquote>}
+            <button class="framework-link" aria-label="View regulatory frameworks applied" type="button">Frameworks applied <span class="fl-arrow" aria-hidden="true">↗</span></button>
             <a href="#contact" class="card-cta">{sector.cta} <span class="cta-arrow">↗</span></a>
 
             <!-- Tooltip regulation detail (appears on hover) -->
@@ -315,6 +316,40 @@ const iconPaths: Record<string, string> = {
     flex-direction: column;
     overflow: visible;
   }
+  /* SE-6 · framework-link subtle gold underlined button */
+  .framework-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--ff-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-text, #C9A772);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(201,167,114,0.5);
+    padding: 0;
+    margin-bottom: 10px;
+    transition: text-decoration-color 160ms ease, color 160ms ease;
+  }
+  .framework-link:hover,
+  .framework-link:focus-visible {
+    color: var(--gold, #C9A772);
+    text-decoration-color: rgba(201,167,114,0.9);
+    outline: none;
+  }
+  .fl-arrow {
+    font-size: 11px;
+    line-height: 1;
+    transition: transform 160ms ease;
+  }
+  .framework-link:hover .fl-arrow { transform: translate(1px,-1px); }
+
   .card-cta {
     margin-top: auto;
     padding-top: 16px;
@@ -863,6 +898,30 @@ const iconPaths: Record<string, string> = {
         });
       });
     }
+
+    /* SE-6 · framework-link button opens tooltip on ALL devices */
+    document.querySelectorAll('.framework-link').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const card = (e.currentTarget as HTMLElement).closest('.sector-card');
+        if (card) {
+          card.classList.toggle('tooltip-open');
+          const tooltip = card.querySelector('.card-tooltip') as HTMLElement | null;
+          if (tooltip) tooltip.setAttribute('aria-hidden', card.classList.contains('tooltip-open') ? 'false' : 'true');
+        }
+      });
+    });
+
+    /* SE-6 · close tooltip when clicking outside any open card */
+    document.addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('.sector-card')) {
+        document.querySelectorAll('.sector-card.tooltip-open').forEach(c => {
+          c.classList.remove('tooltip-open');
+          const t = c.querySelector('.card-tooltip') as HTMLElement | null;
+          if (t) t.setAttribute('aria-hidden', 'true');
+        });
+      }
+    });
   });
 
   /* Mobile carousel auto-scroll hint · 800ms forward, 600ms back, runs once when grid first scrolls into view */

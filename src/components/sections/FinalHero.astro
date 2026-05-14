@@ -3,9 +3,21 @@
 // Inserted in index.astro: after <Header />, before <LawsStrip />
 // Founder portrait: /public/aman-portrait.webp (already in repo)
 // No external font imports — site uses self-hosted WOFF2
+import { heroContent } from '../../content/hero';
+const frameworks = (heroContent as any).regulationFrameworks || [];
+const ribbonDouble = [...frameworks, ...frameworks];
 ---
 
 <section class="tz-mhero" aria-label="Tamazia sector compass hero">
+
+  <!-- Laws ribbon - right side vertical marquee -->
+  <div class="tz-laws-ribbon" aria-hidden="true">
+    <div class="tz-laws-ribbon-track">
+      {ribbonDouble.map((reg: string) => (
+        <span>{reg}</span>
+      ))}
+    </div>
+  </div>
 
   <div class="tz-rail" data-reveal="fade">
     <span>§ I</span>
@@ -631,6 +643,59 @@
     .tz-fine-pill { padding: 3px 7px; }
     #tz-fine { font-size: 7.5px; }
   }
+
+  /* Laws ribbon - right side vertical marquee (desktop only) */
+  .tz-laws-ribbon {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 28px;
+    overflow: hidden;
+    border-left: 1px solid rgba(201, 167, 114, 0.18);
+    background: linear-gradient(180deg, transparent 0%, rgba(201,167,114,0.03) 50%, transparent 100%);
+  }
+  .tz-laws-ribbon-track {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: max-content;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    white-space: nowrap;
+    animation: tz-laws-scroll-up 180s linear infinite;
+    font-family: var(--tz-display);
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(26, 26, 29, 0.28);
+    font-weight: 500;
+    padding: 20px 0;
+    transform: rotate(180deg);
+  }
+  .tz-laws-ribbon-track span {
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .tz-laws-ribbon-track span::after {
+    content: " ·";
+    opacity: 0.4;
+    color: rgba(201,167,114,0.6);
+  }
+  @keyframes tz-laws-scroll-up {
+    from { transform: rotate(180deg) translateY(0); }
+    to   { transform: rotate(180deg) translateY(-50%); }
+  }
+  @media (min-width: 1024px) {
+    .tz-mhero { position: relative; }
+    .tz-laws-ribbon { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tz-laws-ribbon-track { animation-duration: 360s; }
+  }
+
 </style>
 
 <script>

@@ -4,7 +4,7 @@ International SEO for regulated enterprises. Built on Astro 4 + Cloudflare Pages
 
 **Live**: [tamazia.co.uk](https://tamazia.co.uk) · **Repo**: github.com/Tamaziaa/tamazia-website
 
-Operated by Tamazia Pvt Ltd · India. UK + EU operations. Data Protection Officer: dpo@tamazia.co.uk.
+Operated by Tamazia Ltd · India. UK + EU operations. Data Protection Officer: dpo@tamazia.co.uk.
 
 ## Stack
 

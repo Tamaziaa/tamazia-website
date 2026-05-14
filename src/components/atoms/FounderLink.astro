@@ -16,7 +16,7 @@ interface Props {
 const { variant = 'light', compact = false, className = '' } = Astro.props;
 const cls = `founder-link${variant === 'dark' ? ' on-dark' : ''}${className ? ' ' + className : ''}`;
 // Portrait file: drop a 200x200+ image at /public/aman-portrait.jpg to swap the AP monogram for a real photo.
-const portraitSrc = '/aman-portrait.png';
+const portraitSrc = '/aman-portrait.webp';
 ---
 <a
   href="https://www.linkedin.com/in/amanpareekk/"
@@ -34,7 +34,7 @@ const portraitSrc = '/aman-portrait.png';
       height="56"
       loading="eager" fetchpriority="high"
       decoding="async"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+      data-portrait-img
     />
     <span class="founder-initials">AP</span>
   </span>
@@ -86,5 +86,22 @@ const portraitSrc = '/aman-portrait.png';
     height: 100%;
     letter-spacing: -0.02em;
   }
-  /* When portrait image fails to load, the inline onerror swaps display:none -> flex */
+  /* When portrait fails, JS adds .portrait-failed class to .founder-avatar */
+  .founder-avatar.portrait-failed .founder-portrait { display: none; }
+  .founder-avatar.portrait-failed .founder-initials { display: flex; }
 </style>
+
+<script>
+  // CSP-safe portrait fallback — replaces banned onerror="this.style..." attribute
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('img[data-portrait-img]').forEach(img => {
+      img.addEventListener('error', () => {
+        img.closest('.founder-avatar')?.classList.add('portrait-failed');
+      });
+      // If already broken (cached 404 state)
+      if (!img.complete || img.naturalWidth === 0) {
+        img.closest('.founder-avatar')?.classList.add('portrait-failed');
+      }
+    });
+  });
+</script>

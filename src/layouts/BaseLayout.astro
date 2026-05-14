@@ -410,7 +410,7 @@ if (_segs.length > 0) {
       }
     </style>
 
-    <script is:inline>
+    <script is:inline data-cfasync="false">
       // Round-12 · cookie strip with explicit Accept / Reject (UK GDPR + EU PECR equal-prominence)
       (() => {
         const KEY = 'tamazia-cookie-consent';
@@ -425,7 +425,10 @@ if (_segs.length > 0) {
         // { v: 2, analytics: boolean, ad: false, ts: <unix-ms> }
         // Sliding 13-month expiry per ICO guidance triggers re-prompt.
         // Advertising consent stays denied permanently per founder decision.
+        var _cookieDismissed = false;
         window.__tamaziaCookieDismiss = function(decision) {
+          if (_cookieDismissed) return;
+          _cookieDismissed = true;
           var analytics = decision === 'granted';
           var record = { v: 2, analytics: analytics, ad: false, ts: Date.now() };
           try { localStorage.setItem(KEY, JSON.stringify(record)); } catch(_){}
@@ -485,26 +488,35 @@ if (_segs.length > 0) {
           strip.style.display = 'flex';
         } catch (e) { /* swallow */ }
 
-        // CSP-safe handler binding · Cloudflare edge injects strict-dynamic CSP
-        // which blocks all inline event-handler attributes (onclick=, onsubmit=).
-        // Bind inside this nonced script so dismiss() actually fires when buttons
-        // are clicked. Use both click and touchstart for iOS safety.
-        function bindCookieHandler(id, decision) {
+        // Layer 1: Event delegation on document (capture phase).
+        // Fires regardless of Rocket Loader deferral, nonce conflicts, or
+        // timing races. Capture phase fires before child handlers, even if
+        // bubbling is later stopped. Source: MDN, Cloudflare Community, javascript.info.
+        document.addEventListener('click', function(ev) {
+          var t = ev.target;
+          if (!t) return;
+          var btn = (typeof t.closest === 'function')
+            ? t.closest('#cookie-accept, #cookie-reject')
+            : ((t.id === 'cookie-accept' || t.id === 'cookie-reject') ? t : null);
+          if (!btn) return;
+          window.__tamaziaCookieDismiss(btn.id === 'cookie-accept' ? 'granted' : 'denied');
+        }, true);
+
+        // Layer 2: Direct binding as belt-and-suspenders.
+        // __tamaziaCookieDismiss is idempotent (dismissed flag) so double-fire is safe.
+        function bindBtn(id, decision) {
           var el = document.getElementById(id);
           if (!el || el.__tamaziaBound) return;
           el.__tamaziaBound = true;
           el.addEventListener('click', function() {
-            try { window.__tamaziaCookieDismiss(decision); } catch(_) {}
+            window.__tamaziaCookieDismiss(decision);
           });
         }
-        function wireCookieButtons() {
-          bindCookieHandler('cookie-accept', 'granted');
-          bindCookieHandler('cookie-reject', 'denied');
-        }
+        function bindAll() { bindBtn('cookie-accept', 'granted'); bindBtn('cookie-reject', 'denied'); }
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', wireCookieButtons);
+          document.addEventListener('DOMContentLoaded', bindAll);
         } else {
-          wireCookieButtons();
+          bindAll();
         }
       })();
 

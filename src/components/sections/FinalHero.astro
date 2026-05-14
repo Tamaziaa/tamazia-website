@@ -132,17 +132,30 @@ const ribbonDouble = [...frameworks, ...frameworks];
         <div class="tz-founder-name">Aman Pareek</div>
         <div class="tz-founder-creds">FOUNDER · LLM, KING'S COLLEGE LONDON</div>
       </div>
-      <a
-        class="tz-founder-li"
-        href="https://www.linkedin.com/in/amanpareektamazia/"
-        aria-label="Aman Pareek on LinkedIn"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="currentColor">
-          <path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.7c-1 0-1.7-.8-1.7-1.7s.7-1.7 1.7-1.7 1.7.8 1.7 1.7-.7 1.7-1.7 1.7zM20 19h-3v-5.6c0-3.4-4-3.1-4 0V19h-3V8h3v1.8c1.4-2.6 7-2.8 7 2.5V19z"/>
-        </svg>
-      </a>
+      <div class="tz-founder-socials">
+        <a
+          class="tz-founder-li"
+          href="https://www.linkedin.com/in/amanpareektamazia/"
+          aria-label="Aman Pareek on LinkedIn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="15" height="15" fill="currentColor">
+            <path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.7c-1 0-1.7-.8-1.7-1.7s.7-1.7 1.7-1.7 1.7.8 1.7 1.7-.7 1.7-1.7 1.7zM20 19h-3v-5.6c0-3.4-4-3.1-4 0V19h-3V8h3v1.8c1.4-2.6 7-2.8 7 2.5V19z"/>
+          </svg>
+        </a>
+        <a
+          class="tz-founder-ig"
+          href="https://instagram.com/tamazia"
+          aria-label="Tamazia on Instagram"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="15" height="15" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </aside>
 
@@ -701,8 +714,15 @@ const ribbonDouble = [...frameworks, ...frameworks];
     font-style: italic;
     font-weight: 600;
   }
+  /* Show at 1180px: (1180-860)/2=160px gutter, ribbon 160px → exact fit */
+  @media (min-width: 1180px) {
+    .tz-laws-ribbon { display: block; width: 160px; }
+  }
   @media (min-width: 1280px) {
-    .tz-laws-ribbon { display: block; }
+    .tz-laws-ribbon { width: 200px; }
+  }
+  @media (min-width: 1440px) {
+    .tz-laws-ribbon { width: 220px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .tz-laws-ribbon-track { animation-duration: 480s; }
@@ -721,47 +741,89 @@ const ribbonDouble = [...frameworks, ...frameworks];
     50%       { opacity: 0; }
   }
 
-  /* ===== Founder + CTA 50/50 row ===== */
+  /* ===== Founder + CTA 50/50 row — equal height both sides ===== */
   .tz-founder-cta-row {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
     padding: 14px 22px 6px;
   }
   .tz-founder-cta-row .tz-founder {
     flex: 1 1 0;
     min-width: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
   }
+  .tz-founder-cta-row .tz-founder-rule { margin-bottom: 8px; }
+  .tz-founder-cta-row .tz-founder-pill {
+    flex: 1;
+    padding: 6px 8px 6px 6px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+  .tz-founder-cta-row .tz-founder-name { font-size: 14px; }
+  .tz-founder-cta-row .tz-founder-creds { font-size: 7px; }
+  .tz-founder-cta-row .tz-founder-photo { width: 42px; height: 42px; }
   .tz-founder-cta-row .tz-cta-wrap {
     flex: 1 1 0;
     min-width: 0;
     padding: 0;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: stretch;
   }
   .tz-founder-cta-row .tz-cta-wrap .tz-cta {
+    flex: 1;
     width: 100%;
-    font-size: 9.5px;
-    padding: 12px 14px;
-    letter-spacing: 0.16em;
+    font-size: 9px;
+    padding: 10px 12px;
+    letter-spacing: 0.14em;
+    border-radius: 12px;
+    white-space: normal;
+    text-align: center;
+    flex-direction: column;
+    gap: 6px;
+    height: auto;
+    justify-content: center;
   }
-  .tz-founder-cta-row .tz-founder-pill {
-    padding: 6px 8px 6px 6px;
-    gap: 8px;
+  .tz-founder-cta-row .tz-cta-arr {
+    align-self: center;
   }
-  .tz-founder-cta-row .tz-founder-name { font-size: 15px; }
-  .tz-founder-cta-row .tz-founder-creds { font-size: 7.5px; }
   @media (max-width: 380px) {
-    .tz-founder-cta-row {
-      flex-direction: column;
-      padding: 12px 16px 4px;
-    }
+    .tz-founder-cta-row { flex-direction: column; padding: 12px 16px 4px; }
   }
   @media (min-width: 1024px) {
-    .tz-founder-cta-row { padding: 16px 28px 8px; gap: 16px; }
+    .tz-founder-cta-row { padding: 16px 28px 8px; gap: 14px; }
   }
+
+  /* ===== Founder social icons ===== */
+  .tz-founder-socials {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .tz-founder-li,
+  .tz-founder-ig {
+    width: 28px;
+    height: 28px;
+    background: var(--tz-oxblood);
+    color: var(--tz-gold);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(62,17,25,0.18);
+    transition: transform 200ms ease;
+  }
+  .tz-founder-ig { background: #C13584; color: #fff; }
+  .tz-founder-li:hover,
+  .tz-founder-ig:hover { transform: translateY(-1px); }
 
 </style>
 

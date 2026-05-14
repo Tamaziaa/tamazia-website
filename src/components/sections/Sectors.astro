@@ -163,7 +163,7 @@ const iconPaths: Record<string, string> = {
   .sectors {
     position: relative;
     background: var(--obsidian);
-    padding-block: clamp(72px, 7vw, 112px);
+    padding-block: clamp(48px, 5vw, 80px);
     overflow: clip; /* α-02 · was hidden; clip allows hover lift to overflow */
     color: var(--ivory);
   }
@@ -438,6 +438,7 @@ const iconPaths: Record<string, string> = {
     flex: 1;
     /* B-01 fix · removed line-clamp so full body text shows */
     font-weight: 300;
+    text-align: justify;
   }
 
   .card-cta {
@@ -455,13 +456,14 @@ const iconPaths: Record<string, string> = {
     text-decoration: none;
     padding: 12px 18px;
     min-height: 44px;
+    height: auto;
     border-radius: 999px;
     border: 1px solid var(--accent-orange-deep);
     align-self: flex-start;
     transition: background 240ms ease, transform 240ms ease, box-shadow 240ms ease;
     margin-top: auto;
     /* Text must stay fully visible — never clip the label */
-    white-space: nowrap;
+    white-space: normal;
     max-width: 100%;
     overflow: visible;
   }
@@ -675,6 +677,7 @@ const iconPaths: Record<string, string> = {
     .sector-card {
       overflow: hidden;
       contain: layout;
+      padding-bottom: 20px;
     }
     .sector-card * {
       max-width: 100%;
@@ -758,7 +761,11 @@ const iconPaths: Record<string, string> = {
       width: 100%;
       justify-content: center;
       white-space: normal;
-      line-height: 1.25;
+      line-height: 1.3;
+      height: auto;
+      min-height: 44px;
+      padding-bottom: 14px;
+      padding-top: 14px;
     }
     /* Each card on mobile gets a clear scroll-snap edge so the carousel feels intentional */
     .bento-grid {

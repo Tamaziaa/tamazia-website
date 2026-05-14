@@ -135,7 +135,7 @@ const iconPaths: Record<string, string> = {
             <div class="card-shorthand">{sector.regulatoryShorthand}</div>
             <p class="card-body">{sector.body}</p>
             {sector.pullQuote && <blockquote class="card-pullquote">{sector.pullQuote}</blockquote>}
-            <button class="framework-link" aria-label="View regulatory frameworks applied" type="button">Frameworks applied <span class="fl-arrow" aria-hidden="true">↗</span></button>
+            <button class="framework-link" aria-label="View regulatory frameworks applied" type="button">Specific frameworks applied <span class="fl-arrow" aria-hidden="true">↗</span></button>
             <a href="#contact" class="card-cta">{sector.cta} <span class="cta-arrow">↗</span></a>
 
             <!-- Tooltip regulation detail (appears on hover) -->
@@ -157,6 +157,7 @@ const iconPaths: Record<string, string> = {
   </div>
       </div>
     </section>
+    <div class="tz-tooltip-overlay" id="tz-tooltip-overlay" aria-hidden="true"></div>
 
 <style>
   .sectors {
@@ -505,9 +506,48 @@ const iconPaths: Record<string, string> = {
     visibility: visible;
   }
 
-  /* Round-8 fix · tooltip is hover-only and unreachable on touch devices · hide entirely on mobile */
+  /* Desktop hover shows tooltip (CSS-only) */
+  @media (hover: hover) and (min-width: 769px) {
+    .sector-card:hover .card-tooltip,
+    .sector-card:focus-within .card-tooltip {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+  /* Mobile: JS renders tooltip as position:fixed bottom-sheet */
   @media (max-width: 768px), (hover: none) {
     .card-tooltip { display: none; }
+    .card-tooltip.tooltip-mobile-open {
+      display: block;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 16px 16px 0 0;
+      z-index: 9000;
+      padding: 20px 24px 32px;
+      margin: 0;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      background: #FAF7F2;
+      border: 1px solid #C9A772;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.18);
+    }
+    .tz-tooltip-overlay { display: none; }
+    .tz-tooltip-overlay.active {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,29,0.55);
+      z-index: 8999;
+    }
   }
 
   .tooltip-header {
@@ -595,24 +635,6 @@ const iconPaths: Record<string, string> = {
     .sector-large .card-headline { font-size: 24px; }
     .sector-standard .card-headline { font-size: 20px; }
     .sector-medium .card-headline { font-size: 20px; }
-    /* B-25 fix · tap-to-toggle tooltip on mobile */
-    .card-tooltip {
-      display: block;
-      position: static;
-      width: 100%;
-      margin-top: 12px;
-      max-height: 0;
-      padding-block: 0;
-      opacity: 0;
-      transform: none;
-      overflow: hidden;
-      transition: max-height 280ms ease, opacity 280ms ease, padding-block 280ms ease;
-    }
-    .sector-card.tooltip-open .card-tooltip {
-      max-height: 600px;
-      opacity: 1;
-      padding-block: 16px;
-    }
   }
 
   @media (max-width: 768px) {
@@ -663,11 +685,7 @@ const iconPaths: Record<string, string> = {
       width: 100%;
       text-align: center;
     }
-    .sector-card .card-tooltip {
-      position: static;
-      width: 100%;
-      transform: none;
-    }
+    /* tooltip via fixed bottom-sheet - see .tooltip-mobile-open */
     /* Mobile sector grid carousel · animated arrow indicator */
     /* Wrapper so the indicator hovers ABOVE the scrolling carousel without being clipped */
     .bento-wrap {
@@ -888,32 +906,55 @@ const iconPaths: Record<string, string> = {
       document.querySelectorAll('.sector-card:not(.in-view)').forEach(c => c.classList.add('in-view'));
     }, 3000);
 
-    /* B-25 · sector card tap-to-toggle tooltip on touch devices */
-    const isTouch = window.matchMedia('(hover: none)').matches || ('ontouchstart' in window);
-    if (isTouch) {
-      document.querySelectorAll('.sector-card').forEach((card) => {
-        card.addEventListener('click', (e) => {
-          if ((e.target as HTMLElement).closest('a,button')) return;
-          card.classList.toggle('tooltip-open');
-        });
-      });
+    /* ── Tooltip: desktop hover (CSS) + mobile fixed bottom-sheet (JS) ── */
+    const isMobileTouch = () => window.matchMedia('(max-width: 768px), (hover: none)').matches;
+    const tooltipOverlay = document.getElementById('tz-tooltip-overlay') as HTMLElement | null;
+    let tooltipTimer: ReturnType<typeof setTimeout> | null = null;
+    let activeTooltip: HTMLElement | null = null;
+
+    function closeActiveTooltip() {
+      if (tooltipTimer) { clearTimeout(tooltipTimer); tooltipTimer = null; }
+      if (activeTooltip) {
+        activeTooltip.classList.remove('tooltip-mobile-open');
+        activeTooltip.setAttribute('aria-hidden', 'true');
+        activeTooltip = null;
+      }
+      tooltipOverlay?.classList.remove('active');
     }
 
-    /* SE-6 · framework-link button opens tooltip on ALL devices */
+    function openMobileTooltip(tooltip: HTMLElement) {
+      closeActiveTooltip();
+      activeTooltip = tooltip;
+      tooltip.classList.add('tooltip-mobile-open');
+      tooltip.setAttribute('aria-hidden', 'false');
+      tooltipOverlay?.classList.add('active');
+      tooltipTimer = setTimeout(closeActiveTooltip, 5000); // auto-close after 5s
+    }
+
+    /* framework-link: mobile → fixed sheet; desktop → CSS :hover handles it */
     document.querySelectorAll('.framework-link').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const card = (e.currentTarget as HTMLElement).closest('.sector-card');
-        if (card) {
+        const card = (btn as HTMLElement).closest('.sector-card') as HTMLElement | null;
+        if (!card) return;
+        const tooltip = card.querySelector('.card-tooltip') as HTMLElement | null;
+        if (!tooltip) return;
+        if (isMobileTouch()) {
+          tooltip === activeTooltip ? closeActiveTooltip() : openMobileTooltip(tooltip);
+        } else {
+          // desktop: toggle class for CSS :hover supplement
           card.classList.toggle('tooltip-open');
-          const tooltip = card.querySelector('.card-tooltip') as HTMLElement | null;
-          if (tooltip) tooltip.setAttribute('aria-hidden', card.classList.contains('tooltip-open') ? 'false' : 'true');
+          tooltip.setAttribute('aria-hidden', card.classList.contains('tooltip-open') ? 'false' : 'true');
         }
       });
     });
 
-    /* SE-6 · close tooltip when clicking outside any open card */
+    /* Close on overlay tap or click outside */
+    tooltipOverlay?.addEventListener('click', closeActiveTooltip);
     document.addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('.sector-card') && activeTooltip) {
+        closeActiveTooltip();
+      }
       if (!(e.target as HTMLElement).closest('.sector-card')) {
         document.querySelectorAll('.sector-card.tooltip-open').forEach(c => {
           c.classList.remove('tooltip-open');

@@ -113,6 +113,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
   </div>
   <p class="tz-chips-suffix" data-reveal="fade" style="--rd:160ms"><em>and international advertising laws.</em></p>
 
+  <div class="tz-founder-cta-row">
   <aside class="tz-founder" data-reveal="lift">
     <div class="tz-founder-rule"><span></span><em>Founder</em><span></span></div>
     <div class="tz-founder-pill">
@@ -153,6 +154,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
       <span class="tz-cta-arr" aria-hidden="true">→</span>
     </a>
   </div>
+  </div><!-- /.tz-founder-cta-row -->
 
   <div class="tz-colophon">
     <span>LONDON</span><span class="tz-dot">·</span>
@@ -651,60 +653,54 @@ const ribbonDouble = [...frameworks, ...frameworks];
     #tz-fine { font-size: 7.5px; }
   }
 
-  /* Wrapper */
+  /* ===== Wrapper: positioning context for ribbon ===== */
   .tz-hero-wrap {
     position: relative;
     width: 100%;
+    overflow: hidden; /* clips ribbon-track scroll beyond hero height */
   }
 
-  /* ===== Laws ribbon — fixed right-edge · copied from Hero.astro regulation-ribbon ===== */
-  /* approach: horizontal text, right-aligned, tall flex column, ribbon-vertical scroll      */
-  /* ribbon-vertical keyframe: translateY(0) → translateY(-50%) is in tgcs-master.css       */
+  /* ===== Laws ribbon — verbatim Hero.astro pattern (regulation-ribbon) ===== */
+  /* position:absolute within overflow:hidden wrapper · no CSS-var dependency  */
   .tz-laws-ribbon {
     display: none;
-    position: fixed;
+    position: absolute;
     right: 0;
     top: 0;
-    height: 100vh;
-    width: 200px;
+    bottom: 0;
+    width: 220px;
     overflow: hidden;
     pointer-events: none;
-    z-index: 99;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-    background: rgba(250, 247, 242, 0.92);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    border-left: 1px solid rgba(201, 167, 114, 0.35);
+    z-index: 4;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
   }
   .tz-laws-ribbon-track {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    padding-right: 16px;
-    padding-top: 60px;
+    padding-right: 20px;
+    padding-top: 80px;
     gap: 18px;
     animation: ribbon-vertical 240s linear infinite;
-    font-family: var(--tz-display);
-    font-size: 10px;
-    letter-spacing: 0.06em;
+    /* hardcode fonts/colours — CSS vars are scoped to .tz-mhero, not available here */
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--tz-oxblood);
+    color: #5A1A2B;
     font-weight: 500;
   }
   .tz-laws-ribbon-track span {
     white-space: nowrap;
     display: block;
     text-align: right;
-    opacity: 0.7;
   }
   .tz-laws-ribbon-track span.gold {
-    color: var(--tz-gold);
+    color: #C9A772;
     font-style: italic;
     font-weight: 600;
-    opacity: 1;
   }
-  /* show only when viewport is wide enough that ribbon doesn't eat hero content */
   @media (min-width: 1280px) {
     .tz-laws-ribbon { display: block; }
   }
@@ -723,6 +719,48 @@ const ribbonDouble = [...frameworks, ...frameworks];
   @keyframes tz-cursor-blink {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0; }
+  }
+
+  /* ===== Founder + CTA 50/50 row ===== */
+  .tz-founder-cta-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 22px 6px;
+  }
+  .tz-founder-cta-row .tz-founder {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0;
+  }
+  .tz-founder-cta-row .tz-cta-wrap {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  .tz-founder-cta-row .tz-cta-wrap .tz-cta {
+    width: 100%;
+    font-size: 9.5px;
+    padding: 12px 14px;
+    letter-spacing: 0.16em;
+  }
+  .tz-founder-cta-row .tz-founder-pill {
+    padding: 6px 8px 6px 6px;
+    gap: 8px;
+  }
+  .tz-founder-cta-row .tz-founder-name { font-size: 15px; }
+  .tz-founder-cta-row .tz-founder-creds { font-size: 7.5px; }
+  @media (max-width: 380px) {
+    .tz-founder-cta-row {
+      flex-direction: column;
+      padding: 12px 16px 4px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .tz-founder-cta-row { padding: 16px 28px 8px; gap: 16px; }
   }
 
 </style>

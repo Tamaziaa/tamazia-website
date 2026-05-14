@@ -126,6 +126,19 @@
   --fvn-tabular: tabular-nums;   /* font-variant-numeric: use on all stat/number elements */
 }
 
+
+/* ── Mobile compaction · max-width 480px ─────────────────────────────────
+   section-padding-block is clamp(56px,6vw,96px) which collapses to 56px
+   on a 375px phone. 56px top+bottom per section creates excessive whitespace.
+   Override to 28px so each section boundary reads as intentional breathing
+   room without looking gapped. */
+@media (max-width: 480px) {
+  :root {
+    --section-padding-block: 28px;
+    --container-padding: clamp(16px, 4vw, 24px);
+  }
+}
+
 /* PRINT DEFAULTS (unused at launch but defined) */
 @media print {
   :root {

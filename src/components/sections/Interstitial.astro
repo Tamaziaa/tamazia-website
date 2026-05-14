@@ -63,6 +63,11 @@ const { numeral, label } = Astro.props;
     color: var(--ink);
     font-weight: 500;
   }
+
+  @media (max-width: 480px) {
+    .interstitial { padding-block: 18px; }
+    .container { gap: 10px; }
+  }
 </style>
 
 <script>

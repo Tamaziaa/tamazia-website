@@ -1,0 +1,790 @@
+---
+// FinalHero.astro — Sextant sector compass hero
+// Inserted in index.astro: after <Header />, before <LawsStrip />
+// Founder portrait: /public/aman-portrait.webp (already in repo)
+// No external font imports — site uses self-hosted WOFF2
+---
+
+<section class="tz-mhero" aria-label="Tamazia sector compass hero">
+
+  <div class="tz-rail" data-reveal="fade">
+    <span>§ I</span>
+    <span class="tz-rail-title"><em>The Sextant</em></span>
+    <span class="tz-rail-year">MMXVIII</span>
+  </div>
+
+  <div class="tz-panel" data-reveal="slide" style="--rd:60ms">
+    <div class="tz-panel-head">
+      <span>I · SECTOR</span>
+      <span class="tz-panel-mid"><em>matched · live</em></span>
+      <span>§ <strong id="tz-idx">02</strong> / 07</span>
+    </div>
+    <div class="tz-cp">
+      <svg viewBox="0 0 300 130" aria-hidden="true">
+        <path class="tz-cp-arc" d="M 30 130 A 120 120 0 0 1 270 130"/>
+        <path class="tz-cp-arc-inner" d="M 60 130 A 90 90 0 0 1 240 130"/>
+        <line x1="0" y1="130" x2="300" y2="130" stroke="#1A1A1D" stroke-width="0.3" opacity="0.4"/>
+        <text x="30" y="144" class="tz-cp-deg" text-anchor="middle">0°</text>
+        <text x="150" y="6" class="tz-cp-deg" text-anchor="middle">45°</text>
+        <text x="270" y="144" class="tz-cp-deg" text-anchor="middle">90°</text>
+        <g id="tz-secs"></g>
+        <g class="tz-cp-needle-g">
+          <line class="tz-cp-needle" x1="150" y1="130" x2="150" y2="20"/>
+          <circle class="tz-cp-needle-tip" cx="150" cy="20" r="3"/>
+          <circle class="tz-cp-needle-halo" cx="150" cy="20" r="6.5"/>
+        </g>
+        <circle cx="150" cy="130" r="3.4" fill="#1A1A1D"/>
+        <circle cx="150" cy="130" r="1.4" fill="#C9A772"/>
+        <text x="150" y="122" class="tz-cp-sx-label" text-anchor="middle">sextant · TMZ</text>
+      </svg>
+    </div>
+    <div class="tz-band">
+      <div class="tz-band-l">
+        <div class="tz-band-l-kicker">NOW</div>
+        <div class="tz-band-l-name" id="tz-name">Healthcare</div>
+        <div class="tz-band-l-idx">§ <span id="tz-idx-inline">02</span> / 07</div>
+      </div>
+      <div class="tz-band-laws" id="tz-laws"></div>
+    </div>
+    <div class="tz-fine">
+      <span class="tz-fine-rule"></span>
+      <span class="tz-fine-pill">
+        <span class="tz-fine-dot"></span>
+        <span class="tz-fine-lab">Fined .</span>
+        <span id="tz-fine">MHRA · POM weight-loss enforcement · <em>2025</em></span>
+      </span>
+      <span class="tz-fine-rule"></span>
+    </div>
+    <div class="tz-panel-foot">
+      <span class="tz-foot-mark">+</span>
+      <span><em>and <strong>18 other sectors</strong>, each cross-referenced</em></span>
+      <span class="tz-foot-mark tz-foot-mark--gold">—</span>
+    </div>
+  </div>
+
+  <div class="tz-coord" data-reveal="fade" style="--rd:40ms">
+    <span>51° 30′ N</span><span class="tz-coord-dot">·</span><span>0° 7′ W</span>
+  </div>
+
+  <h2 class="tz-headline">
+    <span class="tz-line" data-reveal="slide" style="--rd:0ms"><span class="tz-word">Outrank</span> <em class="tz-word">competitors.</em></span>
+    <span class="tz-line" data-reveal="slide" style="--rd:160ms"><span class="tz-word">Master</span> <em class="tz-word">regulators.</em></span>
+    <span class="tz-line tz-line-em" data-reveal="slide" style="--rd:320ms"><span class="tz-word">One</span> <span class="tz-word">agency.</span></span>
+  </h2>
+
+  <div class="tz-subs">
+    <div class="tz-sub" data-reveal="slide" style="--rd:480ms"><span class="tz-sub-rule"></span><em>Search dominance, every market.</em></div>
+    <div class="tz-sub" data-reveal="slide" style="--rd:580ms"><span class="tz-sub-rule"></span><em>200+ frameworks reviewed, every word.</em></div>
+    <div class="tz-sub" data-reveal="slide" style="--rd:680ms"><span class="tz-sub-rule"></span><em>Counsel-led, every campaign.</em></div>
+  </div>
+
+  <div class="tz-body" data-reveal="slide">
+    <p><span class="tz-dropcap">L</span>ed by a founder with an <em>LLM in International Business Law</em>, King's College London. Compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.</p>
+  </div>
+
+  <div class="tz-pull-left" data-reveal="lift">
+    <p>Your SEO agency doesn't have a <em>lawyer.</em> <em>Ours is run by one.</em></p>
+  </div>
+
+  <div class="tz-pull-centre" data-reveal="lift">
+    <span class="tz-corner tz-corner-tl"></span><span class="tz-corner tz-corner-tr"></span>
+    <span class="tz-corner tz-corner-bl"></span><span class="tz-corner tz-corner-br"></span>
+    <p>Ranking is only valuable if it is <em>legal.</em></p>
+    <div class="tz-pull-cite">— THE FIRST PRINCIPLE —</div>
+  </div>
+
+  <div class="tz-body tz-body-tight" data-reveal="slide">
+    <p>Every campaign executed through us passes through <strong>200+ laws</strong> before anything goes live:</p>
+  </div>
+  <div class="tz-chips" data-reveal="fade" style="--rd:80ms">
+    <span>GDPR</span><span>FCA</span><span>SRA</span><span>MHRA</span><span>ASA</span><span>HIPAA</span><span>EU AI ACT</span>
+  </div>
+  <p class="tz-chips-suffix" data-reveal="fade" style="--rd:160ms"><em>and international advertising laws.</em></p>
+
+  <aside class="tz-founder" data-reveal="lift">
+    <div class="tz-founder-rule"><span></span><em>Founder</em><span></span></div>
+    <div class="tz-founder-pill">
+      <div class="tz-founder-photo">
+        <img
+          class="tz-founder-photo-img"
+          src="/aman-portrait.webp"
+          alt="Aman Pareek, founder of Tamazia"
+          width="52"
+          height="52"
+          loading="lazy"
+        />
+        <span class="tz-founder-photo-mark" aria-hidden="true">AP</span>
+      </div>
+      <div class="tz-founder-body">
+        <div class="tz-founder-name">Aman Pareek</div>
+        <div class="tz-founder-creds">FOUNDER · LLM, KING'S COLLEGE LONDON</div>
+      </div>
+      <a
+        class="tz-founder-li"
+        href="https://www.linkedin.com/in/amanpareektamazia/"
+        aria-label="Aman Pareek on LinkedIn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="currentColor">
+          <path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.7c-1 0-1.7-.8-1.7-1.7s.7-1.7 1.7-1.7 1.7.8 1.7 1.7-.7 1.7-1.7 1.7zM20 19h-3v-5.6c0-3.4-4-3.1-4 0V19h-3V8h3v1.8c1.4-2.6 7-2.8 7 2.5V19z"/>
+        </svg>
+      </a>
+    </div>
+  </aside>
+
+  <aside class="tz-trusted" data-reveal="lift">
+    <div class="tz-trusted-rule"><span></span><em>Trusted by</em><span></span></div>
+    <div class="tz-trusted-row">
+      <span class="tz-trusted-co">KAMAT HOTELS <i>(NSE)</i></span>
+      <span class="tz-trusted-dot">·</span>
+      <span class="tz-trusted-co">CG ONCOLOGY <i>(NASDAQ: CGON)</i></span>
+      <span class="tz-trusted-dot">·</span>
+      <span class="tz-trusted-co">MERAAS <i>(DUBAI HOLDING)</i></span>
+    </div>
+    <p class="tz-trusted-foot"><em>and regulated enterprises</em> across London, Dubai, New York and four continents.</p>
+  </aside>
+
+  <div class="tz-cta-wrap" data-reveal="lift">
+    <a href="#audit" class="tz-cta">
+      <span>Request your compliance &amp; SEO audit</span>
+      <span class="tz-cta-arr" aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <div class="tz-colophon">
+    <span>LONDON</span><span class="tz-dot">·</span>
+    <span>DUBAI</span><span class="tz-dot">·</span>
+    <span>NEW YORK</span><span class="tz-dot">·</span>
+    <span>PARIS</span><span class="tz-dot">·</span>
+    <span>WORLDWIDE</span>
+  </div>
+
+</section>
+
+<style is:global>
+  /* ===== FinalHero — Sextant component ===== */
+  /* All selectors under .tz-mhero — no bleed into other sections */
+
+  .tz-mhero {
+    --tz-ivory:   #FAF7F2;
+    --tz-obsidian:#1A1A1D;
+    --tz-oxblood: #5A1A2B;
+    --tz-gold:    #C9A772;
+    --tz-gold-light:#E8CF9C;
+    --tz-pearl:   #E8E4DC;
+    --tz-muted:   #6B6B6F;
+    --tz-display: "Playfair Display", Georgia, serif;
+    --tz-body:    "Inter", system-ui, sans-serif;
+    --tz-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+    background: var(--tz-ivory);
+    color: var(--tz-obsidian);
+    font-family: var(--tz-body);
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow: hidden;
+
+    /* Responsive centering */
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 1px solid rgba(201,167,114,0.12);
+    border-right: 1px solid rgba(201,167,114,0.12);
+  }
+
+  /* ===== Scroll-reveal system ===== */
+  .tz-mhero [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 720ms cubic-bezier(.2,.7,.2,1) var(--rd, 0ms),
+      transform 720ms cubic-bezier(.2,.7,.2,1) var(--rd, 0ms),
+      filter 720ms ease var(--rd, 0ms);
+    will-change: opacity, transform;
+  }
+  .tz-mhero [data-reveal="fade"]  { transform: none; filter: blur(2px); }
+  .tz-mhero [data-reveal="slide"] { transform: translateY(20px); }
+  .tz-mhero [data-reveal="lift"]  { transform: translateY(8px) scale(.985); }
+  .tz-mhero [data-reveal="rule"]  { transform: scaleX(0); transform-origin: left; opacity: 1; transition: transform 700ms cubic-bezier(.2,.7,.2,1) var(--rd, 0ms); }
+  .tz-mhero .is-revealed[data-reveal]        { opacity: 1; transform: none; filter: none; }
+  .tz-mhero .is-revealed[data-reveal="rule"] { transform: scaleX(1); }
+  @media (prefers-reduced-motion: reduce) {
+    .tz-mhero [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+  }
+
+  /* ===== Rail ===== */
+  .tz-rail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 22px;
+    border-bottom: 1px solid rgba(26,26,29,0.08);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    color: var(--tz-muted);
+    text-transform: uppercase;
+  }
+  .tz-rail-title {
+    font-family: var(--tz-display);
+    font-style: italic;
+    letter-spacing: 0.06em;
+    font-size: 12px;
+    color: var(--tz-oxblood);
+    text-transform: none;
+  }
+  .tz-rail-year { color: var(--tz-gold); }
+
+  /* ===== Sector panel ===== */
+  .tz-panel {
+    padding: 14px 14px 12px;
+    position: relative;
+  }
+  .tz-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgba(201,167,114,0.16) 31px 32px, transparent 32px 64px);
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+  }
+  .tz-panel > * { position: relative; z-index: 1; }
+  .tz-panel-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--tz-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .tz-panel-head > :first-child,
+  .tz-panel-head > :last-child { color: var(--tz-oxblood); }
+  .tz-panel-mid {
+    font-family: var(--tz-display);
+    font-style: italic;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+    color: var(--tz-gold);
+    text-transform: none;
+  }
+
+  /* ===== Dual-band compass ===== */
+  .tz-cp {
+    width: 100%;
+    aspect-ratio: 2.4 / 1;
+    max-height: 150px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .tz-cp svg { width: 100%; height: 100%; overflow: visible; display: block; }
+  .tz-cp-arc      { fill: none; stroke: var(--tz-gold); stroke-width: 0.8; }
+  .tz-cp-arc-inner{ stroke: rgba(26,26,29,0.16); stroke-dasharray: 1 3; stroke-width: 0.6; fill: none; }
+  .tz-cp-deg      { font: 500 6.5px var(--tz-body); fill: var(--tz-muted); letter-spacing: 0.18em; }
+  .tz-cp-sx-label { font: italic 8px var(--tz-display); fill: var(--tz-gold); letter-spacing: 0.04em; }
+  .tz-cp-tick     { stroke: rgba(26,26,29,0.45); stroke-width: 0.7; transition: stroke 250ms ease, stroke-width 250ms ease; }
+  .tz-cp-tick.is-active { stroke: var(--tz-oxblood); stroke-width: 1.6; }
+  .tz-cp-abbr     { font: 600 6.5px var(--tz-body); fill: rgba(26,26,29,0.4); letter-spacing: 0.2em; transition: fill 250ms ease, font-size 250ms ease; }
+  .tz-cp-abbr.is-active { fill: var(--tz-oxblood); font-size: 8px; font-weight: 700; }
+  .tz-cp-needle-g { transform-origin: 150px 130px; transform: rotate(-60deg); transition: transform 1100ms cubic-bezier(.5,.05,.2,1); }
+  .tz-cp-needle   { stroke: var(--tz-oxblood); stroke-width: 1.4; stroke-linecap: round; }
+  .tz-cp-needle-tip  { fill: var(--tz-oxblood); }
+  .tz-cp-needle-halo { fill: none; stroke: var(--tz-oxblood); stroke-width: 0.5; opacity: 0.4; }
+
+  /* ===== Sector band ===== */
+  .tz-band {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(201,167,114,0.55);
+    border-radius: 3px;
+    background: linear-gradient(180deg, rgba(201,167,114,0.06), transparent 80%);
+    align-items: center;
+  }
+  .tz-band-l        { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .tz-band-l-kicker { font: 600 7px var(--tz-body); letter-spacing: 0.3em; color: var(--tz-muted); text-transform: uppercase; }
+  .tz-band-l-name   { font-family: var(--tz-display); font-style: italic; font-size: 18px; color: var(--tz-oxblood); line-height: 1; font-weight: 500; }
+  .tz-band-l-idx    { font: 600 7px var(--tz-body); letter-spacing: 0.3em; color: var(--tz-gold); margin-top: 2px; }
+  .tz-band-laws     { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; }
+  .tz-band-laws span {
+    font: 500 9px var(--tz-mono);
+    color: var(--tz-obsidian);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .tz-band-laws span::before { content: ""; width: 3px; height: 3px; background: var(--tz-gold); border-radius: 50%; flex-shrink: 0; }
+
+  /* ===== Fine enforcement pill ===== */
+  .tz-fine {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--tz-mono);
+    font-size: 9px;
+    color: var(--tz-muted);
+    letter-spacing: 0.04em;
+  }
+  .tz-fine-rule { flex: 1 1 0; min-width: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(90,26,43,0.5), transparent); }
+  .tz-fine-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(90,26,43,0.06);
+    border: 1px solid rgba(90,26,43,0.25);
+    border-radius: 999px;
+    color: var(--tz-oxblood);
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+    transition: opacity 240ms ease, transform 240ms ease;
+  }
+  .tz-fine-pill .tz-fine-dot { width: 5px; height: 5px; background: var(--tz-oxblood); border-radius: 50%; flex-shrink: 0; }
+  .tz-fine-pill .tz-fine-lab { font-family: var(--tz-display); font-style: italic; color: var(--tz-oxblood); font-weight: 500; font-size: 11px; letter-spacing: 0.01em; padding-right: 2px; white-space: nowrap; }
+  .tz-fine-pill #tz-fine     { white-space: nowrap; font-size: 8.5px; letter-spacing: 0.02em; }
+  .tz-fine-pill em           { font-family: var(--tz-display); font-style: italic; font-size: 10.5px; color: var(--tz-oxblood); white-space: nowrap; }
+  .tz-fine.is-swapping .tz-fine-pill { opacity: 0; transform: translateY(3px); }
+  .tz-band-l-name, #tz-laws  { transition: opacity 240ms ease, transform 240ms ease; }
+  .tz-band.is-swapping .tz-band-l-name,
+  .tz-band.is-swapping #tz-laws { opacity: 0; transform: translateY(3px); }
+
+  /* ===== Panel foot ===== */
+  .tz-panel-foot {
+    margin-top: 10px;
+    padding: 8px 0 0;
+    border-top: 1px dashed rgba(26,26,29,0.18);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--tz-display);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--tz-oxblood);
+    letter-spacing: 0.04em;
+  }
+  .tz-foot-mark         { font-family: var(--tz-body); font-style: normal; font-size: 8px; font-weight: 600; letter-spacing: 0.3em; color: var(--tz-muted); }
+  .tz-foot-mark--gold   { color: var(--tz-gold); }
+  .tz-panel-foot strong { font-weight: 500; }
+
+  /* ===== Coordinates ===== */
+  .tz-coord {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    padding: 18px 22px 6px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    color: var(--tz-gold);
+  }
+  .tz-coord-dot { opacity: 0.7; }
+
+  /* ===== Headline ===== */
+  .tz-headline {
+    padding: 4px 22px 0;
+    font-family: var(--tz-display);
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 0.96;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--tz-obsidian);
+  }
+  .tz-headline .tz-line    { display: block; }
+  .tz-headline em.tz-word  { font-style: italic; color: var(--tz-oxblood); font-weight: 400; }
+  .tz-line-em              { color: var(--tz-oxblood); }
+  .tz-headline .tz-word    { display: inline-block; }
+  .tz-headline .tz-word + .tz-word { margin-left: 0.22em; }
+
+  /* ===== Sub-bullets ===== */
+  .tz-subs { padding: 14px 22px 0; display: flex; flex-direction: column; gap: 6px; }
+  .tz-sub  { display: flex; align-items: center; gap: 8px; font-family: var(--tz-display); font-style: italic; font-size: 13px; color: var(--tz-gold); }
+  .tz-sub-rule { width: 14px; height: 1px; background: var(--tz-gold); }
+
+  /* ===== Body text ===== */
+  .tz-body       { padding: 18px 22px; }
+  .tz-body-tight { padding: 10px 22px 12px; }
+  .tz-body p     { font-family: var(--tz-display); font-size: 14px; line-height: 1.6; margin: 0; }
+  .tz-body em    { color: var(--tz-oxblood); font-style: italic; }
+  .tz-body strong{ color: var(--tz-oxblood); }
+  .tz-dropcap    { font-family: var(--tz-display); font-size: 50px; line-height: 0.8; float: left; padding: 4px 8px 0 0; color: var(--tz-oxblood); font-weight: 500; }
+
+  /* ===== Pull quotes ===== */
+  .tz-pull-left { padding: 0 22px 18px; }
+  .tz-pull-left p { border-left: 3px solid var(--tz-oxblood); background: rgba(90,26,43,0.04); padding: 14px 16px; margin: 0; font-family: var(--tz-display); font-size: 17px; line-height: 1.35; font-weight: 500; }
+  .tz-pull-left em { color: var(--tz-oxblood); font-style: italic; }
+
+  .tz-pull-centre { margin: 4px 22px 18px; position: relative; text-align: center; padding: 22px 16px 18px; border: 1px solid var(--tz-gold); background: rgba(201,167,114,0.04); }
+  .tz-pull-centre p { font-family: var(--tz-display); font-size: 22px; line-height: 1.2; margin: 0; font-weight: 500; letter-spacing: -0.005em; }
+  .tz-pull-centre em { color: var(--tz-oxblood); font-style: italic; }
+  .tz-pull-cite  { margin-top: 10px; font-size: 7.5px; font-weight: 600; letter-spacing: 0.4em; color: var(--tz-gold); }
+  .tz-corner     { position: absolute; width: 10px; height: 10px; border: 1.5px solid var(--tz-oxblood); }
+  .tz-corner-tl  { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .tz-corner-tr  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+  .tz-corner-bl  { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+  .tz-corner-br  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  /* ===== Framework chips ===== */
+  .tz-chips { padding: 0 22px 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tz-chips span { font-size: 9px; font-weight: 600; letter-spacing: 0.16em; color: var(--tz-oxblood); border: 1px solid var(--tz-gold); padding: 4px 8px; background: var(--tz-ivory); }
+  .tz-chips-suffix { padding: 0 22px 4px; font-family: var(--tz-display); font-style: italic; font-size: 13px; color: var(--tz-muted); margin: 0 0 4px; }
+
+  /* ===== Founder pill ===== */
+  .tz-founder { padding: 16px 22px 6px; }
+  .tz-founder-rule { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .tz-founder-rule span { flex: 1; height: 1px; background: var(--tz-gold); opacity: 0.5; }
+  .tz-founder-rule em   { font-family: var(--tz-display); font-style: italic; font-size: 11px; letter-spacing: 0.06em; color: var(--tz-oxblood); }
+
+  .tz-founder-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px 8px 8px;
+    border: 1px solid var(--tz-gold);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(201,167,114,0.06), rgba(201,167,114,0.02));
+    box-shadow: 0 4px 14px rgba(26,20,15,0.04);
+  }
+  .tz-founder-photo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(201,167,114,0.55);
+    background: var(--tz-pearl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .tz-founder-photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(45deg, rgba(90,26,43,0.06) 0 2px, transparent 2px 6px);
+  }
+  .tz-founder-photo-mark {
+    font-family: var(--tz-display);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--tz-oxblood);
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.01em;
+  }
+  .tz-founder-photo-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+    z-index: 2;
+    background: var(--tz-pearl);
+  }
+  .tz-founder-photo-img.is-broken { display: none; }
+  .tz-founder-body  { flex: 1; min-width: 0; }
+  .tz-founder-name  { font-family: var(--tz-display); font-style: italic; font-size: 18px; color: var(--tz-obsidian); line-height: 1.1; letter-spacing: 0; font-weight: 500; }
+  .tz-founder-creds { font-size: 8.5px; letter-spacing: 0.22em; color: var(--tz-oxblood); text-transform: uppercase; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+  .tz-founder-li {
+    width: 34px;
+    height: 34px;
+    background: var(--tz-oxblood);
+    color: var(--tz-gold);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(62,17,25,0.18);
+    transition: transform 200ms ease;
+  }
+  .tz-founder-li:hover { transform: translateY(-1px); }
+
+  /* ===== Trusted by ===== */
+  .tz-trusted { padding: 14px 22px 6px; }
+  .tz-trusted-rule { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tz-trusted-rule span { flex: 1; height: 1px; background: var(--tz-gold); opacity: 0.5; }
+  .tz-trusted-rule em   { font-family: var(--tz-display); font-style: italic; font-size: 11px; letter-spacing: 0.06em; color: var(--tz-oxblood); }
+  .tz-trusted-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; font-size: 9px; letter-spacing: 0.22em; font-weight: 600; text-transform: uppercase; color: var(--tz-oxblood); line-height: 1.4; }
+  .tz-trusted-lab { color: var(--tz-gold); }
+  .tz-trusted-dot { color: var(--tz-gold); font-weight: 700; }
+  .tz-trusted-co i { font-style: normal; color: var(--tz-muted); font-weight: 500; letter-spacing: 0.18em; }
+  .tz-trusted-foot { margin: 10px 0 0; font-family: var(--tz-display); font-style: italic; font-size: 13px; color: var(--tz-muted); line-height: 1.4; letter-spacing: 0.01em; }
+  .tz-trusted-foot em { color: var(--tz-oxblood); font-style: italic; }
+
+  /* ===== CTA ===== */
+  .tz-cta-wrap { padding: 14px 22px; }
+  .tz-cta {
+    background: var(--tz-oxblood);
+    color: var(--tz-ivory);
+    padding: 16px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(62,17,25,0.18);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .tz-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(62,17,25,0.22); }
+  .tz-cta-arr {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--tz-gold);
+    color: var(--tz-gold);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ===== Colophon ===== */
+  .tz-colophon {
+    padding: 16px 22px 18px;
+    border-top: 1px solid rgba(26,26,29,0.08);
+    background: rgba(232,228,220,0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--tz-muted);
+  }
+  .tz-colophon .tz-dot { color: var(--tz-gold); }
+
+  /* ===== Needle halo pulse ===== */
+  @keyframes tzPulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 0.85; }
+  }
+  .tz-cp-needle-halo { animation: tzPulse 2.4s ease-in-out infinite; }
+
+  /* ===== Responsive — Tablet 640px+ ===== */
+  @media (min-width: 640px) {
+    .tz-mhero { max-width: 680px; }
+    .tz-headline { font-size: 52px; }
+    .tz-cp { max-height: 180px; }
+    .tz-band { grid-template-columns: 135px 1fr; gap: 16px; }
+    .tz-body p { font-size: 15px; }
+    .tz-pull-centre p { font-size: 24px; }
+    .tz-pull-left p { font-size: 18px; }
+  }
+
+  /* ===== Responsive — Desktop 1024px+ ===== */
+  @media (min-width: 1024px) {
+    .tz-mhero { max-width: 860px; }
+    .tz-headline { font-size: 68px; line-height: 0.94; }
+    .tz-cp { max-height: 210px; }
+    .tz-band { grid-template-columns: 155px 1fr; gap: 20px; }
+    .tz-panel { padding: 18px 18px 14px; }
+    .tz-rail  { padding: 12px 28px; }
+    .tz-coord { padding: 22px 28px 8px; }
+    .tz-headline  { padding: 6px 28px 0; }
+    .tz-subs      { padding: 16px 28px 0; }
+    .tz-body      { padding: 20px 28px; }
+    .tz-body-tight{ padding: 12px 28px 14px; }
+    .tz-pull-left { padding: 0 28px 22px; }
+    .tz-pull-centre{ margin: 4px 28px 22px; }
+    .tz-chips     { padding: 0 28px 12px; }
+    .tz-chips-suffix{ padding: 0 28px 6px; }
+    .tz-founder   { padding: 18px 28px 8px; }
+    .tz-trusted   { padding: 16px 28px 8px; }
+    .tz-cta-wrap  { padding: 16px 28px; }
+    .tz-colophon  { padding: 18px 28px 20px; }
+    .tz-body p    { font-size: 15px; }
+    .tz-pull-centre p { font-size: 26px; }
+    .tz-band-l-name { font-size: 22px; }
+    .tz-sub       { font-size: 15px; }
+  }
+
+  /* ===== Responsive — Large 1280px+ ===== */
+  @media (min-width: 1280px) {
+    .tz-mhero { max-width: 980px; }
+    .tz-headline { font-size: 76px; }
+  }
+
+  /* ===== Responsive — Small mobile <380px ===== */
+  @media (max-width: 380px) {
+    .tz-headline { font-size: 36px; }
+    .tz-pull-centre p { font-size: 18px; }
+    .tz-founder-name { font-size: 16px; }
+    .tz-fine-pill { padding: 3px 7px; }
+    #tz-fine { font-size: 7.5px; }
+  }
+</style>
+
+<script>
+  (() => {
+    /* ============================================================
+       FinalHero — Sextant sector compass
+       Scoped to .tz-mhero to avoid conflicts with other sections
+    ============================================================ */
+
+    // ---- 1. Sector data ----
+    const SECTORS = [
+      { name: "Law",          abbr: "LAW", laws: ["SRA Code", "MLR 2017", "GDPR Art.6", "DIFC L&R"],         fine: 'SRA · £300K · AML controls · <em>Mar 2025</em>' },
+      { name: "Healthcare",   abbr: "HLT", laws: ["MHRA Blue", "FDA §202", "HIPAA", "ASA CAP-M"],            fine: 'MHRA · POM weight-loss enforcement · <em>2025</em>' },
+      { name: "Hospitality",  abbr: "HSP", laws: ["DMCC 2024", "CMA CPR", "ASA CAP", "GDPR"],               fine: 'CMA · £4.2M · drip pricing · <em>2025</em>' },
+      { name: "Real Estate",  abbr: "RE",  laws: ["SEC Reg-FD", "FCA LR9", "RERA L26", "EU Prosp."],         fine: 'SEC · $19M · IPO disclosure failure · <em>2024</em>' },
+      { name: "Finance",      abbr: "FIN", laws: ["FCA COBS", "MiFID II", "SEC Mkt Rule", "DFSA COB"],       fine: 'FCA · £29M · AML control failure · <em>2024</em>' },
+      { name: "Education",    abbr: "EDU", laws: ["ICO / DPA", "GDPR Art.8", "FERPA", "KCSIE 2024"],         fine: 'ICO · £350K · pupil data breach · <em>2024</em>' },
+      { name: "Professional", abbr: "PRO", laws: ["FRC ES", "ABA MR 7.1", "ICAEW CoE", "LCIA Art.14"],       fine: 'FRC · £21M · audit independence · <em>2024</em>' }
+    ];
+    const N = SECTORS.length;
+    const STEP_MS = 4000;
+    const SWAP_MS = 240;
+
+    const root = document.querySelector('.tz-mhero');
+    if (!root) return;
+
+    // ---- 2. Build rim ticks + abbreviations ----
+    (() => {
+      const ns = "http://www.w3.org/2000/svg";
+      const g = root.querySelector("#tz-secs");
+      if (!g) return;
+      const cx = 150, cy = 130, Ri = 100, Ro = 108, Rt = 120;
+      SECTORS.forEach((s, i) => {
+        const deg = -60 + i * 20;
+        const rad = (deg - 90) * Math.PI / 180;
+        const x1 = cx + Ri * Math.cos(rad), y1 = cy + Ri * Math.sin(rad);
+        const x2 = cx + Ro * Math.cos(rad), y2 = cy + Ro * Math.sin(rad);
+        const xt = cx + Rt * Math.cos(rad), yt = cy + Rt * Math.sin(rad);
+
+        const tick = document.createElementNS(ns, "line");
+        tick.setAttribute("x1", x1.toFixed(1));
+        tick.setAttribute("y1", y1.toFixed(1));
+        tick.setAttribute("x2", x2.toFixed(1));
+        tick.setAttribute("y2", y2.toFixed(1));
+        tick.setAttribute("class", "tz-cp-tick");
+        tick.dataset.i = String(i);
+        g.appendChild(tick);
+
+        const t = document.createElementNS(ns, "text");
+        t.setAttribute("x", xt.toFixed(1));
+        t.setAttribute("y", (yt + 2.5).toFixed(1));
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("class", "tz-cp-abbr");
+        t.dataset.i = String(i);
+        t.textContent = s.abbr;
+        g.appendChild(t);
+      });
+    })();
+
+    // ---- 3. Synced cycle ----
+    const Compass = (() => {
+      const needleG = root.querySelector(".tz-cp-needle-g");
+      const tickRoot = root.querySelector("#tz-secs");
+      const nameEl   = root.querySelector("#tz-name");
+      const idxEl    = root.querySelector("#tz-idx");
+      const idxInln  = root.querySelector("#tz-idx-inline");
+      const lawsEl   = root.querySelector("#tz-laws");
+      const fineEl   = root.querySelector("#tz-fine");
+      const fineRow  = root.querySelector(".tz-fine");
+      const bandRow  = root.querySelector(".tz-band");
+
+      let i = 1;
+      let timer = null;
+      let running = false;
+
+      function paint(idx) {
+        const s = SECTORS[idx];
+        const deg = -60 + idx * 20;
+        if (needleG) needleG.style.transform = `rotate(${deg}deg)`;
+        if (tickRoot) {
+          tickRoot.querySelectorAll("[data-i]").forEach(el => {
+            el.classList.toggle("is-active", +el.dataset.i === idx);
+          });
+        }
+        if (fineRow) fineRow.classList.add("is-swapping");
+        if (bandRow) bandRow.classList.add("is-swapping");
+        setTimeout(() => {
+          if (nameEl)  nameEl.textContent  = s.name;
+          if (idxEl)   idxEl.textContent   = String(idx + 1).padStart(2, "0");
+          if (idxInln) idxInln.textContent = String(idx + 1).padStart(2, "0");
+          if (lawsEl)  lawsEl.innerHTML    = s.laws.map(l => `<span>${l}</span>`).join("");
+          if (fineEl)  fineEl.innerHTML    = s.fine;
+          if (fineRow) fineRow.classList.remove("is-swapping");
+          if (bandRow) bandRow.classList.remove("is-swapping");
+        }, SWAP_MS);
+      }
+
+      function tick() { i = (i + 1) % N; paint(i); }
+      function start() {
+        if (running) return;
+        running = true;
+        paint(i);
+        timer = setInterval(tick, STEP_MS);
+      }
+      function stop() {
+        running = false;
+        clearInterval(timer);
+        timer = null;
+      }
+      return { start, stop };
+    })();
+
+    // ---- 4. Pause cycle when offscreen / on hover ----
+    (() => {
+      const panel = root.querySelector(".tz-panel");
+      if (!panel) return;
+      let inView = false;
+      const io = new IntersectionObserver(([e]) => {
+        inView = e.isIntersecting;
+        inView ? Compass.start() : Compass.stop();
+      }, { threshold: 0.25 });
+      io.observe(panel);
+      panel.addEventListener("mouseenter", () => Compass.stop());
+      panel.addEventListener("mouseleave", () => { if (inView) Compass.start(); });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) Compass.stop();
+        else if (inView) Compass.start();
+      });
+    })();
+
+    // ---- 5. Scroll-triggered reveals (scoped to .tz-mhero) ----
+    (() => {
+      const els = root.querySelectorAll("[data-reveal]");
+      if (!("IntersectionObserver" in window)) {
+        els.forEach(el => el.classList.add("is-revealed"));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-revealed");
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+      els.forEach(el => io.observe(el));
+    })();
+
+    // ---- 6. Founder portrait fallback ----
+    (() => {
+      const img = root.querySelector(".tz-founder-photo-img");
+      if (!img) return;
+      img.addEventListener("error", () => img.classList.add("is-broken"));
+      if (!img.getAttribute("src")) img.classList.add("is-broken");
+    })();
+  })();
+</script>

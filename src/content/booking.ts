@@ -17,7 +17,7 @@ export const BOOKING_EVENTS: BookingEvent[] = [
     title: '15-minute introduction',
     duration: '15-min',
     durationMinutes: 15,
-    description: 'A quick orientation call. You describe what you do; I describe how Tamazia Pvt Ltd would approach the engagement. No commitment, no agenda beyond mutual fit.',
+    description: 'A quick orientation call. You describe what you do; I describe how Tamazia Ltd would approach the engagement. No commitment, no agenda beyond mutual fit.',
     audience: 'Anyone evaluating Tamazia for the first time',
     href: '/book/intro/'
   },

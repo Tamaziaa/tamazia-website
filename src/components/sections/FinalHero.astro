@@ -5,6 +5,7 @@
 // No external font imports — site uses self-hosted WOFF2
 import { heroContent } from '../../content/hero';
 const frameworks = (heroContent as any).regulationFrameworks || [];
+const goldFrameworks: string[] = (heroContent as any).goldHighlightedFrameworks || [];
 const ribbonDouble = [...frameworks, ...frameworks];
 ---
 
@@ -12,7 +13,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
 <aside class="tz-laws-ribbon" aria-hidden="true">
   <div class="tz-laws-ribbon-track">
     {ribbonDouble.map((reg: string) => (
-      <span>{reg}</span>
+      <span class={goldFrameworks.includes(reg) ? 'gold' : ''}>{reg}</span>
     ))}
   </div>
 </aside>
@@ -78,9 +79,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
   </div>
 
   <h2 class="tz-headline">
-    <span class="tz-line tz-tw-line" data-reveal="slide" style="--rd:0ms" data-text="Outrank {{competitors.}}"></span>
-    <span class="tz-line tz-tw-line" data-reveal="slide" style="--rd:160ms" data-text="Master {{regulators.}}"></span>
-    <span class="tz-line tz-line-em tz-tw-line" data-reveal="slide" style="--rd:320ms" data-text="One agency."></span>
+    <span class="tz-line tz-tw-line" data-text="Outrank {{competitors.}}"></span>
+    <span class="tz-line tz-tw-line" data-text="Master {{regulators.}}"></span>
+    <span class="tz-line tz-line-em tz-tw-line" data-text="One agency."></span>
   </h2>
 
   <div class="tz-subs">
@@ -650,65 +651,65 @@ const ribbonDouble = [...frameworks, ...frameworks];
     #tz-fine { font-size: 7.5px; }
   }
 
-  /* Wrapper: no special rules needed with fixed ribbon */
+  /* Wrapper */
   .tz-hero-wrap {
     position: relative;
     width: 100%;
   }
 
-  /* Laws ribbon - fixed right edge of viewport (bypasses any overflow:hidden) */
+  /* ===== Laws ribbon — fixed right-edge · copied from Hero.astro regulation-ribbon ===== */
+  /* approach: horizontal text, right-aligned, tall flex column, ribbon-vertical scroll      */
+  /* ribbon-vertical keyframe: translateY(0) → translateY(-50%) is in tgcs-master.css       */
   .tz-laws-ribbon {
     display: none;
     position: fixed;
-    top: 0;
     right: 0;
-    width: 30px;
+    top: 0;
     height: 100vh;
+    width: 200px;
     overflow: hidden;
-    border-left: 1px solid rgba(201, 167, 114, 0.4);
-    background: rgba(250, 247, 242, 0.95);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    pointer-events: none;
     z-index: 99;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    background: rgba(250, 247, 242, 0.92);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border-left: 1px solid rgba(201, 167, 114, 0.35);
   }
   .tz-laws-ribbon-track {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: max-content;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    white-space: nowrap;
-    animation: tz-laws-scroll-up 180s linear infinite;
+    align-items: flex-end;
+    padding-right: 16px;
+    padding-top: 60px;
+    gap: 18px;
+    animation: ribbon-vertical 240s linear infinite;
     font-family: var(--tz-display);
-    font-size: 8.5px;
-    letter-spacing: 0.20em;
+    font-size: 10px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(90, 26, 43, 0.55);
-    font-weight: 600;
-    padding: 20px 0;
-    transform: rotate(180deg);
+    color: var(--tz-oxblood);
+    font-weight: 500;
   }
   .tz-laws-ribbon-track span {
-    display: inline-block;
     white-space: nowrap;
+    display: block;
+    text-align: right;
+    opacity: 0.7;
   }
-  .tz-laws-ribbon-track span::after {
-    content: " ·";
-    opacity: 0.4;
-    color: rgba(201,167,114,0.6);
+  .tz-laws-ribbon-track span.gold {
+    color: var(--tz-gold);
+    font-style: italic;
+    font-weight: 600;
+    opacity: 1;
   }
-  @keyframes tz-laws-scroll-up {
-    from { transform: rotate(180deg) translateY(0); }
-    to   { transform: rotate(180deg) translateY(-50%); }
-  }
-  @media (min-width: 1024px) {
+  /* show only when viewport is wide enough that ribbon doesn't eat hero content */
+  @media (min-width: 1280px) {
     .tz-laws-ribbon { display: block; }
   }
-  /* Reduce motion: slow the ribbon scroll */
   @media (prefers-reduced-motion: reduce) {
-    .tz-laws-ribbon-track { animation-duration: 360s; }
+    .tz-laws-ribbon-track { animation-duration: 480s; }
   }
 
   /* ===== Typewriter cursor ===== */

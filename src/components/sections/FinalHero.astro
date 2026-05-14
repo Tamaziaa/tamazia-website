@@ -78,9 +78,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
   </div>
 
   <h2 class="tz-headline">
-    <span class="tz-line" data-reveal="slide" style="--rd:0ms"><span class="tz-word">Outrank</span> <em class="tz-word">competitors.</em></span>
-    <span class="tz-line" data-reveal="slide" style="--rd:160ms"><span class="tz-word">Master</span> <em class="tz-word">regulators.</em></span>
-    <span class="tz-line tz-line-em" data-reveal="slide" style="--rd:320ms"><span class="tz-word">One</span> <span class="tz-word">agency.</span></span>
+    <span class="tz-line tz-tw-line" data-reveal="slide" style="--rd:0ms" data-text="Outrank {{competitors.}}"></span>
+    <span class="tz-line tz-tw-line" data-reveal="slide" style="--rd:160ms" data-text="Master {{regulators.}}"></span>
+    <span class="tz-line tz-line-em tz-tw-line" data-reveal="slide" style="--rd:320ms" data-text="One agency."></span>
   </h2>
 
   <div class="tz-subs">
@@ -650,24 +650,26 @@ const ribbonDouble = [...frameworks, ...frameworks];
     #tz-fine { font-size: 7.5px; }
   }
 
-  /* Wrapper: full-width, positions ribbon at right edge of viewport */
+  /* Wrapper: no special rules needed with fixed ribbon */
   .tz-hero-wrap {
     position: relative;
     width: 100%;
   }
 
-  /* Laws ribbon - right side vertical marquee (desktop only) */
+  /* Laws ribbon - fixed right edge of viewport (bypasses any overflow:hidden) */
   .tz-laws-ribbon {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
-    bottom: 0;
     right: 0;
-    width: 28px;
+    width: 30px;
+    height: 100vh;
     overflow: hidden;
     border-left: 1px solid rgba(201, 167, 114, 0.4);
-    background: linear-gradient(180deg, rgba(201,167,114,0.06) 0%, rgba(201,167,114,0.1) 50%, rgba(201,167,114,0.06) 100%);
-    z-index: 10;
+    background: rgba(250, 247, 242, 0.95);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 99;
   }
   .tz-laws-ribbon-track {
     display: flex;
@@ -680,11 +682,11 @@ const ribbonDouble = [...frameworks, ...frameworks];
     white-space: nowrap;
     animation: tz-laws-scroll-up 180s linear infinite;
     font-family: var(--tz-display);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-size: 8.5px;
+    letter-spacing: 0.20em;
     text-transform: uppercase;
-    color: rgba(90, 26, 43, 0.45);
-    font-weight: 500;
+    color: rgba(90, 26, 43, 0.55);
+    font-weight: 600;
     padding: 20px 0;
     transform: rotate(180deg);
   }
@@ -704,8 +706,22 @@ const ribbonDouble = [...frameworks, ...frameworks];
   @media (min-width: 1024px) {
     .tz-laws-ribbon { display: block; }
   }
+  /* Reduce motion: slow the ribbon scroll */
   @media (prefers-reduced-motion: reduce) {
     .tz-laws-ribbon-track { animation-duration: 360s; }
+  }
+
+  /* ===== Typewriter cursor ===== */
+  .tz-tw-typing::after {
+    content: '|';
+    animation: tz-cursor-blink 0.7s step-end infinite;
+    color: var(--tz-oxblood);
+    font-weight: 300;
+    opacity: 1;
+  }
+  @keyframes tz-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
   }
 
 </style>
@@ -862,5 +878,66 @@ const ribbonDouble = [...frameworks, ...frameworks];
       img.addEventListener("error", () => img.classList.add("is-broken"));
       if (!img.getAttribute("src")) img.classList.add("is-broken");
     })();
+    // ---- 7. H1 typewriter ----
+    (() => {
+      function typeText(el, text, speed, onDone) {
+        el.classList.add('tz-tw-typing');
+        const segments = [];
+        let remaining = text;
+        while (remaining.length > 0) {
+          const start = remaining.indexOf('{{');
+          if (start === -1) { segments.push({ text: remaining, emph: false }); break; }
+          if (start > 0) segments.push({ text: remaining.substring(0, start), emph: false });
+          const end = remaining.indexOf('}}', start);
+          segments.push({ text: remaining.substring(start + 2, end), emph: true });
+          remaining = remaining.substring(end + 2);
+        }
+        let segIdx = 0, charIdx = 0;
+        const iv = setInterval(() => {
+          if (segIdx >= segments.length) {
+            clearInterval(iv);
+            el.classList.remove('tz-tw-typing');
+            if (onDone) onDone();
+            return;
+          }
+          const seg = segments[segIdx];
+          charIdx++;
+          let html = '';
+          for (let j = 0; j < segIdx; j++) {
+            html += segments[j].emph
+              ? '<em class=\"tz-word\">' + segments[j].text + '</em>'
+              : segments[j].text;
+          }
+          const partial = seg.text.substring(0, charIdx);
+          html += seg.emph ? '<em class=\"tz-word\">' + partial + '</em>' : partial;
+          el.innerHTML = html;
+          if (charIdx >= seg.text.length) { segIdx++; charIdx = 0; }
+        }, speed);
+      }
+
+      const twLines = Array.from(root.querySelectorAll('.tz-tw-line'));
+      if (!twLines.length) return;
+
+      let started = false;
+      function startTypewriter() {
+        if (started) return;
+        started = true;
+        function runLine(idx) {
+          if (idx >= twLines.length) return;
+          const el = twLines[idx];
+          const text = el.dataset.text || '';
+          typeText(el, text, 42, () => setTimeout(() => runLine(idx + 1), 280));
+        }
+        runLine(0);
+      }
+
+      const h2 = root.querySelector('.tz-headline');
+      if (!h2) return;
+      const twIo = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { twIo.disconnect(); setTimeout(startTypewriter, 250); }
+      }, { threshold: 0.25 });
+      twIo.observe(h2);
+    })();
+
   })();
 </script>

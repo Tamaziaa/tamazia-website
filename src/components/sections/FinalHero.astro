@@ -68,9 +68,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
       <span class="tz-fine-rule"></span>
     </div>
     <div class="tz-panel-foot">
-      <span class="tz-foot-mark">+</span>
-      <span><em>and <strong>18 other sectors</strong>, each cross-referenced</em></span>
-      <span class="tz-foot-mark tz-foot-mark--gold">&mdash;</span>
+      <span class="tz-foot-kicker">Trusted by</span>
+      <span class="tz-foot-clients">KAMAT HOTELS (NSE) &middot; CG ONCOLOGY (NASDAQ: CGON) &middot; MERAAS (DUBAI HOLDING)</span>
+      <span class="tz-foot-tail">and regulated enterprises across London, Dubai, New York and four continents.</span>
     </div>
   </div>
 
@@ -375,16 +375,32 @@ const ribbonDouble = [...frameworks, ...frameworks];
     padding: 8px 0 0;
     border-top: 1px dashed rgba(26,26,29,0.18);
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-family: var(--tz-display);
-    font-style: italic;
-    font-size: 12px;
-    color: var(--tz-oxblood);
-    letter-spacing: 0.04em;
+    flex-direction: column;
+    gap: 3px;
   }
-  .tz-foot-mark         { font-family: var(--tz-body); font-style: normal; font-size: 8px; font-weight: 600; letter-spacing: 0.3em; color: var(--tz-muted); }
-  .tz-foot-mark--gold   { color: var(--tz-gold); }
+  .tz-foot-kicker {
+    font-family: var(--tz-body);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--tz-muted);
+  }
+  .tz-foot-clients {
+    font-family: var(--tz-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--tz-oxblood);
+    line-height: 1.5;
+  }
+  .tz-foot-tail {
+    font-family: var(--tz-body);
+    font-size: 9px;
+    font-style: italic;
+    color: var(--tz-muted);
+    letter-spacing: 0.02em;
+  }
   .tz-panel-foot strong { font-weight: 500; }
 
   /* ===== Coordinates ===== */

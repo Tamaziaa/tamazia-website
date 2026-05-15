@@ -28,7 +28,7 @@ export const whyUsContent = {
     },
     {
       value: '$110M+',
-      caption: 'REVENUE ACROSS FOUR CONTINENTS',
+      caption: 'REVENUE GENERATED FOR CLIENTS',
       icon: 'compass',
     },
   ],

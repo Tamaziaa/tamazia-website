@@ -24,6 +24,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
     <span class="tz-rail-title"><em>The Sextant</em></span>
     <span class="tz-rail-year">MMXVIII</span>
   </div>
+  {/* S3 (Impl Doc v1.0) · Sextant micro-copy */}
+  <p class="tz-rail-microcopy" data-reveal="fade" style="--rd:80ms"><em>Tamazia's regulatory orientation system. We read the rulebook before plotting your course.</em></p>
 
   <div class="tz-panel" data-reveal="slide" style="--rd:60ms">
     <div class="tz-panel-head">
@@ -247,6 +249,24 @@ const ribbonDouble = [...frameworks, ...frameworks];
     text-transform: none;
   }
   .tz-rail-year { color: var(--tz-gold); }
+
+  /* S3 · Sextant micro-copy line */
+  .tz-rail-microcopy {
+    margin: 0;
+    padding: 8px 22px 4px;
+    font-family: var(--tz-display);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--tz-muted);
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+    text-align: center;
+    border-bottom: 1px solid rgba(26,26,29,0.06);
+  }
+  .tz-rail-microcopy em { font-style: italic; color: var(--tz-oxblood); }
+  @media (min-width: 1024px) {
+    .tz-rail-microcopy { padding: 10px 28px 6px; font-size: 13px; }
+  }
 
   /* ===== Sector panel ===== */
   .tz-panel {

@@ -4,7 +4,7 @@
 export const faqContent = {
   eyebrow: '',  /* A5 · was 'TAMAZIA · FAQ' */
   h2: 'FAQ',
-  intro: 'Questions we hear from managing partners, hotel group CMOs, and general counsel before every engagement.',
+  intro: 'Questions we hear from managing partners, group CMOs, marketing directors, and general counsel before every engagement.',
 
   // 4-week audit timeline (B-16 fix · hover popover with detailed week tasks)
   timeline: [
@@ -164,7 +164,7 @@ export const faqContent = {
     { id: 'q6-switch',          label: '06 Switching',        count: 1 },
   ],
   intro:
-    'Questions we hear from managing partners, hotel group CMOs, and general counsel before every engagement.',
+    'Questions we hear from managing partners, group CMOs, marketing directors, and general counsel before every engagement.',
 };
 
 // Backward-compat: ensure each question has `answer` (string) + `category` fields the current component reads.

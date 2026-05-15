@@ -29,9 +29,10 @@ const ribbonDouble = [...frameworks, ...frameworks];
 
   <div class="tz-panel" data-reveal="slide" style="--rd:60ms">
     <div class="tz-panel-head">
-      <span>I · SECTOR</span>
-      <span class="tz-panel-mid"><em>matched · live</em></span>
-      <span>§ <strong id="tz-idx">02</strong> / 07</span>
+      {/* S4 (Impl Doc v1.0) · LIVE — Sector enforcement watch */}
+      <span class="tz-panel-live"><span class="tz-live-dot" aria-hidden="true"></span>LIVE · Sector enforcement watch</span>
+      <span class="tz-panel-mid"><em>Your sector is on the rotation</em></span>
+      <span>§ <strong id="tz-idx">01</strong> / 06</span>
     </div>
     <div class="tz-cp">
       <svg viewBox="0 0 300 130" aria-hidden="true">
@@ -55,8 +56,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
     <div class="tz-band">
       <div class="tz-band-l">
         <div class="tz-band-l-kicker">NOW</div>
-        <div class="tz-band-l-name" id="tz-name">Healthcare</div>
-        <div class="tz-band-l-idx">§ <span id="tz-idx-inline">02</span> / 07</div>
+        <div class="tz-band-l-name" id="tz-name">Legal</div>
+        <div class="tz-band-l-idx">§ <span id="tz-idx-inline">01</span> / 06</div>
       </div>
       <div class="tz-band-laws" id="tz-laws"></div>
     </div>
@@ -65,7 +66,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
       <span class="tz-fine-pill">
         <span class="tz-fine-dot"></span>
         <span class="tz-fine-lab">Fined .</span>
-        <span id="tz-fine">MHRA · POM weight-loss enforcement · <em>2025</em></span>
+        <span id="tz-fine">SRA · £25K firm fining power active · 935 AML engagements · <em>2025</em></span>
       </span>
       <span class="tz-fine-rule"></span>
     </div>
@@ -293,6 +294,36 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
   .tz-panel-head > :first-child,
   .tz-panel-head > :last-child { color: var(--tz-oxblood); }
+  /* S4 · LIVE — Sector enforcement watch label + 4-second pulsing dot (burgundy) */
+  .tz-panel-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--tz-body);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--tz-oxblood);
+  }
+  .tz-live-dot {
+    width: 6px; height: 6px;
+    background: var(--tz-oxblood);
+    border-radius: 50%;
+    animation: tz-live-pulse 4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes tz-live-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.85); }
+    50%      { opacity: 1;    transform: scale(1.15); box-shadow: 0 0 0 4px rgba(90,26,43,0.12); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tz-live-dot { animation: none; opacity: 0.85; }
+  }
+  @media (max-width: 480px) {
+    .tz-panel-live { font-size: 6.5px; letter-spacing: 0.18em; }
+  }
+
   .tz-panel-mid {
     font-family: var(--tz-display);
     font-style: italic;
@@ -955,17 +986,26 @@ const ribbonDouble = [...frameworks, ...frameworks];
     ============================================================ */
 
     // ---- 1. Sector data ----
+    // S4 (Impl Doc v1.0) · 6 researched, current sector enforcement triggers
+    //   Sources verified May 2026: SRA AML Annual Report Oct 2025, ASA upheld rulings register
+    //   (Beautaholics LED face mask Nov 2025, Dr Bunny Aesthetics, food-supplement Aug 2025),
+    //   Cleary Gottlieb on UAE Capital Markets Law 2026, HFSS prohibitions live 5 Jan 2026.
     const SECTORS = [
-      { name: "Law",          abbr: "LAW", laws: ["SRA Code", "MLR 2017", "GDPR Art.6", "DIFC L&R"],         fine: 'SRA · £300K · AML controls · <em>Mar 2025</em>' },
-      { name: "Healthcare",   abbr: "HLT", laws: ["MHRA Blue", "FDA §202", "HIPAA", "ASA CAP-M"],            fine: 'MHRA · POM weight-loss enforcement · <em>2025</em>' },
-      { name: "Hospitality",  abbr: "HSP", laws: ["DMCC 2024", "CMA CPR", "ASA CAP", "GDPR"],               fine: 'CMA · £4.2M · drip pricing · <em>2025</em>' },
-      { name: "Real Estate",  abbr: "RE",  laws: ["SEC Reg-FD", "FCA LR9", "RERA L26", "EU Prosp."],         fine: 'SEC · $19M · IPO disclosure failure · <em>2024</em>' },
-      { name: "Finance",      abbr: "FIN", laws: ["FCA COBS", "MiFID II", "SEC Mkt Rule", "DFSA COB"],       fine: 'FCA · £29M · AML control failure · <em>2024</em>' },
-      { name: "Education",    abbr: "EDU", laws: ["ICO / DPA", "GDPR Art.8", "FERPA", "KCSIE 2024"],         fine: 'ICO · £350K · pupil data breach · <em>2024</em>' },
-      { name: "Professional", abbr: "PRO", laws: ["FRC ES", "ABA MR 7.1", "ICAEW CoE", "LCIA Art.14"],       fine: 'FRC · £21M · audit independence · <em>2024</em>' }
+      { name: "Legal",        abbr: "LAW", laws: ["SRA Code 2019", "BSB Handbook", "ABA MR 7.1-7.3", "DIFC Arb."],
+        fine: 'SRA · £25K firm fining power active · 935 AML engagements · <em>2025</em>' },
+      { name: "Healthcare",   abbr: "HLT", laws: ["MHRA Human Med Regs", "ASA CAP-M", "HIPAA", "CQC Standards"],
+        fine: 'MHRA · POM weight-loss prosecuted · ASA upheld Beautaholics LED · <em>Nov 2025</em>' },
+      { name: "Hospitality",  abbr: "HSP", laws: ["ASA CAP Code", "Package Travel 2018", "UK GDPR", "DTCM"],
+        fine: 'ASA · misleading hotel price comparison rulings upheld · <em>2025–26</em>' },
+      { name: "Real Estate",  abbr: "RE",  laws: ["CPRs 2008", "Tenant Fees Act 2019", "RERA L7 2013", "FCA Fin Prom"],
+        fine: 'UAE Capital Markets Law · cross-border solicitation reach extended · <em>2026</em>' },
+      { name: "Restaurants, Bars, F&B", abbr: "FB", laws: ["FIR 2014", "ASA CAP Food", "HFSS 5 Jan 2026", "FDA §101"],
+        fine: 'ASA · 5 food-supplement upheld · HFSS junk food ad ban live · <em>5 Jan 2026</em>' },
+      { name: "Every sector", abbr: "ALL", laws: ["GDPR", "EU AI Act", "ASA CAP", "Google E-E-A-T"],
+        fine: 'ASA AI-powered Active Ad Monitoring · misleading Dr titles upheld · <em>2024–26</em>' }
     ];
     const N = SECTORS.length;
-    const STEP_MS = 2000;
+    const STEP_MS = 7000;  // S4 · 7s rotation per Impl Doc spec (slow enough to read)
     const SWAP_MS = 240;
 
     const root = document.querySelector('.tz-mhero');
@@ -1016,7 +1056,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
       const fineRow  = root.querySelector(".tz-fine");
       const bandRow  = root.querySelector(".tz-band");
 
-      let i = 1;
+      let i = 0;  // S4 · start on Legal (index 0)
       let timer = null;
       let running = false;
 

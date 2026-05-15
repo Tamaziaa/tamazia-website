@@ -376,7 +376,15 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   }
 
   .briefings-btn {
+    /* F4 · Receive briefings button — defensive sizing so mobile letter-spacing tail never overflows */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     height: 48px;
+    padding: 0 18px;
     background: var(--oxblood);
     color: var(--ivory);
     border: 1px solid var(--gold);
@@ -384,9 +392,15 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.22em;
+    text-align: center;
+    white-space: nowrap;
     cursor: pointer;
     transition: background 300ms ease, border-color 300ms ease;
     border-radius: 4px;
+  }
+  @media (max-width: 480px) {
+    /* F4 · narrower letter-spacing + slight font drop at <=480px so the arrow stays inside */
+    .briefings-btn { font-size: 11px; letter-spacing: 0.14em; padding: 0 14px; }
   }
 
   .briefings-btn:hover {

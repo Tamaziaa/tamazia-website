@@ -30,6 +30,10 @@ export const onRequestPost = async ({ request, env }) => {
 async function unsubscribe(request, env, { token, id }) {
   const headers = { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' };
   if (!env.FORM_SUBMISSIONS) {
+    if (request.method === 'POST') {
+      // RFC 8058 §3: POST must return 200 OK regardless
+      return new Response('unsubscribed', { status: 200, headers });
+    }
     return Response.redirect('https://tamazia.co.uk/unsubscribed/?status=error&reason=kv_unbound', 303);
   }
   let email = null;
@@ -57,6 +61,9 @@ async function unsubscribe(request, env, { token, id }) {
       }
     }
   } else {
+    if (request.method === 'POST') {
+      return new Response('unsubscribed', { status: 200, headers });
+    }
     return Response.redirect('https://tamazia.co.uk/unsubscribed/?status=error&reason=missing_token', 303);
   }
 
@@ -100,6 +107,10 @@ async function unsubscribe(request, env, { token, id }) {
     }
   }
 
+  if (request.method === 'POST') {
+    // RFC 8058 §3: one-click unsubscribe POST must return 200 OK
+    return new Response('unsubscribed', { status: 200, headers });
+  }
   return Response.redirect('https://tamazia.co.uk/unsubscribed/', 303);
 }
 

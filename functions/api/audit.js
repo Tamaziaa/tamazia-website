@@ -3,6 +3,509 @@
 // Compliance-engineered. 200+ frameworks. Lawyer-led. King's College LLM.
 // v3  ·  SEO Score API primary · allorigins HTML fallback · Google Autosuggest
 
+// ============================================================
+// S15 (Impl Doc v1.0) · Sector framework matrix — single source of truth
+// Mirrors /src/data/sector-framework-matrix.json (canonical spec). Keep both in sync.
+// The Tamazia Instrument resolves a user-selected sector to this matrix and returns
+// the precise framework set (per geography) + trigger events for the audit output.
+// ============================================================
+const FRAMEWORK_MATRIX = {
+  version: '1.0',
+  last_updated: '2026-05-15',
+  _source: 'Tamazia Developer Implementation Document v1.0 Section 11 — verbatim',
+  _notes: 'Single source of truth for which frameworks apply to which sector and geography. Update this file when frameworks change rather than hard-coding into pages. Read by the Tamazia Instrument (functions/api/audit.js) at audit time for sector-aware compliance matching.',
+  sectors: {
+    legal: {
+      name: 'Law Firms and Legal Practitioners',
+      geographies: [
+        'UK',
+        'EU',
+        'Middle East',
+        'US'
+      ],
+      frameworks: {
+        UK: [
+          {
+            code: 'SRA Standards 2019',
+            scope: 'Standards 8.7 and 8.9 on client information and publicity'
+          },
+          {
+            code: 'SRA Transparency Rules 2018',
+            scope: 'Mandatory price and service information'
+          },
+          {
+            code: 'BSB Handbook',
+            scope: 'Bar Standards Board advertising and publicity'
+          },
+          {
+            code: 'CILEx Code of Conduct',
+            scope: 'Chartered Legal Executives marketing standards'
+          },
+          {
+            code: 'Legal Services Act 2007',
+            scope: 'Reserved legal activities and authorised persons'
+          }
+        ],
+        EU: [
+          {
+            code: 'CCBE Code of Conduct',
+            scope: 'Council of Bars and Law Societies of Europe advertising standards'
+          },
+          {
+            code: 'EU AI Act Art. 6',
+            scope: 'High-risk AI systems used in legal practice'
+          },
+          {
+            code: 'GDPR',
+            scope: 'Lawful basis and data minimisation in legal marketing'
+          }
+        ],
+        'Middle East': [
+          {
+            code: 'DIFC Courts framework',
+            scope: 'DIFC-seated arbitration and legal practice'
+          },
+          {
+            code: 'ADGM Arbitration Regulations 2015',
+            scope: 'ADGM-seated arbitration'
+          },
+          {
+            code: 'UAE Federal Arbitration Law No. 6 of 2018',
+            scope: 'Onshore UAE arbitration'
+          },
+          {
+            code: 'Saudi Bar Association regulations',
+            scope: 'Saudi-licensed practitioner marketing'
+          }
+        ],
+        US: [
+          {
+            code: 'ABA Model Rules 7.1 to 7.3',
+            scope: 'Communications concerning a lawyer\'s services, including advertising and solicitation'
+          },
+          {
+            code: 'State Bar advertising rules',
+            scope: 'Jurisdiction-specific advertising rules per US state'
+          },
+          {
+            code: 'FTC Endorsement Guides',
+            scope: 'Testimonials and endorsements'
+          }
+        ]
+      },
+      trigger_events_2025_2026: [
+        'SRA AML enforcement: 935 proactive engagements in 2024-25, fines up to GBP 25,000',
+        'SRA increased fining power active since July 2022 enabling on-the-spot GBP 25k fines',
+        'Three UK firms enforced against AI-generated content without solicitor review (early 2026)'
+      ]
+    },
+    healthcare: {
+      name: 'Healthcare and Medical',
+      geographies: [
+        'UK',
+        'EU',
+        'Middle East',
+        'US'
+      ],
+      frameworks: {
+        UK: [
+          {
+            code: 'MHRA Human Medicines Regulations 2012',
+            scope: 'Advertising of medicines'
+          },
+          {
+            code: 'ASA CAP Code Section 12',
+            scope: 'Medicines, medical devices, health and beauty'
+          },
+          {
+            code: 'CQC Inspection Framework',
+            scope: 'Care Quality Commission standards'
+          },
+          {
+            code: 'GMC Good Medical Practice 2024',
+            scope: 'Doctors professional conduct including social media and online presence'
+          },
+          {
+            code: 'GDC Standards',
+            scope: 'General Dental Council advertising standards'
+          }
+        ],
+        EU: [
+          {
+            code: 'Medical Devices Regulation EU 2017/745',
+            scope: 'Marketing of medical devices in EU'
+          },
+          {
+            code: 'EU Falsified Medicines Directive',
+            scope: 'Online sale of medicines'
+          },
+          {
+            code: 'GDPR Art. 9',
+            scope: 'Special category health data'
+          }
+        ],
+        'Middle East': [
+          {
+            code: 'DHA regulations Dubai Health Authority',
+            scope: 'Healthcare provider marketing in Dubai'
+          },
+          {
+            code: 'DOH Abu Dhabi standards',
+            scope: 'Department of Health Abu Dhabi'
+          },
+          {
+            code: 'MoH UAE federal standards',
+            scope: 'Ministry of Health and Prevention UAE'
+          },
+          {
+            code: 'SFDA regulations Saudi',
+            scope: 'Saudi Food and Drug Authority advertising rules'
+          }
+        ],
+        US: [
+          {
+            code: 'HIPAA Privacy Rule 45 CFR 164.508 and 164.502',
+            scope: 'Protected health information in marketing'
+          },
+          {
+            code: 'FDA 21 CFR 202',
+            scope: 'Prescription drug advertising'
+          },
+          {
+            code: 'AMA Ethics Opinion 5.027',
+            scope: 'Use of health-related online sites'
+          },
+          {
+            code: 'State medical board rules',
+            scope: 'Per-state physician advertising rules'
+          }
+        ]
+      },
+      trigger_events_2025_2026: [
+        'MHRA prosecuted unlicensed POM weight-loss advertising 2025',
+        'ASA upheld Beautaholics LED face mask November 2025 for unauthorised medicinal claims',
+        'ASA upheld Dr Bunny Aesthetics ruling on misleading Dr title in cosmetic clinic ads',
+        'ASA Active Ad Monitoring AI system flagging medicinal claims across cosmetic sector'
+      ]
+    },
+    hospitality: {
+      name: 'Hotels and Hospitality',
+      geographies: [
+        'UK',
+        'EU',
+        'Middle East',
+        'US'
+      ],
+      frameworks: {
+        UK: [
+          {
+            code: 'ASA CAP Code',
+            scope: 'Hospitality advertising claims'
+          },
+          {
+            code: 'Consumer Protection from Unfair Trading Regulations 2008',
+            scope: 'Misleading hospitality marketing'
+          },
+          {
+            code: 'Package Travel Regulations 2018',
+            scope: 'Combined hospitality and travel offerings'
+          },
+          {
+            code: 'UK GDPR',
+            scope: 'Guest data and booking flow consent'
+          },
+          {
+            code: 'Schema.org Hotel',
+            scope: 'Structured data for hotel listings'
+          }
+        ],
+        EU: [
+          {
+            code: 'EU Consumer Rights Directive',
+            scope: 'Cross-border hospitality bookings'
+          },
+          {
+            code: 'ePrivacy Regulation',
+            scope: 'Cookie consent and booking tracking'
+          }
+        ],
+        'Middle East': [
+          {
+            code: 'DTCM regulations Dubai',
+            scope: 'Department of Tourism and Commerce Marketing'
+          },
+          {
+            code: 'Trakheesi permit system',
+            scope: 'Tourism establishment permits Dubai'
+          },
+          {
+            code: 'ADTCA standards Abu Dhabi',
+            scope: 'Abu Dhabi Department of Culture and Tourism'
+          }
+        ],
+        US: [
+          {
+            code: 'FTC Endorsement Guides',
+            scope: 'Hotel review and influencer disclosure'
+          },
+          {
+            code: 'State-level booking and disclosure rules',
+            scope: 'Resort fees and disclosure'
+          }
+        ]
+      },
+      trigger_events_2025_2026: [
+        'ASA upheld misleading hospitality price comparison rulings through 2025 and 2026',
+        'Booking.com and Expedia OTA commission ranges 15 to 25% on every reservation',
+        'DTCM enforcement tightening on Dubai hospitality marketing claims'
+      ]
+    },
+    real_estate: {
+      name: 'Real Estate, PBSA, BTR, and Mixed-Use Residential',
+      geographies: [
+        'UK',
+        'EU',
+        'Middle East',
+        'US'
+      ],
+      frameworks: {
+        UK: [
+          {
+            code: 'Consumer Protection from Unfair Trading Regulations 2008',
+            scope: 'Property misdescription'
+          },
+          {
+            code: 'Tenant Fees Act 2019',
+            scope: 'Permitted payments and tenancy marketing'
+          },
+          {
+            code: 'Right to Rent Immigration Act 2014',
+            scope: 'Tenant immigration status checks'
+          },
+          {
+            code: 'Renters Rights Act 2024 to 2025',
+            scope: 'Tenancy reform and marketing implications'
+          },
+          {
+            code: 'Estate Agents Act 1979',
+            scope: 'Estate agent conduct'
+          },
+          {
+            code: 'TPO and TPOS Codes',
+            scope: 'The Property Ombudsman codes of practice'
+          },
+          {
+            code: 'FCA financial promotion rules',
+            scope: 'Property-as-investment marketing'
+          },
+          {
+            code: 'RICS Red Book',
+            scope: 'Valuations referenced in marketing'
+          }
+        ],
+        EU: [
+          {
+            code: 'EU Cross-Border Estate Regulation',
+            scope: 'Cross-border property sales'
+          },
+          {
+            code: 'GDPR',
+            scope: 'Buyer and tenant data marketing pipelines'
+          }
+        ],
+        'Middle East': [
+          {
+            code: 'RERA Law No. 7 of 2013',
+            scope: 'UAE Real Estate Regulatory Agency'
+          },
+          {
+            code: 'Trakheesi permit system',
+            scope: 'Dubai property advertising permits'
+          },
+          {
+            code: 'DLD regulations Dubai Land Department',
+            scope: 'Dubai property transactions'
+          },
+          {
+            code: 'ADREC standards Abu Dhabi Real Estate Centre',
+            scope: 'Abu Dhabi property marketing'
+          }
+        ],
+        US: [
+          {
+            code: 'Fair Housing Act',
+            scope: 'Anti-discrimination in property advertising'
+          },
+          {
+            code: 'State-level real estate commission rules',
+            scope: 'Per-state agent licensing and conduct'
+          },
+          {
+            code: 'SEC Reg D and Reg A',
+            scope: 'Real estate securities and crowdfunding'
+          }
+        ]
+      },
+      trigger_events_2025_2026: [
+        'PBSA aggregator commission 15 to 20% per international student booking',
+        'BTR operators launching new schemes need direct-to-resident pipelines',
+        'UAE Capital Markets Law 2026 extends regulatory reach to cross-border property solicitation',
+        'FCA enforcement on property-as-investment financial promotions accelerating'
+      ]
+    },
+    fnb: {
+      name: 'Restaurants, Bars, and F and B',
+      geographies: [
+        'UK',
+        'EU',
+        'Middle East',
+        'US'
+      ],
+      frameworks: {
+        UK: [
+          {
+            code: 'Food Information Regulations 2014',
+            scope: 'Allergen and nutritional information'
+          },
+          {
+            code: 'ASA CAP Code food and beverage',
+            scope: 'Food advertising claims'
+          },
+          {
+            code: 'HFSS Junk Food Advertising Restrictions effective 5 January 2026',
+            scope: 'TV and online ad restrictions'
+          },
+          {
+            code: 'Schema.org Restaurant and Menu',
+            scope: 'Structured data for restaurants'
+          },
+          {
+            code: 'Trading Standards',
+            scope: 'Local enforcement on F and B claims'
+          }
+        ],
+        EU: [
+          {
+            code: 'EU Food Information to Consumers Regulation FIC',
+            scope: 'Pan-EU food labelling'
+          },
+          {
+            code: 'EU Nutrition and Health Claims Register',
+            scope: 'Authorised health claims on food'
+          }
+        ],
+        'Middle East': [
+          {
+            code: 'Dubai Municipality Food Code',
+            scope: 'Food safety and marketing claims'
+          },
+          {
+            code: 'ESMA standards Emirates Authority for Standardisation',
+            scope: 'Product standards'
+          }
+        ],
+        US: [
+          {
+            code: 'FDA food labelling regulations',
+            scope: 'Federal food labelling'
+          },
+          {
+            code: 'FTC Endorsement Guides',
+            scope: 'Restaurant review and influencer disclosure'
+          },
+          {
+            code: 'State allergen disclosure rules',
+            scope: 'Per-state restaurant allergen requirements'
+          }
+        ]
+      },
+      trigger_events_2025_2026: [
+        'ASA published 5 rulings on food supplement medicinal claims August 2025',
+        'HFSS junk food advertising restrictions effective 5 January 2026',
+        'Deliveroo and Uber Eats commission ranges 25 to 35% per order',
+        'ASA Active Ad Monitoring covering food supplement and beverage claims'
+      ]
+    },
+    every_sector: {
+      name: 'Every Sector catchall',
+      frameworks_universal: [
+        'GDPR and UK GDPR data protection',
+        'EU AI Act AI systems in marketing',
+        'ASA CAP Code UK',
+        'FTC Act Section 5 US',
+        'Wikipedia Notability Guidelines',
+        'Schema.org Organization',
+        'Google E-E-A-T Guidelines'
+      ]
+    }
+  },
+  chip_hover_tooltips: {
+    GDPR: 'Universal data-protection baseline · UK + EU + processor obligations',
+    FCA: 'Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear',
+    SRA: 'UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018',
+    MHRA: 'UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement',
+    ASA: 'UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)',
+    HIPAA: 'US protected health information · 45 CFR 164.508/164.502 marketing rules',
+    'EU AI ACT': 'AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems'
+  }
+};
+
+// Dropdown form option -> JSON sector key. 12 form options collapse to 6 JSON sectors.
+const SECTOR_DROPDOWN_TO_MATRIX_KEY = {
+  'Law Firm':                  'legal',
+  'Healthcare':                'healthcare',
+  'Hotels and Hospitality':    'hospitality',
+  'Real Estate':               'real_estate',
+  'Financial Services':        'real_estate',   // FCA + SEC + DFSA frameworks live under real_estate in the matrix
+  'Restaurants and F&B':       'fnb',
+  'Education':                 'every_sector',
+  'E-commerce':                'every_sector',
+  'Automotive':                'every_sector',
+  'Wellness and Fitness':      'healthcare',
+  'Executive Personal Brand':  'every_sector',
+  'Other':                     'every_sector',
+  // Engagement-type options also fall to every_sector
+  'Content Audit':             'every_sector',
+  'Full Mandate':              'every_sector',
+  'Regulatory Briefing':       'every_sector',
+};
+
+// Resolve sector key (matrix-canonical) for a given user-facing sector string OR existing audit.js key.
+function resolveMatrixSectorKey(input) {
+  if (!input) return 'every_sector';
+  if (FRAMEWORK_MATRIX.sectors[input]) return input;        // already a matrix key
+  if (SECTOR_DROPDOWN_TO_MATRIX_KEY[input]) return SECTOR_DROPDOWN_TO_MATRIX_KEY[input];
+  // Existing audit.js short keys -> matrix keys
+  const legacyMap = { legal: 'legal', healthcare: 'healthcare', hospitality: 'hospitality', 'real-estate': 'real_estate', finance: 'real_estate', fb: 'fnb', education: 'every_sector', default: 'every_sector' };
+  return legacyMap[input] || 'every_sector';
+}
+
+// Return {byGeo:{UK:[..],EU:[..],ME:[..],US:[..]}, total, all_codes, all_scopes, triggers} for the audit panel output.
+function getMatrixFrameworksFor(sectorKey) {
+  const k = resolveMatrixSectorKey(sectorKey);
+  const sec = FRAMEWORK_MATRIX.sectors[k];
+  if (!sec) return { byGeo: {}, total: 0, all_codes: [], all_scopes: [], triggers: [] };
+  if (k === 'every_sector') {
+    const universals = sec.frameworks_universal || [];
+    return { byGeo: { 'Universal': universals.map(c => ({code:c,scope:''})) }, total: universals.length, all_codes: universals, all_scopes: [], triggers: [] };
+  }
+  const fw = sec.frameworks || {};
+  const byGeo = {};
+  let total = 0;
+  const all_codes = [];
+  const all_scopes = [];
+  for (const geo of Object.keys(fw)) {
+    byGeo[geo] = fw[geo];
+    total += fw[geo].length;
+    for (const item of fw[geo]) { all_codes.push(item.code); all_scopes.push(`${geo} · ${item.code} — ${item.scope}`); }
+  }
+  return { byGeo, total, all_codes, all_scopes, triggers: sec.trigger_events_2025_2026 || [] };
+}
+
+// S15 · Authority pricing line (Impl Doc v1.0 Section 15 + Section 33)
+const TAMAZIA_AUTHORITY_PRICING_LINE = 'Authority tier from £4,500/month, or £3,600/month on a six-month commitment.';
+
+
 // Phase C · Canonical regulator list per sector (mirrors src/data/sectorRegulators.js)
 const SECTOR_REGULATORS = {
   legal:          ['SRA Standards', 'Bar Standards Board', 'CLC', 'CILEX', 'FCA (financial services law)', 'CCBE Code'],
@@ -856,6 +1359,7 @@ function buildUpsell(type, input, errors, sector) {
       tier: 'Authority',
       standardRate: '£4,500/month',
       preferredRate: '£3,600/month',
+pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
       term: '6-month strategic engagement',
       framing: 'Preferred Partner Rate',
       body: `The findings above are the surface layer. We have already benchmarked your top 3 competitors against the same 200+ regulatory frameworks  ·  including ${frameworkList}  ·  and they have the same gaps. The firm that closes them first controls the ranking for years. Every Tamazia engagement is led by a King's College LLM specialist in business law, not a junior SEO analyst. The Authority tier is used by regulated groups across London, Dubai, and New York. Six-month engagements include monthly founder review, bi-jurisdictional compliance, bi-weekly revenue attribution, and direct ${profile.regulator} framework monitoring.`,
@@ -869,6 +1373,7 @@ function buildUpsell(type, input, errors, sector) {
     tier: 'Authority',
     standardRate: '£4,500/month',
     preferredRate: '£3,600/month',
+    pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
     term: '6-month strategic engagement',
     framing: 'Preferred Partner Rate',
     body: `A keyword-level audit surfaces intent and competition signals. A full Tamazia engagement adds live URL crawl, Core Web Vitals, meta and schema analysis, and a 200+ framework regulatory content pass  ·  including ${frameworkList}. Competitor benchmarking shows exactly which signals they are missing and why closing them first creates a durable ranking advantage. Every engagement is led by a King's College LLM graduate specialised in business law, not a generalist SEO team. Authority tier clients receive direct ${profile.regulator} monitoring, two-jurisdiction compliance coverage, and monthly founder strategy reviews.`,

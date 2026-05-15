@@ -85,9 +85,9 @@ export const sectorsContent = {
       numeral: 'IV.',
       index: '04',
       size: 'standard',
-      headline: 'Real Estate, Finance and IPOs',
-      regulatoryShorthand: 'SEC Reg FD. FCA Listing Rules. RERA. Trakheesi. Nasdaq IPO. SEC disclosure on every word.',
-      body: 'Property developers. Luxury estate agents. Wealth managers. Fintech startups. Accountants. Investment firms and companies preparing for public markets. We managed digital coverage for exchange-listed IPOs, resulting in shares nearly doubling, and SEC disclosure rules applied to every word published. Virtual tour SEO, international buyer targeting, FCA financial promotion compliance, and pre-IPO digital presence built to institutional standards.',
+      headline: 'Real Estate, Developers and Estate Agents',
+      regulatoryShorthand: 'PBSA. BTR. Residential and commercial developments. Estate agents.',
+      body: 'The three highest-growth real estate marketing segments. Built for student accommodation operators, build-to-rent operators, mixed-use developers, and estate agencies across the UK, EU, Middle East, and US. International student and tenant pipelines built direct, not through aggregator platforms. Compliance reviewed against Consumer Protection from Unfair Trading Regulations 2008, Tenant Fees Act 2019, Right to Rent under Immigration Act 2014, Renters Rights Act 2024 to 2025, TPO codes, and UK GDPR. RERA Law No. 7 of 2013 and Trakheesi for UAE projects. FCA financial promotion rules for property-as-investment marketing.',
       pullQuote: 'High transaction values demand high content standards.',
       cta: 'Real estate audit enquiry',
       tooltip: [

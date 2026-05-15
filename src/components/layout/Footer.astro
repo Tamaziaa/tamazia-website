@@ -195,13 +195,14 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   .brand-lockup:hover { opacity: 0.88; }
   .brand-lockup:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
   .lockup-masthead-img {
-    height: 56px;
+    /* F8 GAP3 · exact-match header masthead height (50px) so footer wordmark reads identically to header */
+    height: 50px;
     width: auto;
     display: block;
     image-rendering: -webkit-optimize-contrast;
   }
   @media (max-width: 640px) {
-    .lockup-masthead-img { height: 48px; }
+    .lockup-masthead-img { height: 40px; }
   }
 
   .tagline-rule {

@@ -96,9 +96,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
     <div class="tz-sub" data-reveal="slide" style="--rd:680ms"><span class="tz-sub-rule"></span><em>Counsel-led, every campaign.</em></div>
   </div>
 
-  <div class="tz-body" data-reveal="slide">
-    {/* F2 · founder credential trimmed — name + credential moved to founder pill per founder direction */}
-    <p><span class="tz-dropcap">C</span>ompliance reviewed before publication, every engagement.</p>
+  <div class="tz-body tz-body-compact" data-reveal="slide">
+    {/* F8 · single-line compliance line — dropcap dropped, sized as a balanced statement */}
+    <p>Compliance reviewed before publication, every engagement.</p>
   </div>
 
   <div class="tz-pull-left" data-reveal="lift">
@@ -573,6 +573,13 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-body em    { color: var(--tz-oxblood); font-style: italic; }
   .tz-body strong{ color: var(--tz-oxblood); }
   .tz-dropcap    { font-family: var(--tz-display); font-size: 50px; line-height: 0.8; float: left; padding: 4px 8px 0 0; color: var(--tz-oxblood); font-weight: 500; }
+  /* F8 · single-line variant — no dropcap, just a balanced statement line that complements the eyebrow */
+  .tz-body-compact p { font-family: var(--tz-display); font-style: italic; font-size: 14px; line-height: 1.55; text-align: center; color: var(--tz-obsidian); }
+  .tz-body-compact p::before, .tz-body-compact p::after { content: ''; display: inline-block; width: 14px; height: 1px; background: var(--tz-gold); vertical-align: middle; margin: 0 10px; opacity: 0.7; }
+  @media (min-width: 1024px) {
+    .tz-body-compact p { font-size: 15px; }
+    .tz-body-compact p::before, .tz-body-compact p::after { width: 18px; margin: 0 12px; }
+  }
 
   /* ===== Pull quotes ===== */
   .tz-pull-left { padding: 0 22px 18px; }
@@ -959,12 +966,12 @@ const ribbonDouble = [...frameworks, ...frameworks];
     50%       { opacity: 0; }
   }
 
-  /* ===== Founder + CTA 50/50 row — equal height both sides ===== */
+  /* F8 GAP4 · Founder + CTA row — pill is now a stacked card (taller); align top so CTA doesn't stretch awkwardly */
   .tz-founder-cta-row {
     display: flex;
     flex-direction: row;
-    align-items: stretch;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 14px;
     padding: 14px 22px 6px;
   }
   .tz-founder-cta-row .tz-founder {
@@ -998,8 +1005,13 @@ const ribbonDouble = [...frameworks, ...frameworks];
     flex: 0 0 auto;
     padding: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    /* F8 · pull CTA up to align with the pill's name+creds row, not the bottom-quote */
+    margin-top: 28px;
+  }
+  @media (max-width: 600px) {
+    .tz-founder-cta-row .tz-cta-wrap { margin-top: 0; }
   }
   .tz-founder-cta-row .tz-cta-wrap .tz-cta {
     width: auto;

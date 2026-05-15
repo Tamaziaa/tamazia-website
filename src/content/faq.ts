@@ -159,8 +159,6 @@ export const faqContent = {
     { id: 'q5-llm-and-ai',      label: '05 LLM & AI',         count: 1 },
     { id: 'q6-switch',          label: '06 Switching',        count: 1 },
   ],
-  intro:
-    'Questions we hear from managing partners, group CMOs, marketing directors, and general counsel before every engagement.',
 };
 
 // Backward-compat: ensure each question has `answer` (string) + `category` fields the current component reads.

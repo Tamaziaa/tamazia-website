@@ -1,3 +1,7 @@
+/* S48 · smooth anchor scrolling */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 /* Round-13 · self-hosted fonts (loaded first so subsequent stylesheets can use them) */
 @import './fonts.css';
 @import './tokens.css';

@@ -45,8 +45,8 @@ export const sectorsContent = {
       index: '02',
       size: 'standard',
       headline: 'Healthcare and Medical',
-      regulatoryShorthand: 'E-E-A-T. HIPAA. MHRA. ASA. CQC. GMC. ADA. Medical content under the hardest scrutiny.',
-      body: 'Private GPs. Dermatologists. Dental practices. Cosmetic clinics. Mental health providers. Plastic surgeons. Medical tourism. Google scrutinises medical content harder than any other sector. We build E-E-A-T-compliant authority, HIPAA-safe contact forms, MHRA-cleared health claims, ADA- and AMA-guideline adherence, patient-journey content, and before-and-after gallery optimisation.',
+      regulatoryShorthand: 'MHRA. ASA. CQC. GMC. HIPAA. DHA. The frameworks Google reads alongside your content.',
+      body: 'Built for private clinics, healthcare groups, and consultant practices across the UK, EU, Middle East, and US. UK practices reviewed against MHRA Human Medicines Regs 2012, ASA CAP Code Section 12, CQC standards, GMC Good Medical Practice 2024, and GDC standards. EU practices under MDR 2017/745 and GDPR Art. 9. Middle East practices under DHA, DOH Abu Dhabi, MoH UAE, and SFDA Saudi standards. US practices under HIPAA Privacy Rule 45 CFR 164.508, FDA 21 CFR 202, and state medical board rules.',
       pullQuote: 'More private patients from search. No regulatory exposure in any direction.',
       cta: 'Healthcare audit enquiry',
       tooltip: [
@@ -66,8 +66,8 @@ export const sectorsContent = {
       index: '03',
       size: 'standard',
       headline: 'Hotels and Hospitality',
-      regulatoryShorthand: 'OTA dependency eliminated. Direct bookings built. Revenue followed.',
-      body: 'Boutique hotels. Luxury resorts. Hotel groups. Heritage properties. Independent properties are losing 15 to 25% of every booking to Booking.com and Expedia. We build direct booking visibility through Google Maps dominance, 50 to 100 location-specific landing pages, international traffic targeting, and AI search indexing so guests book direct.',
+      regulatoryShorthand: 'OTA commission eliminated. Direct bookings rebuilt.',
+      body: 'Booking.com and Expedia take 15 to 25% of every reservation. We rebuild the direct channel so the guest finds the property before the platform does. Built for boutique hotels, hotel groups, resorts, and heritage properties across the UK, EU, Middle East, and US. Compliance reviewed against ASA CAP Code hospitality rules, Package Travel Regulations 2018, and UK GDPR consent on booking flows. DTCM and Trakheesi for UAE properties. EU Consumer Rights Directive for cross-border bookings. £50,000 to £80,000 saved annually on a 100-room property at 70% occupancy.',
       pullQuote: '£50,000 to £80,000 saved annually on a 100-room property at 70% occupancy.',
       cta: 'Hospitality audit enquiry',
       tooltip: [

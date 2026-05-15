@@ -26,6 +26,9 @@ export const howWeWorkContent = {
   h2: 'How Tamazia works.',
   intro: 'Three steps. Audit your exposure. Build compliant visibility. Protect it as laws change.',
 
+  // S31 (Impl Doc v1.0) · Timeline overlay sits between H2 and the opening paragraph
+  timelineOverlay: 'Weeks 1 to 4: the audit. Months 2 onwards: the mandate. Months 4 to 6: revenue impact.',
+
   steps: [
     {
       numeral: '#1',

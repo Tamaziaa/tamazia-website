@@ -11,15 +11,15 @@ export function getStaticPaths() {
 
 const { sector } = Astro.props as any;
 const canonicalUrl = `https://tamazia.co.uk/book/${sector.slug}/`;
-const pageTitle = `Book a ${sector.name.toLowerCase()} call · Tamazia Pvt Ltd`;
-const pageDescription = `Schedule a call with Tamazia Pvt Ltd specifically focused on ${sector.name.toLowerCase()} (${sector.regulator}). Five durations available, paid options included.`;
+const pageTitle = `Book a ${sector.name.toLowerCase()} call · Tamazia Ltd`;
+const pageDescription = `Schedule a call with Tamazia Ltd specifically focused on ${sector.name.toLowerCase()} (${sector.regulator}). Five durations available, paid options included.`;
 ---
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalUrl}>
   <Header />
   <main id="main" class="book-sector">
     <section class="hero">
       <p class="eyebrow">Book a call · {sector.name}</p>
-      <h1>Tamazia Pvt Ltd · {sector.name} engagement scoping</h1>
+      <h1>Tamazia Ltd · {sector.name} engagement scoping</h1>
       <p class="lede">Tamazia operates against the {sector.regulator} regulatory map. Pick the duration that matches what you want from this conversation.</p>
     </section>
     <section class="events">

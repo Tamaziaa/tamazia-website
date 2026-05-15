@@ -28,8 +28,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    // Force all CSS to bundled files (was 'auto' — caused patch-dist gate 94 to fail when a11y queries got inlined into HTML)
-    inlineStylesheets: 'never',
+    inlineStylesheets: 'auto',
   },
   compressHTML: true,
 });

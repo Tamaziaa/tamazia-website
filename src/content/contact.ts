@@ -71,7 +71,7 @@ export const contactContent = {
 
   successMessage: {
     heading: 'Your briefing request has been received.',
-    body: 'The founder will be in touch within 12 hours.',
+    body: 'The founder will be in touch within one business day.',
     note: 'If your enquiry is time-sensitive, book directly using the calendar.',
   },
 };

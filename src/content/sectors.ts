@@ -127,8 +127,8 @@ export const sectorsContent = {
       index: '06',
       size: 'standard',
       headline: 'Every Sector. One Standard.',
-      regulatoryShorthand: 'Schools. E-commerce. Automotive. Gyms. Executives. If it needs to rank, we build it.',
-      body: 'Private schools. Universities. E-commerce brands. Luxury retailers. Car dealerships. Gyms. Spas. Wellness studios. Personal trainers. Executives and founders who need to control what Google says about them. Automotive groups. Fashion brands. If your business needs search visibility, we build it. If your industry has a rulebook, we have read it. If it does not, we make you rank faster than anyone else.',
+      regulatoryShorthand: 'If your industry has a regulator, the rulebook applies.',
+      body: 'We have built for private schools and universities under ASA education advertising rules. E-commerce and luxury retail under CPRs 2008 and GDPR Art. 17 right to erasure. Automotive groups under FCA consumer credit rules where finance is offered. Gyms, spas, and wellness studios under ASA Health Code. Executives, founders, and public figures on Wikipedia, knowledge panel, AI search visibility, and crisis reputation suppression. If your sector is not listed, the engagement is scoped after the audit. The door is open.',
       pullQuote: 'If your industry has a regulator, we have already studied their guidelines.',
       cta: 'Brand audit enquiry',
       tooltip: [

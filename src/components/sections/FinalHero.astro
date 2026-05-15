@@ -167,20 +167,19 @@ const ribbonDouble = [...frameworks, ...frameworks];
   </aside>
   <div class="tz-ribbon-caption" aria-hidden="true"><span>200+ Frameworks reviewed every campaign</span></div>
 
-
-
-  <div class="tz-cta-wrap" data-reveal="lift">
-    {/* S13 (Impl Doc v1.0) · Primary CTA — site-wide consistent wording */}
-    <a href="#contact" class="tz-cta">
-      <span>Run my free audit</span>
-      <span class="tz-cta-arr" aria-hidden="true">→</span>
-    </a>
-  </div>
   </div><!-- /.tz-founder-cta-row -->
 
   <div class="tz-colophon">
     <span>LONDON</span><span class="tz-dot">·</span>
     <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU</span>
+  </div>
+
+  {/* G2 · Primary CTA docked under the engagements colophon */}
+  <div class="tz-cta-wrap tz-cta-wrap--colophon" data-reveal="lift">
+    <a href="#contact" class="tz-cta">
+      <span>Run my free audit</span>
+      <span class="tz-cta-arr" aria-hidden="true">→</span>
+    </a>
   </div>
 
 </section>
@@ -737,7 +736,24 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-trusted-foot { margin: 10px 0 0; font-family: var(--tz-display); font-style: italic; font-size: 13px; color: var(--tz-muted); line-height: 1.4; letter-spacing: 0.01em; }
   .tz-trusted-foot em { color: var(--tz-oxblood); font-style: italic; }
 
-  /* ===== CTA ===== */
+  /* G2 · Primary CTA docked under colophon · centered, narrow on desktop, full-width touch target on mobile */
+  .tz-cta-wrap--colophon {
+    padding: 12px 22px 18px;
+    display: flex;
+    justify-content: center;
+  }
+  .tz-cta-wrap--colophon .tz-cta {
+    width: 100%;
+    max-width: 360px;
+    padding: 14px 20px;
+    font-size: 11px;
+  }
+  @media (min-width: 1024px) {
+    .tz-cta-wrap--colophon { padding: 14px 28px 22px; }
+    .tz-cta-wrap--colophon .tz-cta { max-width: 320px; padding: 16px 22px; font-size: 12px; }
+  }
+
+  /* ===== CTA =====
   .tz-cta-wrap { padding: 14px 22px; }
   .tz-cta {
     background: var(--tz-oxblood);
@@ -968,13 +984,14 @@ const ribbonDouble = [...frameworks, ...frameworks];
     50%       { opacity: 0; }
   }
 
-  /* F8 GAP4 · Founder + CTA row — pill is now a stacked card (taller); align top so CTA doesn't stretch awkwardly */
+  /* G2 · Founder + CTA row simplified — CTA moved under colophon; founder pill spans the full row */
   .tz-founder-cta-row {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 14px;
+    display: block;
     padding: 14px 22px 6px;
+  }
+  .tz-founder-cta-row .tz-founder {
+    display: block;
+    margin: 0;
   }
   .tz-founder-cta-row .tz-founder {
     flex: 1 1 0;
@@ -1004,18 +1021,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
     .tz-founder-cta-row .tz-founder-photo { width: 56px; height: 56px; }
     .tz-founder-cta-row .tz-founder-quote p { font-size: 10px; }
   }
-  .tz-founder-cta-row .tz-cta-wrap {
-    flex: 0 0 auto;
-    padding: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    /* F8 · pull CTA up to align with the pill's name+creds row, not the bottom-quote */
-    margin-top: 28px;
-  }
-  @media (max-width: 600px) {
-    .tz-founder-cta-row .tz-cta-wrap { margin-top: 0; }
-  }
+  /* G2 · CTA wrap inside founder-cta-row removed; rule kept for legacy guard only */
+  .tz-founder-cta-row .tz-cta-wrap { display: none; }
   .tz-founder-cta-row .tz-cta-wrap .tz-cta {
     width: auto;
     flex: 0 0 auto;

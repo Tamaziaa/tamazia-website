@@ -23,8 +23,8 @@ export const sectorsContent = {
       index: '01',
       size: 'standard',
       headline: 'Law Firms and the Legal Sector',
-      regulatoryShorthand: 'SRA. Bar. DIFC. GDPR. ICC. LCIA. SIAC. Every rule, every jurisdiction.',
-      body: 'Solicitors. Barristers. Chambers. Law firms. Personal injury practices. Criminal defence. Family law. Corporate and M&A. Immigration. Employment. Estate planning. We rank every area of legal practice while staying within SRA advertising rules, Bar Association guidelines across all 50 US states, DIFC regulations, EU AI Act, your country-specific laws and GDPR. Practice area pages, legal directory listings, partner biographies, and crisis reputation management.',
+      regulatoryShorthand: 'SRA. BSB. CCBE. DIFC. ADGM. ABA. The rulebook of legal advertising, applied.',
+      body: 'Built for boutique and mid-market law firms, chambers, and legal practitioners across the UK, EU, Middle East, and US. Practice area pages reviewed against SRA Standards 2019 Rules 8.7 and 8.9 and Transparency Rules 2018 for UK firms. CCBE Code and EU AI Act applied for European practitioners. DIFC, ADGM, and UAE Federal Arbitration Law 2018 applied for Middle East practice. ABA Model Rules 7.1 to 7.3 and state bar advertising rules for US firms. Partner biographies, legal directory listings, and crisis reputation management, every word reviewed before publication.',
       // Per-card pull-quote · the 6th unique element
       pullQuote: '2 million legal professionals. None can afford a compliance breach.',
       cta: 'Legal audit enquiry',

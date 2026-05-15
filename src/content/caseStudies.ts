@@ -83,13 +83,13 @@ export const caseStudiesContent = {
 
       metrics: cgoncMetrics,
       bodyParagraphs: [
-        'A piece of digital content published at the wrong moment, with the wrong framing, is not an SEO mistake. It is an SEC Regulation FD violation. CG Oncology was preparing for its Nasdaq listing. Every piece of content had to be accurate on the science, correct on the financials, and clean under SEC disclosure rules simultaneously.',
-        'CG Oncology is listed on the Nasdaq as CGON. Shares nearly doubled, a 96% increase at IPO. Every piece of content Tamazia produced was published without a single compliance incident.',
+        'CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously.',
+        'Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. Shares closed 96% above the offer price at listing.',
       ],
       closingVerdict: 'Your digital agency is either a compliance asset or a compliance risk. There is no middle position.',
 
       pullQuote: 'Your digital agency is either a compliance asset or a compliance risk.',
-      body: 'A piece of digital content published at the wrong moment, with the wrong framing, is not an SEO mistake. It is an SEC Regulation FD violation. CG Oncology was preparing for its Nasdaq listing. Every piece of content had to be accurate on the science, correct on the financials, and clean under SEC disclosure rules simultaneously. CG Oncology is listed on the Nasdaq as CGON. Shares nearly doubled, a 96% increase at IPO. Every piece of content Tamazia produced was published without a single compliance incident.',
+      body: 'CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously. Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. Shares closed 96% above the offer price at listing.',
       stat: '+96%',
       statCaption: 'NASDAQ IPO SHARE PRICE MOVEMENT · CG ONCOLOGY (CGON)',
 

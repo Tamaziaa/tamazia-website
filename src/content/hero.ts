@@ -109,7 +109,7 @@ export const heroContent = {
     'MERAAS (DUBAI HOLDING)',
   ],
   clientRibbonSuffix:
-    'and regulated enterprises across London, Dubai, New York and four continents.',
+    'Engagements delivered across UK, UAE, USA, and EU.',
 
   // Legacy ticker — kept as below-fold strip for scrolling marquee.
   // Dates removed per filler-removal rule.

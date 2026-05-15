@@ -19,24 +19,23 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     <div class="footer-grid">
       <!-- Column 1: Brand -->
       <div class="col col-brand">
-        <!-- Full lockup (crest + wordmark) -->
-        <div class="brand-lockup">
-          <div class="lockup-crest">
-            <img src="/tamazia-mark-horse.png" alt="" class="lockup-mark-img" width="56" height="56" />
-          </div>
-          <div class="lockup-wordmark">{wordmark}</div>
-        </div>
+        {/* F6b · Footer brand lockup — exact-match the header masthead image so the wordmark + horse mark + gold strikethrough align with the header. */}
+        <a href="/" class="brand-lockup" aria-label="Tamazia home">
+          <picture>
+            <source srcset="/tamazia-lockup-masthead-transparent.webp" type="image/webp" />
+            <img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="lockup-masthead-img" width="343" height="64" loading="lazy" decoding="async" />
+          </picture>
+        </a>
 
-        <div class="tagline-rule" aria-hidden="true"></div><p class="tagline">{tagline}</p>
+        <div class="tagline-rule" aria-hidden="true"></div>
+        <p class="tagline">{tagline}</p>
 
+        {/* F6c · 'Engagements delivered…' was overflowing on mobile when chained in the .locations chip row.
+           Split into a primary city chip + a descriptive paragraph beneath so the long line can wrap cleanly. */}
         <div class="locations">
-          {locations.map((loc, i) => (
-            <>
-              {i > 0 && <span class="sep">·</span>}
-              <span class="location">{loc}</span>
-            </>
-          ))}
+          <span class="location">London</span>
         </div>
+        <p class="presence">Engagements delivered across UK, UAE, USA, EU.</p>
 
         <div class="credentials">
           {credentials.map((c, i) => (
@@ -185,48 +184,24 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     margin-bottom: 80px;
   }
 
-  /* Brand column */
+  /* F6b · Brand column lockup — masthead image (matches header exactly) */
   .brand-lockup {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 16px;
     margin-bottom: 24px;
+    text-decoration: none;
+    transition: opacity var(--duration-short, 250ms) ease;
   }
-
-  .lockup-crest {
-    width: 56px;
+  .brand-lockup:hover { opacity: 0.88; }
+  .brand-lockup:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
+  .lockup-masthead-img {
     height: 56px;
-    border-radius: 50%;
-    background: var(--oxblood);
-    border: 1px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-
-  .lockup-crest::before {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border: 1px solid rgba(201, 167, 114, 0.3);
-    border-radius: 50%;
-  }
-
-  .lockup-mark-img {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: auto;
     display: block;
+    image-rendering: -webkit-optimize-contrast;
   }
-
-  .lockup-wordmark {
-    font-family: var(--ff-display);
-    font-size: 36px;
-    font-weight: 500;
-    color: var(--ivory);
-    letter-spacing: 0.08em;
+  @media (max-width: 640px) {
+    .lockup-masthead-img { height: 48px; }
   }
 
   .tagline-rule {
@@ -245,6 +220,7 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     max-width: 420px;
   }
 
+  /* F6d · Footer typography audit · brand column harmonised */
   .locations {
     font-family: var(--ff-body);
     font-size: 13px;
@@ -258,6 +234,21 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     gap: 4px 0;
   }
   .locations .location { white-space: nowrap; }
+  /* F6c · 'Engagements delivered…' paragraph — its own row, never overflows */
+  .presence {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--pearl);
+    opacity: 0.82;
+    margin: 8px 0 16px;
+    letter-spacing: 0.01em;
+    max-width: 360px;
+  }
+  @media (max-width: 640px) {
+    .presence { font-size: 13px; max-width: 100%; }
+  }
 
   .locations .sep {
     color: var(--gold);
@@ -547,15 +538,13 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
       grid-template-columns: 1fr;
       gap: 48px;
     }
-    .lockup-wordmark { font-size: 28px; }
   }
 
   @media (max-width: 640px) {
     .footer { padding: 80px 0 40px; }
     .top-hairline { margin-bottom: 48px; }
-    .brand-lockup { flex-direction: column; align-items: flex-start; gap: 12px; }
+    /* F6 · brand-lockup is now an image link — keep inline-flex */
     .small-print { flex-direction: column; align-items: flex-start; }
-    .lockup-wordmark { font-size: 24px; }
     .tagline-rule {
     height: 1px;
     width: 64px;
@@ -592,13 +581,14 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   .extra-legal-links a { color: var(--ink-muted, #5C4047); text-decoration: none; border-bottom: 1px solid transparent; }
   .extra-legal-links a:hover { border-bottom-color: var(--gold-soft, #C9A772); }
   .brand-address {
+    /* F6d · address harmonised with .presence sister paragraph */
     font-family: var(--ff-body);
     font-size: 11px;
-    line-height: 1.55;
-    letter-spacing: 0.02em;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
     color: var(--pearl);
-    opacity: 0.72;
-    margin: 14px 0 18px;
-    max-width: 320px;
+    opacity: 0.78;
+    margin: 14px 0 22px;
+    max-width: 360px;
   }
 </style>

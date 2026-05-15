@@ -74,28 +74,31 @@ export const heroContent = {
   // Regulation strip · Round-11 · 200 frameworks across UK / EU / US / GCC / Singapore / HK / Switzerland / Australia / Canada / Japan / Korea
   // Indian-jurisdiction laws explicitly excluded (Tamazia does not serve the Indian market — see TAMAZIA-22-PROJECT-HANDOFF §3).
   // Single source of truth for both the vertical right ribbon (Hero) and the horizontal LawsStrip (below QuickAudit).
+  // S2 · curated 30 frameworks (Implementation Doc v1.0 Section 2)
+  // Spans target sectors: legal (SRA, BSB, ABA, DIFC, ADGM), healthcare (MHRA, HIPAA, ASA, CQC),
+  // hospitality (ASA, FIR, GDPR), real estate (RERA, Trakheesi, CPRs, Tenant Fees),
+  // F&B (FIR, ASA), finance (FCA, SEC, Nasdaq, DFSA), universal (GDPR, EU AI Act, E-E-A-T).
   regulationFrameworks: [
-    'GDPR', 'SRA Standards 2019', 'HIPAA Privacy Rule', 'ASA CAP Code', 'FCA COBS 4',
-    'SEC Reg FD', 'RERA', 'Google E-E-A-T', 'ABA Model Rules 7.1-7.3', 'EU AI Act',
-    'CAP Code Section 12', 'Trakheesi', 'NYSE Listed Manual', 'MHRA', 'PECR',
-    'CCPA', 'FINRA Rule 2210', 'UK GDPR', 'Schema.org Hotel', 'SRA Transparency Rules',
-    'FTC Endorsement Guides', 'Children\'s Code', 'DFSA', 'BSB Handbook', 'Nasdaq Rule 5250',
-    'Food Information Regs', 'Consumer Rights Act 2015', 'DPA 2018', 'ASA Health Code', 'DTCM',
-    'Defamation Act 2013', 'e-Commerce Directive', 'CPRA', 'FCA MAR', 'BCAP Code',
-    'ePrivacy Regulation', 'ICC Rules', 'DTRs UK', 'CQC', 'Schema.org Restaurant',
-    'GDPR Art. 17', 'SEC Reg G', 'ADGM', 'SAMA Banking', 'DSA',
-    'FDA 21 CFR 202', 'AMA Ethics 5.027', 'SEC Rule 10b-5', 'Wikipedia Notability', 'FTC §5',
+    'GDPR', 'UK GDPR', 'DPA 2018', 'ePrivacy Regulation', 'PECR',
+    'EU AI Act', 'CCPA', 'CPRA', 'SRA Standards 2019', 'SRA Transparency Rules',
+    'BSB Handbook', 'ABA Model Rules 7.1-7.3', 'DIFC Arbitration Law', 'ADGM Regulations',
+    'MHRA Human Medicines Regs', 'HIPAA Privacy Rule', 'ASA CAP Code', 'ASA Health Code',
+    'CQC Standards', 'FCA COBS 4', 'FCA MAR', 'SEC Reg FD', 'Nasdaq Listed Manual',
+    'RERA Law No. 7 of 2013', 'Trakheesi', 'DFSA Conduct of Business', 'CPRs 2008',
+    'Tenant Fees Act 2019', 'Food Information Regulations 2014', 'Google E-E-A-T Guidelines',
   ],
 
   // 14 gold-italic highlighted picks · clients' daily-vocabulary names (most recognisable per Tamazia's primary buyer personas)
   // C.13: expanded from 12 → 14 per Aman directive 2026-04-30
+  // S2 · 14 gold picks must match labels in the new regulationFrameworks list above
   goldHighlightedFrameworks: [
-    'GDPR', 'HIPAA Privacy Rule', 'SRA Standards 2019', 'ASA CAP Code', 'FCA COBS 4',
-    'SEC Reg FD', 'EU AI Act', 'RERA', 'Google E-E-A-T', 'ABA Model Rules 7.1-7.3',
-    'NYSE Listed Manual', 'CCPA', 'MHRA', 'Trakheesi',
+    'GDPR', 'UK GDPR', 'EU AI Act', 'SRA Standards 2019', 'ABA Model Rules 7.1-7.3',
+    'MHRA Human Medicines Regs', 'HIPAA Privacy Rule', 'ASA CAP Code', 'FCA COBS 4',
+    'SEC Reg FD', 'Nasdaq Listed Manual', 'RERA Law No. 7 of 2013', 'Trakheesi',
+    'Google E-E-A-T Guidelines',
   ],
 
-  ribbonLabel: '200+ regulatory frameworks reviewed per campaign',
+  ribbonLabel: 'Live regulatory register · 30 frameworks shown · selected from 200+ applied to client work',
 
   // Client ribbon — verbatim live site. Kamat stays here (live site confirms).
   // Case-study panel is Orchid (not Kamat) — handled separately in caseStudies.ts.

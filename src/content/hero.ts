@@ -11,7 +11,7 @@ export const heroContent = {
     "LLM, KING'S COLLEGE LONDON",
   ],
 
-  navItems: ['Why Us', 'Sectors', 'Cases', 'Process', 'Pricing', 'FAQ', 'Contact', 'Resources'],
+  navItems: ['Why Us', 'Sectors', 'Cases', 'Process', 'Pricing', 'FAQ', 'Resources'],
 
   // G.1/G.2/G.5 · Full nav with absolute paths for new deep pages
   // NOTE: "About" removed from header — one-page site, About lives in footer only.
@@ -23,8 +23,6 @@ export const heroContent = {
     { label: 'Process',   href: '/#process' },
     { label: 'Pricing',   href: '/#pricing' },
     { label: 'FAQ',       href: '/#faq' },
-    { label: 'Contact',   href: '/#contact' },
-    { label: 'Book',      href: '/book/' },
     { label: 'Resources', href: '/resources/' },
   ],
 

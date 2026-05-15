@@ -4,16 +4,15 @@
 
 export const sectorsContent = {
   // Backward-compatible aliases for current Sectors.astro component
-  eyebrow: 'TAMAZIA · Sectors',
-  h2: 'Every sector. {{One standard.}}',
-  subline:
-    'If your industry has a regulator, we have already studied their guidelines. The sectors change. The standard does not.',
+  // S20 (Impl Doc v1.0) · header hierarchy reorder
+  eyebrow: 'Every sector. One standard.',
+  h2: 'If your industry has a regulator, {{we have already studied their guidelines.}}',
+  subline: 'The sectors change. The standard does not.',
   closingLine: "International Business Law expert from King's at the core.",
 
   // New structured fields (used after component upgrade in Gate B)
-  preambleH2: 'Every sector. {{One standard.}}',
-  preambleBody:
-    'If your industry has a regulator, we have already studied their guidelines. The sectors change. The standard does not.',
+  preambleH2: 'If your industry has a regulator, {{we have already studied their guidelines.}}',
+  preambleBody: 'The sectors change. The standard does not.',
   preambleSignature: "International Business Law expert from King's at the core.",
 
   // All 6 cards equal size (size: 'standard'). No dominant cell.

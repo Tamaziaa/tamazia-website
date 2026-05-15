@@ -25,19 +25,11 @@ export const contactContent = {
     },
     {
       id: 'company',
-      label: 'Company or Organisation',
+      label: 'Company',
       type: 'text',
       required: true,
       autocomplete: 'organization',
       placeholder: 'Company name',
-    },
-    {
-      id: 'role',
-      label: 'Your role or title',
-      type: 'text',
-      required: true,
-      autocomplete: 'organization-title',
-      placeholder: 'Managing Partner, CMO, General Counsel…',
     },
     {
       id: 'sector',
@@ -70,7 +62,7 @@ export const contactContent = {
     },
   ],
 
-  submitLabel: 'Begin the conversation',
+  submitLabel: 'Submit briefing request',
 
   calendlyHeading: 'Or schedule directly using the calendar below.',
   calendlyUrl: '/book/',

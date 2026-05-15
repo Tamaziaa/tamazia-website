@@ -984,22 +984,15 @@ const ribbonDouble = [...frameworks, ...frameworks];
     50%       { opacity: 0; }
   }
 
-  /* G2 · Founder + CTA row simplified — CTA moved under colophon; founder pill spans the full row */
+  /* G4 GAP A · single .tz-founder-cta-row rule · founder pill is the only child after G2 */
   .tz-founder-cta-row {
     display: block;
     padding: 14px 22px 6px;
   }
   .tz-founder-cta-row .tz-founder {
-    display: block;
     margin: 0;
-  }
-  .tz-founder-cta-row .tz-founder {
-    flex: 1 1 0;
-    min-width: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
+    min-width: 0;
   }
   .tz-founder-cta-row .tz-founder-rule { margin-bottom: 8px; }
   /* G1 · cta-row founder pill — even tighter inside the section row */
@@ -1021,53 +1014,10 @@ const ribbonDouble = [...frameworks, ...frameworks];
     .tz-founder-cta-row .tz-founder-photo { width: 56px; height: 56px; }
     .tz-founder-cta-row .tz-founder-quote p { font-size: 10px; }
   }
-  /* G2 · CTA wrap inside founder-cta-row removed; rule kept for legacy guard only */
-  .tz-founder-cta-row .tz-cta-wrap { display: none; }
-  .tz-founder-cta-row .tz-cta-wrap .tz-cta {
-    width: auto;
-    flex: 0 0 auto;
-    font-size: 8.5px;
-    padding: 10px 18px;
-    letter-spacing: 0.13em;
-    border-radius: 999px;
-    flex-direction: row;
-    gap: 10px;
-    height: auto;
-    justify-content: center;
-    white-space: nowrap;
-  }
-  .tz-founder-cta-row .tz-cta-wrap .tz-cta span:first-child {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    min-width: 0;
-  }
-  .tz-founder-cta-row .tz-cta-arr {
-    align-self: center;
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-  }
-  /* Mobile: stack founder + CTA vertically at ≤600px so CTA isn't oversized */
+  /* G4 GAP D · legacy .tz-founder-cta-row .tz-cta-wrap* rules removed; CTA was moved out of the row in G2. */
+  /* G4 GAP D · mobile founder-cta-row · only padding tweak needed now that CTA is gone */
   @media (max-width: 600px) {
-    .tz-founder-cta-row {
-      flex-direction: column;
-      padding: 12px 16px 6px;
-      gap: 8px;
-    }
-    .tz-founder-cta-row .tz-founder { flex: none; }
-    .tz-founder-cta-row .tz-cta-wrap {
-      flex: none;
-      padding: 0;
-    }
-    .tz-founder-cta-row .tz-cta-wrap .tz-cta {
-      font-size: 9px;
-      padding: 11px 16px;
-      letter-spacing: 0.11em;
-      border-radius: 10px;
-      gap: 10px;
-    }
+    .tz-founder-cta-row { padding: 12px 16px 6px; }
   }
   @media (max-width: 380px) {
     .tz-founder-cta-row { padding: 10px 14px 4px; }
@@ -1079,6 +1029,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
     .tz-founder-photo { width: 84px; height: 84px; }
     .tz-founder-photo-mark { font-size: 32px; }
     .tz-founder-cta-row .tz-founder-name { font-size: 22px; }
+    /* G4 GAP B · cap pill width on desktop so the quote doesn't read like a banner */
+    .tz-founder-cta-row .tz-founder-pill { max-width: 540px; margin-inline: auto; }
   }
 
   /* Gate 94 a11y · prefers-contrast + forced-colors — must be in a bundled _astro/*.css file */

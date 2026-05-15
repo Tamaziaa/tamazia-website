@@ -107,8 +107,8 @@ export const sectorsContent = {
       index: '05',
       size: 'standard',
       headline: 'Restaurants, Bars and Food & Beverage',
-      regulatoryShorthand: '30,000 to 40,000 map citations. Google Maps dominance. Deliveroo dependency cut.',
-      body: 'Restaurants. Pubs. Bars. Cafes. Fine dining. Nightclubs. Dark kitchens. We dominate Google Maps through 30,000 to 40,000 map citations per property, menu schema markup for rich snippets, Reserve a Table integration, review generation with incentive systems, food directory listings across 25+ platforms, and event calendar SEO.',
+      regulatoryShorthand: 'Google Maps citations at scale. Direct-order channels rebuilt.',
+      body: 'Restaurant groups, fine-dining venues, bar groups, and hospitality clubs lose 25 to 35% of every order to Deliveroo and Uber Eats. We rebuild the direct ordering channel. 30,000 to 40,000 map citations per property. Menu schema for rich search results. OpenTable and Resy integration. Listings across 25+ food directories. Compliance reviewed against ASA food advertising rules, Food Information Regulations 2014, HFSS junk food advertising restrictions (live 5 January 2026), and allergen disclosure standards.',
       pullQuote: 'Reduce Deliveroo and Uber Eats dependency the same way we reduce OTA dependency for hotels.',
       cta: 'F&B audit enquiry',
       tooltip: [

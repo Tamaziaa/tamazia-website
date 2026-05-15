@@ -1,7 +1,7 @@
 ---
 import { footerContent } from '../../content/footer';
 
-const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, briefingsConsent, legalLinks, copyright, legalEntity, modernSlaveryHref, complaintsHref, acceptableUseHref, securityHref } = footerContent as any;
+const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, briefingsConsent, legalLinks, copyright, legalEntity, modernSlaveryHref, complaintsHref, acceptableUseHref, securityHref, address } = footerContent as any;
 const year = new Date().getFullYear();
 import TurnstileWidget from '../security/TurnstileWidget.astro';
 ---
@@ -46,6 +46,9 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
             </>
           ))}
         </div>
+
+        {/* S44 (Impl Doc v1.0) · founder-confirmed office address line */}
+        {address && <p class="brand-address">{address}</p>}
 
         <!-- Partner badges (I.31) — Google Partner + Meta Business Partner -->
         <div class="partner-badges" aria-label="Agency certifications">
@@ -574,4 +577,14 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   .extra-legal-links { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 14px; font-family: 'Inter', system-ui, sans-serif; font-size: 11px; }
   .extra-legal-links a { color: var(--ink-muted, #5C4047); text-decoration: none; border-bottom: 1px solid transparent; }
   .extra-legal-links a:hover { border-bottom-color: var(--gold-soft, #C9A772); }
+  .brand-address {
+    font-family: var(--ff-body);
+    font-size: 11px;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: var(--pearl);
+    opacity: 0.72;
+    margin: 14px 0 18px;
+    max-width: 320px;
+  }
 </style>

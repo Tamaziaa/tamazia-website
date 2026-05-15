@@ -626,36 +626,38 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-founder-rule span { flex: 1; height: 1px; background: var(--tz-gold); opacity: 0.5; }
   .tz-founder-rule em   { font-family: var(--tz-display); font-style: italic; font-size: 11px; letter-spacing: 0.06em; color: var(--tz-oxblood); }
 
-  /* F3 · Founder pill — stacked card replacing the horizontal pill */
+  /* G1 · Founder pill — compact stacked card · dense, no empty space */
   .tz-founder-pill {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
-    padding: 16px 14px 14px;
+    gap: 8px;
+    padding: 10px 12px 10px;
     border: 1px solid var(--tz-gold);
-    border-radius: 14px;
+    border-radius: 10px;
     background: linear-gradient(180deg, rgba(201,167,114,0.08), rgba(201,167,114,0.02));
-    box-shadow: 0 6px 20px rgba(26,20,15,0.06);
+    box-shadow: 0 4px 14px rgba(26,20,15,0.05);
   }
   .tz-founder-head {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
   }
+  /* Quote sits flush, no left border / no inner padding — every pixel earns its space */
   .tz-founder-quote {
     margin: 0;
-    padding: 10px 14px;
-    background: rgba(250,247,242,0.6);
-    border-left: 2px solid var(--tz-gold);
-    border-radius: 4px;
+    padding: 6px 0 0;
+    border-top: 1px solid rgba(201,167,114,0.32);
+    background: transparent;
+    border-left: 0;
+    border-radius: 0;
   }
   .tz-founder-quote p {
     margin: 0;
     font-family: var(--tz-display);
     font-style: italic;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: 11px;
+    line-height: 1.45;
     color: var(--tz-obsidian);
     letter-spacing: 0.005em;
   }
@@ -664,10 +666,10 @@ const ribbonDouble = [...frameworks, ...frameworks];
     color: var(--tz-oxblood);
     font-weight: 600;
   }
-  /* S12 (Impl Doc v1.0) · Founder portrait sized ~2x — 96px mobile default, 120px on desktop */
+  /* G1 · Founder portrait sized for compact stacked card — 72px base, 84px desktop */
   .tz-founder-photo {
-    width: 96px;
-    height: 96px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     flex-shrink: 0;
     border: 1px solid rgba(201,167,114,0.55);
@@ -687,7 +689,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-founder-photo-mark {
     font-family: var(--tz-display);
     font-style: italic;
-    font-size: 36px;
+    font-size: 28px;
     color: var(--tz-oxblood);
     position: relative;
     z-index: 1;
@@ -705,8 +707,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
   .tz-founder-photo-img.is-broken { display: none; }
   .tz-founder-body  { flex: 1; min-width: 0; }
-  .tz-founder-name  { font-family: var(--tz-display); font-style: italic; font-size: 26px; color: var(--tz-obsidian); line-height: 1.05; letter-spacing: -0.005em; font-weight: 600; }
-  .tz-founder-creds { font-family: var(--tz-display); font-style: italic; font-size: 11px; letter-spacing: 0.02em; color: var(--tz-oxblood); text-transform: none; font-weight: 500; margin-top: 5px; line-height: 1.4; }
+  .tz-founder-name  { font-family: var(--tz-display); font-style: italic; font-size: 20px; color: var(--tz-obsidian); line-height: 1.05; letter-spacing: -0.005em; font-weight: 600; }
+  .tz-founder-creds { font-family: var(--tz-display); font-style: italic; font-size: 10px; letter-spacing: 0.02em; color: var(--tz-oxblood); text-transform: none; font-weight: 500; margin-top: 3px; line-height: 1.35; }
   .tz-founder-li {
     width: 34px;
     height: 34px;
@@ -854,7 +856,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
   @media (max-width: 380px) {
     .tz-headline { font-size: 36px; }
     .tz-pull-centre p { font-size: 18px; }
-    .tz-founder-name { font-size: 22px; }
+    .tz-founder-name { font-size: 17px; }
     .tz-fine-pill { padding: 3px 7px; }
     #tz-fine { font-size: 7.5px; }
   }
@@ -983,23 +985,24 @@ const ribbonDouble = [...frameworks, ...frameworks];
     justify-content: stretch;
   }
   .tz-founder-cta-row .tz-founder-rule { margin-bottom: 8px; }
-  /* F3 · cta-row variant override — slim padding, keep stacked structure */
+  /* G1 · cta-row founder pill — even tighter inside the section row */
   .tz-founder-cta-row .tz-founder-pill {
     flex: 1;
-    padding: 12px 12px 12px;
-    gap: 10px;
-    border-radius: 12px;
+    padding: 10px 12px 10px;
+    gap: 8px;
+    border-radius: 10px;
   }
-  .tz-founder-cta-row .tz-founder-name { font-size: 22px; }
-  .tz-founder-cta-row .tz-founder-creds { font-size: 10.5px; }
-  .tz-founder-cta-row .tz-founder-photo { width: 72px; height: 72px; }
-  .tz-founder-cta-row .tz-founder-quote { padding: 8px 10px; }
-  .tz-founder-cta-row .tz-founder-quote p { font-size: 11px; line-height: 1.5; }
+  .tz-founder-cta-row .tz-founder-name  { font-size: 20px; line-height: 1.05; }
+  .tz-founder-cta-row .tz-founder-creds { font-size: 10px;  margin-top: 3px; line-height: 1.35; }
+  .tz-founder-cta-row .tz-founder-photo { width: 64px; height: 64px; }
+  .tz-founder-cta-row .tz-founder-photo-mark { font-size: 28px; }
+  .tz-founder-cta-row .tz-founder-quote { padding: 6px 0 0; }
+  .tz-founder-cta-row .tz-founder-quote p { font-size: 10.5px; line-height: 1.45; }
   @media (max-width: 600px) {
-    .tz-founder-cta-row .tz-founder-name { font-size: 20px; }
-    .tz-founder-cta-row .tz-founder-creds { font-size: 10px; }
-    .tz-founder-cta-row .tz-founder-photo { width: 64px; height: 64px; }
-    .tz-founder-cta-row .tz-founder-quote p { font-size: 10.5px; }
+    .tz-founder-cta-row .tz-founder-name { font-size: 18px; }
+    .tz-founder-cta-row .tz-founder-creds { font-size: 9.5px; }
+    .tz-founder-cta-row .tz-founder-photo { width: 56px; height: 56px; }
+    .tz-founder-cta-row .tz-founder-quote p { font-size: 10px; }
   }
   .tz-founder-cta-row .tz-cta-wrap {
     flex: 0 0 auto;
@@ -1064,10 +1067,11 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
   @media (min-width: 1024px) {
     .tz-founder-cta-row { padding: 16px 28px 8px; gap: 14px; }
-    /* S12 · desktop founder portrait — 120px */
-    .tz-founder-cta-row .tz-founder-photo { width: 120px; height: 120px; }
-    .tz-founder-photo { width: 120px; height: 120px; }
-    .tz-founder-photo-mark { font-size: 44px; }
+    /* G1 · compact founder photo — 84px desktop */
+    .tz-founder-cta-row .tz-founder-photo { width: 84px; height: 84px; }
+    .tz-founder-photo { width: 84px; height: 84px; }
+    .tz-founder-photo-mark { font-size: 32px; }
+    .tz-founder-cta-row .tz-founder-name { font-size: 22px; }
   }
 
   /* Gate 94 a11y · prefers-contrast + forced-colors — must be in a bundled _astro/*.css file */
@@ -1081,22 +1085,22 @@ const ribbonDouble = [...frameworks, ...frameworks];
     .nav-cta, .tz-cta, .briefings-btn { border: 1px solid CanvasText; }
   }
 
-  /* F3 · Founder social icons — row at bottom of stacked pill */
+  /* G1 · compact socials — smaller, snug */
   .tz-founder-socials {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 6px;
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: 0;
     align-self: flex-start;
   }
   .tz-founder-li,
   .tz-founder-ig {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     background: var(--tz-oxblood);
     color: var(--tz-gold);
-    border-radius: 6px;
+    border-radius: 5px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

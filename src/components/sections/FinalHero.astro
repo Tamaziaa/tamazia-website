@@ -77,8 +77,12 @@ const ribbonDouble = [...frameworks, ...frameworks];
     </div>
   </div>
 
-  {/* S10 (Impl Doc v1.0) · First principle promoted to eyebrow above H1 */}
-  <p class="tz-eyebrow-principle" data-reveal="fade" style="--rd:40ms">Ranking is only valuable if it is <em>legal.</em></p>
+  {/* F1 · Eyebrow principle — restyled, 'legal' standout */}
+  <p class="tz-eyebrow-principle" data-reveal="fade" style="--rd:40ms">
+    <span class="tz-eyebrow-orn" aria-hidden="true"></span>
+    <span class="tz-eyebrow-text">Ranking is only valuable if it is <em><span class="tz-eyebrow-legal">legal.</span></em></span>
+    <span class="tz-eyebrow-orn" aria-hidden="true"></span>
+  </p>
 
   <h2 class="tz-headline">
     <span class="tz-line tz-tw-line" data-text="Outrank {{competitors.}}"></span>
@@ -466,31 +470,60 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
   .tz-coord-dot { opacity: 0.7; }
 
-  /* S10 · Eyebrow over-headline — "Ranking is only valuable if it is legal." */
+  /* F1 · Eyebrow over-headline — brand-aligned beautification, 'legal' standout */
   .tz-eyebrow-principle {
-    margin: 16px 0 8px;
+    margin: 22px 0 10px;
     padding: 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--tz-oxblood);
+    text-align: center;
+    line-height: 1.55;
+  }
+  .tz-eyebrow-text {
     font-family: var(--tz-body);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.36em;
     text-transform: uppercase;
-    color: var(--tz-oxblood);
-    text-align: center;
-    line-height: 1.55;
+    white-space: normal;
   }
   .tz-eyebrow-principle em {
-    font-family: var(--tz-display);
-    font-style: italic;
+    font-style: normal;
     text-transform: none;
     letter-spacing: 0;
-    font-size: 12px;
-    color: var(--tz-oxblood);
-    font-weight: 500;
+  }
+  .tz-eyebrow-legal {
+    font-family: var(--tz-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--tz-gold);
+    letter-spacing: 0.01em;
+    padding: 0 2px;
+    position: relative;
+    background: linear-gradient(180deg, transparent 64%, rgba(201,167,114,0.18) 64%, rgba(201,167,114,0.18) 92%, transparent 92%);
+  }
+  .tz-eyebrow-orn {
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--tz-gold), transparent);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  @media (max-width: 480px) {
+    .tz-eyebrow-principle { gap: 8px; padding: 0 16px; margin: 18px 0 6px; }
+    .tz-eyebrow-text { font-size: 9px; letter-spacing: 0.28em; }
+    .tz-eyebrow-legal { font-size: 14px; }
+    .tz-eyebrow-orn { width: 18px; }
   }
   @media (min-width: 1024px) {
-    .tz-eyebrow-principle { padding: 0 28px; font-size: 11px; margin: 22px 0 12px; }
-    .tz-eyebrow-principle em { font-size: 13px; }
+    .tz-eyebrow-principle { padding: 0 28px; margin: 28px 0 14px; gap: 16px; }
+    .tz-eyebrow-text { font-size: 11px; }
+    .tz-eyebrow-legal { font-size: 19px; }
+    .tz-eyebrow-orn { width: 36px; }
   }
 
   /* ===== Headline ===== */

@@ -76,6 +76,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
     </div>
   </div>
 
+  {/* S10 (Impl Doc v1.0) · First principle promoted to eyebrow above H1 */}
+  <p class="tz-eyebrow-principle" data-reveal="fade" style="--rd:40ms">Ranking is only valuable if it is <em>legal.</em></p>
+
   <h2 class="tz-headline">
     <span class="tz-line tz-tw-line" data-text="Outrank {{competitors.}}"></span>
     <span class="tz-line tz-tw-line" data-text="Master {{regulators.}}"></span>
@@ -95,13 +98,6 @@ const ribbonDouble = [...frameworks, ...frameworks];
 
   <div class="tz-pull-left" data-reveal="lift">
     <p>Your SEO agency doesn't have a <em>lawyer.</em> <em>Ours is run by one.</em></p>
-  </div>
-
-  <div class="tz-pull-centre" data-reveal="lift">
-    <span class="tz-corner tz-corner-tl"></span><span class="tz-corner tz-corner-tr"></span>
-    <span class="tz-corner tz-corner-bl"></span><span class="tz-corner tz-corner-br"></span>
-    <p>Ranking is only valuable if it is <em>legal.</em></p>
-    <div class="tz-pull-cite">&mdash; THE FIRST PRINCIPLE &mdash;</div>
   </div>
 
   <div class="tz-body tz-body-tight" data-reveal="slide">
@@ -436,6 +432,33 @@ const ribbonDouble = [...frameworks, ...frameworks];
     color: var(--tz-gold);
   }
   .tz-coord-dot { opacity: 0.7; }
+
+  /* S10 · Eyebrow over-headline — "Ranking is only valuable if it is legal." */
+  .tz-eyebrow-principle {
+    margin: 16px 0 8px;
+    padding: 0 22px;
+    font-family: var(--tz-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--tz-oxblood);
+    text-align: center;
+    line-height: 1.55;
+  }
+  .tz-eyebrow-principle em {
+    font-family: var(--tz-display);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+    color: var(--tz-oxblood);
+    font-weight: 500;
+  }
+  @media (min-width: 1024px) {
+    .tz-eyebrow-principle { padding: 0 28px; font-size: 11px; margin: 22px 0 12px; }
+    .tz-eyebrow-principle em { font-size: 13px; }
+  }
 
   /* ===== Headline ===== */
   .tz-headline {

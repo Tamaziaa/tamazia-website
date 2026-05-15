@@ -21,10 +21,10 @@ export const pricingContent = {
       priceGbp: 2500,
       priceGbpStandard: 3300,
       savesGbp6: 4800,
-      tagline: 'Single-location businesses building local search authority and compliance defence.',
+      tagline: 'Single-location businesses and small groups building local search authority and compliance defence.',
       idealClients:
-        'Single-location hotels, clinics, restaurants, estate agents. Sole solicitors and practitioners. Financial advisers establishing local authority. Executives building professional visibility.',
-      description: 'Single-location hotels, clinics, restaurants, estate agents. Sole solicitors and practitioners. Financial advisers establishing local authority. Executives building professional visibility.',
+        'Single-clinic cosmetic, dermatology, dental practices. Boutique single-property hotels. Independent restaurants and bars. Small estate agencies. Sole solicitors and 2-partner law firms. Financial advisers and executives building professional visibility.',
+      description: 'Single-clinic cosmetic, dermatology, dental practices. Boutique single-property hotels. Independent restaurants and bars. Small estate agencies. Sole solicitors and 2-partner law firms. Financial advisers and executives building professional visibility.',
       featuresHeading: 'WHAT IS ALWAYS INCLUDED',
       features: [
         {

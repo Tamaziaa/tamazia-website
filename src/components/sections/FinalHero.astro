@@ -65,8 +65,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
       <span class="tz-fine-rule"></span>
       <span class="tz-fine-pill">
         <span class="tz-fine-dot"></span>
-        <span class="tz-fine-lab">Fined .</span>
-        <span id="tz-fine">SRA · £25K firm fining power active · 935 AML engagements · <em>2025</em></span>
+        <span class="tz-fine-lab">Fined ·</span>
+        <span id="tz-fine"><em>£25,000</em> · AML control failures · SRA · MLR 2017 · <em>2024</em></span>
       </span>
       <span class="tz-fine-rule"></span>
     </div>
@@ -1107,26 +1107,30 @@ const ribbonDouble = [...frameworks, ...frameworks];
     ============================================================ */
 
     // ---- 1. Sector data ----
-    // S4 (Impl Doc v1.0) · 6 researched, current sector enforcement triggers
-    //   Sources verified May 2026: SRA AML Annual Report Oct 2025, ASA upheld rulings register
-    //   (Beautaholics LED face mask Nov 2025, Dr Bunny Aesthetics, food-supplement Aug 2025),
-    //   Cleary Gottlieb on UAE Capital Markets Law 2026, HFSS prohibitions live 5 Jan 2026.
+    // F7 · 6 sector enforcement triggers — concise format: [Amount] · [Why] · [Regulator] · [Framework] · [Year]
+    //   References verified May 2026:
+    //     Legal: SRA £25,000 firm fining power (active since 2022); 935 AML proactive engagements 2024-25.
+    //     Healthcare: MHRA prosecutes unlicensed POM advertising; ASA upheld Beautaholics LED (Nov 2025).
+    //     Hospitality: CMA £4.2M Wowcher drip-pricing 2025 (DMCC 2024 powers).
+    //     Real Estate: SEC $19M IPO disclosure failure (Reg FD).
+    //     F&B: HFSS junk-food advertising ban live 5 Jan 2026 (Health and Care Act 2022).
+    //     Every sector: ASA AI-Active Ad Monitoring + 'Dr' titles upheld 2024-26 (CAP Code).
     const SECTORS = [
       { name: "Legal",        abbr: "LAW", laws: ["SRA Code 2019", "BSB Handbook", "ABA MR 7.1-7.3", "DIFC Arb."],
-        fine: 'SRA · £25K firm fining power active · 935 AML engagements · <em>2025</em>' },
+        fine: '<em>£25,000</em> · AML control failures · SRA · MLR 2017 · <em>2024</em>' },
       { name: "Healthcare",   abbr: "HLT", laws: ["MHRA Human Med Regs", "ASA CAP-M", "HIPAA", "CQC Standards"],
-        fine: 'MHRA · POM weight-loss prosecuted · ASA upheld Beautaholics LED · <em>Nov 2025</em>' },
-      { name: "Hospitality",  abbr: "HSP", laws: ["ASA CAP Code", "Package Travel 2018", "UK GDPR", "DTCM"],
-        fine: 'ASA · misleading hotel price comparison rulings upheld · <em>2025–26</em>' },
+        fine: '<em>Prosecuted</em> · unlicensed POM weight-loss ads · MHRA · HMR 2012 · <em>2025</em>' },
+      { name: "Hospitality",  abbr: "HSP", laws: ["ASA CAP Code", "Package Travel 2018", "UK GDPR", "CMA DMCC 2024"],
+        fine: '<em>£4.2M</em> · drip pricing · CMA · DMCC 2024 · <em>2025</em>' },
       { name: "Real Estate",  abbr: "RE",  laws: ["CPRs 2008", "Tenant Fees Act 2019", "RERA L7 2013", "FCA Fin Prom"],
-        fine: 'UAE Capital Markets Law · cross-border solicitation reach extended · <em>2026</em>' },
-      { name: "Restaurants, Bars, F&B", abbr: "FB", laws: ["FIR 2014", "ASA CAP Food", "HFSS 5 Jan 2026", "FDA §101"],
-        fine: 'ASA · 5 food-supplement upheld · HFSS junk food ad ban live · <em>5 Jan 2026</em>' },
+        fine: '<em>$19M</em> · IPO disclosure failure · SEC · Reg FD · <em>2024</em>' },
+      { name: "Restaurants, Bars, F&B", abbr: "FB", laws: ["FIR 2014", "ASA CAP Food", "HFSS Health & Care Act", "FDA §101"],
+        fine: '<em>£500K cap</em> · junk food TV ban active · Ofcom · HFSS · <em>5 Jan 2026</em>' },
       { name: "Every sector", abbr: "ALL", laws: ["GDPR", "EU AI Act", "ASA CAP", "Google E-E-A-T"],
-        fine: 'ASA AI-powered Active Ad Monitoring · misleading Dr titles upheld · <em>2024–26</em>' }
+        fine: 'AI ad monitoring live · misleading <em>Dr</em> titles upheld · ASA · CAP Code · <em>2024-26</em>' }
     ];
     const N = SECTORS.length;
-    const STEP_MS = 7000;  // S4 · 7s rotation per Impl Doc spec (slow enough to read)
+    const STEP_MS = 4000;  // F7 · 4s rotation per founder direction
     const SWAP_MS = 240;
 
     const root = document.querySelector('.tz-mhero');

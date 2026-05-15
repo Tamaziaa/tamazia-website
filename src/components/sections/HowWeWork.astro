@@ -45,6 +45,8 @@ const roleIcons: Record<string, string> = {
       <div class="left-col">
         <div class="eyebrow">{eyebrow}</div>
         <h2 id="howwework-heading" class="section-h2">{h2}</h2>
+        {/* S31 (Impl Doc v1.0) · timeline overlay sits between H2 and opening paragraph */}
+        {timelineOverlay && (<p class="hw-timeline-overlay"><em>{timelineOverlay}</em></p>)}
         <p class="body">{paragraph}</p>
         <blockquote class="pull-quote anim-quote-in" set:html={parseEmph(pullQuote)} />
       </div>

@@ -68,7 +68,7 @@ export const heroContent = {
   },
 
   cta: {
-    label: 'Request your compliance and SEO audit',
+    label: 'Run my free audit',
     href: '#contact',
   },
 

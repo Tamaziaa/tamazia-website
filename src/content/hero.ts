@@ -30,8 +30,9 @@ export const heroContent = {
   navCtaUrl: '/book/',
 
   // Subhead (above H1). Verbatim live site. Restored — was missing from prior rebuild.
+  // S8 (Impl Doc v1.0) · founder credential — names Aman Pareek explicitly
   subHeadline:
-    "Led by a founder with an {{LLM in International Business Law}}, King’s College London. Compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
+    "Founded by {{Aman Pareek}}, LLM in International Business Law, King’s College London. Compliance reviewed before publication, every engagement.",
 
   // Positioning line — restored verbatim.
   positioningLine: "Your SEO agency doesn’t have a {{lawyer}}. Ours is run by {{one}}.",

@@ -12,7 +12,7 @@ export function getStaticPaths() {
 
 const { event } = Astro.props as any;
 const canonicalUrl = `https://tamazia.co.uk/book/${event.slug}/`;
-const pageTitle = `${event.title} · Tamazia Pvt Ltd`;
+const pageTitle = `${event.title} · Tamazia Ltd`;
 const pageDescription = `${event.description.slice(0, 150)}`;
 const calLink = `tamazia/${event.slug}`;
 ---

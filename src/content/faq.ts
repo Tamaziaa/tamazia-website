@@ -36,11 +36,7 @@ export const faqContent = {
       id: 'q1-process',
       question: 'What actually happens when Tamazia starts working on our account?',
       answerParagraphs: [
-        "Week one: technical audit. Every crawlable page reviewed against Google's Core Web Vitals: LCP, INP, and CLS benchmarked against Google's thresholds. Redirect chains, crawl errors, broken links, robots.txt conflicts, heading hierarchy, title tags, and meta descriptions identified. A prioritised fix document delivered to your development team as implementation-ready instructions. Not observations. Instructions.",
-        "Week two: on-page and compliance audit. Every page reviewed simultaneously against search engine requirements and the regulatory advertising standards governing your sector. A page that ranks but breaches SRA Transparency Rules or MHRA health claim standards is worse than a page that does not rank at all. Both problems are identified and fixed.",
-        "Week three: off-page audit. Backlink profile reviewed for toxic links suppressing rankings and quality authority signals that can be amplified. Competitor domain authority benchmarked. The gap quantified. A link building and Digital PR plan designed to close it through editorial placements, not purchased links.",
-        "Week four: Google Business Profile optimisation, social signals, and content calendar locked. For hospitality, healthcare, and restaurants, GBP is the single highest-leverage ranking asset on the entire digital presence. Most businesses manage it poorly. The content calendar is compliance-reviewed before a single piece is commissioned.",
-        "From month two: content published, backlink campaign live, rankings tracked. From month three: revenue attributed to organic search in GA4. Rankings typically begin to move at months two to three. Revenue impact typically arrives between months four and six. Any agency promising revenue in thirty days is not being honest with you.",
+        "See the Process section above for the four-week audit structure. From month two: content published, backlink campaign live, rankings tracked. From month three: revenue attributed to organic search in GA4. Rankings typically begin to move at months two to three. Revenue impact typically arrives between months four and six. Any agency promising revenue in thirty days is not being honest with you.",
       ],
       chips: ['Core Web Vitals', 'SRA', 'MHRA', 'GBP', 'GA4'],
     },

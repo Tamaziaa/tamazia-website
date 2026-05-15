@@ -646,6 +646,22 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
   .tz-colophon .tz-dot { color: var(--tz-gold); }
 
+  /* S14 (Impl Doc v1.0) · Long prose label inside colophon — flows on narrow viewports */
+  .tz-colophon-prose {
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tz-muted);
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: normal;
+    text-align: right;
+  }
+  @media (max-width: 480px) {
+    .tz-colophon { flex-wrap: wrap; gap: 6px; row-gap: 4px; }
+    .tz-colophon-prose { font-size: 8px; letter-spacing: 0.14em; text-align: left; }
+  }
+
   /* ===== Needle halo pulse ===== */
   @keyframes tzPulse {
     0%, 100% { opacity: 0.4; }

@@ -86,10 +86,10 @@ export const pricingContent = {
       priceGbp: 4500,
       priceGbpStandard: 6000,
       savesGbp6: 9000,
-      tagline: 'Multi-location brands scaling organic growth across regions and jurisdictions.',
+      tagline: 'Multi-location and multi-property brands scaling organic growth across regions and jurisdictions.',
       idealClients:
-        'Multi-location hotel groups. Law firms across practice areas and offices. Healthcare groups. Financial services firms competing nationally. Real estate developers with international buyers. F&B brands expanding beyond a single location.',
-      description: 'Multi-location hotel groups. Law firms across practice areas and offices. Healthcare groups. Financial services firms competing nationally. Real estate developers with international buyers. F&B brands expanding beyond a single location.',
+        'Boutique hotel groups. Law firms with 3 to 10 partners and multiple practice areas. Healthcare and cosmetic groups across 2 to 8 locations. PBSA operators. BTR operators launching new schemes. Mixed-use residential developers selling off-plan to international buyers. Restaurant groups across multiple venues. Estate agencies across multiple branches.',
+      description: 'Boutique hotel groups. Law firms with 3 to 10 partners and multiple practice areas. Healthcare and cosmetic groups across 2 to 8 locations. PBSA operators. BTR operators launching new schemes. Mixed-use residential developers selling off-plan to international buyers. Restaurant groups across multiple venues. Estate agencies across multiple branches.',
       includesAllOfPrior: 'Everything in Foundation, included.',
       featuresHeading: 'WHAT IS ADDED AT THIS TIER',
       features: [

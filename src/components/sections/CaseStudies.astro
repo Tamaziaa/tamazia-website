@@ -86,7 +86,7 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
   /* Section header · Round-10 · was 80-128 → 40-64 */
   .section-header {
     background: var(--ivory);
-    padding-block: clamp(72px, 7vw, 112px);
+    padding-block: clamp(40px, 5vw, 64px);
     text-align: center;
   }
 
@@ -388,7 +388,7 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
   /* Closing · Round-10 · was 96-160 → 48-80 */
   .closing-block {
     background: var(--ivory);
-    padding-block: clamp(48px, 6vw, 80px);
+    padding-block: clamp(32px, 5vw, 56px);
     text-align: center;
   }
 
@@ -482,9 +482,9 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
 
   @media (max-width: 480px) {
     /* section-header clamp(72px,7vw,112px) collapses to 72px on mobile — way too tall */
-    .section-header { padding-block: 36px; }
+    .section-header { padding-block: 22px; }
     /* case-panel clamp(40px,5vw,64px) = 40px on mobile — tighten to 28px */
-    .case-panel { padding-block: 28px; }
+    .case-panel { padding-block: 20px; }
   }
 </style>
 

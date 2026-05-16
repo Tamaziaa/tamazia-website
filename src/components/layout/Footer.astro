@@ -133,7 +133,8 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     /* B-28 fix · gradient finale into oxblood-ink */
     background: linear-gradient(180deg, #3A0F1C 0%, #2A0C14 60%, #1F0810 100%);
     color: var(--pearl);
-    padding: 88px 0 40px;
+    /* H2 · footer padding tightened — 88/40 -> 48/28 desktop, 56/24 mobile */
+    padding: 48px 0 28px;
     position: relative;
     overflow: hidden;
   }
@@ -168,7 +169,7 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   .top-hairline {
     height: 2px;
     background: var(--gold);
-    margin-bottom: 80px;
+    margin-bottom: 40px;
     opacity: 0.6;
   }
 
@@ -176,8 +177,8 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   .footer-grid {
     display: grid;
     grid-template-columns: 1.2fr 0.8fr 1fr;
-    gap: 64px;
-    margin-bottom: 80px;
+    gap: 40px;
+    margin-bottom: 48px;
   }
 
   /* F6b · Brand column lockup — masthead image (matches header exactly) */
@@ -533,13 +534,13 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   @media (max-width: 1024px) {
     .footer-grid {
       grid-template-columns: 1fr;
-      gap: 48px;
+      gap: 32px;
     }
   }
 
   @media (max-width: 640px) {
-    .footer { padding: 80px 0 40px; }
-    .top-hairline { margin-bottom: 48px; }
+    .footer { padding: 56px 0 24px; }
+    .top-hairline { margin-bottom: 28px; }
     /* F6 · brand-lockup is now an image link — keep inline-flex */
     .small-print { flex-direction: column; align-items: flex-start; }
     .tagline-rule {

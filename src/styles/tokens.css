@@ -100,7 +100,7 @@
 
   /* CONTAINER */
   --container-max: 1440px;
-  --container-padding: clamp(24px, 4vw, 80px);
+  --container-padding: clamp(24px, 3vw, 48px);
 
   /* MOTION — F.37: canonical duration vars. All component transitions must use these.
      280ms/300ms raw values in components are acceptable aliases for --duration-micro.

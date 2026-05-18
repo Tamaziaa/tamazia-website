@@ -18,7 +18,7 @@
     "@neondatabase/serverless": "^0.10.4"
   },
   "devDependencies": {
-    "@netlify/functions": "^5.2.0",
+    "@netlify/functions": "^5.2.1",
     "@playwright/test": "^1.59.1",
     "typescript": "^5.5.0"
   }

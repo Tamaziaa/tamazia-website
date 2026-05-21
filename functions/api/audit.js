@@ -1387,6 +1387,7 @@ pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
 
 
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { syncLeadToNeon } from '../_lib/neon-sync.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
 
 const MAX_BODY_BYTES = 64 * 1024;
@@ -1458,6 +1459,7 @@ export const onRequestPost = async ({ request, env }) => {
 
   const email = (body.email || '').toString().trim().toLowerCase();
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (emailValid) syncLeadToNeon(env, 'audit', { email, 'audit-input': input, sector: (body.sector || '') }, '');
   const sectorChoice = (body.sector || '').toString().trim();
 
   if (!emailValid && body.demo !== true) {

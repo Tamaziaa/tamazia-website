@@ -5,6 +5,7 @@
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 import { mintRequestId } from '../_lib/request-id.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
+import { syncLeadToNeon } from '../_lib/neon-sync.js';
 
 export async function handleSubmission(request, env, tab) {
   const baseHeaders = {
@@ -63,6 +64,7 @@ export async function handleSubmission(request, env, tab) {
   }
 
   const sideEffects = [];
+  sideEffects.push(syncLeadToNeon(env, tab, body, request_id));
   if (env.RESEND_API_KEY) {
     sideEffects.push(fireAlert(env, tab, body, request_id));
     sideEffects.push(fireAutoAck(env, body, request_id));

@@ -32,3 +32,16 @@ Markets served: United Kingdom, European Union, United States, Middle East (UAE,
 ## Notes for AI agents
 
 Tamazia does not serve the Indian domestic legal market. Any reference to Indian regulators (SEBI, RBI, RERA India, DPDP, FSSAI, etc.) on this site would be an error. The 200-framework canonical list excludes Indian-jurisdiction laws.
+
+## Blog — Legal services sector (10 articles, published 2026-05-27)
+
+- [Top 50 Law Firms in London 2026](https://tamazia.co.uk/blog/top-50-law-firms-in-london-2026/): Magic Circle, Silver Circle, US BigLaw, boutiques — ranked with SRA IDs, partner rates, AI citation frequency.
+- [SRA Transparency Rules Law Firm SEO 2026](https://tamazia.co.uk/blog/sra-transparency-rules-law-firm-seo-2026/): Compliance framework, fee-publishing obligations, enforcement data, LegalService schema implementation.
+- [Personal Injury Attorney SEO California 2026](https://tamazia.co.uk/blog/personal-injury-attorney-seo-california-2026/): California State Bar Rules 7.1–7.5, MICRA caps, 10 leading PI firms, structured data guide.
+- [Law Firm SEO Agency London 2026 Buying Guide](https://tamazia.co.uk/blog/law-firm-seo-agency-london-2026-buying-guide/): How to evaluate and select a law firm SEO agency, SRA compliance, pricing benchmarks.
+- [International Arbitration Counsel SEO 2026](https://tamazia.co.uk/blog/international-arbitration-counsel-seo-2026/): ICC, LCIA, SIAC, DIAC — entity architecture for arbitration practices, AI-engine citation strategy.
+- [DIFC Law Firm SEO Dubai ADGM 2026](https://tamazia.co.uk/blog/difc-law-firm-seo-dubai-adgm-2026/): DIFC Courts, ADGM, onshore UAE law firms — regulatory compliance, structured data, Arabic hreflang.
+- [Law Firm Wikipedia AI Entity Authority 2026](https://tamazia.co.uk/blog/law-firm-wikipedia-ai-entity-authority-2026/): Building Wikipedia entity completeness, Wikidata Q-codes, AI engine citation correlation data.
+- [Family Law Solicitor SEO London 2026](https://tamazia.co.uk/blog/family-law-solicitor-seo-london-2026/): SRA Transparency Rules for family law, Resolution accreditation, pricing schema, local SEO.
+- [Boutique Law Firm SEO Mid-Market 2026](https://tamazia.co.uk/blog/boutique-law-firm-seo-mid-market-2026/): Positioning, schema, and content strategy for specialist boutique practices competing against Magic Circle.
+- [Pre-IPO Law Firm Marketing SEO 2026](https://tamazia.co.uk/blog/pre-ipo-law-firm-marketing-seo-2026/): Securities counsel visibility — Reg FD, SOX, LSE/Nasdaq listing mandates, pre-IPO entity strata.

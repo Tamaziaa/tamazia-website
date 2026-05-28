@@ -10,7 +10,6 @@
   Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(self), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(self), xr-spatial-tracking=(), interest-cohort=(), browsing-topics=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Embedder-Policy: credentialless
   Cross-Origin-Resource-Policy: same-site
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com; font-src 'self' data:; img-src 'self' data: https: https://*.google-analytics.com https://www.google-analytics.com; connect-src 'self' https://api.resend.com https://app.cal.com https://embed.cal.com https://script.google.com https://script.googleusercontent.com https://cloudflareinsights.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://challenges.cloudflare.com; frame-src 'self' https://app.cal.com https://embed.cal.com https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests; report-to csp-endpoint
   Reporting-Endpoints: csp-endpoint="/api/csp-report", nel-endpoint="/api/nel-report"
@@ -37,7 +36,3 @@
   Referrer-Policy: no-referrer
   X-Frame-Options: DENY
 
-/book/
-  Cross-Origin-Embedder-Policy: unsafe-none
-/book/*
-  Cross-Origin-Embedder-Policy: unsafe-none

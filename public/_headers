@@ -39,3 +39,5 @@
 
 /book/
   Cross-Origin-Embedder-Policy: unsafe-none
+/book/*
+  Cross-Origin-Embedder-Policy: unsafe-none

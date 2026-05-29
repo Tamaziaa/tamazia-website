@@ -78,6 +78,7 @@
       else if (tab === 'outbox') await renderOutbox(root);
       else if (tab === 'mystrika') await renderMystrika(root);
       else if (tab === 'icemail') await renderIceMail(root);
+      else if (tab === 'editor') await renderEditor(root);
       else if (tab === 'health') await renderHealth(root);
       else if (tab === 'settings') await renderSettings(root);
     }catch(e){
@@ -309,6 +310,74 @@
       </div>
       <p class="sub">${esc(d.note||'')}</p>
     `;
+  }
+
+  async function renderEditor(root){
+    const FILES = [
+      ['src/content/hero.ts',         'Hero copy + H1 + frameworks'],
+      ['src/content/pricing.ts',      'Pricing tiers'],
+      ['src/content/testimonials.ts', 'Testimonials marquee'],
+      ['src/content/whyUs.ts',        'Why Us section'],
+      ['src/content/sectors.ts',      'Sectors cards'],
+      ['src/content/caseStudies.ts',  'Case studies'],
+      ['src/content/faq.ts',          'FAQ items'],
+      ['src/content/howWeWork.ts',    'Process section'],
+      ['src/content/footer.ts',       'Footer copy'],
+      ['src/content/insights.ts',     'Insights blog metadata'],
+      ['src/content/contact.ts',      'Contact section'],
+      ['src/content/booking.ts',      'Booking event types'],
+      ['src/components/sections/FinalHero.astro', 'Sextant SECTORS array (inside JS)'],
+    ];
+    root.innerHTML = `
+      <h2>Editor</h2>
+      <p class="sub">Inline edit any allowed source file. Save commits to main; auto-deploys via GitHub Actions in ~50s.</p>
+      <div class="card">
+        <label class="kpi-label" for="ed-file">File</label>
+        <select id="ed-file" style="display:block;width:100%;padding:8px;font:inherit;border:1px solid var(--gold);background:var(--pearl);border-radius:3px;margin-bottom:14px">
+          ${FILES.map(([f, label]) => `<option value="${esc(f)}">${esc(f)} · ${esc(label)}</option>`).join('')}
+        </select>
+        <textarea id="ed-content" style="display:block;width:100%;height:480px;padding:12px;font:13px var(--mono);border:1px solid var(--hairline);border-radius:3px;background:#fff;color:var(--ink)" placeholder="Loading..."></textarea>
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <button id="ed-load" style="padding:9px 14px;background:var(--ivory);border:1px solid var(--gold);font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:3px">Load</button>
+          <button id="ed-save" style="padding:9px 14px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:3px">Save + deploy</button>
+          <input id="ed-msg" placeholder="Commit message" style="flex:1;padding:8px;font:inherit;border:1px solid var(--hairline);border-radius:3px" />
+        </div>
+        <p class="sub" id="ed-status" style="margin-top:10px"></p>
+      </div>
+    `;
+    let currentSha = null;
+    async function load(){
+      const f = $('#ed-file').value;
+      $('#ed-status').textContent = 'Loading...';
+      try {
+        const d = await api('/content/get?file=' + encodeURIComponent(f));
+        $('#ed-content').value = d.content || '';
+        currentSha = d.sha;
+        $('#ed-status').textContent = 'Loaded ' + (d.size||'?') + ' bytes · sha ' + (d.sha||'?').slice(0,8);
+      } catch(e) {
+        $('#ed-content').value = '';
+        $('#ed-status').textContent = 'Load error: ' + e.message;
+      }
+    }
+    async function save(){
+      const f = $('#ed-file').value;
+      const c = $('#ed-content').value;
+      const m = $('#ed-msg').value || 'cockpit edit · ' + f;
+      if (!c || c.length < 10) { $('#ed-status').textContent = 'Content too short'; return; }
+      $('#ed-status').textContent = 'Committing...';
+      try {
+        const d = await api('/content/put', { method:'POST', body:{ file: f, content: c, sha: currentSha, message: m }});
+        $('#ed-status').textContent = 'OK · commit ' + (d.commit||'').slice(0,8) + ' · auto-deploy starts in ~10s';
+        status('Saved ' + f, 'ok');
+      } catch(e) {
+        $('#ed-status').textContent = 'Save error: ' + e.message;
+        status('Save failed: ' + e.message, 'err');
+      }
+    }
+    $('#ed-load').addEventListener('click', load);
+    $('#ed-save').addEventListener('click', save);
+    $('#ed-file').addEventListener('change', load);
+    load();
   }
 
   async function dockTick(){

@@ -125,8 +125,8 @@ results.push(checkAcross('8. no pages.dev (any HTML)', c => {
   return !stripped.includes('pages.dev') || 'pages.dev found';
 }));
 
-results.push(checkIndex('9. 200+ count >= 4 (index.html)', c => {
-  const matches = c.match(/200\+/g) || [];
+results.push(checkIndex('9. 400+ count >= 4 (index.html)', c => {
+  const matches = c.match(/400\+/g) || [];
   return matches.length >= 4 || `count was ${matches.length}, expected >= 4`;
 }));
 

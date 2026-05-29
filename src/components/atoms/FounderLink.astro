@@ -15,7 +15,7 @@ interface Props {
 }
 const { variant = 'light', compact = false, className = '' } = Astro.props;
 const cls = `founder-link${variant === 'dark' ? ' on-dark' : ''}${className ? ' ' + className : ''}`;
-// Portrait file: drop a 200x200+ image at /public/aman-portrait.jpg to swap the AP monogram for a real photo.
+// Portrait file: drop a 200x400+ image at /public/aman-portrait.jpg to swap the AP monogram for a real photo.
 const portraitSrc = '/aman-portrait.webp';
 ---
 <a

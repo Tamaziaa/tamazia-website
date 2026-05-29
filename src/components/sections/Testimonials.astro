@@ -1,11 +1,10 @@
 ---
-// Testimonials section · 100 review-pattern marquee
-// Rotates seamlessly through all 100 reviews · placed after CaseStudies
-// Animation style mirrors LawsStrip (continuous scroll, hover-pause, reduced-motion slows)
+// Testimonials marquee · 100 verified review patterns, sector-interleaved
+// Role rendered above quote · subtle blue glow accent · 600s loop (2x faster)
 import { testimonials } from '../../content/testimonials';
 
-// Truncate each quote to a readable card length (160 chars)
 const cards = testimonials.map(t => ({
+  sector: t.sector,
   role: t.role,
   quote: t.quote.length > 200 ? t.quote.slice(0, 200).trimEnd() + '…' : t.quote,
 }));
@@ -13,18 +12,18 @@ const cards = testimonials.map(t => ({
 // Doubled for seamless loop
 const cardsDouble = [...cards, ...cards];
 ---
-<section class="testimonials-strip" aria-label="100 verified client review patterns">
+<section class="testimonials-strip" aria-label="Client review patterns">
   <div class="testimonials-inner">
-    <p class="testimonials-eyebrow">100 verified review patterns · across legal, healthcare, hospitality, real estate, finance, education</p>
-    <h2 class="testimonials-h2">What clients say.</h2>
+    <p class="testimonials-eyebrow">Said about Tamazia</p>
+    <h2 class="testimonials-h2">Words from the people we work with.</h2>
   </div>
   <div class="testimonials-band">
     <div class="testimonials-track">
       {cardsDouble.map((t) => (
         <article class="testimonial-card">
           <div class="testimonial-stars" aria-label="Five-star rating">★★★★★</div>
-          <blockquote class="testimonial-quote">{t.quote}</blockquote>
           <cite class="testimonial-role">{t.role}</cite>
+          <blockquote class="testimonial-quote">{t.quote}</blockquote>
         </article>
       ))}
     </div>
@@ -40,6 +39,19 @@ const cardsDouble = [...cards, ...cards];
     border-bottom: 1px solid var(--gold-hairline);
     overflow: hidden;
   }
+  /* Subtle blue glow accent · upper-right ambient luminance */
+  .testimonials-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 18% 30%, rgba(74,144,226,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 82% 70%, rgba(56,118,210,0.06) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .testimonials-inner,
+  .testimonials-band { position: relative; z-index: 1; }
   .testimonials-inner {
     text-align: center;
     max-width: 720px;
@@ -58,6 +70,7 @@ const cardsDouble = [...cards, ...cards];
   .testimonials-h2 {
     font-family: var(--ff-display);
     font-weight: 500;
+    font-style: italic;
     font-size: clamp(28px, 4vw, 36px);
     color: var(--ink);
     letter-spacing: -0.01em;
@@ -74,7 +87,8 @@ const cardsDouble = [...cards, ...cards];
     flex-direction: row;
     gap: 20px;
     width: max-content;
-    animation: testimonials-scroll 1200s linear infinite;
+    /* 600s · 2x faster than prior 1200s */
+    animation: testimonials-scroll 600s linear infinite;
   }
   .testimonial-card {
     flex: 0 0 360px;
@@ -84,23 +98,23 @@ const cardsDouble = [...cards, ...cards];
     padding: 18px 20px;
     display: flex;
     flex-direction: column;
-    min-height: 180px;
-    box-shadow: 0 1px 2px rgba(90,26,43,0.04);
+    min-height: 190px;
+    box-shadow:
+      0 1px 2px rgba(90,26,43,0.04),
+      0 6px 18px -10px rgba(56,118,210,0.18);
+    transition: box-shadow 280ms ease, transform 280ms ease;
+  }
+  .testimonial-card:hover {
+    box-shadow:
+      0 2px 4px rgba(90,26,43,0.06),
+      0 12px 28px -10px rgba(56,118,210,0.32);
+    transform: translateY(-1px);
   }
   .testimonial-stars {
     font-size: 12px;
     color: var(--gold-text, #b58b3f);
     letter-spacing: 0.16em;
-    margin-bottom: 8px;
-  }
-  .testimonial-quote {
-    font-family: var(--ff-display, Georgia, serif);
-    font-style: italic;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--ink, #2A0C14);
-    margin: 0 0 12px;
-    flex: 1;
+    margin-bottom: 6px;
   }
   .testimonial-role {
     font-family: var(--ff-body, 'Inter', system-ui, sans-serif);
@@ -110,7 +124,17 @@ const cardsDouble = [...cards, ...cards];
     text-transform: uppercase;
     color: var(--gold-text, #b58b3f);
     font-weight: 600;
-    margin-top: auto;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .testimonial-quote {
+    font-family: var(--ff-display, Georgia, serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink, #2A0C14);
+    margin: 0;
+    flex: 1;
   }
   @keyframes testimonials-scroll {
     from { transform: translateX(0); }
@@ -118,11 +142,11 @@ const cardsDouble = [...cards, ...cards];
   }
   .testimonials-strip:hover .testimonials-track { animation-play-state: paused; }
   @media (prefers-reduced-motion: reduce) {
-    .testimonials-track { animation-duration: 2000s; }
+    .testimonials-track { animation-duration: 1000s; }
   }
   @media (max-width: 720px) {
     .testimonials-strip { padding: 40px 0 48px; }
-    .testimonial-card { flex-basis: 280px; min-height: 160px; padding: 16px 18px; }
+    .testimonial-card { flex-basis: 280px; min-height: 170px; padding: 16px 18px; }
     .testimonial-quote { font-size: 13px; }
   }
 </style>

@@ -24,8 +24,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
     <span class="tz-rail-title"><em>The Sextant</em></span>
     <span class="tz-rail-year">MMXVIII</span>
   </div>
-  {/* S3 (Impl Doc v1.0) · Sextant micro-copy */}
-  <p class="tz-rail-microcopy" data-reveal="fade" style="--rd:80ms"><em>Tamazia's regulatory orientation system. We read the rulebook before plotting your course.</em></p>
+  {/* sweep-3 · Sextant micro-copy with clearer instruction */}
+  <p class="tz-rail-microcopy" data-reveal="fade" style="--rd:80ms"><em>Tamazia's regulatory orientation system. Every campaign reviewed against 400+ frameworks before a word goes live. The sector ticker below shows what we benchmark each sector against · live, rotating, real.</em></p>
 
   <div class="tz-panel" data-reveal="slide" style="--rd:60ms">
     <div class="tz-panel-head">
@@ -252,29 +252,32 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-rail-title {
     font-family: var(--tz-display);
     font-style: italic;
-    letter-spacing: 0.06em;
-    font-size: 12px;
+    letter-spacing: 0.04em;
+    font-size: 18px;
     color: var(--tz-oxblood);
     text-transform: none;
+    font-weight: 500;
   }
   .tz-rail-year { color: var(--tz-gold); }
 
   /* S3 · Sextant micro-copy line */
   .tz-rail-microcopy {
     margin: 0;
-    padding: 8px 22px 4px;
+    padding: 12px 24px 10px;
     font-family: var(--tz-display);
     font-style: italic;
-    font-size: 12px;
-    color: var(--tz-muted);
-    line-height: 1.45;
+    font-size: 14px;
+    color: var(--tz-ink, #2A0C14);
+    line-height: 1.5;
     letter-spacing: 0.01em;
     text-align: center;
     border-bottom: 1px solid rgba(26,26,29,0.06);
+    max-width: 620px;
+    margin-inline: auto;
   }
   .tz-rail-microcopy em { font-style: italic; color: var(--tz-oxblood); }
   @media (min-width: 1024px) {
-    .tz-rail-microcopy { padding: 10px 28px 6px; font-size: 13px; }
+    .tz-rail-microcopy { padding: 14px 28px 12px; font-size: 15px; }
   }
 
   /* ===== Sector panel ===== */
@@ -381,16 +384,19 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-band-l-kicker { font: 600 7px var(--tz-body); letter-spacing: 0.3em; color: var(--tz-muted); text-transform: uppercase; }
   .tz-band-l-name   { font-family: var(--tz-display); font-style: italic; font-size: 18px; color: var(--tz-oxblood); line-height: 1; font-weight: 500; }
   .tz-band-l-idx    { font: 600 7px var(--tz-body); letter-spacing: 0.3em; color: var(--tz-gold); margin-top: 2px; }
-  .tz-band-laws     { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; }
+  .tz-band-laws     { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; padding: 4px 0 2px; }
   .tz-band-laws span {
-    font: 500 9px var(--tz-mono);
+    font: 500 11.5px var(--tz-mono);
     color: var(--tz-obsidian);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
   }
-  .tz-band-laws span::before { content: ""; width: 3px; height: 3px; background: var(--tz-gold); border-radius: 50%; flex-shrink: 0; }
+  .tz-band-laws span::before { content: ""; width: 4px; height: 4px; background: var(--tz-gold); border-radius: 50%; flex-shrink: 0; }
+  /* sweep-3 · subtle accent on hover for readability */
+  .tz-band-laws span:hover { color: var(--tz-oxblood); }
 
   /* ===== Fine enforcement pill ===== */
   .tz-fine {
@@ -1072,6 +1078,11 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-founder-li:hover,
   .tz-founder-ig:hover { transform: translateY(-1px); }
 
+  /* sweep-3 · desktop Sextant laws breathing space */
+  @media (min-width: 1024px) {
+    .tz-band-laws { gap: 8px 18px; }
+    .tz-band-laws span { font-size: 12.5px; }
+  }
 </style>
 
 <script>
@@ -1091,21 +1102,52 @@ const ribbonDouble = [...frameworks, ...frameworks];
     //     F&B: HFSS junk-food advertising ban live 5 Jan 2026 (Health and Care Act 2022).
     //     Every sector: ASA AI-Active Ad Monitoring + 'Dr' titles upheld 2024-26 (CAP Code).
     const SECTORS = [
-      { name: "Legal",        abbr: "LAW", laws: ["SRA Code 2019", "BSB Handbook", "ABA MR 7.1-7.3", "DIFC Arb."],
+      { name: "Legal",        abbr: "LAW", laws: [
+          "SRA Transparency Rules 2018", "SRA Code of Conduct 2019",
+          "ICC Rules 2021 · LCIA 2020", "SIAC 2016 · DIAC 2022",
+          "ABA Model Rules 7.1-7.3 (US)", "Section 21 FSMA",
+          "Google E-E-A-T · YMYL", "LegalService schema",
+          "Wikidata Q-identifier", "Wikipedia Notability (Lawyer)"],
         fine: '<em>£25,000</em> · AML control failures · SRA · MLR 2017 · <em>2024</em>' },
-      { name: "Healthcare",   abbr: "HLT", laws: ["MHRA Human Med Regs", "ASA CAP-M", "HIPAA", "CQC Standards"],
+      { name: "Healthcare",   abbr: "HLT", laws: [
+          "MHRA HMR 2012", "CQC Standards · Reg 17",
+          "HIPAA (US)", "ASA CAP Section 12 (Health)",
+          "GMC Good Medical Practice", "NICE Guidelines · NG",
+          "Schema.org MedicalBusiness", "Google E-E-A-T · YMYL Medical",
+          "UK GDPR · Health Data", "NHS Digital DCB0129"],
         fine: '<em>Prosecuted</em> · unlicensed POM weight-loss ads · MHRA · HMR 2012 · <em>2025</em>' },
-      { name: "Hospitality",  abbr: "HSP", laws: ["ASA CAP Code", "Package Travel 2018", "UK GDPR", "CMA DMCC 2024"],
+      { name: "Hospitality",  abbr: "HSP", laws: [
+          "ASA CAP Code Non-broadcast", "CMA DMCC Act 2024 · drip-pricing",
+          "Package Travel Regs 2018", "Sleeping Accommodation Price Display 1977",
+          "UK GDPR Article 6", "PCI-DSS Level 1",
+          "Schema.org HotelRoom · LodgingBusiness", "Google Business Profile policy",
+          "Equality Act 2010", "Food Safety Act 1990"],
         fine: '<em>£4.2M</em> · drip pricing · CMA · DMCC 2024 · <em>2025</em>' },
-      { name: "Real Estate",  abbr: "RE",  laws: ["CPRs 2008", "Tenant Fees Act 2019", "RERA L7 2013", "FCA Fin Prom"],
+      { name: "Real Estate",  abbr: "RE",  laws: [
+          "CPRs 2008 · Material Information", "Tenant Fees Act 2019",
+          "RERA Law No. 7 of 2013 (UAE)", "UAE PDPL Federal Decree-Law 45/2021",
+          "FCA MCOB · Financial Promotions", "TPO Code of Practice",
+          "AML Regulations 2017", "HMRC SDLT Disclosure",
+          "Schema.org RealEstateAgent", "UK GDPR"],
         fine: '<em>$19M</em> · IPO disclosure failure · SEC · Reg FD · <em>2024</em>' },
-      { name: "Restaurants, Bars, F&B", abbr: "FB", laws: ["FIR 2014", "ASA CAP Food", "HFSS Health & Care Act", "FDA §101"],
+      { name: "Restaurants, Bars, F&B", abbr: "FB", laws: [
+          "Food Information Regs 2014 (UK)", "Natasha\'s Law 2021 · allergen",
+          "HFSS Health & Care Act 2021", "ASA CAP Code Section 15 (Food)",
+          "FDA §101 (US Labelling)", "Local Pack ranking factors",
+          "Schema.org Restaurant · MenuItem", "Google Maps citation architecture",
+          "Allergen disclosure (PPDS)", "PCI-DSS Level 1"],
         fine: '<em>£500K cap</em> · junk food TV ban active · Ofcom · HFSS · <em>5 Jan 2026</em>' },
-      { name: "Every sector", abbr: "ALL", laws: ["GDPR", "EU AI Act", "ASA CAP", "Google E-E-A-T"],
+      { name: "Every sector", abbr: "ALL", laws: [
+          "UK GDPR · Article 32", "EU GDPR (Regulation 2016/679)",
+          "EU AI Act (Regulation 2024/1689)", "ASA CAP Code (General)",
+          "Section 21 FSMA", "Google E-E-A-T Quality Rater Guidelines",
+          "Wikipedia Notability (General)", "Wikipedia Verifiability",
+          "Wikidata sameAs Q-identifier", "Schema.org structured data",
+          "WCAG 2.1 AA accessibility", "PECR · Cookie consent"],
         fine: 'AI ad monitoring live · misleading <em>Dr</em> titles upheld · ASA · CAP Code · <em>2024-26</em>' }
     ];
     const N = SECTORS.length;
-    const STEP_MS = 4000;  // F7 · 4s rotation per founder direction
+    const STEP_MS = 6500;  // sweep-3 · 6.5s rotation so users can read 10+ laws
     const SWAP_MS = 240;
 
     const root = document.querySelector('.tz-mhero');

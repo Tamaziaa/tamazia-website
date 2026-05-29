@@ -10,20 +10,11 @@ import { heroContent } from '../../content/hero';
         <img src="/tamazia-lockup-masthead-transparent.png" alt="" class="logo-img" width="343" height="64" loading="eager" decoding="async" fetchpriority="high" />
       </picture>
   </a>
-  {/* Two-block side-by-side nav · brand/scope on left, engagement on right */}
-  <div class="nav-blocks" role="group" aria-label="Primary sections">
-    <ul class="nav-items nav-block nav-block--left">
-      {heroContent.headerNav.slice(0, 3).map(item => (
-        <li><a href={item.href}>{item.label}</a></li>
-      ))}
-    </ul>
-    <span class="nav-block-sep" aria-hidden="true"></span>
-    <ul class="nav-items nav-block nav-block--right">
-      {heroContent.headerNav.slice(3).map(item => (
-        <li><a href={item.href}>{item.label}</a></li>
-      ))}
-    </ul>
-  </div>
+  <ul class="nav-items">
+    {heroContent.headerNav.map(item => (
+      <li><a href={item.href}>{item.label}</a></li>
+    ))}
+  </ul>
   <a class="nav-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
   {/* A-06 · burger with morph-to-X via .open class on click */}
   <button class="burger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
@@ -104,25 +95,8 @@ import { heroContent } from '../../content/hero';
     gap: 22px;
     align-items: center;
     flex-wrap: nowrap;
-    margin: 0;
-    padding: 0;
   }
   .nav-items li { white-space: nowrap; }
-
-  /* Two-block nav · grouped side by side with hairline separator */
-  .nav-blocks {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-  }
-  .nav-block { gap: 18px; }
-  .nav-block-sep {
-    display: inline-block;
-    width: 1px;
-    height: 18px;
-    background: var(--gold);
-    opacity: 0.45;
-  }
 
   .nav-items li a {
     font-size: 12px;
@@ -413,7 +387,6 @@ import { heroContent } from '../../content/hero';
   @media (max-width: 1024px) {
     .main-nav { padding: 0 32px; }
     .nav-items { display: none; }
-    .nav-blocks { display: none; }
     .nav-cta { display: none; }
     .burger { display: flex; }
   }

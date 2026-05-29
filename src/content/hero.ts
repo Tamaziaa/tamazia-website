@@ -44,13 +44,13 @@ export const heroContent = {
   // Each line gets a subtext line — small italic gold typography.
   h1: [
     { text: 'Outrank {{competitors.}}',  subtext: 'Search dominance, every market.' },
-    { text: 'Master {{regulators.}}',    subtext: '400+ frameworks reviewed, every word.' },
+    { text: 'Master {{regulators.}}',    subtext: '200+ frameworks reviewed, every word.' },
     { text: '{{One agency.}}',            subtext: 'Counsel-led, every campaign.' },
   ],
 
   // Compliance paragraph · regulator names wrapped as styled chips (B-18)
   complianceParagraph:
-    'Every campaign executed through us passes through {{400+ laws}} before anything goes live: [[GDPR]], [[FCA]], [[SRA]], [[MHRA]], [[ASA]], [[HIPAA]], [[EU AI Act]], and international advertising law.',
+    'Every campaign executed through us passes through {{200+ laws}} before anything goes live: [[GDPR]], [[FCA]], [[SRA]], [[MHRA]], [[ASA]], [[HIPAA]], [[EU AI Act]], and international advertising law.',
 
   // Legacy eyebrow for current Hero.astro (Gate B will replace with top-bar credentials).
   eyebrow: 'TAMAZIA · The Practice',
@@ -99,7 +99,7 @@ export const heroContent = {
     'Google E-E-A-T Guidelines',
   ],
 
-  ribbonLabel: 'Live regulatory register · 30 frameworks shown · selected from 400+ applied to client work',
+  ribbonLabel: 'Live regulatory register · 30 frameworks shown · selected from 200+ applied to client work',
 
   // Client ribbon — verbatim live site. Kamat stays here (live site confirms).
   // Case-study panel is Orchid (not Kamat) — handled separately in caseStudies.ts.
@@ -118,7 +118,7 @@ export const heroContent = {
     'KAMAT HOTELS GROUP · NSE-LISTED HOSPITALITY · DIRECT-BOOKING SHIFT',
     'CG ONCOLOGY · Nasdaq: CGON · +96% AT IPO · VERIFIED PER SEC FILINGS',
     'MERAAS · DUBAI HOLDING SUBSIDIARY · SHEIKH MOHAMMED DIRECTIVE',
-    '400+ LAWS REVIEWED PER CAMPAIGN',
+    '200+ LAWS REVIEWED PER CAMPAIGN',
     'FOUR CONTINENTS · LONDON · DUBAI · NEW YORK · PARIS',
   ],
 

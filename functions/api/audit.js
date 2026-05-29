@@ -1,6 +1,6 @@
 // Cloudflare Pages Function · /api/audit · plain JS
 // Tamazia Quick Audit Engine  ·  Cloudflare Workers runtime.
-// Compliance-engineered. 400+ frameworks. Lawyer-led. King's College LLM.
+// Compliance-engineered. 200+ frameworks. Lawyer-led. King's College LLM.
 // v3  ·  SEO Score API primary · allorigins HTML fallback · Google Autosuggest
 
 // ============================================================
@@ -1362,7 +1362,7 @@ function buildUpsell(type, input, errors, sector) {
 pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
       term: '6-month strategic engagement',
       framing: 'Preferred Partner Rate',
-      body: `The findings above are the surface layer. We have already benchmarked your top 3 competitors against the same 400+ regulatory frameworks  ·  including ${frameworkList}  ·  and they have the same gaps. The firm that closes them first controls the ranking for years. Every Tamazia engagement is led by a King's College LLM specialist in business law, not a junior SEO analyst. The Authority tier is used by regulated groups across London, Dubai, and New York. Six-month engagements include monthly founder review, bi-jurisdictional compliance, bi-weekly revenue attribution, and direct ${profile.regulator} framework monitoring.`,
+      body: `The findings above are the surface layer. We have already benchmarked your top 3 competitors against the same 200+ regulatory frameworks  ·  including ${frameworkList}  ·  and they have the same gaps. The firm that closes them first controls the ranking for years. Every Tamazia engagement is led by a King's College LLM specialist in business law, not a junior SEO analyst. The Authority tier is used by regulated groups across London, Dubai, and New York. Six-month engagements include monthly founder review, bi-jurisdictional compliance, bi-weekly revenue attribution, and direct ${profile.regulator} framework monitoring.`,
       microFooter: `No obligation from this audit. The 30-minute call is a diagnosis session, not a sales pitch. Your findings are yours regardless of whether you proceed.`,
       cta: 'Speak with the founder  ·  30 minutes, no obligation',
       ctaHref: '#contact',
@@ -1376,7 +1376,7 @@ pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
     pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
     term: '6-month strategic engagement',
     framing: 'Preferred Partner Rate',
-    body: `A keyword-level audit surfaces intent and competition signals. A full Tamazia engagement adds live URL crawl, Core Web Vitals, meta and schema analysis, and a 400+ framework regulatory content pass  ·  including ${frameworkList}. Competitor benchmarking shows exactly which signals they are missing and why closing them first creates a durable ranking advantage. Every engagement is led by a King's College LLM graduate specialised in business law, not a generalist SEO team. Authority tier clients receive direct ${profile.regulator} monitoring, two-jurisdiction compliance coverage, and monthly founder strategy reviews.`,
+    body: `A keyword-level audit surfaces intent and competition signals. A full Tamazia engagement adds live URL crawl, Core Web Vitals, meta and schema analysis, and a 200+ framework regulatory content pass  ·  including ${frameworkList}. Competitor benchmarking shows exactly which signals they are missing and why closing them first creates a durable ranking advantage. Every engagement is led by a King's College LLM graduate specialised in business law, not a generalist SEO team. Authority tier clients receive direct ${profile.regulator} monitoring, two-jurisdiction compliance coverage, and monthly founder strategy reviews.`,
     microFooter: `No obligation. The 30-minute call is a diagnosis session before any commercial commitment. Your findings stay with you.`,
     cta: 'Speak with the founder about Authority',
     ctaHref: '#contact',
@@ -1830,7 +1830,7 @@ export const onRequestPost = async ({ request, env }) => {
   if (wordCount <= 2) {
     keywordErrors.push({
       issue: 'Short-tail keyword  ·  high impression volume, low conversion precision',
-      shouldBe: `One or two-word keywords generate impressions at the top of funnel. The conversion pathway requires long-tail modifiers: sector + jurisdiction + service level (e.g. "${input} + [jurisdiction] + [specific service]"). This is where Tamazia's 400+ framework keyword architecture outperforms generic SEO builds.`,
+      shouldBe: `One or two-word keywords generate impressions at the top of funnel. The conversion pathway requires long-tail modifiers: sector + jurisdiction + service level (e.g. "${input} + [jurisdiction] + [specific service]"). This is where Tamazia's 200+ framework keyword architecture outperforms generic SEO builds.`,
       severity: 'medium',
     });
   }

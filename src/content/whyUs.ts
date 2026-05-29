@@ -1,5 +1,5 @@
 // Why Us / Proof section — verbatim live tamazia.co.uk (TAMAZIA-13 snapshot §2)
-// CRITICAL FIX: stats restored from invented "4× / 400+ / 4" to live-site values.
+// CRITICAL FIX: stats restored from invented "4× / 200+ / 4" to live-site values.
 
 export const whyUsContent = {
   eyebrow: 'WHY US',
@@ -14,7 +14,7 @@ export const whyUsContent = {
   pullQuote: 'The {{lawyer}} reads it before the {{algorithm}} sees it.',
 
   // Verbatim from live tamazia.co.uk. These are the canonical credibility numbers.
-  // The "4× / 400+ / 4" in the prior rebuild was a credibility-damaging error.
+  // The "4× / 200+ / 4" in the prior rebuild was a credibility-damaging error.
   stats: [
     {
       value: '882%',
@@ -22,7 +22,7 @@ export const whyUsContent = {
       icon: 'sparkline',
     },
     {
-      value: '400+',
+      value: '200+',
       caption: 'LAWS REVIEWED PER CAMPAIGN',
       icon: 'scale',
     },

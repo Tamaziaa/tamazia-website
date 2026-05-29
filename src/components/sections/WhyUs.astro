@@ -442,7 +442,7 @@ const proofStrip = (whyUsContent as any).proofStrip;
         const el = entry.target as HTMLElement;
         const final = el.dataset.value || '';
 
-        // Extract numeric portion · supports "882%", "$110M+", "400+", "4×"
+        // Extract numeric portion · supports "882%", "$110M+", "200+", "4×"
         const match = final.match(/^(\$?)(\d+)([%+×MKB]*)$/);
         if (!match) return;
 

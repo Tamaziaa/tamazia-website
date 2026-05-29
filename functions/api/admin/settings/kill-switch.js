@@ -1,4 +1,4 @@
-import { authed, unauth, json, setState, getState } from './_lib.js';
+import { authed, unauth, json, setState, getState } from '../_lib.js';
 export const onRequestPost = async ({ request, env }) => {
   if (!authed(request, env)) return unauth();
   const body = await request.json().catch(() => ({}));

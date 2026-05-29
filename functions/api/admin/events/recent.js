@@ -1,4 +1,4 @@
-import { authed, unauth, json, listKv } from './_lib.js';
+import { authed, unauth, json, listKv } from '../_lib.js';
 export const onRequestGet = async ({ request, env }) => {
   if (!authed(request, env)) return unauth();
   // Synthesize recent events from KV (last 20)

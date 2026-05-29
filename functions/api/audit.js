@@ -1388,6 +1388,7 @@ pricing_line: TAMAZIA_AUTHORITY_PRICING_LINE,
 
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 import { syncLeadToNeon } from '../_lib/neon-sync.js';
+import { notifySlack, notifyTelegram, buildJourneyContext } from '../_lib/notify.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
 
 const MAX_BODY_BYTES = 64 * 1024;
@@ -1460,6 +1461,26 @@ export const onRequestPost = async ({ request, env }) => {
   const email = (body.email || '').toString().trim().toLowerCase();
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if (emailValid) syncLeadToNeon(env, 'audit', { email, 'audit-input': input, sector: (body.sector || '') }, '');
+  // sweep-4 · Slack + Telegram notification (fail-open)
+  try {
+    const ctx = buildJourneyContext(request, body);
+    const summary = '[audit] ' + (email || 'no-email') + ' · ' + (input || '(no input)') + ' · ' + (body.sector || 'auto');
+    const detail = [
+      '*Input:* ' + (input || '?'),
+      '*Email:* ' + (email || '?'),
+      '*Sector:* ' + (body.sector || 'auto'),
+      '*Country:* ' + ctx.country + ' · ' + ctx.device,
+      '*Source:* ' + (ctx.ref || '(direct)'),
+    ].join('\n');
+    const tg = [
+      '<b>Input:</b> ' + (input || '?'),
+      '<b>Email:</b> ' + (email || '?'),
+      '<b>Sector:</b> ' + (body.sector || 'auto'),
+      '<b>Country:</b> ' + ctx.country + ' · ' + ctx.device,
+    ].join('\n');
+    notifySlack(env, { level: 'info', summary, detail });
+    notifyTelegram(env, { level: 'info', summary, detail: tg });
+  } catch (_e) { /* fail-open */ }
   const sectorChoice = (body.sector || '').toString().trim();
 
   if (!emailValid && body.demo !== true) {

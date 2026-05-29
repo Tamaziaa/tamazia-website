@@ -6,6 +6,7 @@ import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 import { mintRequestId } from '../_lib/request-id.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
 import { syncLeadToNeon } from '../_lib/neon-sync.js';
+import { notifySlack, notifyTelegram, buildJourneyContext, isHighIntent } from '../_lib/notify.js';
 
 export async function handleSubmission(request, env, tab) {
   const baseHeaders = {
@@ -77,6 +78,30 @@ export async function handleSubmission(request, env, tab) {
     sideEffects.push(fireAlert(env, tab, body, request_id));
     sideEffects.push(fireAutoAck(env, body, request_id));
   }
+  // sweep-4 · Slack + Telegram founder alerts (fail-open, no impact on response)
+  const ctx = buildJourneyContext(request, body);
+  const intent = isHighIntent(body);
+  const intentTag = intent ? ' · *HIGH-INTENT*' : '';
+  const personLine = (body.name || 'unknown') + ' · ' + (body.company || '(no company)') + ' · ' + (body.email || '');
+  const summary = '[' + tab + '] ' + personLine + intentTag;
+  const detailMd = [
+    '*Sector:* ' + (body.sector || '?'),
+    '*Country/IP:* ' + ctx.country + ' · ' + ctx.ip4 + ' · ' + ctx.device,
+    '*Source:* ' + (ctx.ref || '(direct)'),
+    '*UTM:* ' + ctx.utm,
+    '*Request ID:* ' + request_id,
+  ].join('\n');
+  const tgDetail = [
+    '<b>Sector:</b> ' + (body.sector || '?'),
+    '<b>Country:</b> ' + ctx.country + ' · ' + ctx.ip4 + ' · ' + ctx.device,
+    '<b>Source:</b> ' + (ctx.ref || '(direct)'),
+    '<b>UTM:</b> ' + ctx.utm,
+    '<b>Request ID:</b> <code>' + request_id + '</code>',
+    body.message || body.brief || body.outcome ? '\n<b>Brief:</b> ' + String(body.message || body.brief || body.outcome).slice(0, 800) : '',
+  ].filter(Boolean).join('\n');
+  const fullPayload = Object.entries(body).filter(([k, v]) => v && !k.startsWith('c_') && !k.startsWith('ts_') && k !== 'bot-field' && k !== 'honeypot_value').map(([k, v]) => k + ': ' + String(v).slice(0, 400)).join('\n');
+  sideEffects.push(notifySlack(env, { level: intent ? 'p1' : 'info', summary, detail: detailMd, threadDetail: 'Full payload\n' + fullPayload }));
+  sideEffects.push(notifyTelegram(env, { level: intent ? 'p1' : 'info', summary, detail: tgDetail }));
   Promise.allSettled(sideEffects).catch(() => {});
 
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';

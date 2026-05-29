@@ -1,3 +1,4 @@
+import { notifySlack, notifyTelegram } from '../_lib/notify.js';
 // /api/cal-webhook · Phase 5/6 perfection · Cal.com booking lifecycle webhook
 //
 // Verifies the x-cal-signature-256 header (HMAC-SHA256 of raw body using
@@ -163,6 +164,28 @@ export const onRequestPost = async ({ request, env }) => {
     }).catch(() => {});
   }
 
+  // sweep-4 · Slack + Telegram booking alert (fail-open, CEO-priority for new bookings)
+  try {
+    const isNew = (triggerEvent === 'BOOKING_CREATED');
+    const isCancel = (triggerEvent === 'BOOKING_CANCELLED' || triggerEvent === 'BOOKING_CANCELED');
+    const level = isNew ? 'p1' : (isCancel ? 'p2' : 'info');
+    const summary = '[cal] ' + humanTrigger(triggerEvent) + ' · ' + (record.name || '?') + ' · ' + (record.cal_event_type || 'strategy-call') + ' · ' + (record.cal_start_time || '?');
+    const detail = [
+      '*Name:* ' + (record.name || '?'),
+      '*Email:* ' + (record.email || '?'),
+      '*Event:* ' + (record.cal_event_type || 'strategy-call'),
+      '*Time:* ' + (record.cal_start_time || '?') + ' → ' + (record.cal_end_time || '?'),
+      '*Cal UID:* ' + (record.request_id || '?'),
+    ].join('\n');
+    const tg = [
+      '<b>Name:</b> ' + (record.name || '?'),
+      '<b>Email:</b> ' + (record.email || '?'),
+      '<b>Event:</b> ' + (record.cal_event_type || 'strategy-call'),
+      '<b>Time:</b> ' + (record.cal_start_time || '?'),
+    ].join('\n');
+    notifySlack(env, { level, summary, detail });
+    notifyTelegram(env, { level, summary, detail: tg });
+  } catch (_e) { /* fail-open */ }
   log('persisted', { trigger: triggerEvent, request_id: record.request_id });
   return new Response(JSON.stringify({ ok: true, request_id: record.request_id, event: triggerEvent }), {
     status: 200, headers: baseHeaders

@@ -74,6 +74,10 @@
       else if (tab === 'leads') await renderLeads(root);
       else if (tab === 'forms') await renderForms(root);
       else if (tab === 'bookings') await renderBookings(root);
+      else if (tab === 'inbox') await renderInbox(root);
+      else if (tab === 'outbox') await renderOutbox(root);
+      else if (tab === 'mystrika') await renderMystrika(root);
+      else if (tab === 'icemail') await renderIceMail(root);
       else if (tab === 'health') await renderHealth(root);
       else if (tab === 'settings') await renderSettings(root);
     }catch(e){
@@ -241,6 +245,72 @@
     });
   }
 
+  async function renderInbox(root){
+    const d = await api('/inbox?limit=50');
+    if (d.error) { root.innerHTML = `<h2>Inbox</h2><p class="sub" style="color:var(--amber)">${esc(d.error)}</p>`; return; }
+    const rows = (d.replies||[]).map(r => `<tr>
+      <td>${esc((r.received_at||r.submitted_at||'').slice(0,16))}</td>
+      <td>${esc(r.from_email||r.from||'?')}</td>
+      <td>${esc((r.subject||'').slice(0,80))}</td>
+      <td><span class="tag ${r.classification==='positive'?'green':r.classification==='negative'?'red':'blue'}">${esc(r.classification||'?')}</span></td>
+    </tr>`).join('');
+    root.innerHTML = `
+      <h2>Inbox</h2>
+      <p class="sub">${d.count||0} replies · source: ${esc(d.source||'?')}</p>
+      <table><thead><tr><th>Received</th><th>From</th><th>Subject</th><th>Classification</th></tr></thead><tbody>${rows||'<tr><td colspan="4">No replies yet.</td></tr>'}</tbody></table>
+    `;
+  }
+
+  async function renderOutbox(root){
+    const d = await api('/outbox');
+    if (d.source === 'neon-unbound' || d.source === 'neon-error') {
+      root.innerHTML = `<h2>Outbox</h2><p class="sub" style="color:var(--amber)">${esc(d.source)}${d.detail?' · '+esc(d.detail):''}</p>`;
+      return;
+    }
+    const rows = (d.drafts||[]).map(dr => `<tr>
+      <td>${esc(dr.id||'?')}</td>
+      <td>${esc(dr.lead_id||'?')}</td>
+      <td>T${esc(dr.touch_number||'0')}</td>
+      <td>${esc((dr.subject_line||'').slice(0,80))}</td>
+      <td><span class="tag blue">${esc(dr.send_status||'?')}</span></td>
+      <td>${esc((dr.created_at||'').slice(0,16))}</td>
+    </tr>`).join('');
+    root.innerHTML = `
+      <h2>Outbox</h2>
+      <p class="sub">${d.count||0} drafts pending · Neon outreach_drafts.</p>
+      <table><thead><tr><th>Draft ID</th><th>Lead</th><th>Touch</th><th>Subject</th><th>Status</th><th>Created</th></tr></thead><tbody>${rows||'<tr><td colspan="6">No drafts.</td></tr>'}</tbody></table>
+    `;
+  }
+
+  async function renderMystrika(root){
+    const d = await api('/mystrika');
+    const prompts = (d.known_community_prompts||[]).map(p => `<li>${esc(p)}</li>`).join('');
+    root.innerHTML = `
+      <h2>Mystrika</h2>
+      <p class="sub">${d.known_count||11} campaigns wired to W8 reply handler. ${d.campaigns?.length||0} synced to KV.</p>
+      ${d.note ? `<p class="sub" style="color:var(--amber)">${esc(d.note)}</p>` : ''}
+      <div class="card">
+        <div class="card-title">Community prompts (live)</div>
+        <ul style="padding-left:20px">${prompts}</ul>
+      </div>
+      <p class="sub">Mystrika has no public REST API · stats sync via n8n W6/W8 webhooks.</p>
+    `;
+  }
+
+  async function renderIceMail(root){
+    const d = await api('/icemail');
+    root.innerHTML = `
+      <h2>IceMail</h2>
+      <p class="sub">Bulk export status · 30 mailboxes target ${d.mystrika_target||299} Mystrika slots.</p>
+      <div class="cards-grid">
+        <div class="kpi"><div class="kpi-label">Last job ID</div><div class="kpi-value" style="font-size:12px;font-family:var(--mono)">${esc((d.last_job_id||'').slice(0,16))}</div></div>
+        <div class="kpi"><div class="kpi-label">Progress</div><div class="kpi-value">${d.last_progress_pct||0}%</div></div>
+        <div class="kpi"><div class="kpi-label">Last check</div><div class="kpi-value" style="font-size:12px">${esc((d.last_check||'(never)').slice(0,16))}</div></div>
+      </div>
+      <p class="sub">${esc(d.note||'')}</p>
+    `;
+  }
+
   async function dockTick(){
     try {
       const [ev, dp] = await Promise.all([
@@ -261,8 +331,18 @@
       $('#dock-feed').innerHTML = '<li class="bad">dock error: '+esc(e.message)+'</li>';
     }
   }
-  function startDockPoll(){ dockTick(); dockTimer = setInterval(dockTick, 30000); }
-  function stopDockPoll(){ if(dockTimer) clearInterval(dockTimer); }
+  function startDockPoll(){
+    dockTick();
+    dockTimer = setInterval(dockTick, 30000);
+    // SSE for true real-time
+    try {
+      const sse = new EventSource('/api/admin/events/stream?s=' + encodeURIComponent(SECRET));
+      sse.addEventListener('ready', () => {});
+      sse.onerror = () => { /* SSE auto-reconnects */ };
+      window.__tamaziaSSE = sse;
+    } catch(e) {}
+  }
+  function stopDockPoll(){ if(dockTimer) clearInterval(dockTimer); if(window.__tamaziaSSE) { try{window.__tamaziaSSE.close();}catch(e){} } }
 
   function esc(s){ return String(s==null?'':s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
 

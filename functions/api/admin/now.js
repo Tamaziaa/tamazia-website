@@ -16,7 +16,13 @@ export const onRequestGet = async ({ request, env }) => {
   const highIntent = [...todayContact, ...todayBriefings].filter(s => /authority|enterprise|magic.circle|ipo|fortune|ftse/i.test(s.message || s.brief || s.company || ''));
   if (highIntent.length) cards.push({ kind: 'high-intent', title: highIntent.length + ' high-intent form submission' + (highIntent.length > 1 ? 's' : '') + ' today.' });
   if (!cards.length) cards.push({ kind: 'ok', title: 'All quiet · no critical action items right now.' });
+  // Compute improvement flags (Phase B)
+  const highIntent = [...contact, ...briefings].filter(c => /authority|enterprise|magic.?circle|ipo|fortune|ftse/i.test((c.message || c.brief || c.company || '')));
+  const flags = [];
+  if (highIntent.filter(c => (c.submitted_at||'').startsWith(today)).length) flags.push({ level:'p1', msg: `${highIntent.filter(c => (c.submitted_at||'').startsWith(today)).length} high-intent forms today` });
+  if (todayBookings.length) flags.push({ level: 'p1', msg: `${todayBookings.length} new Cal booking(s) today` });
   return json({
+    flags,
     greeting,
     truth: {
       real: { prospects: contact.length + briefings.length, sent: 0, replies: 0, booked: bookings.length, won: 0 },

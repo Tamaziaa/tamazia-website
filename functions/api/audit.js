@@ -1411,7 +1411,40 @@ export const onRequestGet = async () => {
   );
 };
 
-export const onRequestPost = async ({ request, env }) => {
+
+// Phase F1 · save every audit run to KV (audit-run:<ts>:<request_id>)
+async function saveAuditRun(env, request, body, result, type) {
+  if (!env || !env.FORM_SUBMISSIONS) return;
+  try {
+    const ts = new Date().toISOString();
+    const rid = (body && body['admin-source'] === '1' ? 'admin-' : '') + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID().slice(0, 12) : Date.now().toString(36));
+    const record = {
+      id: rid,
+      created_at: ts,
+      type, // 'url' or 'keyword'
+      input: body && (body['audit-input'] || body.input) || '',
+      sector: body && body.sector || '',
+      email: body && (body.email || body['audit-email']) || '',
+      country: request.headers.get('cf-ipcountry') || '',
+      ip_truncated: (request.headers.get('cf-connecting-ip') || '').replace(/\.\d+$/, '.x'),
+      ua: (request.headers.get('user-agent') || '').slice(0, 200),
+      referer: (request.headers.get('referer') || '').slice(0, 200),
+      admin_source: !!(body && body['admin-source'] === '1'),
+      result_brief: {
+        overall: result && (result.overall || result.score),
+        gradeLetter: result && (result.gradeLetter || result.grade),
+        regulator: result && result.regulator,
+        finding_count: result && (result.errorsVsShouldBe || result.findings || []).length,
+      },
+      result_full: result,
+    };
+    await env.FORM_SUBMISSIONS.put('audit-run:' + ts + ':' + rid, JSON.stringify(record), {
+      expirationTtl: 60 * 60 * 24 * 365 * 2, // 2y
+    });
+  } catch (_e) { /* fail-open */ }
+}
+
+const _originalAuditPost = async ({ request, env }) => {
   const baseHeaders = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -1939,4 +1972,26 @@ export const onRequestPost = async ({ request, env }) => {
     const msg = (err && err.message) ? err.message : 'Internal server error';
     return new Response(JSON.stringify({ error: msg }), { status: 500, headers: baseHeaders });
   }
+};
+
+// Phase F1 · save every audit run wrapper
+export const onRequestPost = async (ctx) => {
+  const { request, env } = ctx;
+  let bodyClone = {};
+  try {
+    const cloned = request.clone();
+    bodyClone = await cloned.json();
+  } catch (_e) {}
+  const resp = await _originalAuditPost(ctx);
+  // Don't save honeypot/silent/error responses
+  try {
+    if (resp.status === 200 && env.FORM_SUBMISSIONS) {
+      const respClone = resp.clone();
+      const data = await respClone.json();
+      if (data && (data.overall || data.metrics || data.type)) {
+        await saveAuditRun(env, request, bodyClone, data, data.type || 'url');
+      }
+    }
+  } catch (_e) {}
+  return resp;
 };

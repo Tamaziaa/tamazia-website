@@ -78,6 +78,8 @@
       else if (tab === 'outbox') await renderOutbox(root);
       else if (tab === 'mystrika') await renderMystrika(root);
       else if (tab === 'icemail') await renderIceMail(root);
+      else if (tab === 'audits') await renderAudits(root);
+      else if (tab === 'sources') await renderSources(root);
       else if (tab === 'editor') await renderEditor(root);
       else if (tab === 'health') await renderHealth(root);
       else if (tab === 'settings') await renderSettings(root);
@@ -393,6 +395,140 @@
     $('#ed-save').addEventListener('click', save);
     $('#ed-file').addEventListener('change', load);
     load();
+  }
+
+  async function renderAudits(root){
+    root.innerHTML = `
+      <h2>Audits · history + runner</h2>
+      <p class="sub">Every public audit + every founder-run audit saved to KV. Re-run, drill, export.</p>
+      <div class="card">
+        <div class="card-title">Run a new audit</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end">
+          <div><label class="kpi-label">Input (domain or keyword)</label><input id="aud-input" placeholder="yourdomain.com or keyword" style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px" /></div>
+          <div><label class="kpi-label">Sector</label><select id="aud-sector" style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px"><option value="">auto</option><option>law firm</option><option>healthcare</option><option>hotels and hospitality</option><option>real estate</option><option>financial services</option><option>restaurants and f&amp;b</option></select></div>
+          <div><label class="kpi-label">Email tag</label><input id="aud-email" placeholder="optional" value="admin@tamazia.co.uk" style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px" /></div>
+          <button id="aud-run" style="padding:10px 18px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:3px;height:39px">Run</button>
+        </div>
+        <p class="sub" id="aud-status" style="margin-top:10px"></p>
+      </div>
+      <div class="card">
+        <div class="card-title">History (most recent 50)</div>
+        <input id="aud-search" placeholder="filter by input / sector / email..." style="width:100%;padding:9px;border:1px solid var(--hairline);background:#fff;font:inherit;border-radius:3px;margin-bottom:12px" />
+        <table id="aud-table"><thead><tr><th>Created</th><th>Type</th><th>Input</th><th>Sector</th><th>Grade</th><th>Findings</th><th>Source</th><th></th></tr></thead><tbody><tr><td colspan="8">Loading...</td></tr></tbody></table>
+      </div>
+      <div id="aud-drill" class="card" hidden>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="card-title" id="aud-drill-title">Audit detail</div><button id="aud-drill-close" class="btn-ghost" style="border:1px solid var(--hairline);color:var(--ink)">Close</button></div>
+        <pre id="aud-drill-json" style="background:#1B0A12;color:#E8D9C9;padding:12px;font:12px var(--mono);max-height:480px;overflow:auto;border-radius:3px"></pre>
+      </div>
+    `;
+    async function load(q){
+      try {
+        const d = await api('/audits?limit=50' + (q?('&q='+encodeURIComponent(q)):''));
+        const rows = (d.audits||[]).map(a => `<tr>
+          <td>${esc((a.created_at||'').slice(0,16))}</td>
+          <td><span class="tag blue">${esc(a.type||'?')}</span></td>
+          <td>${esc((a.input||'').slice(0,40))}</td>
+          <td>${esc(a.sector||'auto')}</td>
+          <td><span class="tag ${(a.result_brief?.gradeLetter==='A'||a.result_brief?.gradeLetter==='B')?'green':a.result_brief?.gradeLetter==='F'?'red':'amber'}">${esc(a.result_brief?.gradeLetter||'?')}</span></td>
+          <td>${a.result_brief?.finding_count||0}</td>
+          <td><span class="tag ${a.admin_source?'amber':'blue'}">${a.admin_source?'admin':'public'}</span></td>
+          <td><button data-aid="${esc(a.id)}" data-key="audit-run:${esc(a.created_at)}:${esc(a.id)}" class="aud-drill-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px">View</button></td>
+        </tr>`).join('');
+        $('#aud-table').querySelector('tbody').innerHTML = rows || '<tr><td colspan="8">No audits yet.</td></tr>';
+        $$('#aud-table .aud-drill-btn').forEach(b => b.addEventListener('click', () => drill(b.dataset.key)));
+      } catch(e) { $('#aud-table').querySelector('tbody').innerHTML = '<tr><td colspan="8" style="color:var(--red)">'+esc(e.message)+'</td></tr>'; }
+    }
+    async function drill(key){
+      try {
+        const d = await api('/audits/get?id=' + encodeURIComponent(key));
+        $('#aud-drill').hidden = false;
+        $('#aud-drill-title').textContent = 'Audit · ' + (d.input||'?') + ' · ' + (d.created_at||'');
+        $('#aud-drill-json').textContent = JSON.stringify(d, null, 2);
+      } catch(e) { status('drill error: '+e.message, 'err'); }
+    }
+    $('#aud-drill-close').addEventListener('click', () => { $('#aud-drill').hidden = true; });
+    $('#aud-run').addEventListener('click', async () => {
+      const input = $('#aud-input').value.trim();
+      const sector = $('#aud-sector').value;
+      const email = $('#aud-email').value.trim() || 'admin@tamazia.co.uk';
+      if (!input) { $('#aud-status').textContent = 'enter input'; return; }
+      $('#aud-status').textContent = 'running...';
+      try {
+        const d = await api('/audits/rerun', { method:'POST', body:{ input, sector, email }});
+        $('#aud-status').textContent = 'done · status ' + d.status + ' · ' + (d.result?.overall?.gradeLetter || d.result?.gradeLetter || '?');
+        setTimeout(() => load(''), 800);
+      } catch(e) { $('#aud-status').textContent = 'error: '+e.message; }
+    });
+    $('#aud-search').addEventListener('input', () => load($('#aud-search').value.trim()));
+    load('');
+  }
+
+  async function renderSources(root){
+    root.innerHTML = `
+      <h2>Sources · scrapers + history</h2>
+      <p class="sub">Run SERPER, Hunter, NeverBounce. Every run saved with tags. Drill, re-run, export.</p>
+      <div class="card">
+        <div class="card-title">Run a scrape</div>
+        <div style="display:grid;grid-template-columns:1fr 2fr 1fr 1fr auto;gap:10px;align-items:end">
+          <div><label class="kpi-label">Type</label><select id="src-type" style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px"><option value="serper">SERPER · Google SERP</option><option value="hunter-domain">Hunter · domain search</option><option value="hunter-verify">Hunter · verify email</option><option value="neverbounce">NeverBounce · verify</option></select></div>
+          <div><label class="kpi-label">Query</label><input id="src-query" placeholder="domain.com or query or email@..." style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px" /></div>
+          <div><label class="kpi-label">Sector tag</label><input id="src-sector" placeholder="optional" style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px" /></div>
+          <div><label class="kpi-label">Geo</label><input id="src-geo" placeholder="UK / US / UAE..." style="width:100%;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px" /></div>
+          <button id="src-run" style="padding:10px 18px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:3px;height:39px">Run</button>
+        </div>
+        <p class="sub" id="src-status" style="margin-top:10px"></p>
+      </div>
+      <div class="card">
+        <div class="card-title">History (most recent 50)</div>
+        <input id="src-search" placeholder="filter by query / type / sector..." style="width:100%;padding:9px;border:1px solid var(--hairline);background:#fff;font:inherit;border-radius:3px;margin-bottom:12px" />
+        <table id="src-table"><thead><tr><th>Created</th><th>Type</th><th>Query</th><th>Sector</th><th>Geo</th><th>Count</th><th>Latency</th><th></th></tr></thead><tbody><tr><td colspan="8">Loading...</td></tr></tbody></table>
+      </div>
+      <div id="src-drill" class="card" hidden>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="card-title" id="src-drill-title">Scrape detail</div><button id="src-drill-close" class="btn-ghost" style="border:1px solid var(--hairline);color:var(--ink)">Close</button></div>
+        <pre id="src-drill-json" style="background:#1B0A12;color:#E8D9C9;padding:12px;font:12px var(--mono);max-height:480px;overflow:auto;border-radius:3px"></pre>
+      </div>
+    `;
+    async function load(q){
+      try {
+        const d = await api('/scrape/history?limit=50' + (q?('&q='+encodeURIComponent(q)):''));
+        const rows = (d.runs||[]).map(r => `<tr>
+          <td>${esc((r.created_at||'').slice(0,16))}</td>
+          <td><span class="tag blue">${esc(r.type||'?')}</span></td>
+          <td>${esc((r.query||'').slice(0,40))}</td>
+          <td>${esc(r.sector||'')}</td>
+          <td>${esc(r.geo||'')}</td>
+          <td>${r.result_count||0}</td>
+          <td>${r.latency_ms||'?'}ms</td>
+          <td><button data-key="scrape-run:${esc(r.created_at)}:${esc(r.id)}" class="src-drill-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px">View</button></td>
+        </tr>`).join('');
+        $('#src-table').querySelector('tbody').innerHTML = rows || '<tr><td colspan="8">No scrapes yet · run one above.</td></tr>';
+        $$('#src-table .src-drill-btn').forEach(b => b.addEventListener('click', () => drill(b.dataset.key)));
+      } catch(e) { $('#src-table').querySelector('tbody').innerHTML = '<tr><td colspan="8" style="color:var(--red)">'+esc(e.message)+'</td></tr>'; }
+    }
+    async function drill(key){
+      try {
+        const d = await api('/scrape/get?id=' + encodeURIComponent(key));
+        $('#src-drill').hidden = false;
+        $('#src-drill-title').textContent = 'Scrape · ' + (d.type||'?') + ' · ' + (d.query||'?');
+        $('#src-drill-json').textContent = JSON.stringify(d, null, 2);
+      } catch(e) { status('drill error: '+e.message, 'err'); }
+    }
+    $('#src-drill-close').addEventListener('click', () => { $('#src-drill').hidden = true; });
+    $('#src-run').addEventListener('click', async () => {
+      const type = $('#src-type').value;
+      const query = $('#src-query').value.trim();
+      const sector = $('#src-sector').value.trim();
+      const geo = $('#src-geo').value.trim();
+      if (!query) { $('#src-status').textContent = 'enter query'; return; }
+      $('#src-status').textContent = 'scraping...';
+      try {
+        const d = await api('/scrape/run', { method:'POST', body:{ type, query, sector, geo }});
+        $('#src-status').textContent = 'done · ' + (d.result_count||0) + ' results · ' + (d.latency_ms||'?') + 'ms';
+        setTimeout(() => load(''), 600);
+      } catch(e) { $('#src-status').textContent = 'error: '+e.message; }
+    });
+    $('#src-search').addEventListener('input', () => load($('#src-search').value.trim()));
+    load('');
   }
 
   async function dockTick(){

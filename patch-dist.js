@@ -1506,13 +1506,16 @@ try {
   else { console.log('[patch-dist]   PASS 118. /book/* · 5 sectors + 5 events = 10 booking pages'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
-// Gate 119 · /book/event consent-gated cal.com embed
+// Gate 119 · /book/event Cal.com embed auto-loads (no consent gate, no error wrapper)
 try {
   const e = readFileSync(join(DIST_DIR, 'book', 'strategy-call', 'index.html'), 'utf8');
-  if (!e.includes('checkConsent') || !e.includes('tamazia-cookie-consent')) {
-    console.error('[patch-dist]   FAIL 119. /book/strategy-call/ embed not consent-gated');
+  if (!e.includes('Cal(') || !e.includes('cal.com')) {
+    console.error('[patch-dist]   FAIL 119. /book/strategy-call/ Cal.com embed missing');
     results.push({ ok: false });
-  } else { console.log('[patch-dist]   PASS 119. /book/* embed · consent-gated (loads only after Accept)'); results.push({ ok: true }); }
+  } else if (e.includes('Cookie consent required') || e.includes('checkConsent')) {
+    console.error('[patch-dist]   FAIL 119. /book/strategy-call/ still has consent gate');
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 119. /book/* embed · auto-loads, no consent gate'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
 // Gate 120 · cal-webhook 4 new lifecycle handlers (OOO_CREATED, RECORDING_TRANSCRIPTION_GENERATED, MEETING_NO_ANSWER, BOOKING_BUSY_TIMES_UPDATED)
@@ -1618,16 +1621,17 @@ try {
   } else { console.log('[patch-dist]   PASS 129. briefings · writes email-briefings: index on submission'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
-// Gate 130 · /book/intro/ /book/discovery/ /book/workshop/ /book/deep-audit/ all have consent-gated cal embed
+// Gate 130 · /book/intro/ /book/discovery/ /book/workshop/ /book/deep-audit/ all auto-load Cal.com (no consent gate)
 try {
   const events = ['intro', 'discovery', 'workshop', 'deep-audit'];
   let ok = true;
   for (const e of events) {
     const html = readFileSync(join(DIST_DIR, 'book', e, 'index.html'), 'utf8');
-    if (!html.includes('checkConsent')) { ok = false; console.error('[patch-dist]   FAIL 130. /book/' + e + '/ no checkConsent'); break; }
+    if (!html.includes('Cal(')) { ok = false; console.error('[patch-dist]   FAIL 130. /book/' + e + '/ no Cal embed'); break; }
+    if (html.includes('Cookie consent required') || html.includes('checkConsent')) { ok = false; console.error('[patch-dist]   FAIL 130. /book/' + e + '/ still has consent gate'); break; }
   }
   if (!ok) results.push({ ok: false });
-  else { console.log('[patch-dist]   PASS 130. /book/* · 4 paid+free events all consent-gated'); results.push({ ok: true }); }
+  else { console.log('[patch-dist]   PASS 130. /book/* · 4 paid+free events all auto-load (no gate)'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
 const failed = results.filter(r => !r.ok);

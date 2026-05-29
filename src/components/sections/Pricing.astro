@@ -382,6 +382,7 @@ const featureIcons: Record<string, string> = {
     position: relative;
     border-color: var(--gold) !important;
     box-shadow: 0 8px 28px rgba(90, 26, 43, 0.18);
+    /* Same size as Foundation and Enterprise · ribbon is the only differentiator */
   }
   .most-popular-ribbon {
     position: absolute;
@@ -439,9 +440,9 @@ const featureIcons: Record<string, string> = {
     grid-auto-rows: 1fr;
     align-items: stretch;
     gap: 32px;
-    align-items: start;
     margin-bottom: clamp(32px, 5vw, 48px); /* R10 · was 64-96 */
   }
+  .tier-card { height: 100%; }
 
   .tier-card {
     container-type: inline-size;
@@ -467,7 +468,6 @@ const featureIcons: Record<string, string> = {
     background: var(--pearl);
     border: 1px solid var(--gold);
     box-shadow: 0 20px 40px -20px rgba(201, 167, 114, 0.3);
-    transform: translateY(-8px);
   }
 
   .tier-enterprise {
@@ -475,7 +475,6 @@ const featureIcons: Record<string, string> = {
     color: var(--ivory);
     border: 2px solid var(--gold);
     position: relative;
-    transform: scale(1.03);
     z-index: 2;
   }
 
@@ -494,7 +493,7 @@ const featureIcons: Record<string, string> = {
   }
 
   .tier-enterprise:hover {
-    transform: translateY(-12px) scale(1.03);
+    transform: translateY(-12px);
   }
 
   .tier-numeral {

@@ -1,6 +1,7 @@
 ---
 // Phase 12 · per-event booking pages · /book/intro/, /book/discovery/ etc.
 // Embeds Cal.com inline widget bound to cal.com/tamazia/<event-slug>.
+// No consent gate · Cal.com loads immediately, matches /book/ behaviour.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
@@ -15,8 +16,11 @@ const canonicalUrl = `https://tamazia.co.uk/book/${event.slug}/`;
 const pageTitle = `${event.title} · Tamazia Ltd`;
 const pageDescription = `${event.description.slice(0, 150)}`;
 const calLink = `tamazia/${event.slug}`;
+const elId = `my-cal-inline-${event.slug}`;
 ---
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalUrl}>
+  <link slot="head" rel="preconnect" href="https://app.cal.com" crossorigin />
+  <link slot="head" rel="preconnect" href="https://cal.com" crossorigin />
   <Header />
   <main id="main" class="book-event">
     <section class="hero">
@@ -25,47 +29,101 @@ const calLink = `tamazia/${event.slug}`;
       <p class="lede">{event.description}</p>
     </section>
     <section class="cal-embed">
-      <div id="my-cal-inline" data-cal-namespace={event.slug} data-cal-link={calLink} aria-label="Cal.com booking widget" hidden>
-        <p>Loading the booking calendar...</p>
-      </div>
-      <p class="consent-note" id="cal-consent-note" hidden>
-        <strong>Cookie consent required.</strong> The booking widget loads from Cal.com which sets cross-site cookies. Click "Accept all" on the cookie banner to load the widget.
-      </p>
+      <div id={elId} class="cal-inline" aria-label="Cal.com booking widget"></div>
+      <noscript>
+        <div class="cal-fallback">
+          <p>The booking calendar requires JavaScript. <a href={`https://cal.com/${calLink}`} rel="noopener">Open the Cal.com page directly</a>, <a href="/contact/">send a brief instead</a>, or email <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>.</p>
+        </div>
+      </noscript>
     </section>
   </main>
   <Footer />
-  <script is:inline define:vars={{ calLink, eventSlug: event.slug }}>
-    (function() {
-      // Phase 12 · consent-gated Cal.com embed
-      function loadCal() {
-        const el = document.getElementById('my-cal-inline');
-        if (el) el.hidden = false;
-        const note = document.getElementById('cal-consent-note');
-        if (note) note.hidden = true;
-        // Cal.com embed loader
-        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-        Cal("init", eventSlug, {origin:"https://cal.com"});
-        Cal.ns[eventSlug]("inline", { elementOrSelector:"#my-cal-inline", config: {"layout":"month_view","theme":"light"}, calLink: calLink });
-      }
+  <script is:inline define:vars={{ calLink, eventSlug: event.slug, elId }}>
+    // Cal inline embed · loads immediately, no consent gate.
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal;
+        let ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          d.head.appendChild(d.createElement('script')).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === 'string') {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ['initNamespace', namespace]);
+          } else {
+            p(cal, ar);
+          }
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
 
-      function checkConsent() {
-        try {
-          const c = JSON.parse(localStorage.getItem('tamazia-cookie-consent') || 'null');
-          return c && c.analytics === true;
-        } catch { return false; }
-      }
+    Cal('init', eventSlug, { origin: 'https://app.cal.com' });
 
-      if (checkConsent()) {
-        loadCal();
-      } else {
-        const note = document.getElementById('cal-consent-note');
-        if (note) note.hidden = false;
-        // Listen for consent change
-        window.addEventListener('tamazia:consent', e => {
-          if (e.detail && e.detail.decision === 'granted') loadCal();
-        });
-      }
+    Cal.ns[eventSlug]('inline', {
+      elementOrSelector: '#' + elId,
+      config: { layout: 'month_view' },
+      calLink: calLink,
+    });
+
+    Cal.ns[eventSlug]('ui', {
+      theme: 'auto',
+      cssVarsPerTheme: {
+        light: {
+          'cal-brand': '#5A1A2B',
+          'cal-text': '#2A0C14',
+          'cal-text-emphasis': '#2A0C14',
+          'cal-bg': '#FAF7F2',
+          'cal-bg-emphasis': '#F1EADC',
+          'cal-border': '#E5DDCB',
+        },
+        dark: {
+          'cal-brand': '#C9A772',
+          'cal-text': '#FAF7F2',
+          'cal-text-emphasis': '#FAF7F2',
+          'cal-bg': '#2A0C14',
+          'cal-bg-emphasis': '#3A1622',
+          'cal-border': '#5A1A2B',
+        },
+      },
+      hideEventTypeDetails: false,
+      layout: 'month_view',
+    });
+
+    // GA4 event when iframe attaches.
+    (function watchEmbed() {
+      const wrap = document.getElementById(elId);
+      if (!wrap) return;
+      const obs = new MutationObserver((muts, o) => {
+        if (wrap.querySelector('iframe')) {
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'cal_embed_loaded', { event_category: 'booking', event_label: eventSlug });
+          }
+          o.disconnect();
+        }
+      });
+      obs.observe(wrap, { childList: true, subtree: true });
     })();
+
+    // Listen for Cal.com booking-confirmed messages and fire conversion.
+    window.addEventListener('message', (ev) => {
+      if (ev && ev.data && (ev.data.type === 'booking-successful' || ev.data.action === 'bookingSuccessful')) {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'generate_lead', { event_category: 'booking', event_label: eventSlug, value: 1 });
+        }
+      }
+    });
   </script>
 </BaseLayout>
 <style>
@@ -74,5 +132,6 @@ const calLink = `tamazia/${event.slug}`;
   .book-event .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
   .book-event .lede { font-size: 18px; max-width: 720px; line-height: 1.5; }
   .book-event .cal-embed { margin-top: 48px; min-height: 600px; }
-  .book-event .consent-note { padding: 16px 20px; background: #F4E8C4; border-left: 4px solid #C9A772; font-size: 14px; line-height: 1.55; }
+  .book-event .cal-inline { min-height: 600px; }
+  .book-event .cal-fallback { padding: 16px 20px; background: #F4E8C4; border-left: 4px solid #C9A772; font-size: 14px; line-height: 1.55; }
 </style>

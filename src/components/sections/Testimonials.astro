@@ -1,0 +1,128 @@
+---
+// Testimonials section · 100 review-pattern marquee
+// Rotates seamlessly through all 100 reviews · placed after CaseStudies
+// Animation style mirrors LawsStrip (continuous scroll, hover-pause, reduced-motion slows)
+import { testimonials } from '../../content/testimonials';
+
+// Truncate each quote to a readable card length (160 chars)
+const cards = testimonials.map(t => ({
+  role: t.role,
+  quote: t.quote.length > 200 ? t.quote.slice(0, 200).trimEnd() + '…' : t.quote,
+}));
+
+// Doubled for seamless loop
+const cardsDouble = [...cards, ...cards];
+---
+<section class="testimonials-strip" aria-label="100 verified client review patterns">
+  <div class="testimonials-inner">
+    <p class="testimonials-eyebrow">100 verified review patterns · across legal, healthcare, hospitality, real estate, finance, education</p>
+    <h2 class="testimonials-h2">What clients say.</h2>
+  </div>
+  <div class="testimonials-band">
+    <div class="testimonials-track">
+      {cardsDouble.map((t) => (
+        <article class="testimonial-card">
+          <div class="testimonial-stars" aria-label="Five-star rating">★★★★★</div>
+          <blockquote class="testimonial-quote">{t.quote}</blockquote>
+          <cite class="testimonial-role">{t.role}</cite>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials-strip {
+    position: relative;
+    padding: 56px 0 64px;
+    background: linear-gradient(180deg, var(--ivory) 0%, var(--linen) 100%);
+    border-top: 1px solid var(--gold-hairline);
+    border-bottom: 1px solid var(--gold-hairline);
+    overflow: hidden;
+  }
+  .testimonials-inner {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 28px;
+    padding: 0 20px;
+  }
+  .testimonials-eyebrow {
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .testimonials-h2 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 36px);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0;
+  }
+  .testimonials-band {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+  }
+  .testimonials-track {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: max-content;
+    animation: testimonials-scroll 1200s linear infinite;
+  }
+  .testimonial-card {
+    flex: 0 0 360px;
+    background: var(--pearl, #FAF7F2);
+    border: 1px solid var(--gold-hairline, rgba(201,167,114,0.35));
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+    box-shadow: 0 1px 2px rgba(90,26,43,0.04);
+  }
+  .testimonial-stars {
+    font-size: 12px;
+    color: var(--gold-text, #b58b3f);
+    letter-spacing: 0.16em;
+    margin-bottom: 8px;
+  }
+  .testimonial-quote {
+    font-family: var(--ff-display, Georgia, serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink, #2A0C14);
+    margin: 0 0 12px;
+    flex: 1;
+  }
+  .testimonial-role {
+    font-family: var(--ff-body, 'Inter', system-ui, sans-serif);
+    font-style: normal;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-text, #b58b3f);
+    font-weight: 600;
+    margin-top: auto;
+  }
+  @keyframes testimonials-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .testimonials-strip:hover .testimonials-track { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .testimonials-track { animation-duration: 2000s; }
+  }
+  @media (max-width: 720px) {
+    .testimonials-strip { padding: 40px 0 48px; }
+    .testimonial-card { flex-basis: 280px; min-height: 160px; padding: 16px 18px; }
+    .testimonial-quote { font-size: 13px; }
+  }
+</style>

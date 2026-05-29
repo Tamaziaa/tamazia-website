@@ -206,7 +206,12 @@
   }
 
   async function renderHealth(root){
-    const d = await api('/health');
+    const [d, cf, site, spam] = await Promise.all([
+      api('/health'),
+      api('/monitoring/cf').catch(() => ({})),
+      api('/monitoring/site').catch(() => ({})),
+      api('/monitoring/spam-landing').catch(() => ({})),
+    ]);
     const rows = (d.probes||[]).map(p => `<tr>
       <td>${esc(p.name)}</td>
       <td><span class="tag ${p.status||'amber'}">${esc((p.status||'amber').toUpperCase())}</span></td>
@@ -214,9 +219,19 @@
       <td>${esc(p.detail||'')}</td>
     </tr>`).join('');
     root.innerHTML = `
-      <h2>Health</h2>
-      <p class="sub">${(d.probes||[]).length} probes · last check ${esc(d.checked_at?.slice(11,19)||'')}</p>
+      <h2>Health + Monitoring</h2>
+      <p class="sub">${(d.probes||[]).length} service probes · ${(site.probes||[]).length} site URLs · ${(spam.domains||[]).length} domains tracked</p>
+      <div class="cards-grid">
+        <div class="kpi"><div class="kpi-label">Deploys 24h</div><div class="kpi-value">${cf.last_24h_deploys ?? 0}</div><div class="kpi-sub">${cf.last_7d_deploys ?? 0} in last 7d · ${cf.last_7d_success_rate ?? 100}% success</div></div>
+        <div class="kpi"><div class="kpi-label">Site p95</div><div class="kpi-value">${site.p95_ms ?? 0}ms</div><div class="kpi-sub">${site.broken_count ?? 0} broken · ${site.slow_count ?? 0} slow</div></div>
+        <div class="kpi"><div class="kpi-label">Spam landings</div><div class="kpi-value" style="font-size:20px">${(spam.domains||[]).filter(x => x.status === 'red').length}</div><div class="kpi-sub">${(spam.domains||[]).length} domains tracked</div></div>
+      </div>
+      <h3 class="card-title">Service probes</h3>
       <table><thead><tr><th>Service</th><th>Status</th><th>Latency</th><th>Detail</th></tr></thead><tbody>${rows}</tbody></table>
+      <h3 class="card-title" style="margin-top:24px">Site URLs</h3>
+      <table><thead><tr><th>Path</th><th>Status</th><th>Latency</th><th>HTTP</th></tr></thead><tbody>${(site.probes||[]).map(p => `<tr><td>${esc(p.name)}</td><td><span class="tag ${p.status||'amber'}">${esc((p.status||'amber').toUpperCase())}</span></td><td>${esc(p.latency_ms||'·')}ms</td><td>${esc(p.detail||'')}</td></tr>`).join('')}</tbody></table>
+      <h3 class="card-title" style="margin-top:24px">Postmaster reputation</h3>
+      <table><thead><tr><th>Domain</th><th>Reputation</th><th>Spam %</th><th>Status</th><th>Last check</th></tr></thead><tbody>${(spam.domains||[]).map(p => `<tr><td>${esc(p.domain)}</td><td>${esc(p.reputation)}</td><td>${esc(p.spam_rate_pct)}%</td><td><span class="tag ${p.status||'amber'}">${esc((p.status||'amber').toUpperCase())}</span></td><td>${esc((p.last_check||'(never)').slice(0,16))}</td></tr>`).join('')}</tbody></table>
     `;
   }
 

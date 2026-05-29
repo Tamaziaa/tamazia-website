@@ -11,24 +11,25 @@ export const onRequestGet = async ({ request, env }) => {
   const todayContact = contact.filter(s => (s.submitted_at || '').startsWith(today));
   const todayBriefings = briefings.filter(s => (s.submitted_at || '').startsWith(today));
   const todayBookings = bookings.filter(b => (b.received_at || b.submitted_at || '').startsWith(today));
+  // High-intent detection (used in both cards + flags)
+  const highIntentToday = [...todayContact, ...todayBriefings].filter(s => /authority|enterprise|magic.?circle|ipo|fortune|ftse|sovereign/i.test(s.message || s.brief || s.company || ''));
+  // Cards
   const cards = [];
   if (todayBookings.length) cards.push({ kind: 'booking', title: todayBookings.length + ' Cal.com booking' + (todayBookings.length > 1 ? 's' : '') + ' today.' });
-  const highIntent = [...todayContact, ...todayBriefings].filter(s => /authority|enterprise|magic.circle|ipo|fortune|ftse/i.test(s.message || s.brief || s.company || ''));
-  if (highIntent.length) cards.push({ kind: 'high-intent', title: highIntent.length + ' high-intent form submission' + (highIntent.length > 1 ? 's' : '') + ' today.' });
+  if (highIntentToday.length) cards.push({ kind: 'high-intent', title: highIntentToday.length + ' high-intent form submission' + (highIntentToday.length > 1 ? 's' : '') + ' today.' });
   if (!cards.length) cards.push({ kind: 'ok', title: 'All quiet · no critical action items right now.' });
-  // Compute improvement flags (Phase B)
-  const highIntent = [...contact, ...briefings].filter(c => /authority|enterprise|magic.?circle|ipo|fortune|ftse/i.test((c.message || c.brief || c.company || '')));
+  // Flags (Phase B)
   const flags = [];
-  if (highIntent.filter(c => (c.submitted_at||'').startsWith(today)).length) flags.push({ level:'p1', msg: `${highIntent.filter(c => (c.submitted_at||'').startsWith(today)).length} high-intent forms today` });
-  if (todayBookings.length) flags.push({ level: 'p1', msg: `${todayBookings.length} new Cal booking(s) today` });
+  if (highIntentToday.length) flags.push({ level: 'p1', msg: highIntentToday.length + ' high-intent form(s) today' });
+  if (todayBookings.length) flags.push({ level: 'p1', msg: todayBookings.length + ' new Cal booking(s) today' });
   return json({
-    flags,
     greeting,
     truth: {
       real: { prospects: contact.length + briefings.length, sent: 0, replies: 0, booked: bookings.length, won: 0 },
       test: { prospects: 0, sent: 0, replies: 0, booked: 0, won: 0 },
     },
     cards,
+    flags,
     pipeline_today: { sourced: 0, sent: 0, replies: 0, bookings: todayBookings.length, forms: todayContact.length + todayBriefings.length },
     build_sha: env.CF_PAGES_COMMIT_SHA || 'dev',
     build_at: env.CF_PAGES_BRANCH ? new Date().toISOString() : '',

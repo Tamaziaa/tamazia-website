@@ -36,9 +36,27 @@ jobs:
             --project-directory=dist
           cp dist/_worker_build/index.js dist/_worker.js
 
-      - name: Notify Slack + Telegram on deploy failure
+      - name: Notify Slack + Telegram on deploy failure (self-verifying endpoint)
         if: failure()
         env:
+          SHA: ${{ github.sha }}
+          RUN: ${{ github.run_id }}
+          TITLE: ${{ github.event.head_commit.message }}
+        run: |
+          set +e
+          PAYLOAD=$(python3 -c "
+          import json, os
+          print(json.dumps({
+            'run_id': os.environ['RUN'],
+            'sha': os.environ['SHA'],
+            'title': (os.environ.get('TITLE') or 'deploy')[:200],
+          }))
+          ")
+          curl -s -X POST "https://tamazia-website.pages.dev/api/admin/notify-deploy" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" || true
+          echo "notify-deploy fired"
+
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

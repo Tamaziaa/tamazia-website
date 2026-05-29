@@ -1,0 +1,16 @@
+---
+// /process/ · standalone page · same component as homepage section
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import HowWeWork from '../components/sections/HowWeWork.astro';
+
+const canonical = 'https://tamazia.co.uk/process/';
+---
+<BaseLayout title="The process · Tamazia" description="Five stages. Audit before execution." canonical={canonical}>
+  <Header />
+  <main id="main">
+    <HowWeWork />
+  </main>
+  <Footer />
+</BaseLayout>

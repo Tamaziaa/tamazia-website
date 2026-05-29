@@ -1,0 +1,16 @@
+---
+// /cases/ · standalone page · same component as homepage section
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import CaseStudies from '../components/sections/CaseStudies.astro';
+
+const canonical = 'https://tamazia.co.uk/cases/';
+---
+<BaseLayout title="Case studies · Tamazia" description="Verified mandates · public-record results." canonical={canonical}>
+  <Header />
+  <main id="main">
+    <CaseStudies />
+  </main>
+  <Footer />
+</BaseLayout>

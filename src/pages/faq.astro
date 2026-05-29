@@ -1,0 +1,16 @@
+---
+// /faq/ · standalone page · same component as homepage section
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import FAQ from '../components/sections/FAQ.astro';
+
+const canonical = 'https://tamazia.co.uk/faq/';
+---
+<BaseLayout title="FAQ · Tamazia" description="Questions buyers ask before engagement." canonical={canonical}>
+  <Header />
+  <main id="main">
+    <FAQ />
+  </main>
+  <Footer />
+</BaseLayout>

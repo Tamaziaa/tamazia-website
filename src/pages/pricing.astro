@@ -1,0 +1,16 @@
+---
+// /pricing/ · standalone page · same component as homepage section
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Pricing from '../components/sections/Pricing.astro';
+
+const canonical = 'https://tamazia.co.uk/pricing/';
+---
+<BaseLayout title="Pricing · Tamazia" description="Foundation · Authority · Enterprise. 90-day rolling." canonical={canonical}>
+  <Header />
+  <main id="main">
+    <Pricing />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+// /sectors/ · standalone page · same component as homepage section
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Sectors from '../components/sections/Sectors.astro';
+
+const canonical = 'https://tamazia.co.uk/sectors/';
+---
+<BaseLayout title="Sectors we serve · Tamazia" description="Seven sectors. One framework per regulator." canonical={canonical}>
+  <Header />
+  <main id="main">
+    <Sectors />
+  </main>
+  <Footer />
+</BaseLayout>

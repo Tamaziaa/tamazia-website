@@ -1,0 +1,16 @@
+---
+// /why-us/ · standalone page · same component as homepage section
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import WhyUs from '../components/sections/WhyUs.astro';
+
+const canonical = 'https://tamazia.co.uk/why-us/';
+---
+<BaseLayout title="Why Tamazia · Tamazia" description="The lawyer-led SEO firm for regulated enterprises." canonical={canonical}>
+  <Header />
+  <main id="main">
+    <WhyUs />
+  </main>
+  <Footer />
+</BaseLayout>

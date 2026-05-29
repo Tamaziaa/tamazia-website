@@ -17,12 +17,12 @@ export const heroContent = {
   // NOTE: "About" removed from header — one-page site, About lives in footer only.
   // "Insights" renamed to "Resources" sitewide.
   headerNav: [
-    { label: 'Why Us',    href: '/#why-us' },
-    { label: 'Sectors',   href: '/#sectors' },
-    { label: 'Cases',     href: '/#cases' },
-    { label: 'Process',   href: '/#process' },
-    { label: 'Pricing',   href: '/#pricing' },
-    { label: 'FAQ',       href: '/#faq' },
+    { label: 'Why Us',    href: '/why-us/' },
+    { label: 'Sectors',   href: '/sectors/' },
+    { label: 'Cases',     href: '/cases/' },
+    { label: 'Process',   href: '/process/' },
+    { label: 'Pricing',   href: '/pricing/' },
+    { label: 'FAQ',       href: '/faq/' },
     { label: 'Resources', href: '/resources/' },
   ],
 

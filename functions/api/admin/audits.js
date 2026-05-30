@@ -20,5 +20,19 @@ export const onRequestGet = async ({ request, env }) => {
   let all = kvAudits.concat(engine);
   if (q) all = all.filter(a => ((a.input || a.domain || '') + ' ' + (a.sector || '') + ' ' + (a.company || '') + ' ' + (a.email || '')).toLowerCase().includes(q));
   all.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
-  return json({ audits: all.slice(0, limit), count: all.length, kv: kvAudits.length, engine: engine.length });
+  // KPI stats computed across the full merged set (not just the returned page)
+  const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+  const stats = {
+    total: all.length,
+    full: all.filter(a => a.kind === 'full').length,
+    quick: all.filter(a => a.kind === 'quick').length,
+    manual: all.filter(a => a.kind === 'manual').length,
+    opened: all.filter(a => a.kind === 'full' && (a.open_count || 0) > 0).length,
+    this_week: all.filter(a => { const t = Date.parse(a.created_at || ''); return t && t >= weekAgo; }).length,
+  };
+  // Hot audits: full £1,500 audits a prospect has actually opened — the strongest buy signal
+  const hot = all.filter(a => a.kind === 'full' && (a.open_count || 0) > 0)
+    .sort((a, b) => (b.last_opened_at || '').localeCompare(a.last_opened_at || ''))
+    .slice(0, 10);
+  return json({ audits: all.slice(0, limit), count: all.length, kv: kvAudits.length, engine: engine.length, stats, hot });
 };

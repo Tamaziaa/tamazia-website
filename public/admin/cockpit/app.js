@@ -92,14 +92,17 @@
   }
 
   async function renderNow(root){
-    const [d, deploys, cal, flg, eng] = await Promise.all([
+    const [d, deploys, cal, flg, eng, aud] = await Promise.all([
       api('/now'),
       api('/deploys').catch(()=>({runs:[]})),
       api('/cal/events').catch(()=>({event_types:[]})),
       api('/flags').catch(()=>({flags:[]})),
       api('/engine/status').catch(()=>({})),
+      api('/audits?limit=50').catch(()=>({hot:[],stats:{}})),
     ]);
+    const hotAudits = (aud.hot||[]);
     const cards = (d.cards||[]).map(c => `<div class="card"><div class="card-title">${esc((c.kind||'').toUpperCase())}</div><p>${esc(c.title||'')}</p></div>`).join('');
+    const hotCards = hotAudits.map(a => `<div class="card" style="border-color:var(--gold)"><div class="card-title">🔥 AUDIT OPENED · ${esc(a.open_count||0)}×</div><p><strong>${esc(a.company||a.input||a.domain||'A prospect')}</strong> opened their £1,500 audit${a.last_opened_at?(' · '+esc((a.last_opened_at||'').slice(0,16))):''}. Hottest signal in the pipeline — reach out now.</p><a href="${esc(location.origin+(a.live_url||''))}" target="_blank" class="btn-ghost" style="border:1px solid var(--gold);color:var(--ink);padding:4px 10px;font-size:10px;text-decoration:none">Open their audit</a></div>`).join('');
     const t = d.truth || {real:{},test:{}};
     const lastDeploy = (deploys.runs||[])[0];
     const deployBadge = lastDeploy ? `<span class="tag ${lastDeploy.conclusion==='success'?'green':lastDeploy.conclusion==='failure'?'red':'amber'}">${esc(lastDeploy.conclusion||lastDeploy.status||'?')}</span>` : '<span class="tag amber">unknown</span>';
@@ -117,8 +120,9 @@
         <div class="kpi"><div class="kpi-label">Last deploy</div><div class="kpi-value" style="font-size:14px;font-family:var(--mono)">${esc(lastDeploy?.sha||'?')}</div><div class="kpi-sub">${deployBadge} ${esc(lastDeploy?.created_at?.slice(0,16)||'')}</div></div>
         <div class="kpi"><div class="kpi-label">Engine cycle</div><div class="kpi-value" style="font-size:14px">${engBadge}</div><div class="kpi-sub">${esc((_e0&&_e0.at||'').slice(0,16))} · sourcing</div></div>
       </div>
+      ${hotAudits.length ? `<div class="tag green" style="display:block;padding:8px 12px;margin:8px 0">🔥 ${hotAudits.length} prospect${hotAudits.length>1?'s have':' has'} opened their £1,500 audit — follow up today</div>` : ''}
       <h3 class="card-title">Critical now</h3>
-      ${cards || '<p class="sub">Nothing critical · all green.</p>'}
+      ${hotCards}${cards || (hotCards?'':'<p class="sub">Nothing critical · all green.</p>')}
       <h3 class="card-title" style="margin-top:18px">Recent deploys</h3>
       <table><thead><tr><th>SHA</th><th>Status</th><th>Title</th><th>When</th></tr></thead><tbody>
         ${(deploys.runs||[]).slice(0,5).map(r => `<tr>
@@ -460,6 +464,7 @@
         </div>
         <p class="sub" id="aud-status" style="margin-top:10px"></p>
       </div>
+      <div id="aud-kpis" class="cards-grid" style="margin-bottom:16px"></div>
       <div class="card">
         <div class="card-title">History (most recent 50)</div>
         <input id="aud-search" placeholder="filter by input / sector / email..." style="width:100%;padding:9px;border:1px solid var(--hairline);background:#fff;font:inherit;border-radius:3px;margin-bottom:12px" />
@@ -470,22 +475,60 @@
         <pre id="aud-drill-json" style="background:#1B0A12;color:#E8D9C9;padding:12px;font:12px var(--mono);max-height:480px;overflow:auto;border-radius:3px"></pre>
       </div>
     `;
+    let _audById = {};
     async function load(q){
       try {
         const d = await api('/audits?limit=50' + (q?('&q='+encodeURIComponent(q)):''));
-        const rows = (d.audits||[]).map(a => `<tr>
+        const st = d.stats || {};
+        const k = $('#aud-kpis');
+        if (k) k.innerHTML = [
+          ['Total audits', st.total||0, 'all sources'],
+          ['Full £1.5k', st.full||0, 'engine · Touch-1'],
+          ['Opened', st.opened||0, 'prospect viewed'],
+          ['Manual', st.manual||0, 'founder-run'],
+          ['This week', st.this_week||0, 'last 7 days'],
+        ].map(([l,v,s2])=>`<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-value">${v}</div><div class="kpi-sub">${s2}</div></div>`).join('');
+        _audById = {};
+        (d.audits||[]).forEach((a,i)=>{ _audById[a.id||('row'+i)] = a; });
+        const rows = (d.audits||[]).map((a,i) => { const rk=a.id||('row'+i); return `<tr>
           <td>${esc((a.created_at||'').slice(0,16))}</td>
           <td><span class="tag ${a.kind==='full'?'green':a.kind==='manual'?'amber':'blue'}">${esc(a.kind||a.type||'quick')}</span></td>
           <td>${esc((a.input||a.domain||'').slice(0,36))}${a.company?(' · '+esc(a.company)):''}</td>
           <td>${esc(a.sector||'auto')}</td>
           <td>${a.kind==='full'?'<span class="tag green">FULL £1.5k</span>':`<span class="tag ${(a.result_brief?.gradeLetter==='A'||a.result_brief?.gradeLetter==='B')?'green':a.result_brief?.gradeLetter==='F'?'red':'amber'}">${esc(a.result_brief?.gradeLetter||'?')}</span>`}</td>
-          <td>${a.kind==='full'?('opens '+(a.open_count||0)):(a.result_brief?.finding_count||0)}</td>
+          <td>${a.kind==='full'?((a.open_count||0)>0?('<span class="tag green">opened '+(a.open_count)+'</span>'):'opens 0'):(a.result_brief?.finding_count||0)}</td>
           <td><span class="tag ${a.source==='engine'?'amber':'blue'}">${esc(a.source||'public')}</span></td>
-          <td>${a.live_url?('<a href="'+esc(a.live_url)+'" target="_blank" class="btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px;text-decoration:none">Open live</a>'):('<button data-aid="'+esc(a.id)+'" data-key="audit-run:'+esc(a.created_at)+':'+esc(a.id)+'" class="aud-drill-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px">View</button>')}</td>
-        </tr>`).join('');
+          <td style="white-space:nowrap">${a.live_url
+            ? ('<a href="'+esc(a.live_url)+'" target="_blank" class="btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 9px;font-size:10px;text-decoration:none">Open</a> <button data-url="'+esc(a.live_url)+'" class="aud-copy-btn btn-ghost" style="border:1px solid var(--gold);color:var(--ink);padding:4px 9px;font-size:10px">Copy link</button> <button data-rk="'+esc(rk)+'" class="aud-row-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 9px;font-size:10px">Details</button>')
+            : ('<button data-key="audit-run:'+esc(a.created_at)+':'+esc(a.id)+'" class="aud-drill-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px">View</button>')}</td>
+        </tr>`; }).join('');
         $('#aud-table').querySelector('tbody').innerHTML = rows || '<tr><td colspan="8">No audits yet.</td></tr>';
         $$('#aud-table .aud-drill-btn').forEach(b => b.addEventListener('click', () => drill(b.dataset.key)));
+        $$('#aud-table .aud-row-btn').forEach(b => b.addEventListener('click', () => drillRow(_audById[b.dataset.rk])));
+        $$('#aud-table .aud-copy-btn').forEach(b => b.addEventListener('click', async () => {
+          const abs = location.origin + b.dataset.url;
+          try { await navigator.clipboard.writeText(abs); b.textContent='Copied ✓'; setTimeout(()=>{b.textContent='Copy link';},1400); }
+          catch(_e){ $('#aud-status').textContent='Copy this into Touch 1: '+abs; }
+        }));
       } catch(e) { $('#aud-table').querySelector('tbody').innerHTML = '<tr><td colspan="8" style="color:var(--red)">'+esc(e.message)+'</td></tr>'; }
+    }
+    function drillRow(a){
+      if(!a) return;
+      $('#aud-drill').hidden = false;
+      $('#aud-drill-title').textContent = 'Full audit · ' + (a.input||a.domain||'?') + (a.company?(' · '+a.company):'');
+      const abs = location.origin + (a.live_url||'');
+      $('#aud-drill-json').textContent = [
+        'Domain:        ' + (a.input||a.domain||'?'),
+        'Company:       ' + (a.company||'—'),
+        'Sector:        ' + (a.sector||'—'),
+        'Minted:        ' + (a.created_at||'—'),
+        'Opens:         ' + (a.open_count||0),
+        'Last opened:   ' + (a.last_opened_at||'never'),
+        'Status:        ' + (a.status||'—'),
+        '',
+        'Live audit URL (paste into Touch 1):',
+        abs,
+      ].join('\n');
     }
     async function drill(key){
       try {

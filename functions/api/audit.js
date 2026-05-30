@@ -1478,12 +1478,16 @@ const _originalAuditPost = async ({ request, env }) => {
   }
 
   // Cloudflare Turnstile · skip if no secret bound
-  const ts = await verifyTurnstile(request, body, env);
+  // Admin re-runs (founder cockpit · same-origin server fetch) bypass the bot-gate: they carry
+  // the x-admin-rerun header set by /api/admin/audits/rerun.js and never reach the public form.
+  const isAdminRerun = request.headers.get('x-admin-rerun') === '1' || (body && body['admin-source'] === '1');
+  const ts = isAdminRerun ? { ok: true, skipped: 'admin-rerun' } : await verifyTurnstile(request, body, env);
   if (!ts.ok) {
     return new Response(JSON.stringify({ error: 'challenge_required', reason: ts.reason }), { status: 403, headers: baseHeaders });
   }
 
-  const input = (body.input || '').toString().trim();
+  // Accept both the public form field (input) and the admin field (audit-input)
+  const input = (body.input || body['audit-input'] || '').toString().trim();
   if (!input || input.length < 3) {
     return new Response(
       JSON.stringify({ error: 'Input too short  ·  enter a domain or keyword (minimum 3 characters).' }),

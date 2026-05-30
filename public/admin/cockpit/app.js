@@ -133,11 +133,21 @@
   }
 
   async function renderClients(root){
-    const [c, ob] = await Promise.all([ api('/clients'), api('/onboarding').catch(()=>({tasks:[]})) ]);
+    const [c, ob, inv] = await Promise.all([ api('/clients'), api('/onboarding').catch(()=>({tasks:[]})), api('/invoices').catch(()=>({invoices:[]})) ]);
     if (c.error && !(c.clients||[]).length){ root.innerHTML = `<h2>Clients</h2><p class="sub" style="color:var(--amber)">${esc(c.error)}</p><p class="sub">Convert a FIT lead from the Leads tab with the &rarr; Client button. The 30-day onboarding plan seeds automatically.</p>`; return; }
-    const crows=(c.clients||[]).map(cl=>`<tr><td>${esc(cl.legal_name||cl.company||'?')}</td><td><span class="tag blue">${esc(cl.tier||'?')}</span></td><td>${esc(cl.currency||'GBP')} ${esc(String(cl.deal_value||'-'))}</td><td><span class="tag ${cl.status==='active'?'green':cl.status==='churned'?'red':'amber'}">${esc(cl.status||'?')}</span></td><td>${cl.health_score!=null?esc(String(cl.health_score)):'-'}</td><td>${esc((cl.contract_end||'').slice(0,10))}</td></tr>`).join('');
-    const orows=(ob.tasks||[]).map(t=>`<tr><td>${esc(t.legal_name||'?')}</td><td>Day ${esc(String(t.day_offset))}</td><td>${esc(t.title||'')}</td><td>${esc((t.due_date||'').slice(0,10))}</td><td><span class="tag ${t.status==='done'?'green':t.status==='overdue'?'red':'blue'}">${esc(t.status||'?')}</span>${t.needs_aman?' <span class="tag amber">you</span>':''}</td></tr>`).join('');
-    root.innerHTML = `<h2>Clients</h2><p class="sub">${(c.clients||[]).length} client(s) &middot; convert FIT leads from the Leads tab.</p><table><thead><tr><th>Client</th><th>Tier</th><th>Value</th><th>Status</th><th>Health</th><th>Renews</th></tr></thead><tbody>${crows||'<tr><td colspan="6">No clients yet.</td></tr>'}</tbody></table><h3 class="card-title" style="margin-top:18px">Onboarding (30-day plan)</h3><table><thead><tr><th>Client</th><th>Day</th><th>Task</th><th>Due</th><th>Status</th></tr></thead><tbody>${orows||'<tr><td colspan="5">No onboarding tasks.</td></tr>'}</tbody></table>`;
+    var soon=function(d){ if(!d) return false; var dt=new Date(d); return (dt-Date.now())<2592000000 && dt>new Date('2000-01-01'); };
+    const crows=(c.clients||[]).map(cl=>`<tr><td>${esc(cl.legal_name||cl.company||'?')}</td><td><span class="tag blue">${esc(cl.tier||'?')}</span></td><td>${esc(cl.currency||'GBP')} ${esc(String(cl.deal_value||'-'))}</td><td><span class="tag ${cl.status==='active'?'green':cl.status==='churned'?'red':'amber'}">${esc(cl.status||'?')}</span></td><td>${cl.health_score!=null?esc(String(cl.health_score)):'-'}</td><td>${esc((cl.contract_end||'').slice(0,10))}${soon(cl.contract_end)?' <span class="tag amber">renew</span>':''}</td><td><button class="invnew" data-ca="${esc(String(cl.id))}">+ Invoice</button></td></tr>`).join('');
+    const orows=(ob.tasks||[]).map(t=>`<tr class="ob-row"${t.needs_aman?' data-aman="1"':''}><td>${esc(t.legal_name||'?')}</td><td>Day ${esc(String(t.day_offset))}</td><td>${esc(t.title||'')}</td><td>${esc((t.due_date||'').slice(0,10))}</td><td><span class="tag ${t.status==='done'?'green':t.status==='overdue'?'red':'blue'}">${esc(t.status||'?')}</span>${t.needs_aman?' <span class="tag amber">you</span>':''}</td><td><button class="obtask" data-id="${esc(String(t.id))}" data-st="done">Done</button> <button class="obtask" data-id="${esc(String(t.id))}" data-st="skipped">Skip</button></td></tr>`).join('');
+    const irows=(inv.invoices||[]).map(iv=>`<tr><td>${esc(iv.invoice_number||'?')}</td><td>${esc(iv.legal_name||'?')}</td><td>${esc(iv.invoice_kind||'')}</td><td>${esc(iv.currency||'GBP')} ${esc(String(iv.amount||'-'))}</td><td><span class="tag ${iv.status==='paid'?'green':iv.status==='overdue'?'red':'blue'}">${esc(iv.status||'?')}</span></td><td>${esc((iv.due_date||'').slice(0,10))}</td></tr>`).join('');
+    root.innerHTML = `<h2>Clients</h2><p class="sub">${(c.clients||[]).length} client(s) &middot; convert FIT leads from the Leads tab.</p>
+      <table><thead><tr><th>Client</th><th>Tier</th><th>Value</th><th>Status</th><th>Health</th><th>Renews</th><th></th></tr></thead><tbody>${crows||'<tr><td colspan="7">No clients yet.</td></tr>'}</tbody></table>
+      <h3 class="card-title" style="margin-top:18px">Onboarding (30-day plan) <button id="aman-only" class="tab" style="margin-left:8px">Needs you</button></h3>
+      <table><thead><tr><th>Client</th><th>Day</th><th>Task</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>${orows||'<tr><td colspan="6">No onboarding tasks.</td></tr>'}</tbody></table>
+      <h3 class="card-title" style="margin-top:18px">Invoices</h3>
+      <table><thead><tr><th>Number</th><th>Client</th><th>Kind</th><th>Amount</th><th>Status</th><th>Due</th></tr></thead><tbody>${irows||'<tr><td colspan="6">No invoices.</td></tr>'}</tbody></table>`;
+    root.querySelectorAll('.obtask').forEach(function(b){ b.addEventListener('click',function(){ b.disabled=true; api('/onboarding/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(b.dataset.id),status:b.dataset.st})}).then(function(){ status('Task '+b.dataset.st,'ok'); renderTab('clients'); }).catch(function(){ b.disabled=false; status('Failed','err'); }); }); });
+    root.querySelectorAll('.invnew').forEach(function(b){ b.addEventListener('click',function(){ b.disabled=true; api('/invoices/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_account_id:Number(b.dataset.ca)})}).then(function(r){ status(r&&r.ok?('Invoice '+r.invoice_number+' created'):'Failed','ok'); renderTab('clients'); }).catch(function(){ b.disabled=false; status('Failed','err'); }); }); });
+    var _ao=document.getElementById('aman-only'); if(_ao){ var on=false; _ao.addEventListener('click',function(){ on=!on; _ao.classList.toggle('active',on); root.querySelectorAll('.ob-row').forEach(function(tr){ tr.style.display=(on && tr.dataset.aman!=='1')?'none':''; }); }); }
   }
 
   async function renderPipeline(root){
@@ -172,7 +182,7 @@
       <td>${esc(l.lifecycle_stage||'?')}</td>
       <td>${esc(l.status||'?')}</td>
       <td>${esc((l.updated_at||l.created_at||'').slice(0,16))}</td>
-      <td><button class="rowbtn" data-id="${esc(String(l.id))}" data-action="advance">Advance</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="won">Won</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="lost">Lost</button> <button class="cbtn" data-id="${esc(String(l.id))}">&rarr; Client</button></td>
+      <td><button class="rowbtn" data-id="${esc(String(l.id))}" data-action="advance">Advance</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="won">Won</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="lost">Lost</button> <button class="cbtn" data-id="${esc(String(l.id))}">&rarr; Client</button> <button class="pbtn" data-id="${esc(String(l.id))}">Proposal</button></td>
     </tr>`).join('');
     root.innerHTML = `
       <h2>Leads</h2>
@@ -184,6 +194,7 @@
       <table><thead><tr><th><input type="checkbox" id="lead-all"></th><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>FIT</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="10">No leads yet.</td></tr>'}</tbody></table>
     `;
     root.querySelectorAll('.rowbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id), act=btn.dataset.action; if(!id) return; btn.disabled=true; status('Updating lead '+id+'...','ok'); api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}).then(function(r){ status(r&&r.ok?('Lead '+id+' '+act):'Update: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Update failed: '+(e.message||'err'),'err'); }); }); });
+    root.querySelectorAll('.pbtn').forEach(function(btn){ btn.addEventListener('click',function(){ status('Generating proposal...','ok'); api('/leads/proposal?id='+Number(btn.dataset.id)).then(function(r){ if(r&&r.ok){ _showModal('Proposal — '+(r.company||''), r.proposal); status('Proposal ready','ok'); } else status('Proposal: '+JSON.stringify(r),'err'); }).catch(function(){ status('Failed','err'); }); }); });
     root.querySelectorAll('.cbtn').forEach(function(btn){ btn.addEventListener('click',function(){ var id=Number(btn.dataset.id); btn.disabled=true; status('Converting lead '+id+' to client...','ok'); api('/clients/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lead_id:id})}).then(function(r){ status(r&&r.ok?('Client #'+r.client_id+' created + 30-day onboarding seeded'):'Convert: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Convert failed: '+(e.message||'err'),'err'); }); }); });
     var _lf=document.getElementById('leads-filter'); if(_lf){ _lf.addEventListener('input',function(){ var q=_lf.value.toLowerCase(); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); }); }
     var _fo=document.getElementById('fit-only'); if(_fo){ var _on=false; _fo.addEventListener('click',function(){ _on=!_on; _fo.classList.toggle('active',_on); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=(_on && tr.dataset.fit!=='1')?'none':''; }); }); }
@@ -627,6 +638,14 @@
     var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
     a.download='tamazia-'+(_activeTabName()||'export')+'-'+new Date().toISOString().slice(0,10)+'.csv';
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  }
+  function _showModal(title,text){
+    var ov=document.createElement('div'); ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+    var box=document.createElement('div'); box.style.cssText='background:#fff;max-width:640px;width:100%;max-height:80vh;overflow:auto;border-radius:10px;padding:20px';
+    box.innerHTML='<h3 style="margin:0 0 10px">'+text.replace(/&/g,'&amp;')&&'<h3 style="margin:0 0 10px">'+title.replace(/</g,'&lt;')+'</h3><pre style="white-space:pre-wrap;font:13px/1.5 monospace;margin:0 0 14px">'+text.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>';
+    var cp=document.createElement('button'); cp.className='tab'; cp.textContent='Copy'; cp.addEventListener('click',function(){ if(navigator.clipboard) navigator.clipboard.writeText(text); status('Copied','ok'); });
+    var cl=document.createElement('button'); cl.className='tab'; cl.textContent='Close'; cl.style.marginLeft='8px'; cl.addEventListener('click',function(){ document.body.removeChild(ov); });
+    box.appendChild(cp); box.appendChild(cl); ov.appendChild(box); ov.addEventListener('click',function(ev){ if(ev.target===ov) document.body.removeChild(ov); }); document.body.appendChild(ov);
   }
   function _addControls(){
     if(document.querySelector('#csv-export')) return;

@@ -4,7 +4,7 @@
 // 
 // Also keeps a Cloudflare KV audit log for regulatory evidence (13mo retention).
 
-import { Pool } from '@neondatabase/serverless';
+import { neonQuery, neonConfigured } from './_neon.js';
 
 export const onRequestGet = async ({ request, env }) => handle(request, env);
 export const onRequestPost = async ({ request, env }) => handle(request, env);
@@ -27,22 +27,18 @@ async function handle(request, env) {
     return errorPage('Invalid or expired link. Reply OPT OUT to the email instead.', 400);
   }
 
-  // Write to Neon suppression table
+  // Write to Neon suppression table (the engine's W2 send-gate filters against this).
+  // Uses the shared helper so it works on the same NEON_URL every other channel uses.
   let neonOk = false;
-  try {
-    if (env.NEON_DATABASE_URL) {
-      const pool = new Pool({ connectionString: env.NEON_DATABASE_URL });
-      await pool.query(
-        `INSERT INTO suppression (email, reason) VALUES ($1, 'one_click_optout')
-         ON CONFLICT (email) DO UPDATE SET reason='one_click_optout', suppressed_at=NOW()`,
-        [recipient.toLowerCase()]
-      );
-      await pool.end();
-      neonOk = true;
-    }
-  } catch (e) {
-    // Log but continue — still confirm to user
-    console.error('Neon insert failed:', e.message);
+  if (neonConfigured(env)) {
+    const res = await neonQuery(env,
+      `INSERT INTO suppression (email, reason, scope, suppressed_at)
+       VALUES ($1, 'one_click_optout', 'global', NOW())
+       ON CONFLICT (email) DO UPDATE SET reason='one_click_optout', scope='global', suppressed_at=NOW()`,
+      [recipient.toLowerCase()]
+    );
+    neonOk = res.ok;
+    if (!res.ok) console.error('suppression insert failed:', res.error);
   }
 
   // Mirror to Cloudflare KV for regulatory audit trail (13-month retention)

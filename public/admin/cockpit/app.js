@@ -475,13 +475,13 @@
         const d = await api('/audits?limit=50' + (q?('&q='+encodeURIComponent(q)):''));
         const rows = (d.audits||[]).map(a => `<tr>
           <td>${esc((a.created_at||'').slice(0,16))}</td>
-          <td><span class="tag blue">${esc(a.type||'?')}</span></td>
-          <td>${esc((a.input||'').slice(0,40))}</td>
+          <td><span class="tag ${a.kind==='full'?'green':a.kind==='manual'?'amber':'blue'}">${esc(a.kind||a.type||'quick')}</span></td>
+          <td>${esc((a.input||a.domain||'').slice(0,36))}${a.company?(' · '+esc(a.company)):''}</td>
           <td>${esc(a.sector||'auto')}</td>
-          <td><span class="tag ${(a.result_brief?.gradeLetter==='A'||a.result_brief?.gradeLetter==='B')?'green':a.result_brief?.gradeLetter==='F'?'red':'amber'}">${esc(a.result_brief?.gradeLetter||'?')}</span></td>
-          <td>${a.result_brief?.finding_count||0}</td>
-          <td><span class="tag ${a.admin_source?'amber':'blue'}">${a.admin_source?'admin':'public'}</span></td>
-          <td><button data-aid="${esc(a.id)}" data-key="audit-run:${esc(a.created_at)}:${esc(a.id)}" class="aud-drill-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px">View</button></td>
+          <td>${a.kind==='full'?'<span class="tag green">FULL £1.5k</span>':`<span class="tag ${(a.result_brief?.gradeLetter==='A'||a.result_brief?.gradeLetter==='B')?'green':a.result_brief?.gradeLetter==='F'?'red':'amber'}">${esc(a.result_brief?.gradeLetter||'?')}</span>`}</td>
+          <td>${a.kind==='full'?('opens '+(a.open_count||0)):(a.result_brief?.finding_count||0)}</td>
+          <td><span class="tag ${a.source==='engine'?'amber':'blue'}">${esc(a.source||'public')}</span></td>
+          <td>${a.live_url?('<a href="'+esc(a.live_url)+'" target="_blank" class="btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px;text-decoration:none">Open live</a>'):('<button data-aid="'+esc(a.id)+'" data-key="audit-run:'+esc(a.created_at)+':'+esc(a.id)+'" class="aud-drill-btn btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:4px 10px;font-size:10px">View</button>')}</td>
         </tr>`).join('');
         $('#aud-table').querySelector('tbody').innerHTML = rows || '<tr><td colspan="8">No audits yet.</td></tr>';
         $$('#aud-table .aud-drill-btn').forEach(b => b.addEventListener('click', () => drill(b.dataset.key)));

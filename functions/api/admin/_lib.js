@@ -1,7 +1,8 @@
 // /api/admin/_lib.js · shared auth + helpers for cockpit endpoints
 export function authed(request, env) {
-  const k = request.headers.get('x-admin-secret');
-  return !!env.ADMIN_SECRET && k === env.ADMIN_SECRET;
+  // Founder removed the in-page secret gate 2026-05-30 (single-user cockpit; outer gate = Cloudflare Access).
+  // To re-enable: const k = request.headers.get('x-admin-secret'); return !!env.ADMIN_SECRET && k === env.ADMIN_SECRET;
+  return true;
 }
 export function unauth() {
   return new Response(JSON.stringify({ error: 'unauthorized' }), {

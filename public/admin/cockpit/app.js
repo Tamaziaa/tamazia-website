@@ -572,4 +572,35 @@
       status('Restored session.', 'ok');
     }).catch(()=>signOut());
   }
+
+  // ===== Phase 5 cockpit controls: CSV export + refresh + auto-refresh =====
+  function _activeTabName(){ var a=document.querySelector('#tabs .tab.active'); return a?a.dataset.tab:null; }
+  function _activeTable(){ var n=_activeTabName(); return n?document.querySelector('#tab-'+n+' table'):null; }
+  function _tableToCSV(t){
+    return Array.prototype.slice.call(t.querySelectorAll('tr')).map(function(r){
+      return Array.prototype.slice.call(r.querySelectorAll('th,td')).map(function(c){
+        return '"'+(c.innerText||'').replace(/"/g,'""').replace(/\s+/g,' ').trim()+'"';
+      }).join(',');
+    }).join('\n');
+  }
+  function _exportCSV(){
+    var t=_activeTable();
+    if(!t){ status('No table to export on this tab','amber'); return; }
+    var blob=new Blob([_tableToCSV(t)],{type:'text/csv;charset=utf-8;'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='tamazia-'+(_activeTabName()||'export')+'-'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  }
+  function _addControls(){
+    if(document.querySelector('#csv-export')) return;
+    var host=document.querySelector('#tabs'); if(!host) return;
+    var rf=document.createElement('button'); rf.id='refresh-now'; rf.className='tab'; rf.textContent='Refresh';
+    rf.addEventListener('click',function(){ var n=_activeTabName(); if(n) renderTab(n); });
+    var ex=document.createElement('button'); ex.id='csv-export'; ex.className='tab'; ex.textContent='Export CSV';
+    ex.addEventListener('click',_exportCSV);
+    host.appendChild(rf); host.appendChild(ex);
+  }
+  try{ _addControls(); }catch(e){}
+  setInterval(function(){ var n=_activeTabName(); if(n && ['now','health','pipeline','leads','inbox','outbox'].indexOf(n)>=0){ try{ renderTab(n); }catch(e){} } }, 60000);
+
 })();

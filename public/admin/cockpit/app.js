@@ -616,7 +616,10 @@
     ex.addEventListener('click',_exportCSV);
     var re=document.createElement('button'); re.id='run-engine'; re.className='tab'; re.textContent='Run Engine';
     re.addEventListener('click',function(){ status('Dispatching engine cycle...','ok'); api('/engine/dispatch',{method:'POST'}).then(function(r){ status(r&&r.ok?'Engine cycle dispatched':'Dispatch: '+JSON.stringify(r),'ok'); }).catch(function(e){ status('Dispatch failed: '+(e.message||'err'),'err'); }); });
-    host.appendChild(rf); host.appendChild(ex); host.appendChild(re);
+    var fi=document.createElement('input'); fi.id='global-filter'; fi.placeholder='Filter table...';
+    fi.style.cssText='padding:6px 10px;border:1px solid var(--hairline);border-radius:8px;font-size:12px;margin-left:8px;max-width:200px';
+    fi.addEventListener('input',function(){ var q=fi.value.toLowerCase(); var t=_activeTable(); if(!t) return; t.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); });
+    host.appendChild(rf); host.appendChild(ex); host.appendChild(re); host.appendChild(fi);
   }
   try{ _addControls(); }catch(e){}
   setInterval(function(){ var n=_activeTabName(); if(n && ['now','health','pipeline','leads','inbox','outbox'].indexOf(n)>=0){ try{ renderTab(n); }catch(e){} } }, 60000);

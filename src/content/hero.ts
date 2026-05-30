@@ -72,7 +72,7 @@ export const heroContent = {
     href: '#contact',
   },
 
-  // Regulation strip · Round-11 · 200 frameworks across UK / EU / US / GCC / Singapore / HK / Switzerland / Australia / Canada / Japan / Korea
+  // Regulation strip · Round-11 · 400 frameworks across UK / EU / US / GCC / Singapore / HK / Switzerland / Australia / Canada / Japan / Korea
   // Indian-jurisdiction laws explicitly excluded (Tamazia does not serve the Indian market — see TAMAZIA-22-PROJECT-HANDOFF §3).
   // Single source of truth for both the vertical right ribbon (Hero) and the horizontal LawsStrip (below QuickAudit).
   // S2 · curated 30 frameworks (Implementation Doc v1.0 Section 2)

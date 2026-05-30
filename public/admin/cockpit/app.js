@@ -559,6 +559,23 @@
     root.innerHTML = `
       <h2>Sources · scrapers + history</h2>
       <p class="sub">Run SERPER, Hunter, NeverBounce. Every run saved with tags. Drill, re-run, export.</p>
+      <div class="card" style="border-color:var(--gold)">
+        <div class="card-title">Hot-lead sourcing engine</div>
+        <p class="sub">One click sources ICP-matched ad-runners, runs the full audit, enriches emails + decision-makers + LinkedIn, and marks each lead ready for Mystrika / LinkedIn / Instagram.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:10px 0">
+          <div><label class="kpi-label">Max leads</label><input id="se-max" value="25" style="width:74px;padding:9px;border:1px solid var(--gold);background:var(--pearl);font:inherit;border-radius:3px" /></div>
+          <button class="se-btn" data-src="serp-top" style="padding:9px 12px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px">SERP top</button>
+          <button class="se-btn" data-src="reddit" style="padding:9px 12px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px">Reddit</button>
+          <button class="se-btn" data-src="youtube" style="padding:9px 12px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px">YouTube ads</button>
+          <button class="se-btn" data-src="x-ads" style="padding:9px 12px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px">X ads</button>
+          <button class="se-btn" data-src="social-ads" style="padding:9px 12px;background:var(--oxblood-ink);color:var(--ivory);border:none;font:600 10px var(--body);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px">Social ads</button>
+          <button class="se-btn" data-src="all" style="padding:9px 14px;background:var(--gold);color:var(--oxblood-ink);border:none;font:700 10px var(--body);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px">Run ALL</button>
+        </div>
+        <p class="sub" id="se-status"></p>
+        <div id="se-kpis" class="cards-grid" style="margin:10px 0"></div>
+        <div class="card-title" style="margin-top:8px">Sourced leads (newest)</div>
+        <table id="se-table"><thead><tr><th>Sourced</th><th>Company</th><th>Sector</th><th>Platform</th><th>Hot</th><th>FIT</th><th>Emails</th><th>Decision-maker</th><th>Channels</th><th>Audit</th></tr></thead><tbody><tr><td colspan="10">Loading...</td></tr></tbody></table>
+      </div>
       <div class="card">
         <div class="card-title">Run a scrape</div>
         <div style="display:grid;grid-template-columns:1fr 2fr 1fr 1fr auto;gap:10px;align-items:end">
@@ -606,6 +623,35 @@
       } catch(e) { status('drill error: '+e.message, 'err'); }
     }
     $('#src-drill-close').addEventListener('click', () => { $('#src-drill').hidden = true; });
+    // ── Hot-lead sourcing engine ──
+    function chBadge(on,label){ return '<span class="tag '+(on?'green':'')+'" style="'+(on?'':'opacity:.4')+'">'+label+'</span>'; }
+    async function loadSourced(){
+      try {
+        const d = await api('/sourcing/history?limit=100'); const st = d.stats||{};
+        const k = $('#se-kpis'); if (k) k.innerHTML = [['Sourced',st.total||0],['Hot',st.hot||0],['FIT',st.fit||0],['Email-ready',st.email_ready||0],['LinkedIn-ready',st.linkedin_ready||0]].map(([l,v])=>`<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-value">${v}</div></div>`).join('');
+        const rows = (d.leads||[]).map(l => { const fit=(l.fit===true||l.fit==='t'); const hot=Number(l.hot_score)||0; return `<tr>
+          <td>${esc((l.sourced_at||'').slice(0,16))}</td>
+          <td>${esc((l.company||l.domain||'').slice(0,28))}</td>
+          <td>${esc(l.sector||'')}</td>
+          <td><span class="tag blue">${esc(l.platform||l.source||'')}</span></td>
+          <td><span class="tag ${hot>=70?'green':hot>=45?'amber':''}">${hot}</span></td>
+          <td>${fit?'<span class="tag green">FIT</span>':'<span class="tag" style="opacity:.4">no</span>'}</td>
+          <td>${l.email_count||0}${Number(l.email_count)>0?' ✓':''}</td>
+          <td>${esc((l.contact_name||'').slice(0,22))}${l.contact_title?('<br><span style="font-size:9px;opacity:.7">'+esc(l.contact_title.slice(0,28))+'</span>'):''}${l.contact_linkedin?' <a href="'+esc(l.contact_linkedin)+'" target="_blank" style="font-size:9px">LI</a>':''}</td>
+          <td style="white-space:nowrap">${chBadge(l.channel_email_ready===true||l.channel_email_ready==='t','✉')} ${chBadge(l.channel_linkedin_ready===true||l.channel_linkedin_ready==='t','in')} ${chBadge(l.channel_instagram_ready===true||l.channel_instagram_ready==='t','IG')}</td>
+          <td>${l.audit_url?('<a href="'+esc(l.audit_url)+'" target="_blank" class="btn-ghost" style="border:1px solid var(--hairline);color:var(--ink);padding:3px 8px;font-size:10px;text-decoration:none">view</a>'):'—'}</td>
+        </tr>`; }).join('');
+        $('#se-table').querySelector('tbody').innerHTML = rows || '<tr><td colspan="10">No sourced leads yet · run a source above.</td></tr>';
+      } catch(e){ $('#se-table').querySelector('tbody').innerHTML = '<tr><td colspan="10" style="color:var(--red)">'+esc(e.message)+'</td></tr>'; }
+    }
+    $$('.se-btn').forEach(b => b.addEventListener('click', async () => {
+      const src=b.dataset.src, max=$('#se-max').value||'25';
+      $('#se-status').textContent='dispatching '+src+' ...';
+      try { const d=await api('/sourcing/run',{method:'POST',body:{source:src,max}});
+        $('#se-status').textContent = d.ok ? ('Sourcing started ('+src+'). Leads appear below as the run completes in ~2-3 min — refresh.') : ('error: '+(d.error||('HTTP '+d.status)));
+      } catch(e){ $('#se-status').textContent='error: '+e.message; }
+    }));
+    loadSourced();
     $('#src-run').addEventListener('click', async () => {
       const type = $('#src-type').value;
       const query = $('#src-query').value.trim();

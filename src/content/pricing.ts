@@ -5,9 +5,9 @@ export const pricingContent = {
   eyebrow: '',  /* A5 · was 'TAMAZIA · Pricing'; Interstitial supplies numeral + theme */
   h2: 'Pricing',
   // Legacy intro string (component reads single string). Full intro paragraphs available below.
-  intro: 'Three mandates. Each covers a defined compliance scope. Every engagement begins with an SEO and compliance audit included at no additional cost.',
+  intro: 'Three mandates. Each covers a defined compliance scope. Every engagement begins with a £1,500 SEO, compliance and AI-visibility audit: your online presence checked against 400+ legal and regulatory frameworks, your AI-search visibility, your SEO standing, and a prioritised fix for every issue we find.',
   introParagraphs: [
-    'Every engagement begins with an SEO and compliance audit. Regulatory review is standard across all tiers.',
+    'Every engagement begins with a £1,500 audit: 400+ frameworks reviewed, AI visibility, SEO standing, and a prioritised fix for each issue. Regulatory review is standard across all tiers.',
     'Regulatory compliance review is included as standard across all tiers.',
   ],
   microNote: 'Pricing is indicative. All engagements are bespoke.',

@@ -91,16 +91,20 @@
   }
 
   async function renderNow(root){
-    const [d, deploys, cal, flg] = await Promise.all([
+    const [d, deploys, cal, flg, eng] = await Promise.all([
       api('/now'),
       api('/deploys').catch(()=>({runs:[]})),
       api('/cal/events').catch(()=>({event_types:[]})),
       api('/flags').catch(()=>({flags:[]})),
+      api('/engine/status').catch(()=>({})),
     ]);
     const cards = (d.cards||[]).map(c => `<div class="card"><div class="card-title">${esc((c.kind||'').toUpperCase())}</div><p>${esc(c.title||'')}</p></div>`).join('');
     const t = d.truth || {real:{},test:{}};
     const lastDeploy = (deploys.runs||[])[0];
     const deployBadge = lastDeploy ? `<span class="tag ${lastDeploy.conclusion==='success'?'green':lastDeploy.conclusion==='failure'?'red':'amber'}">${esc(lastDeploy.conclusion||lastDeploy.status||'?')}</span>` : '<span class="tag amber">unknown</span>';
+    const _e0 = (eng&&eng.engine)||null;
+    const _engC = _e0 ? (_e0.conclusion||_e0.status||'?') : 'unknown';
+    const engBadge = `<span class="tag ${_engC==='success'?'green':_engC==='failure'?'red':'amber'}">${esc(_engC)}</span>`;
     root.innerHTML = `
       <h2>${esc(d.greeting||'Welcome')}, Aman.</h2>
       ${(flg.flags||[]).length ? `<div style="margin:8px 0;display:flex;flex-direction:column;gap:6px">${flg.flags.map(f=>`<div class="tag ${f.level==='p1'?'red':f.level==='p2'?'amber':'blue'}" style="display:block;padding:8px 12px">${esc(f.msg)}</div>`).join('')}</div>` : ''}
@@ -110,6 +114,7 @@
         <div class="kpi"><div class="kpi-label">Bookings (KV)</div><div class="kpi-value">${t.real.booked||0}</div><div class="kpi-sub">all-time</div></div>
         <div class="kpi"><div class="kpi-label">Cal event types</div><div class="kpi-value">${cal.count||0}</div><div class="kpi-sub">live on cal.com/tamazia</div></div>
         <div class="kpi"><div class="kpi-label">Last deploy</div><div class="kpi-value" style="font-size:14px;font-family:var(--mono)">${esc(lastDeploy?.sha||'?')}</div><div class="kpi-sub">${deployBadge} ${esc(lastDeploy?.created_at?.slice(0,16)||'')}</div></div>
+        <div class="kpi"><div class="kpi-label">Engine cycle</div><div class="kpi-value" style="font-size:14px">${engBadge}</div><div class="kpi-sub">${esc((_e0&&_e0.at||'').slice(0,16))} · sourcing</div></div>
       </div>
       <h3 class="card-title">Critical now</h3>
       ${cards || '<p class="sub">Nothing critical · all green.</p>'}
@@ -161,9 +166,11 @@
     root.innerHTML = `
       <h2>Leads</h2>
       <p class="sub">${d.total||d.count||0} total in Neon · showing ${(d.leads||[]).length}.</p>
+      <input id="leads-filter" placeholder="Filter leads (company, domain, sector, stage)..." style="width:100%;max-width:420px;padding:8px 12px;margin:0 0 10px;border:1px solid var(--hairline);border-radius:8px;font-size:13px">
       <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="8">No leads yet.</td></tr>'}</tbody></table>
     `;
     root.querySelectorAll('.rowbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id), act=btn.dataset.action; if(!id) return; btn.disabled=true; status('Updating lead '+id+'...','ok'); api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}).then(function(r){ status(r&&r.ok?('Lead '+id+' '+act):'Update: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Update failed: '+(e.message||'err'),'err'); }); }); });
+    var _lf=document.getElementById('leads-filter'); if(_lf){ _lf.addEventListener('input',function(){ var q=_lf.value.toLowerCase(); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); }); }
   }
 
   async function renderForms(root){

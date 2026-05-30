@@ -1,5 +1,5 @@
 import { authed, unauth, json } from '../_lib.js';
-import { neonQuery } from '../_neon.js';
+import { neonQuery } from '../../_neon.js';
 const SRC = "'serp-top','reddit','youtube','x-ads','social-ads','google_sponsored'";
 export const onRequestGet = async ({ request, env }) => {
   if (!authed(request, env)) return unauth();

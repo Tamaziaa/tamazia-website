@@ -154,6 +154,7 @@
       return;
     }
     const rows = (d.leads||[]).map(l => `<tr${l.quality_fit?' data-fit="1"':''}>
+      <td><input type="checkbox" class="lchk" data-id="${esc(String(l.id))}"></td>
       <td>${esc(l.company||'?')}</td>
       <td>${esc(l.domain||'?')}</td>
       <td>${esc(l.contact_email||'?')}</td>
@@ -169,11 +170,17 @@
       <p class="sub">${d.total||d.count||0} total in Neon · showing ${(d.leads||[]).length}.</p>
       <input id="leads-filter" placeholder="Filter leads (company, domain, sector, stage)..." style="width:100%;max-width:420px;padding:8px 12px;margin:0 0 10px;border:1px solid var(--hairline);border-radius:8px;font-size:13px">
       <button id="fit-only" class="tab" style="margin:0 0 10px 8px">FIT only</button>
-      <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>FIT</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="9">No leads yet.</td></tr>'}</tbody></table>
+      <button id="bulk-advance" class="tab" style="margin:0 0 10px 8px">Advance selected</button>
+      <button id="bulk-won" class="tab" style="margin:0 0 10px 4px">Won selected</button>
+      <table><thead><tr><th><input type="checkbox" id="lead-all"></th><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>FIT</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="10">No leads yet.</td></tr>'}</tbody></table>
     `;
     root.querySelectorAll('.rowbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id), act=btn.dataset.action; if(!id) return; btn.disabled=true; status('Updating lead '+id+'...','ok'); api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}).then(function(r){ status(r&&r.ok?('Lead '+id+' '+act):'Update: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Update failed: '+(e.message||'err'),'err'); }); }); });
     var _lf=document.getElementById('leads-filter'); if(_lf){ _lf.addEventListener('input',function(){ var q=_lf.value.toLowerCase(); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); }); }
     var _fo=document.getElementById('fit-only'); if(_fo){ var _on=false; _fo.addEventListener('click',function(){ _on=!_on; _fo.classList.toggle('active',_on); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=(_on && tr.dataset.fit!=='1')?'none':''; }); }); }
+    var _all=document.getElementById('lead-all'); if(_all){ _all.addEventListener('change',function(){ root.querySelectorAll('.lchk').forEach(function(c){ c.checked=_all.checked; }); }); }
+    function _bulk(act){ var ids=[]; root.querySelectorAll('.lchk:checked').forEach(function(c){ ids.push(Number(c.dataset.id)); }); if(!ids.length){ status('Select leads first','amber'); return; } status('Updating '+ids.length+' leads...','ok'); Promise.all(ids.map(function(id){ return api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}); })).then(function(){ status(ids.length+' leads '+act,'ok'); renderTab('leads'); }).catch(function(e){ status('Bulk failed: '+(e.message||'err'),'err'); }); }
+    var _ba=document.getElementById('bulk-advance'); if(_ba) _ba.addEventListener('click',function(){ _bulk('advance'); });
+    var _bw=document.getElementById('bulk-won'); if(_bw) _bw.addEventListener('click',function(){ _bulk('won'); });
   }
 
   async function renderForms(root){
@@ -287,12 +294,14 @@
       <td>${esc(r.from_email||r.from||'?')}</td>
       <td>${esc((r.subject||'').slice(0,80))}</td>
       <td><span class="tag ${r.classification==='positive'?'green':r.classification==='negative'?'red':'blue'}">${esc(r.classification||'?')}</span></td>
+      <td><button class="ibtn" data-id="${esc(String(r.id))}">Mark handled</button></td>
     </tr>`).join('');
     root.innerHTML = `
       <h2>Inbox</h2>
       <p class="sub">${d.count||0} replies · source: ${esc(d.source||'?')}</p>
-      <table><thead><tr><th>Received</th><th>From</th><th>Subject</th><th>Classification</th></tr></thead><tbody>${rows||'<tr><td colspan="4">No replies yet.</td></tr>'}</tbody></table>
+      <table><thead><tr><th>Received</th><th>From</th><th>Subject</th><th>Classification</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="5">No replies yet.</td></tr>'}</tbody></table>
     `;
+    root.querySelectorAll('.ibtn').forEach(function(btn){ btn.addEventListener('click',function(){ var id=Number(btn.dataset.id); btn.disabled=true; api('/inbox/handle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(r){ status(r&&r.ok?('Reply '+id+' handled'):'Failed','ok'); renderTab('inbox'); }).catch(function(e){ btn.disabled=false; status('Failed: '+(e.message||'err'),'err'); }); }); });
   }
 
   async function renderOutbox(root){
@@ -308,12 +317,14 @@
       <td>${esc((dr.subject_line||'').slice(0,80))}</td>
       <td><span class="tag blue">${esc(dr.send_status||'?')}</span></td>
       <td>${esc((dr.created_at||'').slice(0,16))}</td>
+      <td><button class="obtn" data-id="${esc(String(dr.id))}" data-act="approve">Approve</button> <button class="obtn" data-id="${esc(String(dr.id))}" data-act="marksent">Mark Sent</button></td>
     </tr>`).join('');
     root.innerHTML = `
       <h2>Outbox</h2>
       <p class="sub">${d.count||0} drafts pending · Neon outreach_drafts.</p>
-      <table><thead><tr><th>Draft ID</th><th>Lead</th><th>Touch</th><th>Subject</th><th>Status</th><th>Created</th></tr></thead><tbody>${rows||'<tr><td colspan="6">No drafts.</td></tr>'}</tbody></table>
+      <table><thead><tr><th>Draft ID</th><th>Lead</th><th>Touch</th><th>Subject</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="7">No drafts.</td></tr>'}</tbody></table>
     `;
+    root.querySelectorAll('.obtn').forEach(function(btn){ btn.addEventListener('click',function(){ var id=Number(btn.dataset.id), act=btn.dataset.act; btn.disabled=true; api('/outbox/'+(act==='approve'?'approve':'marksent'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(r){ status(r&&r.ok?('Draft '+id+' '+act):'Failed','ok'); renderTab('outbox'); }).catch(function(e){ btn.disabled=false; status('Failed: '+(e.message||'err'),'err'); }); }); });
   }
 
   async function renderMystrika(root){
@@ -619,7 +630,9 @@
     var fi=document.createElement('input'); fi.id='global-filter'; fi.placeholder='Filter table...';
     fi.style.cssText='padding:6px 10px;border:1px solid var(--hairline);border-radius:8px;font-size:12px;margin-left:8px;max-width:200px';
     fi.addEventListener('input',function(){ var q=fi.value.toLowerCase(); var t=_activeTable(); if(!t) return; t.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); });
-    host.appendChild(rf); host.appendChild(ex); host.appendChild(re); host.appendChild(fi);
+    var rq=document.createElement('button'); rq.id='requalify'; rq.className='tab'; rq.textContent='Re-qualify FIT';
+    rq.addEventListener('click',function(){ status('Resetting FIT leads for re-qualify...','ok'); api('/engine/requalify',{method:'POST'}).then(function(r){ status(r&&r.ok?(r.note||'Re-qualify queued'):'Failed','ok'); }).catch(function(e){ status('Failed: '+(e.message||'err'),'err'); }); });
+    host.appendChild(rf); host.appendChild(ex); host.appendChild(re); host.appendChild(fi); host.appendChild(rq);
   }
   try{ _addControls(); }catch(e){}
   setInterval(function(){ var n=_activeTabName(); if(n && ['now','health','pipeline','leads','inbox','outbox'].indexOf(n)>=0){ try{ renderTab(n); }catch(e){} } }, 60000);

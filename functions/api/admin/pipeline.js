@@ -1,29 +1,30 @@
-import { authed, unauth, json, listKv } from './_lib.js';
+import { authed, unauth, json } from './_lib.js';
 export const onRequestGet = async ({ request, env }) => {
   if (!authed(request, env)) return unauth();
-  const today = new Date().toISOString().slice(0, 10);
-  // Pull KV-based today counts
-  const contact = await listKv(env, 'contact:', 200);
-  const briefings = await listKv(env, 'briefings:', 200);
-  const bookings = await listKv(env, 'bookings:', 200);
-  const t = {
-    contact: contact.length,
-    briefings: briefings.length,
-    bookings: bookings.length,
-    contact_today: contact.filter(c => (c.submitted_at||'').startsWith(today)).length,
-    briefings_today: briefings.filter(c => (c.submitted_at||'').startsWith(today)).length,
-    bookings_today: bookings.filter(b => (b.received_at||b.cal_start_time||'').startsWith(today)).length,
+  if (!env.NEON_URL) return json({ stages: [], error: 'NEON_URL unbound' });
+  const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
+  const q = async (sql) => {
+    const r = await fetch('https://' + host + '/sql', { method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' }, body: JSON.stringify({ query: sql, params: [] }) });
+    if (!r.ok) return [];
+    const d = await r.json(); return d.rows || d.results || [];
   };
-  // 8-stage conveyor (Sourced → Enriched → Verified → Qualified → Audited → Sent → Replied → Booked)
-  const stages = [
-    { key: 'source',      letter: 'A', label: 'Sourcing',        total: t.contact + t.briefings + t.bookings, today: t.contact_today + t.briefings_today + t.bookings_today },
-    { key: 'enrich',      letter: 'B', label: 'Enrichment',      total: t.contact + t.briefings, today: t.contact_today + t.briefings_today },
-    { key: 'verify',      letter: 'C', label: 'Verification',    total: t.contact + t.briefings, today: t.contact_today + t.briefings_today },
-    { key: 'qualify',     letter: 'D', label: 'Qualification',   total: t.contact + t.briefings, today: t.contact_today + t.briefings_today },
-    { key: 'audit',       letter: 'E', label: 'Audit minted',    total: t.briefings, today: t.briefings_today },
-    { key: 'send',        letter: 'F', label: 'Send',            total: t.briefings, today: t.briefings_today },
-    { key: 'reply',       letter: 'G', label: 'Reply',           total: 0, today: 0 },
-    { key: 'book',        letter: 'H', label: 'Booked',          total: t.bookings, today: t.bookings_today },
-  ];
-  return json({ stages, generated_at: new Date().toISOString() });
+  try {
+    const sr = await q("SELECT COALESCE(lifecycle_stage,'unknown') k, COUNT(*)::int n FROM leads GROUP BY 1");
+    const m = {}; for (const r of sr) m[r.k] = r.n;
+    const one = async (sql) => { const x = await q(sql); return (x[0] && (x[0].n ?? x[0].count)) || 0; };
+    const fit = await one('SELECT COUNT(*)::int n FROM leads WHERE quality_fit IS TRUE');
+    const drafts = await one("SELECT COUNT(*)::int n FROM outreach_drafts WHERE send_status IN ('pending','ready')");
+    const replies = await one('SELECT COUNT(*)::int n FROM inbound_emails');
+    const stages = [
+      { letter: 'A', label: 'Sourced', total: m['sourced'] || 0 },
+      { letter: 'B', label: 'Enriched', total: m['enriched'] || 0 },
+      { letter: 'C', label: 'Qualified', total: m['qualified'] || 0 },
+      { letter: 'D', label: 'FIT', total: fit },
+      { letter: 'E', label: 'Drafts', total: drafts },
+      { letter: 'F', label: 'Contacted', total: m['contacted'] || 0 },
+      { letter: 'G', label: 'Replied', total: replies },
+      { letter: 'H', label: 'Booked', total: m['booked'] || 0 },
+    ];
+    return json({ stages, generated_at: new Date().toISOString(), source: 'neon' });
+  } catch (e) { return json({ stages: [], error: e.message }); }
 };

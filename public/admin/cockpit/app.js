@@ -153,11 +153,12 @@
       root.innerHTML = `<h2>Leads</h2><p class="sub" style="color:var(--amber)">${esc(d.error)}${d.detail?' · '+esc(d.detail):''}</p><p class="sub">Phase B will reconcile schema.</p>`;
       return;
     }
-    const rows = (d.leads||[]).map(l => `<tr>
+    const rows = (d.leads||[]).map(l => `<tr${l.quality_fit?' data-fit="1"':''}>
       <td>${esc(l.company||'?')}</td>
       <td>${esc(l.domain||'?')}</td>
       <td>${esc(l.contact_email||'?')}</td>
       <td><span class="tag blue">${esc(l.sector||'?')}</span></td>
+      <td title="${esc(l.top_finding||'')}">${l.quality_fit?'<span class="tag green">FIT</span> ':''}${l.quality_score!=null?esc(String(l.quality_score)):'<span class="sub">·</span>'}</td>
       <td>${esc(l.lifecycle_stage||'?')}</td>
       <td>${esc(l.status||'?')}</td>
       <td>${esc((l.updated_at||l.created_at||'').slice(0,16))}</td>
@@ -167,10 +168,12 @@
       <h2>Leads</h2>
       <p class="sub">${d.total||d.count||0} total in Neon · showing ${(d.leads||[]).length}.</p>
       <input id="leads-filter" placeholder="Filter leads (company, domain, sector, stage)..." style="width:100%;max-width:420px;padding:8px 12px;margin:0 0 10px;border:1px solid var(--hairline);border-radius:8px;font-size:13px">
-      <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="8">No leads yet.</td></tr>'}</tbody></table>
+      <button id="fit-only" class="tab" style="margin:0 0 10px 8px">FIT only</button>
+      <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>FIT</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="9">No leads yet.</td></tr>'}</tbody></table>
     `;
     root.querySelectorAll('.rowbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id), act=btn.dataset.action; if(!id) return; btn.disabled=true; status('Updating lead '+id+'...','ok'); api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}).then(function(r){ status(r&&r.ok?('Lead '+id+' '+act):'Update: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Update failed: '+(e.message||'err'),'err'); }); }); });
     var _lf=document.getElementById('leads-filter'); if(_lf){ _lf.addEventListener('input',function(){ var q=_lf.value.toLowerCase(); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); }); }
+    var _fo=document.getElementById('fit-only'); if(_fo){ var _on=false; _fo.addEventListener('click',function(){ _on=!_on; _fo.classList.toggle('active',_on); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=(_on && tr.dataset.fit!=='1')?'none':''; }); }); }
   }
 
   async function renderForms(root){

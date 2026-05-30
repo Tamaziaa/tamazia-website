@@ -27,7 +27,7 @@ export const whyUsContent = {
       icon: 'scale',
     },
     {
-      value: '$110M+',
+      value: '£110M+',
       caption: 'REVENUE GENERATED FOR CLIENTS',
       icon: 'compass',
     },

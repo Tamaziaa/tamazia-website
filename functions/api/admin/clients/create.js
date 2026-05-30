@@ -11,10 +11,11 @@ export const onRequestPost = async ({ request, env }) => {
     const lead = await q('SELECT company, domain FROM leads WHERE id=$1', [leadId]);
     const lr = lead.rows || lead.results || []; const company = (lr[0] && lr[0].company) || ('lead-' + leadId);
     const slug = String(company).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 150) + '-' + leadId;
-    const ins = await q("INSERT INTO client_accounts (lead_id, client_slug, legal_name, tier, status, account_manager) VALUES ($1,$2,$3,$4,'active','Aman') RETURNING id", [leadId, slug, company, b.tier || 'authority']);
+    const token = (crypto.randomUUID ? crypto.randomUUID().replace(/-/g,'') : (Date.now().toString(36)+Math.random().toString(36).slice(2)));
+    const ins = await q("INSERT INTO client_accounts (lead_id, client_slug, legal_name, tier, status, account_manager, metadata) VALUES ($1,$2,$3,$4,'active','Aman',$5) RETURNING id", [leadId, slug, company, b.tier || 'authority', JSON.stringify({ portal_token: token })]);
     const cid = ((ins.rows || ins.results || [])[0] || {}).id;
     for (const [day, title] of ONBOARD) { await q("INSERT INTO onboarding_tasks (client_id, client_account_id, day_offset, title, due_date, status) VALUES ($1,$2,$3,$4, CURRENT_DATE + $3, 'pending')", [leadId, cid, day, title]); }
     await q("UPDATE leads SET status='won', lifecycle_stage='client', updated_at=NOW() WHERE id=$1", [leadId]);
-    return json({ ok: true, client_id: cid, company, onboarding_tasks: ONBOARD.length });
+    return json({ ok: true, client_id: cid, company, onboarding_tasks: ONBOARD.length, portal_url: '/portal/?c=' + slug + '&t=' + token });
   } catch (e) { return json({ ok: false, error: e.message }); }
 };

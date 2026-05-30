@@ -74,6 +74,7 @@
       if (tab === 'now') await renderNow(root);
       else if (tab === 'pipeline') await renderPipeline(root);
       else if (tab === 'leads') await renderLeads(root);
+      else if (tab === 'clients') await renderClients(root);
       else if (tab === 'forms') await renderForms(root);
       else if (tab === 'bookings') await renderBookings(root);
       else if (tab === 'inbox') await renderInbox(root);
@@ -131,6 +132,14 @@
     if (d.build_sha) $('#build-sha').textContent = d.build_sha.slice(0,8);
   }
 
+  async function renderClients(root){
+    const [c, ob] = await Promise.all([ api('/clients'), api('/onboarding').catch(()=>({tasks:[]})) ]);
+    if (c.error && !(c.clients||[]).length){ root.innerHTML = `<h2>Clients</h2><p class="sub" style="color:var(--amber)">${esc(c.error)}</p><p class="sub">Convert a FIT lead from the Leads tab with the &rarr; Client button. The 30-day onboarding plan seeds automatically.</p>`; return; }
+    const crows=(c.clients||[]).map(cl=>`<tr><td>${esc(cl.legal_name||cl.company||'?')}</td><td><span class="tag blue">${esc(cl.tier||'?')}</span></td><td>${esc(cl.currency||'GBP')} ${esc(String(cl.deal_value||'-'))}</td><td><span class="tag ${cl.status==='active'?'green':cl.status==='churned'?'red':'amber'}">${esc(cl.status||'?')}</span></td><td>${cl.health_score!=null?esc(String(cl.health_score)):'-'}</td><td>${esc((cl.contract_end||'').slice(0,10))}</td></tr>`).join('');
+    const orows=(ob.tasks||[]).map(t=>`<tr><td>${esc(t.legal_name||'?')}</td><td>Day ${esc(String(t.day_offset))}</td><td>${esc(t.title||'')}</td><td>${esc((t.due_date||'').slice(0,10))}</td><td><span class="tag ${t.status==='done'?'green':t.status==='overdue'?'red':'blue'}">${esc(t.status||'?')}</span>${t.needs_aman?' <span class="tag amber">you</span>':''}</td></tr>`).join('');
+    root.innerHTML = `<h2>Clients</h2><p class="sub">${(c.clients||[]).length} client(s) &middot; convert FIT leads from the Leads tab.</p><table><thead><tr><th>Client</th><th>Tier</th><th>Value</th><th>Status</th><th>Health</th><th>Renews</th></tr></thead><tbody>${crows||'<tr><td colspan="6">No clients yet.</td></tr>'}</tbody></table><h3 class="card-title" style="margin-top:18px">Onboarding (30-day plan)</h3><table><thead><tr><th>Client</th><th>Day</th><th>Task</th><th>Due</th><th>Status</th></tr></thead><tbody>${orows||'<tr><td colspan="5">No onboarding tasks.</td></tr>'}</tbody></table>`;
+  }
+
   async function renderPipeline(root){
     const d = await api('/pipeline');
     const max = Math.max(1, ...(d.stages||[]).map(s => s.total||0));
@@ -163,7 +172,7 @@
       <td>${esc(l.lifecycle_stage||'?')}</td>
       <td>${esc(l.status||'?')}</td>
       <td>${esc((l.updated_at||l.created_at||'').slice(0,16))}</td>
-      <td><button class="rowbtn" data-id="${esc(String(l.id))}" data-action="advance">Advance</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="won">Won</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="lost">Lost</button></td>
+      <td><button class="rowbtn" data-id="${esc(String(l.id))}" data-action="advance">Advance</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="won">Won</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="lost">Lost</button> <button class="cbtn" data-id="${esc(String(l.id))}">&rarr; Client</button></td>
     </tr>`).join('');
     root.innerHTML = `
       <h2>Leads</h2>
@@ -175,6 +184,7 @@
       <table><thead><tr><th><input type="checkbox" id="lead-all"></th><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>FIT</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="10">No leads yet.</td></tr>'}</tbody></table>
     `;
     root.querySelectorAll('.rowbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id), act=btn.dataset.action; if(!id) return; btn.disabled=true; status('Updating lead '+id+'...','ok'); api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}).then(function(r){ status(r&&r.ok?('Lead '+id+' '+act):'Update: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Update failed: '+(e.message||'err'),'err'); }); }); });
+    root.querySelectorAll('.cbtn').forEach(function(btn){ btn.addEventListener('click',function(){ var id=Number(btn.dataset.id); btn.disabled=true; status('Converting lead '+id+' to client...','ok'); api('/clients/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lead_id:id})}).then(function(r){ status(r&&r.ok?('Client #'+r.client_id+' created + 30-day onboarding seeded'):'Convert: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Convert failed: '+(e.message||'err'),'err'); }); }); });
     var _lf=document.getElementById('leads-filter'); if(_lf){ _lf.addEventListener('input',function(){ var q=_lf.value.toLowerCase(); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=tr.innerText.toLowerCase().indexOf(q)>=0?'':'none'; }); }); }
     var _fo=document.getElementById('fit-only'); if(_fo){ var _on=false; _fo.addEventListener('click',function(){ _on=!_on; _fo.classList.toggle('active',_on); root.querySelectorAll('tbody tr').forEach(function(tr){ tr.style.display=(_on && tr.dataset.fit!=='1')?'none':''; }); }); }
     var _all=document.getElementById('lead-all'); if(_all){ _all.addEventListener('change',function(){ root.querySelectorAll('.lchk').forEach(function(c){ c.checked=_all.checked; }); }); }

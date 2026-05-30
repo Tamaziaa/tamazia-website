@@ -56,6 +56,8 @@
     });
   });
   $('#signout').addEventListener('click', signOut);
+  // Founder removed the in-page login 2026-05-30: auto-enter the cockpit on load.
+  try{ showCockpit(); }catch(e){}
   $$('#tabs .tab').forEach(b => b.addEventListener('click', ()=>{
     $$('#tabs .tab').forEach(t=>t.classList.remove('active'));
     b.classList.add('active');
@@ -598,7 +600,9 @@
     rf.addEventListener('click',function(){ var n=_activeTabName(); if(n) renderTab(n); });
     var ex=document.createElement('button'); ex.id='csv-export'; ex.className='tab'; ex.textContent='Export CSV';
     ex.addEventListener('click',_exportCSV);
-    host.appendChild(rf); host.appendChild(ex);
+    var re=document.createElement('button'); re.id='run-engine'; re.className='tab'; re.textContent='Run Engine';
+    re.addEventListener('click',function(){ status('Dispatching engine cycle...','ok'); api('/engine/dispatch',{method:'POST'}).then(function(r){ status(r&&r.ok?'Engine cycle dispatched':'Dispatch: '+JSON.stringify(r),'ok'); }).catch(function(e){ status('Dispatch failed: '+(e.message||'err'),'err'); }); });
+    host.appendChild(rf); host.appendChild(ex); host.appendChild(re);
   }
   try{ _addControls(); }catch(e){}
   setInterval(function(){ var n=_activeTabName(); if(n && ['now','health','pipeline','leads','inbox','outbox'].indexOf(n)>=0){ try{ renderTab(n); }catch(e){} } }, 60000);

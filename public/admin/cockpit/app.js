@@ -91,10 +91,11 @@
   }
 
   async function renderNow(root){
-    const [d, deploys, cal] = await Promise.all([
+    const [d, deploys, cal, flg] = await Promise.all([
       api('/now'),
       api('/deploys').catch(()=>({runs:[]})),
       api('/cal/events').catch(()=>({event_types:[]})),
+      api('/flags').catch(()=>({flags:[]})),
     ]);
     const cards = (d.cards||[]).map(c => `<div class="card"><div class="card-title">${esc((c.kind||'').toUpperCase())}</div><p>${esc(c.title||'')}</p></div>`).join('');
     const t = d.truth || {real:{},test:{}};
@@ -102,6 +103,7 @@
     const deployBadge = lastDeploy ? `<span class="tag ${lastDeploy.conclusion==='success'?'green':lastDeploy.conclusion==='failure'?'red':'amber'}">${esc(lastDeploy.conclusion||lastDeploy.status||'?')}</span>` : '<span class="tag amber">unknown</span>';
     root.innerHTML = `
       <h2>${esc(d.greeting||'Welcome')}, Aman.</h2>
+      ${(flg.flags||[]).length ? `<div style="margin:8px 0;display:flex;flex-direction:column;gap:6px">${flg.flags.map(f=>`<div class="tag ${f.level==='p1'?'red':f.level==='p2'?'amber':'blue'}" style="display:block;padding:8px 12px">${esc(f.msg)}</div>`).join('')}</div>` : ''}
       <p class="sub">Today · ${d.pipeline_today?.forms||0} forms · ${d.pipeline_today?.bookings||0} bookings</p>
       <div class="cards-grid">
         <div class="kpi"><div class="kpi-label">Forms (KV)</div><div class="kpi-value">${t.real.prospects||0}</div><div class="kpi-sub">all-time</div></div>
@@ -154,12 +156,14 @@
       <td>${esc(l.lifecycle_stage||'?')}</td>
       <td>${esc(l.status||'?')}</td>
       <td>${esc((l.updated_at||l.created_at||'').slice(0,16))}</td>
+      <td><button class="rowbtn" data-id="${esc(String(l.id))}" data-action="advance">Advance</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="won">Won</button> <button class="rowbtn" data-id="${esc(String(l.id))}" data-action="lost">Lost</button></td>
     </tr>`).join('');
     root.innerHTML = `
       <h2>Leads</h2>
       <p class="sub">${d.total||d.count||0} total in Neon · showing ${(d.leads||[]).length}.</p>
-      <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>Stage</th><th>Status</th><th>Updated</th></tr></thead><tbody>${rows||'<tr><td colspan="7">No leads yet.</td></tr>'}</tbody></table>
+      <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>Stage</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="8">No leads yet.</td></tr>'}</tbody></table>
     `;
+    root.querySelectorAll('.rowbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id), act=btn.dataset.action; if(!id) return; btn.disabled=true; status('Updating lead '+id+'...','ok'); api('/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,action:act})}).then(function(r){ status(r&&r.ok?('Lead '+id+' '+act):'Update: '+JSON.stringify(r),'ok'); renderTab('leads'); }).catch(function(e){ btn.disabled=false; status('Update failed: '+(e.message||'err'),'err'); }); }); });
   }
 
   async function renderForms(root){

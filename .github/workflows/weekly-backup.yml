@@ -17,7 +17,7 @@ jobs:
         run: |
           git bundle create tamazia-website-$(date +%F).bundle --all
       - name: Upload to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: backup-$(date +%F)
           name: "Weekly backup $(date +%F)"

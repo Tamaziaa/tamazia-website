@@ -111,7 +111,7 @@ C('psiAudits-a11y-wcag', ({ D }) => (D.seo.psiAudits || []).filter((x) => x.lane
 C('scoring-present', ({ D }) => D.scoring && D.scoring.formula && D.scoring.why && (D.scoring.bands || []).length ? null : 'scoring incomplete');
 C('jurisdiction-statement', ({ D }) => D.jurisdiction && D.jurisdiction.length > 20 ? null : 'no jurisdiction statement');
 C('meta-complete', ({ D }) => D.meta && D.meta.company && D.meta.domain && D.meta.sector ? null : 'meta incomplete');
-C('exposure-string', ({ D }) => /^£[\d.]+[kM]?$|^£0$/.test(D.exposure) ? null : 'bad exposure "' + D.exposure + '"');
+C('exposure-string', ({ D }) => /^[£$€][\d.]+[kM]?$|^[£$€]0$/.test(D.exposure) ? null : 'bad exposure "' + D.exposure + '"');
 C('no-fine-NaN', ({ T }) => (T.pointers || []).every((p) => !Number.isNaN(p.fine)) ? null : 'fine NaN');
 
 // ---- D. RUBRIC (R1–R6) ----

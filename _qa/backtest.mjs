@@ -153,6 +153,16 @@ C('verdict-h2', ({ app }) => { const h = app.querySelector('.verdict h2'); retur
 C('vfix-chips', ({ app }) => q(app, '.vfix') >= 1 ? null : 'no vfix');
 C('pillar-bodies-nonempty', ({ app }) => { let bad = ''; app.querySelectorAll('.pillar .pbody').forEach((b) => { if (!b.innerHTML.trim()) bad = b.parentElement.id; }); return bad ? 'empty pbody ' + bad : null; });
 
+// ---- F. OVERHAUL invariants (Phases 0-12) ----
+C('kw-band-2050', ({ D }) => { const bad = (D.seo.keywords || []).filter((k) => /^#\d/.test(String(k.you))).filter((k) => { const n = +String(k.you).slice(1); return !(n >= 20 && n <= 50); }); return bad.length ? 'out-of-band ' + bad.map((k) => k.you).join(',') : null; });
+C('kw-leader-real', ({ D, T }) => { const bad = (D.seo.keywords || []).map((k) => k.who).filter((w) => w && w !== ', ' && w !== '—').filter((w) => !isRealCompetitor(w, T.market)); return bad.length ? 'junk keyword leader ' + bad[0] : null; });
+C('dr-no-null', ({ D }) => { const L = D.competitors.ladder || []; const nul = L.filter((c) => !Number.isFinite(+c.dr)); if (nul.length) return 'null dr x' + nul.length; if (L.length >= 2 && (D.competitors.drBars || []).length < 2) return 'drBars<2 with ladder>=2'; return null; });
+C('beatby-distinct', ({ D }) => { const L = D.competitors.ladder || []; if (L.length < 2) return null; const sig = L.map((c) => String((c.beatBy && c.beatBy.proof) || '') + '|' + String((c.beatBy && c.beatBy.fix) || '')); return new Set(sig).size === sig.length ? null : 'duplicate beatBy row'; });
+C('frameworks-merge-stable', ({ D }) => { const F = D.frameworks || []; const nm = F.map((f) => f.name); if (new Set(nm).size !== nm.length) return 'duplicate framework name (siblings not merged)'; for (const f of F) { for (const pv of (f.provisions || [])) { if (!pv.fix || !String(pv.fix).trim()) return 'empty provision fix in ' + f.code; if (/^[A-Z_]{2,}$/.test(String(pv.label || ''))) return 'raw provision label ' + pv.label; } } return null; });
+C('cwv-label-honest', ({ D, app }) => { const real = (D.seo.cwv || []).some((m) => m.k === 'CLS' || m.k === 'PERF'); if (real) return null; const seo = app.querySelector('#sec-seo'); return seo && /failing\s+\d+\s+of\s+\d+/i.test(seo.textContent) ? '"failing N of M" shown with no PSI' : null; });
+C('single-finding-detail', ({ app }) => { const n = app.querySelectorAll('#fx-1').length; return n === 1 ? null : '#fx-1 count ' + n; });
+C('css-vp-cap-contract', () => /max-height:\s*var\(--vp-cap\)/.test(assets.css) ? null : '--vp-cap cap rule missing from audit.css');
+
 const dirs = [join(__dirname, 'fixtures'), join(__dirname, 'fixtures', '_matrix')];
 const files = [];
 for (const d of dirs) { if (existsSync(d)) for (const f of readdirSync(d)) if (f.endsWith('.json')) files.push([d, f]); }

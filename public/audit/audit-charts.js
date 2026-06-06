@@ -328,7 +328,7 @@ window.CH = (function(){
   /* ---- element-level PSI evidence (real failing DOM nodes) ---- */
   function psiAuditList(){
     const a=(D.seo&&D.seo.psiAudits)||[];
-    if(!a.length) return `<div class="capt" style="margin:0">Google PageSpeed could not deep-read your site this scan, a re-scan captures the element-level evidence (failing nodes, savings).</div>`;
+    if(!a.length) return `<div class="capt" style="margin:0">Google PageSpeed could not deep-read your site this scan, a re-scan captures the element-level evidence, the exact nodes and the savings each is worth.</div>`;
     return `<div class="psi-list">${a.map(x=>`<div class="psi-row"><div class="psi-h"><span class="psi-t">${esc(x.title)}</span><span class="psi-lane l-${x.laneKey}">${esc(x.lane)}</span></div>
       <div class="psi-ev">Evidence · Google PageSpeed (mobile) · <span class="mono">${esc(x.id)}</span>${x.disp?' · '+esc(x.disp):''}${x.nodes?' · '+x.nodes+' element'+(x.nodes>1?'s':''):''}</div>
       ${x.sel?`<div class="psi-sel mono">${esc(x.sel)}</div>`:''}

@@ -125,7 +125,7 @@ window.CH = (function(){
     const line=xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)} ${ys[i].toFixed(1)}`).join(' ');
     const area=xs.length?`${line} L${xs[xs.length-1].toFixed(1)} ${h-20} L${xs[0].toFixed(1)} ${h-20} Z`:'';
     let dots=''; xs.forEach((x,i)=> dots+=`<circle cx="${x.toFixed(1)}" cy="${ys[i].toFixed(1)}" r="5" fill="${i===0?'#B3261E':i===xs.length-1?'#2F7A4A':'#7A2A3B'}" stroke="#fff" stroke-width="2"/>`);
-    return `<div class="traj-wrap"><svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    return `<div class="traj-wrap"><svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A87C" stop-opacity=".42"/><stop offset="1" stop-color="#C9A87C" stop-opacity="0"/></linearGradient></defs>
       <path d="${area}" fill="url(#${id})"/><path d="${line}" fill="none" stroke="#7A2A3B" stroke-width="2.5"/>${dots}</svg>
       <div class="traj-pts">${T.map((p,i)=>`<div class="traj-pt ${i===0?'now':i===T.length-1?'end':''}"><b>${p.v}</b>${p.x} · ${p.g}</div>`).join('')}</div></div>`;

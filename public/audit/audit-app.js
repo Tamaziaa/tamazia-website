@@ -363,7 +363,7 @@
           <div class="ptj-meta">today ${score} → week 12 ${proj[1]} → week 24 ${proj[2]} · hover a tier to see it lift</div></div>
         <div class="ptj-key"><span class="k-cur">Left to drift</span><span class="k-proj">With Tamazia</span></div>
       </div>
-      <svg class="ptj-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}" role="img" aria-label="Projected score trajectory">
+      <svg class="ptj-svg" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Projected score trajectory">
         <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A87C" stop-opacity=".40"/><stop offset="1" stop-color="#C9A87C" stop-opacity="0"/></linearGradient></defs>
         ${grid}
         ${labX.map((l,i)=>`<text x="${X(i).toFixed(1)}" y="${H-9}" text-anchor="${i===0?'start':i===2?'end':'middle'}" font-family="var(--mono)" font-size="8.5" fill="var(--muted)">${l}</text>`).join('')}
@@ -522,15 +522,19 @@
 
   /* ---------------- NAV, one pillar open at a time ---------------- */
   function setActive(id){ document.querySelectorAll('.railnav button').forEach(b=>b.classList.toggle('active', b.dataset.pane===id)); }
+  // When navigating from a verdict/breach chip we open the overview pillar AND a specific finding;
+  // suppress the pillar-level scrolls so only the finding scroll wins (the async pillar 'toggle'
+  // otherwise fires last and overrides it — the #6/#7/#8 jump-to-bottom bug).
+  let _chipNav=false;
   function openPillar(id){
     document.querySelectorAll('.pillar').forEach(d=>{ d.open=(d.id==='sec-'+id); });
     setActive(id);
-    const el=document.getElementById('sec-'+id); if(el) scrollHeadingTop(el);
+    const el=document.getElementById('sec-'+id); if(el && !_chipNav) scrollHeadingTop(el);
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
   // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
   document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
-  document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); scrollHeadingTop(d); } }));
+  document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); if(!_chipNav) scrollHeadingTop(d); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
   // PSI desktop|mobile toggle: switch the active strategy card-set within the SEO pane.
   app.addEventListener('click',function(e){ const t=e.target.closest('.psi-tab'); if(!t) return; e.preventDefault();
@@ -580,8 +584,13 @@
   app.addEventListener('click',function(e){
     const b=e.target.closest('[data-finding]'); if(!b) return; e.preventDefault();
     const id=b.dataset.finding;
+    _chipNav=true;
     openPillar('overview');
-    requestAnimationFrame(function(){ const d=document.getElementById(id); if(d){ d.open=true; scrollHeadingTop(d); } });
+    requestAnimationFrame(function(){
+      const d=document.getElementById(id); if(d) d.open=true;
+      requestAnimationFrame(function(){ scrollHeadingTop(d||document.getElementById('sec-overview')); });
+    });
+    setTimeout(function(){ _chipNav=false; }, 400);
   });
 
   /* ---------------- Phase 4: "Top N exposures" bars jump to their framework box ---------------- */

@@ -1106,6 +1106,10 @@ export function payloadToD(payload, ctx = {}) {
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
     .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
+  // Desktop + mobile PSI (engine now returns both strategies). When present, the render shows a
+  // Mobile|Desktop toggle with the 4 Lighthouse dials + Core Web Vitals + element-level audits-with-fixes
+  // for each — so the speed/quality metrics are ALWAYS populated (PSI fetches the site itself). (no-not-assessed)
+  seo.psiStrats = (function () { const m = buildPsiStrat(g(payload, 'scan.psi.mobile', null)); const d = buildPsiStrat(g(payload, 'scan.psi.desktop', null)); return (m || d) ? { mobile: m, desktop: d } : null; })();
   // Total surfaced SEO/technical issues (drives the rail "N issues" chip): on-page + structured-data gaps +
   // every missing security header + every failing Lighthouse audit measured on your DOM. Honest tally. (>=5)
   seo.issueCount = (seo.onpage || []).length + (seo.security || []).filter((s) => s.present === false).length + (seo.psiAudits || []).length;
@@ -1411,6 +1415,29 @@ function buildCwv(psi) {
   if (isNum(psi.perf)) out.push({ k: 'PERF', label: 'Performance score', v: Math.round(psi.perf * 100) + '/100', target: '> 90', pct: Math.round(psi.perf * 100), st: psi.perf >= 0.9 ? 'pass' : psi.perf >= 0.5 ? 'warn' : 'fail', plain: 'Overall mobile performance. Google ranks slow pages lower and visitors leave before 3s.' });
   if (!out.length) out.push({ k: 'CWV', label: 'Core Web Vitals', v: 'not assessed', target: 'PageSpeed unavailable', pct: 0, st: 'warn', plain: 'PageSpeed data was unavailable on this scan, the live site was unreachable or behind a bot-challenge. Speed is captured on the next live scan.' });
   return out;
+}
+// Core Web Vitals rows for ONE strategy (mobile or desktop) from the engine's rich per-strategy cwv.
+// Rounds the raw lab decimals; clamps the bar; brand-plain explanation tuned to a non-technical buyer.
+function buildCwvStrat(cwv) {
+  if (!cwv) return [];
+  const out = [], r = Math.round, cl = (n) => Math.max(8, Math.min(100, r(n)));
+  if (isNum(cwv.lcp_ms)) { const s = cwv.lcp_ms; out.push({ k: 'LCP', label: 'Largest Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 2.5s', pct: cl(100 - (s - 1000) / 40), st: s > 4000 ? 'fail' : s > 2500 ? 'warn' : 'pass', plain: 'How long until the main content appears. Slow LCP is the top reason visitors leave before the page loads.' }); }
+  if (isNum(cwv.inp_ms)) { const s = cwv.inp_ms; out.push({ k: 'INP', label: 'Interaction to Next Paint', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - (s - 100) / 5), st: s > 500 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How fast the page responds to a tap or click. Laggy interaction reads as a broken, low-trust site.' }); }
+  if (isNum(cwv.cls)) { const s = cwv.cls; out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: s.toFixed(2), target: '< 0.10', pct: cl(100 - s * 100), st: s > 0.25 ? 'fail' : s > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.' }); }
+  if (isNum(cwv.fcp_ms)) { const s = cwv.fcp_ms; out.push({ k: 'FCP', label: 'First Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 1.8s', pct: cl(100 - (s - 800) / 30), st: s > 3000 ? 'fail' : s > 1800 ? 'warn' : 'pass', plain: 'How fast anything first appears. A slow first paint makes the site feel dead on arrival.' }); }
+  if (isNum(cwv.tbt_ms)) { const s = cwv.tbt_ms; out.push({ k: 'TBT', label: 'Total Blocking Time', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - s / 10), st: s > 600 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How long the page is frozen while scripts run. High TBT means taps do nothing for seconds.' }); }
+  return out;
+}
+// One strategy's full PSI view: the 4 Lighthouse dials (0-100, always present), CWV rows, and the
+// element-level failing audits (prefers the engine's brand-tone fix line over the static fallback).
+function buildPsiStrat(strat) {
+  if (!strat || !strat.scores) return null;
+  const sc = strat.scores, dial = (v) => isNum(v) ? Math.round(v * 100) : null;
+  const audits = arr(strat.audits)
+    .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
+    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix: String(a.fix || fixFb || '').trim(), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .sort((x, y) => y._w - x._w).slice(0, 10);
+  return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
 }
 // Region-specific legal glossary terms that must NOT be defined for a firm whose jurisdiction set doesn't
 // include that region (a UAE-only firm should never see GDPR / UK GDPR / PECR / CCPA defined). Term → the

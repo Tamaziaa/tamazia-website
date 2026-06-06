@@ -335,6 +335,28 @@ window.CH = (function(){
       ${x.wcag?`<div class="psi-wcag">⚖ ${esc(x.wcag)}, enforceable under ADA Title III &amp; the EU Accessibility Act</div>`:''}
       <div class="psi-fix"><b>Tamazia fix</b> ${esc(x.fix)}</div></div>`).join('')}</div>`;
   }
+  /* ---- strategy-aware PSI (desktop|mobile) — data passed in explicitly ---- */
+  function psiDialRow(d){ d=d||{};
+    return `<div style="display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap">${dial(d.performance,'Performance')}${dial(d.accessibility,'Accessibility')}${dial(d.bestPractices,'Best practices')}${dial(d.seo,'SEO')}</div>`;
+  }
+  function cwvMeterRow(cwv){
+    return `<div class="cwvgrid">${(cwv||[]).map(m=>{
+      const col=stCls(m.st)==='r'?'red':stCls(m.st)==='a'?'amber':'green';
+      return `<div class="cwvchip" data-tip="${esc(String(m.plain||'')).replace(/"/g,'&quot;')}">
+        <div class="cwv-k"><b>${esc(m.k)}</b> · ${esc(m.label)}</div>
+        <div class="cwv-v num" style="color:var(--${col})">${esc(m.v)}<span class="cwv-t mono">target ${esc(m.target)}</span></div>
+        <div class="bar-track cwv-bar"><div class="bar-fill ${m.st==='warn'?'amber':''}" style="width:${m.pct}%"></div></div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+  function psiAuditRow(a,strat){ a=a||[];
+    if(!a.length) return `<div class="capt" style="margin:0">No failing audits surfaced for ${esc(strat||'this strategy')} this scan — your live site cleared this lane.</div>`;
+    return `<div class="psi-list">${a.map(x=>`<div class="psi-row"><div class="psi-h"><span class="psi-t">${esc(x.title)}</span><span class="psi-lane l-${x.laneKey}">${esc(x.lane)}</span></div>
+      <div class="psi-ev">Evidence · Google PageSpeed (${esc(strat||'mobile')}) · <span class="mono">${esc(x.id)}</span>${x.disp?' · '+esc(x.disp):''}${x.nodes?' · '+x.nodes+' element'+(x.nodes>1?'s':''):''}</div>
+      ${x.sel?`<div class="psi-sel mono">${esc(x.sel)}</div>`:''}
+      ${x.wcag?`<div class="psi-wcag">⚖ ${esc(x.wcag)}, enforceable under ADA Title III &amp; the EU Accessibility Act</div>`:''}
+      ${x.fix?`<div class="psi-fix"><b>Tamazia fix</b> ${esc(x.fix)}</div>`:''}</div>`).join('')}</div>`;
+  }
 
   /* ---- framework severity bars + regulator badges ("Your top N regulatory exposures") ---- */
   function frameworkBars(){
@@ -350,6 +372,6 @@ window.CH = (function(){
 
   return {gauge,dial,bars,exposureBars,heatmap,radar,trajectory,donut,pill,dimScorecard,dimCardGrid,
     waterfall,causalChain,psiAuditList,frameworkBars,
-    cwvMeters,psiDials,issueList,securityGrid,engineGrid,schemaChecklist,sourceGap,
+    cwvMeters,psiDials,psiDialRow,cwvMeterRow,psiAuditRow,issueList,securityGrid,engineGrid,schemaChecklist,sourceGap,
     competitorTable,citationTable,keywordTable,stat,urgent,finding};
 })();

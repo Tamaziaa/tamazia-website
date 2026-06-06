@@ -125,21 +125,27 @@
     <div class="pane-head"><span class="eyebrow">Search &amp; AI both read these signals</span>
       <h2>${seoHeadline}</h2>
       <p>Search engines and AI answer engines read the same things, speed, structure, security, depth. Every signal below was measured live on your site, and each one is a buyer a competitor is capturing instead of you. Here is the exact fix.</p></div>
+    ${D.seo.psiStrats?`
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed &mdash; desktop and mobile.</h3></div>
+    <div class="psi-toggle" role="tablist">${['mobile','desktop'].map(st=>`<button class="psi-tab${st==='mobile'?' active':''}" data-strat="${st}" type="button" role="tab">${st==='mobile'?'Mobile':'Desktop'}</button>`).join('')}</div>
+    ${['mobile','desktop'].map(st=>{const S=D.seo.psiStrats[st];if(!S)return '';const fail=S.cwv.filter(c=>c.st==='fail').length;return `<div class="psi-strat${st==='mobile'?' active':''}" data-strat="${st}">
+      <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live &middot; ${st}</div></div>${CH.psiDialRow(S.dials)}</div>
+      <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${st} &middot; failing ${fail} of ${S.cwv.length}</div></div>${CH.cwvMeterRow(S.cwv)}</div>
+      <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Failing audits on your live DOM</div><div class="meta">${st} &middot; ${S.audits.length} found &middot; hover the fix</div></div>${CH.psiAuditRow(S.audits,st)}</div>
+    </div>`;}).join('')}`:`
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed.</h3></div>
     <div class="card pad" style="margin-bottom:15px">${CH.psiAuditList()}</div>
     <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
+    <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>`}
     <div class="grid g2">
-      <div class="card pad"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>
-      <div style="display:flex;flex-direction:column;gap:15px">
-        <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
-        <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
-          <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
-          <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
-          <div class="fact"><span class="k">Trackers</span><span class="v">${D.seo.tech.trackers}</span></div>
-          <div class="fact"><span class="k">Ad pixels</span><span class="v">${D.seo.tech.adPixels}</span></div>
-          <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
-          <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
-        </div>
+      <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
+      <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
+        <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
+        <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
+        <div class="fact"><span class="k">Trackers</span><span class="v">${D.seo.tech.trackers}</span></div>
+        <div class="fact"><span class="k">Ad pixels</span><span class="v">${D.seo.tech.adPixels}</span></div>
+        <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
+        <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
       </div>
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>Security headers, each one missing is a door a regulator now reads as negligence.</h3></div>
@@ -526,6 +532,12 @@
   document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
   document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); scrollHeadingTop(d); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
+  // PSI desktop|mobile toggle: switch the active strategy card-set within the SEO pane.
+  app.addEventListener('click',function(e){ const t=e.target.closest('.psi-tab'); if(!t) return; e.preventDefault();
+    const strat=t.dataset.strat, scope=t.closest('.pbody')||document;
+    scope.querySelectorAll('.psi-tab').forEach(b=>b.classList.toggle('active', b===t));
+    scope.querySelectorAll('.psi-strat').forEach(s=>s.classList.toggle('active', s.dataset.strat===strat));
+  });
 
   /* ---------------- OPEN-FROM-HEADING for every box (robust) ---------------- */
   // Pin a box's heading (its <summary>) just under the top of the viewport when it opens.

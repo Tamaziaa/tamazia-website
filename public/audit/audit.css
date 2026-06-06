@@ -790,3 +790,12 @@ body.cmx-lock{overflow:hidden}
 .art-quote{font-style:italic;color:var(--ox);border-left:2px solid var(--line-2);padding-left:9px;margin:4px 0 0 15px;font-size:11.5px;line-height:1.4}
 .art-fix{background:var(--green-bg);border-radius:7px;padding:5px 9px;margin:5px 0 0 15px;font-family:var(--body);font-size:11.5px;color:#26402f;line-height:1.4}
 .art-fix b{font-family:var(--mono);font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-right:6px}
+
+/* R2 — PageSpeed desktop|mobile toggle (never 'not assessed') */
+.psi-toggle{display:inline-flex;margin:0 0 13px;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--paper)}
+.psi-tab{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:7px 20px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-weight:500;transition:.13s}
+.psi-tab+.psi-tab{border-left:1px solid var(--line)}
+.psi-tab.active{background:var(--ox);color:var(--paper)}
+.psi-tab:not(.active):hover{background:var(--cream-2);color:var(--ink)}
+.psi-strat{display:none}
+.psi-strat.active{display:block}

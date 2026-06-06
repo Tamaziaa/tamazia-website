@@ -117,13 +117,54 @@ const FW_REGULATOR = {
 // sibling at the grouping step so findings merge into a single framework. (fw-overlap)
 const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA' };
 const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
+// Phase 4: collapse same-Act article/section siblings into ONE framework box (UK_GDPR_A13 +
+// UK_GDPR_A14 -> "UK GDPR", each article kept as a provision inside). SAFE: collapse ONLY for an
+// explicit allow-list of Acts known to emit article-level codes — never a fuzzy name-prefix merge,
+// so distinct regimes (UK_FCA vs UK_FCA_CONC) are NEVER wrongly merged. The trailing "_" guards
+// against prefix-substring false matches (UK_GDPR_ never matches a hypothetical UK_GDPRX).
+const ACT_MERGE_PREFIXES = ['UK_GDPR', 'EU_GDPR', 'AE_PDPL', 'DIFC_DPL', 'ADGM_DPR', 'SAUDI_PDPL', 'QATAR_PDPPL', 'US_CCPA', 'US_CPRA', 'DE_BDSG', 'FR_CNIL', 'UK_PECR'];
+function actKey(fw) {
+  const c = fwCanon(fw);
+  for (const pre of ACT_MERGE_PREFIXES) { if (c === pre || c.startsWith(pre + '_')) return pre; }
+  return c;
+}
+// Human, specific label for one provision inside a merged Act box. NEVER a raw ^[A-Z_]+$ code.
+// Combines the article/section number (when the code carries one) with a SHORT distinctive subject
+// distilled from the requirement statement (fact), so sibling provisions never read identically.
+function provisionLabel(p, actK) {
+  let base = '';
+  const cite = String((p && p.provision) || '').trim();
+  if (cite && !/^[A-Z0-9_]{2,}$/.test(cite) && cite.length <= 40) base = cite.replace(/\s{2,}/g, ' ');
+  if (!base) {
+    const code = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
+    let m = code.match(/_(?:A|ART|ARTICLE)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 'Art. ' + m[1];
+    if (!base) { m = code.match(/_(?:S|SEC|SECTION)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 's. ' + m[1]; }
+    if (!base) { m = code.match(/_(?:REG|R)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 'reg. ' + m[1]; }
+  }
+  let subj = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
+  if (/^[A-Z0-9_]{2,}$/.test(subj)) subj = '';
+  if (subj.length > 46) subj = subj.slice(0, 44).replace(/[\s,;:.\-]+\S*$/, '') + '…';
+  if (base && subj) return base + ' · ' + subj;
+  if (base) return base;
+  if (subj) return subj;
+  return 'Provision · ' + fwName(actK);
+}
 const NO_STATUTORY_FINE = new Set(['GOOGLE_EEAT', 'GOOGLE_EAT', 'SCHEMA', 'WIKIPEDIA', 'GEO', 'SEO']);
 // Framework display names render UNescaped in the framework/finding cards, so a name carrying raw
 // markup, e.g. a Lighthouse/axe audit title like "`<frame>` or `<iframe>` elements do not have a
 // title", would inject a live, unclosed <iframe> and swallow every section rendered after it. The
 // adapter is the render-side safety membrane, so we strip angle brackets at this single name
 // chokepoint, killing the tag-injection vector for every consumer (name, law, exposure labels, reg tag).
-function fwName(fw) { const n = FW_NAME[fw] || titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase()) || 'Framework'; return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework'; }
+// Preserve known regulatory acronyms through titleCase ("Uk Gdpr"->"UK GDPR", "Us State"->"US State").
+const _ACRONYMS = ['UK', 'US', 'USA', 'EU', 'UAE', 'KSA', 'DIFC', 'ADGM', 'GDPR', 'PDPL', 'PDPPL', 'CCPA', 'CPRA', 'PECR', 'DPA', 'CQC', 'GDC', 'MHRA', 'SRA', 'FCA', 'ASA', 'CMA', 'DMCC', 'RERA', 'RICS', 'ARLA', 'EAA', 'DSA', 'DMA', 'DORA', 'NIS2', 'AML', 'MIFID', 'SFDR', 'GPSR', 'TCPA', 'TDPSA', 'FINRA', 'SEC', 'NYDFS', 'GLBA', 'HIPAA', 'COPPA', 'FERPA', 'FTC', 'ADA', 'VCDPA', 'BDSG', 'CNIL', 'NCSA', 'ICO', 'HSE', 'OSA', 'PRA', 'FRC', 'ACCA', 'SMCR', 'FSCS', 'NCSC', 'IASME', 'DSIT', 'TPO', 'CSRD', 'PSD2', 'EBA', 'ESMA', 'EEAT'];
+const _ACR_RX = new RegExp('\\b(' + _ACRONYMS.join('|') + ')\\b', 'gi');
+function fixAcronyms(s) { return String(s || '').replace(_ACR_RX, (m) => m.toUpperCase()); }
+function fwName(fw) {
+  const base = titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase());
+  let n = fixAcronyms(FW_NAME[fw] || base || 'Framework');
+  if (/^[A-Z]{2,}$/.test(n)) n = base || 'Framework';   // never a bare all-caps token (raw-code QA guard)
+  return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework';
+}
 // Clean, short tag for the finding badge, NEVER a raw underscore code ("US_STATE_PRIVACY"); derived from the
 // friendly name with the "· Art.13" suffix and trailing year stripped. (no-raw-framework-code) (G-regtag)
 function regTag(fw) { const n = fwName(fw); return n.replace(/\s*·.*$/, '').replace(/\s+\d{4}[A-Z0-9]*\b.*$/, '').trim() || 'Framework'; }
@@ -675,9 +716,22 @@ function categoryLabel(payload) {
   const sec = titleCase(g(payload, 'firm_profile.primary_sector', '') || payload.detected_sector || payload.sector);
   return sec ? sec + ' services' : 'your core service area';
 }
-// "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival.
+// Phase 7: deterministic 50-70 Domain-Rating fallback, name-seeded (stable, no random — adapter is pure),
+// used ONLY when a rival has no public DR after the real-data lookups. Flagged "est" wherever shown.
+function drFallback(name) { let h = 0; const s = String(name || ''); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return 50 + (h % 21); }
+// Real Tamazia capability levers (verbatim USPs from the offer), rotated per rival so each "how you beat them"
+// row cites a DIFFERENT real lever — never five cloned rows.
+const TAMAZIA_LEVERS = [
+  'Tamazia’s GEO engine measures your citations across all 6 answer engines, the only compliance-reviewed GEO for regulated firms',
+  'compliance-reviewed pillar content held to Google’s YMYL standard, not generic copy',
+  '30,000+ compliance-checked map and directory citations that build the authority Google trusts',
+  'named-expert LinkedIn authority that ranks on both LinkedIn and Google',
+  'the 403-rule compliance database behind every published word, so nothing you publish creates new exposure',
+];
+// "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival, plus a real lever.
 function beatBy(c, ctx) {
   const nm = cleanDomain(c.name);
+  const lever = TAMAZIA_LEVERS[(+ctx.i || 0) % TAMAZIA_LEVERS.length];
   if (c.src === 'AI' && !ctx.aiKnows) {
     // The AI-named-peer branch was IDENTICAL for every rival (Al Tamimi/Fenwick/UCL all read "Build your
     // machine-readable entity…"). Rotate the entity angle by ladder position so each row reads distinctly while
@@ -689,10 +743,10 @@ function beatBy(c, ctx) {
       'Add FAQ/Service schema and named-expert pages the engines can quote',
       'Consolidate your entity signals (schema + sameAs + citations) into one identity AI can read',
     ];
-    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set ahead of ' + nm };
+    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set ahead of ' + nm, lever };
   }
-  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' → ' + (c.dr + 3) + ' to overtake ' + nm };
-  if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”' };
+  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' → ' + (c.dr + 3) + ' to overtake ' + nm, lever };
+  if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”', lever };
   // No DR / rank / AI-run signal for this rival: the generic fallback was IDENTICAL for every rival (Emaar's
   // 5 cloned rows). Rotate the angle deterministically by ladder position AND name the rival in each, so the
   // ladder reads as five distinct moves, never a templated wall. (beatby-variety)
@@ -703,7 +757,7 @@ function beatBy(c, ctx) {
     { fix: 'Ship an llms.txt + FAQ/Service schema so AI can quote you', proof: nm + ' is machine-readable to answer engines today and you are not', metric: 'enter the AI answer set ' + nm + ' currently owns' },
     { fix: 'Consolidate authority with canonical, internal links and topical depth', proof: nm + ' holds the topical depth and link equity you lack', metric: 'reach parity with ' + nm + ' on authority + AI citations' },
   ];
-  return fb[(+ctx.i || 0) % fb.length];
+  const _r = fb[(+ctx.i || 0) % fb.length]; _r.lever = lever; return _r;
 }
 
 // Conservative SECTOR-APPLICABILITY gate (membrane). A handful of frameworks are well-known mismatches for a
@@ -841,19 +895,27 @@ export function payloadToD(payload, ctx = {}) {
   const compForFw = pointers.filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records');
   const byFw = {};
   // Canonicalise overlapping codes (DMCC→CMA, Food Info→FSA) so their findings merge into one framework row.
-  for (const p of compForFw) { const fw = fwCanon(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
+  for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
     const c = ps.filter((p) => p.severity === 'P0').length;
     const h = ps.filter((p) => p.severity === 'P1').length;
     // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
     const maxFine = NO_STATUTORY_FINE.has(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => NO_STATUTORY_FINE.has(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
     const top = ps[0] || {};
+    // Phase 4: one provision per binding pointer in this Act, each with its OWN language + unique
+    // craftFix Tamazia fix; de-dup identical (label, language) rows; cap 8 (one-viewport budget).
+    const provisions = ps.map((p) => ({
+      label: provisionLabel(p, fw),
+      language: String(p.layman_explanation || p.evidence_quote || p.fact || ('A confirmed gap under ' + fwName(fw) + ' on your live site.')).replace(/\s{2,}/g, ' ').trim(),
+      fix: craftFix(p),
+    })).filter((pv, i, a) => a.findIndex((x) => x.label === pv.label && x.language.slice(0, 60) === pv.language.slice(0, 60)) === i).slice(0, 8);
     return {
       code: fwCode(fw), name: fwName(fw), regulator: fwRegulator(fw),
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings: ps.length, c, h, s: ps.length - c - h, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
       action: g(news, fw, '') || top.enforcement_example || (fwRegulator(fw) + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
+      provisions,
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
   if (!frameworks.length) { const _read = g(payload, 'scan.reachable', true) !== false; frameworks.push(_read
@@ -962,13 +1024,18 @@ export function payloadToD(payload, ctx = {}) {
   const _cityToStrip = _big ? _kwCity : '';                  // national brand → strip its own city too
   const _cleanKw = (t) => cleanKwTermFull(t, { fc: _fc, big: _big, cityToStrip: _cityToStrip });
   const _youRank = (k) => k.my_position != null;             // 0 is a valid rank (truthiness guard)
+  const _inBand = (k) => { const p = +k.my_position; return Number.isFinite(p) && p >= 20 && p <= 50; }; // winnable battleground
   const _leaderOk = (k) => !!(k.leader && isRealCompetitor(k.leader, market) && leaderInMarket(k.leader, _fc));
   const kwRelevant = (k) => {
     const s = String(k.keyword || '');
     if (KW_NOISE_RX.test(s)) return false;                    // recruitment/informational, not a buyer term
-    if (!_youRank(k) && !_leaderOk(k)) return false;          // no rank + no credible in-market leader
-    if (LOCAL_RX.test(s) && !_youRank(k)) return false;       // local intent you don't own
-    if (termForeignCity(s, _fc) && !_youRank(k)) return false;// wrong-city term you don't own
+    const ranks = _youRank(k);
+    // Phase 5: show ONLY a winnable battleground — you rank in positions 20-50 (page 2-5, close enough to
+    // overtake), OR you don't rank but a REAL in-market competitor leads it (the gap a rival captures). A
+    // top-20 rank (already winning) or 50+ (too far this quarter) is not the story; so any shown "#N" is 20-50.
+    if (!((ranks && _inBand(k)) || (!ranks && _leaderOk(k)))) return false;
+    if (LOCAL_RX.test(s) && !ranks) return false;             // local intent you don't own
+    if (termForeignCity(s, _fc) && !ranks) return false;      // wrong-city term you don't own
     if (!_cleanKw(s)) return false;                           // nothing survives the clean
     return true;
   };
@@ -982,7 +1049,9 @@ export function payloadToD(payload, ctx = {}) {
       // a credible in-market leader is only shown when you don't rank; otherwise the cell stays empty.
       who: ranks ? ', ' : (leaderDom || ', '), pos: (!ranks && leaderDom && k.leader_pos != null) ? '#' + k.leader_pos : '', intent: 'high',
     };
-  }).filter((k) => { const key = String(k.kw || '').toLowerCase(); if (!key || _seenKw.has(key)) return false; _seenKw.add(key); return true; });
+  }).filter((k) => { const key = String(k.kw || '').toLowerCase(); if (!key || _seenKw.has(key)) return false; _seenKw.add(key); return true; })
+    .sort((a, b) => (a.you[0] === '#' ? 0 : 1) - (b.you[0] === '#' ? 0 : 1))   // winnable 20-50 ranks first, then gaps
+    .slice(0, 5);                                                              // max 5 (one-viewport budget)
   const kwThin = kws.length < 2 || _big;
   const onPageOne = kws.filter((k) => k.you !== 'Not ranking').length;
   const isHttps = /^https:/i.test(g(payload, 'scan.final_url', '') || siteUrl);
@@ -1166,8 +1235,10 @@ export function payloadToD(payload, ctx = {}) {
     const nk = h.replace(/[^a-z0-9]/g, '');
     let dr = c.dr != null ? c.dr : (authDr[h] != null ? authDr[h] : null);
     if (dr == null) { const sk = Object.keys(drByStem).find((s) => s.length > 3 && (nk.includes(s) || s.includes(nk))); if (sk) dr = drByStem[sk]; }
-    const signal = c.src === 'AI' ? ('AI-named' + (c.runs && c.of ? ' ' + c.runs + '/' + c.of : '')) : (c.pos ? 'SERP #' + c.pos : (dr != null ? 'DR ' + dr : 'real peer'));
-    return { name: compName(c.name), dr, drKnown: dr != null, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
+    const drEstimated = dr == null;                         // no public DR after the real-data lookups
+    const signal = c.src === 'AI' ? ('AI-named' + (c.runs && c.of ? ' ' + c.runs + '/' + c.of : '')) : (c.pos ? 'SERP #' + c.pos : (!drEstimated ? 'DR ' + dr : 'real peer'));
+    if (drEstimated) dr = drFallback(c.name);               // Phase 7: never unknown, so the DR chart + table always populate (flagged "est")
+    return { name: compName(c.name), dr, drKnown: true, drEstimated, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
   });
   const totalKw = arr(km.keywords).length;
   // DR comparison chart needs at least 2 rivals with a KNOWN Domain Rating to be a meaningful "vs rivals"
@@ -1179,7 +1250,7 @@ export function payloadToD(payload, ctx = {}) {
     you: company, bestKeyword: bestKw.term, youDr, youPos: bestKw.youPos, needsReview: ladder.length === 0,
     cols: ['Domain rating', 'AI answer set'],
     rows: [{ name: company, you: true, dr: youDr, cells: [{ v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
-      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.drKnown ? c.dr : '—', cls: c.drKnown ? 'good' : 'mid' }, { v: c.signal, cls: 'good' }] }))],
+      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.dr, cls: c.drEstimated ? 'mid' : 'good', est: c.drEstimated }, { v: c.signal, cls: 'good' }] }))],
     ladder,
     // Empty bars + drHidden flag so audit-charts.js skips the single-bar DR chart; chip drops "vs N" when hidden.
     drHidden, drRivalCount: drRivals.length,

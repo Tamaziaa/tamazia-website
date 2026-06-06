@@ -6,6 +6,9 @@
   // count-aware pluralization: plur(1,'finding')→'finding', plur(2,'finding')→'findings',
   // plur(1,'is','are')→'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
   const plur = (n,s,p)=> n===1 ? s : (p||s+'s');
+  // Escape DATA-sourced strings before innerHTML (evidence quotes/LLM text can carry a raw "<"
+  // that would corrupt the DOM — the axe-rule-name regression). Display text only.
+  const escH = s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
   /* ---------------- LEFT RAIL ---------------- */
   function rail(){
@@ -19,10 +22,10 @@
     ];
     return `
     <aside class="rail">
-      <div class="rail-brand"><span class="mark"></span><div><b>Tamazia</b><small>Compliance · SEO · AI audit</small></div></div>
+      <div class="rail-brand"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></div>
       <h1>${D.meta.company}</h1>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city,D.meta.date].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
-      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:120,dark:true})}</div>
+      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
       <div class="rail-band">${D.scoreBand} · ${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       <div class="rail-kpis">
@@ -33,16 +36,23 @@
       </div>
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
-      <div class="rail-fixes">
-        <div class="rail-navtitle" style="margin-top:0">Fix these three first</div>
-        ${D.fixes.map(f=>`<div class="rail-fix"><span class="n" style="color:var(--${f.n===3?'gold':'red'}-light,#E8B4AE)">${f.n}</span><span class="t">${f.title}</span><span class="e">${f.exp.split('–').pop()}</span></div>`).join('')}
-      </div>
+      <button class="rail-jump" data-pane="plan">Jump to pricing →</button>
       <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder →</button>
       <div class="rail-trust">100+ verified reviews · 47 UK &amp; US legal clients<br>Founder-led · ${D.rulesChecked} rules every campaign</div>
     </aside>`;
   }
 
   /* ---------------- PANES ---------------- */
+  // Phase 3 de-triplication: the FULL finding detail lives ONCE in P.overview (ids fx-1..N).
+  // Everywhere else that referenced a top-fix (regulatory "breaches in full", verdict chips)
+  // becomes a clickable SUMMARY that opens the overview detail. fixSummary keys on the fix's
+  // position in D.fixes so the id matches the overview card exactly.
+  function fixSummary(f){
+    const i=(D.fixes||[]).indexOf(f);
+    return `<button class="fix-summary" data-finding="fx-${i+1}">
+      <span class="fs-tag">${f.reg||f.pillar||''}</span><span class="fs-t">${f.title}</span>
+      <span class="fs-e">${f.exp}</span><span class="fs-go">full finding ↑</span></button>`;
+  }
   const P = {};
 
   P.overview = ()=>`
@@ -60,7 +70,7 @@
       </div>
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
-    ${D.fixes.map((f,i)=>CH.finding(f,i===0)).join('')}
+    ${D.fixes.map((f,i)=>CH.finding(f,i===0,{id:'fx-'+(i+1)})).join('')}
     <div class="card pad" style="margin-top:15px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
   P.regulatory = ()=>{
@@ -75,7 +85,7 @@
     <div class="card pad" style="margin-bottom:16px">${CH.frameworkBars()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached right now'):''}, worst exposure first.</h3></div>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
-    ${D.frameworks.map((fw,i)=>`<details class="fw" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
+    ${D.frameworks.map((fw,i)=>`<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary><span class="code">${fw.code}</span>
         <div><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'finding'))}</div></div>
         <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
@@ -83,9 +93,11 @@
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${fw.why}
         <div class="lbl">${fw.regulator} · recent enforcement</div><div class="action">${fw.action}</div>
+        ${(fw.provisions||[]).length?`<div class="lbl">Breaches under this Act, and the Tamazia fix for each</div>
+        <div class="provlist">${fw.provisions.map(pv=>`<div class="prov"><div class="prov-h"><span class="prov-l">${escH(pv.label)}</span></div><div class="prov-lang">${escH(pv.language)}</div><div class="prov-fix"><b>Tamazia fix</b> ${escH(pv.fix)}</div></div>`).join('')}</div>`:''}
       </div></details>`).join('')}
     ${regFixes.length?`<div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
-    ${regFixes.map(f=>CH.finding(f,false)).join('')}`:''}`;
+    <div class="reg-fixsummaries">${regFixes.map(fixSummary).join('')}</div>`:''}`;
   };
 
   P.seo = ()=>{
@@ -176,10 +188,12 @@
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>Who AI names instead of you</h3></div>
     <div class="card pad">${CH.citationTable()}</div>
+    ${(!D.seo.keywordsThin && (D.seo.keywords||[]).length>=2)?`<div class="subhead"><span class="nt">↳</span><h3>The searches you rank 20&ndash;50 for, and who AI &amp; Google name first</h3></div>
+    <div class="card pad">${CH.keywordTable()}</div>`:''}
     <div class="subhead"><span class="nt">↳</span><h3>The fix, in full</h3></div>
     ${CH.finding(D.geo.fix,true)}
-    <div class="subhead"><span class="nt">↳</span><h3>Plain-English glossary</h3></div>
-    <div class="card pad"><div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${k}</b><span>${v}</span></div>`).join('')}</div></div>`;
+    <details class="gloss-mini"><summary>Plain-English glossary · ${Object.keys(D.glossary).length} terms</summary>
+      <div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${k}</b><span>${v}</span></div>`).join('')}</div></details>`;
   };
 
   P.competitors = ()=>`
@@ -188,12 +202,12 @@
       <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
     <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them</h3></div>
-    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div></div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
+    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div>${c.beatBy.lever?`<div class="blever"><span class="blk">How Tamazia wins it</span> ${c.beatBy.lever}</div>`:''}</div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
         ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} ${plur(D.competitors.sovBar.of,'run')}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
         : `<div class="card pad"><div class="card-h"><div class="t">AI citations &amp; page-one</div><div class="meta">you vs leader</div></div>${CH.bars(D.competitors.aiKwBars,{max:Math.max(2,...(D.competitors.aiKwBars||[{v:1}]).map(b=>b.v))})}</div>`}
-      <div class="card pad"><div class="card-h"><div class="t">Domain rating vs rivals</div><div class="meta">0–100 authority</div></div>${CH.bars(D.competitors.drBars,{max:100})}</div>
+      <div class="card pad"><div class="card-h"><div class="t">Domain rating vs rivals</div><div class="meta">0–100 authority</div></div>${CH.bars(D.competitors.drBars,{max:100})}${(D.competitors.ladder||[]).some(c=>c.drEstimated)?'<div class="capt" style="margin-top:7px">Rivals that publish no Domain Rating are shown as an <b>est</b>imate from their authority signals.</div>':''}</div>
     </div>
     ${CH.urgent('The gap compounds. Every month you are absent, the firms AI names every time accumulate the citations and authority that make them harder to displace.', 'Tamazia closes the entity, schema and authority gap that decides who gets named.')}`;
 
@@ -229,17 +243,63 @@
   // List prices are verbatim from src/content/pricing.ts; pilot = 0.6 x list, a compliance-safe
   // limited engagement (no countdown). Per-firm recommendation flows from D.pricing flags.
   const gbpFmt=n=>'£'+Number(n).toLocaleString('en-GB');
+  // Canonical tier display mirrors the live website EXACTLY: Standard price struck through, "From" price,
+  // and the 6-month savings framing. Bullets are VERBATIM headlines from src/content/pricing.ts (the pane
+  // is the display owner). feats = the 4 shown collapsed; more = the rest, behind "See everything ›".
+  const PRICING_TIERS_RENDER=[
+    {key:'foundation',name:'Foundation',standard:3300,from:2500,saves6:4800,wk:'Single-location · local authority',
+      blurb:'Single-location businesses and small groups building local search authority and compliance defence.',
+      feats:[
+        'The searches your buyers run when ready to act, targeted with commercial precision',
+        'Every word reviewed against your sector’s legal framework before it goes live',
+        'A complete technical audit with a prioritised fix document for your dev team',
+        'Your Google Business Profile optimised to outrank local competitors',
+      ],
+      more:[
+        'Business information verified across every directory your buyers trust',
+        'Baseline AI-search audit across Claude, ChatGPT, Perplexity & Google AI Overviews',
+        'Monthly reporting that attributes organic search to revenue, not positions',
+        'Your primary operating jurisdiction covered, with change notifications',
+      ]},
+    {key:'authority',name:'Authority',standard:6000,from:4500,saves6:9000,wk:'Multi-location · two jurisdictions',
+      blurb:'Multi-location and multi-property brands scaling organic growth across regions and jurisdictions.',
+      feats:[
+        'Everything in Foundation, included',
+        'Every location, practice area & service line ranked simultaneously (30 keywords)',
+        'GEO included as standard — your brand inside AI-generated answers',
+        'The strategy that removes dependency on platforms taking 15–25% per booking',
+      ],
+      more:[
+        'Your Instagram authority grown alongside your rankings',
+        'Two jurisdictions reviewed on every piece of content simultaneously',
+        'Four compliance-reviewed content pieces monthly',
+        'Editorial placements in sector-relevant publications',
+        'Up to three locations fully managed on Google Business Profile',
+        'Regulatory monitoring across both jurisdictions, 72-hour notification',
+        'Bi-weekly reporting with revenue attribution across all locations',
+      ]},
+    {key:'enterprise',name:'Enterprise',standard:12700,from:9500,saves6:19200,wk:'Full-stack · multi-market mandate',
+      blurb:'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
+      feats:[
+        'Everything in Authority, included',
+        'Every market, territory & commercial keyword covered (50+ keywords)',
+        'Your brand established as the source AI systems cite across all major engines',
+        'The compliance standard applied to a Nasdaq-listed company, every jurisdiction',
+      ],
+      more:[
+        'LinkedIn and Instagram authority grown alongside your rankings',
+        'International SEO across up to five markets, full technical implementation',
+        'Ten compliance-reviewed content pieces monthly',
+        'Every location in your portfolio managed on Google Business Profile',
+        'Crisis reputation management built before it is needed',
+        'Dedicated regulatory monitoring with 24-hour notification',
+        'Transaction-level revenue attribution across every market',
+      ]},
+  ];
   function planData(){
     const Dp=Array.isArray(D.pricing)?D.pricing:[];
     const byName=n=>Dp.find(p=>String(p.tier||'').toLowerCase()===n)||{};
-    const TIERS=[
-      {key:'foundation',name:'Foundation',list:2500,pilot:1500,wk:'4-week onboarding'},
-      {key:'authority', name:'Authority', list:4500,pilot:2700,wk:'8-week programme'},
-      {key:'enterprise',name:'Enterprise',list:9500,pilot:5700,wk:'12-week+ mandate'},
-    ].map(t=>{const d=byName(t.key);return Object.assign({
-      blurb:d.blurb||'', feats:d.feats||[], more:d.more||[],
-      rec:!!d.rec, popular:!!d.popular,
-    },t);});
+    const TIERS=PRICING_TIERS_RENDER.map(t=>{const d=byName(t.key);return Object.assign({ rec:!!d.rec, popular:!!d.popular },t);});
     // ensure exactly one recommended + one popular even if the adapter flags drift
     if(!TIERS.some(t=>t.rec)) TIERS[2].rec=true;
     if(!TIERS.some(t=>t.popular)) TIERS[1].popular=true;
@@ -343,22 +403,24 @@
         <div class="fx-rib">Anchor offer</div>
         <div class="fx-eyebrow">One-time Fix Sprint</div>
         <h3>Top 30 critical issues solved.</h3>
-        <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
+        <div class="fx-price"><span class="fx-was">${gbpFmt(25000)}</span><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
+        <div class="fx-anchor">A consultancy quotes ${gbpFmt(25000)}+ to remediate this scope. The Fix Sprint is the same outcome, productised.</div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
         <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} ${plur(crit,'critical')} closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
         <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
       </div>
       <div class="tiers">
         <div class="tier-bar" role="tablist" aria-label="Recurring mandate">
-          ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>${gbpFmt(t.pilot)}/mo</small></button>`).join('')}
+          ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>From ${gbpFmt(t.from)}</small></button>`).join('')}
         </div>
-        <div class="pilot-note">Pilot pricing: a compliance-safe limited engagement at <b>40% off list</b> for the first cohort. 90-day rolling, no long-term contract.</div>
+        <div class="pilot-note">Each shows the standard rate struck through and your <b>“from” price</b>, the same figures as our pricing page, plus what you save across the first six months. 90-day rolling, no long-term contract.</div>
+        <div class="tier-decoy"><b>Authority</b> is where most multi-location firms your size start. Foundation proves the model on one location; Enterprise is the full multi-market mandate.</div>
         <div class="price-grid">
           ${TIERS.map((t,i)=>`<div class="price tierpanel ${t.rec?'rec':''} ${i===0?'on':''}" data-tier-panel="${i}" role="tabpanel" aria-labelledby="tt-${i}">
             ${t.rec?'<span class="badge rec">Recommended for this firm</span>':''}${t.popular?'<span class="badge pop">Most popular</span>':''}
             <div class="tier">${t.name}</div><div class="blurb">${t.blurb}</div>
-            <div class="pr"><span class="was">${gbpFmt(t.list)}</span><b>${gbpFmt(t.pilot)}</b><small>/month</small></div>
-            <div class="wk">${t.wk} · 90-day rolling · pilot price</div>
+            <div class="pr"><span class="was">${gbpFmt(t.standard)}</span><b>From ${gbpFmt(t.from)}</b><small>/mo</small></div>
+            <div class="wk">${t.wk} · 90-day rolling · saves ${gbpFmt(t.saves6)} over 6 months</div>
             <ul>${t.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
             <button class="moretoggle" data-more="price">See everything included ›</button>
             <div class="more"><ul style="padding-top:6px">${t.more.map(f=>`<li>${f}</li>`).join('')}</ul></div>
@@ -409,7 +471,7 @@
       <div><span class="eyebrow">The verdict</span>
         <h2>${D.score} / 100 · ${D.grade}${(D._meta&&D._meta.exposureN>0)?`, and <span class="vexp">${D.exposure}</span> of regulatory exposure is sitting on your live site today.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
         <p>${D.exec}</p>
-        <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-open="${x.pillar==='AI / GEO'?'geo':'regulatory'}"><span class="n">${i+1}</span><span class="t">${x.title}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
+        <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${x.title}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
       </div></div>`;
   }
 
@@ -439,7 +501,7 @@
     seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' '+plur(D.seo.onpage.length,'issue'),'amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
     geo:{ico:'❖',nm:'AI &amp; GEO visibility',kpis:chip('SoV '+D.geo.shareOfVoice,'red')+chip(D.geo.aiKnows?'AI cites you':'AI can’t cite you','red')+chip('Entity '+D.geo.entityReadiness)},
     competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' '+plur(Math.max(0,(D.competitors.rows||[]).length-1),'rival')+' ahead')+drChip},
-    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+((D.pricing||[])[0]||{}).pr+'/mo')+chip(D.counts.critical+' to fix')},
+    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+gbpFmt(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
@@ -455,8 +517,56 @@
     setActive(id);
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
+  // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
+  document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
   document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
+
+  /* ---------------- Phase 1: OPEN-FROM-HEADING for every inner box ---------------- */
+  // Bring any clickable box's heading (its <summary>) to the top of the viewport when it opens.
+  // scrollIntoView is nested-scroll-aware, so it correctly scrolls BOTH the capped .pbody
+  // container (Phase 0) AND the window; scroll-margin-top:12px (Phase 0) supplies the offset.
+  // Hoisted (function decl) so the Phase 3 de-triplication + Phase 4 fwjump handlers reuse it.
+  function scrollHeadingTop(el){
+    if(!el) return;
+    try{ el.scrollIntoView({block:'start',behavior:'smooth'}); }
+    catch(_e){ try{ const y=el.getBoundingClientRect().top+window.scrollY-12; window.scrollTo({top:y,behavior:'smooth'}); }catch(_e2){} }
+  }
+  // One delegated toggle-capture handler (toggle does NOT bubble → capture). When a .fw/.finding
+  // opens, single-open its siblings within the same pane and pin its heading to the top, so at
+  // most one inner box is open and it always fits one viewport. Closing a sibling fires toggle
+  // with open=false, guarded by the early return.
+  document.addEventListener('toggle',function(e){
+    const d=e.target;
+    if(!(d instanceof HTMLDetailsElement) || !d.open) return;
+    if(d.classList.contains('pillar')) return;            // pillars handled by openPillar()
+    if(d.matches('.fw, .finding')){
+      const scope=d.closest('.pbody')||document;
+      const sel=d.matches('.fw')?'.fw[open]':'.finding[open]';
+      scope.querySelectorAll(sel).forEach(function(o){ if(o!==d) o.open=false; });
+      requestAnimationFrame(function(){ scrollHeadingTop(d); });
+    }
+  },true);
+
+  /* ---------------- Phase 3: clickable summaries open the ONE overview detail ---------------- */
+  // Verdict chips + regulatory "breaches in full" summaries carry data-finding="fx-N". Clicking
+  // opens the overview pillar, then (after the pillar's single-open settles) opens that finding
+  // and pins its heading to the top. The detail exists exactly once (in overview).
+  app.addEventListener('click',function(e){
+    const b=e.target.closest('[data-finding]'); if(!b) return; e.preventDefault();
+    const id=b.dataset.finding;
+    openPillar('overview');
+    requestAnimationFrame(function(){ const d=document.getElementById(id); if(d){ d.open=true; scrollHeadingTop(d); } });
+  });
+
+  /* ---------------- Phase 4: "Top N exposures" bars jump to their framework box ---------------- */
+  // The bars sit inside the (already-open) regulatory pane; clicking one opens the matching
+  // <details class="fw" data-code> and pins its heading to the top.
+  app.addEventListener('click',function(e){
+    const b=e.target.closest('[data-fwjump]'); if(!b) return; e.preventDefault();
+    const t=document.querySelector('.fw[data-code="'+(b.dataset.fwjump||'').replace(/"/g,'')+'"]');
+    if(t){ t.open=true; scrollHeadingTop(t); }
+  });
   /* ---------- Gate 1: jurisdiction selector live-filters the regulatory layer ---------- */
   app.addEventListener('click',e=>{ const c=e.target.closest('.jur-chip'); if(!c)return; e.preventDefault();
     const sel=c.dataset.jurf, box=c.closest('#sec-regulatory')||document;
@@ -518,11 +628,9 @@
     const b=document.createElement('button');
     b.className='fix-fab'; b.type='button';
     b.innerHTML='<span class="ff-dot"></span>Fix these now!';
-    b.addEventListener('click',()=>openPillar('plan'));
+    // Phase 11: ALWAYS visible (no hide-on-open). Click opens the plan pane AND scrolls to the Fix Sprint box.
+    b.addEventListener('click',()=>{ openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .fixbox'); if(fx) scrollHeadingTop(fx); }); });
     document.body.appendChild(b);
-    // hide the FAB while the plan pane is already open and in view
-    const sync=()=>{ const open=document.getElementById('sec-plan'); b.classList.toggle('hide', !!(open&&open.open)); };
-    document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',sync)); sync();
   })();
 
   /* ============================================================

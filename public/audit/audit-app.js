@@ -6,6 +6,9 @@
   // count-aware pluralization: plur(1,'finding')→'finding', plur(2,'finding')→'findings',
   // plur(1,'is','are')→'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
   const plur = (n,s,p)=> n===1 ? s : (p||s+'s');
+  // Escape DATA-sourced strings before innerHTML (evidence quotes/LLM text can carry a raw "<"
+  // that would corrupt the DOM — the axe-rule-name regression). Display text only.
+  const escH = s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
   /* ---------------- LEFT RAIL ---------------- */
   function rail(){
@@ -85,7 +88,7 @@
     <div class="card pad" style="margin-bottom:16px">${CH.frameworkBars()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached right now'):''}, worst exposure first.</h3></div>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
-    ${D.frameworks.map((fw,i)=>`<details class="fw" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
+    ${D.frameworks.map((fw,i)=>`<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary><span class="code">${fw.code}</span>
         <div><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'finding'))}</div></div>
         <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
@@ -93,6 +96,8 @@
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${fw.why}
         <div class="lbl">${fw.regulator} · recent enforcement</div><div class="action">${fw.action}</div>
+        ${(fw.provisions||[]).length?`<div class="lbl">Breaches under this Act, and the Tamazia fix for each</div>
+        <div class="provlist">${fw.provisions.map(pv=>`<div class="prov"><div class="prov-h"><span class="prov-l">${escH(pv.label)}</span></div><div class="prov-lang">${escH(pv.language)}</div><div class="prov-fix"><b>Tamazia fix</b> ${escH(pv.fix)}</div></div>`).join('')}</div>`:''}
       </div></details>`).join('')}
     ${regFixes.length?`<div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
     <div class="reg-fixsummaries">${regFixes.map(fixSummary).join('')}</div>`:''}`;
@@ -503,6 +508,15 @@
     const id=b.dataset.finding;
     openPillar('overview');
     requestAnimationFrame(function(){ const d=document.getElementById(id); if(d){ d.open=true; scrollHeadingTop(d); } });
+  });
+
+  /* ---------------- Phase 4: "Top N exposures" bars jump to their framework box ---------------- */
+  // The bars sit inside the (already-open) regulatory pane; clicking one opens the matching
+  // <details class="fw" data-code> and pins its heading to the top.
+  app.addEventListener('click',function(e){
+    const b=e.target.closest('[data-fwjump]'); if(!b) return; e.preventDefault();
+    const t=document.querySelector('.fw[data-code="'+(b.dataset.fwjump||'').replace(/"/g,'')+'"]');
+    if(t){ t.open=true; scrollHeadingTop(t); }
   });
   /* ---------- Gate 1: jurisdiction selector live-filters the regulatory layer ---------- */
   app.addEventListener('click',e=>{ const c=e.target.closest('.jur-chip'); if(!c)return; e.preventDefault();

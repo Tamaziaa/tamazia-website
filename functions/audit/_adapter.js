@@ -117,13 +117,54 @@ const FW_REGULATOR = {
 // sibling at the grouping step so findings merge into a single framework. (fw-overlap)
 const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA' };
 const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
+// Phase 4: collapse same-Act article/section siblings into ONE framework box (UK_GDPR_A13 +
+// UK_GDPR_A14 -> "UK GDPR", each article kept as a provision inside). SAFE: collapse ONLY for an
+// explicit allow-list of Acts known to emit article-level codes — never a fuzzy name-prefix merge,
+// so distinct regimes (UK_FCA vs UK_FCA_CONC) are NEVER wrongly merged. The trailing "_" guards
+// against prefix-substring false matches (UK_GDPR_ never matches a hypothetical UK_GDPRX).
+const ACT_MERGE_PREFIXES = ['UK_GDPR', 'EU_GDPR', 'AE_PDPL', 'DIFC_DPL', 'ADGM_DPR', 'SAUDI_PDPL', 'QATAR_PDPPL', 'US_CCPA', 'US_CPRA', 'DE_BDSG', 'FR_CNIL', 'UK_PECR'];
+function actKey(fw) {
+  const c = fwCanon(fw);
+  for (const pre of ACT_MERGE_PREFIXES) { if (c === pre || c.startsWith(pre + '_')) return pre; }
+  return c;
+}
+// Human, specific label for one provision inside a merged Act box. NEVER a raw ^[A-Z_]+$ code.
+// Combines the article/section number (when the code carries one) with a SHORT distinctive subject
+// distilled from the requirement statement (fact), so sibling provisions never read identically.
+function provisionLabel(p, actK) {
+  let base = '';
+  const cite = String((p && p.provision) || '').trim();
+  if (cite && !/^[A-Z0-9_]{2,}$/.test(cite) && cite.length <= 40) base = cite.replace(/\s{2,}/g, ' ');
+  if (!base) {
+    const code = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
+    let m = code.match(/_(?:A|ART|ARTICLE)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 'Art. ' + m[1];
+    if (!base) { m = code.match(/_(?:S|SEC|SECTION)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 's. ' + m[1]; }
+    if (!base) { m = code.match(/_(?:REG|R)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 'reg. ' + m[1]; }
+  }
+  let subj = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
+  if (/^[A-Z0-9_]{2,}$/.test(subj)) subj = '';
+  if (subj.length > 46) subj = subj.slice(0, 44).replace(/[\s,;:.\-]+\S*$/, '') + '…';
+  if (base && subj) return base + ' · ' + subj;
+  if (base) return base;
+  if (subj) return subj;
+  return 'Provision · ' + fwName(actK);
+}
 const NO_STATUTORY_FINE = new Set(['GOOGLE_EEAT', 'GOOGLE_EAT', 'SCHEMA', 'WIKIPEDIA', 'GEO', 'SEO']);
 // Framework display names render UNescaped in the framework/finding cards, so a name carrying raw
 // markup, e.g. a Lighthouse/axe audit title like "`<frame>` or `<iframe>` elements do not have a
 // title", would inject a live, unclosed <iframe> and swallow every section rendered after it. The
 // adapter is the render-side safety membrane, so we strip angle brackets at this single name
 // chokepoint, killing the tag-injection vector for every consumer (name, law, exposure labels, reg tag).
-function fwName(fw) { const n = FW_NAME[fw] || titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase()) || 'Framework'; return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework'; }
+// Preserve known regulatory acronyms through titleCase ("Uk Gdpr"->"UK GDPR", "Us State"->"US State").
+const _ACRONYMS = ['UK', 'US', 'USA', 'EU', 'UAE', 'KSA', 'DIFC', 'ADGM', 'GDPR', 'PDPL', 'PDPPL', 'CCPA', 'CPRA', 'PECR', 'DPA', 'CQC', 'GDC', 'MHRA', 'SRA', 'FCA', 'ASA', 'CMA', 'DMCC', 'RERA', 'RICS', 'ARLA', 'EAA', 'DSA', 'DMA', 'DORA', 'NIS2', 'AML', 'MIFID', 'SFDR', 'GPSR', 'TCPA', 'TDPSA', 'FINRA', 'SEC', 'NYDFS', 'GLBA', 'HIPAA', 'COPPA', 'FERPA', 'FTC', 'ADA', 'VCDPA', 'BDSG', 'CNIL', 'NCSA', 'ICO', 'HSE', 'OSA', 'PRA', 'FRC', 'ACCA', 'SMCR', 'FSCS', 'NCSC', 'IASME', 'DSIT', 'TPO', 'CSRD', 'PSD2', 'EBA', 'ESMA', 'EEAT'];
+const _ACR_RX = new RegExp('\\b(' + _ACRONYMS.join('|') + ')\\b', 'gi');
+function fixAcronyms(s) { return String(s || '').replace(_ACR_RX, (m) => m.toUpperCase()); }
+function fwName(fw) {
+  const base = titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase());
+  let n = fixAcronyms(FW_NAME[fw] || base || 'Framework');
+  if (/^[A-Z]{2,}$/.test(n)) n = base || 'Framework';   // never a bare all-caps token (raw-code QA guard)
+  return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework';
+}
 // Clean, short tag for the finding badge, NEVER a raw underscore code ("US_STATE_PRIVACY"); derived from the
 // friendly name with the "· Art.13" suffix and trailing year stripped. (no-raw-framework-code) (G-regtag)
 function regTag(fw) { const n = fwName(fw); return n.replace(/\s*·.*$/, '').replace(/\s+\d{4}[A-Z0-9]*\b.*$/, '').trim() || 'Framework'; }
@@ -841,19 +882,27 @@ export function payloadToD(payload, ctx = {}) {
   const compForFw = pointers.filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records');
   const byFw = {};
   // Canonicalise overlapping codes (DMCC→CMA, Food Info→FSA) so their findings merge into one framework row.
-  for (const p of compForFw) { const fw = fwCanon(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
+  for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
     const c = ps.filter((p) => p.severity === 'P0').length;
     const h = ps.filter((p) => p.severity === 'P1').length;
     // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
     const maxFine = NO_STATUTORY_FINE.has(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => NO_STATUTORY_FINE.has(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
     const top = ps[0] || {};
+    // Phase 4: one provision per binding pointer in this Act, each with its OWN language + unique
+    // craftFix Tamazia fix; de-dup identical (label, language) rows; cap 8 (one-viewport budget).
+    const provisions = ps.map((p) => ({
+      label: provisionLabel(p, fw),
+      language: String(p.layman_explanation || p.evidence_quote || p.fact || ('A confirmed gap under ' + fwName(fw) + ' on your live site.')).replace(/\s{2,}/g, ' ').trim(),
+      fix: craftFix(p),
+    })).filter((pv, i, a) => a.findIndex((x) => x.label === pv.label && x.language.slice(0, 60) === pv.language.slice(0, 60)) === i).slice(0, 8);
     return {
       code: fwCode(fw), name: fwName(fw), regulator: fwRegulator(fw),
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings: ps.length, c, h, s: ps.length - c - h, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
       action: g(news, fw, '') || top.enforcement_example || (fwRegulator(fw) + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
+      provisions,
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
   if (!frameworks.length) { const _read = g(payload, 'scan.reachable', true) !== false; frameworks.push(_read

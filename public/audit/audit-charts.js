@@ -340,10 +340,10 @@ window.CH = (function(){
     return `<div class="fwbars">${D.frameworks.map(f=>{
       const tot=Math.max(1,f.findings), cp=f.c/tot*100, hp=f.h/tot*100, sp=Math.max(0,100-cp-hp);
       const exp=(f.exp&&(String(f.exp)[0]==='£'))?f.exp:(f.exp==='ranking'?'ranking impact':f.exp);
-      return `<div class="fwbar"><div class="fwbar-h"><span class="reg-badge" style="background:${badgeColor(f.code)}">${esc(f.code)}</span>
+      return `<button class="fwbar" type="button" data-fwjump="${esc(f.code)}"><div class="fwbar-h"><span class="reg-badge" style="background:${badgeColor(f.code)}">${esc(f.code)}</span>
         <div class="fwbar-nm"><b>${esc(f.name)}</b><span class="fwbar-r">${esc(f.regulator)} · ${f.findings} finding${f.findings===1?'':'s'} · ${esc(exp)}</span></div>
         <div class="cnt">${f.c?`<span class="c">${f.c} crit</span>`:''}${f.h?`<span class="h">${f.h} high</span>`:''}${f.s?`<span class="s">${f.s} std</span>`:''}</div></div>
-        <div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>`;
+        <div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></button>`;
     }).join('')}</div>`;
   }
 

@@ -54,23 +54,28 @@ export async function onRequestPost(context) {
   const auditDomain = clip(body.audit_domain || body.audit, 200);
   const company = clip(body.company, 200);
 
-  // Stripe Checkout Session (subscription). x-www-form-urlencoded per Stripe's API.
+  // Stripe Checkout Session. x-www-form-urlencoded per Stripe's API.
+  // Recurring add-ons (unit 'mo') → subscription; one-time add-ons (unit 'piece', e.g. YMYL Content)
+  // → payment. Subscription mode rejects a one-time price, so this MUST branch on the add-on unit.
+  const oneTime = ADDON_CATALOGUE[key].unit === 'piece';
   const form = new URLSearchParams();
-  form.set('mode', 'subscription');
+  form.set('mode', oneTime ? 'payment' : 'subscription');
   form.set('line_items[0][price]', priceId);
   form.set('line_items[0][quantity]', '1');
   form.set('success_url', `${origin}/audit/checkout-complete?status=success&session_id={CHECKOUT_SESSION_ID}`);
   form.set('cancel_url', `${origin}/audit/checkout-complete?status=cancel`);
   form.set('allow_promotion_codes', 'true');
   form.set('billing_address_collection', 'required');
-  // metadata + subscription metadata so the webhook can persist a labelled order
+  // metadata so the webhook can persist a labelled order (on the session for both modes)
   form.set('client_reference_id', `${key}:${auditDomain || 'na'}`);
   form.set('metadata[addon_key]', key);
   form.set('metadata[addon_name]', ADDON_CATALOGUE[key].name);
   form.set('metadata[audit_domain]', auditDomain);
   form.set('metadata[company]', company);
-  form.set('subscription_data[metadata][addon_key]', key);
-  form.set('subscription_data[metadata][audit_domain]', auditDomain);
+  // mirror onto the durable object (subscription vs payment_intent) so the webhook sees it there too
+  const metaPrefix = oneTime ? 'payment_intent_data' : 'subscription_data';
+  form.set(`${metaPrefix}[metadata][addon_key]`, key);
+  form.set(`${metaPrefix}[metadata][audit_domain]`, auditDomain);
   if (company) form.set('customer_email', ''); // left blank → Stripe collects it on the hosted page
 
   let resp, data;

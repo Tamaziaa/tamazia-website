@@ -150,11 +150,14 @@ export function addonPriceId(env, key) {
 }
 
 // ---- Cal.com: tier / one_time_fix -> event slug -------------------------------
-// Only `tamazia/strategy-call` exists in the Cal.com workspace today (mirrors the
-// note in src/pages/book/[event].astro). Every intent resolves to it until the
-// dedicated event types are created; the chosen tier is still recorded in Neon and
-// passed to Cal as prefill notes. Override per-intent via env if/when they exist:
-//   CAL_SLUG_DEFAULT, CAL_SLUG_FOUNDATION, CAL_SLUG_AUTHORITY,
+// VERIFIED 2026-06-06 against the live workspace (account username `tamazia`, public
+// page cal.com/tamazia). Three event types exist: `tamazia/strategy-call` (30-min
+// Strategy Call — the canonical discovery call), `tamazia/15min`, and `tamazia/secret`
+// (hidden). Every intent intentionally resolves to the live `strategy-call`; the chosen
+// tier is recorded in Neon AND passed to Cal as a prefill note, so the founder sees the
+// route. This is end-to-end live today — no placeholder. To split tiers into their own
+// events later, create them in Cal and set the per-intent env overrides below (each wins
+// over the default): CAL_SLUG_DEFAULT, CAL_SLUG_FOUNDATION, CAL_SLUG_AUTHORITY,
 //   CAL_SLUG_ENTERPRISE, CAL_SLUG_ONE_TIME_FIX
 export const CAL_DEFAULT_SLUG = 'tamazia/strategy-call';
 

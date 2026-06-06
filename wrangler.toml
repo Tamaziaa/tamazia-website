@@ -1,6 +1,6 @@
 # Cloudflare Pages config · Phase 5 perfection
 # KV namespace form_submissions in account 4a3b271b... · cross-account
-# constraint resolved Wave 48 · namespace ID 7c7537a8d5ad444491a92aa16c4abce0
+# constraint resolved Wave 48 · namespace ID 11971a76eda74339936dd7738680d973
 name = "tamazia-website"
 compatibility_date = "2026-05-04"
 pages_build_output_dir = "dist"
@@ -12,9 +12,9 @@ RESEND_REPLY_TO = "founder@tamazia.co.uk"
 ALERT_TO = "realfamemedia@gmail.com"
 CONTACT_FROM = "Tamazia Ltd · Forms <forms@tamazia.in>"
 CONTACT_TO = "founder@tamazia.co.uk"
-PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADJy0G6mQ9At9Hk4"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADf7dMzKneovEzOp"
 EMAIL_VALIDATION_MODE = "tag"
 
 [[kv_namespaces]]
 binding = "FORM_SUBMISSIONS"
-id = "7c7537a8d5ad444491a92aa16c4abce0"
+id = "11971a76eda74339936dd7738680d973"

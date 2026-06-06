@@ -11,7 +11,7 @@
  * Never edit dist/ directly · this script overwrites it on every deploy.
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, cpSync } from 'fs';
 import { join, dirname, relative } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -1633,6 +1633,14 @@ try {
   if (!ok) results.push({ ok: false });
   else { console.log('[patch-dist]   PASS 130. /book/* · 4 paid+free events all auto-load (no gate)'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
+
+// Ensure ALL audit static assets land in dist/ before the gates check them. Astro's public-copy
+// intermittently skips a subdir (engine-logos/ was missing from dist while fonts/ + trusted-logos/ copied),
+// which 404s those assets live. Force-copy public/audit -> dist/audit so nothing is dropped. (asset-copy fix)
+try {
+  const srcAudit = join(ROOT, 'public', 'audit');
+  if (existsSync(srcAudit)) { cpSync(srcAudit, join(DIST_DIR, 'audit'), { recursive: true, force: true }); console.log('[patch-dist]   COPY  public/audit -> dist/audit (all assets, incl. engine-logos)'); }
+} catch (e) { console.error('[patch-dist]   WARN  audit asset force-copy: ' + e.message); }
 
 // Gate 131 · audit Pages assets present in dist/ (css + charts + app copied from public/audit/)
 try {

@@ -482,11 +482,15 @@
       if(t.indexOf('foundation')>=0) return 'foundation';
       if(t.indexOf('authority')>=0) return 'authority';
       if(t.indexOf('enterprise')>=0) return 'enterprise';
-      return 'enterprise'; // package CTA with no explicit tier → top mandate
+      return 'enterprise'; // package CTA with no explicit tier, default to the top mandate
     }
+    // Human label for a tier/fix/add-on intent. Add-on intents pass the add-on display
+    // name straight through (the backend accepts it via addonKey).
+    const TIER_INTENTS={foundation:1,authority:1,enterprise:1,one_time_fix:1};
     function intentLabel(intent){
-      return intent==='one_time_fix' ? 'One-time Fix Sprint'
-        : intent.charAt(0).toUpperCase()+intent.slice(1)+' mandate';
+      if(intent==='one_time_fix') return 'One-time Fix Sprint';
+      if(TIER_INTENTS[intent]) return intent.charAt(0).toUpperCase()+intent.slice(1)+' mandate';
+      return String(intent||'')+' add-on'; // add-on display name
     }
     function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
@@ -506,17 +510,26 @@
     function open(){ ensureModal().classList.add('open'); document.body.classList.add('cmx-lock'); }
     function close(){ if(modal){ modal.classList.remove('open'); document.body.classList.remove('cmx-lock'); modal.querySelector('.cmx-body').innerHTML=''; } }
 
-    // --- the intake form (tier OR one_time_fix) ---
-    function openIntake(route, tier){
-      const intent=intentFor(route,tier);
+    // --- the intake form (tier, one_time_fix, OR an add-on enquiry) ---
+    // opts.addon (a display name) routes this as an add-on enquiry: the hidden intent becomes
+    // the add-on name and the copy explains the call will set the add-on up. Used when Stripe
+    // checkout is unavailable, so the buyer never hits a dead redirect.
+    function openIntake(route, tier, opts){
+      opts=opts||{};
+      const isAddon=!!opts.addon;
+      const intent=isAddon?opts.addon:intentFor(route,tier);
       const topFinding=((D.fixes||[])[0]||{}).title||'';
       const m=ensureModal(); open();
       const turnstileSite = (window.TURNSTILE_SITE_KEY||'');
+      const eyebrow=isAddon?(esc(opts.addon)+' · add-on'):esc(intentLabel(intent));
+      const lede=isAddon
+        ? 'Online checkout for this add-on is being switched on. Leave your details and pick a time, and the founder will set it up with you on the call.'
+        : ('30 seconds. This scopes the call so no time is wasted on discovery. '+(intent==='one_time_fix'?'A one-time, fixed-scope sprint, not a retainer.':'Your tier and strongest finding are carried into the conversation.'));
       m.querySelector('.cmx-body').innerHTML=`
         <div class="cmx-head">
-          <span class="cmx-eyebrow">${esc(intentLabel(intent))}</span>
+          <span class="cmx-eyebrow">${eyebrow}</span>
           <h3>Tell us about the firm, then pick a time with the founder</h3>
-          <p>30 seconds. This scopes the call so no time is wasted on discovery. ${intent==='one_time_fix'?'A one-time, fixed-scope sprint, not a retainer.':'Your tier and strongest finding are carried into the conversation.'}</p>
+          <p>${lede}</p>
         </div>
         <form class="cmx-form" novalidate>
           <input type="hidden" name="intent" value="${esc(intent)}">
@@ -654,7 +667,15 @@
       }
     }
 
-    // --- Stripe add-on checkout ---
+    // --- Stripe add-on checkout (with graceful intake fallback) ---
+    // No Stripe key is live today, so /api/stripe/checkout returns { ok:false, fallback:true }.
+    // We treat that as the expected path: open the intake modal with THIS add-on preselected.
+    // When the keys land the same endpoint returns { ok:true, url }, which we redirect to.
+    function addonFallback(addon, btn, label, note){
+      if(btn){ btn.classList.remove('loading'); btn.textContent=label; }
+      toast(note);
+      openIntake('addon',null,{ addon });
+    }
     async function startAddon(addon, price, btn){
       const label = btn ? btn.textContent : '';
       if(btn){ btn.classList.add('loading'); btn.textContent='Opening checkout…'; }
@@ -663,18 +684,17 @@
         const r=await fetch('/api/stripe/checkout',{method:'POST',headers:{'Content-Type':'application/json'},
           body:JSON.stringify({ addon, price, audit_domain:meta.domain||'', company:meta.company||'' })});
         res=await r.json().catch(()=>({}));
+        // Live checkout session: go straight to Stripe.
         if(r.ok && res && res.ok && res.url){ window.location.assign(res.url); return; }
+        // Explicit, expected fallback (no Stripe key / price): route to the intake modal.
+        if(res && res.fallback){
+          addonFallback(addon, btn, label, 'Online checkout for this add-on is being switched on. Leave your details and the founder will set it up with you.');
+          return;
+        }
         throw new Error((res&&res.error)||('http_'+r.status));
       }catch(err){
-        if(btn){ btn.classList.remove('loading'); btn.textContent=label; }
-        // Stripe not live yet (or transient) → route to the intake/founder path instead of a dead end.
-        const reason=(res&&res.error)||'';
-        const note=(reason==='stripe_not_configured'||reason==='price_not_configured')
-          ? 'Online checkout for this add-on is being switched on. Book a call and we\'ll set it up with you.'
-          : 'We couldn\'t open checkout just now. Book a call and we\'ll sort it directly.';
-        toast(note);
-        // fall back to the intake modal as an enterprise/add-on enquiry
-        openIntake('package','Enterprise');
+        // Genuine transient failure: still route to the founder path, never a dead end.
+        addonFallback(addon, btn, label, 'We could not open checkout just now. Leave your details and we will sort it directly.');
       }
     }
 

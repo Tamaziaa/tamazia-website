@@ -1,0 +1,3981 @@
+{
+  "scan": {
+    "psi": null,
+    "counts": {
+      "p0": 0,
+      "p1": 2,
+      "p2": 10,
+      "total": 12
+    },
+    "markets": {
+      "cities": [
+        "New York",
+        "Miami",
+        "Los Angeles",
+        "Paris",
+        "Madrid",
+        "Singapore",
+        "Riyadh",
+        "Toronto",
+        "Sydney",
+        "San Francisco",
+        "Seattle",
+        "Washington"
+      ],
+      "regions": [
+        "UK",
+        "EU",
+        "US",
+        "Middle East",
+        "Global"
+      ],
+      "evidence": {
+        "Italy": [
+          "mentioned",
+          "market URL path"
+        ],
+        "Spain": [
+          "mentioned",
+          "city: Madrid",
+          "hreflang locale",
+          "market URL path"
+        ],
+        "France": [
+          "mentioned",
+          "city: Paris",
+          "market URL path"
+        ],
+        "Switzerland": [
+          "mentioned",
+          "prices in local currency"
+        ],
+        "Saudi Arabia": [
+          "mentioned",
+          "prices in local currency",
+          "city: Riyadh"
+        ],
+        "United States": [
+          "mentioned",
+          "city: New York",
+          "city: Miami",
+          "city: Los Angeles",
+          "city: San Francisco",
+          "city: Seattle",
+          "city: Washington",
+          "USD pricing"
+        ],
+        "United Kingdom": [
+          "mentioned",
+          "prices in local currency"
+        ],
+        "United Arab Emirates": [
+          "mentioned",
+          "prices in local currency"
+        ]
+      },
+      "serves_eu": true,
+      "confidence": {
+        "Italy": 3,
+        "Qatar": 1,
+        "Spain": 7,
+        "Canada": 2,
+        "France": 4,
+        "Germany": 2,
+        "Australia": 2,
+        "Singapore": 2,
+        "Switzerland": 3,
+        "Saudi Arabia": 4,
+        "United States": 9,
+        "United Kingdom": 3,
+        "United Arab Emirates": 3
+      },
+      "currencies": [
+        "GBP",
+        "EUR",
+        "USD",
+        "AED"
+      ],
+      "eu_countries": [
+        "France",
+        "Spain",
+        "Italy"
+      ],
+      "primary_city": "New York",
+      "international": true,
+      "operating_countries": [
+        "United Kingdom",
+        "United States",
+        "United Arab Emirates",
+        "France",
+        "Spain",
+        "Italy",
+        "Saudi Arabia",
+        "Switzerland"
+      ]
+    },
+    "signals": {
+      "csp": true,
+      "ugc": false,
+      "xfo": false,
+      "hsts": true,
+      "lang": true,
+      "xcto": true,
+      "title": "Four Seasons Hotels and Resorts | Luxury Hotels | Four Seasons",
+      "refpol": false,
+      "ad_tech": {
+        "count": 0,
+        "signals": [],
+        "runs_ads": false,
+        "platforms": []
+      },
+      "favicon": true,
+      "json_ld": true,
+      "permpol": false,
+      "uses_ai": false,
+      "h1_count": 1,
+      "payments": true,
+      "trackers": [],
+      "viewport": true,
+      "canonical": true,
+      "has_forms": false,
+      "title_len": 62,
+      "biometrics": false,
+      "html_bytes": 629557,
+      "open_graph": true,
+      "twitter_card": true,
+      "meta_description": true,
+      "meta_description_len": 144
+    },
+    "final_url": "https://fourseasons.com",
+    "reachable": true,
+    "scanned_at": "2026-06-04T00:58:27.113Z",
+    "site_scan_reachable": true
+  },
+  "rules": [
+    {
+      "rule_id": "BDSG_GERMAN_NOTICE",
+      "severity": "P0",
+      "description": "Germany requires German-language privacy + impressum + cookie notice for DE-targeted sites.",
+      "citation_url": "https://www.bfdi.bund.de/",
+      "framework_short": "DE_BDSG"
+    },
+    {
+      "rule_id": "ART5",
+      "severity": "P0",
+      "description": "Prohibited AI practices avoided (no social scoring, no manipulation)",
+      "citation_url": "https://artificialintelligenceact.eu/article/5/",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "ART50",
+      "severity": "P0",
+      "description": "Transparency obligation: notice that user is interacting with AI",
+      "citation_url": "https://artificialintelligenceact.eu/article/50/",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "ART6",
+      "severity": "P0",
+      "description": "High-risk AI system disclosure (CV screening, credit scoring, medical)",
+      "citation_url": "https://artificialintelligenceact.eu/article/6/",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "EAA_ACCESSIBILITY_STATEMENT",
+      "severity": "P0",
+      "description": "B2C e-commerce, banking, e-books and ticketing serving EU consumers must publish accessibility statement.",
+      "citation_url": "https://ec.europa.eu/social/main.jsp?catId=1202",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "A8",
+      "severity": "P0",
+      "description": "Cookies + similar technologies prior-consent banner",
+      "citation_url": "https://eur-lex.europa.eu/",
+      "framework_short": "EU_EPRIVACY"
+    },
+    {
+      "rule_id": "A12",
+      "severity": "P0",
+      "description": "Transparent information in concise, intelligible form",
+      "citation_url": "https://gdpr-info.eu/art-12-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A13",
+      "severity": "P0",
+      "description": "Information on collection from data subject",
+      "citation_url": "https://gdpr-info.eu/art-13-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A14",
+      "severity": "P0",
+      "description": "Information when data not obtained from data subject",
+      "citation_url": "https://gdpr-info.eu/art-14-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A15",
+      "severity": "P0",
+      "description": "Right of access",
+      "citation_url": "https://gdpr-info.eu/art-15-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A17",
+      "severity": "P0",
+      "description": "Right to erasure (right to be forgotten)",
+      "citation_url": "https://gdpr-info.eu/art-17-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A21",
+      "severity": "P0",
+      "description": "Right to object to direct marketing",
+      "citation_url": "https://gdpr-info.eu/art-21-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A27",
+      "severity": "P0",
+      "description": "Non-EU controller representative requirement",
+      "citation_url": "https://gdpr-info.eu/art-27-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A28",
+      "severity": "P0",
+      "description": "Processor contract terms required",
+      "citation_url": "https://gdpr-info.eu/art-28-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A44",
+      "severity": "P0",
+      "description": "International transfer baseline",
+      "citation_url": "https://gdpr-info.eu/art-44-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A46",
+      "severity": "P0",
+      "description": "SCCs or BCRs required for transfers absent adequacy",
+      "citation_url": "https://gdpr-info.eu/art-46-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A6",
+      "severity": "P0",
+      "description": "Lawful basis must be identifiable for every processing activity",
+      "citation_url": "https://gdpr-info.eu/art-6-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A7",
+      "severity": "P0",
+      "description": "Conditions for consent (freely given, specific, informed, unambiguous)",
+      "citation_url": "https://gdpr-info.eu/art-7-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "CNIL_COOKIE_REJECT",
+      "severity": "P0",
+      "description": "France requires Reject-All cookie button equally prominent as Accept.",
+      "citation_url": "https://www.cnil.fr/en",
+      "framework_short": "FR_CNIL_2025"
+    },
+    {
+      "rule_id": "AS2.1",
+      "severity": "P0",
+      "description": "Disclosure of paid testimonials / endorsements",
+      "citation_url": "https://www.asa.org.uk/",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "CAA1.1",
+      "severity": "P0",
+      "description": "ATOL protection statement for travel sellers",
+      "citation_url": "https://www.caa.co.uk/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CAA2.1",
+      "severity": "P0",
+      "description": "Air operator certificate or licence reference",
+      "citation_url": "https://www.caa.co.uk/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CMA1.1",
+      "severity": "P0",
+      "description": "Consumer Rights Act statutory information",
+      "citation_url": "https://www.gov.uk/consumer-protection-rights",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "CMA3.1",
+      "severity": "P0",
+      "description": "Pricing transparency: total price including unavoidable fees",
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "DMCC_SUB_REMINDER",
+      "severity": "P0",
+      "description": "Subscription traders must send reminders before renewal and offer one-click cancellation.",
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "EQA_REASONABLE_ADJUSTMENTS",
+      "severity": "P0",
+      "description": "Customer-facing websites must offer reasonable adjustments under the Equality Act 2010.",
+      "citation_url": "https://www.equalityhumanrights.com/en/advice-and-guidance/website-accessibility",
+      "framework_short": "UK_EQUALITY_2010"
+    },
+    {
+      "rule_id": "CALORIES",
+      "severity": "P0",
+      "description": "Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2021/909/made",
+      "framework_short": "UK_FOOD_INFO_2014"
+    },
+    {
+      "rule_id": "NATASHA",
+      "severity": "P0",
+      "description": "14 allergens disclosed on every food product page (PPDS)",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "framework_short": "UK_FOOD_INFO_2014"
+    },
+    {
+      "rule_id": "FSA1.1",
+      "severity": "P0",
+      "description": "Food Hygiene Rating Scheme disclosure",
+      "citation_url": "https://www.food.gov.uk/",
+      "framework_short": "UK_FSA"
+    },
+    {
+      "rule_id": "FSA2.1",
+      "severity": "P0",
+      "description": "Allergen information / Natasha law statement",
+      "citation_url": "https://www.food.gov.uk/business-guidance/allergen-guidance-for-food-businesses",
+      "framework_short": "UK_FSA"
+    },
+    {
+      "rule_id": "A13.1.a",
+      "severity": "P0",
+      "description": "Identity of the controller must be disclosed on first data collection page",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/right-to-be-informed/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.b",
+      "severity": "P0",
+      "description": "Contact details of the controller (including DPO if applicable)",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/right-to-be-informed/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.c",
+      "severity": "P0",
+      "description": "Purposes of processing AND legal basis",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.f",
+      "severity": "P0",
+      "description": "International transfers and safeguards (SCCs / adequacy)",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.a",
+      "severity": "P0",
+      "description": "Retention period or criteria",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.b",
+      "severity": "P0",
+      "description": "Right to access, rectify, erase, restrict, port, object",
+      "citation_url": "https://ico.org.uk/your-data-matters/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.c",
+      "severity": "P0",
+      "description": "Right to withdraw consent (if consent is the basis)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.d",
+      "severity": "P0",
+      "description": "Right to complain to ICO",
+      "citation_url": "https://ico.org.uk/make-a-complaint/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "C01",
+      "severity": "P0",
+      "description": "Analytics cookies require consent (ICO position 2023)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C02",
+      "severity": "P0",
+      "description": "Cookie banner must not use pre-ticked boxes",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C03",
+      "severity": "P0",
+      "description": "Cookie wall (pay-or-OK) for unrelated content is not freely-given consent",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "LA1.1",
+      "severity": "P0",
+      "description": "Premises licence holder / DPS disclosure",
+      "citation_url": "https://www.gov.uk/guidance/licensing-act-2003-explanatory-notes",
+      "framework_short": "UK_LICENSING_ACT"
+    },
+    {
+      "rule_id": "R22.1",
+      "severity": "P0",
+      "description": "Soft opt-in: prior similar product/service customer relationship for marketing",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R22.2",
+      "severity": "P0",
+      "description": "Marketing emails must include sender identity (no false header)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R22.3",
+      "severity": "P0",
+      "description": "Marketing emails must include valid return address",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R22.4",
+      "severity": "P0",
+      "description": "Easy opt-out mechanism in every marketing email",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.1",
+      "severity": "P0",
+      "description": "Cookie consent before non-essential cookies set",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.2",
+      "severity": "P0",
+      "description": "Cookie reject must be as prominent as accept",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.3",
+      "severity": "P0",
+      "description": "Cookie purpose disclosed clearly before consent",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "TS2.1",
+      "severity": "P0",
+      "description": "Business identification on website (Co. No, VAT, Address)",
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "framework_short": "UK_TRADING_STANDARDS"
+    },
+    {
+      "rule_id": "1798.100",
+      "severity": "P0",
+      "description": "Right-to-know disclosure on data collected",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "1798.105",
+      "severity": "P0",
+      "description": "Right to delete disclosure",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "1798.120",
+      "severity": "P0",
+      "description": "Right to opt out of sale or sharing",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "1798.135",
+      "severity": "P0",
+      "description": "Do Not Sell or Share My Personal Information link",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "SPAM01",
+      "severity": "P0",
+      "description": "Subject line cannot be deceptive",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "SPAM02",
+      "severity": "P0",
+      "description": "From header must identify sender",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "SPAM03",
+      "severity": "P0",
+      "description": "Postal address required in email",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "SPAM04",
+      "severity": "P0",
+      "description": "Opt-out within 10 business days",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "TCPA_EXPRESS_CONSENT",
+      "severity": "P0",
+      "description": "Calls/texts to US numbers require prior express written consent; AI voice = artificial voice.",
+      "citation_url": "https://www.fcc.gov/sites/default/files/tcpa-rules.pdf",
+      "framework_short": "US_TCPA"
+    },
+    {
+      "rule_id": "DIFC_NOTICE",
+      "severity": "P1",
+      "description": "Fair-processing privacy notice meeting DIFC DPL Article 29",
+      "citation_url": "https://www.difc.com/business/laws-and-regulations/legal-database/difc-laws/data-protection-law-difc-law-no-5-2020",
+      "framework_short": "DIFC_DPL"
+    },
+    {
+      "rule_id": "DIFC_REGISTRATION",
+      "severity": "P1",
+      "description": "Registration with the DIFC Commissioner of Data Protection",
+      "citation_url": "https://www.difc.com/business/laws-and-regulations/legal-database/difc-laws/data-protection-law-difc-law-no-5-2020",
+      "framework_short": "DIFC_DPL"
+    },
+    {
+      "rule_id": "AIACT_CHATBOT_DISCLOSE",
+      "severity": "P1",
+      "description": "Disclose to users when they are interacting with an AI system",
+      "citation_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "ART4",
+      "severity": "P1",
+      "description": "AI literacy disclosure for AI-enabled customer-facing tools",
+      "citation_url": "https://artificialintelligenceact.eu/article/4/",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "ART53",
+      "severity": "P1",
+      "description": "GPAI model transparency disclosure",
+      "citation_url": "https://artificialintelligenceact.eu/article/53/",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "EAA_WCAG_AA",
+      "severity": "P1",
+      "description": "Consumer-facing digital service serving the EU with no evident WCAG 2.1 AA accessibility conformance",
+      "citation_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32019L0882",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "A16",
+      "severity": "P1",
+      "description": "Unsolicited commercial communications opt-in for natural persons",
+      "citation_url": "https://eur-lex.europa.eu/",
+      "framework_short": "EU_EPRIVACY"
+    },
+    {
+      "rule_id": "A6",
+      "severity": "P1",
+      "description": "Confidentiality of electronic communications notice",
+      "citation_url": "https://eur-lex.europa.eu/",
+      "framework_short": "EU_EPRIVACY"
+    },
+    {
+      "rule_id": "A20",
+      "severity": "P1",
+      "description": "Right to data portability",
+      "citation_url": "https://gdpr-info.eu/art-20-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A25",
+      "severity": "P1",
+      "description": "Data protection by design and by default",
+      "citation_url": "https://gdpr-info.eu/art-25-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A32",
+      "severity": "P1",
+      "description": "Security of processing appropriate to risk",
+      "citation_url": "https://gdpr-info.eu/art-32-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "CNIL_FR_PRIVACY_NOTICE",
+      "severity": "P1",
+      "description": "France requires a French-language privacy notice for FR-targeted sites.",
+      "citation_url": "https://www.cnil.fr/en/personal-data",
+      "framework_short": "FR_CNIL_2025"
+    },
+    {
+      "rule_id": "AUTHOR",
+      "severity": "P1",
+      "description": "Author byline on substantive content (Experience + Expertise)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "CREDENTIALS",
+      "severity": "P1",
+      "description": "Author credentials visible (Authoritativeness)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "SAUDI_CONSENT",
+      "severity": "P1",
+      "description": "Valid consent and an easy withdrawal route",
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "SAUDI_MARKETING",
+      "severity": "P1",
+      "description": "Prior consent for marketing communications",
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "SAUDI_NOTICE",
+      "severity": "P1",
+      "description": "Privacy notice: identity, purpose, recipients, risks, rights",
+      "citation_url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "PDPL_CONSENT",
+      "severity": "P1",
+      "description": "Consent that is freely given, specific, informed and revocable",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1972",
+      "framework_short": "UAE_PDPL"
+    },
+    {
+      "rule_id": "PDPL_CONTROLLER",
+      "severity": "P1",
+      "description": "Identity and contact of the data controller disclosed before collection",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1972",
+      "framework_short": "UAE_PDPL"
+    },
+    {
+      "rule_id": "PDPL_PURPOSE",
+      "severity": "P1",
+      "description": "Purposes and legal basis of processing stated",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1972",
+      "framework_short": "UAE_PDPL"
+    },
+    {
+      "rule_id": "PDPL_RIGHTS",
+      "severity": "P1",
+      "description": "Data subject rights (access, correction, erasure, restriction, withdraw) disclosed",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1972",
+      "framework_short": "UAE_PDPL"
+    },
+    {
+      "rule_id": "AS1.1",
+      "severity": "P1",
+      "description": "Honest claims (no superlatives without substantiation)",
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "AS3.1",
+      "severity": "P1",
+      "description": "Pricing transparency (incl. VAT or excluding clearly stated)",
+      "citation_url": "https://www.asa.org.uk/",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "CAA3.1",
+      "severity": "P1",
+      "description": "EU261/UK261 passenger rights disclosure",
+      "citation_url": "https://www.caa.co.uk/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CMA2.1",
+      "severity": "P1",
+      "description": "Honest reviews disclosure (no fake or paid reviews)",
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "CMA_DRIP_PRICING",
+      "severity": "P1",
+      "description": "All-in pricing, no hidden mandatory fees (DMCC drip-pricing ban)",
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "CA_NAME_NUMBER",
+      "severity": "P1",
+      "description": "UK limited companies must display registered name, number, registered office on every website.",
+      "citation_url": "https://www.gov.uk/running-a-limited-company/signs-stationery-and-promotional-material",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "CRA_RIGHTS_NOTICE",
+      "severity": "P1",
+      "description": "Consumer Rights Act 2015 requires clear rights notice on commercial websites.",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2015/15/contents/enacted",
+      "framework_short": "UK_CRA_2015"
+    },
+    {
+      "rule_id": "DMCC_DRIP_PRICING",
+      "severity": "P1",
+      "description": "Total price including mandatory fees must be displayed up-front, not added at checkout.",
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "DMCC_FAKE_REVIEWS",
+      "severity": "P1",
+      "description": "Must publish a policy declaring no incentivised, fake or undisclosed reviews.",
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "DMCC_INCENTIVISED_REVIEWS",
+      "severity": "P1",
+      "description": "Reviews or testimonials shown without disclosing incentives or a genuine-review verification process",
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "DMCC_SUBSCRIPTION",
+      "severity": "P1",
+      "description": "Clear subscription terms + easy cancellation (DMCC)",
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "S3",
+      "severity": "P1",
+      "description": "Section 3 personal data definition disclosure",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2018/12/section/3",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "A13.1.d",
+      "severity": "P1",
+      "description": "Legitimate interests (if relied on) clearly stated",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/legitimate-interests/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.e",
+      "severity": "P1",
+      "description": "Recipients or categories of recipients of personal data",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.e",
+      "severity": "P1",
+      "description": "Whether provision is statutory/contractual and consequences of not providing",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.f",
+      "severity": "P1",
+      "description": "Existence of automated decision-making including profiling",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/rights-related-to-automated-decision-making-including-profiling/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "HSE1.1",
+      "severity": "P1",
+      "description": "Health and Safety policy disclosure",
+      "citation_url": "https://www.hse.gov.uk/",
+      "framework_short": "UK_HSE"
+    },
+    {
+      "rule_id": "C04",
+      "severity": "P1",
+      "description": "Cookie purposes must be itemised (functional vs analytics vs marketing)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C05",
+      "severity": "P1",
+      "description": "Cookie list must include third-party cookies",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C07",
+      "severity": "P1",
+      "description": "Cookie banner copy must be available before clicking accept",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C08",
+      "severity": "P1",
+      "description": "Cookie consent log must be retained for 12 months minimum",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C09",
+      "severity": "P1",
+      "description": "Re-prompt for consent after material changes to cookie usage",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "LA2.1",
+      "severity": "P1",
+      "description": "Challenge 21/25 policy",
+      "citation_url": "https://www.gov.uk/government/publications/code-of-practice-for-the-sale-of-alcohol",
+      "framework_short": "UK_LICENSING_ACT"
+    },
+    {
+      "rule_id": "MSA_S54_STATEMENT",
+      "severity": "P1",
+      "description": "Commercial organisations turnover >\u00a336M must publish annual Modern Slavery Act statement.",
+      "citation_url": "https://www.gov.uk/government/publications/transparency-in-supply-chains-a-practical-guide",
+      "framework_short": "UK_MODERN_SLAVERY"
+    },
+    {
+      "rule_id": "PECR_CONSENT_PLATFORM",
+      "severity": "P1",
+      "description": "Marketing or analytics trackers present but no consent-management platform gating them before consent",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "PECR_REJECT_ALL_PARITY",
+      "severity": "P1",
+      "description": "Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R23",
+      "severity": "P1",
+      "description": "B2B corporate subscriber: soft opt-in still required for individual employees identifiable in role",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/business-to-business-marketing/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.4",
+      "severity": "P1",
+      "description": "Cookie withdrawal mechanism accessible from every page",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "TS1.1",
+      "severity": "P1",
+      "description": "Unit pricing for pre-packaged goods",
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "framework_short": "UK_TRADING_STANDARDS"
+    },
+    {
+      "rule_id": "ADA_WEB_ACCESSIBILITY",
+      "severity": "P1",
+      "description": "US public-accommodation website with no evident accessibility conformance under ADA Title III",
+      "citation_url": "https://www.ada.gov/resources/web-guidance/",
+      "framework_short": "US_ADA"
+    },
+    {
+      "rule_id": "WCAG_AA",
+      "severity": "P1",
+      "description": "WCAG 2.1 AA accessibility statement",
+      "citation_url": "https://www.ada.gov/notices/2024/04/24/web-accessibility-final-rule/",
+      "framework_short": "US_ADA"
+    },
+    {
+      "rule_id": "SPAM05",
+      "severity": "P1",
+      "description": "Commercial messages must be labelled if subscriber opted in for transactional only",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "FTC_CONSUMER_REVIEW_RULE",
+      "severity": "P1",
+      "description": "Reviews or testimonials shown to US consumers without genuine-review safeguards under the FTC Consumer Review Rule",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers",
+      "framework_short": "US_FTC_ENDORSE"
+    },
+    {
+      "rule_id": "FTC_DISCLOSURE",
+      "severity": "P1",
+      "description": "Sites with influencer, affiliate or AI content must disclose endorsements clearly.",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/ftc-endorsement-guides-what-people-are-asking",
+      "framework_short": "US_FTC_ENDORSE"
+    },
+    {
+      "rule_id": "SP_DONOTSELL",
+      "severity": "P1",
+      "description": "\"Do Not Sell or Share\" / \"Your Privacy Choices\" opt-out link",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "SP_GPC",
+      "severity": "P1",
+      "description": "Honour the Global Privacy Control universal opt-out signal",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "SP_NOTICE",
+      "severity": "P1",
+      "description": "State-compliant privacy notice (categories, purposes, rights, opt-out methods)",
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "TCPA_PRIOR_CONSENT",
+      "severity": "P1",
+      "description": "One-to-one prior express written consent for calls/texts (TCPA/FCC)",
+      "citation_url": "https://www.fcc.gov/general/telemarketing-and-robocalls",
+      "framework_short": "US_TCPA"
+    },
+    {
+      "rule_id": "ADGM_NOTICE",
+      "severity": "P2",
+      "description": "GDPR-aligned privacy notice for ADGM controllers",
+      "citation_url": "https://www.adgm.com/operating-in-adgm/office-of-data-protection",
+      "framework_short": "ADGM_DPR"
+    },
+    {
+      "rule_id": "ADGM_REGISTRATION",
+      "severity": "P2",
+      "description": "Registration with the ADGM Commissioner + GDPR-aligned notice",
+      "citation_url": "https://www.adgm.com/operating-in-adgm/office-of-data-protection",
+      "framework_short": "ADGM_DPR"
+    },
+    {
+      "rule_id": "DIFC_RIGHTS",
+      "severity": "P2",
+      "description": "DIFC data subject rights disclosed",
+      "citation_url": "https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection",
+      "framework_short": "DIFC_DPL"
+    },
+    {
+      "rule_id": "AIACT_GENAI_LABEL",
+      "severity": "P2",
+      "description": "Label AI-generated or manipulated content",
+      "citation_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "framework_short": "EU_AI_ACT"
+    },
+    {
+      "rule_id": "EAA_ALT_TEXT",
+      "severity": "P2",
+      "description": "Text alternatives for non-text content (WCAG 1.1.1)",
+      "citation_url": "https://eur-lex.europa.eu/eli/dir/2019/882/oj",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "EAA_KEYBOARD",
+      "severity": "P2",
+      "description": "Full keyboard operability (WCAG 2.1.1)",
+      "citation_url": "https://eur-lex.europa.eu/eli/dir/2019/882/oj",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "A16",
+      "severity": "P2",
+      "description": "Right to rectification",
+      "citation_url": "https://gdpr-info.eu/art-16-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A18",
+      "severity": "P2",
+      "description": "Right to restriction of processing",
+      "citation_url": "https://gdpr-info.eu/art-18-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A22",
+      "severity": "P2",
+      "description": "Automated decision-making + profiling safeguards",
+      "citation_url": "https://gdpr-info.eu/art-22-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A30",
+      "severity": "P2",
+      "description": "Records of processing activities (ROPA)",
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A33",
+      "severity": "P2",
+      "description": "Personal data breach notification within 72 hours",
+      "citation_url": "https://gdpr-info.eu/art-33-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A34",
+      "severity": "P2",
+      "description": "Communication of a breach to data subjects",
+      "citation_url": "https://gdpr-info.eu/art-34-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A35",
+      "severity": "P2",
+      "description": "Data protection impact assessment (DPIA)",
+      "citation_url": "https://gdpr-info.eu/art-35-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A37",
+      "severity": "P2",
+      "description": "Data Protection Officer appointment + contact",
+      "citation_url": "https://gdpr-info.eu/art-37-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "CITATIONS",
+      "severity": "P2",
+      "description": "Citations to authoritative sources (Trust)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "EEAT_AUTHOR",
+      "severity": "P2",
+      "description": "Published content shows author / expertise signals (E-E-A-T)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "SAUDI_RIGHTS",
+      "severity": "P2",
+      "description": "Data subject rights (access, copy, correction, deletion, withdraw)",
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "SAUDI_TRANSFER",
+      "severity": "P2",
+      "description": "Cross-border transfer conditions disclosed (Saudi PDPL)",
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "UAE_PRICE",
+      "severity": "P2",
+      "description": "Clear, all-inclusive pricing for UAE consumers",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1530",
+      "framework_short": "UAE_CONSUMER"
+    },
+    {
+      "rule_id": "PDPL_CROSSBORDER",
+      "severity": "P2",
+      "description": "Cross-border transfer of personal data outside the UAE disclosed",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1972",
+      "framework_short": "UAE_PDPL"
+    },
+    {
+      "rule_id": "ASA_ENVIRONMENTAL",
+      "severity": "P2",
+      "description": "Substantiated, non-misleading environmental/green claims",
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "ASA_URGENCY",
+      "severity": "P2",
+      "description": "No false urgency / misleading countdown timers",
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "CAA_ATOL",
+      "severity": "P2",
+      "description": "ATOL protection disclosure for package travel",
+      "citation_url": "https://www.caa.co.uk/atol-protection/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CA_TRADING_DISCLOSURE",
+      "severity": "P2",
+      "description": "Incorporated entity not displaying company number, registered office and place of registration on its website",
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "CA_VAT_REGISTERED",
+      "severity": "P2",
+      "description": "VAT-registered businesses must show VAT number on website per HMRC guidance.",
+      "citation_url": "https://www.gov.uk/vat-businesses/vat-registration",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "CRA_DISTANCE_CANCELLATION",
+      "severity": "P2",
+      "description": "Online sales with no visible 14-day cancellation, returns or refund rights for distance consumers",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2013/3134/contents/made",
+      "framework_short": "UK_CRA_2015"
+    },
+    {
+      "rule_id": "CRA_FAIR_TERMS",
+      "severity": "P2",
+      "description": "Fair, transparent and legible consumer contract terms",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2015/15/contents/enacted",
+      "framework_short": "UK_CRA_2015"
+    },
+    {
+      "rule_id": "DPA_CHILDRENS_CODE",
+      "severity": "P2",
+      "description": "Age-appropriate design (ICO Children Code)",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "S22",
+      "severity": "P2",
+      "description": "Section 22 manual unstructured data exemption noted where applicable",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2018/12/section/22",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "EQA_ALT_TEXT",
+      "severity": "P2",
+      "description": "Image alt text as a reasonable adjustment",
+      "citation_url": "https://www.equalityhumanrights.com/en/advice-and-guidance/website-accessibility",
+      "framework_short": "UK_EQUALITY_2010"
+    },
+    {
+      "rule_id": "FOOD_ALLERGEN",
+      "severity": "P2",
+      "description": "Allergen + mandatory food information online",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "framework_short": "UK_FOOD_INFO_2014"
+    },
+    {
+      "rule_id": "A15UK",
+      "severity": "P2",
+      "description": "UK right of access (Subject Access Request)",
+      "citation_url": "https://gdpr-info.eu/art-15-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A17UK",
+      "severity": "P2",
+      "description": "UK right to erasure",
+      "citation_url": "https://gdpr-info.eu/art-17-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A20UK",
+      "severity": "P2",
+      "description": "UK right to data portability",
+      "citation_url": "https://gdpr-info.eu/art-20-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A21UK",
+      "severity": "P2",
+      "description": "UK right to object to direct marketing",
+      "citation_url": "https://gdpr-info.eu/art-21-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A28UK",
+      "severity": "P2",
+      "description": "UK processor / sub-processor transparency",
+      "citation_url": "https://gdpr-info.eu/art-28-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A30UK",
+      "severity": "P2",
+      "description": "UK records of processing (ROPA)",
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A6UK",
+      "severity": "P2",
+      "description": "UK lawful basis identified",
+      "citation_url": "https://gdpr-info.eu/art-6-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "HSE2.1",
+      "severity": "P2",
+      "description": "RIDDOR reportable incident reference",
+      "citation_url": "https://www.hse.gov.uk/",
+      "framework_short": "UK_HSE"
+    },
+    {
+      "rule_id": "C06",
+      "severity": "P2",
+      "description": "Cookie scan must distinguish session vs persistent cookies",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C10",
+      "severity": "P2",
+      "description": "Cookie banner not shown to authenticated users with stored preferences",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "PECR_SOFT_OPTIN",
+      "severity": "P2",
+      "description": "Valid marketing consent or soft opt-in for email/SMS",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/electronic-and-telephone-marketing/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.5",
+      "severity": "P2",
+      "description": "Strictly necessary cookies do not require consent but must be disclosed",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "TS_DISTANCE",
+      "severity": "P2",
+      "description": "Distance-selling pre-contract information (CCRs 2013)",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2013/3134/contents/made",
+      "framework_short": "UK_TRADING_STANDARDS"
+    },
+    {
+      "rule_id": "ADA_STATEMENT",
+      "severity": "P2",
+      "description": "Accessibility statement + WCAG 2.1 AA (ADA Title III)",
+      "citation_url": "https://www.ada.gov/resources/web-guidance/",
+      "framework_short": "US_ADA"
+    },
+    {
+      "rule_id": "CCPA_LIMIT_SENSITIVE",
+      "severity": "P2",
+      "description": "\"Limit the Use of My Sensitive Personal Information\" link",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "FTC_MATERIAL_CONNECTION",
+      "severity": "P2",
+      "description": "Endorsements, ambassador or affiliate content without a clear material-connection disclosure",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "framework_short": "US_FTC_ENDORSE"
+    },
+    {
+      "rule_id": "SP_RIGHTS",
+      "severity": "P2",
+      "description": "Consumer rights (access, delete, correct, opt-out, appeal) + request method",
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "SP_SENSITIVE",
+      "severity": "P2",
+      "description": "Opt-in / limit for sensitive data (Nebraska, Maryland MODPA, others)",
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "TCPA_SMS_CONSENT",
+      "severity": "P2",
+      "description": "SMS or text marketing collected without prior express written consent and required disclosures",
+      "citation_url": "https://www.fcc.gov/general/telemarketing-and-robocalls",
+      "framework_short": "US_TCPA"
+    },
+    {
+      "rule_id": "ADGM_DPIA",
+      "severity": "P3",
+      "description": "DPIA + appropriate-safeguards posture (ADGM)",
+      "citation_url": "https://www.adgm.com/operating-in-adgm/office-of-data-protection",
+      "framework_short": "ADGM_DPR"
+    },
+    {
+      "rule_id": "SAUDI_BREACH",
+      "severity": "P3",
+      "description": "Breach-notification readiness (Saudi PDPL)",
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "SAUDI_DPO",
+      "severity": "P3",
+      "description": "Data Protection Officer where required + contact",
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "framework_short": "SAUDI_PDPL"
+    },
+    {
+      "rule_id": "UAE_RETURNS",
+      "severity": "P3",
+      "description": "Consumer return/refund rights disclosed (UAE)",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1530",
+      "framework_short": "UAE_CONSUMER"
+    },
+    {
+      "rule_id": "PDPL_DPO",
+      "severity": "P3",
+      "description": "Data Protection Officer where required + contact",
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1972",
+      "framework_short": "UAE_PDPL"
+    },
+    {
+      "rule_id": "CA_VAT_DISPLAY",
+      "severity": "P3",
+      "description": "VAT number displayed where VAT-registered",
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "DPA_ICO_FEE",
+      "severity": "P3",
+      "description": "Organisation processing personal data with no sign of ICO data-protection-fee registration",
+      "citation_url": "https://ico.org.uk/for-organisations/data-protection-fee/",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "FSA_HYGIENE",
+      "severity": "P3",
+      "description": "Food hygiene rating display where used in promotion",
+      "citation_url": "https://www.food.gov.uk/",
+      "framework_short": "UK_FSA"
+    },
+    {
+      "rule_id": "HSE_SAFETY_CLAIMS",
+      "severity": "P3",
+      "description": "Accurate health-and-safety / competence claims",
+      "citation_url": "https://www.hse.gov.uk/",
+      "framework_short": "UK_HSE"
+    },
+    {
+      "rule_id": "LIC_PREMISES",
+      "severity": "P3",
+      "description": "Premises/personal licence displayed for licensable activity",
+      "citation_url": "https://www.gov.uk/guidance/alcohol-licensing",
+      "framework_short": "UK_LICENSING_ACT"
+    },
+    {
+      "rule_id": "MS_STATEMENT",
+      "severity": "P3",
+      "description": "Modern Slavery statement (turnover GBP 36M+)",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2015/30/section/54",
+      "framework_short": "UK_MODERN_SLAVERY"
+    },
+    {
+      "rule_id": "TS_PRICE_MARKING",
+      "severity": "P3",
+      "description": "Clear price marking incl. unit/total price",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2004/102/contents/made",
+      "framework_short": "UK_TRADING_STANDARDS"
+    }
+  ],
+  "domain": "fourseasons.com",
+  "sector": "hospitality",
+  "country": "UK",
+  "lead_id": null,
+  "glossary": {
+    "used": [
+      "da",
+      "pa",
+      "geo",
+      "schema",
+      "structured data",
+      "llms.txt",
+      "nap",
+      "map pack",
+      "e-e-a-t",
+      "gdpr",
+      "uk gdpr",
+      "pecr",
+      "ccpa",
+      "sameas",
+      "wikidata",
+      "share of voice",
+      "organic"
+    ],
+    "terms": {
+      "da": "Domain Authority: a 0 to 100 trust score based on the quality of sites linking to you. The higher it is, the easier everything else ranks.",
+      "pa": "Page Authority: the same trust idea as Domain Authority but for one specific page rather than the whole site.",
+      "cls": "Cumulative Layout Shift: how much your page jumps around while loading. Jumpy pages frustrate users and rank worse.",
+      "csp": "Content-Security-Policy: a security header that blocks malicious scripts. Security reviews check for it.",
+      "geo": "Generative Engine Optimisation: whether AI answer engines (ChatGPT, Gemini, Perplexity, Google AI Overviews) actually name and cite your business when a buyer asks them for a provider like you.",
+      "lcp": "Largest Contentful Paint: how long your main content takes to appear. Over 2.5 seconds and Google ranks you lower and visitors leave.",
+      "nap": "Name, Address, Phone. Search engines cross-check these to trust that your business is real and local. Inconsistent or missing NAP sinks local rankings.",
+      "ccpa": "California's privacy law, and the template for the roughly 20 US states that now have one. It gives consumers the right to opt out and to have data deleted.",
+      "gdpr": "The data-protection law for the UK and EU. Fines reach GBP 17.5M or 4% of global turnover, so gaps here are the most expensive on the page.",
+      "hsts": "A security header that stops your site being downgraded from secure HTTPS. Corporate buyers check for it, so its absence is an easy red flag.",
+      "pecr": "UK rules on cookies and electronic marketing. You must get clear consent before non-essential cookies or trackers fire.",
+      "sameas": "Schema links that connect your site to your verified profiles (LinkedIn, Companies House, Wikidata) so AI knows the business is really you.",
+      "schema": "Hidden code (structured data) that tells search engines and AI exactly who you are, what you offer and where. Without it they have to guess, and they guess wrong.",
+      "e-e-a-t": "Google's test of Experience, Expertise, Authoritativeness and Trust. It decides whether your content deserves to rank, and it matters most in law, health and finance.",
+      "organic": "The unpaid search results, as opposed to ads. Ranking here is the durable, compounding kind of visibility.",
+      "uk gdpr": "The UK version of the EU data-protection law, enforced by the ICO with fines up to GBP 17.5M or 4% of global turnover.",
+      "llms.txt": "A simple file that tells AI models what your site is about and what they may use. It is a new standard and most firms do not have one yet, so adding it is an easy edge.",
+      "map pack": "The three-business map result at the top of local searches. The top spots take the majority of local clicks.",
+      "wikidata": "Google's and AI's open knowledge base. An entry there makes you a recognised entity that answer engines can confidently cite.",
+      "canonical": "A line of code that tells Google which version of a page is the real one, so duplicate web addresses do not split your ranking power.",
+      "ai crawler": "The automated readers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) that AI answer engines send to read your site. Block them and those engines cannot cite you.",
+      "local pack": "The three businesses Google shows on a small map at the top of local searches. Most local clicks go to those three, so being outside it costs real enquiries.",
+      "robots.txt": "A file that tells web crawlers which parts of your site they may read. One wrong line here can make you invisible to Google or to AI engines.",
+      "ai visibility": "Whether the AI answer engines buyers now ask first will name and cite you, or only your competitors.",
+      "share of voice": "How often you appear versus your competitors when buyers search or ask AI in your category. Low share of voice means they are heard and you are not.",
+      "structured data": "Hidden code that spells out who you are and what you offer so Google and AI can read it precisely instead of guessing.",
+      "domain authority": "A 0 to 100 score of how much trust your site has earned from links on other websites. Higher means Google and AI engines are more likely to rank and cite you. It is the single biggest reason one site outranks another.",
+      "meta description": "The summary Google shows under your result. A good one lifts click-through; if it is missing, Google writes its own from random page text."
+    }
+  },
+  "news_map": {
+    "UK_CMA": "CMA (2026-05-28): Court endorses CMA action as Emma Sleep agrees to change sales practices. Source: https://www.gov.uk/government/news/court-endorses-cma-action-as-emma-sleep-agrees-to-change-sales-practices",
+    "UK_HSE": "HSE prosecutions resulted in \u00a355M of fines in 2024.",
+    "US_ADA": "DOJ ADA Title III digital-accessibility rule finalised April 2024. 4,000+ web-accessibility lawsuits in 2024.",
+    "US_FTC": "FTC (2026-05-21): FTC to Require Cox Media Group, Two Other Firms to Pay Nearly $1 Million to Settle Charges They Deceived Customers About \u201cActive Listening\u201d AI-Powered Marketing Service \u2014 $1M. Source: https://www.ftc.gov/news-events/news/press-releases/2026/05/ftc-require-cox-media-group-two-other-firms-pay-nearly-1-million-settle-charges-they-deceived",
+    "DE_BDSG": "BfDI + state DPAs collectively issued \u20ac18M in fines 2024.",
+    "UK_PECR": "The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to GBP 17.5M (from GBP 500k); the ICO is reviewing the UK top 1,000 websites cookie banners.",
+    "US_CCPA": "California CPPA brought 12 enforcement actions in 2024, largest fine $1.55M.",
+    "US_TCPA": "FCC AI-voice ruling Feb 2024. $500-$1,500 per call statutory damages.",
+    "EU_AI_ACT": "EU AI Act prohibited-practices ban took effect 2 February 2025.",
+    "UK_ASA_CAP": "The ASA AI monitoring banned ads in 2025 for greenwashing (Wizz Air), misleading product claims (Origin Mattress) and false-urgency countdown timers (Oct 2025).",
+    "EU_EAA_2025": "In force June 2025. Fines up to \u20ac1M in Spain, \u20ac500k in Germany.",
+    "GOOGLE_EEAT": "Google March 2024 core update emphasised E-E-A-T; sites without author bylines saw 31% traffic drop.",
+    "UK_CRA_2015": "CMA confirms CRA 2015 applies in parallel with DMCC. Cross-referenced in 2025 enforcement.",
+    "UK_DPA_2018": "ICO 2025 enforcement hit GBP 19.6M from 7 cases (vs GBP 2.7M in 2024); the DUAA came into force 5 Feb 2026 with new compulsion powers.",
+    "UK_GDPR_A13": "ICO issued GBP 19.6M across 7 cases in 2025 (Capita GBP 14M, Advanced Computer Software GBP 3.07M, 23andMe GBP 2.31M, LastPass GBP 1.23M); two-thirds were UK GDPR breaches.",
+    "FR_CNIL_2025": "CNIL fined SHEIN \u20ac40M, Carrefour \u20ac3M, Free Mobile \u20ac2.25M in 2024.",
+    "UK_DMCC_2024": "CMA gained direct fining powers up to 10% global turnover from April 2025.",
+    "UK_ICO_COOKIES": "DUAA (in force 5 Feb 2026) lifts PECR fines to GBP 17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.",
+    "US_FTC_ENDORSE": "FTC (2026-05-21): FTC to Require Cox Media Group, Two Other Firms to Pay Nearly $1 Million to Settle Charges They Deceived Customers About \u201cActive Listening\u201d AI-Powered Marketing Service \u2014 $1M. Source: https://www.ftc.gov/news-events/news/press-releases/2026/05/ftc-require-cox-media-group-two-other-firms-pay-nearly-1-million-settle-charges-they-deceived",
+    "UK_COMPANIES_ACT": "Companies House active enforcement of website disclosure post Economic Crime Act 2023.",
+    "UK_EQUALITY_2010": "EHRC 2024 digital-accessibility code. Damages claims up 18% in 2024."
+  },
+  "pointers": [
+    {
+      "fact": "Germany requires German-language privacy + impressum + cookie notice for DE-targeted sites.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the Impressum (legal disclosure), translates the privacy + cookie notices to German, and aligns to TTDSG cookie rules.",
+        "problem": "Right now: Germany requires German-language privacy + impressum + cookie notice for DE-targeted sites."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "DE_BDSG",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.bfdi.bund.de/",
+      "fine_low_gbp": 50000,
+      "fine_high_gbp": 35000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the Impressum (legal disclosure), translates the privacy + cookie notices to German, and aligns to TTDSG cookie rules.",
+      "framework_short": "DE_BDSG",
+      "tamazia_fix_short": "Tamazia adds the Impressum (legal disclosure), translates the privacy + cookie notices to German, and aligns to TTDSG cookie rules.",
+      "layman_explanation": "Germany requires Impressum (legal disclosure), German-language privacy notice, and a TTDSG-compliant cookie banner. BfDI + 17 state DPAs collectively issued \u20ac18M in fines in 2024.",
+      "enforcement_example": "German DPAs (BfDI and Land authorities): GDPR fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Cookies + similar technologies prior-consent banner",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Cookies + similar technologies prior-consent banner\" on your site so it satisfies the EU ePrivacy Directive.",
+        "problem": "Right now: Cookies + similar technologies prior-consent banner."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_EPRIVACY",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://eur-lex.europa.eu/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Cookies + similar technologies prior-consent banner\" on your site so it satisfies the EU ePrivacy Directive.",
+      "framework_short": "EU_EPRIVACY",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Cookies + similar technologies prior-consent banner\" on your site so it satisfies the EU ePrivacy Directive.",
+      "layman_explanation": "Cookies + similar technologies prior-consent banner. This is a specific requirement of the EU ePrivacy Directive, which the EU data protection authorities enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "National data-protection authorities under the ePrivacy Directive and GDPR: consent-related fines and enforcement notices."
+    },
+    {
+      "fact": "France requires Reject-All cookie button equally prominent as Accept.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia rebuilds the cookie banner to CNIL specification, drops onclick tracking before consent, and produces the consent journal.",
+        "problem": "Right now: France requires Reject-All cookie button equally prominent as Accept."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "FR_CNIL_2025",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.cnil.fr/en",
+      "fine_low_gbp": 2000000,
+      "fine_high_gbp": 40000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia rebuilds the cookie banner to CNIL specification, drops onclick tracking before consent, and produces the consent journal.",
+      "framework_short": "FR_CNIL_2025",
+      "tamazia_fix_short": "Tamazia rebuilds the cookie banner to CNIL specification, drops onclick tracking before consent, and produces the consent journal.",
+      "layman_explanation": "CNIL fined SHEIN \u20ac40M, Carrefour \u20ac3M, Free Mobile \u20ac2.25M in 2024 for cookie + transparency breaches. France remains the EU\u2019s most active DPA. Reject-All must be as prominent as Accept.",
+      "enforcement_example": "CNIL: fines up to EUR 20M or 4% of global turnover; sanction decisions published at cnil.fr."
+    },
+    {
+      "fact": "Consumer Rights Act statutory information",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a compliant pre-contract information block: trader identity, total price, key service terms and the consumer cancellation right.",
+        "problem": "Right now: Consumer Rights Act statutory information."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CMA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/consumer-protection-rights",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a compliant pre-contract information block: trader identity, total price, key service terms and the consumer cancellation right.",
+      "framework_short": "UK_CMA",
+      "tamazia_fix_short": "Tamazia adds a compliant pre-contract information block: trader identity, total price, key service terms and the consumer cancellation right.",
+      "layman_explanation": "Under the Consumer Rights Act 2015 and Consumer Contracts Regulations 2013 you must give consumers clear pre-contract information (trader identity, total price, the main service characteristics, and cancellation rights) before they commit. Missing this makes contracts harder to enforce and draws Trading Standards action.",
+      "enforcement_example": "CMA under the DMCC Act 2024: direct consumer-law fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Pricing transparency: total price including unavoidable fees",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia redesigns the pricing flow to show total price upfront and removes drip-pricing patterns.",
+        "problem": "Right now: Pricing transparency: total price including unavoidable fees."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CMA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia redesigns the pricing flow to show total price upfront and removes drip-pricing patterns.",
+      "framework_short": "UK_CMA",
+      "tamazia_fix_short": "Tamazia redesigns the pricing flow to show total price upfront and removes drip-pricing patterns.",
+      "layman_explanation": "CMA Digital Markets, Competition and Consumers Act 2024 requires you to show total prices without drip-pricing. The CMA has powers to fine 10% of global turnover.",
+      "enforcement_example": "CMA under the DMCC Act 2024: direct consumer-law fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)\" on your site so it satisfies the Food Information Regulations 2014.",
+        "problem": "Right now: Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FOOD_INFO_2014",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.legislation.gov.uk/uksi/2021/909/made",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)\" on your site so it satisfies the Food Information Regulations 2014.",
+      "framework_short": "UK_FOOD_INFO_2014",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)\" on your site so it satisfies the Food Information Regulations 2014.",
+      "layman_explanation": "Calorie information on out-of-home menus (Calorie Labelling Regulations 2021). This is a specific requirement of the Food Information Regulations 2014, which Trading Standards / the FSA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Trading Standards and the FSA: improvement notices and prosecution."
+    },
+    {
+      "fact": "Food Hygiene Rating Scheme disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the FSA Food Hygiene Rating widget to the homepage and footer template within week 1.",
+        "problem": "Right now: Food Hygiene Rating Scheme disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FSA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.food.gov.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the FSA Food Hygiene Rating widget to the homepage and footer template within week 1.",
+      "framework_short": "UK_FSA",
+      "tamazia_fix_short": "Tamazia adds the FSA Food Hygiene Rating widget to the homepage and footer template within week 1.",
+      "layman_explanation": "Restaurants must show the Food Hygiene Rating clearly on their site (FSA requirement). Without it, FSA can enforce and the rating loss damages organic traffic from local searches.",
+      "enforcement_example": "Food Standards Agency and Trading Standards: improvement and prohibition notices and prosecution."
+    },
+    {
+      "fact": "Identity of the controller must be disclosed on first data collection page",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia drafts the controller-identity disclosure block (registered name, company number, registered office, ICO registration) and inserts it as paragraph 1 of the privacy notice.",
+        "problem": "Right now: Identity of the controller must be disclosed on first data collection page."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://fourseasons.com/privacy/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/privacy/"
+      ],
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/right-to-be-informed/",
+      "fine_low_gbp": 8750000,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia drafts the controller-identity disclosure block (registered name, company number, registered office, ICO registration) and inserts it as paragraph 1 of the privacy notice.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia drafts the controller-identity disclosure block (registered name, company number, registered office, ICO registration) and inserts it as paragraph 1 of the privacy notice.",
+      "layman_explanation": "Your privacy notice does not name who the legal \"data controller\" is. Visitors cannot tell who is collecting their data. ICO treats this as a first-mover breach of Article 13(1)(a) and opens an inquiry within weeks.",
+      "enforcement_example": "ICO v doorstep canvasser 2023: \u00a3130,000 for failing to identify controller"
+    },
+    {
+      "fact": "Retention period or criteria",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia drafts a retention schedule per data category (e.g. marketing 24 months, accounting 7 years) and adds it to the privacy notice.",
+        "problem": "Right now: Retention period or criteria."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://fourseasons.com/privacy/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/privacy/"
+      ],
+      "citation_url": "https://ico.org.uk/",
+      "fine_low_gbp": 2500000,
+      "fine_high_gbp": 12500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia drafts a retention schedule per data category (e.g. marketing 24 months, accounting 7 years) and adds it to the privacy notice.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia drafts a retention schedule per data category (e.g. marketing 24 months, accounting 7 years) and adds it to the privacy notice.",
+      "layman_explanation": "You do not state how long personal data is retained. Article 13(2)(a) requires either a specific period or the criteria used to determine it. Indefinite retention is itself a breach.",
+      "enforcement_example": "ICO v Clearview 2022: \u00a37.5m for indefinite retention"
+    },
+    {
+      "fact": "Business identification on website (Co. No, VAT, Address)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Business identification on website (Co. No, VAT, Address)\" on your site so it satisfies UK TRADING STANDARDS.",
+        "problem": "Right now: Business identification on website (Co. No, VAT, Address)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_TRADING_STANDARDS",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Business identification on website (Co. No, VAT, Address)\" on your site so it satisfies UK TRADING STANDARDS.",
+      "framework_short": "UK_TRADING_STANDARDS",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Business identification on website (Co. No, VAT, Address)\" on your site so it satisfies UK TRADING STANDARDS.",
+      "layman_explanation": "Business identification on website (Co. No, VAT, Address). This is a specific requirement of UK TRADING STANDARDS, which the relevant regulator enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Trading Standards: enforcement orders and prosecution with unlimited fines on conviction."
+    },
+    {
+      "fact": "Right to delete disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Right to delete disclosure\" on your site so it satisfies the CCPA as amended by CPRA.",
+        "problem": "Right now: Right to delete disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "US_CCPA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 7500,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Right to delete disclosure\" on your site so it satisfies the CCPA as amended by CPRA.",
+      "framework_short": "US_CCPA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Right to delete disclosure\" on your site so it satisfies the CCPA as amended by CPRA.",
+      "layman_explanation": "Right to delete disclosure. This is a specific requirement of the CCPA as amended by CPRA, which the CPPA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "California Privacy Protection Agency and Attorney General: civil penalties of USD 2,500 per violation (USD 7,500 if intentional or involving minors); e.g. Sephora USD 1.2M settlement (2022)."
+    },
+    {
+      "fact": "Registration with the DIFC Commissioner of Data Protection",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia confirms and evidences your DIFC Commissioner registration.",
+        "problem": "Right now: Registration with the DIFC Commissioner of Data Protection. Here it is on your site: \u201cIf you did not receive a verification code, you may need to register.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "DIFC_DPL",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.difc.com/business/laws-and-regulations/legal-database/difc-laws/data-protection-law-difc-law-no-5-2020",
+      "fine_low_gbp": 40000,
+      "fine_high_gbp": 79000,
+      "evidence_quote": "If you did not receive a verification code, you may need to register.",
+      "recommendation": "Tamazia confirms and evidences your DIFC Commissioner registration.",
+      "framework_short": "DIFC_DPL",
+      "tamazia_fix_short": "Tamazia confirms and evidences your DIFC Commissioner registration.",
+      "layman_explanation": "A DIFC-based controller must register with the Commissioner of Data Protection. There is no sign you have, and non-registration is finable up to USD 50,000.",
+      "enforcement_example": "DIFC DPL No.5 of 2020: registration with the Commissioner is mandatory; failure to notify draws fines up to USD 50,000."
+    },
+    {
+      "fact": "Disclose to users when they are interacting with an AI system",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a clear AI-interaction disclosure to the chatbot for EU users.",
+        "problem": "Right now: Disclose to users when they are interacting with an AI system."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_AI_ACT",
+      "evidence": "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a clear AI-interaction disclosure to the chatbot for EU users.",
+      "verify_context": null,
+      "framework_short": "EU_AI_ACT",
+      "tamazia_fix_short": "Tamazia adds a clear AI-interaction disclosure to the chatbot for EU users.",
+      "layman_explanation": "The EU AI Act requires you to tell EU users when they are interacting with an AI chatbot rather than a human. Your AI widget does not disclose this.",
+      "enforcement_example": "EU AI Act Art. 50 transparency duties apply from 2025; the Act carries the highest tech-law fine ceiling, EUR 35M or 7% of global turnover."
+    },
+    {
+      "fact": "France requires a French-language privacy notice for FR-targeted sites.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia translates the privacy notice to lawyer-reviewed French and adds the FR/EN language switch.",
+        "problem": "Right now: France requires a French-language privacy notice for FR-targeted sites."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "FR_CNIL_2025",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.cnil.fr/en/personal-data",
+      "fine_low_gbp": 100000,
+      "fine_high_gbp": 500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia translates the privacy notice to lawyer-reviewed French and adds the FR/EN language switch.",
+      "framework_short": "FR_CNIL_2025",
+      "tamazia_fix_short": "Tamazia translates the privacy notice to lawyer-reviewed French and adds the FR/EN language switch.",
+      "layman_explanation": "Sites targeting French consumers must publish privacy notice in French (CNIL position confirmed 2024). English-only triggers automatic enforcement.",
+      "enforcement_example": "CNIL: fines up to EUR 20M or 4% of global turnover; sanction decisions published at cnil.fr."
+    },
+    {
+      "fact": "Pricing transparency (incl. VAT or excluding clearly stated)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Pricing transparency (incl. VAT or excluding clearly stated)\" on your site so it satisfies the ASA / CAP Code.",
+        "problem": "Right now: Pricing transparency (incl. VAT or excluding clearly stated)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_ASA_CAP",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.asa.org.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Pricing transparency (incl. VAT or excluding clearly stated)\" on your site so it satisfies the ASA / CAP Code.",
+      "framework_short": "UK_ASA_CAP",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Pricing transparency (incl. VAT or excluding clearly stated)\" on your site so it satisfies the ASA / CAP Code.",
+      "layman_explanation": "Pricing transparency (incl. VAT or excluding clearly stated). This is a specific requirement of the ASA / CAP Code, which the ASA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "ASA: ad-removal rulings, referral to Trading Standards or Ofcom, and paid-search/ad sanctions; rulings published weekly."
+    },
+    {
+      "fact": "EU261/UK261 passenger rights disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"EU261/UK261 passenger rights disclosure\" on your site so it satisfies the CAA ATOL rules.",
+        "problem": "Right now: EU261/UK261 passenger rights disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CAA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.caa.co.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"EU261/UK261 passenger rights disclosure\" on your site so it satisfies the CAA ATOL rules.",
+      "framework_short": "UK_CAA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"EU261/UK261 passenger rights disclosure\" on your site so it satisfies the CAA ATOL rules.",
+      "layman_explanation": "EU261/UK261 passenger rights disclosure. This is a specific requirement of the CAA ATOL rules, which the CAA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Civil Aviation Authority: enforcement orders, financial penalties and licence action."
+    },
+    {
+      "fact": "Honest reviews disclosure (no fake or paid reviews)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds review verification and incentive disclosure, and removes any testimonial that cannot be substantiated.",
+        "problem": "Right now: Honest reviews disclosure (no fake or paid reviews)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CMA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds review verification and incentive disclosure, and removes any testimonial that cannot be substantiated.",
+      "framework_short": "UK_CMA",
+      "tamazia_fix_short": "Tamazia adds review verification and incentive disclosure, and removes any testimonial that cannot be substantiated.",
+      "layman_explanation": "The DMCC Act 2024 bans fake and undisclosed-incentivised reviews and the CMA can fine up to 10 percent of global turnover. If you display reviews or testimonials you must be able to show they are genuine and disclose any incentive.",
+      "enforcement_example": "CMA under the DMCC Act 2024: direct consumer-law fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "All-in pricing, no hidden mandatory fees (DMCC drip-pricing ban)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia shows all-in pricing and removes drip-pricing.",
+        "problem": "Right now: All-in pricing, no hidden mandatory fees (DMCC drip-pricing ban)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CMA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "fine_low_gbp": 10000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia shows all-in pricing and removes drip-pricing.",
+      "framework_short": "UK_CMA",
+      "tamazia_fix_short": "Tamazia shows all-in pricing and removes drip-pricing.",
+      "layman_explanation": "The DMCC drip-pricing ban requires unavoidable fees in the headline price; your pricing adds fees later.",
+      "enforcement_example": "The DMCC drip-pricing ban requires unavoidable fees in the headline price; CMA can fine 10% of turnover."
+    },
+    {
+      "fact": "UK limited companies must display registered name, number, registered office on every website.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a single compliant disclosure block to the footer site-wide. 1-day fix.",
+        "problem": "Right now: UK limited companies must display registered name, number, registered office on every website."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_COMPANIES_ACT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/running-a-limited-company/signs-stationery-and-promotional-material",
+      "fine_low_gbp": 1000,
+      "fine_high_gbp": 5000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a single compliant disclosure block to the footer site-wide. 1-day fix.",
+      "framework_short": "UK_COMPANIES_ACT",
+      "tamazia_fix_short": "Tamazia adds a single compliant disclosure block to the footer site-wide. 1-day fix.",
+      "layman_explanation": "Every UK limited company is legally required to display its registered name, company number and registered office on its website. Missing it triggers fines from Companies House and breaches Companies Act 2006 s.82.",
+      "enforcement_example": "Companies House: late-filing penalties, director disqualification and prosecution."
+    },
+    {
+      "fact": "Total price including mandatory fees must be displayed up-front, not added at checkout.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia audits the pricing journey, flags every drip charge, and rewrites the pricing/booking page to show full price up-front per CMA wording.",
+        "problem": "Right now: Total price including mandatory fees must be displayed up-front, not added at checkout."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DMCC_2024",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "fine_low_gbp": 200000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia audits the pricing journey, flags every drip charge, and rewrites the pricing/booking page to show full price up-front per CMA wording.",
+      "framework_short": "UK_DMCC_2024",
+      "tamazia_fix_short": "Tamazia audits the pricing journey, flags every drip charge, and rewrites the pricing/booking page to show full price up-front per CMA wording.",
+      "layman_explanation": "Drip pricing \u2014 adding mandatory fees at later stages \u2014 is now a banned practice under DMCC Part 4 (in force April 2025). Includes booking, service, processing and admin fees.",
+      "enforcement_example": "CMA under the DMCC Act 2024 (in force 6 April 2025): direct fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Must publish a policy declaring no incentivised, fake or undisclosed reviews.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia drafts a Reviews Policy page meeting CMA wording, runs a review-audit on the live site, and updates the review-collection flow to meet disclosure standards.",
+        "problem": "Right now: Must publish a policy declaring no incentivised, fake or undisclosed reviews. Here it is on your site: \u201cto all communications you make available, provide or send to Four Seasons, including but not limited to information, feedback, questions, co\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DMCC_2024",
+      "evidence": "https://fourseasons.com/legal/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "fine_low_gbp": 150000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": "to all communications you make available, provide or send to Four Seasons, including but not limited to information, feedback, questions, comments, proposals, content, suggestions, submissions, hotel reviews, photographs, images, designs\u2026",
+      "recommendation": "Tamazia drafts a Reviews Policy page meeting CMA wording, runs a review-audit on the live site, and updates the review-collection flow to meet disclosure standards.",
+      "framework_short": "UK_DMCC_2024",
+      "tamazia_fix_short": "Tamazia drafts a Reviews Policy page meeting CMA wording, runs a review-audit on the live site, and updates the review-collection flow to meet disclosure standards.",
+      "layman_explanation": "From 2025, hosting fake or incentivised reviews without disclosure is a CMA fineable offence. The fine reaches \u00a3300k or 10% turnover. Buyers and platforms are both in scope.",
+      "enforcement_example": "CMA under the DMCC Act 2024 (in force 6 April 2025): direct fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Legitimate interests (if relied on) clearly stated",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia drafts the Legitimate Interests Assessment summary and the specific interests pursued, linked from the privacy notice.",
+        "problem": "Right now: Legitimate interests (if relied on) clearly stated."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://fourseasons.com/privacy/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/privacy/"
+      ],
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/legitimate-interests/",
+      "fine_low_gbp": 1000000,
+      "fine_high_gbp": 5000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia drafts the Legitimate Interests Assessment summary and the specific interests pursued, linked from the privacy notice.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia drafts the Legitimate Interests Assessment summary and the specific interests pursued, linked from the privacy notice.",
+      "layman_explanation": "Where you rely on \"legitimate interests\" as the lawful basis, Article 13(1)(d) requires you to spell out what those interests are. Saying just \"for our legitimate business interests\" is not enough.",
+      "enforcement_example": "Easylife \u2014 failed legitimate interest balancing test"
+    },
+    {
+      "fact": "Health and Safety policy disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Health and Safety policy disclosure\" on your site so it satisfies UK HSE.",
+        "problem": "Right now: Health and Safety policy disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_HSE",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.hse.gov.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Health and Safety policy disclosure\" on your site so it satisfies UK HSE.",
+      "framework_short": "UK_HSE",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Health and Safety policy disclosure\" on your site so it satisfies UK HSE.",
+      "layman_explanation": "Health and Safety policy disclosure. This is a specific requirement of UK HSE, which the relevant regulator enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "HSE: improvement and prohibition notices and unlimited fines on conviction."
+    },
+    {
+      "fact": "Challenge 21/25 policy",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Challenge 21/25 policy\" on your site so it satisfies the Licensing Act 2003.",
+        "problem": "Right now: Challenge 21/25 policy."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_LICENSING_ACT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/government/publications/code-of-practice-for-the-sale-of-alcohol",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Challenge 21/25 policy\" on your site so it satisfies the Licensing Act 2003.",
+      "framework_short": "UK_LICENSING_ACT",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Challenge 21/25 policy\" on your site so it satisfies the Licensing Act 2003.",
+      "layman_explanation": "Challenge 21/25 policy. This is a specific requirement of the Licensing Act 2003, which the licensing authority enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Licensing authority: review, suspension or revocation of the premises licence."
+    },
+    {
+      "fact": "Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and func\" on your site so it satisfies UK PECR.",
+        "problem": "Right now: Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_PECR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and func\" on your site so it satisfies UK PECR.",
+      "framework_short": "UK_PECR",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and func\" on your site so it satisfies UK PECR.",
+      "layman_explanation": "Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All. This is a specific requirement of UK PECR, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "DUAA 2025 raised the maximum PECR fine from 500000 to 17.5M or 4 percent of global turnover. The ICO is sweeping the top 1000 UK sites; in its first batch of 200, 134 firms were warned and given 30 days to fix non-compliant banners."
+    },
+    {
+      "fact": "Unit pricing for pre-packaged goods",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Unit pricing for pre-packaged goods\" on your site so it satisfies UK TRADING STANDARDS.",
+        "problem": "Right now: Unit pricing for pre-packaged goods."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_TRADING_STANDARDS",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Unit pricing for pre-packaged goods\" on your site so it satisfies UK TRADING STANDARDS.",
+      "framework_short": "UK_TRADING_STANDARDS",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Unit pricing for pre-packaged goods\" on your site so it satisfies UK TRADING STANDARDS.",
+      "layman_explanation": "Unit pricing for pre-packaged goods. This is a specific requirement of UK TRADING STANDARDS, which the relevant regulator enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Trading Standards: enforcement orders and prosecution with unlimited fines on conviction."
+    },
+    {
+      "fact": "One-to-one prior express written consent for calls/texts (TCPA/FCC)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds TCPA one-to-one consent to phone capture.",
+        "problem": "Right now: One-to-one prior express written consent for calls/texts (TCPA/FCC). Here it is on your site: \u201c\",\"An SMS with a 6-digit code was sent to {0} .\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "US_TCPA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.fcc.gov/general/telemarketing-and-robocalls",
+      "fine_low_gbp": 395,
+      "fine_high_gbp": 1185,
+      "evidence_quote": "\",\"An SMS with a 6-digit code was sent to {0} .",
+      "recommendation": "Tamazia adds TCPA one-to-one consent to phone capture.",
+      "framework_short": "US_TCPA",
+      "tamazia_fix_short": "Tamazia adds TCPA one-to-one consent to phone capture.",
+      "layman_explanation": "TCPA + FCC one-to-one rules require specific prior express written consent before calling/texting US contacts; your capture lacks it.",
+      "enforcement_example": "The FCC one-to-one consent rule + TCPA require specific prior express written consent; USD 500-1,500 per message/call."
+    },
+    {
+      "fact": "Your firm has no Wikidata entity and no Wikipedia article, so it is absent from the public knowledge graph.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia establishes your Wikidata and Knowledge-Graph entity (and a notability-backed Wikipedia presence where eligible) with sourced references.",
+        "problem": "Right now: Your firm has no Wikidata entity and no Wikipedia article, so it is absent from the public knowledge graph."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Knowledge Graph presence",
+      "evidence": "Wikidata + Wikipedia \u00b7 no entity found for fourseasons.com",
+      "severity": "P1",
+      "confidence": 0.85,
+      "recommendation": "Tamazia establishes your Wikidata and Knowledge-Graph entity (and a notability-backed Wikipedia presence where eligible) with sourced references.",
+      "tamazia_fix_short": "Tamazia establishes your Wikidata and Knowledge-Graph entity (and a notability-backed Wikipedia presence where eligible) with sourced references.",
+      "layman_explanation": "ChatGPT, Google AI, Gemini and Perplexity lean on Wikidata and Wikipedia to decide who is a real, citable entity. With neither, you are structurally invisible to those answers, while competitors who have an entity get named."
+    },
+    {
+      "fact": "5 likely spelling or grammar error(s) are published on your homepage right now.",
+      "kind": "observed",
+      "bingo": {
+        "fix": "Tamazia proofreads and corrects every page, then sets an editorial QA gate so it does not recur.",
+        "problem": "Right now: 5 likely spelling or grammar error(s) are published on your homepage right now."
+      },
+      "state": "CONFIRMED",
+      "bucket": "content_depth",
+      "signals": [
+        "observed_evidence",
+        "render_ok"
+      ],
+      "citation": "Spelling & grammar errors on your live site",
+      "evidence": "homepage - \"Navigation-topBar-ProfileStatus\" to \"Navigation-top Bar-ProfileStatus\", \"Am\u00e9rica\" to \"America\", \"Portugu\u00eas\" to \"Portuguese\", \"T\u00fcrk\u00e7e\" to \"Turkey\", \"Espa\u00f1o\" to \"Espa\u00f1a\"",
+      "severity": "P1",
+      "confidence": 0.85,
+      "recommendation": "Tamazia proofreads and corrects every page, then sets an editorial QA gate so it does not recur.",
+      "tamazia_fix_short": "Tamazia proofreads and corrects every page, then sets an editorial QA gate so it does not recur.",
+      "layman_explanation": "Visible errors on a professional firm's website quietly erode trust with high-value clients and signal low quality to Google's helpful-content systems. For a firm selling expertise, typos on the live site are an avoidable credibility leak."
+    },
+    {
+      "fact": "Absent from the AI / search answer surface for \"luxury hotels resorts New York\"",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia runs the GEO + entity programme (Schema.org, llms.txt, a Wikidata entity and authoritative content) that puts you into the set of sources AI engines read and cite for your category.",
+        "problem": "Right now: Absent from the AI / search answer surface for \"luxury hotels resorts New York\"."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "GEO",
+      "evidence": "live SERP: luxury hotels resorts New York",
+      "severity": "P1",
+      "confidence": 0.85,
+      "citation_url": "",
+      "ai_competitors": [
+        {
+          "pos": 1,
+          "domain": "timeout.com"
+        },
+        {
+          "pos": 2,
+          "domain": "robbreport.com"
+        },
+        {
+          "pos": 3,
+          "domain": "luxuryhotel.guide"
+        },
+        {
+          "pos": 5,
+          "domain": "thehotelguru.com"
+        },
+        {
+          "pos": 6,
+          "domain": "forbes.com"
+        }
+      ],
+      "evidence_quote": null,
+      "recommendation": "",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia runs the GEO + entity programme (Schema.org, llms.txt, a Wikidata entity and authoritative content) that puts you into the set of sources AI engines read and cite for your category.",
+      "layman_explanation": "When a buyer asks ChatGPT, Perplexity, Google AI or a search engine for \"luxury hotels resorts New York\", your site is not in the top 10 results these engines read and cite. The firms that own that answer surface today are timeout.com, robbreport.com, luxuryhotel.guide. AI engines synthesise answers from these ranked, recognised sources, so they name your competitors and not you."
+    },
+    {
+      "fact": "A live groq query did not name your firm for your category",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity + authoritative-content footprint that gets you named in live AI answers.",
+        "problem": "Right now: A live groq query did not name your firm for your category."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "GEO",
+      "evidence": "live groq answer probe",
+      "severity": "P1",
+      "confidence": 0.85,
+      "citation_url": "",
+      "recommendation": "",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity + authoritative-content footprint that gets you named in live AI answers.",
+      "layman_explanation": "We asked groq to list the top firms for \"luxury hotels resorts New York\". Your firm was not named, confirming you are absent from the real AI answers buyers receive."
+    },
+    {
+      "fact": "For \"luxury hotels in new york city\" you are not visible in the top 100; timeout.com owns position #1.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia builds the page depth and authority to move \"luxury hotels in new york city\" into the top three, where the clicks and the AI citations are.",
+        "problem": "Right now: For \"luxury hotels in new york city\" you are not visible in the top 100; timeout.com owns position #1. Here it is on your site: \u201clive SERP: you not visible in the top 100 vs timeout.com #1\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "SEO",
+      "evidence": "live SERP (free-serp) \u00b7 query \"luxury hotels in new york city\"",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "competitors": [
+        "timeout.com",
+        "cheyenne.org"
+      ],
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "live SERP: you not visible in the top 100 vs timeout.com #1",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia builds the page depth and authority to move \"luxury hotels in new york city\" into the top three, where the clicks and the AI citations are.",
+      "layman_explanation": "When your buyers search \"luxury hotels in new york city\", they find timeout.com, not you. Page two and below is effectively zero clicks, so this exact query hands its high-intent traffic to a competitor every day, and AI answers cite the top-ranked pages, so being invisible here also keeps you out of the AI results. The firms winning your buyer queries: timeout.com, cheyenne.org."
+    },
+    {
+      "fact": "You are missing 3 of the signals Google uses to rank the local map pack: not listed in OpenStreetMap, the open map data Apple Maps, Bing and AI assistants read; no LocalBusiness schema with address and geo-coordinates; no clearly published phone number (NAP).",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia builds the local-pack foundation: an optimised Google Business Profile, LocalBusiness schema with geo, consistent NAP and local citations.",
+        "problem": "Right now: You are missing 3 of the signals Google uses to rank the local map pack: not listed in OpenStreetMap, the open map data Apple Maps, Bing and AI assistants read; no LocalBusiness schema with address and geo-coordinates; no clearly published phone number (NAP). Here it is on your site: \u201cnot found in OpenStreetMap for New York\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Local search (map pack)",
+      "evidence": "local-readiness check \u00b7 OpenStreetMap presence (absent)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "not found in OpenStreetMap for New York",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia builds the local-pack foundation: an optimised Google Business Profile, LocalBusiness schema with geo, consistent NAP and local citations.",
+      "layman_explanation": "When a buyer searches \"hotel in New York\", Google shows a three-result map pack above the normal results, and AI assistants read the same local sources. Those slots go to firms with a complete, consistent local presence. You are missing 3 of those signals, so you are structurally excluded from the results buyers tap first."
+    },
+    {
+      "fact": "Your AI entity-readiness score is 80/100: no Wikidata knowledge-graph entry; no llms.txt.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds your machine-readable entity: full Organization schema with sameAs, a Wikidata entry, and an llms.txt, so the answer engines can identify and cite you.",
+        "problem": "Right now: Your AI entity-readiness score is 80/100: no Wikidata knowledge-graph entry; no llms.txt. Here it is on your site: \u201cno Wikidata knowledge-graph entry; no llms.txt\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI entity readiness",
+      "evidence": "entity-readiness check (schema + Wikidata + llms.txt)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "no Wikidata knowledge-graph entry; no llms.txt",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds your machine-readable entity: full Organization schema with sameAs, a Wikidata entry, and an llms.txt, so the answer engines can identify and cite you.",
+      "layman_explanation": "AI answer engines decide who to cite by first identifying you as a known, trusted entity. They read your Organization schema, the sameAs links that connect you to your verified profiles, and knowledge bases like Wikidata. You are missing 2 of these anchors, so to an AI engine you are an unknown string rather than a citable provider, and it names the firms it can identify instead."
+    },
+    {
+      "fact": "Asked \"luxury hotels resorts New York\" 1 time, an AI engine named you in 0 of 1 answer; it named Mandarin Oriental New York (1/1), Baccarat Hotel & Residences New York (1/1).",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity, content and authority signals that get you named consistently when buyers ask AI for a provider like you.",
+        "problem": "Right now: Asked \"luxury hotels resorts New York\" 1 time, an AI engine named you in 0 of 1 answer; it named Mandarin Oriental New York (1/1), Baccarat Hotel & Residences New York (1/1). Here it is on your site: \u201cyou 0/1 vs Mandarin Oriental New York 1/1\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "metric": {
+        "you": 0,
+        "label": "AI share of voice",
+        "scale": 100,
+        "samples": 1,
+        "competitors": [
+          {
+            "of": 1,
+            "name": "Mandarin Oriental New York",
+            "in_runs": 1
+          },
+          {
+            "of": 1,
+            "name": "Baccarat Hotel & Residences New York",
+            "in_runs": 1
+          }
+        ]
+      },
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI share of voice",
+      "evidence": "multi-sample AI probe (1 runs \u00b7 nvidia-nim)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "you 0/1 vs Mandarin Oriental New York 1/1",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity, content and authority signals that get you named consistently when buyers ask AI for a provider like you.",
+      "layman_explanation": "AI answers vary run to run, so we asked 1 time (via nvidia-nim). You were never named, while Mandarin Oriental New York appeared 1 of 1. The firms named every time are the ones AI now treats as the default answer for your buyers, compounding while you are absent."
+    },
+    {
+      "fact": "DIFC data subject rights disclosed",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a DIFC-compliant rights section and request workflow.",
+        "problem": "Right now: DIFC data subject rights disclosed. Here it is on your site: \u201cIf you did not receive a verification code, you may need to register.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "DIFC_DPL",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection",
+      "fine_low_gbp": 40000,
+      "fine_high_gbp": 79000,
+      "evidence_quote": "If you did not receive a verification code, you may need to register.",
+      "recommendation": "Tamazia adds a DIFC-compliant rights section and request workflow.",
+      "framework_short": "DIFC_DPL",
+      "tamazia_fix_short": "Tamazia adds a DIFC-compliant rights section and request workflow.",
+      "layman_explanation": "DIFC residents have GDPR-style data rights; failing to honour or disclose them is the DIFC Commissioner most-fined breach.",
+      "enforcement_example": "DIFC DPL grants GDPR-style rights; breach of data-subject rights is the most heavily fined area (up to USD 100,000)."
+    },
+    {
+      "fact": "Right to rectification",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a rectification route.",
+        "problem": "Right now: Right to rectification."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-16-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a rectification route.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia adds a rectification route.",
+      "layman_explanation": "EU residents can correct inaccurate data; the route is not explained.",
+      "enforcement_example": "EU/UK GDPR Art. 16; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Right to restriction of processing",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia documents the restriction right.",
+        "problem": "Right now: Right to restriction of processing."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-18-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia documents the restriction right.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia documents the restriction right.",
+      "layman_explanation": "The right to restrict processing is not disclosed.",
+      "enforcement_example": "EU/UK GDPR Art. 18; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Records of processing activities (ROPA)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia builds and maintains the ROPA.",
+        "problem": "Right now: Records of processing activities (ROPA)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia builds and maintains the ROPA.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia builds and maintains the ROPA.",
+      "layman_explanation": "Art. 30 ROPA is expected for most controllers; none referenced.",
+      "enforcement_example": "EU/UK GDPR Art. 30; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Personal data breach notification within 72 hours",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia documents a 72-hour breach process.",
+        "problem": "Right now: Personal data breach notification within 72 hours."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-33-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia documents a 72-hour breach process.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia documents a 72-hour breach process.",
+      "layman_explanation": "Art. 33 requires 72-hour breach notification; no posture evident.",
+      "enforcement_example": "EU/UK GDPR Art. 33; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Communication of a breach to data subjects",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia documents Art. 34 subject-breach communication.",
+        "problem": "Right now: Communication of a breach to data subjects."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-34-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia documents Art. 34 subject-breach communication.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia documents Art. 34 subject-breach communication.",
+      "layman_explanation": "Art. 34 requires high-risk breaches to be communicated to data subjects; no posture.",
+      "enforcement_example": "EU/UK GDPR Art. 34; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Data protection impact assessment (DPIA)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia conducts DPIAs for high-risk processing.",
+        "problem": "Right now: Data protection impact assessment (DPIA)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-35-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia conducts DPIAs for high-risk processing.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia conducts DPIAs for high-risk processing.",
+      "layman_explanation": "Art. 35 requires DPIAs for high-risk processing; none referenced.",
+      "enforcement_example": "EU/UK GDPR Art. 35; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Citations to authoritative sources (Trust)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+        "problem": "Right now: Citations to authoritative sources (Trust)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "GOOGLE_EEAT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+      "framework_short": "GOOGLE_EEAT",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+      "layman_explanation": "Citations to authoritative sources (Trust). This is a specific requirement of Google E-E-A-T and Helpful Content, which Google Search enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Google Search ranking systems and manual actions: no statutory fine, but ranking suppression and loss of organic visibility; manual actions reported in Search Console."
+    },
+    {
+      "fact": "Clear, all-inclusive pricing for UAE consumers",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia displays all-inclusive prices and removes hidden-fee patterns for UAE buyers.",
+        "problem": "Right now: Clear, all-inclusive pricing for UAE consumers."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UAE_CONSUMER",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://uaelegislation.gov.ae/en/legislations/1530",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia displays all-inclusive prices and removes hidden-fee patterns for UAE buyers.",
+      "verify_context": null,
+      "framework_short": "UAE_CONSUMER",
+      "tamazia_fix_short": "Tamazia displays all-inclusive prices and removes hidden-fee patterns for UAE buyers.",
+      "layman_explanation": "UAE consumer law requires clear, all-inclusive pricing. Your displayed prices are not clearly inclusive, which the Ministry of Economy can penalise.",
+      "enforcement_example": "UAE Consumer Protection Law (Federal Law 15/2020) requires clear, honest pricing; the Ministry of Economy penalises misleading prices."
+    },
+    {
+      "fact": "No false urgency / misleading countdown timers",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia removes false-urgency patterns and keeps only genuine, evidenced ones.",
+        "problem": "Right now: No false urgency / misleading countdown timers."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_ASA_CAP",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia removes false-urgency patterns and keeps only genuine, evidenced ones.",
+      "verify_context": null,
+      "framework_short": "UK_ASA_CAP",
+      "tamazia_fix_short": "Tamazia removes false-urgency patterns and keeps only genuine, evidenced ones.",
+      "layman_explanation": "False-urgency tactics (fake countdowns, \"only 2 left\") breach the CAP Code and the DMCC Act. Your site uses urgency cues that must be genuine.",
+      "enforcement_example": "The ASA ruled against misleading countdown timers and false urgency in Oct 2025; the DMCC also bans false-urgency practices."
+    },
+    {
+      "fact": "Incorporated entity not displaying company number, registered office and place of registration on its website",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia add the full trading-disclosure block (registered name, number, place of registration, registered office) to the footer or contact page.",
+        "problem": "Right now: Incorporated entity not displaying company number, registered office and place of registration on its website."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_COMPANIES_ACT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "fine_low_gbp": 1000,
+      "fine_high_gbp": 1000,
+      "evidence_quote": null,
+      "recommendation": "Add the full trading-disclosure block (registered name, number, place of registration, registered office) to the footer or contact page.",
+      "framework_short": "UK_COMPANIES_ACT",
+      "tamazia_fix_short": "Add the full trading-disclosure block (registered name, number, place of registration, registered office) to the footer or contact page.",
+      "layman_explanation": "A UK limited company must print its company number, where it is registered and its registered office on the website. Many firms only put the trading name, which is an offence.",
+      "enforcement_example": "The Companies (Trading Disclosures) Regulations 2015 and Companies Act 2006 s82 require a company to show its registered name, number, place of registration and registered office address on its website. Failure is an offence carrying a 1000 pound fine plus 100 pounds a day."
+    },
+    {
+      "fact": "VAT-registered businesses must show VAT number on website per HMRC guidance.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the VAT number to the footer and to the invoicing template.",
+        "problem": "Right now: VAT-registered businesses must show VAT number on website per HMRC guidance."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_COMPANIES_ACT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/vat-businesses/vat-registration",
+      "fine_low_gbp": 500,
+      "fine_high_gbp": 5000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the VAT number to the footer and to the invoicing template.",
+      "framework_short": "UK_COMPANIES_ACT",
+      "tamazia_fix_short": "Tamazia adds the VAT number to the footer and to the invoicing template.",
+      "layman_explanation": "If you collect VAT, HMRC expects your VAT number on customer-facing documents and your website. Missing it is a low-fine offence but triggers HMRC visits.",
+      "enforcement_example": "Companies House: late-filing penalties, director disqualification and prosecution."
+    },
+    {
+      "fact": "Age-appropriate design (ICO Children Code)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia applies the ICO Children Code standards.",
+        "problem": "Right now: Age-appropriate design (ICO Children Code)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DPA_2018",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia applies the ICO Children Code standards.",
+      "framework_short": "UK_DPA_2018",
+      "tamazia_fix_short": "Tamazia applies the ICO Children Code standards.",
+      "layman_explanation": "If children are likely to use your service, the ICO Children Code requires age-appropriate design; not evident.",
+      "enforcement_example": "The ICO Children Code requires age-appropriate design for services likely accessed by children."
+    },
+    {
+      "fact": "Section 22 manual unstructured data exemption noted where applicable",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Section 22 manual unstructured data exemption noted where applicable\" on your site so it satisfies the Data Protection Act 2018.",
+        "problem": "Right now: Section 22 manual unstructured data exemption noted where applicable."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DPA_2018",
+      "evidence": "https://fourseasons.com/privacy/",
+      "severity": "P2",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/privacy/"
+      ],
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2018/12/section/22",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Section 22 manual unstructured data exemption noted where applicable\" on your site so it satisfies the Data Protection Act 2018.",
+      "framework_short": "UK_DPA_2018",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Section 22 manual unstructured data exemption noted where applicable\" on your site so it satisfies the Data Protection Act 2018.",
+      "layman_explanation": "Section 22 manual unstructured data exemption noted where applicable. This is a specific requirement of the Data Protection Act 2018, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "ICO: fines up to GBP 17.5M or 4% of global turnover, plus enforcement notices; action register at ico.org.uk/action-weve-taken."
+    },
+    {
+      "fact": "Allergen + mandatory food information online",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds compliant allergen and food information.",
+        "problem": "Right now: Allergen + mandatory food information online."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FOOD_INFO_2014",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds compliant allergen and food information.",
+      "verify_context": null,
+      "framework_short": "UK_FOOD_INFO_2014",
+      "tamazia_fix_short": "Tamazia adds compliant allergen and food information.",
+      "layman_explanation": "Food businesses selling online must provide allergen and mandatory food information. Yours is missing.",
+      "enforcement_example": "Food Information Regs 2014 require allergen information; Trading Standards and the FSA enforce."
+    },
+    {
+      "fact": "UK right to erasure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a UK erasure route.",
+        "problem": "Right now: UK right to erasure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-17-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a UK erasure route.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia adds a UK erasure route.",
+      "layman_explanation": "UK residents can request erasure; the route is not explained.",
+      "enforcement_example": "EU/UK GDPR Art. 17; fines up to GBP 17.5M or 4% turnover (ICO)."
+    },
+    {
+      "fact": "UK right to object to direct marketing",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the objection right and opt-out.",
+        "problem": "Right now: UK right to object to direct marketing."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-21-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the objection right and opt-out.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia adds the objection right and opt-out.",
+      "layman_explanation": "UK residents can object to direct marketing; not disclosed.",
+      "enforcement_example": "EU/UK GDPR Art. 21; fines up to GBP 17.5M or 4% turnover (ICO)."
+    },
+    {
+      "fact": "UK records of processing (ROPA)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia maintains the ROPA.",
+        "problem": "Right now: UK records of processing (ROPA)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia maintains the ROPA.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia maintains the ROPA.",
+      "layman_explanation": "UK GDPR Art. 30 ROPA expected; none referenced.",
+      "enforcement_example": "EU/UK GDPR Art. 30; fines up to GBP 17.5M or 4% turnover (ICO)."
+    },
+    {
+      "fact": "RIDDOR reportable incident reference",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"RIDDOR reportable incident reference\" on your site so it satisfies UK HSE.",
+        "problem": "Right now: RIDDOR reportable incident reference."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_HSE",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fourseasons.com/",
+        "https://fourseasons.com/legal/",
+        "https://fourseasons.com/privacy/",
+        "https://fourseasons.com/legal/accessibility-policy/",
+        "https://fourseasons.com/content/dam/fourseasons/images/web/FSH/PDFs/Four-Seasons-2026-Modern-Slavery-Statement.pdf",
+        "https://fourseasons.com/careers"
+      ],
+      "citation_url": "https://www.hse.gov.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"RIDDOR reportable incident reference\" on your site so it satisfies UK HSE.",
+      "framework_short": "UK_HSE",
+      "tamazia_fix_short": "Tamazia implements and verifies \"RIDDOR reportable incident reference\" on your site so it satisfies UK HSE.",
+      "layman_explanation": "RIDDOR reportable incident reference. This is a specific requirement of UK HSE, which the relevant regulator enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "HSE: improvement and prohibition notices and unlimited fines on conviction."
+    },
+    {
+      "fact": "Accessibility statement + WCAG 2.1 AA (ADA Title III)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia brings the site to WCAG 2.1 AA and adds an accessibility statement.",
+        "problem": "Right now: Accessibility statement + WCAG 2.1 AA (ADA Title III)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "US_ADA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.ada.gov/resources/web-guidance/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 59000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia brings the site to WCAG 2.1 AA and adds an accessibility statement.",
+      "framework_short": "US_ADA",
+      "tamazia_fix_short": "Tamazia brings the site to WCAG 2.1 AA and adds an accessibility statement.",
+      "layman_explanation": "ADA Title III expects WCAG 2.1 AA and an accessibility statement; missing.",
+      "enforcement_example": "DOJ 2024 guidance treats WCAG 2.1 AA as the ADA standard; thousands of Title III suits yearly."
+    },
+    {
+      "fact": "\"Limit the Use of My Sensitive Personal Information\" link",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the CPRA sensitive-data limit link.",
+        "problem": "Right now: \"Limit the Use of My Sensitive Personal Information\" link. Here it is on your site: \u201cEmbrace the classic yacht club lifestyle at our prime beachfront Hotel on the South Florida Riviera.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "US_CCPA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 6000,
+      "evidence_quote": "Embrace the classic yacht club lifestyle at our prime beachfront Hotel on the South Florida Riviera.",
+      "recommendation": "Tamazia adds the CPRA sensitive-data limit link.",
+      "framework_short": "US_CCPA",
+      "tamazia_fix_short": "Tamazia adds the CPRA sensitive-data limit link.",
+      "layman_explanation": "CPRA requires a \"Limit the Use of My Sensitive Personal Information\" link where you use sensitive data; missing.",
+      "enforcement_example": "CPRA requires a \"Limit the Use of My Sensitive Personal Information\" link where sensitive data drives inference."
+    },
+    {
+      "fact": "Opt-in / limit for sensitive data (Nebraska, Maryland MODPA, others)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds sensitive-data opt-in and a data-minimisation posture.",
+        "problem": "Right now: Opt-in / limit for sensitive data (Nebraska, Maryland MODPA, others). Here it is on your site: \u201cEmbrace the classic yacht club lifestyle at our prime beachfront Hotel on the South Florida Riviera.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "US_STATE_PRIVACY",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "fine_low_gbp": 6000,
+      "fine_high_gbp": 16000,
+      "evidence_quote": "Embrace the classic yacht club lifestyle at our prime beachfront Hotel on the South Florida Riviera.",
+      "recommendation": "Tamazia adds sensitive-data opt-in and a data-minimisation posture.",
+      "framework_short": "US_STATE_PRIVACY",
+      "tamazia_fix_short": "Tamazia adds sensitive-data opt-in and a data-minimisation posture.",
+      "layman_explanation": "If you process sensitive data (health, biometrics, precise location), states like Nebraska and Maryland require opt-in and strict necessity. Your site has no such control.",
+      "enforcement_example": "Nebraska requires opt-in for sensitive data; Maryland MODPA (Oct 2025) adds strict data-minimisation and expansive sensitive-data definitions."
+    },
+    {
+      "fact": "No LocalBusiness schema (address, opening hours, geo).",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+        "problem": "Right now: No LocalBusiness schema (address, opening hours, geo)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "LocalBusiness schema",
+      "evidence": "homepage JSON-LD \u00b7 no LocalBusiness",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+      "tamazia_fix_short": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+      "layman_explanation": "Local and map AI results depend on LocalBusiness schema with verified NAP and geo. Without it you are invisible to \"near me\" and local AI answers your competitors win."
+    },
+    {
+      "fact": "No Service or Offer schema describing what you sell.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia marks up each service with Service schema and clear offers.",
+        "problem": "Right now: No Service or Offer schema describing what you sell."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Service schema",
+      "evidence": "homepage JSON-LD \u00b7 no Service/Offer",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia marks up each service with Service schema and clear offers.",
+      "tamazia_fix_short": "Tamazia marks up each service with Service schema and clear offers.",
+      "layman_explanation": "AI engines extract Service/Offer schema to answer \"who offers X\". Without it your services are not machine-readable and you are left out of those answers."
+    },
+    {
+      "fact": "No FAQPage schema or structured Q&A.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+        "problem": "Right now: No FAQPage schema or structured Q&A."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "FAQ schema",
+      "evidence": "homepage JSON-LD \u00b7 no FAQPage",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+      "tamazia_fix_short": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+      "layman_explanation": "Answer engines preferentially quote structured Q&A. With no FAQPage you miss the single format LLMs cite most when answering buyer questions."
+    },
+    {
+      "fact": "No Review or AggregateRating schema.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+        "problem": "Right now: No Review or AggregateRating schema."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Review schema",
+      "evidence": "homepage JSON-LD \u00b7 no Review schema",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+      "tamazia_fix_short": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+      "layman_explanation": "Star ratings shown in AI and search answers come from Review/AggregateRating schema. Without it your reputation is invisible to the engines buyers now ask first."
+    },
+    {
+      "fact": "No bylined author or Person schema establishing expertise.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia ships a bylined expert-author programme with Person schema, credentials and sameAs.",
+        "problem": "Right now: No bylined author or Person schema establishing expertise."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "E-E-A-T author signals",
+      "evidence": "homepage \u00b7 no author / Person markup",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia ships a bylined expert-author programme with Person schema, credentials and sameAs.",
+      "tamazia_fix_short": "Tamazia ships a bylined expert-author programme with Person schema, credentials and sameAs.",
+      "layman_explanation": "Google E-E-A-T and LLM trust models reward demonstrable Experience, Expertise, Authority and Trust. Anonymous content is discounted and rarely cited in AI answers."
+    },
+    {
+      "fact": "No llms.txt file.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia publishes a curated llms.txt.",
+        "problem": "Right now: No llms.txt file."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "llms.txt",
+      "evidence": "GET /llms.txt \u00b7 404",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia publishes a curated llms.txt.",
+      "tamazia_fix_short": "Tamazia publishes a curated llms.txt.",
+      "layman_explanation": "llms.txt is the emerging standard that tells AI assistants how to represent your firm. Publishing one puts you ahead of peers who have not."
+    },
+    {
+      "fact": "Operates across 5 regions (UK, EU, US, Middle East, Global) on one-size-fits-all compliance.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia maps each market to its regime and closes the gaps.",
+        "problem": "Right now: Operates across 5 regions (UK, EU, US, Middle East, Global) on one-size-fits-all compliance."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "Multi-jurisdiction posture",
+      "evidence": "markets \u00b7 UK+EU+US+Middle East+Global",
+      "severity": "P2",
+      "confidence": 0.88,
+      "recommendation": "Tamazia maps each market to its regime and closes the gaps.",
+      "tamazia_fix_short": "Tamazia maps each market to its regime and closes the gaps.",
+      "layman_explanation": "Operating across UK, EU, US, Middle East, Global means several data-protection and advertising regimes apply at once. A single generic policy rarely satisfies all of them, which is the most common compliance gap for international firms and a direct credibility risk in regulated sectors.",
+      "enforcement_example": "Enforced by the framework regulator through penalties and sanctions per the statute (see citation)."
+    },
+    {
+      "fact": "For \"luxury hotels resorts New York\", the authoritative sources AI and Google read are tripadvisor.com, forbes.com, forbestravelguide.com and your site is not among the top results.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia gets you placed, complete and well-reviewed on the exact authority sources that feed AI and Google for your category.",
+        "problem": "Right now: For \"luxury hotels resorts New York\", the authoritative sources AI and Google read are tripadvisor.com, forbes.com, forbestravelguide.com and your site is not among the top results. Here it is on your site: \u201ctop authority sources: tripadvisor.com, forbes.com, forbestravelguide.com; your domain absent from top 10\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "metric": {
+        "label": "Authority sources for your query",
+        "sources": [
+          "tripadvisor.com",
+          "forbes.com",
+          "forbestravelguide.com"
+        ]
+      },
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Source gap",
+      "evidence": "free SERP \u00b7 query \"luxury hotels resorts New York\"",
+      "severity": "P2",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "top authority sources: tripadvisor.com, forbes.com, forbestravelguide.com; your domain absent from top 10",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia gets you placed, complete and well-reviewed on the exact authority sources that feed AI and Google for your category.",
+      "layman_explanation": "AI answers and Google both lean on a handful of trusted sources for each category (directories, review sites, trade press, Wikipedia). For your buyer query those sources are tripadvisor.com, forbes.com, forbestravelguide.com. Your competitors are listed and cited there; you are not, so the engines repeat what those sources say and leave you out."
+    },
+    {
+      "fact": "DPIA + appropriate-safeguards posture (ADGM)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia documents ADGM DPIAs and safeguards.",
+        "problem": "Right now: DPIA + appropriate-safeguards posture (ADGM)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "ADGM_DPR",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.adgm.com/operating-in-adgm/office-of-data-protection",
+      "fine_low_gbp": 40000,
+      "fine_high_gbp": 79000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia documents ADGM DPIAs and safeguards.",
+      "framework_short": "ADGM_DPR",
+      "tamazia_fix_short": "Tamazia documents ADGM DPIAs and safeguards.",
+      "layman_explanation": "ADGM controllers must run DPIAs for high-risk processing; not evident.",
+      "enforcement_example": "ADGM DP Regs require DPIAs for high-risk processing and appropriate safeguards."
+    },
+    {
+      "fact": "Breach-notification readiness (Saudi PDPL)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia documents a Saudi breach-notification process.",
+        "problem": "Right now: Breach-notification readiness (Saudi PDPL)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "SAUDI_PDPL",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+      "fine_low_gbp": 630000,
+      "fine_high_gbp": 1050000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia documents a Saudi breach-notification process.",
+      "framework_short": "SAUDI_PDPL",
+      "tamazia_fix_short": "Tamazia documents a Saudi breach-notification process.",
+      "layman_explanation": "Saudi PDPL requires breach notification to SDAIA; no posture is evident.",
+      "enforcement_example": "Saudi PDPL requires breach notification to SDAIA and affected data subjects."
+    },
+    {
+      "fact": "VAT number displayed where VAT-registered",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the VAT number to the footer and invoices.",
+        "problem": "Right now: VAT number displayed where VAT-registered."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_COMPANIES_ACT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the VAT number to the footer and invoices.",
+      "verify_context": null,
+      "framework_short": "UK_COMPANIES_ACT",
+      "tamazia_fix_short": "Tamazia adds the VAT number to the footer and invoices.",
+      "layman_explanation": "If VAT-registered you must display your VAT number on the website. It is not shown.",
+      "enforcement_example": "HMRC requires VAT-registered businesses to show the VAT number on their website and invoices."
+    },
+    {
+      "fact": "Organisation processing personal data with no sign of ICO data-protection-fee registration",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Organisation processing personal data with no sign of ICO data-protection-fee registration\" on your site so it satisfies the Data Protection Act 2018.",
+        "problem": "Right now: Organisation processing personal data with no sign of ICO data-protection-fee registration."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DPA_2018",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/data-protection-fee/",
+      "fine_low_gbp": 400,
+      "fine_high_gbp": 4350,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Organisation processing personal data with no sign of ICO data-protection-fee registration\" on your site so it satisfies the Data Protection Act 2018.",
+      "framework_short": "UK_DPA_2018",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Organisation processing personal data with no sign of ICO data-protection-fee registration\" on your site so it satisfies the Data Protection Act 2018.",
+      "layman_explanation": "Organisation processing personal data with no sign of ICO data-protection-fee registration. This is a specific requirement of the Data Protection Act 2018, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Most UK organisations that process personal data must pay the ICO data protection fee of 40 to 2900 pounds and register. The ICO issues monetary penalties up to 4350 pounds for non-payment and publishes defaulters."
+    },
+    {
+      "fact": "Food hygiene rating display where used in promotion",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia displays the current FHRS rating accurately.",
+        "problem": "Right now: Food hygiene rating display where used in promotion."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FSA",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.food.gov.uk/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia displays the current FHRS rating accurately.",
+      "verify_context": null,
+      "framework_short": "UK_FSA",
+      "tamazia_fix_short": "Tamazia displays the current FHRS rating accurately.",
+      "layman_explanation": "If you reference a food hygiene rating it must be current and accurate. Verify yours.",
+      "enforcement_example": "The FSA requires food hygiene ratings to be displayed accurately where referenced."
+    },
+    {
+      "fact": "Premises/personal licence displayed for licensable activity",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds licensing and age-verification information.",
+        "problem": "Right now: Premises/personal licence displayed for licensable activity."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_LICENSING_ACT",
+      "evidence": "https://fourseasons.com/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/guidance/alcohol-licensing",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds licensing and age-verification information.",
+      "verify_context": null,
+      "framework_short": "UK_LICENSING_ACT",
+      "tamazia_fix_short": "Tamazia adds licensing and age-verification information.",
+      "layman_explanation": "Licensable premises must operate under a valid licence and show age policies (Challenge 25); not evident.",
+      "enforcement_example": "The Licensing Act 2003 requires licensable premises to operate under a valid licence (and show age policies)."
+    },
+    {
+      "fact": "No Referrer-Policy header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets a strict Referrer-Policy.",
+        "problem": "Right now: No Referrer-Policy header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Referrer-Policy",
+      "evidence": "response headers \u00b7 referrer-policy absent",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets a strict Referrer-Policy.",
+      "tamazia_fix_short": "Tamazia sets a strict Referrer-Policy.",
+      "layman_explanation": "Full URLs (which can carry sensitive query parameters) leak to third parties on outbound navigation without a Referrer-Policy."
+    },
+    {
+      "fact": "No Permissions-Policy header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets a least-privilege Permissions-Policy.",
+        "problem": "Right now: No Permissions-Policy header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Permissions-Policy",
+      "evidence": "response headers \u00b7 permissions-policy absent",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets a least-privilege Permissions-Policy.",
+      "tamazia_fix_short": "Tamazia sets a least-privilege Permissions-Policy.",
+      "layman_explanation": "Powerful browser features (camera, microphone, geolocation) are not restricted, widening the attack surface a security review will flag."
+    },
+    {
+      "fact": "Your domain is not signed with DNSSEC.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+        "problem": "Right now: Your domain is not signed with DNSSEC."
+      },
+      "state": "CONFIRMED",
+      "bucket": "tls_dns",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "DNSSEC not enabled",
+      "evidence": "DNS \u00b7 no DS record and AD flag false",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+      "tamazia_fix_short": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+      "layman_explanation": "Without DNSSEC, attackers can forge DNS responses (cache poisoning) to silently redirect your visitors or intercept email. Enterprise, finance and government client security reviews increasingly require it."
+    }
+  ],
+  "authority": null,
+  "geo_probe": {
+    "samples": 1,
+    "ai_knows": true,
+    "grounded": null,
+    "ai_sentiment": "positive",
+    "repeatability": 100,
+    "share_of_voice": 0,
+    "top_competitors": [
+      {
+        "of": 1,
+        "name": "Mandarin Oriental New York",
+        "in_runs": 1
+      },
+      {
+        "of": 1,
+        "name": "Baccarat Hotel & Residences New York",
+        "in_runs": 1
+      }
+    ]
+  },
+  "ai_citation": {
+    "ok": true,
+    "llm": {
+      "ran": true,
+      "cited": false,
+      "model": "llama-3.3-70b-versatile",
+      "answer": "The Plaza, The Ritz-Carlton New York Central Park, The St. Regis New York, Mandarin Oriental New York, The Peninsula New York, The Langham New York, Baccarat Hotel & Residences New York, Four Seasons Hotel New York City",
+      "provider": "groq"
+    },
+    "query": "luxury hotels resorts New York",
+    "source": "serp",
+    "checked": 10,
+    "country": "UK",
+    "competitors": [
+      {
+        "pos": 1,
+        "domain": "timeout.com"
+      },
+      {
+        "pos": 2,
+        "domain": "robbreport.com"
+      },
+      {
+        "pos": 3,
+        "domain": "luxuryhotel.guide"
+      },
+      {
+        "pos": 5,
+        "domain": "thehotelguru.com"
+      },
+      {
+        "pos": 6,
+        "domain": "forbes.com"
+      }
+    ],
+    "entity_known": false,
+    "firm_position": null,
+    "surface_owned_by": [
+      "timeout.com",
+      "robbreport.com",
+      "luxuryhotel.guide"
+    ]
+  },
+  "content_gap": null,
+  "geo_visuals": {
+    "ai_radar": "<svg viewBox=\"0 0 400 400\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"200\" y=\"24\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">AI visibility</text><polygon points=\"200.0,157.5 228.1,173.8 228.1,206.3 200.0,222.5 171.9,206.3 171.9,173.8\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,125.0 256.3,157.5 256.3,222.5 200.0,255.0 143.7,222.5 143.7,157.5\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,92.5 284.4,141.3 284.4,238.8 200.0,287.5 115.6,238.8 115.6,141.3\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,60.0 312.6,125.0 312.6,255.0 200.0,320.0 87.4,255.0 87.4,125.0\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,86.0 312.6,125.0 200.0,190.0 200.0,320.0 200.0,190.0 200.0,190.0\" fill=\"#3D0E0E\" fill-opacity=\"0.25\" stroke=\"#3D0E0E\" stroke-width=\"2\"/><text x=\"200.0\" y=\"38.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Entity</text><text x=\"200.0\" y=\"51.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">80</text><text x=\"331.6\" y=\"114.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Crawler access</text><text x=\"331.6\" y=\"127.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">100</text><text x=\"331.6\" y=\"266.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Share of voice</text><text x=\"331.6\" y=\"279.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text><text x=\"200.0\" y=\"342.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Schema</text><text x=\"200.0\" y=\"355.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">100</text><text x=\"68.4\" y=\"266.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Knowledge graph</text><text x=\"68.4\" y=\"279.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text><text x=\"68.4\" y=\"114.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Citations</text><text x=\"68.4\" y=\"127.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text></svg>",
+    "ai_engine_grid": "<svg viewBox=\"0 0 560 180\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"16\" y=\"22\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">Which AI engines cite you</text><rect x=\"8\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"70\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">ChatGPT</text><text x=\"70\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"148\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"210\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Gemini</text><text x=\"210\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"288\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"350\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Perplexity</text><text x=\"350\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"428\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"490\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Claude</text><text x=\"490\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"8\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"70\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Copilot</text><text x=\"70\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"148\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"210\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Grok</text><text x=\"210\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"288\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"350\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Meta AI</text><text x=\"350\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"428\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"490\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Google AI</text><text x=\"490\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text></svg>",
+    "entity_web_map": "<svg viewBox=\"0 0 560 360\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"280\" y=\"22\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">Who the AI knowledge graph connects to you</text><circle cx=\"280\" cy=\"180\" r=\"30\" fill=\"#3D0E0E\"/><text x=\"280\" y=\"184\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"12\" fill=\"#fff\">fourseasons</text></svg>"
+  },
+  "keyword_map": {
+    "ok": true,
+    "city": "New York",
+    "keywords": [
+      {
+        "leader": "timeout.com",
+        "target": 3,
+        "keyword": "luxury hotels resorts New York",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "timeout.com",
+        "target": 3,
+        "keyword": "best luxury hotels resorts in New York",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "timeout.com",
+        "target": 3,
+        "keyword": "top luxury hotels resorts New York",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "cheyenne.org",
+        "target": 3,
+        "keyword": "luxury hotels resorts near me",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "timeout.com",
+        "target": 3,
+        "keyword": "luxury hotels resorts New York reviews",
+        "leader_pos": 2,
+        "my_position": null
+      },
+      {
+        "leader": "timeout.com",
+        "target": 3,
+        "keyword": "luxury hotels in new york city",
+        "leader_pos": 1,
+        "my_position": null
+      }
+    ],
+    "service_noun": "luxury hotels resorts"
+  },
+  "screenshots": {
+    "homepage": "https://image.thum.io/get/width/1200/crop/1000/https://fourseasons.com",
+    "provider": "thum.io (free, no key)",
+    "answer_surface": "https://image.thum.io/get/width/1200/crop/1000/https://www.google.com/search?q=luxury%20hotels%20resorts%20New%20York"
+  },
+  "via_archive": false,
+  "ai_readiness": {
+    "score": 80,
+    "has_same_as": true,
+    "in_wikidata": false,
+    "has_llms_txt": false,
+    "has_org_schema": true,
+    "blocked_ai_bots": []
+  },
+  "archive_date": null,
+  "exec_summary": "The single most serious regulatory risk is the potential fine of up to GBP 300,292,035 for non-compliance with various regulations, including privacy, cookie, and consumer rights laws, which matters because it poses a significant financial threat to the company. By addressing these regulatory issues, particularly the high-priority (P0) findings, Four Seasons can mitigate this risk and create a headline opportunity to enhance its reputation, build trust with customers, and ensure a competitive advantage in the market.",
+  "needs_review": [],
+  "trust_summary": {
+    "confirmed": 74,
+    "needs_review": 0
+  },
+  "schema_version": "v2",
+  "framework_version": "4.7",
+  "engine_jurisdictions": [
+    "UK",
+    "US",
+    "AE",
+    "EU",
+    "FR",
+    "SA"
+  ],
+  "applicable_frameworks": [
+    "ADGM_DPR",
+    "DE_BDSG",
+    "DIFC_DPL",
+    "EU_AI_ACT",
+    "EU_EAA_2025",
+    "EU_EPRIVACY",
+    "EU_GDPR",
+    "FR_CNIL_2025",
+    "GOOGLE_EEAT",
+    "SAUDI_PDPL",
+    "UAE_CONSUMER",
+    "UAE_PDPL",
+    "UK_ASA_CAP",
+    "UK_CAA",
+    "UK_CMA",
+    "UK_COMPANIES_ACT",
+    "UK_CRA_2015",
+    "UK_DMCC_2024",
+    "UK_DPA_2018",
+    "UK_EQUALITY_2010",
+    "UK_FOOD_INFO_2014",
+    "UK_FSA",
+    "UK_GDPR_A13",
+    "UK_HSE",
+    "UK_ICO_COOKIES",
+    "UK_LICENSING_ACT",
+    "UK_MODERN_SLAVERY",
+    "UK_PECR",
+    "UK_TRADING_STANDARDS",
+    "US_ADA",
+    "US_CCPA",
+    "US_FTC",
+    "US_FTC_ENDORSE",
+    "US_STATE_PRIVACY",
+    "US_TCPA"
+  ],
+  "competitive_benchmark": {
+    "you": {
+      "cited": false,
+      "position": null
+    },
+    "query": "luxury hotels resorts New York",
+    "source": "live SERP + AI-citation probe",
+    "competitors": [
+      {
+        "name": "timeout.com",
+        "domain": "timeout.com",
+        "position": 1
+      },
+      {
+        "name": "robbreport.com",
+        "domain": "robbreport.com",
+        "position": 2
+      },
+      {
+        "name": "luxuryhotel.guide",
+        "domain": "luxuryhotel.guide",
+        "position": 3
+      },
+      {
+        "name": "thehotelguru.com",
+        "domain": "thehotelguru.com",
+        "position": 5
+      },
+      {
+        "name": "forbes.com",
+        "domain": "forbes.com",
+        "position": 6
+      }
+    ],
+    "keyword_leaders": [
+      {
+        "leader": "timeout.com",
+        "keyword": "luxury hotels resorts New York",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "timeout.com",
+        "keyword": "best luxury hotels resorts in New York",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "timeout.com",
+        "keyword": "top luxury hotels resorts New York",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "cheyenne.org",
+        "keyword": "luxury hotels resorts near me",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "timeout.com",
+        "keyword": "luxury hotels resorts New York reviews",
+        "your_position": null,
+        "leader_position": 2
+      },
+      {
+        "leader": "timeout.com",
+        "keyword": "luxury hotels in new york city",
+        "your_position": null,
+        "leader_position": 1
+      }
+    ]
+  },
+  "detected_jurisdictions": [
+    "United Kingdom",
+    "United States",
+    "United Arab Emirates",
+    "France",
+    "Spain",
+    "Italy",
+    "Saudi Arabia",
+    "Switzerland"
+  ],
+  "jurisdiction_statement": {
+    "regimes": [
+      {
+        "why": "serves UK clients",
+        "regime": "UK GDPR + PECR"
+      },
+      {
+        "why": "serves EU clients (applies regardless of where the firm is registered)",
+        "regime": "EU GDPR + ePrivacy + EAA"
+      },
+      {
+        "why": "serves US clients",
+        "regime": "CCPA/CPRA + ADA"
+      },
+      {
+        "why": "serves Gulf clients",
+        "regime": "UAE PDPL / DIFC DP"
+      },
+      {
+        "why": "applies to every site that wants to rank in Google or be cited by AI answer engines, regardless of where it is registered",
+        "regime": "Google Search Essentials + E-E-A-T"
+      }
+    ],
+    "statement": "fourseasons is registered in the United Kingdom and its own website shows it serves clients in the UK, the EU, the US, the Middle East and globally. It is therefore bound by UK law (UK GDPR, PECR, CMA/DMCC, sector regulators), EU law (GDPR, ePrivacy, the European Accessibility Act, DSA), US law (CCPA/CPRA and ~20 state privacy laws, FTC, ADA), Gulf law (UAE PDPL, DIFC/ADGM, RERA where applicable) and multiple international regimes, not only the law of its country of registration. This audit applies the laws of every jurisdiction the site shows you operate in, and no others.",
+    "registered": "UK",
+    "registered_label": "the United Kingdom",
+    "operating_regions": [
+      "UK",
+      "EU",
+      "US",
+      "Middle East",
+      "Global"
+    ]
+  },
+  "framework_last_reviewed": "2026-06-03"
+}

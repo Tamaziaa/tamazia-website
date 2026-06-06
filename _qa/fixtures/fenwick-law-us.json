@@ -1,0 +1,1430 @@
+{
+  "scan": {
+    "psi": null,
+    "counts": {
+      "p0": 0,
+      "p1": 1,
+      "p2": 10,
+      "total": 11
+    },
+    "markets": {
+      "cities": [
+        "Boston"
+      ],
+      "regions": [
+        "US"
+      ],
+      "evidence": {
+        "United States": [
+          "mentioned",
+          "city: Boston",
+          "USD pricing"
+        ]
+      },
+      "serves_eu": false,
+      "confidence": {
+        "United States": 4
+      },
+      "currencies": [
+        "USD"
+      ],
+      "eu_countries": [],
+      "primary_city": "Boston",
+      "international": true,
+      "operating_countries": [
+        "United States"
+      ]
+    },
+    "signals": {
+      "csp": true,
+      "ugc": false,
+      "xfo": true,
+      "hsts": true,
+      "lang": true,
+      "xcto": true,
+      "title": "Fenwick | Homepage",
+      "refpol": true,
+      "ad_tech": {
+        "count": 1,
+        "signals": [
+          "LinkedIn Insight Tag"
+        ],
+        "runs_ads": true,
+        "platforms": [
+          "linkedin-ads"
+        ]
+      },
+      "favicon": true,
+      "json_ld": true,
+      "permpol": false,
+      "uses_ai": false,
+      "h1_count": 2,
+      "payments": false,
+      "trackers": [
+        {
+          "cookies": [
+            "_ga",
+            "_gali",
+            "_ga_",
+            "_gid",
+            "_gat"
+          ],
+          "category": "Analytics",
+          "platform": "Google Analytics",
+          "controller": "Google"
+        },
+        {
+          "cookies": [
+            "td"
+          ],
+          "category": "Marketing",
+          "platform": "Google Tag Manager",
+          "controller": "Google"
+        },
+        {
+          "cookies": [
+            "lidc",
+            "bcookie",
+            "bscookie",
+            "trkCode",
+            "trkInfo"
+          ],
+          "category": "Advertising",
+          "platform": "LinkedIn Insight Tag",
+          "controller": "LinkedIn"
+        }
+      ],
+      "viewport": true,
+      "canonical": true,
+      "has_forms": true,
+      "title_len": 18,
+      "biometrics": false,
+      "html_bytes": 132102,
+      "open_graph": true,
+      "twitter_card": true,
+      "meta_description": false,
+      "meta_description_len": 0
+    },
+    "final_url": "https://fenwick.com",
+    "reachable": true,
+    "scanned_at": "2026-06-04T18:50:13.520Z",
+    "site_scan_reachable": true
+  },
+  "rules": [
+    {
+      "rule_id": "1798.100",
+      "severity": "P0",
+      "description": "Right-to-know disclosure on data collected",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "1798.105",
+      "severity": "P0",
+      "description": "Right to delete disclosure",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "1798.120",
+      "severity": "P0",
+      "description": "Right to opt out of sale or sharing",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "1798.135",
+      "severity": "P0",
+      "description": "Do Not Sell or Share My Personal Information link",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "SPAM01",
+      "severity": "P0",
+      "description": "Subject line cannot be deceptive",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "SPAM02",
+      "severity": "P0",
+      "description": "From header must identify sender",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "SPAM03",
+      "severity": "P0",
+      "description": "Postal address required in email",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "SPAM04",
+      "severity": "P0",
+      "description": "Opt-out within 10 business days",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "AUTHOR",
+      "severity": "P1",
+      "description": "Author byline on substantive content (Experience + Expertise)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "CREDENTIALS",
+      "severity": "P1",
+      "description": "Author credentials visible (Authoritativeness)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "ADA_WEB_ACCESSIBILITY",
+      "severity": "P1",
+      "description": "US public-accommodation website with no evident accessibility conformance under ADA Title III",
+      "citation_url": "https://www.ada.gov/resources/web-guidance/",
+      "framework_short": "US_ADA"
+    },
+    {
+      "rule_id": "WCAG_AA",
+      "severity": "P1",
+      "description": "WCAG 2.1 AA accessibility statement",
+      "citation_url": "https://www.ada.gov/notices/2024/04/24/web-accessibility-final-rule/",
+      "framework_short": "US_ADA"
+    },
+    {
+      "rule_id": "ATTY_MISLEADING",
+      "severity": "P1",
+      "description": "No false or misleading statements about the lawyer or services (ABA 7.1)",
+      "citation_url": "https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/rule_7_1_communications_concerning_a_lawyer_s_services/",
+      "framework_short": "US_ATTORNEY_ADVERTISING"
+    },
+    {
+      "rule_id": "SPAM05",
+      "severity": "P1",
+      "description": "Commercial messages must be labelled if subscriber opted in for transactional only",
+      "citation_url": "https://www.ftc.gov/",
+      "framework_short": "US_FTC"
+    },
+    {
+      "rule_id": "FTC_CONSUMER_REVIEW_RULE",
+      "severity": "P1",
+      "description": "Reviews or testimonials shown to US consumers without genuine-review safeguards under the FTC Consumer Review Rule",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers",
+      "framework_short": "US_FTC_ENDORSE"
+    },
+    {
+      "rule_id": "FTC_DISCLOSURE",
+      "severity": "P1",
+      "description": "Sites with influencer, affiliate or AI content must disclose endorsements clearly.",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/ftc-endorsement-guides-what-people-are-asking",
+      "framework_short": "US_FTC_ENDORSE"
+    },
+    {
+      "rule_id": "SP_DONOTSELL",
+      "severity": "P1",
+      "description": "\"Do Not Sell or Share\" / \"Your Privacy Choices\" opt-out link",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "SP_GPC",
+      "severity": "P1",
+      "description": "Honour the Global Privacy Control universal opt-out signal",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "SP_NOTICE",
+      "severity": "P1",
+      "description": "State-compliant privacy notice (categories, purposes, rights, opt-out methods)",
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "VCDPA_DATA_RIGHTS",
+      "severity": "P1",
+      "description": "Virginia requires a controller privacy notice including access, deletion, portability rights.",
+      "citation_url": "https://lis.virginia.gov/cgi-bin/legp604.exe?212+sum+SB1392",
+      "framework_short": "US_VCDPA"
+    },
+    {
+      "rule_id": "CITATIONS",
+      "severity": "P2",
+      "description": "Citations to authoritative sources (Trust)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "EEAT_AUTHOR",
+      "severity": "P2",
+      "description": "Published content shows author / expertise signals (E-E-A-T)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "ADA_STATEMENT",
+      "severity": "P2",
+      "description": "Accessibility statement + WCAG 2.1 AA (ADA Title III)",
+      "citation_url": "https://www.ada.gov/resources/web-guidance/",
+      "framework_short": "US_ADA"
+    },
+    {
+      "rule_id": "ATTY_RESULTS",
+      "severity": "P2",
+      "description": "Past-results / testimonial disclaimer",
+      "citation_url": "https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/rule_7_1_communications_concerning_a_lawyer_s_services/",
+      "framework_short": "US_ATTORNEY_ADVERTISING"
+    },
+    {
+      "rule_id": "CCPA_LIMIT_SENSITIVE",
+      "severity": "P2",
+      "description": "\"Limit the Use of My Sensitive Personal Information\" link",
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "framework_short": "US_CCPA"
+    },
+    {
+      "rule_id": "FTC_MATERIAL_CONNECTION",
+      "severity": "P2",
+      "description": "Endorsements, ambassador or affiliate content without a clear material-connection disclosure",
+      "citation_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "framework_short": "US_FTC_ENDORSE"
+    },
+    {
+      "rule_id": "SP_RIGHTS",
+      "severity": "P2",
+      "description": "Consumer rights (access, delete, correct, opt-out, appeal) + request method",
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "SP_SENSITIVE",
+      "severity": "P2",
+      "description": "Opt-in / limit for sensitive data (Nebraska, Maryland MODPA, others)",
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "framework_short": "US_STATE_PRIVACY"
+    },
+    {
+      "rule_id": "VCDPA_APPEAL",
+      "severity": "P3",
+      "description": "Virginia consumer rights + mandatory appeal process",
+      "citation_url": "https://law.lis.virginia.gov/vacodefull/title59.1/chapter53/",
+      "framework_short": "US_VCDPA"
+    }
+  ],
+  "domain": "fenwick.com",
+  "sector": "law-firms",
+  "country": "USA",
+  "lead_id": null,
+  "glossary": {
+    "used": [
+      "domain authority",
+      "da",
+      "pa",
+      "geo",
+      "schema",
+      "llms.txt",
+      "nap",
+      "map pack",
+      "e-e-a-t",
+      "pecr",
+      "ccpa",
+      "meta description",
+      "sameas",
+      "wikidata",
+      "share of voice"
+    ],
+    "terms": {
+      "da": "Domain Authority: a 0 to 100 trust score based on the quality of sites linking to you. The higher it is, the easier everything else ranks.",
+      "pa": "Page Authority: the same trust idea as Domain Authority but for one specific page rather than the whole site.",
+      "cls": "Cumulative Layout Shift: how much your page jumps around while loading. Jumpy pages frustrate users and rank worse.",
+      "csp": "Content-Security-Policy: a security header that blocks malicious scripts. Security reviews check for it.",
+      "geo": "Generative Engine Optimisation: whether AI answer engines (ChatGPT, Gemini, Perplexity, Google AI Overviews) actually name and cite your business when a buyer asks them for a provider like you.",
+      "lcp": "Largest Contentful Paint: how long your main content takes to appear. Over 2.5 seconds and Google ranks you lower and visitors leave.",
+      "nap": "Name, Address, Phone. Search engines cross-check these to trust that your business is real and local. Inconsistent or missing NAP sinks local rankings.",
+      "ccpa": "California's privacy law, and the template for the roughly 20 US states that now have one. It gives consumers the right to opt out and to have data deleted.",
+      "gdpr": "The data-protection law for the UK and EU. Fines reach GBP 17.5M or 4% of global turnover, so gaps here are the most expensive on the page.",
+      "hsts": "A security header that stops your site being downgraded from secure HTTPS. Corporate buyers check for it, so its absence is an easy red flag.",
+      "pecr": "UK rules on cookies and electronic marketing. You must get clear consent before non-essential cookies or trackers fire.",
+      "sameas": "Schema links that connect your site to your verified profiles (LinkedIn, Companies House, Wikidata) so AI knows the business is really you.",
+      "schema": "Hidden code (structured data) that tells search engines and AI exactly who you are, what you offer and where. Without it they have to guess, and they guess wrong.",
+      "e-e-a-t": "Google's test of Experience, Expertise, Authoritativeness and Trust. It decides whether your content deserves to rank, and it matters most in law, health and finance.",
+      "organic": "The unpaid search results, as opposed to ads. Ranking here is the durable, compounding kind of visibility.",
+      "uk gdpr": "The UK version of the EU data-protection law, enforced by the ICO with fines up to GBP 17.5M or 4% of global turnover.",
+      "llms.txt": "A simple file that tells AI models what your site is about and what they may use. It is a new standard and most firms do not have one yet, so adding it is an easy edge.",
+      "map pack": "The three-business map result at the top of local searches. The top spots take the majority of local clicks.",
+      "wikidata": "Google's and AI's open knowledge base. An entry there makes you a recognised entity that answer engines can confidently cite.",
+      "canonical": "A line of code that tells Google which version of a page is the real one, so duplicate web addresses do not split your ranking power.",
+      "ai crawler": "The automated readers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) that AI answer engines send to read your site. Block them and those engines cannot cite you.",
+      "local pack": "The three businesses Google shows on a small map at the top of local searches. Most local clicks go to those three, so being outside it costs real enquiries.",
+      "robots.txt": "A file that tells web crawlers which parts of your site they may read. One wrong line here can make you invisible to Google or to AI engines.",
+      "ai visibility": "Whether the AI answer engines buyers now ask first will name and cite you, or only your competitors.",
+      "share of voice": "How often you appear versus your competitors when buyers search or ask AI in your category. Low share of voice means they are heard and you are not.",
+      "structured data": "Hidden code that spells out who you are and what you offer so Google and AI can read it precisely instead of guessing.",
+      "domain authority": "A 0 to 100 score of how much trust your site has earned from links on other websites. Higher means Google and AI engines are more likely to rank and cite you. It is the single biggest reason one site outranks another.",
+      "meta description": "The summary Google shows under your result. A good one lifts click-through; if it is missing, Google writes its own from random page text."
+    }
+  },
+  "news_map": {
+    "US_ADA": "DOJ ADA Title III digital-accessibility rule finalised April 2024. 4,000+ web-accessibility lawsuits in 2024.",
+    "US_FTC": "FTC (2026-05-21): FTC to Require Cox Media Group, Two Other Firms to Pay Nearly $1 Million to Settle Charges They Deceived Customers About \u201cActive Listening\u201d AI-Powered Marketing Service \u2014 $1M. Source: https://www.ftc.gov/news-events/news/press-releases/2026/05/ftc-require-cox-media-group-two-other-firms-pay-nearly-1-million-settle-charges-they-deceived",
+    "US_CCPA": "California CPPA brought 12 enforcement actions in 2024, largest fine $1.55M.",
+    "GOOGLE_EEAT": "Google March 2024 core update emphasised E-E-A-T; sites without author bylines saw 31% traffic drop.",
+    "US_FTC_ENDORSE": "FTC (2026-05-21): FTC to Require Cox Media Group, Two Other Firms to Pay Nearly $1 Million to Settle Charges They Deceived Customers About \u201cActive Listening\u201d AI-Powered Marketing Service \u2014 $1M. Source: https://www.ftc.gov/news-events/news/press-releases/2026/05/ftc-require-cox-media-group-two-other-firms-pay-nearly-1-million-settle-charges-they-deceived"
+  },
+  "pointers": [
+    {
+      "fact": "Right to delete disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Right to delete disclosure\" on your site so it satisfies the CCPA as amended by CPRA.",
+        "problem": "Right now: Right to delete disclosure. Here it is on your site: \u201cAlthough this Site may be viewed from any of the 50 United States of America and territories, as well as any country, Fenwick's attorneys pr\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "US_CCPA",
+      "evidence": "https://www.fenwick.com/terms-of-use",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 7500,
+      "evidence_quote": "Although this Site may be viewed from any of the 50 United States of America and territories, as well as any country, Fenwick's attorneys practice primarily in the State of California, United States of America.",
+      "recommendation": "Tamazia implements and verifies \"Right to delete disclosure\" on your site so it satisfies the CCPA as amended by CPRA.",
+      "framework_short": "US_CCPA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Right to delete disclosure\" on your site so it satisfies the CCPA as amended by CPRA.",
+      "layman_explanation": "Right to delete disclosure. This is a specific requirement of the CCPA as amended by CPRA, which the CPPA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "California Privacy Protection Agency and Attorney General: civil penalties of USD 2,500 per violation (USD 7,500 if intentional or involving minors); e.g. Sephora USD 1.2M settlement (2022)."
+    },
+    {
+      "fact": "Do Not Sell or Share My Personal Information link",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Do Not Sell or Share My Personal Information link\" on your site so it satisfies the CCPA as amended by CPRA.",
+        "problem": "Right now: Do Not Sell or Share My Personal Information link. Here it is on your site: \u201cAlthough this Site may be viewed from any of the 50 United States of America and territories, as well as any country, Fenwick's attorneys pr\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "US_CCPA",
+      "evidence": "https://www.fenwick.com/terms-of-use",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 7500,
+      "evidence_quote": "Although this Site may be viewed from any of the 50 United States of America and territories, as well as any country, Fenwick's attorneys practice primarily in the State of California, United States of America.",
+      "recommendation": "Tamazia implements and verifies \"Do Not Sell or Share My Personal Information link\" on your site so it satisfies the CCPA as amended by CPRA.",
+      "framework_short": "US_CCPA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Do Not Sell or Share My Personal Information link\" on your site so it satisfies the CCPA as amended by CPRA.",
+      "layman_explanation": "Do Not Sell or Share My Personal Information link. This is a specific requirement of the CCPA as amended by CPRA, which the CPPA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "California Privacy Protection Agency and Attorney General: civil penalties of USD 2,500 per violation (USD 7,500 if intentional or involving minors); e.g. Sephora USD 1.2M settlement (2022)."
+    },
+    {
+      "fact": "Honour the Global Privacy Control universal opt-out signal",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements server- and client-side GPC detection wired to your opt-out.",
+        "problem": "Right now: Honour the Global Privacy Control universal opt-out signal."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "US_STATE_PRIVACY",
+      "evidence": "https://fenwick.com/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "fine_low_gbp": 6000,
+      "fine_high_gbp": 16000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements server- and client-side GPC detection wired to your opt-out.",
+      "framework_short": "US_STATE_PRIVACY",
+      "tamazia_fix_short": "Tamazia implements server- and client-side GPC detection wired to your opt-out.",
+      "layman_explanation": "Most US privacy states now require your site to detect and honour the Global Privacy Control browser signal for opting out of data sale/sharing. Your site shows no GPC handling, the exact failure the CA/CO/CT joint sweep is targeting.",
+      "enforcement_example": "California, Colorado and Connecticut launched a joint 2025 sweep against businesses that ignore Global Privacy Control opt-outs; 11+ states now require honouring it."
+    },
+    {
+      "fact": "3 non-essential tracker(s) load with no detectable consent mechanism: Google Analytics (sets _ga, _gali, _ga_ \u2014 Analytics, controller Google); Google Tag Manager (sets td \u2014 Marketing, controller Google); LinkedIn Insight Tag (sets lidc, bcookie, bscookie \u2014 Advertising, controller LinkedIn).",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia installs a consent platform that blocks every non-essential tracker until opt-in, with a Reject-All button as prominent as Accept-All.",
+        "problem": "Right now: 3 non-essential tracker(s) load with no detectable consent mechanism: Google Analytics (sets _ga, _gali, _ga_ \u2014 Analytics, controller Google); Google Tag Manager (sets td \u2014 Marketing, controller Google); LinkedIn Insight Tag (sets lidc, bcookie, bscookie \u2014 Advertising, controller LinkedIn)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "US state privacy law (CCPA/CPRA) \u00b7 cookie consent",
+      "evidence": "homepage HTML \u00b7 3 non-essential trackers, no consent gate \u00b7 controllers: Google, LinkedIn",
+      "severity": "P1",
+      "confidence": 0.88,
+      "recommendation": "Tamazia installs a consent platform that blocks every non-essential tracker until opt-in, with a Reject-All button as prominent as Accept-All.",
+      "tamazia_fix_short": "Tamazia installs a consent platform that blocks every non-essential tracker until opt-in, with a Reject-All button as prominent as Accept-All.",
+      "layman_explanation": "These trackers set cookies and share data with Google, LinkedIn the moment the page loads, before the visitor consents. That breaches US state privacy law (CCPA/CPRA). You serve clients in US, so each of those regimes applies regardless of where the firm is registered. The ICO is actively reviewing the UK's top 1,000 sites and the maximum PECR fine is now \u00a317.5M or 4% of global turnover.",
+      "enforcement_example": "California Privacy Protection Agency and Attorney General: civil penalties of USD 2,500 per violation (USD 7,500 if intentional or involving minors); e.g. Sephora USD 1.2M settlement (2022)."
+    },
+    {
+      "fact": "Absent from the AI / search answer surface for \"law firms near Boston\"",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia runs the GEO + entity programme (Schema.org, llms.txt, a Wikidata entity and authoritative content) that puts you into the set of sources AI engines read and cite for your category.",
+        "problem": "Right now: Absent from the AI / search answer surface for \"law firms near Boston\"."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "GEO",
+      "evidence": "live SERP: law firms near Boston",
+      "severity": "P1",
+      "confidence": 0.85,
+      "citation_url": "",
+      "ai_competitors": [
+        {
+          "pos": 1,
+          "domain": "bestlawfirms.com"
+        },
+        {
+          "pos": 2,
+          "domain": "law.usnews.com"
+        },
+        {
+          "pos": 3,
+          "domain": "bostoninsider.org"
+        },
+        {
+          "pos": 4,
+          "domain": "bcgsearch.com"
+        },
+        {
+          "pos": 5,
+          "domain": "statebarattorneys.com"
+        }
+      ],
+      "evidence_quote": null,
+      "recommendation": "",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia runs the GEO + entity programme (Schema.org, llms.txt, a Wikidata entity and authoritative content) that puts you into the set of sources AI engines read and cite for your category.",
+      "layman_explanation": "When a buyer asks ChatGPT, Perplexity, Google AI or a search engine for \"law firms near Boston\", your site is not in the top 10 results these engines read and cite. The firms that own that answer surface today are bestlawfirms.com, law.usnews.com, bostoninsider.org. AI engines synthesise answers from these ranked, recognised sources, so they name your competitors and not you."
+    },
+    {
+      "fact": "A live groq query did not name your firm for your category",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity + authoritative-content footprint that gets you named in live AI answers.",
+        "problem": "Right now: A live groq query did not name your firm for your category."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "GEO",
+      "evidence": "live groq answer probe",
+      "severity": "P1",
+      "confidence": 0.85,
+      "citation_url": "",
+      "recommendation": "",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity + authoritative-content footprint that gets you named in live AI answers.",
+      "layman_explanation": "We asked groq to list the top firms for \"law firms near Boston\". Your firm was not named, confirming you are absent from the real AI answers buyers receive."
+    },
+    {
+      "fact": "Your AI entity-readiness score is 80/100: no Wikidata knowledge-graph entry; no llms.txt.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds your machine-readable entity: full Organization schema with sameAs, a Wikidata entry, and an llms.txt, so the answer engines can identify and cite you.",
+        "problem": "Right now: Your AI entity-readiness score is 80/100: no Wikidata knowledge-graph entry; no llms.txt. Here it is on your site: \u201cno Wikidata knowledge-graph entry; no llms.txt\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI entity readiness",
+      "evidence": "entity-readiness check (schema + Wikidata + llms.txt)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "no Wikidata knowledge-graph entry; no llms.txt",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds your machine-readable entity: full Organization schema with sameAs, a Wikidata entry, and an llms.txt, so the answer engines can identify and cite you.",
+      "layman_explanation": "AI answer engines decide who to cite by first identifying you as a known, trusted entity. They read your Organization schema, the sameAs links that connect you to your verified profiles, and knowledge bases like Wikidata. You are missing 2 of these anchors, so to an AI engine you are an unknown string rather than a citable provider, and it names the firms it can identify instead."
+    },
+    {
+      "fact": "Asked \"law firms near Boston\" 2 times, an AI engine named you in 0 of 2 answers; it named Mintz Levin (2/2), WilmerHale (2/2), Ropes & Gray (2/2).",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity, content and authority signals that get you named consistently when buyers ask AI for a provider like you.",
+        "problem": "Right now: Asked \"law firms near Boston\" 2 times, an AI engine named you in 0 of 2 answers; it named Mintz Levin (2/2), WilmerHale (2/2), Ropes & Gray (2/2). Here it is on your site: \u201cyou 0/2 vs Mintz Levin 2/2\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "metric": {
+        "you": 0,
+        "label": "AI share of voice",
+        "scale": 100,
+        "samples": 2,
+        "competitors": [
+          {
+            "of": 2,
+            "name": "Mintz Levin",
+            "in_runs": 2
+          },
+          {
+            "of": 2,
+            "name": "WilmerHale",
+            "in_runs": 2
+          },
+          {
+            "of": 2,
+            "name": "Ropes & Gray",
+            "in_runs": 2
+          }
+        ]
+      },
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI share of voice",
+      "evidence": "multi-sample AI probe (2 runs \u00b7 groq)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "you 0/2 vs Mintz Levin 2/2",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity, content and authority signals that get you named consistently when buyers ask AI for a provider like you.",
+      "layman_explanation": "AI answers vary run to run, so we asked 2 times (via groq). You were never named, while Mintz Levin appeared 2 of 2. The firms named every time are the ones AI now treats as the default answer for your buyers, compounding while you are absent."
+    },
+    {
+      "fact": "Asked who you are by name, a leading AI model has no reliable information about your firm.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity footprint (schema, Wikidata, authoritative mentions) that makes AI models actually know and describe you correctly.",
+        "problem": "Right now: Asked who you are by name, a leading AI model has no reliable information about your firm. Here it is on your site: \u201cmodel reply: \"NO RELIABLE INFO\"\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI knowledge of you",
+      "evidence": "free-LLM knowledge probe (groq)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "model reply: \"NO RELIABLE INFO\"",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity footprint (schema, Wikidata, authoritative mentions) that makes AI models actually know and describe you correctly.",
+      "layman_explanation": "When a buyer asks an AI assistant about you by name, it cannot describe you, so it will not vouch for or recommend you, and when pushed it may invent details (a hallucination) that you cannot control. Competitors the model does know get described and recommended. Becoming a model-known entity is what fixes this."
+    },
+    {
+      "fact": "For \"law firms near boston\" you are not visible in the top 100; bestlawfirms.com owns position #1.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia builds the page depth and authority to move \"law firms near boston\" into the top three, where the clicks and the AI citations are.",
+        "problem": "Right now: For \"law firms near boston\" you are not visible in the top 100; bestlawfirms.com owns position #1. Here it is on your site: \u201clive SERP: you not visible in the top 100 vs bestlawfirms.com #1\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "SEO",
+      "evidence": "live SERP (free-serp) \u00b7 query \"law firms near boston\"",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "competitors": [
+        "bestlawfirms.com",
+        "foley.com",
+        "lawyers.com"
+      ],
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "live SERP: you not visible in the top 100 vs bestlawfirms.com #1",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia builds the page depth and authority to move \"law firms near boston\" into the top three, where the clicks and the AI citations are.",
+      "layman_explanation": "When your buyers search \"law firms near boston\", they find bestlawfirms.com, not you. Page two and below is effectively zero clicks, so this exact query hands its high-intent traffic to a competitor every day, and AI answers cite the top-ranked pages, so being invisible here also keeps you out of the AI results. The firms winning your buyer queries: bestlawfirms.com, foley.com, lawyers.com."
+    },
+    {
+      "fact": "You are missing 3 of the signals Google uses to rank the local map pack: no LocalBusiness schema with address and geo-coordinates; no clearly published street address (NAP); no clearly published phone number (NAP).",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia builds the local-pack foundation: an optimised Google Business Profile, LocalBusiness schema with geo, consistent NAP and local citations.",
+        "problem": "Right now: You are missing 3 of the signals Google uses to rank the local map pack: no LocalBusiness schema with address and geo-coordinates; no clearly published street address (NAP); no clearly published phone number (NAP). Here it is on your site: \u201cno LocalBusiness schema with address and geo-coordinates\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Local search (map pack)",
+      "evidence": "local-readiness check \u00b7 OpenStreetMap presence (found: highway/residential)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "no LocalBusiness schema with address and geo-coordinates",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia builds the local-pack foundation: an optimised Google Business Profile, LocalBusiness schema with geo, consistent NAP and local citations.",
+      "layman_explanation": "When a buyer searches \"solicitors in Boston\", Google shows a three-result map pack above the normal results, and AI assistants read the same local sources. Those slots go to firms with a complete, consistent local presence. You are missing 3 of those signals, so you are structurally excluded from the results buyers tap first."
+    },
+    {
+      "fact": "Citations to authoritative sources (Trust)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+        "problem": "Right now: Citations to authoritative sources (Trust)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "GOOGLE_EEAT",
+      "evidence": "https://fenwick.com/",
+      "severity": "P2",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://fenwick.com/",
+        "https://www.fenwick.com/services/practices/privacy-cybersecurity",
+        "https://www.fenwick.com/services/practices/regulatory",
+        "https://www.fenwick.com/services/practices/healthcare-regulatory",
+        "https://www.fenwick.com/services/practices/fintech-regulatory",
+        "https://www.fenwick.com/terms-of-use"
+      ],
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+      "framework_short": "GOOGLE_EEAT",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+      "layman_explanation": "Citations to authoritative sources (Trust). This is a specific requirement of Google E-E-A-T and Helpful Content, which Google Search enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Google Search ranking systems and manual actions: no statutory fine, but ranking suppression and loss of organic visibility; manual actions reported in Search Console."
+    },
+    {
+      "fact": "Accessibility statement + WCAG 2.1 AA (ADA Title III)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia brings the site to WCAG 2.1 AA and adds an accessibility statement.",
+        "problem": "Right now: Accessibility statement + WCAG 2.1 AA (ADA Title III)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "US_ADA",
+      "evidence": "https://fenwick.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.ada.gov/resources/web-guidance/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 59000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia brings the site to WCAG 2.1 AA and adds an accessibility statement.",
+      "framework_short": "US_ADA",
+      "tamazia_fix_short": "Tamazia brings the site to WCAG 2.1 AA and adds an accessibility statement.",
+      "layman_explanation": "ADA Title III expects WCAG 2.1 AA and an accessibility statement; missing.",
+      "enforcement_example": "DOJ 2024 guidance treats WCAG 2.1 AA as the ADA standard; thousands of Title III suits yearly."
+    },
+    {
+      "fact": "\"Limit the Use of My Sensitive Personal Information\" link",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the CPRA sensitive-data limit link.",
+        "problem": "Right now: \"Limit the Use of My Sensitive Personal Information\" link."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "US_CCPA",
+      "evidence": "https://fenwick.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://oag.ca.gov/privacy/ccpa",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 6000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the CPRA sensitive-data limit link.",
+      "framework_short": "US_CCPA",
+      "tamazia_fix_short": "Tamazia adds the CPRA sensitive-data limit link.",
+      "layman_explanation": "CPRA requires a \"Limit the Use of My Sensitive Personal Information\" link where you use sensitive data; missing.",
+      "enforcement_example": "CPRA requires a \"Limit the Use of My Sensitive Personal Information\" link where sensitive data drives inference."
+    },
+    {
+      "fact": "Opt-in / limit for sensitive data (Nebraska, Maryland MODPA, others)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds sensitive-data opt-in and a data-minimisation posture.",
+        "problem": "Right now: Opt-in / limit for sensitive data (Nebraska, Maryland MODPA, others)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "US_STATE_PRIVACY",
+      "evidence": "https://fenwick.com/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.osano.com/us-data-privacy-laws",
+      "fine_low_gbp": 6000,
+      "fine_high_gbp": 16000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds sensitive-data opt-in and a data-minimisation posture.",
+      "framework_short": "US_STATE_PRIVACY",
+      "tamazia_fix_short": "Tamazia adds sensitive-data opt-in and a data-minimisation posture.",
+      "layman_explanation": "If you process sensitive data (health, biometrics, precise location), states like Nebraska and Maryland require opt-in and strict necessity. Your site has no such control.",
+      "enforcement_example": "Nebraska requires opt-in for sensitive data; Maryland MODPA (Oct 2025) adds strict data-minimisation and expansive sensitive-data definitions."
+    },
+    {
+      "fact": "No LocalBusiness schema (address, opening hours, geo).",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+        "problem": "Right now: No LocalBusiness schema (address, opening hours, geo)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "LocalBusiness schema",
+      "evidence": "homepage JSON-LD \u00b7 no LocalBusiness",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+      "tamazia_fix_short": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+      "layman_explanation": "Local and map AI results depend on LocalBusiness schema with verified NAP and geo. Without it you are invisible to \"near me\" and local AI answers your competitors win."
+    },
+    {
+      "fact": "No Service or Offer schema describing what you sell.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia marks up each service with Service schema and clear offers.",
+        "problem": "Right now: No Service or Offer schema describing what you sell."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Service schema",
+      "evidence": "homepage JSON-LD \u00b7 no Service/Offer",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia marks up each service with Service schema and clear offers.",
+      "tamazia_fix_short": "Tamazia marks up each service with Service schema and clear offers.",
+      "layman_explanation": "AI engines extract Service/Offer schema to answer \"who offers X\". Without it your services are not machine-readable and you are left out of those answers."
+    },
+    {
+      "fact": "No FAQPage schema or structured Q&A.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+        "problem": "Right now: No FAQPage schema or structured Q&A."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "FAQ schema",
+      "evidence": "homepage JSON-LD \u00b7 no FAQPage",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+      "tamazia_fix_short": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+      "layman_explanation": "Answer engines preferentially quote structured Q&A. With no FAQPage you miss the single format LLMs cite most when answering buyer questions."
+    },
+    {
+      "fact": "No Review or AggregateRating schema.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+        "problem": "Right now: No Review or AggregateRating schema."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Review schema",
+      "evidence": "homepage JSON-LD \u00b7 no Review schema",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+      "tamazia_fix_short": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+      "layman_explanation": "Star ratings shown in AI and search answers come from Review/AggregateRating schema. Without it your reputation is invisible to the engines buyers now ask first."
+    },
+    {
+      "fact": "No llms.txt file.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia publishes a curated llms.txt.",
+        "problem": "Right now: No llms.txt file."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "llms.txt",
+      "evidence": "GET /llms.txt \u00b7 404",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia publishes a curated llms.txt.",
+      "tamazia_fix_short": "Tamazia publishes a curated llms.txt.",
+      "layman_explanation": "llms.txt is the emerging standard that tells AI assistants how to represent your firm. Publishing one puts you ahead of peers who have not."
+    },
+    {
+      "fact": "For \"law firms near Boston\", the authoritative sources AI and Google read are yelp.com and your site is not among the top results.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia gets you placed, complete and well-reviewed on the exact authority sources that feed AI and Google for your category.",
+        "problem": "Right now: For \"law firms near Boston\", the authoritative sources AI and Google read are yelp.com and your site is not among the top results. Here it is on your site: \u201ctop authority sources: yelp.com; your domain absent from top 10\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "metric": {
+        "label": "Authority sources for your query",
+        "sources": [
+          "yelp.com"
+        ]
+      },
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Source gap",
+      "evidence": "free SERP \u00b7 query \"law firms near Boston\"",
+      "severity": "P2",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "top authority sources: yelp.com; your domain absent from top 10",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia gets you placed, complete and well-reviewed on the exact authority sources that feed AI and Google for your category.",
+      "layman_explanation": "AI answers and Google both lean on a handful of trusted sources for each category (directories, review sites, trade press, Wikipedia). For your buyer query those sources are yelp.com. Your competitors are listed and cited there; you are not, so the engines repeat what those sources say and leave you out."
+    },
+    {
+      "fact": "Homepage is missing a meta description.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia writes sector-tuned meta descriptions across the site.",
+        "problem": "Right now: Homepage is missing a meta description."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Meta description",
+      "evidence": "fetched homepage \u00b7 no <meta name=\"description\">",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia writes sector-tuned meta descriptions across the site.",
+      "tamazia_fix_short": "Tamazia writes sector-tuned meta descriptions across the site.",
+      "layman_explanation": "Search engines fall back to scraping random page text for your result snippet, which suppresses click-through. A deliberate description is a basic, high-leverage SEO control your site is missing."
+    },
+    {
+      "fact": "1 likely spelling or grammar error(s) are published on your homepage right now.",
+      "kind": "observed",
+      "bingo": {
+        "fix": "Tamazia proofreads and corrects every page, then sets an editorial QA gate so it does not recur.",
+        "problem": "Right now: 1 likely spelling or grammar error(s) are published on your homepage right now."
+      },
+      "state": "CONFIRMED",
+      "bucket": "content_depth",
+      "signals": [
+        "observed_evidence",
+        "render_ok"
+      ],
+      "citation": "Spelling & grammar errors on your live site",
+      "evidence": "homepage - \"What&\" to \"What\"",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia proofreads and corrects every page, then sets an editorial QA gate so it does not recur.",
+      "tamazia_fix_short": "Tamazia proofreads and corrects every page, then sets an editorial QA gate so it does not recur.",
+      "layman_explanation": "Visible errors on a professional firm's website quietly erode trust with high-value clients and signal low quality to Google's helpful-content systems. For a firm selling expertise, typos on the live site are an avoidable credibility leak."
+    },
+    {
+      "fact": "Your Domain Authority is 28/100. Top competitors: foley.com 34/100, lawyers.com 34/100, lawfuel.com 30/100.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia runs the digital-PR and authority-building programme (earned links, citations, entity coverage) that defends and extends your Domain Authority lead.",
+        "problem": "Right now: Your Domain Authority is 28/100. Top competitors: foley.com 34/100, lawyers.com 34/100, lawfuel.com 30/100. Here it is on your site: \u201cyou 28/100 vs foley.com 34/100, lawyers.com 34/100, lawfuel.com 30/100\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "metric": {
+        "you": 28,
+        "label": "Domain Authority",
+        "scale": 100,
+        "competitors": [
+          {
+            "dr": 3.44,
+            "da_100": 34,
+            "domain": "foley.com"
+          },
+          {
+            "dr": 3.43,
+            "da_100": 34,
+            "domain": "lawyers.com"
+          },
+          {
+            "dr": 3.01,
+            "da_100": 30,
+            "domain": "lawfuel.com"
+          }
+        ]
+      },
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Domain authority",
+      "evidence": "OpenPageRank \u00b7 authority as of 28th Mar 2026",
+      "severity": "P3",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "you 28/100 vs foley.com 34/100, lawyers.com 34/100, lawfuel.com 30/100",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia runs the digital-PR and authority-building programme (earned links, citations, entity coverage) that defends and extends your Domain Authority lead.",
+      "layman_explanation": "Domain Authority is the backlink-trust score search and AI engines use to decide who to rank and cite. This is where you stand against the firms competing for your buyers; staying ahead protects both your rankings and your AI citations."
+    },
+    {
+      "fact": "No Permissions-Policy header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets a least-privilege Permissions-Policy.",
+        "problem": "Right now: No Permissions-Policy header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Permissions-Policy",
+      "evidence": "response headers \u00b7 permissions-policy absent",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets a least-privilege Permissions-Policy.",
+      "tamazia_fix_short": "Tamazia sets a least-privilege Permissions-Policy.",
+      "layman_explanation": "Powerful browser features (camera, microphone, geolocation) are not restricted, widening the attack surface a security review will flag."
+    },
+    {
+      "fact": "3 sampled outbound links are dead.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia audits outbound links and replaces or removes dead destinations.",
+        "problem": "Right now: 3 sampled outbound links are dead."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Broken outbound links",
+      "evidence": "outbound links \u00b7 broken: /, /company/fenwick-&amp;-west/, /",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia audits outbound links and replaces or removes dead destinations.",
+      "tamazia_fix_short": "Tamazia audits outbound links and replaces or removes dead destinations.",
+      "layman_explanation": "Dead outbound links to closed pages erode user trust and the topical authority signals search engines read from your citations."
+    },
+    {
+      "fact": "Your domain is not signed with DNSSEC.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+        "problem": "Right now: Your domain is not signed with DNSSEC."
+      },
+      "state": "CONFIRMED",
+      "bucket": "tls_dns",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "DNSSEC not enabled",
+      "evidence": "DNS \u00b7 no DS record and AD flag false",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+      "tamazia_fix_short": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+      "layman_explanation": "Without DNSSEC, attackers can forge DNS responses (cache poisoning) to silently redirect your visitors or intercept email. Enterprise, finance and government client security reviews increasingly require it."
+    }
+  ],
+  "authority": {
+    "top": {
+      "dr": 3.44,
+      "rank": 2358188,
+      "domain": "foley.com"
+    },
+    "you": {
+      "dr": 2.79,
+      "rank": 7171250,
+      "da_100": 28
+    },
+    "ranked": [
+      {
+        "dr": 3.44,
+        "rank": 2358188,
+        "domain": "foley.com"
+      },
+      {
+        "dr": 3.43,
+        "rank": 2386117,
+        "domain": "lawyers.com"
+      },
+      {
+        "dr": 3.01,
+        "rank": 4577248,
+        "domain": "lawfuel.com"
+      },
+      {
+        "dr": 2.44,
+        "rank": 17568150,
+        "domain": "bestlawfirms.com"
+      },
+      {
+        "dr": 2.38,
+        "rank": 21989239,
+        "domain": "bostoninsider.org"
+      }
+    ],
+    "last_updated": "28th Mar 2026"
+  },
+  "geo_probe": {
+    "samples": 2,
+    "ai_knows": false,
+    "grounded": null,
+    "ai_sentiment": "neutral",
+    "repeatability": 100,
+    "share_of_voice": 0,
+    "top_competitors": [
+      {
+        "of": 2,
+        "name": "Mintz Levin",
+        "in_runs": 2
+      },
+      {
+        "of": 2,
+        "name": "WilmerHale",
+        "in_runs": 2
+      },
+      {
+        "of": 2,
+        "name": "Ropes & Gray",
+        "in_runs": 2
+      }
+    ]
+  },
+  "ai_citation": {
+    "ok": true,
+    "llm": {
+      "ran": true,
+      "cited": false,
+      "model": "llama-3.3-70b-versatile",
+      "answer": "Goodwin, Ropes & Gray, WilmerHale, Mintz, Foley Hoag, Nixon Peabody, Hogan Lovells, Sullivan & Worcester",
+      "provider": "groq"
+    },
+    "query": "law firms near Boston",
+    "source": "serp",
+    "checked": 10,
+    "country": "USA",
+    "competitors": [
+      {
+        "pos": 1,
+        "domain": "bestlawfirms.com"
+      },
+      {
+        "pos": 2,
+        "domain": "law.usnews.com"
+      },
+      {
+        "pos": 3,
+        "domain": "bostoninsider.org"
+      },
+      {
+        "pos": 4,
+        "domain": "bcgsearch.com"
+      },
+      {
+        "pos": 5,
+        "domain": "statebarattorneys.com"
+      }
+    ],
+    "entity_known": false,
+    "firm_position": null,
+    "surface_owned_by": [
+      "bestlawfirms.com",
+      "law.usnews.com",
+      "bostoninsider.org"
+    ]
+  },
+  "content_gap": {
+    "gaps": [
+      "biggest law firms in boston",
+      "biggest law firms near me",
+      "good law firms near me",
+      "best law offices near me",
+      "best law lawyers near me",
+      "best law firms around me"
+    ],
+    "pages": 400
+  },
+  "geo_visuals": {
+    "ai_radar": "<svg viewBox=\"0 0 400 400\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"200\" y=\"24\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">AI visibility</text><polygon points=\"200.0,157.5 228.1,173.8 228.1,206.3 200.0,222.5 171.9,206.3 171.9,173.8\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,125.0 256.3,157.5 256.3,222.5 200.0,255.0 143.7,222.5 143.7,157.5\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,92.5 284.4,141.3 284.4,238.8 200.0,287.5 115.6,238.8 115.6,141.3\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,60.0 312.6,125.0 312.6,255.0 200.0,320.0 87.4,255.0 87.4,125.0\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,86.0 312.6,125.0 200.0,190.0 200.0,320.0 200.0,190.0 200.0,190.0\" fill=\"#3D0E0E\" fill-opacity=\"0.25\" stroke=\"#3D0E0E\" stroke-width=\"2\"/><text x=\"200.0\" y=\"38.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Entity</text><text x=\"200.0\" y=\"51.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">80</text><text x=\"331.6\" y=\"114.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Crawler access</text><text x=\"331.6\" y=\"127.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">100</text><text x=\"331.6\" y=\"266.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Share of voice</text><text x=\"331.6\" y=\"279.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text><text x=\"200.0\" y=\"342.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Schema</text><text x=\"200.0\" y=\"355.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">100</text><text x=\"68.4\" y=\"266.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Knowledge graph</text><text x=\"68.4\" y=\"279.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text><text x=\"68.4\" y=\"114.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Citations</text><text x=\"68.4\" y=\"127.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text></svg>",
+    "ai_engine_grid": "<svg viewBox=\"0 0 560 180\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"16\" y=\"22\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">Which AI engines cite you</text><rect x=\"8\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"70\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">ChatGPT</text><text x=\"70\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"148\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"210\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Gemini</text><text x=\"210\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"288\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"350\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Perplexity</text><text x=\"350\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"428\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"490\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Claude</text><text x=\"490\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"8\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"70\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Copilot</text><text x=\"70\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"148\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"210\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Grok</text><text x=\"210\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"288\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"350\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Meta AI</text><text x=\"350\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"428\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"490\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Google AI</text><text x=\"490\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text></svg>",
+    "entity_web_map": "<svg viewBox=\"0 0 560 360\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"280\" y=\"22\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">Who the AI knowledge graph connects to you</text><circle cx=\"280\" cy=\"180\" r=\"30\" fill=\"#3D0E0E\"/><text x=\"280\" y=\"184\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"12\" fill=\"#fff\">fenwick</text></svg>"
+  },
+  "keyword_map": {
+    "ok": true,
+    "city": "Boston",
+    "keywords": [
+      {
+        "leader": "foley.com",
+        "target": 3,
+        "keyword": "law firm Boston",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "lawyers.com",
+        "target": 3,
+        "keyword": "law firms near near me",
+        "leader_pos": 2,
+        "my_position": null
+      },
+      {
+        "leader": "bestlawfirms.com",
+        "target": 3,
+        "keyword": "law firms near Boston",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "lawfuel.com",
+        "target": 3,
+        "keyword": "best law firms near in Boston",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "bestlawfirms.com",
+        "target": 3,
+        "keyword": "top law firms near Boston",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "bostoninsider.org",
+        "target": 3,
+        "keyword": "law firms near Boston reviews",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "bestlawfirms.com",
+        "target": 3,
+        "keyword": "law firms near boston",
+        "leader_pos": 1,
+        "my_position": null
+      }
+    ],
+    "service_noun": "law firms near"
+  },
+  "screenshots": {
+    "homepage": "https://image.thum.io/get/width/1200/crop/1000/https://fenwick.com",
+    "provider": "thum.io (free, no key)",
+    "answer_surface": "https://image.thum.io/get/width/1200/crop/1000/https://www.google.com/search?q=law%20firms%20near%20Boston"
+  },
+  "via_archive": false,
+  "ai_readiness": {
+    "score": 80,
+    "has_same_as": true,
+    "in_wikidata": false,
+    "has_llms_txt": false,
+    "has_org_schema": true,
+    "blocked_ai_bots": []
+  },
+  "archive_date": null,
+  "exec_summary": "The most serious regulatory risk is the absence of a Right to Delete disclosure and a Do Not Sell or Share My Personal Information link, which poses a significant fine exposure of up to GBP 362,000 and undermines trust in fenwick.com's data handling practices. Fixing the identified issues, particularly the visibility and search ranking shortcomings, presents an opportunity to enhance fenwick.com's online presence, particularly for searches like \"law firms near Boston\", and thereby increase its commercial prospects and reputation.",
+  "needs_review": [],
+  "trust_summary": {
+    "confirmed": 27,
+    "needs_review": 0
+  },
+  "schema_version": "v2",
+  "framework_version": "4.7",
+  "engine_jurisdictions": [
+    "USA",
+    "US"
+  ],
+  "applicable_frameworks": [
+    "GOOGLE_EEAT",
+    "US_ADA",
+    "US_ATTORNEY_ADVERTISING",
+    "US_CCPA",
+    "US_FTC",
+    "US_FTC_ENDORSE",
+    "US_STATE_PRIVACY",
+    "US_VCDPA"
+  ],
+  "competitive_benchmark": {
+    "you": {
+      "cited": false,
+      "position": null
+    },
+    "query": "law firms near Boston",
+    "source": "live SERP + AI-citation probe",
+    "competitors": [
+      {
+        "name": "bestlawfirms.com",
+        "domain": "bestlawfirms.com",
+        "position": 1
+      },
+      {
+        "name": "law.usnews.com",
+        "domain": "law.usnews.com",
+        "position": 2
+      },
+      {
+        "name": "bostoninsider.org",
+        "domain": "bostoninsider.org",
+        "position": 3
+      },
+      {
+        "name": "bcgsearch.com",
+        "domain": "bcgsearch.com",
+        "position": 4
+      },
+      {
+        "name": "statebarattorneys.com",
+        "domain": "statebarattorneys.com",
+        "position": 5
+      }
+    ],
+    "keyword_leaders": [
+      {
+        "leader": "foley.com",
+        "keyword": "law firm Boston",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "lawyers.com",
+        "keyword": "law firms near near me",
+        "your_position": null,
+        "leader_position": 2
+      },
+      {
+        "leader": "bestlawfirms.com",
+        "keyword": "law firms near Boston",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "lawfuel.com",
+        "keyword": "best law firms near in Boston",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "bestlawfirms.com",
+        "keyword": "top law firms near Boston",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "bostoninsider.org",
+        "keyword": "law firms near Boston reviews",
+        "your_position": null,
+        "leader_position": 1
+      }
+    ]
+  },
+  "detected_jurisdictions": [
+    "United States"
+  ],
+  "jurisdiction_statement": {
+    "regimes": [
+      {
+        "why": "serves US clients",
+        "regime": "CCPA/CPRA + ADA"
+      },
+      {
+        "why": "applies to every site that wants to rank in Google or be cited by AI answer engines, regardless of where it is registered",
+        "regime": "Google Search Essentials + E-E-A-T"
+      }
+    ],
+    "statement": "fenwick is registered in the United States and its own website shows it serves clients in the US. It is therefore bound by US law (CCPA/CPRA and ~20 state privacy laws, FTC, ADA), not only the law of its country of registration. This audit applies the laws of every jurisdiction the site shows you operate in, and no others.",
+    "registered": "USA",
+    "registered_label": "the United States",
+    "operating_regions": [
+      "US"
+    ]
+  },
+  "framework_last_reviewed": "2026-06-03"
+}

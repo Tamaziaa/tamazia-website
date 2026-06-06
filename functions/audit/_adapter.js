@@ -417,9 +417,15 @@ const COMPETITOR_DENYLIST = new Set([
   'trustpilot.com','yelp.com','yelp.co.uk','yell.com','yell.co.uk','tripadvisor.com','tripadvisor.co.uk','glassdoor.com','glassdoor.co.uk','indeed.com','g2.com','clutch.co','goodfirms.co','expertise.com','threebestrated.co.uk','bark.com','checkatrade.com','which.co.uk','yellowpages.com','yellowpages.co.uk','justdial.com','thomsonlocal.com','freeindex.co.uk','hotfrog.co.uk','cylex-uk.co.uk','scoot.co.uk','192.com','topconsumerreviews.com','aeroleads.com','f6s.com','disfold.com','rankred.com','spocket.co','metricscart.com','merchantmachine.co.uk','ecommerceguide.com','homelight.com','findanyagent.ae','toppropertydevelopers.com','dentistsearch.co.uk',
   'legal500.com','chambers.com','chambersandpartners.com','chambersstudent.co.uk','reviewsolicitors.co.uk','lawsociety.org.uk','sra.org.uk','findlaw.com','lawyers.findlaw.com','justia.com','avvo.com','lawyers.com','lawfuel.com','bestlawfirms.com','law.usnews.com','bcgsearch.com','statebarattorneys.com','thelawyer.com','courtscast.com','lawzana.com','lawyersuae.ae','dubaimatic.com','dubaisbest.com','edarabia.com',
   'zocdoc.com','whatclinic.com','whatclinic.co.uk','doctify.com','topdoctors.co.uk','topdoctors.com','healthgrades.com','vitals.com','ratemds.com','opencare.com','theteledentists.com','treatwell.co.uk',
-  'rightmove.co.uk','zoopla.co.uk','onthemarket.com','primelocation.com','zillow.com','realestate.usnews.com','dubaisells.com','bhomes.com','uniqueproperties.ae',
-  'booking.com','expedia.com','hotels.com','opentable.com','luxuryhotel.guide','thehotelguru.com','bestofluxury.com',
+  'rightmove.co.uk','zoopla.co.uk','onthemarket.com','primelocation.com','zillow.com','realtor.com','realestate.usnews.com','dubaisells.com','bhomes.com','uniqueproperties.ae','propertyfinder.ae','bayut.com','dubizzle.com','homes.com','redfin.com','trulia.com','apartments.com','loopnet.com',
+  'booking.com','expedia.com','hotels.com','opentable.com','luxuryhotel.guide','thehotelguru.com','bestofluxury.com','lastminute.com','agoda.com','trivago.com','trivago.co.uk','kayak.com','kayak.co.uk','skyscanner.net','airbnb.com','vrbo.com','hostelworld.com','laterooms.com','travelsupermarket.com',
   'forbes.com','timeout.com','robbreport.com','luxurylondon.co.uk','londontheinside.com','factmagazines.com','luxsphere.co','thegentlemansjournal.com','ceoreviewmagazine.com','bostoninsider.org','dubaiweek.ae','mr7.ae','investinreading.com','joyofcreating.org','safehome.org','propertysecurity.org','goodguardsecurity.com','cheyenne.org','gov.uk','nhs.uk',
+  // additional news/magazine/listicle hosts whose stems dodge the token patterns (ibtimes != "times",
+  // lawyermag != "magazine", bestinlondon has no separator after "best"). These co-rank by aggregating firms.
+  'ibtimes.co.uk','ibtimes.com','lawyermag.co.uk','lawyermonthly.com','legalfutures.co.uk','bestinlondon.london','bestlondon.co.uk','citymatters.london','londonpost.news','thelondoneconomic.com','standard.co.uk','mirror.co.uk','dailymail.co.uk','telegraph.co.uk','independent.co.uk','metro.co.uk','huffingtonpost.co.uk',
+  // tech/SaaS/software listicle, review-aggregator & roundup blogs that co-rank for "saas"/"software"
+  // category terms by aggregating vendors (NOT real vendors themselves — real vendors are kept).
+  'geekflare.com','g2crowd.com','capterra.com','getapp.com','softwareadvice.com','trustradius.com','techradar.com','pcmag.com','cnet.com','techcrunch.com','venturebeat.com','producthunt.com','saashub.com','slashdot.org','sourceforge.net','financesonline.com','softwaresuggest.com','selecthub.com',
 ]);
 const JUNK_PATTERNS = [
   /(^|\.)wikipedia\.org$/i, /(^|\.)(facebook|linkedin|youtube|instagram|tiktok|x)\.com$/i, /(^|\.)google\./i, /\.gov(\.[a-z]{2})?$/i, /(^|\.)nhs\.uk$/i,
@@ -463,26 +469,135 @@ function looksAggregator(name) {
 function bestSecondaryKeyword(payload, market) {
   const kws = arr(g(payload, 'keyword_map.keywords', []));
   const brand = cleanDomain(payload.domain).split('.')[0];
-  const bad = (k) => { const s = String(k || '').toLowerCase().trim(); return !s || /\bnear\b/.test(s) || /\b(online|reviews?)$/.test(s) || /^(best|top)\b/.test(s) || /\b(reading|boston|new york|nyc)\b/.test(s) || (brand.length > 3 && s.includes(brand)); };
-  // A keyword only counts if you actually rank for it, OR its leader is a REAL, corroborated peer, 
-  // never a directory/aggregator (findlaw, justia). Kills the local-intent "near me" + aggregator noise
-  // that makes a 400-lawyer firm look like it's losing to a listings site. (S-kw-relevance)
-  const real = (k) => k.my_position != null || (k.leader && isRealCompetitor(k.leader, market));
-  const ok = kws.filter((k) => !bad(k.keyword) && real(k));
-  const withPos = ok.filter((k) => k.my_position != null);
-  const multi = ok.filter((k) => String(k.keyword).split(/\s+/).length >= 3);
+  const fc = firmCountry(payload);
+  const big = isBigBrand(payload);
+  const cityToStrip = big ? String(g(payload, 'keyword_map.city', '') || '').trim() : '';
+  const youRank = (k) => k.my_position != null;            // 0 is a valid rank
+  // A keyword is shown only if you rank for it, OR a REAL, in-market peer (not a directory/aggregator/
+  // off-jurisdiction firm) leads it. Drops local "near me" + aggregator noise + wrong-city terms you don't
+  // rank for (a UAE firm must not be shown "losing hotel London to an OTA"). (S-kw-relevance · wrong-city)
+  const real = (k) => youRank(k) || (k.leader && isRealCompetitor(k.leader, market) && leaderInMarket(k.leader, fc));
+  const cleanFor = (k) => cleanKwTermFull(k.keyword, { fc, big, cityToStrip });
+  const bad = (k) => {
+    const s = String(k.keyword || '').toLowerCase().trim();
+    if (!s) return true;
+    if (KW_NOISE_RX.test(s)) return true;                    // recruitment/informational, not a buyer term
+    if (LOCAL_RX.test(s) && !youRank(k)) return true;        // local intent you don't own
+    if (termForeignCity(s, fc) && !youRank(k)) return true;  // wrong-city term you don't own
+    if (brand.length > 3 && s.includes(brand)) return true;  // your own brand term
+    if (!cleanFor(k)) return true;                           // nothing survives cleaning
+    return false;
+  };
+  const ok = kws.filter((k) => !bad(k) && real(k));
+  const withPos = ok.filter(youRank);
+  const multi = ok.filter((k) => cleanFor(k).split(/\s+/).length >= 2);
   const pick = withPos[0] || multi[0] || ok[0];
-  if (pick) return { term: pick.keyword, youPos: pick.my_position, leader: pick.leader, leaderPos: pick.leader_pos };
+  if (pick) return { term: cleanFor(pick) || categoryLabel(payload), youPos: pick.my_position, leader: pick.leader, leaderPos: pick.leader_pos };
   return { term: categoryLabel(payload), youPos: null, thin: true };
+}
+// ---- keyword accuracy: wrong-city + scale awareness (Gate 2 / Gate 7 / §5.5) ----
+// Local-intent pattern ("near me", "nearby", "local", "in my area") that a national brand never competes on.
+const LOCAL_RX = /\bnear(\s?(me|you|by))?\b|\bnearby\b|\blocal\b|\bin my area\b/i;
+// Junk superlative / non-buyer modifiers that turn a clean category term into magazine bait
+// ("best law firms online", "top cosmetic dentist", "cheapest hotels"). The buyer types the category,
+// not the listicle headline; a term made ENTIRELY of modifier + noun is the aggregator's query, not yours.
+const KW_SUPERLATIVE_RX = /\b(best|top(?:\s*\d+)?|cheapest|cheap|leading|premier|finest|greatest|ultimate|recommended|reviews?|rated|ranking|ranked|compare|comparison|vs|online)\b/gi;
+// Recruitment / careers / informational queries are NOT buyer intent (a "training contract" or "work
+// experience" search is a graduate, not a client). These terms must never appear as a competitive gap.
+const KW_NOISE_RX = /\b(work experience|training contract|vacation scheme|graduate scheme|internship|apprenticeship|jobs?|vacancies|vacancy|career|careers|salary|salaries|recruitment|hiring|interview|wikipedia|meaning|definition|how to|what is|examples?)\b/i;
+// Cities mapped to the firm COUNTRY they belong to, so a keyword city minted against the wrong market
+// (e.g. a UAE hotel group minted with city "London") is detected as foreign and stripped. Keys are the
+// adapter's normalised country codes (UK/US/AE/SA/QA/FR/DE/etc.).
+const CITY_COUNTRY = {
+  london: 'UK', manchester: 'UK', birmingham: 'UK', edinburgh: 'UK', glasgow: 'UK', leeds: 'UK', bristol: 'UK', liverpool: 'UK', sheffield: 'UK', newcastle: 'UK', nottingham: 'UK', leicester: 'UK', coventry: 'UK', cardiff: 'UK', belfast: 'UK', aberdeen: 'UK', brighton: 'UK', oxford: 'UK', cambridge: 'UK', reading: 'UK', southampton: 'UK', norwich: 'UK', exeter: 'UK', derby: 'UK', plymouth: 'UK', wolverhampton: 'UK', leeds: 'UK',
+  'new york': 'US', nyc: 'US', miami: 'US', 'los angeles': 'US', 'san francisco': 'US', chicago: 'US', boston: 'US', seattle: 'US', austin: 'US', dallas: 'US', houston: 'US', washington: 'US', atlanta: 'US', denver: 'US', phoenix: 'US', philadelphia: 'US',
+  dubai: 'AE', 'abu dhabi': 'AE', sharjah: 'AE', ajman: 'AE',
+  riyadh: 'SA', jeddah: 'SA', dammam: 'SA', mecca: 'SA', medina: 'SA',
+  doha: 'QA', paris: 'FR', marseille: 'FR', lyon: 'FR', berlin: 'DE', munich: 'DE', frankfurt: 'DE', hamburg: 'DE',
+  madrid: 'ES', barcelona: 'ES', rome: 'IT', milan: 'IT', amsterdam: 'NL', brussels: 'BE', dublin: 'IE', luxembourg: 'LU',
+  geneva: 'CH', zurich: 'CH', singapore: 'SG', 'hong kong': 'HK', toronto: 'CA', sydney: 'AU', melbourne: 'AU',
+};
+const CITY_TOKEN_RX = new RegExp('\\b(' + Object.keys(CITY_COUNTRY).map((c) => c.replace(/ /g, '\\s+')).join('|') + ')\\b', 'gi');
+// Map the adapter's many country spellings to one comparable code.
+const COUNTRY_CODE = (c) => ({ USA: 'US', GBR: 'UK', GB: 'UK', UAE: 'AE', KSA: 'SA' }[String(c || '').toUpperCase()] || String(c || '').toUpperCase());
+// The firm's real country code and the set of cities legitimately "theirs" (so a London clinic keeps London,
+// but a UAE firm's mis-minted "London" keyword is treated as a wrong-city term).
+function firmCountry(payload) {
+  return COUNTRY_CODE(payload.country) || (g(payload, 'firm_profile.hq_country') ? COUNTRY_CODE(g(payload, 'firm_profile.hq_country')) : '');
+}
+// Does this term carry a city that does NOT belong to the firm's country? (foreign-city = wrong-city)
+function termForeignCity(term, fc) {
+  if (!fc) return false;
+  const m = String(term || '').toLowerCase().match(CITY_TOKEN_RX); if (!m) return false;
+  return m.some((tok) => { const cc = CITY_COUNTRY[tok.replace(/\s+/g, ' ').trim()]; return cc && cc !== fc; });
+}
+// Is a SERP leader credible as "who beats you" for the firm's market? A real business that ALSO sits in (or
+// near) the firm's market is credible; a same-vertical firm in a DIFFERENT country leading a term you don't
+// rank for is not a meaningful threat to show (a UK solicitor is not "beating" a Dubai law firm on UAE search).
+// Globally-recognised stems (corroborated peers) always pass; this only gates unknown local firms by TLD.
+function leaderInMarket(domain, fc) {
+  const host = cleanDomain(domain).toLowerCase(); if (!host) return false;
+  const tld1 = host.split('.').pop(); const tld2 = host.split('.').slice(-2).join('.');
+  const FC_TLD = { UK: ['co.uk', 'uk', 'org.uk', 'london'], US: ['com', 'us', 'org', 'net'], AE: ['ae', 'com'], SA: ['sa', 'com'], QA: ['qa', 'com'], FR: ['fr', 'com'], DE: ['de', 'com'], IE: ['ie', 'com'], NL: ['nl', 'com'], ES: ['es', 'com'], IT: ['it', 'com'] };
+  const allowed = FC_TLD[fc]; if (!allowed) return true; // unknown firm market → don't gate on TLD
+  // A clearly-foreign ccTLD (a .co.uk leader for a UAE firm) is not a credible in-market threat.
+  if (/^(co\.uk|uk|org\.uk|london|ae|sa|qa|fr|de|ie|nl|es|it)$/i.test(tld2) || /^(uk|ae|sa|qa|fr|de|ie|nl|es|it)$/i.test(tld1)) {
+    return allowed.includes(tld1) || allowed.includes(tld2);
+  }
+  return true; // generic gTLD (.com/.net/.org) → could be the firm's own market, allow
+}
+// "Big brand" = a firm that does NOT compete on city-localised search, so its keywords must read at category
+// level (a national bank fights for "business bank account", not "business bank account London"). Signals:
+// real Domain Authority, AI-recognised entity, genuinely multinational (3+ jurisdictions, not 2 which a local
+// firm trips by serving EU visitors), or an inherently-national/global sector (you do not bank, insure, or buy
+// SaaS "near me"; a hotel GROUP or retail GROUP sells a brand, not a single high-street unit). A local
+// clinic/gym/restaurant/single-site agent stays local. Shared so bestKeyword + the table agree. (kw-scale)
+const NATIONAL_SECTOR_RX = /\b(bank|banking|fintech|finance|financial|insurance|insurtech|software|saas|platform|technology|tech|telecom|airline|aviation|group|chain|retail-?group|hotel-?group|ecommerce|e-?commerce|marketplace|consultancy|consulting|agency|enterprise|logistics|manufacturing|pharma)\b/;
+function isBigBrand(payload, authority) {
+  const da = +g(authority || payload.authority, 'you.da_100', 0) || 0;
+  const sec = String(payload.detected_sector || payload.sector || '').toLowerCase();
+  const profileSecs = arr(g(payload, 'firm_profile.sectors', [])).join(' ').toLowerCase();
+  return da >= 48
+    || g(payload, 'geo_probe.ai_knows') === true
+    || arr(payload.detected_jurisdictions).length >= 3
+    || arr(g(payload, 'firm_profile.office_countries', [])).length >= 2
+    || NATIONAL_SECTOR_RX.test(sec) || NATIONAL_SECTOR_RX.test(profileSecs);
+}
+// Strip local-intent + the firm's own city (when big-brand) + any FOREIGN city + junk superlatives from a
+// raw keyword, returning a clean category-level term. `cityToStrip` is the firm's own minted city; foreign
+// cities are always removed. Returns '' if nothing usable survives (caller falls back to the category label).
+function cleanKwTermFull(t, { fc = '', big = false, cityToStrip = '' } = {}) {
+  let s = String(t || '').toLowerCase().replace(LOCAL_RX, ' ');
+  // remove any foreign city token (wrong-city), and the firm's own city too when it's a national brand
+  s = s.replace(CITY_TOKEN_RX, (tok) => {
+    const cc = CITY_COUNTRY[tok.replace(/\s+/g, ' ').trim().toLowerCase()];
+    if (cc && fc && cc !== fc) return ' ';                 // foreign city → always strip
+    if (big) return ' ';                                   // national brand → strip its own city too
+    return tok;                                            // local firm keeps its real city
+  });
+  if (cityToStrip) s = s.replace(new RegExp('\\b' + cityToStrip.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'ig'), ' ');
+  s = s.replace(/\s+(in|near|at|for)\s*$/i, ' ');
+  // drop leading/trailing junk modifiers but keep a modifier if it is the ONLY descriptive word
+  let words = s.replace(/\s{2,}/g, ' ').trim().split(/\s+/).filter(Boolean);
+  const isMod = (w) => KW_SUPERLATIVE_RX.test(w); KW_SUPERLATIVE_RX.lastIndex = 0;
+  while (words.length > 1 && isMod(words[0])) { words.shift(); KW_SUPERLATIVE_RX.lastIndex = 0; }
+  while (words.length > 1 && isMod(words[words.length - 1])) { words.pop(); KW_SUPERLATIVE_RX.lastIndex = 0; }
+  words = words.filter((w, i) => w !== words[i - 1]);       // collapse immediate repeats
+  return words.join(' ').replace(/\s{2,}/g, ' ').trim();
 }
 // One clean human label for the firm's category, used wherever we'd otherwise emit a raw "<sector>
 // services" concatenation or a "your core service / your core term" placeholder. Never blank, never
 // a leading-space fragment. (placeholder-leak)
 function categoryLabel(payload) {
-  const noun = String(g(payload, 'keyword_map.service_noun', '') || '')
+  // Clean the engine's category noun and strip any foreign/own city that leaked into it, so the fallback
+  // term is brand-relevant and never wrong-city (a UAE firm's noun must not surface "hotels london").
+  const fc = firmCountry(payload);
+  const raw = String(g(payload, 'keyword_map.service_noun', '') || '')
     .replace(/\s+(near|nearby|local|online|reviews?).*$/i, '').replace(/\s+(in|near)\s*$/i, '').trim();
+  const noun = cleanKwTermFull(raw, { fc, big: false, cityToStrip: '' }) || raw;
   if (noun) return noun;
-  const sec = titleCase(payload.detected_sector || payload.sector);
+  // fall back to the firm-profile primary sector, then the registered sector, as a clean category label.
+  const sec = titleCase(g(payload, 'firm_profile.primary_sector', '') || payload.detected_sector || payload.sector);
   return sec ? sec + ' services' : 'your core service area';
 }
 // "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival.
@@ -625,38 +740,44 @@ export function payloadToD(payload, ctx = {}) {
   if (sig.html_bytes && sig.html_bytes < 4000) onpage.push({ issue: 'Thin homepage content', sev: 'std', impact: 'Below the depth Google rewards', fix: 'Compliance-reviewed depth on every service page.' });
   const SEC = [['hsts', 'HSTS', 'Strict-Transport-Security absent, connection can be downgraded'], ['csp', 'Content-Security-Policy', 'No CSP, exposed to injection / XSS'], ['xfo', 'X-Frame-Options', 'Clickjacking protection missing'], ['xcto', 'X-Content-Type-Options', 'MIME-sniffing not blocked'], ['refpol', 'Referrer-Policy', 'Referrer leakage to third parties'], ['permpol', 'Permissions-Policy', 'Browser features not locked down']];
   const security = SEC.map(([k, hh, note]) => ({ h: hh, present: !!sig[k], sev: 'high', note }));
-  // Keyword RELEVANCE filter, only show a query if you rank for it OR a real corroborated peer leads
-  // it; drop local "near me" intent you don't rank for, and SERP-noise led by directories. A large firm
-  // must never be shown "losing law firms near me to findlaw.com". (S-kw-relevance)
-  const LOCAL_RX = /\bnear(\s?(me|you|by))?\b|\bnearby\b|\blocal\b|\bin my area\b/i;
-  const cleanKwTerm = (t) => String(t || '').replace(LOCAL_RX, '').replace(/\s+(in|near)\s*$/i, '').replace(/\s{2,}/g, ' ').trim();
-  // Relevant = you rank for it, OR a REAL firm (not a denylisted directory/aggregator) leads it.
-  // findlaw/justia/bestlawfirms are denylisted so aggregator-owned queries drop; real-firm-led ones stay.
-  const kwRelevant = (k) => { const youRank = k.my_position != null; const realLeader = k.leader && isRealCompetitor(k.leader, market); if (!youRank && !realLeader) return false; if (LOCAL_RX.test(String(k.keyword || '')) && !youRank) return false; return true; };
-  // SCALE-AWARENESS: a national/international brand (high authority, AI-recognised, or multi-jurisdiction) does NOT
-  // compete on city-localised search, "digital bank account London" misrepresents a national bank; "hotel London"
-  // misrepresents a Dubai hotel group. For such firms strip the detected-city token so keywords read at category
-  // level, and force "thin" so the pane frames the real fight (brand authority + AI visibility), not local SEO.
-  // A genuinely local business (low authority, single market) keeps its city. (kw-scale)
-  const _daYou = +g(authority, 'you.da_100', 0) || 0;
-  // "Big brand" = does NOT compete on city-localised search. Signals: real authority, AI-recognised, genuinely
-  // multinational (3+ jurisdictions, NOT 2, which a local firm trips just by serving EU visitors), or an
-  // inherently-national sector (you don't bank or buy SaaS "near me"). A local clinic/gym/restaurant stays local.
-  const _bigBrand = _daYou >= 48 || g(payload, 'geo_probe.ai_knows') === true || arr(payload.detected_jurisdictions).length >= 3 || /bank|fintech|finance|insurance|software|saas|platform|airline|hotel-group|retail-group/.test(String(payload.detected_sector || payload.sector || '').toLowerCase());
+  // Keyword RELEVANCE + ACCURACY filter (Gate 2 / Gate 7 / §5.5). A query is shown only if it genuinely
+  // matches the firm's brand + vertical and reads in the right market. Three accuracy gates layer here:
+  //  (1) RELEVANCE — you rank for it, OR a REAL firm (not a denylisted directory/aggregator) leads it AND
+  //      that leader sits in your market (an off-jurisdiction local firm is not a meaningful "who beats you").
+  //  (2) SCALE — a national/international brand never competes on city-localised search; for such firms the
+  //      firm's own city token is stripped so terms read at category level (a bank fights for "business bank
+  //      account", never "business bank account London").
+  //  (3) WRONG-CITY — a term carrying a city in a DIFFERENT country than the firm (a UAE hotel group minted
+  //      with city "London") is dropped if you don't rank for it, and has the foreign city stripped otherwise.
+  // A genuinely local business (low authority, single market) keeps its real city. (S-kw-relevance · kw-scale)
+  const _fc = firmCountry(payload);
+  const _big = isBigBrand(payload, authority);
   const _kwCity = String(g(km, 'city', '') || '').trim();
-  const _scaleKw = (t) => { let s = cleanKwTerm(t); if (_bigBrand && _kwCity) s = s.replace(new RegExp('\\s*\\b' + _kwCity.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b\\s*', 'ig'), ' ').replace(/\s{2,}/g, ' ').trim(); return s; };
+  const _cityToStrip = _big ? _kwCity : '';                  // national brand → strip its own city too
+  const _cleanKw = (t) => cleanKwTermFull(t, { fc: _fc, big: _big, cityToStrip: _cityToStrip });
+  const _youRank = (k) => k.my_position != null;             // 0 is a valid rank (truthiness guard)
+  const _leaderOk = (k) => !!(k.leader && isRealCompetitor(k.leader, market) && leaderInMarket(k.leader, _fc));
+  const kwRelevant = (k) => {
+    const s = String(k.keyword || '');
+    if (KW_NOISE_RX.test(s)) return false;                    // recruitment/informational, not a buyer term
+    if (!_youRank(k) && !_leaderOk(k)) return false;          // no rank + no credible in-market leader
+    if (LOCAL_RX.test(s) && !_youRank(k)) return false;       // local intent you don't own
+    if (termForeignCity(s, _fc) && !_youRank(k)) return false;// wrong-city term you don't own
+    if (!_cleanKw(s)) return false;                           // nothing survives the clean
+    return true;
+  };
   const _seenKw = new Set();
   const kws = arr(km.keywords).filter(kwRelevant).map((k) => {
-    const ranks = k.my_position != null;   // 0 is a valid rank, never treat it as "not ranking" (truthiness bug)
-    const leaderDom = (k.leader && isRealCompetitor(k.leader, market)) ? cleanDomain(k.leader) : '';
+    const ranks = _youRank(k);
+    const leaderDom = _leaderOk(k) ? cleanDomain(k.leader) : '';
     return {
-      kw: _scaleKw(k.keyword) || cleanKwTerm(km.service_noun) || (titleCase(payload.sector) + ' services'),
+      kw: _cleanKw(k.keyword) || categoryLabel(payload),
       vol: 'high-intent', you: ranks ? '#' + k.my_position : 'Not ranking',
-      // kwRelevant guarantees youRank OR a real leader, so leaderDom is non-empty whenever you don't rank.
-      who: ranks ? ', ' : (leaderDom || ', '), pos: (!ranks && k.leader_pos != null) ? '#' + k.leader_pos : '', intent: 'high',
+      // a credible in-market leader is only shown when you don't rank; otherwise the cell stays empty.
+      who: ranks ? ', ' : (leaderDom || ', '), pos: (!ranks && leaderDom && k.leader_pos != null) ? '#' + k.leader_pos : '', intent: 'high',
     };
   }).filter((k) => { const key = String(k.kw || '').toLowerCase(); if (!key || _seenKw.has(key)) return false; _seenKw.add(key); return true; });
-  const kwThin = kws.length < 2 || _bigBrand;
+  const kwThin = kws.length < 2 || _big;
   const onPageOne = kws.filter((k) => k.you !== 'Not ranking').length;
   const isHttps = /^https:/i.test(g(payload, 'scan.final_url', '') || siteUrl);
   const seo = {
@@ -666,7 +787,7 @@ export function payloadToD(payload, ctx = {}) {
     security,
     a11y: (function () { const l = []; if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); l.push('Unlabelled forms + low-contrast text block screen-reader users today, the Equality Act exposure most firms never see coming'); return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l }; })(),
     tech: { ssl: isHttps ? 'Valid · HTTPS' : 'Not HTTPS', mobile: !!sig.viewport, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : 'None detected', adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : 'None detected', pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : 'Not measured', render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered') },
-    keywords: kws.length ? kws : [{ kw: cleanKwTerm(km.service_noun) || categoryLabel(payload), vol: 'specialist', you: 'Not ranking', who: ', ', pos: '', intent: 'high' }],
+    keywords: kws.length ? kws : [{ kw: categoryLabel(payload), vol: 'specialist', you: 'Not ranking', who: ', ', pos: '', intent: 'high' }],
     keywordsThin: kwThin,
     keywordSummary: { onPageOne, totalTracked: kws.length || 0, opportunity: String(Math.max(0, (kws.length || 0) - onPageOne)), oppLabel: 'high-intent searches a rival captures instead of you' },
   };
@@ -676,8 +797,16 @@ export function payloadToD(payload, ctx = {}) {
     .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   // Real keyword rank-gap from the engine's keyword_leaders (you vs the real leader and their rank). (N3)
-  seo.rankGap = arr(cb.keyword_leaders).filter((k) => k.leader && isRealCompetitor(k.leader, market))
-    .slice(0, 6).map((k) => ({ kw: k.keyword, youPos: k.your_position, leader: cleanDomain(k.leader), leaderPos: k.leader_position }));
+  // Same accuracy gates as the table: a credible IN-MARKET leader (not an aggregator / off-jurisdiction
+  // firm), a brand-relevant cleaned term (no wrong-city / superlative noise), and you don't already win it.
+  const _seenGap = new Set();
+  seo.rankGap = arr(cb.keyword_leaders)
+    .filter((k) => k.leader && isRealCompetitor(k.leader, market) && leaderInMarket(k.leader, _fc))
+    .filter((k) => !KW_NOISE_RX.test(String(k.keyword || '')))
+    .filter((k) => !(termForeignCity(k.keyword, _fc) && k.your_position == null))
+    .map((k) => ({ kw: _cleanKw(k.keyword) || cleanDomain(k.keyword), youPos: k.your_position, leader: cleanDomain(k.leader), leaderPos: k.leader_position }))
+    .filter((k) => { const key = String(k.kw || '').toLowerCase(); if (!k.kw || _seenGap.has(key)) return false; _seenGap.add(key); return true; })
+    .slice(0, 6);
   // Enrich the Accessibility + Content dim sub-lines with the REAL failing audits Chrome measured.
   const _a11y = seo.psiAudits.filter((a) => a.laneKey === 'a11y').slice(0, 3).map((a) => a.title);
   const _a11yDim = dims.find((d) => d.key === 'a11y'); if (_a11yDim && _a11y.length) _a11yDim.sub = _a11y.join(' · ');

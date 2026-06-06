@@ -1,8 +1,14 @@
 // /api/stripe/checkout · create a Stripe Checkout Session for an audit add-on.
 // The plan pane's `data-addon` button POSTs { addon, audit_domain, company, ... }.
 // We map the add-on -> Stripe price_id (functions/audit/_commerce.js, from env),
-// create a subscription Checkout Session via the Stripe REST API (no SDK — the
+// create a subscription Checkout Session via the Stripe REST API (no SDK, because the
 // Workers runtime has no Node), and return { ok, url } for the client to redirect to.
+//
+// NO STRIPE KEY IS SET TODAY. When STRIPE_SECRET_KEY (or the per-add-on STRIPE_PRICE_*
+// id) is absent, this endpoint does NOT error: it returns HTTP 200 with
+// { ok:false, fallback:true, addon, reason } so the client opens the intake modal with
+// that add-on preselected instead of hitting a broken redirect. The Stripe path below is
+// kept fully correct so it goes live the moment the keys are bound, no further code change.
 //
 // GO-LIVE DEPS (not set yet): STRIPE_SECRET_KEY + the STRIPE_PRICE_* ids in _commerce.js.
 // Optional: SITE_ORIGIN (defaults to the request origin) for success/cancel URLs.
@@ -33,10 +39,16 @@ export async function onRequestPost(context) {
   const key = addonKey(body.addon || body.addon_key || body.name);
   if (!key) return json({ ok: false, error: 'unknown_addon' }, 400);
 
-  // Keys not live yet → clean, explicit signal for the client (no 500).
-  if (!env.STRIPE_SECRET_KEY) return json({ ok: false, error: 'stripe_not_configured', detail: 'STRIPE_SECRET_KEY not set' }, 503);
+  // No Stripe key bound today. Return a 200 fallback signal (NOT an error) so the client
+  // opens the intake modal with this add-on preselected rather than a dead redirect.
+  // `addon` is echoed back as the add-on key so the modal can carry it as the intent.
+  if (!env.STRIPE_SECRET_KEY) {
+    return json({ ok: false, fallback: true, addon: key, reason: 'stripe_not_configured' });
+  }
   const priceId = addonPriceId(env, key);
-  if (!priceId) return json({ ok: false, error: 'price_not_configured', detail: ADDON_CATALOGUE[key].envKey + ' not set' }, 503);
+  if (!priceId) {
+    return json({ ok: false, fallback: true, addon: key, reason: 'price_not_configured' });
+  }
 
   const origin = (env.SITE_ORIGIN || new URL(request.url).origin).replace(/\/$/, '');
   const auditDomain = clip(body.audit_domain || body.audit, 200);

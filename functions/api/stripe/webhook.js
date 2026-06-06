@@ -1,12 +1,13 @@
 // /api/stripe/webhook · Stripe webhook receiver for add-on subscriptions.
-// Verifies the `Stripe-Signature` header (HMAC-SHA256 over `t.payload` via WebCrypto —
-// the Stripe Node SDK is unavailable on the Workers runtime), then on
+// Verifies the `Stripe-Signature` header (HMAC-SHA256 over `t.payload` via WebCrypto,
+// because the Stripe Node SDK is unavailable on the Workers runtime), then on
 // `checkout.session.completed` writes a row to Neon `addon_orders` and notifies.
 //
-// GO-LIVE DEPS (not set yet): STRIPE_WEBHOOK_SECRET (whsec_…). Until it is bound this
-// endpoint rejects every event (401) — by design: an unverified webhook is never trusted.
+// GO-LIVE DEPS (not set yet): STRIPE_WEBHOOK_SECRET (whsec_...). Until it is bound this
+// endpoint no-ops cleanly: it returns 401 and never trusts an unverified event. No keys,
+// no writes, no errors. It goes live untouched the moment the secret is bound.
 //
-// Neon migration (run once by the founder — DO NOT auto-run against prod):
+// Neon migration (run once by the founder, DO NOT auto-run against prod):
 //
 //   CREATE TABLE IF NOT EXISTS addon_orders (
 //     id             BIGSERIAL PRIMARY KEY,
@@ -139,8 +140,8 @@ export async function onRequestPost(context) {
       order.audit_domain && `*Audit:* ${order.audit_domain}`,
       order.customer_email && `*Email:* ${order.customer_email}`,
       amt && `*Amount:* ${amt}/mo`,
-      `*Subscription:* ${order.subscription || '—'}`,
-      !saved && `:warning: NOT persisted (${dbError}) — run the addon_orders migration`,
+      `*Subscription:* ${order.subscription || 'n/a'}`,
+      !saved && `:warning: NOT persisted (${dbError}). Run the addon_orders migration.`,
     ].filter(Boolean).join('\n');
     context.waitUntil(Promise.allSettled([
       notifySlack(env, { level: 'ok', summary, detail }),

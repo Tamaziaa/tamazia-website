@@ -171,7 +171,7 @@ window.CH = (function(){
   function engineGrid(){
     return `<div class="enggrid">${D.geo.engines.map(e=>{
       const slug=ENG_SLUG[e.nm]||String(e.nm||'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-      return `<div class="engcell ${e.cites?'':'no'}"><div class="eng-id"><img class="eng-logo" src="/audit/engine-logos/${slug}.svg" alt="${esc(e.nm)}" loading="lazy" width="20" height="20" style="width:20px;height:20px;object-fit:contain;${e.cites?'':'opacity:.42;filter:grayscale(1)'}"><span class="eng-nm" style="font-family:var(--mono);font-size:10px;color:var(--ink)">${esc(e.nm)}</span></div>
+      return `<div class="engcell ${e.cites?'':'no'}"><div class="eng-id"><img class="eng-logo" src="/audit/engine-logos/${slug}.svg" alt="" loading="lazy" width="20" height="20" onerror="this.style.display='none'" style="width:20px;height:20px;object-fit:contain;${e.cites?'':'opacity:.42;filter:grayscale(1)'}"><span class="eng-nm" style="font-family:var(--mono);font-size:10px;color:var(--ink)">${esc(e.nm)}</span></div>
       <div class="num" style="font-size:18px;color:var(--${e.readiness<20?'red':'ox'})">${e.readiness}</div>
       <div class="st">${e.cites?'✓ citing you':'✕ not citing'}</div></div>`;
     }).join('')}</div>`;

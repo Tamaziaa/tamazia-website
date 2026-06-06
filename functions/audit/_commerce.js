@@ -58,7 +58,7 @@ export const ADDON_CATALOGUE = {
   reputation: {
     key: 'reputation', name: 'Reputation Monitoring + Crisis', envKey: 'STRIPE_PRICE_REPUTATION',
     gbp: 1500, was: 0, unit: 'mo', market: 'at market',
-    usp: 'Real-time monitoring, pre-built suppression, 24 hour crisis response. Share prices fall 35 percent on average after a reputational crisis.',
+    usp: 'Real-time monitoring, pre-built suppression, 24-hour crisis response — protect the reputation your referrals and pipeline depend on, before a problem spreads.',
     spec: ['Real-time review, mention and press monitoring', 'Crisis playbook on standby with the founder', 'Suppression architecture, not just alerting', 'Compliance-aware responses from minute one', 'Best for any firm with £5M or more of revenue to protect'],
   },
   entity: {

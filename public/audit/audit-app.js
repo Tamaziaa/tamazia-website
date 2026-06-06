@@ -148,7 +148,7 @@
         <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
       </div>
     </div>
-    <div class="subhead"><span class="nt">↳</span><h3>Security headers, each one missing is a door a regulator now reads as negligence.</h3></div>
+    <div class="subhead"><span class="nt">↳</span><h3>Security headers &mdash; each one missing is an easy red flag in any enterprise security review.</h3></div>
     <div class="card pad">${CH.securityGrid()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>${D.seo.keywordsThin?'The queries that actually fit a firm of your scale':'Keyword demand a rival is capturing'}</h3></div>
     <div class="card pad">
@@ -330,7 +330,7 @@
     {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same engine that found you as a client.', spec:['Built on the 403-rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
     {nm:'Compliance Monitoring', gbp:399, was:0, unit:'mo', usp:'Monthly re-scan of the full 403-rule catalogue. The loss-leader every budget holder approves without escalation.', spec:['Catches new breaches the day the law changes','Alerts within 24 hours of a new gap','Quarterly board-ready certificate','8.9 percent of a core retainer'], hot:true},
     {nm:'LinkedIn Executive Authority', gbp:1100, was:750, unit:'mo', usp:'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.', spec:['Dual distribution, LinkedIn and Google','8 to 12 posts per month per executive','Every post compliance-checked','Builds the named-expert E-E-A-T signal']},
-    {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24 hour crisis response. Share prices fall 35 percent on average after a reputational crisis.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
+    {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24-hour crisis response — protect the reputation your referrals and pipeline depend on, before a problem spreads.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
     {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
     {nm:'AI Entity + Knowledge Panel', gbp:1200, was:0, unit:'mo', usp:'Your machine-readable entity: Organization schema, sameAs, Wikidata and llms.txt, so AI engines identify and cite you correctly.', spec:['Wikidata entry and Knowledge Panel build','sameAs across every verified profile','Wikipedia presence where eligible','Feeds the identity layer AI reads first']},
     {nm:'Regulatory Change Alerts', gbp:199, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands. The loss-leader that keeps you ahead of enforcement.', spec:['Names the exact page and rule affected','Below the discretionary approval threshold','Sector and jurisdiction filtered','Every alert is a natural brief for a fix']},
@@ -414,8 +414,8 @@
         <div class="fx-rib">Anchor offer</div>
         <div class="fx-eyebrow">One-time Fix Sprint</div>
         <h3>Top 30 critical issues solved.</h3>
-        <div class="fx-price"><span class="fx-was">${gbpFmt(25000)}</span><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
-        <div class="fx-anchor">A consultancy quotes ${gbpFmt(25000)}+ to remediate this scope. The Fix Sprint is the same outcome, productised.</div>
+        <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
+        <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
         <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} ${plur(crit,'critical')} closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
         <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
@@ -480,7 +480,7 @@
     const f=D.fixes||[];
     return `<div class="verdict">
       <div><span class="eyebrow">The verdict</span>
-        <h2>${D.score} / 100 · ${D.grade}${(D._meta&&D._meta.exposureN>0)?`, and <span class="vexp">${D.exposure}</span> of regulatory exposure is sitting on your live site today.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
+        <h2>${D.score} / 100 · ${D.grade}${(D._meta&&D._meta.exposureN>0)?`, with up to <span class="vexp">${D.exposure}</span> in maximum statutory penalties across the breaches evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
         <p>${D.exec}</p>
         <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${x.title}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
       </div></div>`;

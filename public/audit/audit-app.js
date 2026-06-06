@@ -22,7 +22,7 @@
     ];
     return `
     <aside class="rail">
-      <div class="rail-brand"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></div>
+      <div class="rail-brand"><a href="https://tamazia.co.uk" target="_blank" rel="noopener" aria-label="Tamazia — visit tamazia.co.uk"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></a></div>
       <h1>${D.meta.company}</h1>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city,D.meta.date].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
@@ -408,36 +408,23 @@
 
     ${planTrajectory(score,wk12,wk24,TIERS,recT.key)}
 
-    <div class="subhead" style="margin-top:9px"><span class="nt">↳</span><h3>Start here, or scale into a mandate</h3></div>
+    <div class="subhead" style="margin-top:9px"><span class="nt">↳</span><h3>Start here &mdash; one fixed-scope sprint to clear your criticals</h3></div>
     <div class="plan-offer">
       <div class="fixbox">
         <div class="fx-rib">Anchor offer</div>
-        <div class="fx-eyebrow">One-time Fix Sprint</div>
-        <h3>${crit>0?`Your ${crit} critical ${plur(crit,'finding')}, solved`:`Your highest-severity gaps, solved`}.</h3>
-        <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
-        <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
-        <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
-        <p class="fx-line">For the firm that wants the urgent items closed first. ${crit>0?`The ${crit} ${plur(crit,'critical')} closed`:`The highest-severity gaps closed`} in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
-        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint&nbsp;↗</a>
-      </div>
-      <div class="tiers">
-        <div class="tier-bar" role="tablist" aria-label="Recurring mandate">
-          ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>From ${gbpFmt(t.from)}</small></button>`).join('')}
-        </div>
-        <div class="pilot-note">Each shows the standard rate struck through and your <b>“from” price</b>, the same figures as our pricing page, plus what you save across the first six months. 90-day rolling, no long-term contract.</div>
-        <div class="tier-decoy"><b>Authority</b> is where most multi-location firms your size start. Foundation proves the model on one location; Enterprise is the full multi-market mandate.</div>
-        <div class="price-grid">
-          ${TIERS.map((t,i)=>`<div class="price tierpanel ${t.rec?'rec':''} ${i===0?'on':''}" data-tier-panel="${i}" role="tabpanel" aria-labelledby="tt-${i}">
-            ${t.rec?'<span class="badge rec">Recommended for this firm</span>':''}${t.popular?'<span class="badge pop">Most popular</span>':''}
-            <div class="tier">${t.name}</div><div class="blurb">${t.blurb}</div>
-            <div class="pr"><span class="was">${gbpFmt(t.standard)}</span><b>From ${gbpFmt(t.from)}</b><small>/mo</small></div>
-            <div class="wk">${t.wk.split(' · ').map(s=>`<span class="wk-pill">${s}</span>`).join('')}<span class="wk-pill">90-day rolling</span><span class="wk-pill save">saves ${gbpFmt(t.saves6)}/6mo</span></div>
-            <ul>${t.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
-            <button class="moretoggle" data-more="price">See everything included ›</button>
-            <div class="more"><ul style="padding-top:6px">${t.more.map(f=>`<li>${f}</li>`).join('')}</ul></div>
-            <div class="spacer"></div>
-            <a class="btn ${t.rec?'solid':''} block" data-book="package" data-tier="${t.name}" style="margin-top:10px">Book a ${t.name} call ↗</a>
-          </div>`).join('')}
+        <div class="fx-main">
+          <div class="fx-body">
+            <div class="fx-eyebrow">One-time Fix Sprint</div>
+            <h3>${crit>0?`Your ${crit} critical ${plur(crit,'finding')}, solved`:`Your highest-severity gaps, solved`}.</h3>
+            <p class="fx-line">For the firm that wants the urgent items closed first. ${crit>0?`The ${crit} ${plur(crit,'critical')} closed`:`The highest-severity gaps closed`} in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
+            <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
+          </div>
+          <div class="fx-side">
+            <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time &middot; fixed scope &middot; 8 weeks</span></div>
+            <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
+            <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint&nbsp;↗</a>
+            <div class="fx-or">Prefer an ongoing mandate? Walk it with the founder on the call below.</div>
+          </div>
         </div>
       </div>
     </div>

@@ -852,7 +852,8 @@ html{scroll-behavior:smooth}
 .rail-prep .rp-name{font-family:var(--serif);font-size:15.5px;color:#fff;margin-top:4px;line-height:1.1}
 .rail-prep .rp-deg{font-family:var(--body);font-size:10.5px;color:var(--gold-light);opacity:.92;margin-top:3px;line-height:1.3}
 .rail-prep .rp-inst{display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-light);opacity:.72;margin-top:6px}
-.rail-prep .rp-logo{height:16px;width:16px;border-radius:3px;object-fit:contain;opacity:.97}
+.rail-prep .rp-logo{height:12px;width:12px;border-radius:2px;object-fit:contain;opacity:.97;flex-shrink:0}
+.rail-brand a{display:inline-block;line-height:0;cursor:pointer}
 .rail-prep .rp-rules{font-family:var(--mono);font-size:8px;letter-spacing:.03em;color:var(--gold-light);opacity:.5;margin-top:8px}
 .price .wk{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:11px}
 .price .wk-pill{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);background:var(--cream-2);border:1px solid var(--line);border-radius:5px;padding:2px 7px;line-height:1.45;white-space:nowrap}
@@ -862,6 +863,21 @@ html{scroll-behavior:smooth}
 /* Fix-Sprint CTA fits the narrow anchor column; never overflow */
 .fx-cta{font-size:9.5px;letter-spacing:.01em;padding-left:9px;padding-right:9px}
 .fixbox .fx-cta{white-space:normal;line-height:1.2}
+
+/* R4d — Fix Sprint as one elegant full-width anchor (recurring-tier panels removed) */
+.plan-offer{display:block}
+.fixbox{padding:18px 22px}
+.fx-main{display:grid;grid-template-columns:1.6fr 1fr;gap:24px;align-items:center}
+.fx-body{min-width:0}
+.fixbox h3{max-width:100%;font-size:22px;margin:4px 0 8px}
+.fx-side{display:flex;flex-direction:column;gap:10px;border-left:1px solid rgba(201,168,124,.22);padding-left:22px}
+.fx-side .fx-price{margin:0;border-bottom:0;padding-bottom:0}
+.fx-side .fx-anchor{margin:0}
+.fx-side .fx-cta{margin-top:2px}
+.fx-list{margin-bottom:0}
+.fx-line{margin-bottom:11px}
+.fx-or{font-family:var(--body);font-size:10.5px;color:var(--gold-light);opacity:.7;line-height:1.4;text-align:center;margin-top:2px}
+@media(max-width:760px){.fx-main{grid-template-columns:1fr;gap:14px}.fx-side{border-left:0;border-top:1px solid rgba(201,168,124,.22);padding-left:0;padding-top:13px}}
 /* Add-on "Add X" CTA sizes to its text (kills the wide-button centering gap) */
 .addon .foot{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .addon .foot .btn.gold{flex:0 0 auto;width:auto;display:inline-block;padding:8px 13px}

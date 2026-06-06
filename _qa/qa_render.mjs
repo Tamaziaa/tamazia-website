@@ -95,7 +95,7 @@ function checkDom(doc) {
     ['#sec-seo .issrow', 1, '>='], ['#sec-seo .seccell', 6, '>='], ['#sec-seo table tbody tr', 1, '>='],
     ['#sec-geo .engcell', 8, '='], ['#sec-geo .checkrow', 4, '>='], ['#sec-geo table tbody tr', 1, '>='],
     ['#sec-competitors table.cmp tbody tr', 2, '>='], ['#sec-competitors .bar-row', 2, '>='],
-    ['#sec-plan .price', 3, '='], ['#sec-plan .addon', 3, '>='],
+    ['#sec-plan .fixbox', 1, '>='], ['#sec-plan .addon', 3, '>='],
   ];
   for (const [sel, n, op] of expect) { const c = q(sel); const ok = op === '=' ? c === n : c >= n; if (!ok) out.push(`${sel} = ${c} (expected ${op}${n})`); }
   app.querySelectorAll('.num, .val, .v, .cmpv, .kpi .v, .sbg').forEach((el) => {

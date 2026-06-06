@@ -259,25 +259,33 @@ window.CH = (function(){
     return `<div class="urgent"><span class="upulse"></span><div><div class="ut">${text}</div>${sub?`<div class="us">${sub}</div>`:''}</div></div>`;
   }
 
-  /* bingo finding card (7 layers) */
-  function finding(f, open=false){
+  /* bingo finding card — 7 layers, folded into a 2-column dense grid (Evidence | The case).
+     opts.id stamps a stable DOM id (Phase 3 de-triplication: the FULL detail lives once). */
+  function finding(f, open=false, opts={}){
     f = Object.assign({n:0,reg:'',title:'Finding',exp:'',quote:'',plain:'',law:'',prec:'',fix:'',plan:'',shot:''}, f||{});
     // A money exposure (starts with £) carries the "statutory ceiling" caption; a ranking-impact finding
     // must NOT (calling "ranking impact" a statutory ceiling is nonsensical). (exposure-label consistency)
     const isMoney = /^£/.test(String(f.exp||''));
     const expCaption = isMoney ? 'statutory ceiling · evidence-locked' : 'ranking, AI-visibility & trust cost, not a statutory fine';
-    return `<details class="finding" ${open?'open':''}>
+    const idAttr = opts.id ? ` id="${opts.id}"` : '';
+    return `<details class="finding"${idAttr} ${open?'open':''}>
       <summary><span class="sev ${f.n===3?'a':''}"></span>
         <span class="ftitle"><span class="tag">${esc(f.reg)}</span>${esc(f.title)}</span>
         <span style="display:flex;align-items:center;gap:10px"><span class="fexp">${f.exp}</span><span class="chev">▸</span></span></summary>
-      <div class="fbody">
-        <div class="layer"><div class="lk">① Live error</div><div class="lv"><div class="shot" style="background:#fff;padding:0;min-height:auto;overflow:hidden;position:relative;border-color:var(--line-2)">${f.shot?`<img src="${f.shot}" loading="lazy" referrerpolicy="no-referrer" alt="live screenshot of ${D.meta.domain}" style="width:100%;display:block">`:`▣ screenshot pending for ${D.meta.domain}`}<span style="position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-family:var(--mono);font-size:8px;letter-spacing:.07em;padding:3px 7px;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.25)">● LIVE · YOUR SITE</span></div>${f.quote?`<span class="quote" style="display:block;margin-top:9px">${esc(f.quote)}</span>`:''}</div></div>
-        <div class="layer"><div class="lk">② What it means</div><div class="lv">${esc(f.plain)}</div></div>
-        <div class="layer"><div class="lk">③ The law</div><div class="lv"><b>${esc(f.law)}</b></div></div>
-        ${f.prec?`<div class="layer"><div class="lk">④ Past ruling</div><div class="lv">${esc(f.prec)}</div></div>`:''}
-        <div class="layer"><div class="lk">⑤ Exposure</div><div class="lv"><span class="num" style="font-size:17px;color:var(--red)">${f.exp}</span> <span class="mono" style="font-size:9px;color:var(--muted)">${expCaption}</span></div></div>
-        <div class="layer fix"><div class="lk">⑥ Tamazia fix</div><div class="lv">${esc(f.fix)}</div></div>
-        <div class="layer"><div class="lk">⑦ Plan</div><div class="lv mono" style="font-size:11px;color:var(--muted)">${f.plan}</div></div>
+      <div class="fbody dense">
+        <div class="fcol fcol-ev">
+          <div class="lk">① Live error · your site</div>
+          <div class="shot-wrap">${f.shot?`<img src="${f.shot}" loading="lazy" referrerpolicy="no-referrer" alt="live screenshot of ${esc(D.meta.domain)}">`:`<span class="shot-ph">▣ screenshot pending for ${esc(D.meta.domain)}</span>`}<span class="shot-live">● LIVE · YOUR SITE</span></div>
+          ${f.quote?`<div class="quote">${esc(f.quote)}</div>`:''}
+          <div class="lk">② What it means</div><div class="lv">${esc(f.plain)}</div>
+        </div>
+        <div class="fcol fcol-case">
+          <div class="meta-row"><span class="mk">③ Law</span><b>${esc(f.law)}</b></div>
+          ${f.prec?`<div class="meta-row"><span class="mk">④ Ruling</span><span>${esc(f.prec)}</span></div>`:''}
+          <div class="meta-row"><span class="mk">⑤ Exposure</span><span><span class="num exp">${f.exp}</span> <span class="cap">${expCaption}</span></span></div>
+          <div class="fix-block"><div class="fix-h"><span class="lk">⑥ Tamazia fix</span><span class="fix-rib">✓ every mandate</span></div><div class="lv">${esc(f.fix)}</div></div>
+          <div class="plan-line">⑦ ${f.plan}</div>
+        </div>
       </div></details>`;
   }
 

@@ -43,6 +43,16 @@
   }
 
   /* ---------------- PANES ---------------- */
+  // Phase 3 de-triplication: the FULL finding detail lives ONCE in P.overview (ids fx-1..N).
+  // Everywhere else that referenced a top-fix (regulatory "breaches in full", verdict chips)
+  // becomes a clickable SUMMARY that opens the overview detail. fixSummary keys on the fix's
+  // position in D.fixes so the id matches the overview card exactly.
+  function fixSummary(f){
+    const i=(D.fixes||[]).indexOf(f);
+    return `<button class="fix-summary" data-finding="fx-${i+1}">
+      <span class="fs-tag">${f.reg||f.pillar||''}</span><span class="fs-t">${f.title}</span>
+      <span class="fs-e">${f.exp}</span><span class="fs-go">full finding ↑</span></button>`;
+  }
   const P = {};
 
   P.overview = ()=>`
@@ -60,7 +70,7 @@
       </div>
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
-    ${D.fixes.map((f,i)=>CH.finding(f,i===0)).join('')}
+    ${D.fixes.map((f,i)=>CH.finding(f,i===0,{id:'fx-'+(i+1)})).join('')}
     <div class="card pad" style="margin-top:15px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
   P.regulatory = ()=>{
@@ -85,7 +95,7 @@
         <div class="lbl">${fw.regulator} · recent enforcement</div><div class="action">${fw.action}</div>
       </div></details>`).join('')}
     ${regFixes.length?`<div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
-    ${regFixes.map(f=>CH.finding(f,false)).join('')}`:''}`;
+    <div class="reg-fixsummaries">${regFixes.map(fixSummary).join('')}</div>`:''}`;
   };
 
   P.seo = ()=>{
@@ -409,7 +419,7 @@
       <div><span class="eyebrow">The verdict</span>
         <h2>${D.score} / 100 · ${D.grade}${(D._meta&&D._meta.exposureN>0)?`, and <span class="vexp">${D.exposure}</span> of regulatory exposure is sitting on your live site today.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
         <p>${D.exec}</p>
-        <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-open="${x.pillar==='AI / GEO'?'geo':'regulatory'}"><span class="n">${i+1}</span><span class="t">${x.title}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
+        <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${x.title}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
       </div></div>`;
   }
 
@@ -457,6 +467,43 @@
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
   document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
+
+  /* ---------------- Phase 1: OPEN-FROM-HEADING for every inner box ---------------- */
+  // Bring any clickable box's heading (its <summary>) to the top of the viewport when it opens.
+  // scrollIntoView is nested-scroll-aware, so it correctly scrolls BOTH the capped .pbody
+  // container (Phase 0) AND the window; scroll-margin-top:12px (Phase 0) supplies the offset.
+  // Hoisted (function decl) so the Phase 3 de-triplication + Phase 4 fwjump handlers reuse it.
+  function scrollHeadingTop(el){
+    if(!el) return;
+    try{ el.scrollIntoView({block:'start',behavior:'smooth'}); }
+    catch(_e){ try{ const y=el.getBoundingClientRect().top+window.scrollY-12; window.scrollTo({top:y,behavior:'smooth'}); }catch(_e2){} }
+  }
+  // One delegated toggle-capture handler (toggle does NOT bubble → capture). When a .fw/.finding
+  // opens, single-open its siblings within the same pane and pin its heading to the top, so at
+  // most one inner box is open and it always fits one viewport. Closing a sibling fires toggle
+  // with open=false, guarded by the early return.
+  document.addEventListener('toggle',function(e){
+    const d=e.target;
+    if(!(d instanceof HTMLDetailsElement) || !d.open) return;
+    if(d.classList.contains('pillar')) return;            // pillars handled by openPillar()
+    if(d.matches('.fw, .finding')){
+      const scope=d.closest('.pbody')||document;
+      const sel=d.matches('.fw')?'.fw[open]':'.finding[open]';
+      scope.querySelectorAll(sel).forEach(function(o){ if(o!==d) o.open=false; });
+      requestAnimationFrame(function(){ scrollHeadingTop(d); });
+    }
+  },true);
+
+  /* ---------------- Phase 3: clickable summaries open the ONE overview detail ---------------- */
+  // Verdict chips + regulatory "breaches in full" summaries carry data-finding="fx-N". Clicking
+  // opens the overview pillar, then (after the pillar's single-open settles) opens that finding
+  // and pins its heading to the top. The detail exists exactly once (in overview).
+  app.addEventListener('click',function(e){
+    const b=e.target.closest('[data-finding]'); if(!b) return; e.preventDefault();
+    const id=b.dataset.finding;
+    openPillar('overview');
+    requestAnimationFrame(function(){ const d=document.getElementById(id); if(d){ d.open=true; scrollHeadingTop(d); } });
+  });
   /* ---------- Gate 1: jurisdiction selector live-filters the regulatory layer ---------- */
   app.addEventListener('click',e=>{ const c=e.target.closest('.jur-chip'); if(!c)return; e.preventDefault();
     const sel=c.dataset.jurf, box=c.closest('#sec-regulatory')||document;

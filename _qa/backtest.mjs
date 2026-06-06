@@ -80,7 +80,7 @@ C('geo-checkrows>=4', ({ app }) => q(app, '#sec-geo .checkrow') >= 4 ? null : 'c
 C('geo-citation-table>=1', ({ app }) => q(app, '#sec-geo table tbody tr') >= 1 ? null : 'citation table 0');
 C('competitors-table>=2', ({ app }) => q(app, '#sec-competitors table.cmp tbody tr') >= 2 ? null : 'cmp rows ' + q(app, '#sec-competitors table.cmp tbody tr'));
 C('competitors-bars>=2', ({ app }) => q(app, '#sec-competitors .bar-row') >= 2 ? null : 'comp bars ' + q(app, '#sec-competitors .bar-row'));
-C('plan-prices=3', ({ app }) => q(app, '#sec-plan .price') === 3 ? null : 'prices ' + q(app, '#sec-plan .price'));
+C('plan-fixbox>=1', ({ app }) => q(app, '#sec-plan .fixbox') >= 1 ? null : 'no fixbox ' + q(app, '#sec-plan .fixbox'));
 C('plan-addons>=3', ({ app }) => q(app, '#sec-plan .addon') >= 3 ? null : 'addons ' + q(app, '#sec-plan .addon'));
 
 // ---- B. NO BAD VALUES (DOM) ----

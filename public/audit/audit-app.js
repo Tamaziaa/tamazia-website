@@ -3,8 +3,8 @@
    ============================================================ */
 (function(){
   const $ = (s,r=document)=>r.querySelector(s);
-  // count-aware pluralization: plur(1,'finding')→'finding', plur(2,'finding')→'findings',
-  // plur(1,'is','are')→'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
+  // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
+  // plur(1,'is','are')↗'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
   const plur = (n,s,p)=> n===1 ? s : (p||s+'s');
   // Escape DATA-sourced strings before innerHTML (evidence quotes/LLM text can carry a raw "<"
   // that would corrupt the DOM — the axe-rule-name regression). Display text only.
@@ -22,11 +22,11 @@
     ];
     return `
     <aside class="rail">
-      <div class="rail-brand"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></div>
+      <div class="rail-brand"><a href="https://tamazia.co.uk" target="_blank" rel="noopener" aria-label="Tamazia — visit tamazia.co.uk"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></a></div>
       <h1>${D.meta.company}</h1>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city,D.meta.date].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
-      <div class="rail-band">${D.scoreBand} · ${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
+      <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       <div class="rail-kpis">
         <div class="rail-kpi"><div class="v red">${D.counts.critical}</div><div class="l">Critical findings</div></div>
@@ -36,9 +36,9 @@
       </div>
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
-      <button class="rail-jump" data-pane="plan">Jump to pricing →</button>
-      <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder →</button>
-      <div class="rail-trust">100+ verified reviews · 47 UK &amp; US legal clients<br>Founder-led · ${D.rulesChecked} rules every campaign</div>
+      <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
+      <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder ↗</button>
+      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM, International Business Law</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
     </aside>`;
   }
 
@@ -60,7 +60,7 @@
       <div class="card pad"><div class="card-h"><div class="t">Findings by severity</div><div class="meta">${D.confirmed} confirmed v. evidence</div></div>${CH.donut()}</div>
       <div class="card pad"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${D.jurisdiction}</p></div>
     </div>
-    <div class="card pad" style="margin-top:14px">
+    <div class="card pad" style="margin-top:9px">
       <div class="card-h"><div class="t">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksTotal} frameworks · ${D.confirmed} evidence checks</div></div>
       <div class="grid g-7-5" style="gap:20px">
         <div><p style="font-size:13.5px;color:#3a2d30;line-height:1.55">${D.scoring.formula}</p>
@@ -71,7 +71,7 @@
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
     ${D.fixes.map((f,i)=>CH.finding(f,i===0,{id:'fx-'+(i+1)})).join('')}
-    <div class="card pad" style="margin-top:15px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
+    <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
   P.regulatory = ()=>{
     // #3: only render the "breaches in full" subhead + cards when the Regulatory-filtered
@@ -81,23 +81,28 @@
     <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
       <h2>${D.regulatoryHeadline || ('We screened all '+D.rulesChecked+' active frameworks. '+D.frameworksAssessed+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')}</h2>
       <p>We screen all ${D.rulesChecked} active frameworks every scan; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Your top ${D.frameworks.length} regulatory exposures</h3></div>
-    <div class="card pad" style="margin-bottom:16px">${CH.frameworkBars()}</div>
-    <div class="subhead"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached right now'):''}, worst exposure first.</h3></div>
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached on your live site right now'):''} &mdash; worst exposure first</h3></div>
+    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach we evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
-    ${D.frameworks.map((fw,i)=>`<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
-      <summary><span class="code">${fw.code}</span>
-        <div><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'finding'))}</div></div>
-        <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
-        <div class="fwe">${fw.exp}</div></summary>
+    ${D.frameworks.map((fw,i)=>{
+      const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
+      return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
+      <summary>
+        <div class="fw-head"><span class="code">${fw.code}</span>
+          <div class="fwn-wrap"><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
+          <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
+          <div class="fwe">${fw.exp}</div></div>
+        <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
+      </summary>
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${fw.why}
-        <div class="lbl">${fw.regulator} · recent enforcement</div><div class="action">${fw.action}</div>
-        ${(fw.provisions||[]).length?`<div class="lbl">Breaches under this Act, and the Tamazia fix for each</div>
-        <div class="provlist">${fw.provisions.map(pv=>`<div class="prov"><div class="prov-h"><span class="prov-l">${escH(pv.label)}</span></div><div class="prov-lang">${escH(pv.language)}</div><div class="prov-fix"><b>Tamazia fix</b> ${escH(pv.fix)}</div></div>`).join('')}</div>`:''}
-      </div></details>`).join('')}
-    ${regFixes.length?`<div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
-    <div class="reg-fixsummaries">${regFixes.map(fixSummary).join('')}</div>`:''}`;
+        <div class="lbl">${fw.regulator} &middot; recent enforcement</div><div class="action">${fw.action}</div>
+        ${(fw.articleGroups||[]).length?`<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
+        <div class="artlist">${fw.articleGroups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
+          <div class="art-items">${gp.items.map(it=>`<div class="art-item"><div class="art-subj"><span class="art-dot ${it.sev==='P0'?'c':it.sev==='P1'?'h':'s'}"></span>${escH(it.subject)}</div>${it.quote?`<div class="art-quote">&ldquo;${escH(it.quote)}&rdquo;</div>`:''}<div class="art-fix"><b>Tamazia fix</b> ${escH(it.fix)}</div></div>`).join('')}</div>
+        </div>`).join('')}</div>`:''}
+      </div></details>`;
+    }).join('')}`;
   };
 
   P.seo = ()=>{
@@ -120,24 +125,30 @@
     <div class="pane-head"><span class="eyebrow">Search &amp; AI both read these signals</span>
       <h2>${seoHeadline}</h2>
       <p>Search engines and AI answer engines read the same things, speed, structure, security, depth. Every signal below was measured live on your site, and each one is a buyer a competitor is capturing instead of you. Here is the exact fix.</p></div>
+    ${D.seo.psiStrats?`
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed &mdash; desktop and mobile.</h3></div>
+    ${(function(){const av=['mobile','desktop'].filter(s=>D.seo.psiStrats[s]);return av.length>1?`<div class="psi-toggle" role="tablist">${av.map(st=>`<button class="psi-tab${st===av[0]?' active':''}" data-strat="${st}" type="button" role="tab">${st==='mobile'?'Mobile':'Desktop'}</button>`).join('')}</div>`:'';})()}
+    ${['mobile','desktop'].filter(s=>D.seo.psiStrats[s]).map((st,i)=>{const S=D.seo.psiStrats[st];const fail=S.cwv.filter(c=>c.st==='fail').length;return `<div class="psi-strat${i===0?' active':''}" data-strat="${st}">
+      <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live &middot; ${st}</div></div>${CH.psiDialRow(S.dials)}</div>
+      <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${st} &middot; failing ${fail} of ${S.cwv.length}</div></div>${CH.cwvMeterRow(S.cwv)}</div>
+      <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">Failing audits on your live DOM</div><div class="meta">${st} &middot; ${S.audits.length} found &middot; hover the fix</div></div>${CH.psiAuditRow(S.audits,st)}</div>
+    </div>`;}).join('')}`:`
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed.</h3></div>
-    <div class="card pad" style="margin-bottom:15px">${CH.psiAuditList()}</div>
-    <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
+    <div class="card pad" style="margin-bottom:10px">${CH.psiAuditList()}</div>
+    <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
+    <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>`}
     <div class="grid g2">
-      <div class="card pad"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>
-      <div style="display:flex;flex-direction:column;gap:15px">
-        <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
-        <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
-          <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
-          <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
-          <div class="fact"><span class="k">Trackers</span><span class="v">${D.seo.tech.trackers}</span></div>
-          <div class="fact"><span class="k">Ad pixels</span><span class="v">${D.seo.tech.adPixels}</span></div>
-          <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
-          <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
-        </div>
+      <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
+      <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
+        <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
+        <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
+        <div class="fact"><span class="k">Trackers</span><span class="v">${D.seo.tech.trackers}</span></div>
+        <div class="fact"><span class="k">Ad pixels</span><span class="v">${D.seo.tech.adPixels}</span></div>
+        <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
+        <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
       </div>
     </div>
-    <div class="subhead"><span class="nt">↳</span><h3>Security headers, each one missing is a door a regulator now reads as negligence.</h3></div>
+    <div class="subhead"><span class="nt">↳</span><h3>Security headers &mdash; each one missing is an easy red flag in any enterprise security review.</h3></div>
     <div class="card pad">${CH.securityGrid()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>${D.seo.keywordsThin?'The queries that actually fit a firm of your scale':'Keyword demand a rival is capturing'}</h3></div>
     <div class="card pad">
@@ -171,7 +182,7 @@
       <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+D.meta.company+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+D.meta.company+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+D.meta.company+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
       <p>${D.geo.rootCause?D.geo.rootCause.reason:'The answer engines decide who to name from structured signals you are missing.'} ${aiOverview}</p></div>
     ${aiCallout}
-    <div class="grid g-4-8" style="margin-top:16px">
+    <div class="grid g-4-8" style="margin-top:10px">
       <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(radarAxes,210)}</div>
       <div style="display:flex;flex-direction:column;gap:15px">
         <div class="card pad"><div class="card-h"><div class="t">Do AI engines cite you?</div><div class="meta">readiness /100 · ${D.geo.aiKnows?'recognised':'0 citing'}</div></div>${CH.engineGrid()}</div>
@@ -182,7 +193,7 @@
         </div>
       </div>
     </div>
-    <div class="grid g2" style="margin-top:15px">
+    <div class="grid g2" style="margin-top:10px">
       <div class="card pad"><div class="card-h"><div class="t">Structured-data gaps</div><div class="meta">what AI reads first</div></div>${CH.schemaChecklist()}</div>
       <div class="card pad"><div class="card-h"><div class="t">Authority sources you're absent from</div><div class="meta">source gap</div></div>${CH.sourceGap()}</div>
     </div>
@@ -202,7 +213,7 @@
       <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
     <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them</h3></div>
-    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div>${c.beatBy.lever?`<div class="blever"><span class="blk">How Tamazia wins it</span> ${c.beatBy.lever}</div>`:''}</div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
+    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">↗</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">↗</span> <span class="bmetric">${c.beatBy.metric}</span></div>${c.beatBy.lever?`<div class="blever"><span class="blk">How Tamazia wins it</span> ${c.beatBy.lever}</div>`:''}</div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
         ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} ${plur(D.competitors.sovBar.of,'run')}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
@@ -221,7 +232,7 @@
   const TRUSTED_LOGOS = [
     ['demo-1','Meridian'],['demo-2','Calloway'],['demo-3','Ardent'],
     ['demo-4','Thornbury'],['demo-5','Vaughn & Hale'],['demo-6','Sterling Park'],
-    ['demo-7','Lockhart'],['demo-8','Ashbourne'],
+    ['demo-7','Lockhart'],['demo-8','Ashbourne'],['adidas','adidas'],
   ];
   function tbItem(n,label){
     const fb="this.outerHTML='<span class=\\'tb-name\\'>"+label.replace(/'/g,'')+"</span>'";
@@ -232,7 +243,6 @@
     return `<div class="trusted-by" aria-label="Representative client profile, demo logos">
       <div class="tb-label">Trusted by regulated firms across law, healthcare, property &amp; hospitality</div>
       <div class="tb-marquee"><div class="tb-track">${row}${row}</div></div>
-      <div class="tb-foot">Logos shown are illustrative placeholders. Client identities are confidential.</div>
     </div>`;
   }
 
@@ -315,14 +325,14 @@
   const coldSendRule=isFinancial?'FCA and COBS-compliant sends':'jurisdiction-compliant, opt-out-respecting sends';
   // Full add-on catalogue (value-only, leads with the outcome USP). Mirrors _commerce.js.
   const ADDONS=[
-    {nm:'GEO / AI Search Presence', gbp:1800, was:950, unit:'mo', usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews. AI visitors convert 4.4 to 23 times organic. The only compliance-reviewed GEO for regulated firms.', spec:['Per-engine citation measurement across all 6 engines','Entity, schema, llms.txt and Wikidata build','Compliance review of what AI says about you','Monthly share of voice against named rivals'], hero:true},
-    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same engine that found you as a client.', spec:['Built on the 403-rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
-    {nm:'Compliance Monitoring', gbp:399, was:0, unit:'mo', usp:'Monthly re-scan of the full 403-rule catalogue. The loss-leader every budget holder approves without escalation.', spec:['Catches new breaches the day the law changes','Alerts within 24 hours of a new gap','Quarterly board-ready certificate','8.9 percent of a core retainer'], hot:true},
+    {nm:'GEO / AI Search Presence', gbp:1800, was:950, unit:'mo', usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews. AI-referred visitors arrive with high intent. The only compliance-reviewed GEO for regulated firms.', spec:['Per-engine citation measurement across all 6 engines','Entity, schema, llms.txt and Wikidata build','Compliance review of what AI says about you','Monthly share of voice against named rivals'], hero:true},
+    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same compliance-first outbound engine, working for your pipeline.', spec:['Built on the 400+ rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
+    {nm:'Compliance Monitoring', gbp:399, was:0, unit:'mo', usp:'The audit, in your inbox every month — your live position across compliance, SEO and GEO, tracked over time. The report partners quote in management meetings and quarterly board packs.', spec:['Monthly compliance + SEO + GEO position report','Catches new breaches the day the law changes','Alerts within 24 hours of a new gap','Quarterly board-ready certificate'], hot:true},
     {nm:'LinkedIn Executive Authority', gbp:1100, was:750, unit:'mo', usp:'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.', spec:['Dual distribution, LinkedIn and Google','8 to 12 posts per month per executive','Every post compliance-checked','Builds the named-expert E-E-A-T signal']},
-    {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24 hour crisis response. Share prices fall 35 percent on average after a reputational crisis.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
+    {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24-hour crisis response — protect the reputation your referrals and pipeline depend on, before a problem spreads.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
     {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
     {nm:'AI Entity + Knowledge Panel', gbp:1200, was:0, unit:'mo', usp:'Your machine-readable entity: Organization schema, sameAs, Wikidata and llms.txt, so AI engines identify and cite you correctly.', spec:['Wikidata entry and Knowledge Panel build','sameAs across every verified profile','Wikipedia presence where eligible','Feeds the identity layer AI reads first']},
-    {nm:'Regulatory Change Alerts', gbp:199, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands. The loss-leader that keeps you ahead of enforcement.', spec:['Names the exact page and rule affected','Below the discretionary approval threshold','Sector and jurisdiction filtered','Every alert is a natural brief for a fix']},
+    {nm:'Regulatory Change Alerts', gbp:999, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands — so you move before enforcement does.', spec:['Names the exact page and rule affected','Sector and jurisdiction filtered','The earliest warning of a new obligation','Every alert is a natural brief for a fix']},
     {nm:'YMYL Content', gbp:800, was:550, unit:'piece', usp:'Per compliance-reviewed piece. Health and legal grade, held to Google\'s highest YMYL standard, not generic.', spec:['1,200 or more words, reviewed before publish','Passes your compliance function first time','Held to Google\'s YMYL standard','Cheaper than fixing content that fails review']},
   ];
   // ---- interactive trajectory: current (flat/declining) vs Tamazia-projected (rising) ----
@@ -350,10 +360,10 @@
         data-c1="${cur[1]}" data-c2="${cur[2]}">
       <div class="ptj-head">
         <div><div class="ptj-t">Your trajectory, with Tamazia and without</div>
-          <div class="ptj-meta">today ${score} → week 12 ${proj[1]} → week 24 ${proj[2]} · hover a tier to see it lift</div></div>
+          <div class="ptj-meta">today ${score} ↗ week 12 ${proj[1]} ↗ week 24 ${proj[2]} · hover a tier to see it lift</div></div>
         <div class="ptj-key"><span class="k-cur">Left to drift</span><span class="k-proj">With Tamazia</span></div>
       </div>
-      <svg class="ptj-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}" role="img" aria-label="Projected score trajectory">
+      <svg class="ptj-svg" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Projected score trajectory">
         <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A87C" stop-opacity=".40"/><stop offset="1" stop-color="#C9A87C" stop-opacity="0"/></linearGradient></defs>
         ${grid}
         ${labX.map((l,i)=>`<text x="${X(i).toFixed(1)}" y="${H-9}" text-anchor="${i===0?'start':i===2?'end':'middle'}" font-family="var(--mono)" font-size="8.5" fill="var(--muted)">${l}</text>`).join('')}
@@ -368,6 +378,7 @@
         <div class="traj-pt"><b>${proj[1]}</b>Week 12</div>
         <div class="traj-pt end"><b>${proj[2]}</b>Week 24</div>
       </div>
+      <div class="ptj-tiers"><span class="lbl">Projection assumes</span>${TIERS.map((t,i)=>`<button type="button" data-tier-tab="${i}" class="${i===0?'active':''}">${t.name}</button>`).join('')}</div>
     </div>`;
   }
 
@@ -392,73 +403,61 @@
     return `
     <div class="plan2">
     <div class="pane-head"><span class="eyebrow">The path</span>
-      <h2>${crit} critical finding${crit===1?'':'s'} on your live site today. Here is the price to close them, and the trajectory once you do.</h2>
+      <h2>${crit>0?`${crit} critical finding${crit===1?'':'s'} on your live site today. Here is the price to close them`:`Here is the price to close your highest-severity gaps`}, and the trajectory once you do.</h2>
       <p>${D.pricingNotes}</p></div>
 
     ${planTrajectory(score,wk12,wk24,TIERS,recT.key)}
 
-    <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>Start here, or scale into a mandate</h3></div>
+    <div class="subhead" style="margin-top:9px"><span class="nt">↳</span><h3>Start here &mdash; one fixed-scope sprint to clear your criticals</h3></div>
     <div class="plan-offer">
       <div class="fixbox">
         <div class="fx-rib">Anchor offer</div>
-        <div class="fx-eyebrow">One-time Fix Sprint</div>
-        <h3>Top 30 critical issues solved.</h3>
-        <div class="fx-price"><span class="fx-was">${gbpFmt(25000)}</span><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
-        <div class="fx-anchor">A consultancy quotes ${gbpFmt(25000)}+ to remediate this scope. The Fix Sprint is the same outcome, productised.</div>
-        <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
-        <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} ${plur(crit,'critical')} closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
-        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
-      </div>
-      <div class="tiers">
-        <div class="tier-bar" role="tablist" aria-label="Recurring mandate">
-          ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>From ${gbpFmt(t.from)}</small></button>`).join('')}
-        </div>
-        <div class="pilot-note">Each shows the standard rate struck through and your <b>“from” price</b>, the same figures as our pricing page, plus what you save across the first six months. 90-day rolling, no long-term contract.</div>
-        <div class="tier-decoy"><b>Authority</b> is where most multi-location firms your size start. Foundation proves the model on one location; Enterprise is the full multi-market mandate.</div>
-        <div class="price-grid">
-          ${TIERS.map((t,i)=>`<div class="price tierpanel ${t.rec?'rec':''} ${i===0?'on':''}" data-tier-panel="${i}" role="tabpanel" aria-labelledby="tt-${i}">
-            ${t.rec?'<span class="badge rec">Recommended for this firm</span>':''}${t.popular?'<span class="badge pop">Most popular</span>':''}
-            <div class="tier">${t.name}</div><div class="blurb">${t.blurb}</div>
-            <div class="pr"><span class="was">${gbpFmt(t.standard)}</span><b>From ${gbpFmt(t.from)}</b><small>/mo</small></div>
-            <div class="wk">${t.wk} · 90-day rolling · saves ${gbpFmt(t.saves6)} over 6 months</div>
-            <ul>${t.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
-            <button class="moretoggle" data-more="price">See everything included ›</button>
-            <div class="more"><ul style="padding-top:6px">${t.more.map(f=>`<li>${f}</li>`).join('')}</ul></div>
-            <div class="spacer"></div>
-            <a class="btn ${t.rec?'solid':''} block" data-book="package" data-tier="${t.name}" style="margin-top:10px">Book a ${t.name} call →</a>
-          </div>`).join('')}
+        <div class="fx-main">
+          <div class="fx-body">
+            <div class="fx-eyebrow">One-time Fix Sprint</div>
+            <h3>${crit>0?`Your ${crit} critical ${plur(crit,'finding')}, solved`:`Your highest-severity gaps, solved`}.</h3>
+            <p class="fx-line">For the firm that wants the urgent items closed first. ${crit>0?`The ${crit} ${plur(crit,'critical')} closed`:`The highest-severity gaps closed`} in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
+            <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
+          </div>
+          <div class="fx-side">
+            <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time &middot; fixed scope &middot; 8 weeks</span></div>
+            <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
+            <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint&nbsp;↗</a>
+            <div class="fx-or">Prefer an ongoing mandate? Walk it with the founder on the call below.</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="subhead" style="margin-top:22px"><span class="nt">↳</span><h3>Add-ons, billed monthly. Hover any for the full spec.</h3>
+    <div class="subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Add-ons, billed monthly. Hover any for the full spec.</h3>
       <span class="engnote" style="margin-left:auto">✎ Stripe checkout · selection saved to backend</span></div>
     <p class="plan-sub">Bolt any of these onto a mandate, or take them entirely on their own. ${D.upsellProof}</p>
     <div class="addon-grid">
       ${ADDONS.map(a=>`<div class="addon ${a.hero?'ag-hero':''} ${a.hot?'ag-hot':''}" tabindex="0">
         <div class="ah"><div class="an">${a.nm}</div>
-          <div class="ap">${a.was?`<span class="apwas">${gbpFmt(a.was)}</span>`:''}<b>${gbpFmt(a.gbp)}</b><small>/${a.unit}</small></div></div>
+          <div class="ap"><span class="apwas">${gbpFmt(a.gbp*2)}</span><b>${gbpFmt(a.gbp)}</b><small>/${a.unit}</small></div></div>
         <div class="tag">${a.usp}</div>
         <div class="more"><div class="aspec-h">What you get</div><ul>${a.spec.map(s=>`<li>${s}</li>`).join('')}</ul></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">Full spec ›</button><a class="btn gold block" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}" style="flex:1">Add ${a.nm.split(' ')[0]} →</a></div>
+        <div class="foot"><button class="moretoggle" data-more="addon">Full spec ›</button><a class="btn gold" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}">Add ${a.nm.split(' ')[0]} ↗</a></div>
       </div>`).join('')}
     </div>
 
     ${trustedStrip()}
 
-    <div class="subhead" style="margin-top:22px"><span class="nt">↳</span><h3>Two ways to start, both with the founder</h3></div>
+    <div class="subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Two ways to start, both with the founder</h3></div>
     <div class="booking">
       <div class="bookcard"><div class="rt">Route 1 · Strategy call</div><h3>Walk the report with the founder</h3>
         <p>A 30 minute confidential session with Aman Pareek. No sales team, no discovery loop. Your tier and strongest finding are carried into the call.</p>
         <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="Strategy call calendar"></div>
-        <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a strategy call →</a></div>
-      <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>Close the ${crit} ${plur(crit,'critical')} in 8 weeks</h3>
-        <p>A single fixed-scope engagement at ${gbpFmt(7500)}, not a retainer. For the firm that wants the bleeding stopped first. Logged as a distinct intent.</p>
-        <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint calendar"></div>
-        <a class="btn block" data-book="one_time_fix">Start the Fix Sprint →</a></div>
+        <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a strategy call ↗</a></div>
+      <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>${crit>0?`Close the ${crit} ${plur(crit,'critical')} in 8 weeks`:`Fix the highest-severity gaps in 8 weeks`}</h3>
+        <p>A fixed-scope sprint at ${gbpFmt(7500)}, not a retainer. We close your highest-severity findings in priority order, then re-scan to prove every fix landed &mdash; book the kickoff:</p>
+        <ul class="route-val">${fixOutcomes.slice(0,3).map(o=>`<li>${escH(o)}</li>`).join('')}</ul>
+        <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint kickoff calendar"></div>
+        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint&nbsp;↗</a></div>
     </div>
 
-    <div class="card pad" style="margin-top:16px;background:var(--cream-2);border:0">
+    <div class="card pad" style="margin-top:10px;background:var(--cream-2);border:0">
       <div class="capt" style="font-size:11px;line-height:1.6;margin:0">This is an automated marketing diagnostic from publicly observable signals (or the most recent web-archive snapshot where the live site was unreachable). The monetary figures are <b>statutory maximum fines</b>: worst-case ceilings to indicate exposure, not predictions. Not legal advice. Framework catalogue ${D.meta.catalogue}. Produced by Tamazia Ltd, London. Marketing diagnostic only.</div>
     </div>
     </div>`;
@@ -469,7 +468,7 @@
     const f=D.fixes||[];
     return `<div class="verdict">
       <div><span class="eyebrow">The verdict</span>
-        <h2>${D.score} / 100 · ${D.grade}${(D._meta&&D._meta.exposureN>0)?`, and <span class="vexp">${D.exposure}</span> of regulatory exposure is sitting on your live site today.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
+        <h2>${D.score} / 100 · ${D.grade}${(D._meta&&D._meta.exposureN>0)?`, with up to <span class="vexp">${D.exposure}</span> in maximum statutory penalties across the breaches evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
         <p>${D.exec}</p>
         <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${x.title}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
       </div></div>`;
@@ -511,28 +510,49 @@
 
   /* ---------------- NAV, one pillar open at a time ---------------- */
   function setActive(id){ document.querySelectorAll('.railnav button').forEach(b=>b.classList.toggle('active', b.dataset.pane===id)); }
+  // When navigating from a verdict/breach chip we open the overview pillar AND a specific finding;
+  // suppress the pillar-level scrolls so only the finding scroll wins (the async pillar 'toggle'
+  // otherwise fires last and overrides it — the #6/#7/#8 jump-to-bottom bug).
+  let _chipNav=false;
   function openPillar(id){
     document.querySelectorAll('.pillar').forEach(d=>{ d.open=(d.id==='sec-'+id); });
-    const el=document.getElementById('sec-'+id); if(el){ const y=el.getBoundingClientRect().top+window.scrollY-10; window.scrollTo({top:y,behavior:'smooth'}); }
     setActive(id);
+    const el=document.getElementById('sec-'+id); if(el && !_chipNav) scrollHeadingTop(el);
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
   // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
   document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
-  document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); } }));
+  document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); if(!_chipNav) scrollHeadingTop(d); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
+  // Scorecard dimcards ("Every metric we judged you on") jump to their pillar.
+  app.addEventListener('click',e=>{ const dc=e.target.closest('.dimcard[data-pane]'); if(dc){ e.preventDefault(); openPillar(dc.dataset.pane); } });
+  app.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ const dc=e.target.closest('.dimcard[data-pane]'); if(dc){ e.preventDefault(); openPillar(dc.dataset.pane); } } });
+  // PSI desktop|mobile toggle: switch the active strategy card-set within the SEO pane.
+  app.addEventListener('click',function(e){ const t=e.target.closest('.psi-tab'); if(!t) return; e.preventDefault();
+    const strat=t.dataset.strat, scope=t.closest('.pbody')||document;
+    scope.querySelectorAll('.psi-tab').forEach(b=>b.classList.toggle('active', b===t));
+    scope.querySelectorAll('.psi-strat').forEach(s=>s.classList.toggle('active', s.dataset.strat===strat));
+  });
 
-  /* ---------------- Phase 1: OPEN-FROM-HEADING for every inner box ---------------- */
-  // Bring any clickable box's heading (its <summary>) to the top of the viewport when it opens.
-  // scrollIntoView is nested-scroll-aware, so it correctly scrolls BOTH the capped .pbody
-  // container (Phase 0) AND the window; scroll-margin-top:12px (Phase 0) supplies the offset.
-  // Hoisted (function decl) so the Phase 3 de-triplication + Phase 4 fwjump handlers reuse it.
+  /* ---------------- OPEN-FROM-HEADING for every box (robust) ---------------- */
+  // Pin a box's heading (its <summary>) just under the top of the viewport when it opens.
+  // INSTANT, not smooth: the page sets html{scroll-behavior:smooth}, so two programmatic scrolls
+  // fired close together (e.g. openPillar then open-the-finding) ANIMATE and race — the later one
+  // lands mid-flight and you overshoot to the BOTTOM of the box. We force instant + a monotonic
+  // token so only the LATEST requested target keeps re-pinning; stale pins cancel themselves. We
+  // re-pin across two frames + a short delay so an open-reflow or a sibling-close that shifts the
+  // target can never leave the heading off-screen.
   function scrollHeadingTop(el){
     if(!el) return;
-    try{ el.scrollIntoView({block:'start',behavior:'smooth'}); }
-    catch(_e){ try{ const y=el.getBoundingClientRect().top+window.scrollY-12; window.scrollTo({top:y,behavior:'smooth'}); }catch(_e2){} }
+    // Enterprise-smooth: ONE gentle smooth scroll. scroll-margin-top (CSS, 18px) gives breathing
+    // room so a heading never jams against the very top. _chipNav suppresses competing pillar
+    // scrolls so this never races/overshoots; rAF lets an open-reflow settle before we measure.
+    requestAnimationFrame(function(){
+      try{ el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      catch(_e){ const y=Math.max(0, el.getBoundingClientRect().top+window.scrollY-18); try{ window.scrollTo(0,y); }catch(_e2){} }
+    });
   }
-  // One delegated toggle-capture handler (toggle does NOT bubble → capture). When a .fw/.finding
+  // One delegated toggle-capture handler (toggle does NOT bubble ↗ capture). When a .fw/.finding
   // opens, single-open its siblings within the same pane and pin its heading to the top, so at
   // most one inner box is open and it always fits one viewport. Closing a sibling fires toggle
   // with open=false, guarded by the early return.
@@ -555,8 +575,13 @@
   app.addEventListener('click',function(e){
     const b=e.target.closest('[data-finding]'); if(!b) return; e.preventDefault();
     const id=b.dataset.finding;
+    _chipNav=true;
     openPillar('overview');
-    requestAnimationFrame(function(){ const d=document.getElementById(id); if(d){ d.open=true; scrollHeadingTop(d); } });
+    requestAnimationFrame(function(){
+      const d=document.getElementById(id); if(d) d.open=true;
+      requestAnimationFrame(function(){ scrollHeadingTop(d||document.getElementById('sec-overview')); });
+    });
+    setTimeout(function(){ _chipNav=false; }, 400);
   });
 
   /* ---------------- Phase 4: "Top N exposures" bars jump to their framework box ---------------- */
@@ -634,7 +659,7 @@
   })();
 
   /* ============================================================
-     COMMERCE, intake modal → /api/intent → Cal.com embed; add-ons → Stripe
+     COMMERCE, intake modal ↗ /api/intent ↗ Cal.com embed; add-ons ↗ Stripe
      ============================================================ */
   const Commerce = (function(){
     const meta = (D && D.meta) || {};
@@ -724,7 +749,7 @@
           ${turnstileSite?`<div class="cf-turnstile" data-sitekey="${esc(turnstileSite)}" data-theme="light"></div>`:''}
           <div class="cmx-err" role="alert" hidden></div>
           <div class="cmx-actions">
-            <button type="submit" class="btn solid cmx-submit">Continue to the calendar →</button>
+            <button type="submit" class="btn solid cmx-submit">Continue to the calendar ↗</button>
           </div>
           <p class="cmx-fine">Submitting records this enquiry with Tamazia and opens the founder's calendar. No payment is taken here.</p>
         </form>`;
@@ -800,7 +825,7 @@
         window.Cal.ns[slug]('ui',{ theme:'light', hideEventTypeDetails:false, layout:'month_view' });
       }catch(_e){
         // graceful fallback, direct link already shown above
-        const el=document.getElementById(elId); if(el) el.innerHTML='<a class="btn solid" href="https://cal.com/'+esc(slug)+'" target="_blank" rel="noopener">Open the founder\'s calendar →</a>';
+        const el=document.getElementById(elId); if(el) el.innerHTML='<a class="btn solid" href="https://cal.com/'+esc(slug)+'" target="_blank" rel="noopener">Open the founder\'s calendar ↗</a>';
       }
       // GA4 lead event when the iframe attaches
       const wrap=document.getElementById(elId);
@@ -820,13 +845,14 @@
       el.innerHTML=`<div id="${elId}" class="cal-in-frame"></div>
         <p class="cmx-fine">Prefer a direct link? <a href="https://cal.com/${esc(CAL_SLUG)}" target="_blank" rel="noopener">Open the founder's calendar</a>.</p>`;
       try{
-        loadCalOnce(CAL_SLUG);
-        window.Cal('init', CAL_SLUG, { origin:'https://app.cal.com' });
+        const ns='cal_'+elId.replace(/[^a-z0-9]/gi,'');
+        loadCalOnce(ns);
+        window.Cal('init', ns, { origin:'https://app.cal.com' });
         const notes='Audit route: '+label+(meta.company?(' · '+meta.company):'');
-        window.Cal.ns[CAL_SLUG]('inline',{ elementOrSelector:'#'+elId, config:{ layout:'month_view', notes }, calLink:CAL_SLUG });
-        window.Cal.ns[CAL_SLUG]('ui',{ theme:'light', hideEventTypeDetails:true, layout:'month_view' });
+        window.Cal.ns[ns]('inline',{ elementOrSelector:'#'+elId, config:{ layout:'month_view', notes }, calLink:CAL_SLUG });
+        window.Cal.ns[ns]('ui',{ theme:'light', hideEventTypeDetails:true, layout:'month_view' });
       }catch(_e){
-        const f=document.getElementById(elId); if(f) f.innerHTML='<a class="btn solid block" href="https://cal.com/'+esc(CAL_SLUG)+'" target="_blank" rel="noopener">Open the founder\'s calendar →</a>';
+        const f=document.getElementById(elId); if(f) f.innerHTML='<a class="btn solid block" href="https://cal.com/'+esc(CAL_SLUG)+'" target="_blank" rel="noopener">Open the founder\'s calendar ↗</a>';
       }
     }
 

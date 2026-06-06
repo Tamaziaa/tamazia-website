@@ -67,7 +67,7 @@ window.CH = (function(){
     if(o.drHidden || data.length===0 || (onlyYou && o.compare!==false)){
       return naNote(o.naText || 'Comparison data not available for this scan.');
     }
-    // Guard the denominator: empty data or all-zero values must never yield 0/-Infinity (→ NaN widths).
+    // Guard the denominator: empty data or all-zero values must never yield 0/-Infinity (↗ NaN widths).
     const rawMax = o.max||Math.max(0,...data.map(d=>+d.v||0)), max=rawMax>0?rawMax:1, unit=o.unit||'', fmt=o.fmt||(v=>v);
     return `<div class="barset">${data.map(d=>{
       const w=Math.max(3,((+d.v||0)/max)*100);
@@ -119,13 +119,13 @@ window.CH = (function(){
   function trajectory(w=520,h=130){
     const pad=34, iW=w-pad*2, iH=h-34, id=uid();
     const T=Array.isArray(D.trajectory)?D.trajectory:[], denom=Math.max(1,T.length-1);   // never divide by 0 (single point)
-    if(!T.length) return naNote('Trajectory projection not available for this scan.');   // no points → no empty frame
+    if(!T.length) return naNote('Trajectory projection not available for this scan.');   // no points ↗ no empty frame
     const xs=T.map((_,i)=>pad+iW*i/denom);
     const ys=T.map(p=>(h-20)-(Math.max(0,Math.min(100,+p.v||0))/100)*iH);
     const line=xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)} ${ys[i].toFixed(1)}`).join(' ');
     const area=xs.length?`${line} L${xs[xs.length-1].toFixed(1)} ${h-20} L${xs[0].toFixed(1)} ${h-20} Z`:'';
     let dots=''; xs.forEach((x,i)=> dots+=`<circle cx="${x.toFixed(1)}" cy="${ys[i].toFixed(1)}" r="5" fill="${i===0?'#B3261E':i===xs.length-1?'#2F7A4A':'#7A2A3B'}" stroke="#fff" stroke-width="2"/>`);
-    return `<div class="traj-wrap"><svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    return `<div class="traj-wrap"><svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A87C" stop-opacity=".42"/><stop offset="1" stop-color="#C9A87C" stop-opacity="0"/></linearGradient></defs>
       <path d="${area}" fill="url(#${id})"/><path d="${line}" fill="none" stroke="#7A2A3B" stroke-width="2.5"/>${dots}</svg>
       <div class="traj-pts">${T.map((p,i)=>`<div class="traj-pt ${i===0?'now':i===T.length-1?'end':''}"><b>${p.v}</b>${p.x} · ${p.g}</div>`).join('')}</div></div>`;
@@ -299,7 +299,8 @@ window.CH = (function(){
     const lab={pass:'Pass',warn:'Needs work',fail:'Fail',na:'Not assessed'};
     return `<div class="dimgrid">${D.dims.map(d=>{
       const w=d.st==='na'?0:Math.max(4,d.v||0);
-      return `<div class="dimcard ${d.st}"><div class="dch"><span class="dcn">${d.nm}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
+      const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
+      return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${d.nm} ↗"><div class="dch"><span class="dcn">${d.nm}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
         <div class="bar-track" style="height:5px;margin:7px 0 8px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div>
         <div class="dcs">${d.sub||''}</div></div>`;
     }).join('')}</div>`;
@@ -321,7 +322,7 @@ window.CH = (function(){
   /* ---- GEO "why AI can't see you" causal chain ---- */
   function causalChain(){
     const rc=D.geo&&D.geo.rootCause; if(!rc) return '';
-    return `<div class="causal">${rc.chain.map((c,i)=>`<div class="cc-node ${c.ok?'ok':'bad'}"><div class="cc-k">${esc(c.k)}</div><div class="cc-v">${esc(c.v)}</div></div>${i<rc.chain.length-1?'<div class="cc-arrow">→</div>':''}`).join('')}</div>
+    return `<div class="causal">${rc.chain.map((c,i)=>`<div class="cc-node ${c.ok?'ok':'bad'}"><div class="cc-k">${esc(c.k)}</div><div class="cc-v">${esc(c.v)}</div></div>${i<rc.chain.length-1?'<div class="cc-arrow">↗</div>':''}`).join('')}</div>
       <div class="cc-reason">${esc(rc.reason)}</div>`;
   }
 
@@ -334,6 +335,28 @@ window.CH = (function(){
       ${x.sel?`<div class="psi-sel mono">${esc(x.sel)}</div>`:''}
       ${x.wcag?`<div class="psi-wcag">⚖ ${esc(x.wcag)}, enforceable under ADA Title III &amp; the EU Accessibility Act</div>`:''}
       <div class="psi-fix"><b>Tamazia fix</b> ${esc(x.fix)}</div></div>`).join('')}</div>`;
+  }
+  /* ---- strategy-aware PSI (desktop|mobile) — data passed in explicitly ---- */
+  function psiDialRow(d){ d=d||{};
+    return `<div style="display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap">${dial(d.performance,'Performance')}${dial(d.accessibility,'Accessibility')}${dial(d.bestPractices,'Best practices')}${dial(d.seo,'SEO')}</div>`;
+  }
+  function cwvMeterRow(cwv){
+    return `<div class="cwvgrid">${(cwv||[]).map(m=>{
+      const col=stCls(m.st)==='r'?'red':stCls(m.st)==='a'?'amber':'green';
+      return `<div class="cwvchip" data-tip="${esc(String(m.plain||'')).replace(/"/g,'&quot;')}">
+        <div class="cwv-k"><b>${esc(m.k)}</b> · ${esc(m.label)}</div>
+        <div class="cwv-v num" style="color:var(--${col})">${esc(m.v)}<span class="cwv-t mono">target ${esc(m.target)}</span></div>
+        <div class="bar-track cwv-bar"><div class="bar-fill ${m.st==='warn'?'amber':''}" style="width:${m.pct}%"></div></div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+  function psiAuditRow(a,strat){ a=a||[];
+    if(!a.length) return `<div class="capt" style="margin:0">No failing audits surfaced for ${esc(strat||'this strategy')} this scan — your live site cleared this lane.</div>`;
+    return `<div class="psi-list">${a.map(x=>`<div class="psi-row"><div class="psi-h"><span class="psi-t">${esc(x.title)}</span><span class="psi-lane l-${x.laneKey}">${esc(x.lane)}</span></div>
+      <div class="psi-ev">Evidence · Google PageSpeed (${esc(strat||'mobile')}) · <span class="mono">${esc(x.id)}</span>${x.disp?' · '+esc(x.disp):''}${x.nodes?' · '+x.nodes+' element'+(x.nodes>1?'s':''):''}</div>
+      ${x.sel?`<div class="psi-sel mono">${esc(x.sel)}</div>`:''}
+      ${x.wcag?`<div class="psi-wcag">⚖ ${esc(x.wcag)}, enforceable under ADA Title III &amp; the EU Accessibility Act</div>`:''}
+      ${x.fix?`<div class="psi-fix"><b>Tamazia fix</b> ${esc(x.fix)}</div>`:''}</div>`).join('')}</div>`;
   }
 
   /* ---- framework severity bars + regulator badges ("Your top N regulatory exposures") ---- */
@@ -350,6 +373,6 @@ window.CH = (function(){
 
   return {gauge,dial,bars,exposureBars,heatmap,radar,trajectory,donut,pill,dimScorecard,dimCardGrid,
     waterfall,causalChain,psiAuditList,frameworkBars,
-    cwvMeters,psiDials,issueList,securityGrid,engineGrid,schemaChecklist,sourceGap,
+    cwvMeters,psiDials,psiDialRow,cwvMeterRow,psiAuditRow,issueList,securityGrid,engineGrid,schemaChecklist,sourceGap,
     competitorTable,citationTable,keywordTable,stat,urgent,finding};
 })();

@@ -77,7 +77,7 @@ jobs:
             'title': (os.environ.get('TITLE') or 'deploy')[:200],
           }))
           ")
-          curl -s -X POST "https://tamazia-website.pages.dev/api/admin/notify-deploy" \
+          curl -s -X POST "https://tamazia-website-3fy.pages.dev/api/admin/notify-deploy" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD" || true
           echo "notify-deploy fired"
@@ -101,7 +101,7 @@ jobs:
           for ep in /api/contact /api/audit /api/briefings; do
             CODE=$(curl -sX POST -o /dev/null -w "%{http_code}" --max-time 10 \
               -H 'Content-Type: application/json' -d '{}' \
-              "https://tamazia-website.pages.dev${ep}")
+              "https://tamazia-website-3fy.pages.dev${ep}")
             if [ "$CODE" = "404" ]; then
               echo "FAIL: ${ep} returns 404"
               fail=1
@@ -110,7 +110,7 @@ jobs:
             fi
           done
           CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
-            "https://tamazia-website.pages.dev/api/health")
+            "https://tamazia-website-3fy.pages.dev/api/health")
           if [ "$CODE" != "200" ]; then
             echo "FAIL: /api/health -> ${CODE}"
             fail=1
@@ -134,7 +134,7 @@ jobs:
             echo "SKIP audit probe · set AUDIT_PROBE_SLUG + AUDIT_PROBE_HASH secrets to enable"
             exit 0
           fi
-          URL="https://tamazia-website.pages.dev/audit/${SLUG}/${HASH}"
+          URL="https://tamazia-website-3fy.pages.dev/audit/${SLUG}/${HASH}"
           BODY=$(curl -s --max-time 15 -w '\n%{http_code}' "$URL")
           CODE=$(printf '%s' "$BODY" | tail -n1)
           HTML=$(printf '%s' "$BODY" | sed '$d')

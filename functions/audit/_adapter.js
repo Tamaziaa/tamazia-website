@@ -1011,13 +1011,18 @@ export function payloadToD(payload, ctx = {}) {
   const _cityToStrip = _big ? _kwCity : '';                  // national brand → strip its own city too
   const _cleanKw = (t) => cleanKwTermFull(t, { fc: _fc, big: _big, cityToStrip: _cityToStrip });
   const _youRank = (k) => k.my_position != null;             // 0 is a valid rank (truthiness guard)
+  const _inBand = (k) => { const p = +k.my_position; return Number.isFinite(p) && p >= 20 && p <= 50; }; // winnable battleground
   const _leaderOk = (k) => !!(k.leader && isRealCompetitor(k.leader, market) && leaderInMarket(k.leader, _fc));
   const kwRelevant = (k) => {
     const s = String(k.keyword || '');
     if (KW_NOISE_RX.test(s)) return false;                    // recruitment/informational, not a buyer term
-    if (!_youRank(k) && !_leaderOk(k)) return false;          // no rank + no credible in-market leader
-    if (LOCAL_RX.test(s) && !_youRank(k)) return false;       // local intent you don't own
-    if (termForeignCity(s, _fc) && !_youRank(k)) return false;// wrong-city term you don't own
+    const ranks = _youRank(k);
+    // Phase 5: show ONLY a winnable battleground — you rank in positions 20-50 (page 2-5, close enough to
+    // overtake), OR you don't rank but a REAL in-market competitor leads it (the gap a rival captures). A
+    // top-20 rank (already winning) or 50+ (too far this quarter) is not the story; so any shown "#N" is 20-50.
+    if (!((ranks && _inBand(k)) || (!ranks && _leaderOk(k)))) return false;
+    if (LOCAL_RX.test(s) && !ranks) return false;             // local intent you don't own
+    if (termForeignCity(s, _fc) && !ranks) return false;      // wrong-city term you don't own
     if (!_cleanKw(s)) return false;                           // nothing survives the clean
     return true;
   };
@@ -1031,7 +1036,9 @@ export function payloadToD(payload, ctx = {}) {
       // a credible in-market leader is only shown when you don't rank; otherwise the cell stays empty.
       who: ranks ? ', ' : (leaderDom || ', '), pos: (!ranks && leaderDom && k.leader_pos != null) ? '#' + k.leader_pos : '', intent: 'high',
     };
-  }).filter((k) => { const key = String(k.kw || '').toLowerCase(); if (!key || _seenKw.has(key)) return false; _seenKw.add(key); return true; });
+  }).filter((k) => { const key = String(k.kw || '').toLowerCase(); if (!key || _seenKw.has(key)) return false; _seenKw.add(key); return true; })
+    .sort((a, b) => (a.you[0] === '#' ? 0 : 1) - (b.you[0] === '#' ? 0 : 1))   // winnable 20-50 ranks first, then gaps
+    .slice(0, 5);                                                              // max 5 (one-viewport budget)
   const kwThin = kws.length < 2 || _big;
   const onPageOne = kws.filter((k) => k.you !== 'Not ranking').length;
   const isHttps = /^https:/i.test(g(payload, 'scan.final_url', '') || siteUrl);

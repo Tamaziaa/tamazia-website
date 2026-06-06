@@ -191,6 +191,8 @@
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>Who AI names instead of you</h3></div>
     <div class="card pad">${CH.citationTable()}</div>
+    ${(!D.seo.keywordsThin && (D.seo.keywords||[]).length>=2)?`<div class="subhead"><span class="nt">↳</span><h3>The searches you rank 20&ndash;50 for, and who AI &amp; Google name first</h3></div>
+    <div class="card pad">${CH.keywordTable()}</div>`:''}
     <div class="subhead"><span class="nt">↳</span><h3>The fix, in full</h3></div>
     ${CH.finding(D.geo.fix,true)}
     <div class="subhead"><span class="nt">↳</span><h3>Plain-English glossary</h3></div>

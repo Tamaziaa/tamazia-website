@@ -15,7 +15,16 @@ export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
   const m = url.pathname.match(/^\/audit\/([^/]+)\/([^/]+)\/?$/);
-  if (!m) return htmlResponse(errorShell('Audit not found', 'This link is malformed.'), 404);
+  if (!m) {
+    // This catch-all also sits in front of the static render assets under /audit/ (audit-app.js,
+    // audit-charts.js, audit.css, fonts/*.woff2, engine-logos/*.svg, trusted-logos/*.svg). Without this
+    // pass-through the function 404s them and every audit page renders blank. Anything that looks like a file
+    // (has an extension) or lives in a known asset sub-path falls through to the Pages static-asset server.
+    if (/\.[a-z0-9]{2,6}$/i.test(url.pathname) || /\/(fonts|engine-logos|trusted-logos)\//.test(url.pathname)) {
+      return context.next();
+    }
+    return htmlResponse(errorShell('Audit not found', 'This link is malformed.'), 404);
+  }
   const slug = decodeURIComponent(m[1]);
   const hash = decodeURIComponent(m[2]);
 

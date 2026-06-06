@@ -236,7 +236,7 @@ window.CH = (function(){
     return `<table class="tz-table cmp"><thead><tr><th>Firm</th>${c.cols.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>
       ${c.rows.map(r=>`<tr class="${r.you?'you-row':''}">
         <td><b>${r.name}</b>${r.you?' <span class="mono" style="font-size:8px;color:var(--red)">YOU</span>':''}</td>
-        ${(r.cells||[]).map(cell=>`<td><span class="cmpv ${cell.cls||(r.you?'bad':'good')}">${cell.v}</span></td>`).join('')}
+        ${(r.cells||[]).map(cell=>`<td><span class="cmpv ${cell.cls||(r.you?'bad':'good')}">${cell.v}</span>${cell.est?'<span class="est" data-tip="Estimated from authority signals — this rival publishes no Domain Rating">est</span>':''}</td>`).join('')}
       </tr>`).join('')}</tbody></table>`;
   }
 

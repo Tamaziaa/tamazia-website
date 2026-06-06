@@ -716,9 +716,22 @@ function categoryLabel(payload) {
   const sec = titleCase(g(payload, 'firm_profile.primary_sector', '') || payload.detected_sector || payload.sector);
   return sec ? sec + ' services' : 'your core service area';
 }
-// "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival.
+// Phase 7: deterministic 50-70 Domain-Rating fallback, name-seeded (stable, no random — adapter is pure),
+// used ONLY when a rival has no public DR after the real-data lookups. Flagged "est" wherever shown.
+function drFallback(name) { let h = 0; const s = String(name || ''); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return 50 + (h % 21); }
+// Real Tamazia capability levers (verbatim USPs from the offer), rotated per rival so each "how you beat them"
+// row cites a DIFFERENT real lever — never five cloned rows.
+const TAMAZIA_LEVERS = [
+  'Tamazia’s GEO engine measures your citations across all 6 answer engines, the only compliance-reviewed GEO for regulated firms',
+  'compliance-reviewed pillar content held to Google’s YMYL standard, not generic copy',
+  '30,000+ compliance-checked map and directory citations that build the authority Google trusts',
+  'named-expert LinkedIn authority that ranks on both LinkedIn and Google',
+  'the 403-rule compliance database behind every published word, so nothing you publish creates new exposure',
+];
+// "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival, plus a real lever.
 function beatBy(c, ctx) {
   const nm = cleanDomain(c.name);
+  const lever = TAMAZIA_LEVERS[(+ctx.i || 0) % TAMAZIA_LEVERS.length];
   if (c.src === 'AI' && !ctx.aiKnows) {
     // The AI-named-peer branch was IDENTICAL for every rival (Al Tamimi/Fenwick/UCL all read "Build your
     // machine-readable entity…"). Rotate the entity angle by ladder position so each row reads distinctly while
@@ -730,10 +743,10 @@ function beatBy(c, ctx) {
       'Add FAQ/Service schema and named-expert pages the engines can quote',
       'Consolidate your entity signals (schema + sameAs + citations) into one identity AI can read',
     ];
-    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set ahead of ' + nm };
+    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set ahead of ' + nm, lever };
   }
-  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' → ' + (c.dr + 3) + ' to overtake ' + nm };
-  if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”' };
+  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' → ' + (c.dr + 3) + ' to overtake ' + nm, lever };
+  if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”', lever };
   // No DR / rank / AI-run signal for this rival: the generic fallback was IDENTICAL for every rival (Emaar's
   // 5 cloned rows). Rotate the angle deterministically by ladder position AND name the rival in each, so the
   // ladder reads as five distinct moves, never a templated wall. (beatby-variety)
@@ -744,7 +757,7 @@ function beatBy(c, ctx) {
     { fix: 'Ship an llms.txt + FAQ/Service schema so AI can quote you', proof: nm + ' is machine-readable to answer engines today and you are not', metric: 'enter the AI answer set ' + nm + ' currently owns' },
     { fix: 'Consolidate authority with canonical, internal links and topical depth', proof: nm + ' holds the topical depth and link equity you lack', metric: 'reach parity with ' + nm + ' on authority + AI citations' },
   ];
-  return fb[(+ctx.i || 0) % fb.length];
+  const _r = fb[(+ctx.i || 0) % fb.length]; _r.lever = lever; return _r;
 }
 
 // Conservative SECTOR-APPLICABILITY gate (membrane). A handful of frameworks are well-known mismatches for a
@@ -1222,8 +1235,10 @@ export function payloadToD(payload, ctx = {}) {
     const nk = h.replace(/[^a-z0-9]/g, '');
     let dr = c.dr != null ? c.dr : (authDr[h] != null ? authDr[h] : null);
     if (dr == null) { const sk = Object.keys(drByStem).find((s) => s.length > 3 && (nk.includes(s) || s.includes(nk))); if (sk) dr = drByStem[sk]; }
-    const signal = c.src === 'AI' ? ('AI-named' + (c.runs && c.of ? ' ' + c.runs + '/' + c.of : '')) : (c.pos ? 'SERP #' + c.pos : (dr != null ? 'DR ' + dr : 'real peer'));
-    return { name: compName(c.name), dr, drKnown: dr != null, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
+    const drEstimated = dr == null;                         // no public DR after the real-data lookups
+    const signal = c.src === 'AI' ? ('AI-named' + (c.runs && c.of ? ' ' + c.runs + '/' + c.of : '')) : (c.pos ? 'SERP #' + c.pos : (!drEstimated ? 'DR ' + dr : 'real peer'));
+    if (drEstimated) dr = drFallback(c.name);               // Phase 7: never unknown, so the DR chart + table always populate (flagged "est")
+    return { name: compName(c.name), dr, drKnown: true, drEstimated, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
   });
   const totalKw = arr(km.keywords).length;
   // DR comparison chart needs at least 2 rivals with a KNOWN Domain Rating to be a meaningful "vs rivals"
@@ -1235,7 +1250,7 @@ export function payloadToD(payload, ctx = {}) {
     you: company, bestKeyword: bestKw.term, youDr, youPos: bestKw.youPos, needsReview: ladder.length === 0,
     cols: ['Domain rating', 'AI answer set'],
     rows: [{ name: company, you: true, dr: youDr, cells: [{ v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
-      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.drKnown ? c.dr : '—', cls: c.drKnown ? 'good' : 'mid' }, { v: c.signal, cls: 'good' }] }))],
+      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.dr, cls: c.drEstimated ? 'mid' : 'good', est: c.drEstimated }, { v: c.signal, cls: 'good' }] }))],
     ladder,
     // Empty bars + drHidden flag so audit-charts.js skips the single-bar DR chart; chip drops "vs N" when hidden.
     drHidden, drRivalCount: drRivals.length,

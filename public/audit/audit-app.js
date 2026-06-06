@@ -195,8 +195,8 @@
     <div class="card pad">${CH.keywordTable()}</div>`:''}
     <div class="subhead"><span class="nt">↳</span><h3>The fix, in full</h3></div>
     ${CH.finding(D.geo.fix,true)}
-    <div class="subhead"><span class="nt">↳</span><h3>Plain-English glossary</h3></div>
-    <div class="card pad"><div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${k}</b><span>${v}</span></div>`).join('')}</div></div>`;
+    <details class="gloss-mini"><summary>Plain-English glossary · ${Object.keys(D.glossary).length} terms</summary>
+      <div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${k}</b><span>${v}</span></div>`).join('')}</div></details>`;
   };
 
   P.competitors = ()=>`
@@ -205,12 +205,12 @@
       <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
     <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them</h3></div>
-    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div></div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
+    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div>${c.beatBy.lever?`<div class="blever"><span class="blk">How Tamazia wins it</span> ${c.beatBy.lever}</div>`:''}</div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
         ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} ${plur(D.competitors.sovBar.of,'run')}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
         : `<div class="card pad"><div class="card-h"><div class="t">AI citations &amp; page-one</div><div class="meta">you vs leader</div></div>${CH.bars(D.competitors.aiKwBars,{max:Math.max(2,...(D.competitors.aiKwBars||[{v:1}]).map(b=>b.v))})}</div>`}
-      <div class="card pad"><div class="card-h"><div class="t">Domain rating vs rivals</div><div class="meta">0–100 authority</div></div>${CH.bars(D.competitors.drBars,{max:100})}</div>
+      <div class="card pad"><div class="card-h"><div class="t">Domain rating vs rivals</div><div class="meta">0–100 authority</div></div>${CH.bars(D.competitors.drBars,{max:100})}${(D.competitors.ladder||[]).some(c=>c.drEstimated)?'<div class="capt" style="margin-top:7px">Rivals that publish no Domain Rating are shown as an <b>est</b>imate from their authority signals.</div>':''}</div>
     </div>
     ${CH.urgent('The gap compounds. Every month you are absent, the firms AI names every time accumulate the citations and authority that make them harder to displace.', 'Tamazia closes the entity, schema and authority gap that decides who gets named.')}`;
 

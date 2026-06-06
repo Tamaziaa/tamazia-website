@@ -246,17 +246,63 @@
   // List prices are verbatim from src/content/pricing.ts; pilot = 0.6 x list, a compliance-safe
   // limited engagement (no countdown). Per-firm recommendation flows from D.pricing flags.
   const gbpFmt=n=>'£'+Number(n).toLocaleString('en-GB');
+  // Canonical tier display mirrors the live website EXACTLY: Standard price struck through, "From" price,
+  // and the 6-month savings framing. Bullets are VERBATIM headlines from src/content/pricing.ts (the pane
+  // is the display owner). feats = the 4 shown collapsed; more = the rest, behind "See everything ›".
+  const PRICING_TIERS_RENDER=[
+    {key:'foundation',name:'Foundation',standard:3300,from:2500,saves6:4800,wk:'Single-location · local authority',
+      blurb:'Single-location businesses and small groups building local search authority and compliance defence.',
+      feats:[
+        'The searches your buyers run when ready to act, targeted with commercial precision',
+        'Every word reviewed against your sector’s legal framework before it goes live',
+        'A complete technical audit with a prioritised fix document for your dev team',
+        'Your Google Business Profile optimised to outrank local competitors',
+      ],
+      more:[
+        'Business information verified across every directory your buyers trust',
+        'Baseline AI-search audit across Claude, ChatGPT, Perplexity & Google AI Overviews',
+        'Monthly reporting that attributes organic search to revenue, not positions',
+        'Your primary operating jurisdiction covered, with change notifications',
+      ]},
+    {key:'authority',name:'Authority',standard:6000,from:4500,saves6:9000,wk:'Multi-location · two jurisdictions',
+      blurb:'Multi-location and multi-property brands scaling organic growth across regions and jurisdictions.',
+      feats:[
+        'Everything in Foundation, included',
+        'Every location, practice area & service line ranked simultaneously (30 keywords)',
+        'GEO included as standard — your brand inside AI-generated answers',
+        'The strategy that removes dependency on platforms taking 15–25% per booking',
+      ],
+      more:[
+        'Your Instagram authority grown alongside your rankings',
+        'Two jurisdictions reviewed on every piece of content simultaneously',
+        'Four compliance-reviewed content pieces monthly',
+        'Editorial placements in sector-relevant publications',
+        'Up to three locations fully managed on Google Business Profile',
+        'Regulatory monitoring across both jurisdictions, 72-hour notification',
+        'Bi-weekly reporting with revenue attribution across all locations',
+      ]},
+    {key:'enterprise',name:'Enterprise',standard:12700,from:9500,saves6:19200,wk:'Full-stack · multi-market mandate',
+      blurb:'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
+      feats:[
+        'Everything in Authority, included',
+        'Every market, territory & commercial keyword covered (50+ keywords)',
+        'Your brand established as the source AI systems cite across all major engines',
+        'The compliance standard applied to a Nasdaq-listed company, every jurisdiction',
+      ],
+      more:[
+        'LinkedIn and Instagram authority grown alongside your rankings',
+        'International SEO across up to five markets, full technical implementation',
+        'Ten compliance-reviewed content pieces monthly',
+        'Every location in your portfolio managed on Google Business Profile',
+        'Crisis reputation management built before it is needed',
+        'Dedicated regulatory monitoring with 24-hour notification',
+        'Transaction-level revenue attribution across every market',
+      ]},
+  ];
   function planData(){
     const Dp=Array.isArray(D.pricing)?D.pricing:[];
     const byName=n=>Dp.find(p=>String(p.tier||'').toLowerCase()===n)||{};
-    const TIERS=[
-      {key:'foundation',name:'Foundation',list:2500,pilot:1500,wk:'4-week onboarding'},
-      {key:'authority', name:'Authority', list:4500,pilot:2700,wk:'8-week programme'},
-      {key:'enterprise',name:'Enterprise',list:9500,pilot:5700,wk:'12-week+ mandate'},
-    ].map(t=>{const d=byName(t.key);return Object.assign({
-      blurb:d.blurb||'', feats:d.feats||[], more:d.more||[],
-      rec:!!d.rec, popular:!!d.popular,
-    },t);});
+    const TIERS=PRICING_TIERS_RENDER.map(t=>{const d=byName(t.key);return Object.assign({ rec:!!d.rec, popular:!!d.popular },t);});
     // ensure exactly one recommended + one popular even if the adapter flags drift
     if(!TIERS.some(t=>t.rec)) TIERS[2].rec=true;
     if(!TIERS.some(t=>t.popular)) TIERS[1].popular=true;
@@ -360,22 +406,23 @@
         <div class="fx-rib">Anchor offer</div>
         <div class="fx-eyebrow">One-time Fix Sprint</div>
         <h3>Top 30 critical issues solved.</h3>
-        <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
+        <div class="fx-price"><span class="fx-was">${gbpFmt(25000)}</span><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
+        <div class="fx-anchor">A consultancy quotes ${gbpFmt(25000)}+ to remediate this scope. The Fix Sprint is the same outcome, productised.</div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
         <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} ${plur(crit,'critical')} closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
         <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
       </div>
       <div class="tiers">
         <div class="tier-bar" role="tablist" aria-label="Recurring mandate">
-          ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>${gbpFmt(t.pilot)}/mo</small></button>`).join('')}
+          ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>From ${gbpFmt(t.from)}</small></button>`).join('')}
         </div>
-        <div class="pilot-note">Pilot pricing: a compliance-safe limited engagement at <b>40% off list</b> for the first cohort. 90-day rolling, no long-term contract.</div>
+        <div class="pilot-note">Each shows the standard rate struck through and your <b>“from” price</b>, the same figures as our pricing page, plus what you save across the first six months. 90-day rolling, no long-term contract.</div>
         <div class="price-grid">
           ${TIERS.map((t,i)=>`<div class="price tierpanel ${t.rec?'rec':''} ${i===0?'on':''}" data-tier-panel="${i}" role="tabpanel" aria-labelledby="tt-${i}">
             ${t.rec?'<span class="badge rec">Recommended for this firm</span>':''}${t.popular?'<span class="badge pop">Most popular</span>':''}
             <div class="tier">${t.name}</div><div class="blurb">${t.blurb}</div>
-            <div class="pr"><span class="was">${gbpFmt(t.list)}</span><b>${gbpFmt(t.pilot)}</b><small>/month</small></div>
-            <div class="wk">${t.wk} · 90-day rolling · pilot price</div>
+            <div class="pr"><span class="was">${gbpFmt(t.standard)}</span><b>From ${gbpFmt(t.from)}</b><small>/mo</small></div>
+            <div class="wk">${t.wk} · 90-day rolling · saves ${gbpFmt(t.saves6)} over 6 months</div>
             <ul>${t.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
             <button class="moretoggle" data-more="price">See everything included ›</button>
             <div class="more"><ul style="padding-top:6px">${t.more.map(f=>`<li>${f}</li>`).join('')}</ul></div>
@@ -456,7 +503,7 @@
     seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' '+plur(D.seo.onpage.length,'issue'),'amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
     geo:{ico:'❖',nm:'AI &amp; GEO visibility',kpis:chip('SoV '+D.geo.shareOfVoice,'red')+chip(D.geo.aiKnows?'AI cites you':'AI can’t cite you','red')+chip('Entity '+D.geo.entityReadiness)},
     competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' '+plur(Math.max(0,(D.competitors.rows||[]).length-1),'rival')+' ahead')+drChip},
-    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+((D.pricing||[])[0]||{}).pr+'/mo')+chip(D.counts.critical+' to fix')},
+    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+gbpFmt(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}

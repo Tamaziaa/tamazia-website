@@ -921,7 +921,11 @@ export function payloadToD(payload, ctx = {}) {
   if (sig.html_bytes && sig.html_bytes < 4000) onpage.push({ issue: 'Thin homepage content', sev: 'std', impact: 'Below the depth Google rewards', fix: 'Compliance-reviewed depth on every service page.' });
   // Additional REAL on-page / structured-data checks (each evidenced from the live signal bag or the entity
   // probe), framed as honest gaps, never fabricated. (depth · founder standing rule: every pillar shows >=5)
-  const _marketCountSEO = Array.from(allow).filter((j) => j !== 'GLOBAL').length;
+  // Count REAL market blocs, not the EU member fan-out: when 'EU' is in the allow-set the individual member
+  // states (FR/DE/IT/ES/NL/IE the membrane adds) collapse into one 'EU' bloc, so a UK firm serving the EU reads
+  // "2 markets" (UK + EU), never an inflated "8 jurisdictions". (hreflang-market-count honesty)
+  const _EU_FANOUT = new Set(['FR', 'DE', 'IT', 'ES', 'NL', 'IE']);
+  const _marketCountSEO = (() => { const b = new Set(); for (const j of allow) { if (j === 'GLOBAL') continue; b.add((_EU_FANOUT.has(j) && allow.has('EU')) ? 'EU' : j); } return b.size; })();
   const _multiMarketSEO = _marketCountSEO >= 2;
   if (siteScanned && !sig.open_graph) onpage.push({ issue: 'No Open Graph / social-share tags', sev: 'std', impact: 'Shared to LinkedIn, WhatsApp or Slack your links render as a bare URL with no title or image, and AI social-preview crawlers read nothing.', fix: 'Tamazia adds Open Graph + Twitter-card tags so every shared link renders a branded preview.' });
   if (siteScanned && !aiR.has_org_schema) onpage.push({ issue: 'No Organization schema', sev: 'high', impact: 'Without Organization markup Google and AI engines cannot tie your pages to one identifiable firm, so they cite a competitor they can.', fix: 'Tamazia ships Organization + sameAs schema so search and AI resolve you to a single trusted entity.' });

@@ -127,8 +127,8 @@
       <p>Search engines and AI answer engines read the same things, speed, structure, security, depth. Every signal below was measured live on your site, and each one is a buyer a competitor is capturing instead of you. Here is the exact fix.</p></div>
     ${D.seo.psiStrats?`
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed &mdash; desktop and mobile.</h3></div>
-    <div class="psi-toggle" role="tablist">${['mobile','desktop'].map(st=>`<button class="psi-tab${st==='mobile'?' active':''}" data-strat="${st}" type="button" role="tab">${st==='mobile'?'Mobile':'Desktop'}</button>`).join('')}</div>
-    ${['mobile','desktop'].map(st=>{const S=D.seo.psiStrats[st];if(!S)return '';const fail=S.cwv.filter(c=>c.st==='fail').length;return `<div class="psi-strat${st==='mobile'?' active':''}" data-strat="${st}">
+    ${(function(){const av=['mobile','desktop'].filter(s=>D.seo.psiStrats[s]);return av.length>1?`<div class="psi-toggle" role="tablist">${av.map(st=>`<button class="psi-tab${st===av[0]?' active':''}" data-strat="${st}" type="button" role="tab">${st==='mobile'?'Mobile':'Desktop'}</button>`).join('')}</div>`:'';})()}
+    ${['mobile','desktop'].filter(s=>D.seo.psiStrats[s]).map((st,i)=>{const S=D.seo.psiStrats[st];const fail=S.cwv.filter(c=>c.st==='fail').length;return `<div class="psi-strat${i===0?' active':''}" data-strat="${st}">
       <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live &middot; ${st}</div></div>${CH.psiDialRow(S.dials)}</div>
       <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${st} &middot; failing ${fail} of ${S.cwv.length}</div></div>${CH.cwvMeterRow(S.cwv)}</div>
       <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Failing audits on your live DOM</div><div class="meta">${st} &middot; ${S.audits.length} found &middot; hover the fix</div></div>${CH.psiAuditRow(S.audits,st)}</div>

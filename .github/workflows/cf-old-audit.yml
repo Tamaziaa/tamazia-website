@@ -1,0 +1,25 @@
+name: CF old-account config dump (temporary)
+on: workflow_dispatch
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump old Pages project config
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          mkdir -p out
+          H="Authorization: Bearer $CF_API_TOKEN"
+          B="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID"
+          echo "$CF_ACCOUNT_ID" > out/account_id.txt
+          curl -s -H "$H" "https://api.cloudflare.com/client/v4/accounts" > out/accounts.json
+          curl -s -H "$H" "$B/pages/projects/tamazia-website" > out/project.json
+          curl -s -H "$H" "$B/pages/projects/tamazia-website/domains" > out/domains.json
+          curl -s -H "$H" "$B/storage/kv/namespaces?per_page=100" > out/kv_namespaces.json
+          curl -s -H "$H" "$B/pages/projects" > out/all_projects.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cf-old-config
+          path: out/
+          retention-days: 1

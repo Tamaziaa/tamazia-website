@@ -39,7 +39,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spa
 .rail-gauge{display:grid;place-items:center;margin:12px 0 5px}
 .rail-band{text-align:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#E8B4AE;margin-bottom:14px}
 .rail-exposure{text-align:center;padding:10px;border:1px solid rgba(201,168,124,.22);border-radius:10px;background:rgba(179,38,30,.08);margin-bottom:12px}
-.rail-exposure .v{font-family:var(--serif);font-size:28px;color:#E8B4AE;line-height:1.05}
+.rail-exposure .v{font-family:var(--serif);font-size:28px;color:#E8B4AE;line-height:1.2;padding:1px 0}
 .rail-exposure .l{font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--gold-light);opacity:.7;text-transform:uppercase;margin-top:3px}
 .rail-kpis{display:none}
 .rail-kpi{border:1px solid rgba(201,168,124,.16);border-radius:8px;padding:8px 10px}
@@ -526,7 +526,7 @@ body.cmx-lock{overflow:hidden}
 .plan2 .addon .ap small{font-family:var(--mono);font-size:9px;color:var(--muted)}
 .plan2 .addon .tag{font-size:11.5px;color:#4a3a3d;line-height:1.4;margin:6px 0 8px}
 .plan2 .addon .more{max-height:0;overflow:hidden;transition:max-height .32s ease,margin .2s,padding .2s;border-top:1px dashed var(--line-2);margin-top:0}
-.plan2 .addon:hover .more,.plan2 .addon:focus-within .more,.plan2 .addon.open .more{max-height:230px;margin-top:7px;padding-top:7px}
+.plan2 .addon:hover .more,.plan2 .addon.open .more{max-height:340px;margin-top:7px;padding-top:7px}
 .plan2 .addon .aspec-h{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ox);margin-bottom:4px}
 .plan2 .addon .more ul{gap:3px;margin-bottom:8px}
 .plan2 .addon .more li{font-size:11px;color:#3a2d30}
@@ -810,10 +810,10 @@ body.cmx-lock{overflow:hidden}
 .fixbox .fx-cta:hover{background:var(--orange-deep)}
 .plan2 .price .btn,.plan2 .bookcard .btn.solid{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 2px 10px rgba(217,102,58,.22)}
 .plan2 .price .btn:hover,.plan2 .bookcard .btn.solid:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
-.addon.open .more{max-height:560px}
 .route-val{list-style:none;display:flex;flex-direction:column;gap:6px;margin:4px 0 12px}
 .route-val li{font-family:var(--body);font-size:12px;color:#3a2d30;padding-left:16px;position:relative;line-height:1.4}
 .route-val li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;font-size:10px}
 .route-price{font-family:var(--serif);font-size:20px;color:var(--ox-deep);margin:2px 0 12px}
 .route-price span{font-family:var(--mono);font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-left:8px}
 .ptj-svg,.traj-wrap svg{height:auto;display:block}
+@media(max-width:900px){.railnav button{min-height:42px;padding-top:10px;padding-bottom:10px}.railnav{gap:4px}}

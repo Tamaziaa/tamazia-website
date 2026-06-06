@@ -67,7 +67,7 @@ window.CH = (function(){
     if(o.drHidden || data.length===0 || (onlyYou && o.compare!==false)){
       return naNote(o.naText || 'Comparison data not available for this scan.');
     }
-    // Guard the denominator: empty data or all-zero values must never yield 0/-Infinity (→ NaN widths).
+    // Guard the denominator: empty data or all-zero values must never yield 0/-Infinity (↗ NaN widths).
     const rawMax = o.max||Math.max(0,...data.map(d=>+d.v||0)), max=rawMax>0?rawMax:1, unit=o.unit||'', fmt=o.fmt||(v=>v);
     return `<div class="barset">${data.map(d=>{
       const w=Math.max(3,((+d.v||0)/max)*100);
@@ -119,7 +119,7 @@ window.CH = (function(){
   function trajectory(w=520,h=130){
     const pad=34, iW=w-pad*2, iH=h-34, id=uid();
     const T=Array.isArray(D.trajectory)?D.trajectory:[], denom=Math.max(1,T.length-1);   // never divide by 0 (single point)
-    if(!T.length) return naNote('Trajectory projection not available for this scan.');   // no points → no empty frame
+    if(!T.length) return naNote('Trajectory projection not available for this scan.');   // no points ↗ no empty frame
     const xs=T.map((_,i)=>pad+iW*i/denom);
     const ys=T.map(p=>(h-20)-(Math.max(0,Math.min(100,+p.v||0))/100)*iH);
     const line=xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)} ${ys[i].toFixed(1)}`).join(' ');
@@ -322,7 +322,7 @@ window.CH = (function(){
   /* ---- GEO "why AI can't see you" causal chain ---- */
   function causalChain(){
     const rc=D.geo&&D.geo.rootCause; if(!rc) return '';
-    return `<div class="causal">${rc.chain.map((c,i)=>`<div class="cc-node ${c.ok?'ok':'bad'}"><div class="cc-k">${esc(c.k)}</div><div class="cc-v">${esc(c.v)}</div></div>${i<rc.chain.length-1?'<div class="cc-arrow">→</div>':''}`).join('')}</div>
+    return `<div class="causal">${rc.chain.map((c,i)=>`<div class="cc-node ${c.ok?'ok':'bad'}"><div class="cc-k">${esc(c.k)}</div><div class="cc-v">${esc(c.v)}</div></div>${i<rc.chain.length-1?'<div class="cc-arrow">↗</div>':''}`).join('')}</div>
       <div class="cc-reason">${esc(rc.reason)}</div>`;
   }
 

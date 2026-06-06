@@ -225,7 +225,7 @@ const LH = {
   'svg-img-alt': ['SVG graphics have no accessible name', 'a11y', 'Tamazia adds titles/labels to SVG graphics.'],
   'aria-hidden-focus': ['Hidden elements still trap keyboard focus', 'a11y', 'Tamazia fixes aria-hidden focus traps for keyboard users.'],
   'color-contrast': ['Text and background colours fail the contrast minimum', 'a11y', 'Tamazia corrects colour contrast to WCAG AA.'],
-  'heading-order': ['Headings are not in a sequential order', 'a11y', 'Tamazia restructures headings into a logical H1→H6 order.'],
+  'heading-order': ['Headings are not in a sequential order', 'a11y', 'Tamazia restructures headings into a logical H1↗H6 order.'],
   'html-has-lang': ['The page declares no language', 'a11y', 'Tamazia sets the html lang attribute.'],
   'frame-title': ['Frames/iframes have no title', 'a11y', 'Tamazia titles every frame for screen readers.'],
   'label': ['Form fields have no associated labels', 'a11y', 'Tamazia labels every form field for accessibility and compliance.'],
@@ -317,7 +317,7 @@ function pillarOf(p) {
   if (b === 'ai_visibility') return 'AI / GEO';
   if (b === 'compliance' || b === 'public_records') return 'Regulatory';
   if (b === 'seo' || b === 'technical' || b === 'technical_seo' || b === 'tls_dns' || b === 'tech' || b === 'performance' || b === 'accessibility') return 'SEO + Technical';
-  // Unknown bucket: fall back on the framework code (GEO→AI, SEO→SEO), else treat as Regulatory only if it
+  // Unknown bucket: fall back on the framework code (GEO↗AI, SEO↗SEO), else treat as Regulatory only if it
   // actually carries a regulatory framework code, otherwise SEO + Technical.
   const fw = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
   if (/^GEO$/.test(fw)) return 'AI / GEO';
@@ -500,7 +500,7 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
   const has = (k) => !!sig[k];
   const perf = isNum(psi.perf) ? Math.round(psi.perf * 100) : null;
   const dims = [
-    // Verdict: criticals→fail, highs→warn, standard-only→warn (NOT a confident green "PASS", which read as
+    // Verdict: criticals↗fail, highs↗warn, standard-only↗warn (NOT a confident green "PASS", which read as
     // "Regulatory compliance PASS" under an F grade); only a genuinely clean sheet (no findings at all) passes. (zero-critical-honest)
     { nm: 'Regulatory compliance', key: 'compliance', _na: compNA, _cc: cc0, _ch: ch0, st: compNA ? 'na' : (cc0 > 0 ? 'fail' : ch0 > 0 ? 'warn' : cs0 > 0 ? 'warn' : 'pass'), v: compNA ? 0 : Math.round(compHealth * 100), sub: compNA ? 'not assessed, limited read of the live site' : `${cc0} critical · ${ch0} high · ${cs0} standard`, w: 2 },
     // On-page / technical / content / security / a11y / tracking dims INFER from the signal bag; with no readable
@@ -672,12 +672,12 @@ function leaderInMarket(domain, fc) {
   const host = cleanDomain(domain).toLowerCase(); if (!host) return false;
   const tld1 = host.split('.').pop(); const tld2 = host.split('.').slice(-2).join('.');
   const FC_TLD = { UK: ['co.uk', 'uk', 'org.uk', 'london'], US: ['com', 'us', 'org', 'net'], AE: ['ae', 'com'], SA: ['sa', 'com'], QA: ['qa', 'com'], FR: ['fr', 'com'], DE: ['de', 'com'], IE: ['ie', 'com'], NL: ['nl', 'com'], ES: ['es', 'com'], IT: ['it', 'com'] };
-  const allowed = FC_TLD[fc]; if (!allowed) return true; // unknown firm market → don't gate on TLD
+  const allowed = FC_TLD[fc]; if (!allowed) return true; // unknown firm market ↗ don't gate on TLD
   // A clearly-foreign ccTLD (a .co.uk leader for a UAE firm) is not a credible in-market threat.
   if (/^(co\.uk|uk|org\.uk|london|ae|sa|qa|fr|de|ie|nl|es|it)$/i.test(tld2) || /^(uk|ae|sa|qa|fr|de|ie|nl|es|it)$/i.test(tld1)) {
     return allowed.includes(tld1) || allowed.includes(tld2);
   }
-  return true; // generic gTLD (.com/.net/.org) → could be the firm's own market, allow
+  return true; // generic gTLD (.com/.net/.org) ↗ could be the firm's own market, allow
 }
 // "Big brand" = a firm that does NOT compete on city-localised search, so its keywords must read at category
 // level (a national bank fights for "business bank account", not "business bank account London"). Signals:
@@ -704,8 +704,8 @@ function cleanKwTermFull(t, { fc = '', big = false, cityToStrip = '' } = {}) {
   // remove any foreign city token (wrong-city), and the firm's own city too when it's a national brand
   s = s.replace(CITY_TOKEN_RX, (tok) => {
     const cc = CITY_COUNTRY[tok.replace(/\s+/g, ' ').trim().toLowerCase()];
-    if (cc && fc && cc !== fc) return ' ';                 // foreign city → always strip
-    if (big) return ' ';                                   // national brand → strip its own city too
+    if (cc && fc && cc !== fc) return ' ';                 // foreign city ↗ always strip
+    if (big) return ' ';                                   // national brand ↗ strip its own city too
     return tok;                                            // local firm keeps its real city
   });
   if (cityToStrip) s = s.replace(new RegExp('\\b' + cityToStrip.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'ig'), ' ');
@@ -745,7 +745,7 @@ const TAMAZIA_LEVERS = [
   'named-expert LinkedIn authority that ranks on both LinkedIn and Google',
   'the 400+ rule compliance database behind every published word, so nothing you publish creates new exposure',
 ];
-// "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival, plus a real lever.
+// "Beat them by: {fix} ↗ {proof} ↗ {metric}" derived from the REAL gap vs this rival, plus a real lever.
 function beatBy(c, ctx) {
   const nm = cleanDomain(c.name);
   const lever = TAMAZIA_LEVERS[(+ctx.i || 0) % TAMAZIA_LEVERS.length];
@@ -760,15 +760,15 @@ function beatBy(c, ctx) {
       'Add FAQ/Service schema and named-expert pages the engines can quote',
       'Consolidate your entity signals (schema + sameAs + citations) into one identity AI can read',
     ];
-    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set ahead of ' + nm, lever };
+    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' ↗ 70+ to enter the AI answer set ahead of ' + nm, lever };
   }
-  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' → ' + (c.dr + 3) + ' to overtake ' + nm, lever };
+  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' ↗ ' + (c.dr + 3) + ' to overtake ' + nm, lever };
   if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”', lever };
   // No DR / rank / AI-run signal for this rival: the generic fallback was IDENTICAL for every rival (Emaar's
   // 5 cloned rows). Rotate the angle deterministically by ladder position AND name the rival in each, so the
   // ladder reads as five distinct moves, never a templated wall. (beatby-variety)
   const fb = [
-    { fix: 'Build the Organization + sameAs schema and Wikidata entity they already hold', proof: nm + ' is the name engines surface in your category; you return “no reliable information”', metric: 'become a citable entity (readiness ' + ctx.youEntity + ' → 70+) before ' + nm },
+    { fix: 'Build the Organization + sameAs schema and Wikidata entity they already hold', proof: nm + ' is the name engines surface in your category; you return “no reliable information”', metric: 'become a citable entity (readiness ' + ctx.youEntity + ' ↗ 70+) before ' + nm },
     { fix: 'Earn authoritative, named-expert backlinks in your sector', proof: nm + ' carries the referring-domain authority Google trusts first', metric: 'close the authority gap to ' + nm + ' on Domain Rating' },
     { fix: 'Publish compliance-reviewed pillar content for your priority terms', proof: nm + ' owns the answer surface for the queries your buyers actually search', metric: 'rank top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”, ahead of ' + nm },
     { fix: 'Ship an llms.txt + FAQ/Service schema so AI can quote you', proof: nm + ' is machine-readable to answer engines today and you are not', metric: 'enter the AI answer set ' + nm + ' currently owns' },
@@ -911,7 +911,7 @@ export function payloadToD(payload, ctx = {}) {
   // its literal <iframe> corrupted the DOM and swallowed every pillar after Regulatory. (C/S-021)
   const compForFw = pointers.filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records');
   const byFw = {};
-  // Canonicalise overlapping codes (DMCC→CMA, Food Info→FSA) so their findings merge into one framework row.
+  // Canonicalise overlapping codes (DMCC↗CMA, Food Info↗FSA) so their findings merge into one framework row.
   for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
     // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
@@ -987,7 +987,7 @@ export function payloadToD(payload, ctx = {}) {
   }
 
   // --- exposure bars (£M, chart max 18) ---
-  // Collapse overlapping codes (DMCC→CMA, Food Info→FSA) to one bar (max), matching the merged framework rows
+  // Collapse overlapping codes (DMCC↗CMA, Food Info↗FSA) to one bar (max), matching the merged framework rows
   // above, so a collapsed framework never appears as two near-identical bars. (fw-overlap)
   const perFwBars = {};
   for (const [fw, v] of Object.entries(perFw)) { const k = fwCanon(fw); perFwBars[k] = Math.max(perFwBars[k] || 0, v); }
@@ -1053,7 +1053,7 @@ export function payloadToD(payload, ctx = {}) {
   const _fc = firmCountry(payload);
   const _big = isBigBrand(payload, authority);
   const _kwCity = String(g(km, 'city', '') || '').trim();
-  const _cityToStrip = _big ? _kwCity : '';                  // national brand → strip its own city too
+  const _cityToStrip = _big ? _kwCity : '';                  // national brand ↗ strip its own city too
   const _cleanKw = (t) => cleanKwTermFull(t, { fc: _fc, big: _big, cityToStrip: _cityToStrip });
   const _youRank = (k) => k.my_position != null;             // 0 is a valid rank (truthiness guard)
   const _inBand = (k) => { const p = +k.my_position; return Number.isFinite(p) && p >= 20 && p <= 50; }; // winnable battleground
@@ -1160,7 +1160,7 @@ export function payloadToD(payload, ctx = {}) {
   // The firm must never appear as its own citation/leader (UCL citing "ucl.ac.uk"). Drop a leader whose domain
   // stem matches the firm's own brand stem. (self-competitor)
   const _ownStem = cleanDomain(payload.domain).split('.')[0].replace(/[^a-z0-9]/gi, '').toLowerCase();
-  // Initials acronym of a multi-word firm/competitor name ("University College London" → "ucl").
+  // Initials acronym of a multi-word firm/competitor name ("University College London" ↗ "ucl").
   const _acro = (name) => { const w = String(name || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((x) => x && !/^(the|of|and|for|de|la|le|al)$/.test(x)); return w.length >= 2 ? w.map((x) => x[0]).join('') : ''; };
   const _companyKeyEarly = String(company || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   // Is this competitor NAME the firm itself? (acronym match, full-name match, or stem containment) (self-competitor)
@@ -1186,7 +1186,7 @@ export function payloadToD(payload, ctx = {}) {
       { src: 'Trustpilot / Reviews', you: false, note: 'No managed review presence, AI reads your reputation from whatever it finds, not what’s true' },
       { src: 'Industry directories', you: 'partial', note: 'Inconsistent NAP across listings' },
     ],
-    aiOverview: 'AI Overviews now sit above the classic results on a large, growing share of searches, and AI-referred visitors arrive ready to buy. You appear in none for your category.',
+    aiOverview: 'AI Overviews now sit above the classic results on a large, growing share of searches, and AI-referred visitors arrive ready to buy.' + (sov > 0 ? '' : ' You appear in none for your category.'),
   };
   // GEO ROOT-CAUSE, diagnose WHICH of three real defects makes AI invisible, then chain it to the
   // consequence and the rivals it names. The "I didn't even think of that" insight. (§1.3)
@@ -1243,7 +1243,7 @@ export function payloadToD(payload, ctx = {}) {
     if (!dom || h === cleanDomain(payload.domain).toLowerCase()) return;
     if (isRealCompetitor(dom, market) && corroborated(dom, payload) && !serpFirms.some((s) => s.name.toLowerCase() === h)) serpFirms.push({ name: dom, pos: c.position || c.pos, dr: authDr[h], src: 'SERP' });
   });
-  // Word-initials acronym of a multi-word name ("University College London" → "ucl"). Used to catch a firm
+  // Word-initials acronym of a multi-word name ("University College London" ↗ "ucl"). Used to catch a firm
   // listed as its OWN competitor when one side is the acronym and the other the full name. (self-competitor)
   const acronymOf = (name) => { const w = String(name || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((x) => x && !/^(the|of|and|for|de|la|le|al)$/.test(x)); return w.length >= 2 ? w.map((x) => x[0]).join('') : ''; };
   // The firm's own self-keys: domain stem, the displayed company name as a key, and the company's acronym.
@@ -1440,7 +1440,7 @@ function buildPsiStrat(strat) {
   return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
 }
 // Region-specific legal glossary terms that must NOT be defined for a firm whose jurisdiction set doesn't
-// include that region (a UAE-only firm should never see GDPR / UK GDPR / PECR / CCPA defined). Term → the
+// include that region (a UAE-only firm should never see GDPR / UK GDPR / PECR / CCPA defined). Term ↗ the
 // jurisdiction(s) any of which must be in the firm's allow-set for the term to render. (glossary-jurisdiction)
 const GLOSSARY_TERM_JUR = {
   gdpr: ['EU', 'UK'], 'uk gdpr': ['UK'], 'eu gdpr': ['EU'], pecr: ['UK'], 'dpa 2018': ['UK'], dpa: ['UK'],

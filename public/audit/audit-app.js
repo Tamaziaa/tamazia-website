@@ -81,23 +81,28 @@
     <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
       <h2>${D.regulatoryHeadline || ('We screened all '+D.rulesChecked+' active frameworks. '+D.frameworksAssessed+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')}</h2>
       <p>We screen all ${D.rulesChecked} active frameworks every scan; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Your top ${D.frameworks.length} regulatory exposures</h3></div>
-    <div class="card pad" style="margin-bottom:16px">${CH.frameworkBars()}</div>
-    <div class="subhead"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached right now'):''}, worst exposure first.</h3></div>
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached on your live site right now'):''} &mdash; worst exposure first</h3></div>
+    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach we evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
-    ${D.frameworks.map((fw,i)=>`<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
-      <summary><span class="code">${fw.code}</span>
-        <div><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'finding'))}</div></div>
-        <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
-        <div class="fwe">${fw.exp}</div></summary>
+    ${D.frameworks.map((fw,i)=>{
+      const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
+      return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
+      <summary>
+        <div class="fw-head"><span class="code">${fw.code}</span>
+          <div class="fwn-wrap"><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
+          <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
+          <div class="fwe">${fw.exp}</div></div>
+        <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
+      </summary>
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${fw.why}
-        <div class="lbl">${fw.regulator} · recent enforcement</div><div class="action">${fw.action}</div>
-        ${(fw.provisions||[]).length?`<div class="lbl">Breaches under this Act, and the Tamazia fix for each</div>
-        <div class="provlist">${fw.provisions.map(pv=>`<div class="prov"><div class="prov-h"><span class="prov-l">${escH(pv.label)}</span></div><div class="prov-lang">${escH(pv.language)}</div><div class="prov-fix"><b>Tamazia fix</b> ${escH(pv.fix)}</div></div>`).join('')}</div>`:''}
-      </div></details>`).join('')}
-    ${regFixes.length?`<div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
-    <div class="reg-fixsummaries">${regFixes.map(fixSummary).join('')}</div>`:''}`;
+        <div class="lbl">${fw.regulator} &middot; recent enforcement</div><div class="action">${fw.action}</div>
+        ${(fw.articleGroups||[]).length?`<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
+        <div class="artlist">${fw.articleGroups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
+          <div class="art-items">${gp.items.map(it=>`<div class="art-item"><div class="art-subj"><span class="art-dot ${it.sev==='P0'?'c':it.sev==='P1'?'h':'s'}"></span>${escH(it.subject)}</div>${it.quote?`<div class="art-quote">&ldquo;${escH(it.quote)}&rdquo;</div>`:''}<div class="art-fix"><b>Tamazia fix</b> ${escH(it.fix)}</div></div>`).join('')}</div>
+        </div>`).join('')}</div>`:''}
+      </div></details>`;
+    }).join('')}`;
   };
 
   P.seo = ()=>{

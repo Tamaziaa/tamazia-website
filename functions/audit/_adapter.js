@@ -128,22 +128,39 @@ function actKey(fw) {
   for (const pre of ACT_MERGE_PREFIXES) { if (c === pre || c.startsWith(pre + '_')) return pre; }
   return c;
 }
-// Human, specific label for one provision inside a merged Act box. NEVER a raw ^[A-Z_]+$ code.
-// Combines the article/section number (when the code carries one) with a SHORT distinctive subject
-// distilled from the requirement statement (fact), so sibling provisions never read identically.
-function provisionLabel(p, actK) {
-  let base = '';
+// The Article/section token a pointer cites (groups sibling breaches): "Art. 13", "s. 82", "reg. 6", or ''.
+function articleOf(p) {
   const cite = String((p && p.provision) || '').trim();
-  if (cite && !/^[A-Z0-9_]{2,}$/.test(cite) && cite.length <= 40) base = cite.replace(/\s{2,}/g, ' ');
-  if (!base) {
-    const code = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
-    let m = code.match(/_(?:A|ART|ARTICLE)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 'Art. ' + m[1];
-    if (!base) { m = code.match(/_(?:S|SEC|SECTION)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 's. ' + m[1]; }
-    if (!base) { m = code.match(/_(?:REG|R)[_ ]?(\d+[A-Z]?)\b/); if (m) base = 'reg. ' + m[1]; }
-  }
-  let subj = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
-  if (/^[A-Z0-9_]{2,}$/.test(subj)) subj = '';
-  if (subj.length > 46) subj = subj.slice(0, 44).replace(/[\s,;:.\-]+\S*$/, '') + '…';
+  if (cite && !/^[A-Z0-9_]{2,}$/.test(cite) && cite.length <= 36) return cite.replace(/\s{2,}/g, ' ');
+  const code = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
+  let m = code.match(/_(?:A|ART|ARTICLE)[_ ]?(\d+[A-Z]?)\b/); if (m) return 'Art. ' + m[1];
+  m = code.match(/_(?:S|SEC|SECTION)[_ ]?(\d+[A-Z]?)\b/); if (m) return 's. ' + m[1];
+  m = code.match(/_(?:REG|R)[_ ]?(\d+[A-Z]?)\b/); if (m) return 'reg. ' + m[1];
+  return '';
+}
+// The short distinctive subject of a single breach ("Who the data controller is"). Never a raw code.
+function subjectOf(p, maxLen) {
+  let s = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
+  if (/^[A-Z0-9_]{2,}$/.test(s)) s = '';
+  const L = maxLen || 72; if (s.length > L) s = s.slice(0, L - 2).replace(/[\s,;:.\-]+\S*$/, '') + '…';
+  return s;
+}
+// Humanise a checked URL into the page we inspected ("your privacy policy") — the live proof.
+function humanUrl(u) {
+  let s = String(u || '').replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+  if (!s) return '';
+  const slash = s.indexOf('/'); const path = slash < 0 ? '' : s.slice(slash);
+  if (!path) return 'your homepage';
+  if (/privacy/i.test(path)) return 'your privacy policy';
+  if (/cookie/i.test(path)) return 'your cookie policy';
+  if (/terms|conditions/i.test(path)) return 'your terms page';
+  if (/contact/i.test(path)) return 'your contact page';
+  const seg = path.replace(/^\//, '').split('/')[0].replace(/[-_]+/g, ' ').trim();
+  return seg ? ('your ' + seg + ' page') : 'your homepage';
+}
+// Human, specific label for one provision. NEVER a raw ^[A-Z_]+$ code. (kept for back-compat consumers.)
+function provisionLabel(p, actK) {
+  const base = articleOf(p), subj = subjectOf(p, 46);
   if (base && subj) return base + ' · ' + subj;
   if (base) return base;
   if (subj) return subj;
@@ -897,25 +914,40 @@ export function payloadToD(payload, ctx = {}) {
   // Canonicalise overlapping codes (DMCC→CMA, Food Info→FSA) so their findings merge into one framework row.
   for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
-    const c = ps.filter((p) => p.severity === 'P0').length;
-    const h = ps.filter((p) => p.severity === 'P1').length;
     // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
     const maxFine = NO_STATUTORY_FINE.has(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => NO_STATUTORY_FINE.has(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
     const top = ps[0] || {};
-    // Phase 4: one provision per binding pointer in this Act, each with its OWN language + unique
-    // craftFix Tamazia fix; de-dup identical (label, language) rows; cap 8 (one-viewport budget).
-    const provisions = ps.map((p) => ({
-      label: provisionLabel(p, fw),
-      language: String(p.layman_explanation || p.evidence_quote || p.fact || ('A confirmed gap under ' + fwName(fw) + ' on your live site.')).replace(/\s{2,}/g, ' ').trim(),
-      fix: craftFix(p),
-    })).filter((pv, i, a) => a.findIndex((x) => x.label === pv.label && x.language.slice(0, 60) === pv.language.slice(0, 60)) === i).slice(0, 8);
+    // Group this Act's EVIDENCED breaches by Article so "Art. 13" appears ONCE with its distinct
+    // sub-breaches listed beneath (never repeated 8x), each carrying its live proof (the quote, or the
+    // page we inspected) + its own craftFix. "Evidenced" = a quote OR the checked_urls we inspected.
+    const _evd = ps.filter((p) => String(p.evidence_quote || '').trim() || (Array.isArray(p.checked_urls) && p.checked_urls.length));
+    const _use = _evd.length ? _evd : ps;
+    const _byArt = {};
+    for (const p of _use) { const a = articleOf(p) || 'Core requirements'; (_byArt[a] = _byArt[a] || []).push(p); }
+    const articleGroups = Object.entries(_byArt).map(([article, aps]) => {
+      const inspected = [...new Set(aps.flatMap((p) => arr(p.checked_urls)).map(humanUrl).filter(Boolean))].slice(0, 3);
+      const items = aps.map((p) => ({
+        subject: subjectOf(p, 84) || 'Required disclosure',
+        quote: String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ').slice(0, 180),
+        fix: craftFix(p), sev: p.severity,
+      })).filter((it, i, a2) => a2.findIndex((x) => x.subject.toLowerCase() === it.subject.toLowerCase()) === i).slice(0, 12);
+      return { article, inspected, items };
+    }).filter((gp) => gp.items.length).sort((a, b) => b.items.length - a.items.length).slice(0, 6);
+    // flat provisions retained for back-compat consumers + the merge-stable QA assertion
+    const provisions = articleGroups.map((gp) => ({ label: gp.article, language: gp.items.map((i) => i.subject).join('; '), fix: (gp.items[0] || {}).fix || craftFix(ps[0] || {}) }));
+    // Counts reflect the DEDUPED breaches actually shown, so the box header always matches its body.
+    const _it = articleGroups.flatMap((gp) => gp.items);
+    const c = _it.filter((x) => x.sev === 'P0').length;
+    const h = _it.filter((x) => x.sev === 'P1').length;
+    const findings = _it.length || ps.length;
+    const s = Math.max(0, findings - c - h);
     return {
       code: fwCode(fw), name: fwName(fw), regulator: fwRegulator(fw),
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
-      findings: ps.length, c, h, s: ps.length - c - h, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
+      findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
       action: g(news, fw, '') || top.enforcement_example || (fwRegulator(fw) + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
-      provisions,
+      provisions, articleGroups,
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
   if (!frameworks.length) { const _read = g(payload, 'scan.reachable', true) !== false; frameworks.push(_read

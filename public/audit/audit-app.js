@@ -26,7 +26,7 @@
       <h1>${D.meta.company}</h1>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city,D.meta.date].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
-      <div class="rail-band">${D.scoreBand} · ${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
+      <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       <div class="rail-kpis">
         <div class="rail-kpi"><div class="v red">${D.counts.critical}</div><div class="l">Critical findings</div></div>
@@ -38,7 +38,7 @@
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
       <button class="rail-jump" data-pane="plan">Jump to pricing →</button>
       <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder →</button>
-      <div class="rail-trust">100+ verified reviews · 47 UK &amp; US legal clients<br>Founder-led · ${D.rulesChecked} rules every campaign</div>
+      <div class="rail-trust">Founder-led · every fix checked against ${D.rulesChecked} rules</div>
     </aside>`;
   }
 
@@ -232,7 +232,7 @@
   const TRUSTED_LOGOS = [
     ['demo-1','Meridian'],['demo-2','Calloway'],['demo-3','Ardent'],
     ['demo-4','Thornbury'],['demo-5','Vaughn & Hale'],['demo-6','Sterling Park'],
-    ['demo-7','Lockhart'],['demo-8','Ashbourne'],
+    ['demo-7','Lockhart'],['demo-8','Ashbourne'],['adidas','adidas'],
   ];
   function tbItem(n,label){
     const fb="this.outerHTML='<span class=\\'tb-name\\'>"+label.replace(/'/g,'')+"</span>'";
@@ -243,7 +243,6 @@
     return `<div class="trusted-by" aria-label="Representative client profile, demo logos">
       <div class="tb-label">Trusted by regulated firms across law, healthcare, property &amp; hospitality</div>
       <div class="tb-marquee"><div class="tb-track">${row}${row}</div></div>
-      <div class="tb-foot">Logos shown are illustrative placeholders. Client identities are confidential.</div>
     </div>`;
   }
 
@@ -327,13 +326,13 @@
   // Full add-on catalogue (value-only, leads with the outcome USP). Mirrors _commerce.js.
   const ADDONS=[
     {nm:'GEO / AI Search Presence', gbp:1800, was:950, unit:'mo', usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews. AI-referred visitors arrive with high intent. The only compliance-reviewed GEO for regulated firms.', spec:['Per-engine citation measurement across all 6 engines','Entity, schema, llms.txt and Wikidata build','Compliance review of what AI says about you','Monthly share of voice against named rivals'], hero:true},
-    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same engine that found you as a client.', spec:['Built on the 403-rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
-    {nm:'Compliance Monitoring', gbp:399, was:0, unit:'mo', usp:'Monthly re-scan of the full 403-rule catalogue. The loss-leader every budget holder approves without escalation.', spec:['Catches new breaches the day the law changes','Alerts within 24 hours of a new gap','Quarterly board-ready certificate','8.9 percent of a core retainer'], hot:true},
+    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same compliance-first outbound engine, working for your pipeline.', spec:['Built on the 400+ rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
+    {nm:'Compliance Monitoring', gbp:399, was:0, unit:'mo', usp:'The audit, in your inbox every month — your live position across compliance, SEO and GEO, tracked over time. The report partners quote in management meetings and quarterly board packs.', spec:['Monthly compliance + SEO + GEO position report','Catches new breaches the day the law changes','Alerts within 24 hours of a new gap','Quarterly board-ready certificate'], hot:true},
     {nm:'LinkedIn Executive Authority', gbp:1100, was:750, unit:'mo', usp:'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.', spec:['Dual distribution, LinkedIn and Google','8 to 12 posts per month per executive','Every post compliance-checked','Builds the named-expert E-E-A-T signal']},
     {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24-hour crisis response — protect the reputation your referrals and pipeline depend on, before a problem spreads.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
     {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
     {nm:'AI Entity + Knowledge Panel', gbp:1200, was:0, unit:'mo', usp:'Your machine-readable entity: Organization schema, sameAs, Wikidata and llms.txt, so AI engines identify and cite you correctly.', spec:['Wikidata entry and Knowledge Panel build','sameAs across every verified profile','Wikipedia presence where eligible','Feeds the identity layer AI reads first']},
-    {nm:'Regulatory Change Alerts', gbp:199, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands. The loss-leader that keeps you ahead of enforcement.', spec:['Names the exact page and rule affected','Below the discretionary approval threshold','Sector and jurisdiction filtered','Every alert is a natural brief for a fix']},
+    {nm:'Regulatory Change Alerts', gbp:199, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands — so you move before enforcement does.', spec:['Names the exact page and rule affected','Sector and jurisdiction filtered','The earliest warning of a new obligation','Every alert is a natural brief for a fix']},
     {nm:'YMYL Content', gbp:800, was:550, unit:'piece', usp:'Per compliance-reviewed piece. Health and legal grade, held to Google\'s highest YMYL standard, not generic.', spec:['1,200 or more words, reviewed before publish','Passes your compliance function first time','Held to Google\'s YMYL standard','Cheaper than fixing content that fails review']},
   ];
   // ---- interactive trajectory: current (flat/declining) vs Tamazia-projected (rising) ----
@@ -403,7 +402,7 @@
     return `
     <div class="plan2">
     <div class="pane-head"><span class="eyebrow">The path</span>
-      <h2>${crit} critical finding${crit===1?'':'s'} on your live site today. Here is the price to close them, and the trajectory once you do.</h2>
+      <h2>${crit>0?`${crit} critical finding${crit===1?'':'s'} on your live site today. Here is the price to close them`:`Here is the price to close your highest-severity gaps`}, and the trajectory once you do.</h2>
       <p>${D.pricingNotes}</p></div>
 
     ${planTrajectory(score,wk12,wk24,TIERS,recT.key)}
@@ -413,11 +412,11 @@
       <div class="fixbox">
         <div class="fx-rib">Anchor offer</div>
         <div class="fx-eyebrow">One-time Fix Sprint</div>
-        <h3>Top 30 critical issues solved.</h3>
+        <h3>${crit>0?`Your ${crit} critical ${plur(crit,'finding')}, solved`:`Your highest-severity gaps, solved`}.</h3>
         <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
         <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
-        <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} ${plur(crit,'critical')} closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
+        <p class="fx-line">For the firm that wants the urgent items closed first. ${crit>0?`The ${crit} ${plur(crit,'critical')} closed`:`The highest-severity gaps closed`} in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
         <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
       </div>
       <div class="tiers">
@@ -463,10 +462,11 @@
         <p>A 30 minute confidential session with Aman Pareek. No sales team, no discovery loop. Your tier and strongest finding are carried into the call.</p>
         <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="Strategy call calendar"></div>
         <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a strategy call →</a></div>
-      <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>Close the ${crit} ${plur(crit,'critical')} in 8 weeks</h3>
-        <p>A single fixed-scope engagement at ${gbpFmt(7500)}, not a retainer. For the firm that wants the bleeding stopped first. Logged as a distinct intent.</p>
-        <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint calendar"></div>
-        <a class="btn block" data-book="one_time_fix">Start the Fix Sprint →</a></div>
+      <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>${crit>0?`Close the ${crit} ${plur(crit,'critical')} in 8 weeks`:`Fix the highest-severity gaps in 8 weeks`}</h3>
+        <p>A single fixed-scope engagement at ${gbpFmt(7500)}, not a retainer — for the firm that wants the urgent items closed first.</p>
+        <ul class="route-val">${fixOutcomes.slice(0,4).map(o=>`<li>${escH(o)}</li>`).join('')}</ul>
+        <div class="route-price"><b>${gbpFmt(7500)}</b><span>one-time · fixed scope · 8 weeks</span></div>
+        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint →</a></div>
     </div>
 
     <div class="card pad" style="margin-top:16px;background:var(--cream-2);border:0">

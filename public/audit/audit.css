@@ -799,3 +799,20 @@ body.cmx-lock{overflow:hidden}
 .psi-tab:not(.active):hover{background:var(--cream-2);color:var(--ink)}
 .psi-strat{display:none}
 .psi-strat.active{display:block}
+
+/* R3 — CTAs orange + compact (tamazia.co.uk style) · Full-spec reveal fix · Route-2 value block */
+:root{--orange:#D9663A;--orange-deep:#BF4F28}
+.btn.solid,.btn.gold{background:var(--orange);border-color:var(--orange);color:#fff;font-size:10px;padding:10px 15px;letter-spacing:.04em;font-weight:600}
+.btn.solid:hover,.btn.gold:hover{background:var(--orange-deep);border-color:var(--orange-deep);color:#fff}
+.rail-cta{background:var(--orange);color:#fff;font-weight:600}
+.rail-cta:hover{background:var(--orange-deep)}
+.fixbox .fx-cta{background:var(--orange);border-color:var(--orange);color:#fff}
+.fixbox .fx-cta:hover{background:var(--orange-deep)}
+.plan2 .price .btn,.plan2 .bookcard .btn.solid{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 2px 10px rgba(217,102,58,.22)}
+.plan2 .price .btn:hover,.plan2 .bookcard .btn.solid:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
+.addon.open .more{max-height:560px}
+.route-val{list-style:none;display:flex;flex-direction:column;gap:6px;margin:4px 0 12px}
+.route-val li{font-family:var(--body);font-size:12px;color:#3a2d30;padding-left:16px;position:relative;line-height:1.4}
+.route-val li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;font-size:10px}
+.route-price{font-family:var(--serif);font-size:20px;color:var(--ox-deep);margin:2px 0 12px}
+.route-price span{font-family:var(--mono);font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-left:8px}

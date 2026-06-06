@@ -743,7 +743,7 @@ const TAMAZIA_LEVERS = [
   'compliance-reviewed pillar content held to Google’s YMYL standard, not generic copy',
   '30,000+ compliance-checked map and directory citations that build the authority Google trusts',
   'named-expert LinkedIn authority that ranks on both LinkedIn and Google',
-  'the 403-rule compliance database behind every published word, so nothing you publish creates new exposure',
+  'the 400+ rule compliance database behind every published word, so nothing you publish creates new exposure',
 ];
 // "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival, plus a real lever.
 function beatBy(c, ctx) {
@@ -895,10 +895,10 @@ export function payloadToD(payload, ctx = {}) {
   const compCriticals = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P0').length;
   const compHighs = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P1').length;
   const regulatoryHeadline = compCriticals > 0
-    ? `We screened all ${arr(payload.rules).length || 403} active frameworks. ${arr(payload.applicable_frameworks).length} of them legally bind you, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
+    ? `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
     : (compHighs > 0
-      ? `We screened all ${arr(payload.rules).length || 403} active frameworks. ${arr(payload.applicable_frameworks).length} of them legally bind you; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
-      : `We screened all ${arr(payload.rules).length || 403} active frameworks. ${arr(payload.applicable_frameworks).length} of them legally bind you, and none is confirmed breached on the live site this scan — so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+      ? `We screened all ${'400+'} active frameworks. The ones that legally bind you are below; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
+      : `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and none is confirmed breached on the live site this scan — so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
@@ -1357,7 +1357,7 @@ export function payloadToD(payload, ctx = {}) {
     // the (ranking-only) frameworks shown. Present the exposure tile honestly instead. (£0-leak / consistency)
     exposureHeadline: exposureN > 0 ? gbp(exposureN, curSym) : 'Ranking & AI',
     exposureNote: exposureN > 0
-      ? `Collapsed statutory ceiling across ${Object.keys(perFw).length} binding framework${Object.keys(perFw).length === 1 ? '' : 's'}`
+      ? 'Maximum statutory penalty across the breaches evidenced on your live site'
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
     counts, confirmed: pointers.length,
     // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
@@ -1365,7 +1365,7 @@ export function payloadToD(payload, ctx = {}) {
     regulatoryHeadline, regulatoryCriticalsZero,
     // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
     // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
-    frameworksAssessed: arr(payload.applicable_frameworks).length, rulesChecked: arr(payload.rules).length || 403, frameworksTotal: arr(payload.rules).length || 403,
+    frameworksAssessed: frameworks.length, rulesChecked: '400+', frameworksTotal: '400+',
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0–100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,
@@ -1381,7 +1381,7 @@ export function payloadToD(payload, ctx = {}) {
     dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub })),
     seo, geo, competitors,
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
-    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full 403-rule scan with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
+    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full 400+ rule scan with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
     glossary: buildGlossary(payload, allow),
     // commerce scaffold (Slice 5 replaces with live config + Cal/Stripe wiring)
     pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, addons: COMMERCE.addons, addonsMore: COMMERCE.addonsMore, upsellProof: COMMERCE.upsellProof,
@@ -1516,7 +1516,7 @@ const COMMERCE = {
   ],
   addons: [
     { nm: 'GEO / AI Search Presence', rank: '#1', score: 91, pr: '£1,800', market: 'vs market £1,900–£6,300/mo', tag: 'Appear inside ChatGPT, Perplexity, Claude, Gemini & Google AI, the only compliance-reviewed GEO programme on the market.', us: ['AI-referred visitors arrive with high intent and convert above organic', 'Entity + schema + llms.txt + Wikidata build', 'Compliance review of what AI says about you (unique)'], more: ['Per-engine citation measurement across 6 engines', 'Monthly share-of-voice tracking vs named rivals', 'Answer-surface content targeting real buyer prompts', 'Delivered: entity wk1–4, content wk4–12, measured monthly', 'Best for: every regulated firm, AI is the first research step'] },
-    { nm: 'Cold Email Outreach Engine', rank: '#2', score: 88, pr: '£1,400', market: 'vs market £2,400–£6,400/mo', tag: '30,000 ICP-targeted, compliance-reviewed sends per month — the same compliance-first outbound engine, working for your pipeline.', us: ['3–8% target reply rate', 'FCA / COBS-compliant sends', 'Personalised per prospect, classified by intent'], more: ['Built on the 403-rule compliance database', 'Self-healing deliverability + inbox rotation', 'Personalised per-prospect, classified by intent', 'Delivered: list wk1, warmup wk2, sending wk3+', 'Best for: clinics building lists, firms doing BD'] },
+    { nm: 'Cold Email Outreach Engine', rank: '#2', score: 88, pr: '£1,400', market: 'vs market £2,400–£6,400/mo', tag: '30,000 ICP-targeted, compliance-reviewed sends per month — the same compliance-first outbound engine, working for your pipeline.', us: ['3–8% target reply rate', 'FCA / COBS-compliant sends', 'Personalised per prospect, classified by intent'], more: ['Built on the 400+ rule compliance database', 'Self-healing deliverability + inbox rotation', 'Personalised per-prospect, classified by intent', 'Delivered: list wk1, warmup wk2, sending wk3+', 'Best for: clinics building lists, firms doing BD'] },
     { nm: 'Compliance Monitoring', rank: '#3', score: 85, pr: '£399', market: 'correctly priced · 67% uptake', tag: 'Monthly re-scan of the full rule catalogue, so a new breach never sits on your live site unseen.', us: ['Catches new breaches as the law changes', 'Continuous, board-ready compliance proof', 'Alerts within 24h of a new gap appearing'], more: ['Alerts within 24h of a new gap appearing', 'Tracks enforcement-register changes per framework', 'Quarterly compliance certificate', 'Delivered: automated, human-reviewed monthly', 'Best for: any firm that wants the audit to stay live'] },
     { nm: 'LinkedIn Executive Authority', rank: '#4', score: 80, pr: '£1,100', market: 'vs market £600–£5,800/mo', tag: 'Ghostwritten, compliance-reviewed thought leadership for partners. 4× the conversion of company content.', us: ['Dual distribution: LinkedIn + Google', 'Every post compliance-checked before publish', 'Builds the named-expert E-E-A-T signal Google rewards'], more: ['8–12 posts / month per executive', 'SEO-optimised so posts rank on Google too', 'Engagement + lead attribution reporting', 'Delivered: voice capture wk1, publishing wk2+', 'Best for: law/finance partners, clinic founders'] },
     { nm: 'Reputation Monitoring + Crisis', rank: '#5', score: 76, pr: '£1,500', market: 'at market', tag: 'Enterprise ORM with compliance-aware suppression — protect the reputation your referrals and pipeline depend on, before a problem spreads.', us: ['Real-time review + mention monitoring', 'Crisis playbook on standby with the founder', 'Suppression architecture, not just alerting'], more: ['Covers Google, Trustpilot, social, press', 'Negative-result suppression within guidelines', 'Monthly sentiment trend reporting', 'Delivered: baseline wk1, monitoring continuous', 'Best for: any firm with £5M+ revenue to protect'] },

@@ -513,24 +513,32 @@
   function setActive(id){ document.querySelectorAll('.railnav button').forEach(b=>b.classList.toggle('active', b.dataset.pane===id)); }
   function openPillar(id){
     document.querySelectorAll('.pillar').forEach(d=>{ d.open=(d.id==='sec-'+id); });
-    const el=document.getElementById('sec-'+id); if(el){ const y=el.getBoundingClientRect().top+window.scrollY-10; window.scrollTo({top:y,behavior:'smooth'}); }
     setActive(id);
+    const el=document.getElementById('sec-'+id); if(el) scrollHeadingTop(el);
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
   // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
   document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
-  document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); } }));
+  document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); scrollHeadingTop(d); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
 
-  /* ---------------- Phase 1: OPEN-FROM-HEADING for every inner box ---------------- */
-  // Bring any clickable box's heading (its <summary>) to the top of the viewport when it opens.
-  // scrollIntoView is nested-scroll-aware, so it correctly scrolls BOTH the capped .pbody
-  // container (Phase 0) AND the window; scroll-margin-top:12px (Phase 0) supplies the offset.
-  // Hoisted (function decl) so the Phase 3 de-triplication + Phase 4 fwjump handlers reuse it.
+  /* ---------------- OPEN-FROM-HEADING for every box (robust) ---------------- */
+  // Pin a box's heading (its <summary>) just under the top of the viewport when it opens.
+  // INSTANT, not smooth: the page sets html{scroll-behavior:smooth}, so two programmatic scrolls
+  // fired close together (e.g. openPillar then open-the-finding) ANIMATE and race — the later one
+  // lands mid-flight and you overshoot to the BOTTOM of the box. We force instant + a monotonic
+  // token so only the LATEST requested target keeps re-pinning; stale pins cancel themselves. We
+  // re-pin across two frames + a short delay so an open-reflow or a sibling-close that shifts the
+  // target can never leave the heading off-screen.
+  let _scrollTok=0;
   function scrollHeadingTop(el){
     if(!el) return;
-    try{ el.scrollIntoView({block:'start',behavior:'smooth'}); }
-    catch(_e){ try{ const y=el.getBoundingClientRect().top+window.scrollY-12; window.scrollTo({top:y,behavior:'smooth'}); }catch(_e2){} }
+    const tok=++_scrollTok;
+    const pin=function(){ if(tok!==_scrollTok)return; const y=Math.max(0, el.getBoundingClientRect().top+window.scrollY-12);
+      try{ window.scrollTo({top:y,behavior:'instant'}); }catch(_e){ try{ window.scrollTo(0,y); }catch(_e2){} } };
+    pin();
+    requestAnimationFrame(function(){ pin(); requestAnimationFrame(pin); });
+    setTimeout(pin, 140);
   }
   // One delegated toggle-capture handler (toggle does NOT bubble → capture). When a .fw/.finding
   // opens, single-open its siblings within the same pane and pin its heading to the top, so at

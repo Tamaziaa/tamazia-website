@@ -601,13 +601,13 @@ body.cmx-lock{overflow:hidden}
    is exempt so it page-scrolls across its subsections (Phase 9).
    ============================================================ */
 :root{ --vp-cap:calc(100svh - 96px); }   /* svh = mobile-safe; ~96px sticky/header allowance */
-.pillar .pbody,
+/* Cap the COLLAPSIBLE BOXES (a finding, a framework), not the pillar pane: an open box fits one
+   viewport with internal scroll; the pane itself page-scrolls (no awkward nested pane+box scroll). */
 .finding .fbody,
 .fw .fwbody,
 .reg-fixwrap{ max-height:var(--vp-cap); overflow:auto; overscroll-behavior:contain; }
-.pillar .pbody::-webkit-scrollbar,.finding .fbody::-webkit-scrollbar,.fw .fwbody::-webkit-scrollbar{width:7px}
-.pillar .pbody::-webkit-scrollbar-thumb,.finding .fbody::-webkit-scrollbar-thumb,.fw .fwbody::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:4px}
-#sec-plan .pbody{ max-height:none; overflow:visible; }   /* the close scrolls the page, not an inner box */
+.finding .fbody::-webkit-scrollbar,.fw .fwbody::-webkit-scrollbar{width:7px}
+.finding .fbody::-webkit-scrollbar-thumb,.fw .fwbody::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:4px}
 .pillar,.finding,.fw,.reg-card,.price,.addon{ scroll-margin-top:12px; }
 /* density: fold the finding's 7 stacked layers into 2 columns (Phase 2 uses .fbody.dense) */
 .fbody.dense{ display:grid; grid-template-columns:1.05fr .95fr; gap:10px 16px; align-items:start; }
@@ -750,3 +750,19 @@ body.cmx-lock{overflow:hidden}
    ============================================================ */
 .tier-decoy{font-family:var(--body);font-size:11px;color:var(--muted);line-height:1.45;margin:0 0 10px;padding-left:11px;border-left:2px solid var(--gold-light)}
 .tier-decoy b{color:var(--ox)}
+
+/* rail one-viewport fit (verified live at 1366x768): reclaim ~40px so the rail never scrolls on a standard laptop, even with a long firm name */
+.rail{padding:14px 18px 13px}
+.rail-logo{margin-bottom:11px}
+.rail h1{font-size:17px;line-height:1.1;margin-bottom:4px}
+.rail-meta{line-height:1.4}
+.rail-gauge{margin:5px 0 3px}
+.rail-band{margin-bottom:9px}
+.rail-exposure{padding:8px;margin-bottom:9px}
+.rail-exposure .v{font-size:24px}
+.rail-navtitle{margin:4px 0 6px}
+.railnav{margin-bottom:9px}
+.railnav button{padding:5px 10px}
+.rail-jump{padding:8px;margin-bottom:8px}
+.rail-cta{padding:10px}
+.rail-trust{margin-top:8px}

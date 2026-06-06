@@ -25,7 +25,7 @@
       <div class="rail-brand"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></div>
       <h1>${D.meta.company}</h1>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city,D.meta.date].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
-      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:104,dark:true})}</div>
+      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
       <div class="rail-band">${D.scoreBand} · ${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       <div class="rail-kpis">

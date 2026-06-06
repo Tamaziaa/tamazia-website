@@ -1634,6 +1634,32 @@ try {
   else { console.log('[patch-dist]   PASS 130. /book/* · 4 paid+free events all auto-load (no gate)'); results.push({ ok: true }); }
 } catch (e) { results.push({ ok: true }); }
 
+// Gate 131 · audit Pages assets present in dist/ (css + charts + app copied from public/audit/)
+try {
+  const auditDir = join(DIST_DIR, 'audit');
+  const need = ['audit.css', 'audit-charts.js', 'audit-app.js'];
+  const missing = need.filter(f => !existsSync(join(auditDir, f)));
+  if (!existsSync(auditDir) || missing.length) {
+    console.error('[patch-dist]   FAIL 131. dist/audit/ assets missing · ' + (existsSync(auditDir) ? missing.join(', ') : 'no dist/audit dir'));
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 131. dist/audit/ · audit.css + audit-charts.js + audit-app.js present'); results.push({ ok: true }); }
+} catch (e) { console.error('[patch-dist]   FAIL 131. dist/audit/ check threw · ' + e.message); results.push({ ok: false }); }
+
+// Gate 132 · self-hosted fonts present in dist/audit/fonts/ (the 3 families · 11 woff2 the shell references)
+try {
+  const fontsDir = join(DIST_DIR, 'audit', 'fonts');
+  const need = [
+    'fraunces-300.woff2', 'fraunces-400.woff2', 'fraunces-400-italic.woff2', 'fraunces-500.woff2', 'fraunces-600.woff2',
+    'newsreader-300.woff2', 'newsreader-400.woff2', 'newsreader-400-italic.woff2', 'newsreader-500.woff2',
+    'jetbrains-mono-400.woff2', 'jetbrains-mono-500.woff2',
+  ];
+  const missing = existsSync(fontsDir) ? need.filter(f => !existsSync(join(fontsDir, f))) : need;
+  if (!existsSync(fontsDir) || missing.length) {
+    console.error('[patch-dist]   FAIL 132. dist/audit/fonts/ missing woff2 · ' + (existsSync(fontsDir) ? missing.join(', ') : 'no dist/audit/fonts dir'));
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 132. dist/audit/fonts/ · all ' + need.length + ' self-hosted woff2 present'); results.push({ ok: true }); }
+} catch (e) { console.error('[patch-dist]   FAIL 132. dist/audit/fonts/ check threw · ' + e.message); results.push({ ok: false }); }
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

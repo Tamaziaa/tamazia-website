@@ -1,0 +1,3822 @@
+{
+  "scan": {
+    "psi": {
+      "cls": null,
+      "seo": 0.92,
+      "perf": 0.46,
+      "audits": [
+        {
+          "id": "forced-reflow-insight",
+          "items": 2,
+          "score": 0,
+          "title": "Forced reflow",
+          "node_count": 0,
+          "description": "A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about and possible mitigations.",
+          "displayValue": "",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "speed-index",
+          "items": 0,
+          "score": 0.16,
+          "title": "Speed Index",
+          "node_count": 0,
+          "description": "Speed Index shows how quickly the contents of a page are visibly populated..",
+          "displayValue": "8.7\u00a0s",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "render-blocking-insight",
+          "items": 11,
+          "score": 0,
+          "title": "Render-blocking requests",
+          "node_count": 0,
+          "description": "Requests are blocking the page's initial render, which may delay LCP. can move these network requests out of the critical path.",
+          "displayValue": "Est savings of 3,130\u00a0ms",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "cache-insight",
+          "items": 31,
+          "score": 0,
+          "title": "Use efficient cache lifetimes",
+          "node_count": 0,
+          "description": "A long cache lifetime can speed up repeat visits to your page..",
+          "displayValue": "Est savings of 1,373\u00a0KiB",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "max-potential-fid",
+          "items": 0,
+          "score": 0.68,
+          "title": "Max Potential First Input Delay",
+          "node_count": 0,
+          "description": "The maximum potential First Input Delay that your users could experience is the duration of the longest task..",
+          "displayValue": "200\u00a0ms",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "font-display-insight",
+          "items": 2,
+          "score": 0.5,
+          "title": "Font display",
+          "node_count": 0,
+          "description": "Consider setting to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with.",
+          "displayValue": "Est savings of 10\u00a0ms",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "link-name",
+          "items": 8,
+          "score": 0,
+          "title": "Links do not have a discernible name",
+          "node_count": 8,
+          "description": "Link text (and alternate text for images, when used as links) that is discernible, unique, and focusable improves the navigation experience for screen reader users..",
+          "displayValue": "",
+          "node_snippet": "<a href=\"https://www.instagram.com/thirdspacelondon/\" target=\"_blank\" class=\"flex items-center space-x-2 md:space-x-3\">",
+          "node_selector": "div.Footer > div.max-w-[1800px] > ul.Footer__socials > a.flex"
+        },
+        {
+          "id": "first-contentful-paint",
+          "items": 0,
+          "score": 0.01,
+          "title": "First Contentful Paint",
+          "node_count": 0,
+          "description": "First Contentful Paint marks the time at which the first text or image is painted..",
+          "displayValue": "7.3\u00a0s",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "document-latency-insight",
+          "items": 0,
+          "score": 0,
+          "title": "Document request latency",
+          "node_count": 0,
+          "description": "Your first network request is the most important. by avoiding redirects, ensuring a fast server response, and enabling text compression.",
+          "displayValue": "Est savings of 150\u00a0ms",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "interactive",
+          "items": 0,
+          "score": 0.04,
+          "title": "Time to Interactive",
+          "node_count": 0,
+          "description": "Time to Interactive is the amount of time it takes for the page to become fully interactive..",
+          "displayValue": "17.2\u00a0s",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "total-blocking-time",
+          "items": 0,
+          "score": 0.64,
+          "title": "Total Blocking Time",
+          "node_count": 0,
+          "description": "Sum of all time periods between FCP and Time to Interactive, when task length exceeded 50ms, expressed in milliseconds..",
+          "displayValue": "430\u00a0ms",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "unused-javascript",
+          "items": 7,
+          "score": 0,
+          "title": "Reduce unused JavaScript",
+          "node_count": 0,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity..",
+          "displayValue": "Est savings of 638\u00a0KiB",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "unused-css-rules",
+          "items": 2,
+          "score": 0,
+          "title": "Reduce unused CSS",
+          "node_count": 0,
+          "description": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity..",
+          "displayValue": "Est savings of 47\u00a0KiB",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "button-name",
+          "items": 2,
+          "score": 0,
+          "title": "Buttons do not have an accessible name",
+          "node_count": 2,
+          "description": "When a button doesn't have an accessible name, screen readers announce it as \"button\", making it unusable for users who rely on screen readers..",
+          "displayValue": "",
+          "node_snippet": "<button class=\"flex items-center justify-center border rounded-full border-white h-10 w-1\u2026\" @click.stop=\"cardActiveState = !cardActiveState\">",
+          "node_selector": "div.w-full > div.absolute > div.flex > button.flex"
+        },
+        {
+          "id": "list",
+          "items": 2,
+          "score": 0,
+          "title": "Lists do not contain only `<li>` elements and script supporting elements (`<script>` and `<template>`).",
+          "node_count": 2,
+          "description": "Screen readers have a specific way of announcing lists. Ensuring proper list structure aids screen reader output..",
+          "displayValue": "",
+          "node_snippet": "<ul class=\"Footer__menu flex flex-col md:flex-row md:items-center md:space-x-2 lg:spa\u2026\">",
+          "node_selector": "div.Footer > div.max-w-[1800px] > nav.h-full > ul.Footer__menu"
+        },
+        {
+          "id": "image-alt",
+          "items": 20,
+          "score": 0,
+          "title": "Image elements do not have `[alt]` attributes",
+          "node_count": 20,
+          "description": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute..",
+          "displayValue": "",
+          "node_snippet": "<img decoding=\"async\" src=\"https://www.thirdspace.london/wp-content/uploads/2024/08/mobile-banner-tra\u2026\" class=\"absolute-center w-full h-full object-cover md:hidden flex\" loading=\"eager\" lazy=\"1\">",
+          "node_selector": "div.h-screen > div.relative > picture > img.absolute-center"
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "items": 2,
+          "score": 0,
+          "title": "LCP request discovery",
+          "node_count": 0,
+          "description": "by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading",
+          "displayValue": "",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "items": 7,
+          "score": 0,
+          "title": "Minimize main-thread work",
+          "node_count": 0,
+          "description": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this.",
+          "displayValue": "2.7\u00a0s",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "bootup-time",
+          "items": 12,
+          "score": 0,
+          "title": "Reduce JavaScript execution time",
+          "node_count": 0,
+          "description": "Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this..",
+          "displayValue": "1.7\u00a0s",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "total-byte-weight",
+          "items": 10,
+          "score": 0.5,
+          "title": "Avoid enormous network payloads",
+          "node_count": 0,
+          "description": "Large network payloads cost users real money and are highly correlated with long load times..",
+          "displayValue": "Total size was 3,454\u00a0KiB",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "redirects",
+          "items": 2,
+          "score": 0,
+          "title": "Avoid multiple page redirects",
+          "node_count": 0,
+          "description": "Redirects introduce additional delays before the page can be loaded..",
+          "displayValue": "Est savings of 780\u00a0ms",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "color-contrast",
+          "items": 3,
+          "score": 0,
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "node_count": 3,
+          "description": "Low-contrast text is difficult or impossible for many users to read..",
+          "displayValue": "",
+          "node_snippet": "<a href=\"https://without.studio/\" target=\"_blank\" class=\"body-tiny\">",
+          "node_selector": "div.max-w-[1800px] > div.w-full > div.text-brand-white/40 > a.body-tiny"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "items": 3,
+          "score": 0,
+          "title": "Network dependency tree",
+          "node_count": 0,
+          "description": "by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.",
+          "displayValue": "",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "image-delivery-insight",
+          "items": 14,
+          "score": 0.5,
+          "title": "Improve image delivery",
+          "node_count": 14,
+          "description": "Reducing the download time of images can improve the perceived load time of the page and LCP.",
+          "displayValue": "Est savings of 432\u00a0KiB",
+          "node_snippet": "<img decoding=\"async\" src=\"https://www.thirdspace.london/wp-content/uploads/2024/09/ThirdSpace_Wilmbl\u2026\" width=\"540\" height=\"360\" class=\"absolute inset-0 object-cover object-center h-full w-full transition-opaci\u2026\" alt=\"Wimbledon Swimming Pool 2\" loading=\"lazy\" sizes=\"auto, (min-width: 375px) 640px\" lazy=\"1\">",
+          "node_selector": "div.flex > div.relative > picture > img.absolute"
+        },
+        {
+          "id": "largest-contentful-paint",
+          "items": 0,
+          "score": 0,
+          "title": "Largest Contentful Paint",
+          "node_count": 0,
+          "description": "Largest Contentful Paint marks the time at which the largest text or image is painted.",
+          "displayValue": "16.7\u00a0s",
+          "node_snippet": "",
+          "node_selector": ""
+        },
+        {
+          "id": "legacy-javascript-insight",
+          "items": 2,
+          "score": 0,
+          "title": "Legacy JavaScript",
+          "node_count": 0,
+          "description": "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile features, unless you know you must support older browsers.",
+          "displayValue": "Est savings of 18\u00a0KiB",
+          "node_snippet": "",
+          "node_selector": ""
+        }
+      ],
+      "fcp_ms": 7269.006610743097,
+      "lcp_ms": 16697.78452896486,
+      "tbt_ms": 434.5
+    },
+    "counts": {
+      "p0": 0,
+      "p1": 4,
+      "p2": 40,
+      "total": 44
+    },
+    "markets": {
+      "cities": [
+        "London"
+      ],
+      "regions": [
+        "UK"
+      ],
+      "evidence": {
+        "United Kingdom": [
+          "mentioned",
+          "city: London",
+          "UK postcode"
+        ]
+      },
+      "serves_eu": false,
+      "confidence": {
+        "Canada": 1,
+        "United States": 1,
+        "United Kingdom": 5
+      },
+      "currencies": [],
+      "eu_countries": [],
+      "primary_city": "London",
+      "international": true,
+      "operating_countries": [
+        "United Kingdom"
+      ]
+    },
+    "signals": {
+      "csp": false,
+      "ugc": false,
+      "xfo": false,
+      "hsts": false,
+      "lang": true,
+      "xcto": false,
+      "title": "Third Space - London Health Clubs and Luxury Gyms",
+      "refpol": false,
+      "ad_tech": {
+        "count": 0,
+        "signals": [],
+        "runs_ads": false,
+        "platforms": []
+      },
+      "favicon": true,
+      "json_ld": true,
+      "permpol": false,
+      "uses_ai": false,
+      "h1_count": 0,
+      "payments": true,
+      "trackers": [
+        {
+          "cookies": [
+            "td"
+          ],
+          "category": "Marketing",
+          "platform": "Google Tag Manager",
+          "controller": "Google"
+        },
+        {
+          "cookies": [
+            "__hstc",
+            "hubspotutk",
+            "__hssc",
+            "__hssrc",
+            "messagesUtk"
+          ],
+          "category": "Analytics",
+          "platform": "HubSpot",
+          "controller": "HubSpot"
+        }
+      ],
+      "viewport": true,
+      "canonical": true,
+      "has_forms": false,
+      "title_len": 49,
+      "biometrics": false,
+      "html_bytes": 307660,
+      "open_graph": true,
+      "twitter_card": true,
+      "meta_description": true,
+      "meta_description_len": 155
+    },
+    "final_url": "https://thirdspace.london",
+    "reachable": true,
+    "scanned_at": "2026-06-04T18:47:41.632Z",
+    "site_scan_reachable": true
+  },
+  "rules": [
+    {
+      "rule_id": "BDSG_GERMAN_NOTICE",
+      "severity": "P0",
+      "description": "Germany requires German-language privacy + impressum + cookie notice for DE-targeted sites.",
+      "citation_url": "https://www.bfdi.bund.de/",
+      "framework_short": "DE_BDSG"
+    },
+    {
+      "rule_id": "EAA_ACCESSIBILITY_STATEMENT",
+      "severity": "P0",
+      "description": "B2C e-commerce, banking, e-books and ticketing serving EU consumers must publish accessibility statement.",
+      "citation_url": "https://ec.europa.eu/social/main.jsp?catId=1202",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "A8",
+      "severity": "P0",
+      "description": "Cookies + similar technologies prior-consent banner",
+      "citation_url": "https://eur-lex.europa.eu/",
+      "framework_short": "EU_EPRIVACY"
+    },
+    {
+      "rule_id": "A12",
+      "severity": "P0",
+      "description": "Transparent information in concise, intelligible form",
+      "citation_url": "https://gdpr-info.eu/art-12-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A13",
+      "severity": "P0",
+      "description": "Information on collection from data subject",
+      "citation_url": "https://gdpr-info.eu/art-13-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A14",
+      "severity": "P0",
+      "description": "Information when data not obtained from data subject",
+      "citation_url": "https://gdpr-info.eu/art-14-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A15",
+      "severity": "P0",
+      "description": "Right of access",
+      "citation_url": "https://gdpr-info.eu/art-15-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A17",
+      "severity": "P0",
+      "description": "Right to erasure (right to be forgotten)",
+      "citation_url": "https://gdpr-info.eu/art-17-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A21",
+      "severity": "P0",
+      "description": "Right to object to direct marketing",
+      "citation_url": "https://gdpr-info.eu/art-21-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A27",
+      "severity": "P0",
+      "description": "Non-EU controller representative requirement",
+      "citation_url": "https://gdpr-info.eu/art-27-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A28",
+      "severity": "P0",
+      "description": "Processor contract terms required",
+      "citation_url": "https://gdpr-info.eu/art-28-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A44",
+      "severity": "P0",
+      "description": "International transfer baseline",
+      "citation_url": "https://gdpr-info.eu/art-44-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A46",
+      "severity": "P0",
+      "description": "SCCs or BCRs required for transfers absent adequacy",
+      "citation_url": "https://gdpr-info.eu/art-46-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A6",
+      "severity": "P0",
+      "description": "Lawful basis must be identifiable for every processing activity",
+      "citation_url": "https://gdpr-info.eu/art-6-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A7",
+      "severity": "P0",
+      "description": "Conditions for consent (freely given, specific, informed, unambiguous)",
+      "citation_url": "https://gdpr-info.eu/art-7-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "CNIL_COOKIE_REJECT",
+      "severity": "P0",
+      "description": "France requires Reject-All cookie button equally prominent as Accept.",
+      "citation_url": "https://www.cnil.fr/en",
+      "framework_short": "FR_CNIL_2025"
+    },
+    {
+      "rule_id": "AS2.1",
+      "severity": "P0",
+      "description": "Disclosure of paid testimonials / endorsements",
+      "citation_url": "https://www.asa.org.uk/",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "CAA1.1",
+      "severity": "P0",
+      "description": "ATOL protection statement for travel sellers",
+      "citation_url": "https://www.caa.co.uk/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CAA2.1",
+      "severity": "P0",
+      "description": "Air operator certificate or licence reference",
+      "citation_url": "https://www.caa.co.uk/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CMA1.1",
+      "severity": "P0",
+      "description": "Consumer Rights Act statutory information",
+      "citation_url": "https://www.gov.uk/consumer-protection-rights",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "CMA3.1",
+      "severity": "P0",
+      "description": "Pricing transparency: total price including unavoidable fees",
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "DMCC_SUB_REMINDER",
+      "severity": "P0",
+      "description": "Subscription traders must send reminders before renewal and offer one-click cancellation.",
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "EQA_REASONABLE_ADJUSTMENTS",
+      "severity": "P0",
+      "description": "Customer-facing websites must offer reasonable adjustments under the Equality Act 2010.",
+      "citation_url": "https://www.equalityhumanrights.com/en/advice-and-guidance/website-accessibility",
+      "framework_short": "UK_EQUALITY_2010"
+    },
+    {
+      "rule_id": "CALORIES",
+      "severity": "P0",
+      "description": "Calorie information on out-of-home menus (Calorie Labelling Regulations 2021)",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2021/909/made",
+      "framework_short": "UK_FOOD_INFO_2014"
+    },
+    {
+      "rule_id": "NATASHA",
+      "severity": "P0",
+      "description": "14 allergens disclosed on every food product page (PPDS)",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "framework_short": "UK_FOOD_INFO_2014"
+    },
+    {
+      "rule_id": "FSA1.1",
+      "severity": "P0",
+      "description": "Food Hygiene Rating Scheme disclosure",
+      "citation_url": "https://www.food.gov.uk/",
+      "framework_short": "UK_FSA"
+    },
+    {
+      "rule_id": "FSA2.1",
+      "severity": "P0",
+      "description": "Allergen information / Natasha law statement",
+      "citation_url": "https://www.food.gov.uk/business-guidance/allergen-guidance-for-food-businesses",
+      "framework_short": "UK_FSA"
+    },
+    {
+      "rule_id": "A13.1.a",
+      "severity": "P0",
+      "description": "Identity of the controller must be disclosed on first data collection page",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/right-to-be-informed/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.b",
+      "severity": "P0",
+      "description": "Contact details of the controller (including DPO if applicable)",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/right-to-be-informed/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.c",
+      "severity": "P0",
+      "description": "Purposes of processing AND legal basis",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.f",
+      "severity": "P0",
+      "description": "International transfers and safeguards (SCCs / adequacy)",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.a",
+      "severity": "P0",
+      "description": "Retention period or criteria",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.b",
+      "severity": "P0",
+      "description": "Right to access, rectify, erase, restrict, port, object",
+      "citation_url": "https://ico.org.uk/your-data-matters/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.c",
+      "severity": "P0",
+      "description": "Right to withdraw consent (if consent is the basis)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.d",
+      "severity": "P0",
+      "description": "Right to complain to ICO",
+      "citation_url": "https://ico.org.uk/make-a-complaint/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "C01",
+      "severity": "P0",
+      "description": "Analytics cookies require consent (ICO position 2023)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C02",
+      "severity": "P0",
+      "description": "Cookie banner must not use pre-ticked boxes",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C03",
+      "severity": "P0",
+      "description": "Cookie wall (pay-or-OK) for unrelated content is not freely-given consent",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "LA1.1",
+      "severity": "P0",
+      "description": "Premises licence holder / DPS disclosure",
+      "citation_url": "https://www.gov.uk/guidance/licensing-act-2003-explanatory-notes",
+      "framework_short": "UK_LICENSING_ACT"
+    },
+    {
+      "rule_id": "R22.1",
+      "severity": "P0",
+      "description": "Soft opt-in: prior similar product/service customer relationship for marketing",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R22.2",
+      "severity": "P0",
+      "description": "Marketing emails must include sender identity (no false header)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R22.3",
+      "severity": "P0",
+      "description": "Marketing emails must include valid return address",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R22.4",
+      "severity": "P0",
+      "description": "Easy opt-out mechanism in every marketing email",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.1",
+      "severity": "P0",
+      "description": "Cookie consent before non-essential cookies set",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.2",
+      "severity": "P0",
+      "description": "Cookie reject must be as prominent as accept",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.3",
+      "severity": "P0",
+      "description": "Cookie purpose disclosed clearly before consent",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "TS2.1",
+      "severity": "P0",
+      "description": "Business identification on website (Co. No, VAT, Address)",
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "framework_short": "UK_TRADING_STANDARDS"
+    },
+    {
+      "rule_id": "EAA_WCAG_AA",
+      "severity": "P1",
+      "description": "Consumer-facing digital service serving the EU with no evident WCAG 2.1 AA accessibility conformance",
+      "citation_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32019L0882",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "A16",
+      "severity": "P1",
+      "description": "Unsolicited commercial communications opt-in for natural persons",
+      "citation_url": "https://eur-lex.europa.eu/",
+      "framework_short": "EU_EPRIVACY"
+    },
+    {
+      "rule_id": "A6",
+      "severity": "P1",
+      "description": "Confidentiality of electronic communications notice",
+      "citation_url": "https://eur-lex.europa.eu/",
+      "framework_short": "EU_EPRIVACY"
+    },
+    {
+      "rule_id": "A20",
+      "severity": "P1",
+      "description": "Right to data portability",
+      "citation_url": "https://gdpr-info.eu/art-20-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A25",
+      "severity": "P1",
+      "description": "Data protection by design and by default",
+      "citation_url": "https://gdpr-info.eu/art-25-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A32",
+      "severity": "P1",
+      "description": "Security of processing appropriate to risk",
+      "citation_url": "https://gdpr-info.eu/art-32-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "CNIL_FR_PRIVACY_NOTICE",
+      "severity": "P1",
+      "description": "France requires a French-language privacy notice for FR-targeted sites.",
+      "citation_url": "https://www.cnil.fr/en/personal-data",
+      "framework_short": "FR_CNIL_2025"
+    },
+    {
+      "rule_id": "AUTHOR",
+      "severity": "P1",
+      "description": "Author byline on substantive content (Experience + Expertise)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "CREDENTIALS",
+      "severity": "P1",
+      "description": "Author credentials visible (Authoritativeness)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "AS1.1",
+      "severity": "P1",
+      "description": "Honest claims (no superlatives without substantiation)",
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "AS3.1",
+      "severity": "P1",
+      "description": "Pricing transparency (incl. VAT or excluding clearly stated)",
+      "citation_url": "https://www.asa.org.uk/",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "CAA3.1",
+      "severity": "P1",
+      "description": "EU261/UK261 passenger rights disclosure",
+      "citation_url": "https://www.caa.co.uk/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CMA2.1",
+      "severity": "P1",
+      "description": "Honest reviews disclosure (no fake or paid reviews)",
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "CMA_DRIP_PRICING",
+      "severity": "P1",
+      "description": "All-in pricing, no hidden mandatory fees (DMCC drip-pricing ban)",
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "framework_short": "UK_CMA"
+    },
+    {
+      "rule_id": "CA_NAME_NUMBER",
+      "severity": "P1",
+      "description": "UK limited companies must display registered name, number, registered office on every website.",
+      "citation_url": "https://www.gov.uk/running-a-limited-company/signs-stationery-and-promotional-material",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "CRA_RIGHTS_NOTICE",
+      "severity": "P1",
+      "description": "Consumer Rights Act 2015 requires clear rights notice on commercial websites.",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2015/15/contents/enacted",
+      "framework_short": "UK_CRA_2015"
+    },
+    {
+      "rule_id": "DMCC_DRIP_PRICING",
+      "severity": "P1",
+      "description": "Total price including mandatory fees must be displayed up-front, not added at checkout.",
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "DMCC_FAKE_REVIEWS",
+      "severity": "P1",
+      "description": "Must publish a policy declaring no incentivised, fake or undisclosed reviews.",
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "DMCC_INCENTIVISED_REVIEWS",
+      "severity": "P1",
+      "description": "Reviews or testimonials shown without disclosing incentives or a genuine-review verification process",
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "DMCC_SUBSCRIPTION",
+      "severity": "P1",
+      "description": "Clear subscription terms + easy cancellation (DMCC)",
+      "citation_url": "https://www.gov.uk/government/publications/dmcc-act-unfair-commercial-practices-guidance",
+      "framework_short": "UK_DMCC_2024"
+    },
+    {
+      "rule_id": "S3",
+      "severity": "P1",
+      "description": "Section 3 personal data definition disclosure",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2018/12/section/3",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "A13.1.d",
+      "severity": "P1",
+      "description": "Legitimate interests (if relied on) clearly stated",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/legitimate-interests/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.1.e",
+      "severity": "P1",
+      "description": "Recipients or categories of recipients of personal data",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.e",
+      "severity": "P1",
+      "description": "Whether provision is statutory/contractual and consequences of not providing",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A13.2.f",
+      "severity": "P1",
+      "description": "Existence of automated decision-making including profiling",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/rights-related-to-automated-decision-making-including-profiling/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "HSE1.1",
+      "severity": "P1",
+      "description": "Health and Safety policy disclosure",
+      "citation_url": "https://www.hse.gov.uk/",
+      "framework_short": "UK_HSE"
+    },
+    {
+      "rule_id": "C04",
+      "severity": "P1",
+      "description": "Cookie purposes must be itemised (functional vs analytics vs marketing)",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C05",
+      "severity": "P1",
+      "description": "Cookie list must include third-party cookies",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C07",
+      "severity": "P1",
+      "description": "Cookie banner copy must be available before clicking accept",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C08",
+      "severity": "P1",
+      "description": "Cookie consent log must be retained for 12 months minimum",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C09",
+      "severity": "P1",
+      "description": "Re-prompt for consent after material changes to cookie usage",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "LA2.1",
+      "severity": "P1",
+      "description": "Challenge 21/25 policy",
+      "citation_url": "https://www.gov.uk/government/publications/code-of-practice-for-the-sale-of-alcohol",
+      "framework_short": "UK_LICENSING_ACT"
+    },
+    {
+      "rule_id": "MSA_S54_STATEMENT",
+      "severity": "P1",
+      "description": "Commercial organisations turnover >\u00a336M must publish annual Modern Slavery Act statement.",
+      "citation_url": "https://www.gov.uk/government/publications/transparency-in-supply-chains-a-practical-guide",
+      "framework_short": "UK_MODERN_SLAVERY"
+    },
+    {
+      "rule_id": "PECR_CONSENT_PLATFORM",
+      "severity": "P1",
+      "description": "Marketing or analytics trackers present but no consent-management platform gating them before consent",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "PECR_REJECT_ALL_PARITY",
+      "severity": "P1",
+      "description": "Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R23",
+      "severity": "P1",
+      "description": "B2B corporate subscriber: soft opt-in still required for individual employees identifiable in role",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/business-to-business-marketing/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.4",
+      "severity": "P1",
+      "description": "Cookie withdrawal mechanism accessible from every page",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "TS1.1",
+      "severity": "P1",
+      "description": "Unit pricing for pre-packaged goods",
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "framework_short": "UK_TRADING_STANDARDS"
+    },
+    {
+      "rule_id": "EAA_ALT_TEXT",
+      "severity": "P2",
+      "description": "Text alternatives for non-text content (WCAG 1.1.1)",
+      "citation_url": "https://eur-lex.europa.eu/eli/dir/2019/882/oj",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "EAA_KEYBOARD",
+      "severity": "P2",
+      "description": "Full keyboard operability (WCAG 2.1.1)",
+      "citation_url": "https://eur-lex.europa.eu/eli/dir/2019/882/oj",
+      "framework_short": "EU_EAA_2025"
+    },
+    {
+      "rule_id": "A16",
+      "severity": "P2",
+      "description": "Right to rectification",
+      "citation_url": "https://gdpr-info.eu/art-16-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A18",
+      "severity": "P2",
+      "description": "Right to restriction of processing",
+      "citation_url": "https://gdpr-info.eu/art-18-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A22",
+      "severity": "P2",
+      "description": "Automated decision-making + profiling safeguards",
+      "citation_url": "https://gdpr-info.eu/art-22-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A30",
+      "severity": "P2",
+      "description": "Records of processing activities (ROPA)",
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A33",
+      "severity": "P2",
+      "description": "Personal data breach notification within 72 hours",
+      "citation_url": "https://gdpr-info.eu/art-33-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A34",
+      "severity": "P2",
+      "description": "Communication of a breach to data subjects",
+      "citation_url": "https://gdpr-info.eu/art-34-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A35",
+      "severity": "P2",
+      "description": "Data protection impact assessment (DPIA)",
+      "citation_url": "https://gdpr-info.eu/art-35-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "A37",
+      "severity": "P2",
+      "description": "Data Protection Officer appointment + contact",
+      "citation_url": "https://gdpr-info.eu/art-37-gdpr/",
+      "framework_short": "EU_GDPR"
+    },
+    {
+      "rule_id": "CITATIONS",
+      "severity": "P2",
+      "description": "Citations to authoritative sources (Trust)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "EEAT_AUTHOR",
+      "severity": "P2",
+      "description": "Published content shows author / expertise signals (E-E-A-T)",
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "framework_short": "GOOGLE_EEAT"
+    },
+    {
+      "rule_id": "ASA_ENVIRONMENTAL",
+      "severity": "P2",
+      "description": "Substantiated, non-misleading environmental/green claims",
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "ASA_URGENCY",
+      "severity": "P2",
+      "description": "No false urgency / misleading countdown timers",
+      "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes.html",
+      "framework_short": "UK_ASA_CAP"
+    },
+    {
+      "rule_id": "CAA_ATOL",
+      "severity": "P2",
+      "description": "ATOL protection disclosure for package travel",
+      "citation_url": "https://www.caa.co.uk/atol-protection/",
+      "framework_short": "UK_CAA"
+    },
+    {
+      "rule_id": "CA_TRADING_DISCLOSURE",
+      "severity": "P2",
+      "description": "Incorporated entity not displaying company number, registered office and place of registration on its website",
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "CA_VAT_REGISTERED",
+      "severity": "P2",
+      "description": "VAT-registered businesses must show VAT number on website per HMRC guidance.",
+      "citation_url": "https://www.gov.uk/vat-businesses/vat-registration",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "CRA_DISTANCE_CANCELLATION",
+      "severity": "P2",
+      "description": "Online sales with no visible 14-day cancellation, returns or refund rights for distance consumers",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2013/3134/contents/made",
+      "framework_short": "UK_CRA_2015"
+    },
+    {
+      "rule_id": "CRA_FAIR_TERMS",
+      "severity": "P2",
+      "description": "Fair, transparent and legible consumer contract terms",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2015/15/contents/enacted",
+      "framework_short": "UK_CRA_2015"
+    },
+    {
+      "rule_id": "DPA_CHILDRENS_CODE",
+      "severity": "P2",
+      "description": "Age-appropriate design (ICO Children Code)",
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "S22",
+      "severity": "P2",
+      "description": "Section 22 manual unstructured data exemption noted where applicable",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2018/12/section/22",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "EQA_ALT_TEXT",
+      "severity": "P2",
+      "description": "Image alt text as a reasonable adjustment",
+      "citation_url": "https://www.equalityhumanrights.com/en/advice-and-guidance/website-accessibility",
+      "framework_short": "UK_EQUALITY_2010"
+    },
+    {
+      "rule_id": "FOOD_ALLERGEN",
+      "severity": "P2",
+      "description": "Allergen + mandatory food information online",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "framework_short": "UK_FOOD_INFO_2014"
+    },
+    {
+      "rule_id": "A15UK",
+      "severity": "P2",
+      "description": "UK right of access (Subject Access Request)",
+      "citation_url": "https://gdpr-info.eu/art-15-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A17UK",
+      "severity": "P2",
+      "description": "UK right to erasure",
+      "citation_url": "https://gdpr-info.eu/art-17-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A20UK",
+      "severity": "P2",
+      "description": "UK right to data portability",
+      "citation_url": "https://gdpr-info.eu/art-20-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A21UK",
+      "severity": "P2",
+      "description": "UK right to object to direct marketing",
+      "citation_url": "https://gdpr-info.eu/art-21-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A28UK",
+      "severity": "P2",
+      "description": "UK processor / sub-processor transparency",
+      "citation_url": "https://gdpr-info.eu/art-28-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A30UK",
+      "severity": "P2",
+      "description": "UK records of processing (ROPA)",
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "A6UK",
+      "severity": "P2",
+      "description": "UK lawful basis identified",
+      "citation_url": "https://gdpr-info.eu/art-6-gdpr/",
+      "framework_short": "UK_GDPR_A13"
+    },
+    {
+      "rule_id": "HSE2.1",
+      "severity": "P2",
+      "description": "RIDDOR reportable incident reference",
+      "citation_url": "https://www.hse.gov.uk/",
+      "framework_short": "UK_HSE"
+    },
+    {
+      "rule_id": "C06",
+      "severity": "P2",
+      "description": "Cookie scan must distinguish session vs persistent cookies",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "C10",
+      "severity": "P2",
+      "description": "Cookie banner not shown to authenticated users with stored preferences",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_ICO_COOKIES"
+    },
+    {
+      "rule_id": "PECR_SOFT_OPTIN",
+      "severity": "P2",
+      "description": "Valid marketing consent or soft opt-in for email/SMS",
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/electronic-and-telephone-marketing/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "R6.5",
+      "severity": "P2",
+      "description": "Strictly necessary cookies do not require consent but must be disclosed",
+      "citation_url": "https://ico.org.uk/",
+      "framework_short": "UK_PECR"
+    },
+    {
+      "rule_id": "TS_DISTANCE",
+      "severity": "P2",
+      "description": "Distance-selling pre-contract information (CCRs 2013)",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2013/3134/contents/made",
+      "framework_short": "UK_TRADING_STANDARDS"
+    },
+    {
+      "rule_id": "CA_VAT_DISPLAY",
+      "severity": "P3",
+      "description": "VAT number displayed where VAT-registered",
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "framework_short": "UK_COMPANIES_ACT"
+    },
+    {
+      "rule_id": "DPA_ICO_FEE",
+      "severity": "P3",
+      "description": "Organisation processing personal data with no sign of ICO data-protection-fee registration",
+      "citation_url": "https://ico.org.uk/for-organisations/data-protection-fee/",
+      "framework_short": "UK_DPA_2018"
+    },
+    {
+      "rule_id": "FSA_HYGIENE",
+      "severity": "P3",
+      "description": "Food hygiene rating display where used in promotion",
+      "citation_url": "https://www.food.gov.uk/",
+      "framework_short": "UK_FSA"
+    },
+    {
+      "rule_id": "HSE_SAFETY_CLAIMS",
+      "severity": "P3",
+      "description": "Accurate health-and-safety / competence claims",
+      "citation_url": "https://www.hse.gov.uk/",
+      "framework_short": "UK_HSE"
+    },
+    {
+      "rule_id": "LIC_PREMISES",
+      "severity": "P3",
+      "description": "Premises/personal licence displayed for licensable activity",
+      "citation_url": "https://www.gov.uk/guidance/alcohol-licensing",
+      "framework_short": "UK_LICENSING_ACT"
+    },
+    {
+      "rule_id": "MS_STATEMENT",
+      "severity": "P3",
+      "description": "Modern Slavery statement (turnover GBP 36M+)",
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2015/30/section/54",
+      "framework_short": "UK_MODERN_SLAVERY"
+    },
+    {
+      "rule_id": "TS_PRICE_MARKING",
+      "severity": "P3",
+      "description": "Clear price marking incl. unit/total price",
+      "citation_url": "https://www.legislation.gov.uk/uksi/2004/102/contents/made",
+      "framework_short": "UK_TRADING_STANDARDS"
+    }
+  ],
+  "domain": "thirdspace.london",
+  "sector": "hospitality",
+  "country": "UK",
+  "lead_id": null,
+  "glossary": {
+    "used": [
+      "domain authority",
+      "da",
+      "pa",
+      "geo",
+      "schema",
+      "structured data",
+      "llms.txt",
+      "nap",
+      "map pack",
+      "e-e-a-t",
+      "gdpr",
+      "uk gdpr",
+      "pecr",
+      "hsts",
+      "csp",
+      "lcp",
+      "sameas",
+      "wikidata",
+      "organic"
+    ],
+    "terms": {
+      "da": "Domain Authority: a 0 to 100 trust score based on the quality of sites linking to you. The higher it is, the easier everything else ranks.",
+      "pa": "Page Authority: the same trust idea as Domain Authority but for one specific page rather than the whole site.",
+      "cls": "Cumulative Layout Shift: how much your page jumps around while loading. Jumpy pages frustrate users and rank worse.",
+      "csp": "Content-Security-Policy: a security header that blocks malicious scripts. Security reviews check for it.",
+      "geo": "Generative Engine Optimisation: whether AI answer engines (ChatGPT, Gemini, Perplexity, Google AI Overviews) actually name and cite your business when a buyer asks them for a provider like you.",
+      "lcp": "Largest Contentful Paint: how long your main content takes to appear. Over 2.5 seconds and Google ranks you lower and visitors leave.",
+      "nap": "Name, Address, Phone. Search engines cross-check these to trust that your business is real and local. Inconsistent or missing NAP sinks local rankings.",
+      "ccpa": "California's privacy law, and the template for the roughly 20 US states that now have one. It gives consumers the right to opt out and to have data deleted.",
+      "gdpr": "The data-protection law for the UK and EU. Fines reach GBP 17.5M or 4% of global turnover, so gaps here are the most expensive on the page.",
+      "hsts": "A security header that stops your site being downgraded from secure HTTPS. Corporate buyers check for it, so its absence is an easy red flag.",
+      "pecr": "UK rules on cookies and electronic marketing. You must get clear consent before non-essential cookies or trackers fire.",
+      "sameas": "Schema links that connect your site to your verified profiles (LinkedIn, Companies House, Wikidata) so AI knows the business is really you.",
+      "schema": "Hidden code (structured data) that tells search engines and AI exactly who you are, what you offer and where. Without it they have to guess, and they guess wrong.",
+      "e-e-a-t": "Google's test of Experience, Expertise, Authoritativeness and Trust. It decides whether your content deserves to rank, and it matters most in law, health and finance.",
+      "organic": "The unpaid search results, as opposed to ads. Ranking here is the durable, compounding kind of visibility.",
+      "uk gdpr": "The UK version of the EU data-protection law, enforced by the ICO with fines up to GBP 17.5M or 4% of global turnover.",
+      "llms.txt": "A simple file that tells AI models what your site is about and what they may use. It is a new standard and most firms do not have one yet, so adding it is an easy edge.",
+      "map pack": "The three-business map result at the top of local searches. The top spots take the majority of local clicks.",
+      "wikidata": "Google's and AI's open knowledge base. An entry there makes you a recognised entity that answer engines can confidently cite.",
+      "canonical": "A line of code that tells Google which version of a page is the real one, so duplicate web addresses do not split your ranking power.",
+      "ai crawler": "The automated readers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) that AI answer engines send to read your site. Block them and those engines cannot cite you.",
+      "local pack": "The three businesses Google shows on a small map at the top of local searches. Most local clicks go to those three, so being outside it costs real enquiries.",
+      "robots.txt": "A file that tells web crawlers which parts of your site they may read. One wrong line here can make you invisible to Google or to AI engines.",
+      "ai visibility": "Whether the AI answer engines buyers now ask first will name and cite you, or only your competitors.",
+      "share of voice": "How often you appear versus your competitors when buyers search or ask AI in your category. Low share of voice means they are heard and you are not.",
+      "structured data": "Hidden code that spells out who you are and what you offer so Google and AI can read it precisely instead of guessing.",
+      "domain authority": "A 0 to 100 score of how much trust your site has earned from links on other websites. Higher means Google and AI engines are more likely to rank and cite you. It is the single biggest reason one site outranks another.",
+      "meta description": "The summary Google shows under your result. A good one lifts click-through; if it is missing, Google writes its own from random page text."
+    }
+  },
+  "news_map": {
+    "UK_CMA": "CMA (2026-05-28): Court endorses CMA action as Emma Sleep agrees to change sales practices. Source: https://www.gov.uk/government/news/court-endorses-cma-action-as-emma-sleep-agrees-to-change-sales-practices",
+    "UK_HSE": "HSE prosecutions resulted in \u00a355M of fines in 2024.",
+    "DE_BDSG": "BfDI + state DPAs collectively issued \u20ac18M in fines 2024.",
+    "UK_PECR": "The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to GBP 17.5M (from GBP 500k); the ICO is reviewing the UK top 1,000 websites cookie banners.",
+    "UK_ASA_CAP": "The ASA AI monitoring banned ads in 2025 for greenwashing (Wizz Air), misleading product claims (Origin Mattress) and false-urgency countdown timers (Oct 2025).",
+    "EU_EAA_2025": "In force June 2025. Fines up to \u20ac1M in Spain, \u20ac500k in Germany.",
+    "GOOGLE_EEAT": "Google March 2024 core update emphasised E-E-A-T; sites without author bylines saw 31% traffic drop.",
+    "UK_CRA_2015": "CMA confirms CRA 2015 applies in parallel with DMCC. Cross-referenced in 2025 enforcement.",
+    "UK_DPA_2018": "ICO 2025 enforcement hit GBP 19.6M from 7 cases (vs GBP 2.7M in 2024); the DUAA came into force 5 Feb 2026 with new compulsion powers.",
+    "UK_GDPR_A13": "ICO issued GBP 19.6M across 7 cases in 2025 (Capita GBP 14M, Advanced Computer Software GBP 3.07M, 23andMe GBP 2.31M, LastPass GBP 1.23M); two-thirds were UK GDPR breaches.",
+    "FR_CNIL_2025": "CNIL fined SHEIN \u20ac40M, Carrefour \u20ac3M, Free Mobile \u20ac2.25M in 2024.",
+    "UK_DMCC_2024": "CMA gained direct fining powers up to 10% global turnover from April 2025.",
+    "UK_ICO_COOKIES": "DUAA (in force 5 Feb 2026) lifts PECR fines to GBP 17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.",
+    "UK_COMPANIES_ACT": "Companies House active enforcement of website disclosure post Economic Crime Act 2023.",
+    "UK_EQUALITY_2010": "EHRC 2024 digital-accessibility code. Damages claims up 18% in 2024."
+  },
+  "pointers": [
+    {
+      "fact": "Germany requires German-language privacy + impressum + cookie notice for DE-targeted sites.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the Impressum (legal disclosure), translates the privacy + cookie notices to German, and aligns to TTDSG cookie rules.",
+        "problem": "Right now: Germany requires German-language privacy + impressum + cookie notice for DE-targeted sites."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "DE_BDSG",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.bfdi.bund.de/",
+      "fine_low_gbp": 50000,
+      "fine_high_gbp": 35000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the Impressum (legal disclosure), translates the privacy + cookie notices to German, and aligns to TTDSG cookie rules.",
+      "framework_short": "DE_BDSG",
+      "tamazia_fix_short": "Tamazia adds the Impressum (legal disclosure), translates the privacy + cookie notices to German, and aligns to TTDSG cookie rules.",
+      "layman_explanation": "Germany requires Impressum (legal disclosure), German-language privacy notice, and a TTDSG-compliant cookie banner. BfDI + 17 state DPAs collectively issued \u20ac18M in fines in 2024.",
+      "enforcement_example": "German DPAs (BfDI and Land authorities): GDPR fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Cookies + similar technologies prior-consent banner",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Cookies + similar technologies prior-consent banner\" on your site so it satisfies the EU ePrivacy Directive.",
+        "problem": "Right now: Cookies + similar technologies prior-consent banner."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_EPRIVACY",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://eur-lex.europa.eu/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Cookies + similar technologies prior-consent banner\" on your site so it satisfies the EU ePrivacy Directive.",
+      "framework_short": "EU_EPRIVACY",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Cookies + similar technologies prior-consent banner\" on your site so it satisfies the EU ePrivacy Directive.",
+      "layman_explanation": "Cookies + similar technologies prior-consent banner. This is a specific requirement of the EU ePrivacy Directive, which the EU data protection authorities enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "National data-protection authorities under the ePrivacy Directive and GDPR: consent-related fines and enforcement notices."
+    },
+    {
+      "fact": "France requires Reject-All cookie button equally prominent as Accept.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia rebuilds the cookie banner to CNIL specification, drops onclick tracking before consent, and produces the consent journal.",
+        "problem": "Right now: France requires Reject-All cookie button equally prominent as Accept. Here it is on your site: \u201cPick up a headset from the instructor before the class starts.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "FR_CNIL_2025",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.cnil.fr/en",
+      "fine_low_gbp": 2000000,
+      "fine_high_gbp": 40000000,
+      "evidence_quote": "Pick up a headset from the instructor before the class starts.",
+      "recommendation": "Tamazia rebuilds the cookie banner to CNIL specification, drops onclick tracking before consent, and produces the consent journal.",
+      "framework_short": "FR_CNIL_2025",
+      "tamazia_fix_short": "Tamazia rebuilds the cookie banner to CNIL specification, drops onclick tracking before consent, and produces the consent journal.",
+      "layman_explanation": "CNIL fined SHEIN \u20ac40M, Carrefour \u20ac3M, Free Mobile \u20ac2.25M in 2024 for cookie + transparency breaches. France remains the EU\u2019s most active DPA. Reject-All must be as prominent as Accept.",
+      "enforcement_example": "CNIL: fines up to EUR 20M or 4% of global turnover; sanction decisions published at cnil.fr."
+    },
+    {
+      "fact": "Disclosure of paid testimonials / endorsements",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Disclosure of paid testimonials / endorsements\" on your site so it satisfies the ASA / CAP Code.",
+        "problem": "Right now: Disclosure of paid testimonials / endorsements."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_ASA_CAP",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.asa.org.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Disclosure of paid testimonials / endorsements\" on your site so it satisfies the ASA / CAP Code.",
+      "framework_short": "UK_ASA_CAP",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Disclosure of paid testimonials / endorsements\" on your site so it satisfies the ASA / CAP Code.",
+      "layman_explanation": "Disclosure of paid testimonials / endorsements. This is a specific requirement of the ASA / CAP Code, which the ASA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "ASA: ad-removal rulings, referral to Trading Standards or Ofcom, and paid-search/ad sanctions; rulings published weekly."
+    },
+    {
+      "fact": "ATOL protection statement for travel sellers",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"ATOL protection statement for travel sellers\" on your site so it satisfies the CAA ATOL rules.",
+        "problem": "Right now: ATOL protection statement for travel sellers."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CAA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.caa.co.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"ATOL protection statement for travel sellers\" on your site so it satisfies the CAA ATOL rules.",
+      "framework_short": "UK_CAA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"ATOL protection statement for travel sellers\" on your site so it satisfies the CAA ATOL rules.",
+      "layman_explanation": "ATOL protection statement for travel sellers. This is a specific requirement of the CAA ATOL rules, which the CAA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Civil Aviation Authority: enforcement orders, financial penalties and licence action."
+    },
+    {
+      "fact": "Air operator certificate or licence reference",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Air operator certificate or licence reference\" on your site so it satisfies the CAA ATOL rules.",
+        "problem": "Right now: Air operator certificate or licence reference."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CAA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.caa.co.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Air operator certificate or licence reference\" on your site so it satisfies the CAA ATOL rules.",
+      "framework_short": "UK_CAA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Air operator certificate or licence reference\" on your site so it satisfies the CAA ATOL rules.",
+      "layman_explanation": "Air operator certificate or licence reference. This is a specific requirement of the CAA ATOL rules, which the CAA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Civil Aviation Authority: enforcement orders, financial penalties and licence action."
+    },
+    {
+      "fact": "14 allergens disclosed on every food product page (PPDS)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"14 allergens disclosed on every food product page (PPDS)\" on your site so it satisfies the Food Information Regulations 2014.",
+        "problem": "Right now: 14 allergens disclosed on every food product page (PPDS)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FOOD_INFO_2014",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"14 allergens disclosed on every food product page (PPDS)\" on your site so it satisfies the Food Information Regulations 2014.",
+      "framework_short": "UK_FOOD_INFO_2014",
+      "tamazia_fix_short": "Tamazia implements and verifies \"14 allergens disclosed on every food product page (PPDS)\" on your site so it satisfies the Food Information Regulations 2014.",
+      "layman_explanation": "14 allergens disclosed on every food product page (PPDS). This is a specific requirement of the Food Information Regulations 2014, which Trading Standards / the FSA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Trading Standards and the FSA: improvement notices and prosecution."
+    },
+    {
+      "fact": "Food Hygiene Rating Scheme disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the FSA Food Hygiene Rating widget to the homepage and footer template within week 1.",
+        "problem": "Right now: Food Hygiene Rating Scheme disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FSA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.food.gov.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the FSA Food Hygiene Rating widget to the homepage and footer template within week 1.",
+      "framework_short": "UK_FSA",
+      "tamazia_fix_short": "Tamazia adds the FSA Food Hygiene Rating widget to the homepage and footer template within week 1.",
+      "layman_explanation": "Restaurants must show the Food Hygiene Rating clearly on their site (FSA requirement). Without it, FSA can enforce and the rating loss damages organic traffic from local searches.",
+      "enforcement_example": "Food Standards Agency and Trading Standards: improvement and prohibition notices and prosecution."
+    },
+    {
+      "fact": "Allergen information / Natasha law statement",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the 14-allergen schema and product-page warning template; passes FSA spot-check from day one.",
+        "problem": "Right now: Allergen information / Natasha law statement."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FSA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.food.gov.uk/business-guidance/allergen-guidance-for-food-businesses",
+      "fine_low_gbp": 5000,
+      "fine_high_gbp": 500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the 14-allergen schema and product-page warning template; passes FSA spot-check from day one.",
+      "framework_short": "UK_FSA",
+      "tamazia_fix_short": "Tamazia adds the 14-allergen schema and product-page warning template; passes FSA spot-check from day one.",
+      "layman_explanation": "Pre-packaged-for-direct-sale foods must show all 14 allergens, in line with Natashas Law. Missing this is a criminal offence in England since 2021.",
+      "enforcement_example": "Food Standards Agency and Trading Standards: improvement and prohibition notices and prosecution."
+    },
+    {
+      "fact": "Premises licence holder / DPS disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Premises licence holder / DPS disclosure\" on your site so it satisfies the Licensing Act 2003.",
+        "problem": "Right now: Premises licence holder / DPS disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_LICENSING_ACT",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P0",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.gov.uk/guidance/licensing-act-2003-explanatory-notes",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Premises licence holder / DPS disclosure\" on your site so it satisfies the Licensing Act 2003.",
+      "framework_short": "UK_LICENSING_ACT",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Premises licence holder / DPS disclosure\" on your site so it satisfies the Licensing Act 2003.",
+      "layman_explanation": "Premises licence holder / DPS disclosure. This is a specific requirement of the Licensing Act 2003, which the licensing authority enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Licensing authority: review, suspension or revocation of the premises licence."
+    },
+    {
+      "fact": "France requires a French-language privacy notice for FR-targeted sites.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia translates the privacy notice to lawyer-reviewed French and adds the FR/EN language switch.",
+        "problem": "Right now: France requires a French-language privacy notice for FR-targeted sites. Here it is on your site: \u201cPick up a headset from the instructor before the class starts.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "FR_CNIL_2025",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.cnil.fr/en/personal-data",
+      "fine_low_gbp": 100000,
+      "fine_high_gbp": 500000,
+      "evidence_quote": "Pick up a headset from the instructor before the class starts.",
+      "recommendation": "Tamazia translates the privacy notice to lawyer-reviewed French and adds the FR/EN language switch.",
+      "framework_short": "FR_CNIL_2025",
+      "tamazia_fix_short": "Tamazia translates the privacy notice to lawyer-reviewed French and adds the FR/EN language switch.",
+      "layman_explanation": "Sites targeting French consumers must publish privacy notice in French (CNIL position confirmed 2024). English-only triggers automatic enforcement.",
+      "enforcement_example": "CNIL: fines up to EUR 20M or 4% of global turnover; sanction decisions published at cnil.fr."
+    },
+    {
+      "fact": "Pricing transparency (incl. VAT or excluding clearly stated)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Pricing transparency (incl. VAT or excluding clearly stated)\" on your site so it satisfies the ASA / CAP Code.",
+        "problem": "Right now: Pricing transparency (incl. VAT or excluding clearly stated)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_ASA_CAP",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.asa.org.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Pricing transparency (incl. VAT or excluding clearly stated)\" on your site so it satisfies the ASA / CAP Code.",
+      "framework_short": "UK_ASA_CAP",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Pricing transparency (incl. VAT or excluding clearly stated)\" on your site so it satisfies the ASA / CAP Code.",
+      "layman_explanation": "Pricing transparency (incl. VAT or excluding clearly stated). This is a specific requirement of the ASA / CAP Code, which the ASA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "ASA: ad-removal rulings, referral to Trading Standards or Ofcom, and paid-search/ad sanctions; rulings published weekly."
+    },
+    {
+      "fact": "EU261/UK261 passenger rights disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"EU261/UK261 passenger rights disclosure\" on your site so it satisfies the CAA ATOL rules.",
+        "problem": "Right now: EU261/UK261 passenger rights disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CAA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.caa.co.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"EU261/UK261 passenger rights disclosure\" on your site so it satisfies the CAA ATOL rules.",
+      "framework_short": "UK_CAA",
+      "tamazia_fix_short": "Tamazia implements and verifies \"EU261/UK261 passenger rights disclosure\" on your site so it satisfies the CAA ATOL rules.",
+      "layman_explanation": "EU261/UK261 passenger rights disclosure. This is a specific requirement of the CAA ATOL rules, which the CAA enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Civil Aviation Authority: enforcement orders, financial penalties and licence action."
+    },
+    {
+      "fact": "Honest reviews disclosure (no fake or paid reviews)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds review verification and incentive disclosure, and removes any testimonial that cannot be substantiated.",
+        "problem": "Right now: Honest reviews disclosure (no fake or paid reviews)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CMA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.gov.uk/government/organisations/competition-and-markets-authority",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds review verification and incentive disclosure, and removes any testimonial that cannot be substantiated.",
+      "framework_short": "UK_CMA",
+      "tamazia_fix_short": "Tamazia adds review verification and incentive disclosure, and removes any testimonial that cannot be substantiated.",
+      "layman_explanation": "The DMCC Act 2024 bans fake and undisclosed-incentivised reviews and the CMA can fine up to 10 percent of global turnover. If you display reviews or testimonials you must be able to show they are genuine and disclose any incentive.",
+      "enforcement_example": "CMA under the DMCC Act 2024: direct consumer-law fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Total price including mandatory fees must be displayed up-front, not added at checkout.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia audits the pricing journey, flags every drip charge, and rewrites the pricing/booking page to show full price up-front per CMA wording.",
+        "problem": "Right now: Total price including mandatory fees must be displayed up-front, not added at checkout. Here it is on your site: \u201cEnquire today Select your booking option Close An error occurred, please try again later.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DMCC_2024",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "fine_low_gbp": 200000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": "Enquire today Select your booking option Close An error occurred, please try again later.",
+      "recommendation": "Tamazia audits the pricing journey, flags every drip charge, and rewrites the pricing/booking page to show full price up-front per CMA wording.",
+      "framework_short": "UK_DMCC_2024",
+      "tamazia_fix_short": "Tamazia audits the pricing journey, flags every drip charge, and rewrites the pricing/booking page to show full price up-front per CMA wording.",
+      "layman_explanation": "Drip pricing \u2014 adding mandatory fees at later stages \u2014 is now a banned practice under DMCC Part 4 (in force April 2025). Includes booking, service, processing and admin fees.",
+      "enforcement_example": "CMA under the DMCC Act 2024 (in force 6 April 2025): direct fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Must publish a policy declaring no incentivised, fake or undisclosed reviews.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia drafts a Reviews Policy page meeting CMA wording, runs a review-audit on the live site, and updates the review-collection flow to meet disclosure standards.",
+        "problem": "Right now: Must publish a policy declaring no incentivised, fake or undisclosed reviews."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DMCC_2024",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/government/publications/digital-markets-competition-and-consumers-act-2024",
+      "fine_low_gbp": 150000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia drafts a Reviews Policy page meeting CMA wording, runs a review-audit on the live site, and updates the review-collection flow to meet disclosure standards.",
+      "framework_short": "UK_DMCC_2024",
+      "tamazia_fix_short": "Tamazia drafts a Reviews Policy page meeting CMA wording, runs a review-audit on the live site, and updates the review-collection flow to meet disclosure standards.",
+      "layman_explanation": "From 2025, hosting fake or incentivised reviews without disclosure is a CMA fineable offence. The fine reaches \u00a3300k or 10% turnover. Buyers and platforms are both in scope.",
+      "enforcement_example": "CMA under the DMCC Act 2024 (in force 6 April 2025): direct fines up to 10% of global turnover plus personal penalties up to GBP 300,000."
+    },
+    {
+      "fact": "Health and Safety policy disclosure",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Health and Safety policy disclosure\" on your site so it satisfies UK HSE.",
+        "problem": "Right now: Health and Safety policy disclosure."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_HSE",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.hse.gov.uk/",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Health and Safety policy disclosure\" on your site so it satisfies UK HSE.",
+      "framework_short": "UK_HSE",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Health and Safety policy disclosure\" on your site so it satisfies UK HSE.",
+      "layman_explanation": "Health and Safety policy disclosure. This is a specific requirement of UK HSE, which the relevant regulator enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "HSE: improvement and prohibition notices and unlimited fines on conviction."
+    },
+    {
+      "fact": "Challenge 21/25 policy",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Challenge 21/25 policy\" on your site so it satisfies the Licensing Act 2003.",
+        "problem": "Right now: Challenge 21/25 policy."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_LICENSING_ACT",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.gov.uk/government/publications/code-of-practice-for-the-sale-of-alcohol",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Challenge 21/25 policy\" on your site so it satisfies the Licensing Act 2003.",
+      "framework_short": "UK_LICENSING_ACT",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Challenge 21/25 policy\" on your site so it satisfies the Licensing Act 2003.",
+      "layman_explanation": "Challenge 21/25 policy. This is a specific requirement of the Licensing Act 2003, which the licensing authority enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Licensing authority: review, suspension or revocation of the premises licence."
+    },
+    {
+      "fact": "Marketing or analytics trackers present but no consent-management platform gating them before consent",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Marketing or analytics trackers present but no consent-management platform gating them bef\" on your site so it satisfies UK PECR.",
+        "problem": "Right now: Marketing or analytics trackers present but no consent-management platform gating them before consent."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "UK_PECR",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Marketing or analytics trackers present but no consent-management platform gating them bef\" on your site so it satisfies UK PECR.",
+      "framework_short": "UK_PECR",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Marketing or analytics trackers present but no consent-management platform gating them bef\" on your site so it satisfies UK PECR.",
+      "layman_explanation": "Marketing or analytics trackers present but no consent-management platform gating them before consent. This is a specific requirement of UK PECR, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Both the SHEIN and American Express PECR cases involved cookies being set despite users clicking Reject All. The ICO treats non-functional or absent consent gating on analytics and advertising trackers as a consent violation."
+    },
+    {
+      "fact": "Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and func\" on your site so it satisfies UK PECR.",
+        "problem": "Right now: Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "UK_PECR",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and func\" on your site so it satisfies UK PECR.",
+      "framework_short": "UK_PECR",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and func\" on your site so it satisfies UK PECR.",
+      "layman_explanation": "Cookie banner must offer a Reject-All / non-essential-refusal option as prominent and functional as Accept-All. This is a specific requirement of UK PECR, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "DUAA 2025 raised the maximum PECR fine from 500000 to 17.5M or 4 percent of global turnover. The ICO is sweeping the top 1000 UK sites; in its first batch of 200, 134 firms were warned and given 30 days to fix non-compliant banners."
+    },
+    {
+      "fact": "Unit pricing for pre-packaged goods",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Unit pricing for pre-packaged goods\" on your site so it satisfies UK TRADING STANDARDS.",
+        "problem": "Right now: Unit pricing for pre-packaged goods."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_TRADING_STANDARDS",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P1",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://www.gov.uk/government/organisations/trading-standards",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 300000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Unit pricing for pre-packaged goods\" on your site so it satisfies UK TRADING STANDARDS.",
+      "framework_short": "UK_TRADING_STANDARDS",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Unit pricing for pre-packaged goods\" on your site so it satisfies UK TRADING STANDARDS.",
+      "layman_explanation": "Unit pricing for pre-packaged goods. This is a specific requirement of UK TRADING STANDARDS, which the relevant regulator enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Trading Standards: enforcement orders and prosecution with unlimited fines on conviction."
+    },
+    {
+      "fact": "2 non-essential tracker(s) load with no detectable consent mechanism: Google Tag Manager (sets td \u2014 Marketing, controller Google); HubSpot (sets __hstc, hubspotutk, __hssc \u2014 Analytics, controller HubSpot).",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia installs a consent platform that blocks every non-essential tracker until opt-in, with a Reject-All button as prominent as Accept-All.",
+        "problem": "Right now: 2 non-essential tracker(s) load with no detectable consent mechanism: Google Tag Manager (sets td \u2014 Marketing, controller Google); HubSpot (sets __hstc, hubspotutk, __hssc \u2014 Analytics, controller HubSpot)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK PECR + UK GDPR \u00b7 cookie consent",
+      "evidence": "homepage HTML \u00b7 2 non-essential trackers, no consent gate \u00b7 controllers: Google, HubSpot",
+      "severity": "P1",
+      "confidence": 0.88,
+      "recommendation": "Tamazia installs a consent platform that blocks every non-essential tracker until opt-in, with a Reject-All button as prominent as Accept-All.",
+      "tamazia_fix_short": "Tamazia installs a consent platform that blocks every non-essential tracker until opt-in, with a Reject-All button as prominent as Accept-All.",
+      "layman_explanation": "These trackers set cookies and share data with Google, HubSpot the moment the page loads, before the visitor consents. That breaches UK PECR + UK GDPR. You serve clients in UK, so each of those regimes applies regardless of where the firm is registered. The ICO is actively reviewing the UK's top 1,000 sites and the maximum PECR fine is now \u00a317.5M or 4% of global turnover.",
+      "enforcement_example": "ICO under PECR: enforcement notices and fines up to GBP 500,000, plus GDPR-level fines where consent is the lawful basis; the ICO has run cookie-consent sweeps against major UK sites."
+    },
+    {
+      "fact": "No <h1> heading on the homepage.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia restructures page headings to a clean H1-H2-H3 hierarchy.",
+        "problem": "Right now: No <h1> heading on the homepage."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Heading structure",
+      "evidence": "fetched homepage \u00b7 zero h1 elements",
+      "severity": "P1",
+      "confidence": 0.95,
+      "recommendation": "Tamazia restructures page headings to a clean H1-H2-H3 hierarchy.",
+      "tamazia_fix_short": "Tamazia restructures page headings to a clean H1-H2-H3 hierarchy.",
+      "layman_explanation": "The H1 is the strongest on-page ranking signal for what a page is about. Without one, search and AI engines must guess your primary topic, weakening every keyword you want to rank for."
+    },
+    {
+      "fact": "For \"luxury gyms london\" you are not visible in the top 100; luxurylondon.co.uk owns position #1.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia builds the page depth and authority to move \"luxury gyms london\" into the top three, where the clicks and the AI citations are.",
+        "problem": "Right now: For \"luxury gyms london\" you are not visible in the top 100; luxurylondon.co.uk owns position #1. Here it is on your site: \u201clive SERP: you not visible in the top 100 vs luxurylondon.co.uk #1\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "SEO",
+      "evidence": "live SERP (free-serp) \u00b7 query \"luxury gyms london\"",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "competitors": [
+        "luxurylondon.co.uk",
+        "timeout.com",
+        "lifetime.life"
+      ],
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "live SERP: you not visible in the top 100 vs luxurylondon.co.uk #1",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia builds the page depth and authority to move \"luxury gyms london\" into the top three, where the clicks and the AI citations are.",
+      "layman_explanation": "When your buyers search \"luxury gyms london\", they find luxurylondon.co.uk, not you. Page two and below is effectively zero clicks, so this exact query hands its high-intent traffic to a competitor every day, and AI answers cite the top-ranked pages, so being invisible here also keeps you out of the AI results. The firms winning your buyer queries: luxurylondon.co.uk, timeout.com, lifetime.life."
+    },
+    {
+      "fact": "You are missing 3 of the signals Google uses to rank the local map pack: not listed in OpenStreetMap, the open map data Apple Maps, Bing and AI assistants read; no LocalBusiness schema with address and geo-coordinates; no clearly published phone number (NAP).",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia builds the local-pack foundation: an optimised Google Business Profile, LocalBusiness schema with geo, consistent NAP and local citations.",
+        "problem": "Right now: You are missing 3 of the signals Google uses to rank the local map pack: not listed in OpenStreetMap, the open map data Apple Maps, Bing and AI assistants read; no LocalBusiness schema with address and geo-coordinates; no clearly published phone number (NAP). Here it is on your site: \u201cnot found in OpenStreetMap for London\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Local search (map pack)",
+      "evidence": "local-readiness check \u00b7 OpenStreetMap presence (absent)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "not found in OpenStreetMap for London",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia builds the local-pack foundation: an optimised Google Business Profile, LocalBusiness schema with geo, consistent NAP and local citations.",
+      "layman_explanation": "When a buyer searches \"hotel in London\", Google shows a three-result map pack above the normal results, and AI assistants read the same local sources. Those slots go to firms with a complete, consistent local presence. You are missing 3 of those signals, so you are structurally excluded from the results buyers tap first."
+    },
+    {
+      "fact": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia fixes colour contrast to WCAG 2.1 AA (also an Equality Act / EAA exposure).",
+        "problem": "Right now: Background and foreground colors do not have a sufficient contrast ratio."
+      },
+      "state": "CONFIRMED",
+      "bucket": "accessibility",
+      "locator": "div.max-w-[1800px] &gt; div.w-full &gt; div.text-brand-white/40 &gt; a.body-tiny",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "evidence": "Google PageSpeed (mobile) \u00b7 color-contrast \u00b7 3 element(s) affected",
+      "severity": "P1",
+      "confidence": 0.95,
+      "element_count": 3,
+      "evidence_html": "&lt;a href=&quot;https://without.studio/&quot; target=&quot;_blank&quot; class=&quot;body-tiny&quot;&gt;",
+      "recommendation": "Tamazia fixes colour contrast to WCAG 2.1 AA (also an Equality Act / EAA exposure).",
+      "tamazia_fix_short": "Tamazia fixes colour contrast to WCAG 2.1 AA (also an Equality Act / EAA exposure).",
+      "layman_explanation": "Low-contrast text is difficult or impossible for many users to read.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Largest Contentful Paint",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia cuts LCP below 2.5s (image, server and render-path optimisation).",
+        "problem": "Right now: Largest Contentful Paint."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Largest Contentful Paint",
+      "evidence": "Google PageSpeed (mobile) \u00b7 largest-contentful-paint \u00b7 16.7\u00a0s",
+      "severity": "P1",
+      "confidence": 0.95,
+      "recommendation": "Tamazia cuts LCP below 2.5s (image, server and render-path optimisation).",
+      "tamazia_fix_short": "Tamazia cuts LCP below 2.5s (image, server and render-path optimisation).",
+      "layman_explanation": "Largest Contentful Paint marks the time at which the largest text or image is painted. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Absent from the AI / search answer surface for \"london luxury gyms London\"",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia runs the GEO + entity programme (Schema.org, llms.txt, a Wikidata entity and authoritative content) that puts you into the set of sources AI engines read and cite for your category.",
+        "problem": "Right now: Absent from the AI / search answer surface for \"london luxury gyms London\"."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "GEO",
+      "evidence": "live SERP: london luxury gyms London",
+      "severity": "P1",
+      "confidence": 0.85,
+      "citation_url": "",
+      "ai_competitors": [
+        {
+          "pos": 1,
+          "domain": "luxurylondon.co.uk"
+        },
+        {
+          "pos": 2,
+          "domain": "luxsphere.co"
+        },
+        {
+          "pos": 3,
+          "domain": "thegentlemansjournal.com"
+        },
+        {
+          "pos": 4,
+          "domain": "bestofluxury.com"
+        },
+        {
+          "pos": 5,
+          "domain": "factmagazines.com"
+        }
+      ],
+      "evidence_quote": null,
+      "recommendation": "",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia runs the GEO + entity programme (Schema.org, llms.txt, a Wikidata entity and authoritative content) that puts you into the set of sources AI engines read and cite for your category.",
+      "layman_explanation": "When a buyer asks ChatGPT, Perplexity, Google AI or a search engine for \"london luxury gyms London\", your site is not in the top 10 results these engines read and cite. The firms that own that answer surface today are luxurylondon.co.uk, luxsphere.co, thegentlemansjournal.com. AI engines synthesise answers from these ranked, recognised sources, so they name your competitors and not you."
+    },
+    {
+      "fact": "A live groq query did not name your firm for your category",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity + authoritative-content footprint that gets you named in live AI answers.",
+        "problem": "Right now: A live groq query did not name your firm for your category."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "GEO",
+      "evidence": "live groq answer probe",
+      "severity": "P1",
+      "confidence": 0.85,
+      "citation_url": "",
+      "recommendation": "",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity + authoritative-content footprint that gets you named in live AI answers.",
+      "layman_explanation": "We asked groq to list the top firms for \"london luxury gyms London\". Your firm was not named, confirming you are absent from the real AI answers buyers receive."
+    },
+    {
+      "fact": "Your AI entity-readiness score is 72/100: no sameAs links to your authoritative profiles; no Wikidata knowledge-graph entry; no llms.txt.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds your machine-readable entity: full Organization schema with sameAs, a Wikidata entry, and an llms.txt, so the answer engines can identify and cite you.",
+        "problem": "Right now: Your AI entity-readiness score is 72/100: no sameAs links to your authoritative profiles; no Wikidata knowledge-graph entry; no llms.txt. Here it is on your site: \u201cno sameAs links to your authoritative profiles; no Wikidata knowledge-graph entry; no llms.txt\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI entity readiness",
+      "evidence": "entity-readiness check (schema + Wikidata + llms.txt)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "no sameAs links to your authoritative profiles; no Wikidata knowledge-graph entry; no llms.txt",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds your machine-readable entity: full Organization schema with sameAs, a Wikidata entry, and an llms.txt, so the answer engines can identify and cite you.",
+      "layman_explanation": "AI answer engines decide who to cite by first identifying you as a known, trusted entity. They read your Organization schema, the sameAs links that connect you to your verified profiles, and knowledge bases like Wikidata. You are missing 3 of these anchors, so to an AI engine you are an unknown string rather than a citable provider, and it names the firms it can identify instead."
+    },
+    {
+      "fact": "Asked who you are by name, a leading AI model has no reliable information about your firm.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds the entity footprint (schema, Wikidata, authoritative mentions) that makes AI models actually know and describe you correctly.",
+        "problem": "Right now: Asked who you are by name, a leading AI model has no reliable information about your firm. Here it is on your site: \u201cmodel reply: \"NO RELIABLE INFO.\"\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "AI knowledge of you",
+      "evidence": "free-LLM knowledge probe (groq)",
+      "severity": "P1",
+      "rule_type": "observed",
+      "confidence": 0.85,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "model reply: \"NO RELIABLE INFO.\"",
+      "framework_short": "GEO",
+      "tamazia_fix_short": "Tamazia builds the entity footprint (schema, Wikidata, authoritative mentions) that makes AI models actually know and describe you correctly.",
+      "layman_explanation": "When a buyer asks an AI assistant about you by name, it cannot describe you, so it will not vouch for or recommend you, and when pushed it may invent details (a hallucination) that you cannot control. Competitors the model does know get described and recommended. Becoming a model-known entity is what fixes this."
+    },
+    {
+      "fact": "Right to rectification",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a rectification route.",
+        "problem": "Right now: Right to rectification."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-16-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a rectification route.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia adds a rectification route.",
+      "layman_explanation": "EU residents can correct inaccurate data; the route is not explained.",
+      "enforcement_example": "EU/UK GDPR Art. 16; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Records of processing activities (ROPA)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia builds and maintains the ROPA.",
+        "problem": "Right now: Records of processing activities (ROPA)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia builds and maintains the ROPA.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia builds and maintains the ROPA.",
+      "layman_explanation": "Art. 30 ROPA is expected for most controllers; none referenced.",
+      "enforcement_example": "EU/UK GDPR Art. 30; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Personal data breach notification within 72 hours",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia documents a 72-hour breach process.",
+        "problem": "Right now: Personal data breach notification within 72 hours."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-33-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia documents a 72-hour breach process.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia documents a 72-hour breach process.",
+      "layman_explanation": "Art. 33 requires 72-hour breach notification; no posture evident.",
+      "enforcement_example": "EU/UK GDPR Art. 33; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Data protection impact assessment (DPIA)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia conducts DPIAs for high-risk processing.",
+        "problem": "Right now: Data protection impact assessment (DPIA)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "EU_GDPR",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-35-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 16000000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia conducts DPIAs for high-risk processing.",
+      "framework_short": "EU_GDPR",
+      "tamazia_fix_short": "Tamazia conducts DPIAs for high-risk processing.",
+      "layman_explanation": "Art. 35 requires DPIAs for high-risk processing; none referenced.",
+      "enforcement_example": "EU/UK GDPR Art. 35; fines up to EUR 20M or 4% of global turnover."
+    },
+    {
+      "fact": "Citations to authoritative sources (Trust)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+        "problem": "Right now: Citations to authoritative sources (Trust)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "GOOGLE_EEAT",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://thirdspace.london/",
+        "https://www.thirdspace.london/privacy/",
+        "https://www.thirdspace.london/membership-terms-conditions/",
+        "https://www.thirdspace.london/cookie-notice/",
+        "https://www.thirdspace.london/spa-terms-conditions-2/",
+        "https://www.thirdspace.london/spa-terms-conditions/"
+      ],
+      "citation_url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+      "framework_short": "GOOGLE_EEAT",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Citations to authoritative sources (Trust)\" on your site so it satisfies Google E-E-A-T and Helpful Content.",
+      "layman_explanation": "Citations to authoritative sources (Trust). This is a specific requirement of Google E-E-A-T and Helpful Content, which Google Search enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Google Search ranking systems and manual actions: no statutory fine, but ranking suppression and loss of organic visibility; manual actions reported in Search Console."
+    },
+    {
+      "fact": "ATOL protection disclosure for package travel",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds ATOL/package-travel protection disclosure.",
+        "problem": "Right now: ATOL protection disclosure for package travel."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_CAA",
+      "evidence": "https://www.thirdspace.london/membership-terms-conditions/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.caa.co.uk/atol-protection/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds ATOL/package-travel protection disclosure.",
+      "verify_context": null,
+      "framework_short": "UK_CAA",
+      "tamazia_fix_short": "Tamazia adds ATOL/package-travel protection disclosure.",
+      "layman_explanation": "Flight-inclusive package sellers must disclose ATOL protection; not shown.",
+      "enforcement_example": "The CAA requires ATOL protection to be disclosed for flight-inclusive packages."
+    },
+    {
+      "fact": "VAT-registered businesses must show VAT number on website per HMRC guidance.",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the VAT number to the footer and to the invoicing template.",
+        "problem": "Right now: VAT-registered businesses must show VAT number on website per HMRC guidance. Here it is on your site: \u201cThe WOD combines effective high intensity training and strength work in an encouraging and motivating environment.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_COMPANIES_ACT",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/vat-businesses/vat-registration",
+      "fine_low_gbp": 500,
+      "fine_high_gbp": 5000,
+      "evidence_quote": "The WOD combines effective high intensity training and strength work in an encouraging and motivating environment.",
+      "recommendation": "Tamazia adds the VAT number to the footer and to the invoicing template.",
+      "framework_short": "UK_COMPANIES_ACT",
+      "tamazia_fix_short": "Tamazia adds the VAT number to the footer and to the invoicing template.",
+      "layman_explanation": "If you collect VAT, HMRC expects your VAT number on customer-facing documents and your website. Missing it is a low-fine offence but triggers HMRC visits.",
+      "enforcement_example": "Companies House: late-filing penalties, director disqualification and prosecution."
+    },
+    {
+      "fact": "Age-appropriate design (ICO Children Code)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia applies the ICO Children Code standards.",
+        "problem": "Right now: Age-appropriate design (ICO Children Code). Here it is on your site: \u201cChildren\u2019s data We do not collect children\u2019s Personal Data through the provision of our products and services and do not offer services to c\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "UK_DPA_2018",
+      "evidence": "https://www.thirdspace.london/privacy/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/",
+      "fine_low_gbp": 2000,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": "Children\u2019s data We do not collect children\u2019s Personal Data through the provision of our products and services and do not offer services to children.",
+      "recommendation": "Tamazia applies the ICO Children Code standards.",
+      "framework_short": "UK_DPA_2018",
+      "tamazia_fix_short": "Tamazia applies the ICO Children Code standards.",
+      "layman_explanation": "If children are likely to use your service, the ICO Children Code requires age-appropriate design; not evident.",
+      "enforcement_example": "The ICO Children Code requires age-appropriate design for services likely accessed by children."
+    },
+    {
+      "fact": "Section 22 manual unstructured data exemption noted where applicable",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Section 22 manual unstructured data exemption noted where applicable\" on your site so it satisfies the Data Protection Act 2018.",
+        "problem": "Right now: Section 22 manual unstructured data exemption noted where applicable."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DPA_2018",
+      "evidence": "https://www.thirdspace.london/privacy/",
+      "severity": "P2",
+      "rule_type": "must_appear",
+      "confidence": 0.88,
+      "checked_urls": [
+        "https://www.thirdspace.london/privacy/"
+      ],
+      "citation_url": "https://www.legislation.gov.uk/ukpga/2018/12/section/22",
+      "fine_low_gbp": 2500,
+      "fine_high_gbp": 250000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia implements and verifies \"Section 22 manual unstructured data exemption noted where applicable\" on your site so it satisfies the Data Protection Act 2018.",
+      "framework_short": "UK_DPA_2018",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Section 22 manual unstructured data exemption noted where applicable\" on your site so it satisfies the Data Protection Act 2018.",
+      "layman_explanation": "Section 22 manual unstructured data exemption noted where applicable. This is a specific requirement of the Data Protection Act 2018, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "ICO: fines up to GBP 17.5M or 4% of global turnover, plus enforcement notices; action register at ico.org.uk/action-weve-taken."
+    },
+    {
+      "fact": "Allergen + mandatory food information online",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds compliant allergen and food information.",
+        "problem": "Right now: Allergen + mandatory food information online."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FOOD_INFO_2014",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.legislation.gov.uk/uksi/2014/1855/contents/made",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds compliant allergen and food information.",
+      "verify_context": null,
+      "framework_short": "UK_FOOD_INFO_2014",
+      "tamazia_fix_short": "Tamazia adds compliant allergen and food information.",
+      "layman_explanation": "Food businesses selling online must provide allergen and mandatory food information. Yours is missing.",
+      "enforcement_example": "Food Information Regs 2014 require allergen information; Trading Standards and the FSA enforce."
+    },
+    {
+      "fact": "UK right of access (Subject Access Request)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds a UK SAR route.",
+        "problem": "Right now: UK right of access (Subject Access Request)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-15-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds a UK SAR route.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia adds a UK SAR route.",
+      "layman_explanation": "UK residents can make a Subject Access Request; the route is not explained.",
+      "enforcement_example": "EU/UK GDPR Art. 15; fines up to GBP 17.5M or 4% turnover (ICO)."
+    },
+    {
+      "fact": "UK records of processing (ROPA)",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia maintains the ROPA.",
+        "problem": "Right now: UK records of processing (ROPA)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage",
+        "nim_gap_confirmed"
+      ],
+      "citation": "UK_GDPR_A13",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P2",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://gdpr-info.eu/art-30-gdpr/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": 17500000,
+      "evidence_quote": null,
+      "recommendation": "Tamazia maintains the ROPA.",
+      "framework_short": "UK_GDPR_A13",
+      "tamazia_fix_short": "Tamazia maintains the ROPA.",
+      "layman_explanation": "UK GDPR Art. 30 ROPA expected; none referenced.",
+      "enforcement_example": "EU/UK GDPR Art. 30; fines up to GBP 17.5M or 4% turnover (ICO)."
+    },
+    {
+      "fact": "Image elements do not have `[alt]` attributes",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia adds descriptive alt text to every image (SEO + accessibility).",
+        "problem": "Right now: Image elements do not have `[alt]` attributes."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "locator": "div.h-screen &gt; div.relative &gt; picture &gt; img.absolute-center",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Image elements do not have `[alt]` attributes",
+      "evidence": "Google PageSpeed (mobile) \u00b7 image-alt \u00b7 20 element(s) affected",
+      "severity": "P2",
+      "confidence": 0.95,
+      "element_count": 20,
+      "evidence_html": "&lt;img decoding=&quot;async&quot; src=&quot;https://www.thirdspace.london/wp-content/uploads/2024/08/mobile-banner-tra\u2026&quot; class=&quot;absolute-center w-full h-full object-cover md:hidden flex&quot; loading=&quot;eager&quot; lazy=&quot;1&quot;&gt;",
+      "recommendation": "Tamazia adds descriptive alt text to every image (SEO + accessibility).",
+      "tamazia_fix_short": "Tamazia adds descriptive alt text to every image (SEO + accessibility).",
+      "layman_explanation": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Your Domain Authority is 29/100. Your top 3 competitors: luxurylondon.co.uk 43/100, londontheinside.com 43/100, timeout.com 41/100.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia runs the digital-PR and authority-building programme (earned links, citations, entity coverage) that lifts your Domain Authority toward the firms outranking you.",
+        "problem": "Right now: Your Domain Authority is 29/100. Your top 3 competitors: luxurylondon.co.uk 43/100, londontheinside.com 43/100, timeout.com 41/100. Here it is on your site: \u201cyou 29/100 (global rank 5,324,149) vs luxurylondon.co.uk 43/100, londontheinside.com 43/100, timeout.com 41/100\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "seo",
+      "metric": {
+        "you": 29,
+        "label": "Domain Authority",
+        "scale": 100,
+        "competitors": [
+          {
+            "dr": 4.28,
+            "da_100": 43,
+            "domain": "luxurylondon.co.uk"
+          },
+          {
+            "dr": 4.28,
+            "da_100": 43,
+            "domain": "londontheinside.com"
+          },
+          {
+            "dr": 4.08,
+            "da_100": 41,
+            "domain": "timeout.com"
+          }
+        ]
+      },
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Domain authority",
+      "evidence": "OpenPageRank \u00b7 authority as of 28th Mar 2026",
+      "severity": "P2",
+      "rule_type": "observed",
+      "confidence": 0.95,
+      "citation_url": "",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "you 29/100 (global rank 5,324,149) vs luxurylondon.co.uk 43/100, londontheinside.com 43/100, timeout.com 41/100",
+      "framework_short": "SEO",
+      "tamazia_fix_short": "Tamazia runs the digital-PR and authority-building programme (earned links, citations, entity coverage) that lifts your Domain Authority toward the firms outranking you.",
+      "layman_explanation": "Domain Authority is the backlink-trust score (here on a 0 to 100 scale) that Google and AI engines use to decide who to rank and cite. luxurylondon.co.uk carries 1.5 times of it than you, which is the structural reason these firms sit above you for your buyer queries and get cited in AI answers while you do not. Closing a rank gap without closing the authority gap rarely holds."
+    },
+    {
+      "fact": "Links do not have a discernible name",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia gives every link an accessible name.",
+        "problem": "Right now: Links do not have a discernible name."
+      },
+      "state": "CONFIRMED",
+      "bucket": "accessibility",
+      "locator": "div.Footer &gt; div.max-w-[1800px] &gt; ul.Footer__socials &gt; a.flex",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Links do not have a discernible name",
+      "evidence": "Google PageSpeed (mobile) \u00b7 link-name \u00b7 8 element(s) affected",
+      "severity": "P2",
+      "confidence": 0.95,
+      "element_count": 8,
+      "evidence_html": "&lt;a href=&quot;https://www.instagram.com/thirdspacelondon/&quot; target=&quot;_blank&quot; class=&quot;flex items-center space-x-2 md:space-x-3&quot;&gt;",
+      "recommendation": "Tamazia gives every link an accessible name.",
+      "tamazia_fix_short": "Tamazia gives every link an accessible name.",
+      "layman_explanation": "Link text (and alternate text for images, when used as links) that is discernible, unique, and focusable improves the navigation experience for screen reader users.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Forced reflow",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia resolves this as part of the technical SEO workstream.",
+        "problem": "Right now: Forced reflow."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Forced reflow",
+      "evidence": "Google PageSpeed (mobile) \u00b7 forced-reflow-insight \u00b7 2 element(s) affected",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia resolves this as part of the technical SEO workstream.",
+      "tamazia_fix_short": "Tamazia resolves this as part of the technical SEO workstream.",
+      "layman_explanation": "A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about and possible mitigations. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Speed Index",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia speeds visual completion of the page.",
+        "problem": "Right now: Speed Index."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Speed Index",
+      "evidence": "Google PageSpeed (mobile) \u00b7 speed-index \u00b7 8.7\u00a0s",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia speeds visual completion of the page.",
+      "tamazia_fix_short": "Tamazia speeds visual completion of the page.",
+      "layman_explanation": "Speed Index shows how quickly the contents of a page are visibly populated.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Render-blocking requests",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia removes render-blocking requests.",
+        "problem": "Right now: Render-blocking requests."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Render-blocking requests",
+      "evidence": "Google PageSpeed (mobile) \u00b7 render-blocking-insight \u00b7 Est savings of 3,130\u00a0ms",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia removes render-blocking requests.",
+      "tamazia_fix_short": "Tamazia removes render-blocking requests.",
+      "layman_explanation": "Requests are blocking the page's initial render, which may delay LCP. can move these network requests out of the critical path. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Use efficient cache lifetimes",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets efficient cache lifetimes for static assets.",
+        "problem": "Right now: Use efficient cache lifetimes."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Use efficient cache lifetimes",
+      "evidence": "Google PageSpeed (mobile) \u00b7 cache-insight \u00b7 Est savings of 1,373\u00a0KiB",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets efficient cache lifetimes for static assets.",
+      "tamazia_fix_short": "Tamazia sets efficient cache lifetimes for static assets.",
+      "layman_explanation": "A long cache lifetime can speed up repeat visits to your page.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Max Potential First Input Delay",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia resolves this as part of the technical SEO workstream.",
+        "problem": "Right now: Max Potential First Input Delay."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Max Potential First Input Delay",
+      "evidence": "Google PageSpeed (mobile) \u00b7 max-potential-fid \u00b7 200\u00a0ms",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia resolves this as part of the technical SEO workstream.",
+      "tamazia_fix_short": "Tamazia resolves this as part of the technical SEO workstream.",
+      "layman_explanation": "The maximum potential First Input Delay that your users could experience is the duration of the longest task.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Font display",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia resolves this as part of the technical SEO workstream.",
+        "problem": "Right now: Font display."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Font display",
+      "evidence": "Google PageSpeed (mobile) \u00b7 font-display-insight \u00b7 Est savings of 10\u00a0ms",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia resolves this as part of the technical SEO workstream.",
+      "tamazia_fix_short": "Tamazia resolves this as part of the technical SEO workstream.",
+      "layman_explanation": "Consider setting to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "First Contentful Paint",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia speeds first paint via critical CSS and render-path fixes.",
+        "problem": "Right now: First Contentful Paint."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "First Contentful Paint",
+      "evidence": "Google PageSpeed (mobile) \u00b7 first-contentful-paint \u00b7 7.3\u00a0s",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia speeds first paint via critical CSS and render-path fixes.",
+      "tamazia_fix_short": "Tamazia speeds first paint via critical CSS and render-path fixes.",
+      "layman_explanation": "First Contentful Paint marks the time at which the first text or image is painted.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Document request latency",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia reduces document request latency.",
+        "problem": "Right now: Document request latency."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Document request latency",
+      "evidence": "Google PageSpeed (mobile) \u00b7 document-latency-insight \u00b7 Est savings of 150\u00a0ms",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia reduces document request latency.",
+      "tamazia_fix_short": "Tamazia reduces document request latency.",
+      "layman_explanation": "Your first network request is the most important. by avoiding redirects, ensuring a fast server response, and enabling text compression. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Time to Interactive",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia reduces time-to-interactive.",
+        "problem": "Right now: Time to Interactive."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Time to Interactive",
+      "evidence": "Google PageSpeed (mobile) \u00b7 interactive \u00b7 17.2\u00a0s",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia reduces time-to-interactive.",
+      "tamazia_fix_short": "Tamazia reduces time-to-interactive.",
+      "layman_explanation": "Time to Interactive is the amount of time it takes for the page to become fully interactive.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Total Blocking Time",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia reduces main-thread blocking via JS splitting and deferral.",
+        "problem": "Right now: Total Blocking Time."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Total Blocking Time",
+      "evidence": "Google PageSpeed (mobile) \u00b7 total-blocking-time \u00b7 430\u00a0ms",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia reduces main-thread blocking via JS splitting and deferral.",
+      "tamazia_fix_short": "Tamazia reduces main-thread blocking via JS splitting and deferral.",
+      "layman_explanation": "Sum of all time periods between FCP and Time to Interactive, when task length exceeded 50ms, expressed in milliseconds.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Reduce unused JavaScript",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia strips unused JavaScript from the critical path.",
+        "problem": "Right now: Reduce unused JavaScript."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Reduce unused JavaScript",
+      "evidence": "Google PageSpeed (mobile) \u00b7 unused-javascript \u00b7 Est savings of 638\u00a0KiB",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia strips unused JavaScript from the critical path.",
+      "tamazia_fix_short": "Tamazia strips unused JavaScript from the critical path.",
+      "layman_explanation": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Reduce unused CSS",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia removes unused CSS.",
+        "problem": "Right now: Reduce unused CSS."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Reduce unused CSS",
+      "evidence": "Google PageSpeed (mobile) \u00b7 unused-css-rules \u00b7 Est savings of 47\u00a0KiB",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia removes unused CSS.",
+      "tamazia_fix_short": "Tamazia removes unused CSS.",
+      "layman_explanation": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Buttons do not have an accessible name",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia resolves this as part of the technical SEO workstream.",
+        "problem": "Right now: Buttons do not have an accessible name."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "locator": "div.w-full &gt; div.absolute &gt; div.flex &gt; button.flex",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Buttons do not have an accessible name",
+      "evidence": "Google PageSpeed (mobile) \u00b7 button-name \u00b7 2 element(s) affected",
+      "severity": "P2",
+      "confidence": 0.95,
+      "element_count": 2,
+      "evidence_html": "&lt;button class=&quot;flex items-center justify-center border rounded-full border-white h-10 w-1\u2026&quot; @click.stop=&quot;cardActiveState = !cardActiveState&quot;&gt;",
+      "recommendation": "Tamazia resolves this as part of the technical SEO workstream.",
+      "tamazia_fix_short": "Tamazia resolves this as part of the technical SEO workstream.",
+      "layman_explanation": "When a button doesn't have an accessible name, screen readers announce it as \"button\", making it unusable for users who rely on screen readers.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "Lists do not contain only `<li>` elements and script supporting elements (`<script>` and `<template>`).",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia resolves this as part of the technical SEO workstream.",
+        "problem": "Right now: Lists do not contain only `<li>` elements and script supporting elements (`<script>` and `<template>`)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "locator": "div.Footer &gt; div.max-w-[1800px] &gt; nav.h-full &gt; ul.Footer__menu",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Lists do not contain only `<li>` elements and script supporting elements (`<script>` and `<template>`).",
+      "evidence": "Google PageSpeed (mobile) \u00b7 list \u00b7 2 element(s) affected",
+      "severity": "P2",
+      "confidence": 0.95,
+      "element_count": 2,
+      "evidence_html": "&lt;ul class=&quot;Footer__menu flex flex-col md:flex-row md:items-center md:space-x-2 lg:spa\u2026&quot;&gt;",
+      "recommendation": "Tamazia resolves this as part of the technical SEO workstream.",
+      "tamazia_fix_short": "Tamazia resolves this as part of the technical SEO workstream.",
+      "layman_explanation": "Screen readers have a specific way of announcing lists. Ensuring proper list structure aids screen reader output.. Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "LCP request discovery",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia fixes LCP resource discovery so the main content loads sooner.",
+        "problem": "Right now: LCP request discovery."
+      },
+      "state": "CONFIRMED",
+      "bucket": "technical_seo",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "LCP request discovery",
+      "evidence": "Google PageSpeed (mobile) \u00b7 lcp-discovery-insight \u00b7 2 element(s) affected",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia fixes LCP resource discovery so the main content loads sooner.",
+      "tamazia_fix_short": "Tamazia fixes LCP resource discovery so the main content loads sooner.",
+      "layman_explanation": "by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading Measured live by Google PageSpeed Insights on your mobile site."
+    },
+    {
+      "fact": "No LocalBusiness schema (address, opening hours, geo).",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+        "problem": "Right now: No LocalBusiness schema (address, opening hours, geo)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "LocalBusiness schema",
+      "evidence": "homepage JSON-LD \u00b7 no LocalBusiness",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+      "tamazia_fix_short": "Tamazia adds LocalBusiness schema with verified NAP, hours and geo-coordinates.",
+      "layman_explanation": "Local and map AI results depend on LocalBusiness schema with verified NAP and geo. Without it you are invisible to \"near me\" and local AI answers your competitors win."
+    },
+    {
+      "fact": "No Service or Offer schema describing what you sell.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia marks up each service with Service schema and clear offers.",
+        "problem": "Right now: No Service or Offer schema describing what you sell."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Service schema",
+      "evidence": "homepage JSON-LD \u00b7 no Service/Offer",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia marks up each service with Service schema and clear offers.",
+      "tamazia_fix_short": "Tamazia marks up each service with Service schema and clear offers.",
+      "layman_explanation": "AI engines extract Service/Offer schema to answer \"who offers X\". Without it your services are not machine-readable and you are left out of those answers."
+    },
+    {
+      "fact": "No FAQPage schema or structured Q&A.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+        "problem": "Right now: No FAQPage schema or structured Q&A."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "FAQ schema",
+      "evidence": "homepage JSON-LD \u00b7 no FAQPage",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+      "tamazia_fix_short": "Tamazia builds an FAQ programme with FAQPage schema targeting real buyer questions.",
+      "layman_explanation": "Answer engines preferentially quote structured Q&A. With no FAQPage you miss the single format LLMs cite most when answering buyer questions."
+    },
+    {
+      "fact": "No Review or AggregateRating schema.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+        "problem": "Right now: No Review or AggregateRating schema."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "Review schema",
+      "evidence": "homepage JSON-LD \u00b7 no Review schema",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+      "tamazia_fix_short": "Tamazia adds compliant Review/AggregateRating schema (DMCC-safe, genuine reviews only).",
+      "layman_explanation": "Star ratings shown in AI and search answers come from Review/AggregateRating schema. Without it your reputation is invisible to the engines buyers now ask first."
+    },
+    {
+      "fact": "No bylined author or Person schema establishing expertise.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia ships a bylined expert-author programme with Person schema, credentials and sameAs.",
+        "problem": "Right now: No bylined author or Person schema establishing expertise."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "E-E-A-T author signals",
+      "evidence": "homepage \u00b7 no author / Person markup",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia ships a bylined expert-author programme with Person schema, credentials and sameAs.",
+      "tamazia_fix_short": "Tamazia ships a bylined expert-author programme with Person schema, credentials and sameAs.",
+      "layman_explanation": "Google E-E-A-T and LLM trust models reward demonstrable Experience, Expertise, Authority and Trust. Anonymous content is discounted and rarely cited in AI answers."
+    },
+    {
+      "fact": "No llms.txt file.",
+      "kind": "probe",
+      "bingo": {
+        "fix": "Tamazia publishes a curated llms.txt.",
+        "problem": "Right now: No llms.txt file."
+      },
+      "state": "CONFIRMED",
+      "bucket": "ai_visibility",
+      "signals": [
+        "live_probe"
+      ],
+      "citation": "llms.txt",
+      "evidence": "GET /llms.txt \u00b7 404",
+      "severity": "P2",
+      "confidence": 0.85,
+      "recommendation": "Tamazia publishes a curated llms.txt.",
+      "tamazia_fix_short": "Tamazia publishes a curated llms.txt.",
+      "layman_explanation": "llms.txt is the emerging standard that tells AI assistants how to represent your firm. Publishing one puts you ahead of peers who have not."
+    },
+    {
+      "fact": "No HTTP Strict-Transport-Security header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia enables HSTS at the edge.",
+        "problem": "Right now: No HTTP Strict-Transport-Security header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "HSTS header",
+      "evidence": "response headers \u00b7 strict-transport-security absent",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia enables HSTS at the edge.",
+      "tamazia_fix_short": "Tamazia enables HSTS at the edge.",
+      "layman_explanation": "Connections can be downgraded from HTTPS, and enterprise procurement and security questionnaires routinely check for HSTS. Its absence is an avoidable trust gap with corporate clients."
+    },
+    {
+      "fact": "No Content-Security-Policy header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia ships a tuned CSP.",
+        "problem": "Right now: No Content-Security-Policy header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Content-Security-Policy",
+      "evidence": "response headers \u00b7 content-security-policy absent",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia ships a tuned CSP.",
+      "tamazia_fix_short": "Tamazia ships a tuned CSP.",
+      "layman_explanation": "A missing CSP leaves the site more exposed to script-injection and is another item flagged in client security reviews."
+    },
+    {
+      "fact": "No X-Frame-Options or CSP frame-ancestors directive.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets X-Frame-Options and CSP frame-ancestors.",
+        "problem": "Right now: No X-Frame-Options or CSP frame-ancestors directive."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Clickjacking protection",
+      "evidence": "response headers \u00b7 x-frame-options absent",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets X-Frame-Options and CSP frame-ancestors.",
+      "tamazia_fix_short": "Tamazia sets X-Frame-Options and CSP frame-ancestors.",
+      "layman_explanation": "The site can be embedded in a hostile iframe (clickjacking), and corporate-client security questionnaires check for this. An avoidable trust gap."
+    },
+    {
+      "fact": "DMARC is set to p=none (monitor only, not enforcing).",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia moves you to p=quarantine then p=reject after monitoring.",
+        "problem": "Right now: DMARC is set to p=none (monitor only, not enforcing)."
+      },
+      "state": "CONFIRMED",
+      "bucket": "tls_dns",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "DMARC policy",
+      "evidence": "DNS TXT _dmarc \u00b7 p=none",
+      "severity": "P2",
+      "confidence": 0.95,
+      "recommendation": "Tamazia moves you to p=quarantine then p=reject after monitoring.",
+      "tamazia_fix_short": "Tamazia moves you to p=quarantine then p=reject after monitoring.",
+      "layman_explanation": "You can see spoofing reports but receivers are not told to reject impostor mail, so the protection is not actually active."
+    },
+    {
+      "fact": "VAT number displayed where VAT-registered",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds the VAT number to the footer and invoices.",
+        "problem": "Right now: VAT number displayed where VAT-registered."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_COMPANIES_ACT",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.legislation.gov.uk/ukdsi/2015/9780111125892/contents",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia adds the VAT number to the footer and invoices.",
+      "verify_context": null,
+      "framework_short": "UK_COMPANIES_ACT",
+      "tamazia_fix_short": "Tamazia adds the VAT number to the footer and invoices.",
+      "layman_explanation": "If VAT-registered you must display your VAT number on the website. It is not shown.",
+      "enforcement_example": "HMRC requires VAT-registered businesses to show the VAT number on their website and invoices."
+    },
+    {
+      "fact": "Organisation processing personal data with no sign of ICO data-protection-fee registration",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia implements and verifies \"Organisation processing personal data with no sign of ICO data-protection-fee registration\" on your site so it satisfies the Data Protection Act 2018.",
+        "problem": "Right now: Organisation processing personal data with no sign of ICO data-protection-fee registration. Here it is on your site: \u201cImportant information about this privacy notice and who the controller is This privacy notice contains important information on who we are a\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_DPA_2018",
+      "evidence": "https://www.thirdspace.london/privacy/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://ico.org.uk/for-organisations/data-protection-fee/",
+      "fine_low_gbp": 400,
+      "fine_high_gbp": 4350,
+      "evidence_quote": "Important information about this privacy notice and who the controller is This privacy notice contains important information on who we are and how and why we collect, store, use and share information relating to an identified or identifi\u2026",
+      "recommendation": "Tamazia implements and verifies \"Organisation processing personal data with no sign of ICO data-protection-fee registration\" on your site so it satisfies the Data Protection Act 2018.",
+      "framework_short": "UK_DPA_2018",
+      "tamazia_fix_short": "Tamazia implements and verifies \"Organisation processing personal data with no sign of ICO data-protection-fee registration\" on your site so it satisfies the Data Protection Act 2018.",
+      "layman_explanation": "Organisation processing personal data with no sign of ICO data-protection-fee registration. This is a specific requirement of the Data Protection Act 2018, which the ICO enforces; for a firm selling trust, its absence on the live site is an avoidable compliance and credibility breach.",
+      "enforcement_example": "Most UK organisations that process personal data must pay the ICO data protection fee of 40 to 2900 pounds and register. The ICO issues monetary penalties up to 4350 pounds for non-payment and publishes defaulters."
+    },
+    {
+      "fact": "Food hygiene rating display where used in promotion",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia displays the current FHRS rating accurately.",
+        "problem": "Right now: Food hygiene rating display where used in promotion."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_FSA",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.food.gov.uk/",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": null,
+      "recommendation": "Tamazia displays the current FHRS rating accurately.",
+      "verify_context": null,
+      "framework_short": "UK_FSA",
+      "tamazia_fix_short": "Tamazia displays the current FHRS rating accurately.",
+      "layman_explanation": "If you reference a food hygiene rating it must be current and accurate. Verify yours.",
+      "enforcement_example": "The FSA requires food hygiene ratings to be displayed accurately where referenced."
+    },
+    {
+      "fact": "Premises/personal licence displayed for licensable activity",
+      "kind": "absence",
+      "bingo": {
+        "fix": "Tamazia adds licensing and age-verification information.",
+        "problem": "Right now: Premises/personal licence displayed for licensable activity. Here it is on your site: \u201cSet to the beat of the music, this low-impact barre workout uses ballet and Pilates-inspired isometric strength training techniques.\u201d."
+      },
+      "state": "CONFIRMED",
+      "bucket": "compliance",
+      "signals": [
+        "rule_trigger",
+        "corpus_coverage"
+      ],
+      "citation": "UK_LICENSING_ACT",
+      "evidence": "https://thirdspace.london/",
+      "severity": "P3",
+      "rule_type": "trigger_then_check",
+      "confidence": 0.88,
+      "checked_urls": null,
+      "citation_url": "https://www.gov.uk/guidance/alcohol-licensing",
+      "fine_low_gbp": null,
+      "fine_high_gbp": null,
+      "evidence_quote": "Set to the beat of the music, this low-impact barre workout uses ballet and Pilates-inspired isometric strength training techniques.",
+      "recommendation": "Tamazia adds licensing and age-verification information.",
+      "verify_context": null,
+      "framework_short": "UK_LICENSING_ACT",
+      "tamazia_fix_short": "Tamazia adds licensing and age-verification information.",
+      "layman_explanation": "Licensable premises must operate under a valid licence and show age policies (Challenge 25); not evident.",
+      "enforcement_example": "The Licensing Act 2003 requires licensable premises to operate under a valid licence (and show age policies)."
+    },
+    {
+      "fact": "No Referrer-Policy header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets a strict Referrer-Policy.",
+        "problem": "Right now: No Referrer-Policy header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Referrer-Policy",
+      "evidence": "response headers \u00b7 referrer-policy absent",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets a strict Referrer-Policy.",
+      "tamazia_fix_short": "Tamazia sets a strict Referrer-Policy.",
+      "layman_explanation": "Full URLs (which can carry sensitive query parameters) leak to third parties on outbound navigation without a Referrer-Policy."
+    },
+    {
+      "fact": "No Permissions-Policy header.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia sets a least-privilege Permissions-Policy.",
+        "problem": "Right now: No Permissions-Policy header."
+      },
+      "state": "CONFIRMED",
+      "bucket": "security",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Permissions-Policy",
+      "evidence": "response headers \u00b7 permissions-policy absent",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia sets a least-privilege Permissions-Policy.",
+      "tamazia_fix_short": "Tamazia sets a least-privilege Permissions-Policy.",
+      "layman_explanation": "Powerful browser features (camera, microphone, geolocation) are not restricted, widening the attack surface a security review will flag."
+    },
+    {
+      "fact": "Your domain is not signed with DNSSEC.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+        "problem": "Right now: Your domain is not signed with DNSSEC."
+      },
+      "state": "CONFIRMED",
+      "bucket": "tls_dns",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "DNSSEC not enabled",
+      "evidence": "DNS \u00b7 no DS record and AD flag false",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+      "tamazia_fix_short": "Tamazia enables DNSSEC at your DNS provider so every lookup of your domain is cryptographically verified.",
+      "layman_explanation": "Without DNSSEC, attackers can forge DNS responses (cache poisoning) to silently redirect your visitors or intercept email. Enterprise, finance and government client security reviews increasingly require it."
+    },
+    {
+      "fact": "Detected platform: WordPress.",
+      "kind": "signal",
+      "bingo": {
+        "fix": "Tamazia tailors fixes to your platform.",
+        "problem": "Right now: Detected platform: WordPress."
+      },
+      "state": "CONFIRMED",
+      "bucket": "tech",
+      "signals": [
+        "deterministic_signal"
+      ],
+      "citation": "Website platform",
+      "evidence": "HTML fingerprint \u00b7 WordPress",
+      "severity": "P3",
+      "confidence": 0.95,
+      "recommendation": "Tamazia tailors fixes to your platform.",
+      "tamazia_fix_short": "Tamazia tailors fixes to your platform.",
+      "layman_explanation": "Identified your stack as WordPress; the SEO and compliance fixes are tailored to it."
+    }
+  ],
+  "authority": {
+    "top": {
+      "dr": 4.28,
+      "rank": 243685,
+      "domain": "luxurylondon.co.uk"
+    },
+    "you": {
+      "dr": 2.93,
+      "rank": 5324149,
+      "da_100": 29
+    },
+    "ranked": [
+      {
+        "dr": 4.28,
+        "rank": 243685,
+        "domain": "luxurylondon.co.uk"
+      },
+      {
+        "dr": 4.28,
+        "rank": 241397,
+        "domain": "londontheinside.com"
+      },
+      {
+        "dr": 4.08,
+        "rank": 580954,
+        "domain": "timeout.com"
+      },
+      {
+        "dr": 3.44,
+        "rank": 2369588,
+        "domain": "lifetime.life"
+      },
+      {
+        "dr": 2.26,
+        "rank": 29061342,
+        "domain": "factmagazines.com"
+      }
+    ],
+    "last_updated": "28th Mar 2026"
+  },
+  "geo_probe": {
+    "samples": 2,
+    "ai_knows": false,
+    "grounded": null,
+    "ai_sentiment": "neutral",
+    "repeatability": 100,
+    "share_of_voice": 100,
+    "top_competitors": [
+      {
+        "of": 2,
+        "name": "KXU",
+        "in_runs": 2
+      },
+      {
+        "of": 2,
+        "name": "Bulgari Hotel Gym",
+        "in_runs": 2
+      },
+      {
+        "of": 2,
+        "name": "Equinox Kensington",
+        "in_runs": 1
+      }
+    ]
+  },
+  "ai_citation": {
+    "ok": true,
+    "llm": {
+      "ran": true,
+      "cited": false,
+      "model": "llama-3.3-70b-versatile",
+      "answer": "Third Space, Equinox, KXU, The Ned, Bulgari Hotel Gym, The Lanesborough Club & Spa, The Dorchester's Health and Beauty Spa, Harbour Club",
+      "provider": "groq"
+    },
+    "query": "london luxury gyms London",
+    "source": "serp",
+    "checked": 10,
+    "country": "UK",
+    "competitors": [
+      {
+        "pos": 1,
+        "domain": "luxurylondon.co.uk"
+      },
+      {
+        "pos": 2,
+        "domain": "luxsphere.co"
+      },
+      {
+        "pos": 3,
+        "domain": "thegentlemansjournal.com"
+      },
+      {
+        "pos": 4,
+        "domain": "bestofluxury.com"
+      },
+      {
+        "pos": 5,
+        "domain": "factmagazines.com"
+      }
+    ],
+    "entity_known": false,
+    "firm_position": null,
+    "surface_owned_by": [
+      "luxurylondon.co.uk",
+      "luxsphere.co",
+      "thegentlemansjournal.com"
+    ]
+  },
+  "content_gap": {
+    "gaps": [
+      "luxury gyms london ontario",
+      "best luxury gyms nyc",
+      "best luxury gyms in los angeles",
+      "best luxury gyms in houston",
+      "luxury gyms fort lauderdale",
+      "luxury gyms fort worth"
+    ],
+    "pages": 192
+  },
+  "geo_visuals": {
+    "ai_radar": "<svg viewBox=\"0 0 400 400\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"200\" y=\"24\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">AI visibility</text><polygon points=\"200.0,157.5 228.1,173.8 228.1,206.3 200.0,222.5 171.9,206.3 171.9,173.8\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,125.0 256.3,157.5 256.3,222.5 200.0,255.0 143.7,222.5 143.7,157.5\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,92.5 284.4,141.3 284.4,238.8 200.0,287.5 115.6,238.8 115.6,141.3\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,60.0 312.6,125.0 312.6,255.0 200.0,320.0 87.4,255.0 87.4,125.0\" fill=\"none\" stroke=\"#C9C2B8\" stroke-width=\"0.7\" opacity=\"0.6\"/><polygon points=\"200.0,96.4 312.6,125.0 200.0,190.0 200.0,320.0 200.0,190.0 200.0,190.0\" fill=\"#3D0E0E\" fill-opacity=\"0.25\" stroke=\"#3D0E0E\" stroke-width=\"2\"/><text x=\"200.0\" y=\"38.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Entity</text><text x=\"200.0\" y=\"51.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">72</text><text x=\"331.6\" y=\"114.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Crawler access</text><text x=\"331.6\" y=\"127.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">100</text><text x=\"331.6\" y=\"266.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Share of voice</text><text x=\"331.6\" y=\"279.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text><text x=\"200.0\" y=\"342.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Schema</text><text x=\"200.0\" y=\"355.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">100</text><text x=\"68.4\" y=\"266.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Knowledge graph</text><text x=\"68.4\" y=\"279.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text><text x=\"68.4\" y=\"114.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"11\" fill=\"#2A2A2A\">Citations</text><text x=\"68.4\" y=\"127.0\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#C8A664\">0</text></svg>",
+    "ai_engine_grid": "<svg viewBox=\"0 0 560 180\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"16\" y=\"22\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">Which AI engines cite you</text><rect x=\"8\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"70\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">ChatGPT</text><text x=\"70\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"148\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"210\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Gemini</text><text x=\"210\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"288\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"350\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Perplexity</text><text x=\"350\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"428\" y=\"36\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"490\" y=\"62\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Claude</text><text x=\"490\" y=\"80\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"8\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"70\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Copilot</text><text x=\"70\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"148\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"210\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Grok</text><text x=\"210\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"288\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"350\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Meta AI</text><text x=\"350\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text><rect x=\"428\" y=\"106\" width=\"124\" height=\"56\" rx=\"8\" fill=\"#EFEAE1\" stroke=\"#C9C2B8\"/><text x=\"490\" y=\"132\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"13\" fill=\"#2A2A2A\">Google AI</text><text x=\"490\" y=\"150\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"10\" fill=\"#8a8377\">not citing you</text></svg>",
+    "entity_web_map": "<svg viewBox=\"0 0 560 360\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\"><text x=\"280\" y=\"22\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#3D0E0E\">Who the AI knowledge graph connects to you</text><circle cx=\"280\" cy=\"180\" r=\"30\" fill=\"#3D0E0E\"/><text x=\"280\" y=\"184\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-size=\"12\" fill=\"#fff\">thirdspace</text></svg>"
+  },
+  "keyword_map": {
+    "ok": true,
+    "city": "London",
+    "keywords": [
+      {
+        "leader": "timeout.com",
+        "target": 3,
+        "keyword": "spa London",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "lifetime.life",
+        "target": 3,
+        "keyword": "luxury gyms near me",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "luxurylondon.co.uk",
+        "target": 3,
+        "keyword": "luxury gyms London",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "factmagazines.com",
+        "target": 3,
+        "keyword": "best luxury gyms in London",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "londontheinside.com",
+        "target": 3,
+        "keyword": "top luxury gyms London",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "luxurylondon.co.uk",
+        "target": 3,
+        "keyword": "luxury gyms London reviews",
+        "leader_pos": 1,
+        "my_position": null
+      },
+      {
+        "leader": "luxurylondon.co.uk",
+        "target": 3,
+        "keyword": "luxury gyms london",
+        "leader_pos": 1,
+        "my_position": null
+      }
+    ],
+    "service_noun": "luxury gyms"
+  },
+  "screenshots": {
+    "homepage": "https://image.thum.io/get/width/1200/crop/1000/https://thirdspace.london",
+    "provider": "thum.io (free, no key)",
+    "answer_surface": "https://image.thum.io/get/width/1200/crop/1000/https://www.google.com/search?q=london%20luxury%20gyms%20London"
+  },
+  "via_archive": false,
+  "ai_readiness": {
+    "score": 72,
+    "has_same_as": false,
+    "in_wikidata": false,
+    "has_llms_txt": false,
+    "has_org_schema": true,
+    "blocked_ai_bots": []
+  },
+  "archive_date": null,
+  "exec_summary": "The most serious regulatory risk is the potential GBP 231,959,350 in fines due to non-compliance with various EU regulations, including cookie consent, privacy notices, and food safety disclosures, which matters because it poses an existential threat to the company's financial stability. By addressing these regulatory deficiencies, thirdspace.london can mitigate this risk and unlock a significant opportunity to enhance its reputation, build trust with customers, and ensure uninterrupted operations in key European markets, including Germany and France.",
+  "needs_review": [],
+  "trust_summary": {
+    "confirmed": 88,
+    "needs_review": 0
+  },
+  "schema_version": "v2",
+  "framework_version": "4.7",
+  "engine_jurisdictions": [
+    "UK",
+    "EU"
+  ],
+  "applicable_frameworks": [
+    "DE_BDSG",
+    "EU_EAA_2025",
+    "EU_EPRIVACY",
+    "EU_GDPR",
+    "FR_CNIL_2025",
+    "GOOGLE_EEAT",
+    "UK_ASA_CAP",
+    "UK_CAA",
+    "UK_CMA",
+    "UK_COMPANIES_ACT",
+    "UK_CRA_2015",
+    "UK_DMCC_2024",
+    "UK_DPA_2018",
+    "UK_EQUALITY_2010",
+    "UK_FOOD_INFO_2014",
+    "UK_FSA",
+    "UK_GDPR_A13",
+    "UK_HSE",
+    "UK_ICO_COOKIES",
+    "UK_LICENSING_ACT",
+    "UK_MODERN_SLAVERY",
+    "UK_PECR",
+    "UK_TRADING_STANDARDS"
+  ],
+  "competitive_benchmark": {
+    "you": {
+      "cited": false,
+      "position": null
+    },
+    "query": "london luxury gyms London",
+    "source": "live SERP + AI-citation probe",
+    "competitors": [
+      {
+        "name": "luxurylondon.co.uk",
+        "domain": "luxurylondon.co.uk",
+        "position": 1
+      },
+      {
+        "name": "luxsphere.co",
+        "domain": "luxsphere.co",
+        "position": 2
+      },
+      {
+        "name": "thegentlemansjournal.com",
+        "domain": "thegentlemansjournal.com",
+        "position": 3
+      },
+      {
+        "name": "bestofluxury.com",
+        "domain": "bestofluxury.com",
+        "position": 4
+      },
+      {
+        "name": "factmagazines.com",
+        "domain": "factmagazines.com",
+        "position": 5
+      }
+    ],
+    "keyword_leaders": [
+      {
+        "leader": "timeout.com",
+        "keyword": "spa London",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "lifetime.life",
+        "keyword": "luxury gyms near me",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "luxurylondon.co.uk",
+        "keyword": "luxury gyms London",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "factmagazines.com",
+        "keyword": "best luxury gyms in London",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "londontheinside.com",
+        "keyword": "top luxury gyms London",
+        "your_position": null,
+        "leader_position": 1
+      },
+      {
+        "leader": "luxurylondon.co.uk",
+        "keyword": "luxury gyms London reviews",
+        "your_position": null,
+        "leader_position": 1
+      }
+    ]
+  },
+  "detected_jurisdictions": [
+    "United Kingdom"
+  ],
+  "jurisdiction_statement": {
+    "regimes": [
+      {
+        "why": "serves UK clients",
+        "regime": "UK GDPR + PECR"
+      },
+      {
+        "why": "applies to every site that wants to rank in Google or be cited by AI answer engines, regardless of where it is registered",
+        "regime": "Google Search Essentials + E-E-A-T"
+      }
+    ],
+    "statement": "thirdspace is registered in the United Kingdom and its own website shows it serves clients in the UK. It is therefore bound by UK law (UK GDPR, PECR, CMA/DMCC, sector regulators), not only the law of its country of registration. This audit applies the laws of every jurisdiction the site shows you operate in, and no others.",
+    "registered": "UK",
+    "registered_label": "the United Kingdom",
+    "operating_regions": [
+      "UK"
+    ]
+  },
+  "framework_last_reviewed": "2026-06-03"
+}

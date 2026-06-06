@@ -299,7 +299,8 @@ window.CH = (function(){
     const lab={pass:'Pass',warn:'Needs work',fail:'Fail',na:'Not assessed'};
     return `<div class="dimgrid">${D.dims.map(d=>{
       const w=d.st==='na'?0:Math.max(4,d.v||0);
-      return `<div class="dimcard ${d.st}"><div class="dch"><span class="dcn">${d.nm}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
+      const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
+      return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${d.nm} ↗"><div class="dch"><span class="dcn">${d.nm}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
         <div class="bar-track" style="height:5px;margin:7px 0 8px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div>
         <div class="dcs">${d.sub||''}</div></div>`;
     }).join('')}</div>`;

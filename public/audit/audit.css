@@ -817,3 +817,33 @@ body.cmx-lock{overflow:hidden}
 .route-price span{font-family:var(--mono);font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-left:8px}
 .ptj-svg,.traj-wrap svg{height:auto;display:block}
 @media(max-width:900px){.railnav button{min-height:42px;padding-top:10px;padding-bottom:10px}.railnav{gap:4px}}
+
+/* R4 — compaction (kill grid-stretch waste + tighten spacing ~40%) · enterprise scroll · clickable scorecard · tier chips */
+.grid{gap:10px;align-items:start}
+.secgrid,.enggrid{align-items:start}
+.card.pad{padding:11px 13px}
+.card-h{margin-bottom:6px}
+.subhead{margin:12px 0 7px}
+.facts{gap:3px 12px}
+.fact{padding:5px 0}
+.btn,.rail-cta,.rail-jump,.moretoggle,.tier-tab,.psi-tab{white-space:nowrap}
+html{scroll-behavior:smooth}
+.pillar>summary,.fw,.finding,.dimcard,#sec-overview,#sec-regulatory,#sec-seo,#sec-geo,#sec-competitors,#sec-plan{scroll-margin-top:18px}
+.dimcard{cursor:pointer;transition:border-color .13s,box-shadow .13s,transform .13s}
+.dimcard:hover{border-color:var(--gold);box-shadow:var(--shadow);transform:translateY(-1px)}
+.dimcard:active{transform:translateY(0)}
+.ptj-tiers{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:9px 0 0}
+.ptj-tiers .lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2)}
+.ptj-tiers button{font-family:var(--mono);font-size:9px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--line-2);border-radius:6px;padding:3px 9px;cursor:pointer;transition:.12s}
+.ptj-tiers button:hover{border-color:var(--gold)}
+.ptj-tiers button.active{background:var(--orange);border-color:var(--orange);color:#fff}
+/* R4b — denser breach lists + finding bodies (content was spacious, not empty) */
+.art-items{gap:6px}
+.fw .fwbody{padding:0 13px 10px}
+.fw .fwbody .lbl{margin:8px 0 2px}
+.fw .fwbody .action{padding:7px 10px}
+.art-quote{margin:3px 0 0 14px}
+.art-fix{margin-top:3px}
+.finding .fbody{padding:0 13px 11px}
+.dimcard{padding:8px 11px}
+.dimcard .bar-track{margin:5px 0 6px!important}

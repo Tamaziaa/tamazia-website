@@ -3,8 +3,8 @@
    ============================================================ */
 (function(){
   const $ = (s,r=document)=>r.querySelector(s);
-  // count-aware pluralization: plur(1,'finding')→'finding', plur(2,'finding')→'findings',
-  // plur(1,'is','are')→'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
+  // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
+  // plur(1,'is','are')↗'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
   const plur = (n,s,p)=> n===1 ? s : (p||s+'s');
   // Escape DATA-sourced strings before innerHTML (evidence quotes/LLM text can carry a raw "<"
   // that would corrupt the DOM — the axe-rule-name regression). Display text only.
@@ -36,8 +36,8 @@
       </div>
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
-      <button class="rail-jump" data-pane="plan">Jump to pricing →</button>
-      <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder →</button>
+      <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
+      <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder ↗</button>
       <div class="rail-trust">Founder-led · every fix checked against ${D.rulesChecked} rules</div>
     </aside>`;
   }
@@ -60,7 +60,7 @@
       <div class="card pad"><div class="card-h"><div class="t">Findings by severity</div><div class="meta">${D.confirmed} confirmed v. evidence</div></div>${CH.donut()}</div>
       <div class="card pad"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${D.jurisdiction}</p></div>
     </div>
-    <div class="card pad" style="margin-top:14px">
+    <div class="card pad" style="margin-top:9px">
       <div class="card-h"><div class="t">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksTotal} frameworks · ${D.confirmed} evidence checks</div></div>
       <div class="grid g-7-5" style="gap:20px">
         <div><p style="font-size:13.5px;color:#3a2d30;line-height:1.55">${D.scoring.formula}</p>
@@ -71,7 +71,7 @@
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
     ${D.fixes.map((f,i)=>CH.finding(f,i===0,{id:'fx-'+(i+1)})).join('')}
-    <div class="card pad" style="margin-top:15px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
+    <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
   P.regulatory = ()=>{
     // #3: only render the "breaches in full" subhead + cards when the Regulatory-filtered
@@ -129,14 +129,14 @@
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed &mdash; desktop and mobile.</h3></div>
     ${(function(){const av=['mobile','desktop'].filter(s=>D.seo.psiStrats[s]);return av.length>1?`<div class="psi-toggle" role="tablist">${av.map(st=>`<button class="psi-tab${st===av[0]?' active':''}" data-strat="${st}" type="button" role="tab">${st==='mobile'?'Mobile':'Desktop'}</button>`).join('')}</div>`:'';})()}
     ${['mobile','desktop'].filter(s=>D.seo.psiStrats[s]).map((st,i)=>{const S=D.seo.psiStrats[st];const fail=S.cwv.filter(c=>c.st==='fail').length;return `<div class="psi-strat${i===0?' active':''}" data-strat="${st}">
-      <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live &middot; ${st}</div></div>${CH.psiDialRow(S.dials)}</div>
-      <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${st} &middot; failing ${fail} of ${S.cwv.length}</div></div>${CH.cwvMeterRow(S.cwv)}</div>
-      <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Failing audits on your live DOM</div><div class="meta">${st} &middot; ${S.audits.length} found &middot; hover the fix</div></div>${CH.psiAuditRow(S.audits,st)}</div>
+      <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live &middot; ${st}</div></div>${CH.psiDialRow(S.dials)}</div>
+      <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${st} &middot; failing ${fail} of ${S.cwv.length}</div></div>${CH.cwvMeterRow(S.cwv)}</div>
+      <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">Failing audits on your live DOM</div><div class="meta">${st} &middot; ${S.audits.length} found &middot; hover the fix</div></div>${CH.psiAuditRow(S.audits,st)}</div>
     </div>`;}).join('')}`:`
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed.</h3></div>
-    <div class="card pad" style="margin-bottom:15px">${CH.psiAuditList()}</div>
-    <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
-    <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>`}
+    <div class="card pad" style="margin-bottom:10px">${CH.psiAuditList()}</div>
+    <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
+    <div class="card pad" style="margin-bottom:10px"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>`}
     <div class="grid g2">
       <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
       <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
@@ -182,7 +182,7 @@
       <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+D.meta.company+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+D.meta.company+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+D.meta.company+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
       <p>${D.geo.rootCause?D.geo.rootCause.reason:'The answer engines decide who to name from structured signals you are missing.'} ${aiOverview}</p></div>
     ${aiCallout}
-    <div class="grid g-4-8" style="margin-top:16px">
+    <div class="grid g-4-8" style="margin-top:10px">
       <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(radarAxes,210)}</div>
       <div style="display:flex;flex-direction:column;gap:15px">
         <div class="card pad"><div class="card-h"><div class="t">Do AI engines cite you?</div><div class="meta">readiness /100 · ${D.geo.aiKnows?'recognised':'0 citing'}</div></div>${CH.engineGrid()}</div>
@@ -193,7 +193,7 @@
         </div>
       </div>
     </div>
-    <div class="grid g2" style="margin-top:15px">
+    <div class="grid g2" style="margin-top:10px">
       <div class="card pad"><div class="card-h"><div class="t">Structured-data gaps</div><div class="meta">what AI reads first</div></div>${CH.schemaChecklist()}</div>
       <div class="card pad"><div class="card-h"><div class="t">Authority sources you're absent from</div><div class="meta">source gap</div></div>${CH.sourceGap()}</div>
     </div>
@@ -213,7 +213,7 @@
       <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
     <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them</h3></div>
-    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div>${c.beatBy.lever?`<div class="blever"><span class="blk">How Tamazia wins it</span> ${c.beatBy.lever}</div>`:''}</div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
+    <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">↗</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">↗</span> <span class="bmetric">${c.beatBy.metric}</span></div>${c.beatBy.lever?`<div class="blever"><span class="blk">How Tamazia wins it</span> ${c.beatBy.lever}</div>`:''}</div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
         ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} ${plur(D.competitors.sovBar.of,'run')}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
@@ -360,7 +360,7 @@
         data-c1="${cur[1]}" data-c2="${cur[2]}">
       <div class="ptj-head">
         <div><div class="ptj-t">Your trajectory, with Tamazia and without</div>
-          <div class="ptj-meta">today ${score} → week 12 ${proj[1]} → week 24 ${proj[2]} · hover a tier to see it lift</div></div>
+          <div class="ptj-meta">today ${score} ↗ week 12 ${proj[1]} ↗ week 24 ${proj[2]} · hover a tier to see it lift</div></div>
         <div class="ptj-key"><span class="k-cur">Left to drift</span><span class="k-proj">With Tamazia</span></div>
       </div>
       <svg class="ptj-svg" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Projected score trajectory">
@@ -378,6 +378,7 @@
         <div class="traj-pt"><b>${proj[1]}</b>Week 12</div>
         <div class="traj-pt end"><b>${proj[2]}</b>Week 24</div>
       </div>
+      <div class="ptj-tiers"><span class="lbl">Projection assumes</span>${TIERS.map((t,i)=>`<button type="button" data-tier-tab="${i}" class="${i===0?'active':''}">${t.name}</button>`).join('')}</div>
     </div>`;
   }
 
@@ -407,7 +408,7 @@
 
     ${planTrajectory(score,wk12,wk24,TIERS,recT.key)}
 
-    <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>Start here, or scale into a mandate</h3></div>
+    <div class="subhead" style="margin-top:9px"><span class="nt">↳</span><h3>Start here, or scale into a mandate</h3></div>
     <div class="plan-offer">
       <div class="fixbox">
         <div class="fx-rib">Anchor offer</div>
@@ -417,7 +418,7 @@
         <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
         <p class="fx-line">For the firm that wants the urgent items closed first. ${crit>0?`The ${crit} ${plur(crit,'critical')} closed`:`The highest-severity gaps closed`} in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
-        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
+        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} ↗</a>
       </div>
       <div class="tiers">
         <div class="tier-bar" role="tablist" aria-label="Recurring mandate">
@@ -435,13 +436,13 @@
             <button class="moretoggle" data-more="price">See everything included ›</button>
             <div class="more"><ul style="padding-top:6px">${t.more.map(f=>`<li>${f}</li>`).join('')}</ul></div>
             <div class="spacer"></div>
-            <a class="btn ${t.rec?'solid':''} block" data-book="package" data-tier="${t.name}" style="margin-top:10px">Book a ${t.name} call →</a>
+            <a class="btn ${t.rec?'solid':''} block" data-book="package" data-tier="${t.name}" style="margin-top:10px">Book a ${t.name} call ↗</a>
           </div>`).join('')}
         </div>
       </div>
     </div>
 
-    <div class="subhead" style="margin-top:22px"><span class="nt">↳</span><h3>Add-ons, billed monthly. Hover any for the full spec.</h3>
+    <div class="subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Add-ons, billed monthly. Hover any for the full spec.</h3>
       <span class="engnote" style="margin-left:auto">✎ Stripe checkout · selection saved to backend</span></div>
     <p class="plan-sub">Bolt any of these onto a mandate, or take them entirely on their own. ${D.upsellProof}</p>
     <div class="addon-grid">
@@ -450,26 +451,26 @@
           <div class="ap">${a.was?`<span class="apwas">${gbpFmt(a.was)}</span>`:''}<b>${gbpFmt(a.gbp)}</b><small>/${a.unit}</small></div></div>
         <div class="tag">${a.usp}</div>
         <div class="more"><div class="aspec-h">What you get</div><ul>${a.spec.map(s=>`<li>${s}</li>`).join('')}</ul></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">Full spec ›</button><a class="btn gold block" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}" style="flex:1">Add ${a.nm.split(' ')[0]} →</a></div>
+        <div class="foot"><button class="moretoggle" data-more="addon">Full spec ›</button><a class="btn gold block" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}" style="flex:1">Add ${a.nm.split(' ')[0]} ↗</a></div>
       </div>`).join('')}
     </div>
 
     ${trustedStrip()}
 
-    <div class="subhead" style="margin-top:22px"><span class="nt">↳</span><h3>Two ways to start, both with the founder</h3></div>
+    <div class="subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Two ways to start, both with the founder</h3></div>
     <div class="booking">
       <div class="bookcard"><div class="rt">Route 1 · Strategy call</div><h3>Walk the report with the founder</h3>
         <p>A 30 minute confidential session with Aman Pareek. No sales team, no discovery loop. Your tier and strongest finding are carried into the call.</p>
         <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="Strategy call calendar"></div>
-        <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a strategy call →</a></div>
+        <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a strategy call ↗</a></div>
       <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>${crit>0?`Close the ${crit} ${plur(crit,'critical')} in 8 weeks`:`Fix the highest-severity gaps in 8 weeks`}</h3>
-        <p>A single fixed-scope engagement at ${gbpFmt(7500)}, not a retainer — for the firm that wants the urgent items closed first.</p>
-        <ul class="route-val">${fixOutcomes.slice(0,4).map(o=>`<li>${escH(o)}</li>`).join('')}</ul>
-        <div class="route-price"><b>${gbpFmt(7500)}</b><span>one-time · fixed scope · 8 weeks</span></div>
-        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint →</a></div>
+        <p>A fixed-scope sprint at ${gbpFmt(7500)}, not a retainer. We close your highest-severity findings in priority order, then re-scan to prove every fix landed &mdash; book the kickoff:</p>
+        <ul class="route-val">${fixOutcomes.slice(0,3).map(o=>`<li>${escH(o)}</li>`).join('')}</ul>
+        <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint kickoff calendar"></div>
+        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} ↗</a></div>
     </div>
 
-    <div class="card pad" style="margin-top:16px;background:var(--cream-2);border:0">
+    <div class="card pad" style="margin-top:10px;background:var(--cream-2);border:0">
       <div class="capt" style="font-size:11px;line-height:1.6;margin:0">This is an automated marketing diagnostic from publicly observable signals (or the most recent web-archive snapshot where the live site was unreachable). The monetary figures are <b>statutory maximum fines</b>: worst-case ceilings to indicate exposure, not predictions. Not legal advice. Framework catalogue ${D.meta.catalogue}. Produced by Tamazia Ltd, London. Marketing diagnostic only.</div>
     </div>
     </div>`;
@@ -536,6 +537,9 @@
   document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
   document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); if(!_chipNav) scrollHeadingTop(d); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
+  // Scorecard dimcards ("Every metric we judged you on") jump to their pillar.
+  app.addEventListener('click',e=>{ const dc=e.target.closest('.dimcard[data-pane]'); if(dc){ e.preventDefault(); openPillar(dc.dataset.pane); } });
+  app.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ const dc=e.target.closest('.dimcard[data-pane]'); if(dc){ e.preventDefault(); openPillar(dc.dataset.pane); } } });
   // PSI desktop|mobile toggle: switch the active strategy card-set within the SEO pane.
   app.addEventListener('click',function(e){ const t=e.target.closest('.psi-tab'); if(!t) return; e.preventDefault();
     const strat=t.dataset.strat, scope=t.closest('.pbody')||document;
@@ -551,17 +555,17 @@
   // token so only the LATEST requested target keeps re-pinning; stale pins cancel themselves. We
   // re-pin across two frames + a short delay so an open-reflow or a sibling-close that shifts the
   // target can never leave the heading off-screen.
-  let _scrollTok=0;
   function scrollHeadingTop(el){
     if(!el) return;
-    const tok=++_scrollTok;
-    const pin=function(){ if(tok!==_scrollTok)return; const y=Math.max(0, el.getBoundingClientRect().top+window.scrollY-12);
-      try{ window.scrollTo({top:y,behavior:'instant'}); }catch(_e){ try{ window.scrollTo(0,y); }catch(_e2){} } };
-    pin();
-    requestAnimationFrame(function(){ pin(); requestAnimationFrame(pin); });
-    setTimeout(pin, 140);
+    // Enterprise-smooth: ONE gentle smooth scroll. scroll-margin-top (CSS, 18px) gives breathing
+    // room so a heading never jams against the very top. _chipNav suppresses competing pillar
+    // scrolls so this never races/overshoots; rAF lets an open-reflow settle before we measure.
+    requestAnimationFrame(function(){
+      try{ el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      catch(_e){ const y=Math.max(0, el.getBoundingClientRect().top+window.scrollY-18); try{ window.scrollTo(0,y); }catch(_e2){} }
+    });
   }
-  // One delegated toggle-capture handler (toggle does NOT bubble → capture). When a .fw/.finding
+  // One delegated toggle-capture handler (toggle does NOT bubble ↗ capture). When a .fw/.finding
   // opens, single-open its siblings within the same pane and pin its heading to the top, so at
   // most one inner box is open and it always fits one viewport. Closing a sibling fires toggle
   // with open=false, guarded by the early return.
@@ -668,7 +672,7 @@
   })();
 
   /* ============================================================
-     COMMERCE, intake modal → /api/intent → Cal.com embed; add-ons → Stripe
+     COMMERCE, intake modal ↗ /api/intent ↗ Cal.com embed; add-ons ↗ Stripe
      ============================================================ */
   const Commerce = (function(){
     const meta = (D && D.meta) || {};
@@ -758,7 +762,7 @@
           ${turnstileSite?`<div class="cf-turnstile" data-sitekey="${esc(turnstileSite)}" data-theme="light"></div>`:''}
           <div class="cmx-err" role="alert" hidden></div>
           <div class="cmx-actions">
-            <button type="submit" class="btn solid cmx-submit">Continue to the calendar →</button>
+            <button type="submit" class="btn solid cmx-submit">Continue to the calendar ↗</button>
           </div>
           <p class="cmx-fine">Submitting records this enquiry with Tamazia and opens the founder's calendar. No payment is taken here.</p>
         </form>`;
@@ -834,7 +838,7 @@
         window.Cal.ns[slug]('ui',{ theme:'light', hideEventTypeDetails:false, layout:'month_view' });
       }catch(_e){
         // graceful fallback, direct link already shown above
-        const el=document.getElementById(elId); if(el) el.innerHTML='<a class="btn solid" href="https://cal.com/'+esc(slug)+'" target="_blank" rel="noopener">Open the founder\'s calendar →</a>';
+        const el=document.getElementById(elId); if(el) el.innerHTML='<a class="btn solid" href="https://cal.com/'+esc(slug)+'" target="_blank" rel="noopener">Open the founder\'s calendar ↗</a>';
       }
       // GA4 lead event when the iframe attaches
       const wrap=document.getElementById(elId);
@@ -860,7 +864,7 @@
         window.Cal.ns[CAL_SLUG]('inline',{ elementOrSelector:'#'+elId, config:{ layout:'month_view', notes }, calLink:CAL_SLUG });
         window.Cal.ns[CAL_SLUG]('ui',{ theme:'light', hideEventTypeDetails:true, layout:'month_view' });
       }catch(_e){
-        const f=document.getElementById(elId); if(f) f.innerHTML='<a class="btn solid block" href="https://cal.com/'+esc(CAL_SLUG)+'" target="_blank" rel="noopener">Open the founder\'s calendar →</a>';
+        const f=document.getElementById(elId); if(f) f.innerHTML='<a class="btn solid block" href="https://cal.com/'+esc(CAL_SLUG)+'" target="_blank" rel="noopener">Open the founder\'s calendar ↗</a>';
       }
     }
 

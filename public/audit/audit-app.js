@@ -38,7 +38,7 @@
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
       <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
       <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder ↗</button>
-      <div class="rail-trust">Founder-led · every fix checked against ${D.rulesChecked} rules</div>
+      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM, International Business Law</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
     </aside>`;
   }
 
@@ -332,7 +332,7 @@
     {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24-hour crisis response — protect the reputation your referrals and pipeline depend on, before a problem spreads.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
     {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
     {nm:'AI Entity + Knowledge Panel', gbp:1200, was:0, unit:'mo', usp:'Your machine-readable entity: Organization schema, sameAs, Wikidata and llms.txt, so AI engines identify and cite you correctly.', spec:['Wikidata entry and Knowledge Panel build','sameAs across every verified profile','Wikipedia presence where eligible','Feeds the identity layer AI reads first']},
-    {nm:'Regulatory Change Alerts', gbp:199, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands — so you move before enforcement does.', spec:['Names the exact page and rule affected','Sector and jurisdiction filtered','The earliest warning of a new obligation','Every alert is a natural brief for a fix']},
+    {nm:'Regulatory Change Alerts', gbp:999, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands — so you move before enforcement does.', spec:['Names the exact page and rule affected','Sector and jurisdiction filtered','The earliest warning of a new obligation','Every alert is a natural brief for a fix']},
     {nm:'YMYL Content', gbp:800, was:550, unit:'piece', usp:'Per compliance-reviewed piece. Health and legal grade, held to Google\'s highest YMYL standard, not generic.', spec:['1,200 or more words, reviewed before publish','Passes your compliance function first time','Held to Google\'s YMYL standard','Cheaper than fixing content that fails review']},
   ];
   // ---- interactive trajectory: current (flat/declining) vs Tamazia-projected (rising) ----
@@ -418,7 +418,7 @@
         <div class="fx-anchor">Fixed scope, fixed price, productised &mdash; the same remediation a bespoke engagement delivers, without the open-ended day rate.</div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
         <p class="fx-line">For the firm that wants the urgent items closed first. ${crit>0?`The ${crit} ${plur(crit,'critical')} closed`:`The highest-severity gaps closed`} in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
-        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} ↗</a>
+        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint&nbsp;↗</a>
       </div>
       <div class="tiers">
         <div class="tier-bar" role="tablist" aria-label="Recurring mandate">
@@ -431,7 +431,7 @@
             ${t.rec?'<span class="badge rec">Recommended for this firm</span>':''}${t.popular?'<span class="badge pop">Most popular</span>':''}
             <div class="tier">${t.name}</div><div class="blurb">${t.blurb}</div>
             <div class="pr"><span class="was">${gbpFmt(t.standard)}</span><b>From ${gbpFmt(t.from)}</b><small>/mo</small></div>
-            <div class="wk">${t.wk} · 90-day rolling · saves ${gbpFmt(t.saves6)} over 6 months</div>
+            <div class="wk">${t.wk.split(' · ').map(s=>`<span class="wk-pill">${s}</span>`).join('')}<span class="wk-pill">90-day rolling</span><span class="wk-pill save">saves ${gbpFmt(t.saves6)}/6mo</span></div>
             <ul>${t.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
             <button class="moretoggle" data-more="price">See everything included ›</button>
             <div class="more"><ul style="padding-top:6px">${t.more.map(f=>`<li>${f}</li>`).join('')}</ul></div>
@@ -448,10 +448,10 @@
     <div class="addon-grid">
       ${ADDONS.map(a=>`<div class="addon ${a.hero?'ag-hero':''} ${a.hot?'ag-hot':''}" tabindex="0">
         <div class="ah"><div class="an">${a.nm}</div>
-          <div class="ap">${a.was?`<span class="apwas">${gbpFmt(a.was)}</span>`:''}<b>${gbpFmt(a.gbp)}</b><small>/${a.unit}</small></div></div>
+          <div class="ap"><span class="apwas">${gbpFmt(a.gbp*2)}</span><b>${gbpFmt(a.gbp)}</b><small>/${a.unit}</small></div></div>
         <div class="tag">${a.usp}</div>
         <div class="more"><div class="aspec-h">What you get</div><ul>${a.spec.map(s=>`<li>${s}</li>`).join('')}</ul></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">Full spec ›</button><a class="btn gold block" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}" style="flex:1">Add ${a.nm.split(' ')[0]} ↗</a></div>
+        <div class="foot"><button class="moretoggle" data-more="addon">Full spec ›</button><a class="btn gold" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}">Add ${a.nm.split(' ')[0]} ↗</a></div>
       </div>`).join('')}
     </div>
 
@@ -467,7 +467,7 @@
         <p>A fixed-scope sprint at ${gbpFmt(7500)}, not a retainer. We close your highest-severity findings in priority order, then re-scan to prove every fix landed &mdash; book the kickoff:</p>
         <ul class="route-val">${fixOutcomes.slice(0,3).map(o=>`<li>${escH(o)}</li>`).join('')}</ul>
         <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint kickoff calendar"></div>
-        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} ↗</a></div>
+        <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint&nbsp;↗</a></div>
     </div>
 
     <div class="card pad" style="margin-top:10px;background:var(--cream-2);border:0">
@@ -858,11 +858,12 @@
       el.innerHTML=`<div id="${elId}" class="cal-in-frame"></div>
         <p class="cmx-fine">Prefer a direct link? <a href="https://cal.com/${esc(CAL_SLUG)}" target="_blank" rel="noopener">Open the founder's calendar</a>.</p>`;
       try{
-        loadCalOnce(CAL_SLUG);
-        window.Cal('init', CAL_SLUG, { origin:'https://app.cal.com' });
+        const ns='cal_'+elId.replace(/[^a-z0-9]/gi,'');
+        loadCalOnce(ns);
+        window.Cal('init', ns, { origin:'https://app.cal.com' });
         const notes='Audit route: '+label+(meta.company?(' · '+meta.company):'');
-        window.Cal.ns[CAL_SLUG]('inline',{ elementOrSelector:'#'+elId, config:{ layout:'month_view', notes }, calLink:CAL_SLUG });
-        window.Cal.ns[CAL_SLUG]('ui',{ theme:'light', hideEventTypeDetails:true, layout:'month_view' });
+        window.Cal.ns[ns]('inline',{ elementOrSelector:'#'+elId, config:{ layout:'month_view', notes }, calLink:CAL_SLUG });
+        window.Cal.ns[ns]('ui',{ theme:'light', hideEventTypeDetails:true, layout:'month_view' });
       }catch(_e){
         const f=document.getElementById(elId); if(f) f.innerHTML='<a class="btn solid block" href="https://cal.com/'+esc(CAL_SLUG)+'" target="_blank" rel="noopener">Open the founder\'s calendar ↗</a>';
       }

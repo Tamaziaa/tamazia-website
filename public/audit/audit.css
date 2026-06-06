@@ -725,3 +725,28 @@ body.cmx-lock{overflow:hidden}
 #sec-plan[open] .ptj-proj{stroke-dasharray:2200;animation:ptjdraw 1.15s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes ptjdraw{from{stroke-dashoffset:2200}to{stroke-dashoffset:0}}
 @media(prefers-reduced-motion:reduce){#sec-plan[open] .ptj-proj{animation:none;stroke-dasharray:none}}
+
+/* ============================================================
+   PHASE 10-11 — rail (real lockup · no fixes block · jump-to-pricing · fits one viewport) + always-on FAB
+   ============================================================ */
+.rail{padding:16px 18px 18px}
+.rail-logo{width:100%;max-width:192px;height:auto;display:block;margin:0 0 13px}
+.rail h1{font-size:18px}
+.rail-gauge{margin:8px 0 4px}
+.rail-band{margin-bottom:11px}
+.rail-exposure{padding:9px;margin-bottom:10px}
+.rail-exposure .v{font-size:25px}
+.rail-navtitle{margin:5px 0 7px}
+.railnav{margin-bottom:11px}
+.railnav button{padding:6px 10px;font-size:12.5px}
+.rail-jump{display:block;width:100%;text-align:center;background:rgba(201,168,124,.12);color:var(--gold-light);border:1px solid rgba(201,168,124,.3);font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:9px;border-radius:9px;cursor:pointer;margin-bottom:9px;transition:.13s}
+.rail-jump:hover{background:rgba(201,168,124,.2);border-color:var(--gold);color:#fff}
+.rail-cta{padding:11px}
+.rail-trust{margin-top:9px}
+.fix-fab{z-index:160}
+
+/* ============================================================
+   PHASE 12 — conversion polish: decoy framing + quiet-luxury whitespace
+   ============================================================ */
+.tier-decoy{font-family:var(--body);font-size:11px;color:var(--muted);line-height:1.45;margin:0 0 10px;padding-left:11px;border-left:2px solid var(--gold-light)}
+.tier-decoy b{color:var(--ox)}

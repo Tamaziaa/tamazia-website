@@ -22,10 +22,10 @@
     ];
     return `
     <aside class="rail">
-      <div class="rail-brand"><span class="mark"></span><div><b>Tamazia</b><small>Compliance · SEO · AI audit</small></div></div>
+      <div class="rail-brand"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></div>
       <h1>${D.meta.company}</h1>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city,D.meta.date].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
-      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:120,dark:true})}</div>
+      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:104,dark:true})}</div>
       <div class="rail-band">${D.scoreBand} · ${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       <div class="rail-kpis">
@@ -36,10 +36,7 @@
       </div>
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
-      <div class="rail-fixes">
-        <div class="rail-navtitle" style="margin-top:0">Fix these three first</div>
-        ${D.fixes.map(f=>`<div class="rail-fix"><span class="n" style="color:var(--${f.n===3?'gold':'red'}-light,#E8B4AE)">${f.n}</span><span class="t">${f.title}</span><span class="e">${f.exp.split('–').pop()}</span></div>`).join('')}
-      </div>
+      <button class="rail-jump" data-pane="plan">Jump to pricing →</button>
       <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk this with the founder →</button>
       <div class="rail-trust">100+ verified reviews · 47 UK &amp; US legal clients<br>Founder-led · ${D.rulesChecked} rules every campaign</div>
     </aside>`;
@@ -417,6 +414,7 @@
           ${TIERS.map((t,i)=>`<button class="tier-tab ${i===0?'active':''}" role="tab" data-tier-tab="${i}" id="tt-${i}">${t.name}<small>From ${gbpFmt(t.from)}</small></button>`).join('')}
         </div>
         <div class="pilot-note">Each shows the standard rate struck through and your <b>“from” price</b>, the same figures as our pricing page, plus what you save across the first six months. 90-day rolling, no long-term contract.</div>
+        <div class="tier-decoy"><b>Authority</b> is where most multi-location firms your size start. Foundation proves the model on one location; Enterprise is the full multi-market mandate.</div>
         <div class="price-grid">
           ${TIERS.map((t,i)=>`<div class="price tierpanel ${t.rec?'rec':''} ${i===0?'on':''}" data-tier-panel="${i}" role="tabpanel" aria-labelledby="tt-${i}">
             ${t.rec?'<span class="badge rec">Recommended for this firm</span>':''}${t.popular?'<span class="badge pop">Most popular</span>':''}
@@ -519,6 +517,8 @@
     setActive(id);
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
+  // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
+  document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
   document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',()=>{ if(d.open){ document.querySelectorAll('.pillar').forEach(o=>{ if(o!==d) o.open=false; }); setActive(d.dataset.section); } }));
   app.addEventListener('click',e=>{ const v=e.target.closest('[data-open]'); if(v){ e.preventDefault(); openPillar(v.dataset.open); } });
 
@@ -628,11 +628,9 @@
     const b=document.createElement('button');
     b.className='fix-fab'; b.type='button';
     b.innerHTML='<span class="ff-dot"></span>Fix these now!';
-    b.addEventListener('click',()=>openPillar('plan'));
+    // Phase 11: ALWAYS visible (no hide-on-open). Click opens the plan pane AND scrolls to the Fix Sprint box.
+    b.addEventListener('click',()=>{ openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .fixbox'); if(fx) scrollHeadingTop(fx); }); });
     document.body.appendChild(b);
-    // hide the FAB while the plan pane is already open and in view
-    const sync=()=>{ const open=document.getElementById('sec-plan'); b.classList.toggle('hide', !!(open&&open.open)); };
-    document.querySelectorAll('.pillar').forEach(d=>d.addEventListener('toggle',sync)); sync();
   })();
 
   /* ============================================================

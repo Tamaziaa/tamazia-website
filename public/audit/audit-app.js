@@ -3,14 +3,17 @@
    ============================================================ */
 (function(){
   const $ = (s,r=document)=>r.querySelector(s);
+  // count-aware pluralization: plur(1,'finding')→'finding', plur(2,'finding')→'findings',
+  // plur(1,'is','are')→'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
+  const plur = (n,s,p)=> n===1 ? s : (p||s+'s');
 
   /* ---------------- LEFT RAIL ---------------- */
   function rail(){
     const nav=[
       {id:'overview', nm:'Overview', dot:'r', c:''},
-      {id:'regulatory', nm:'Regulatory', dot:'r', c:D.counts.critical+' crit'},
-      {id:'seo', nm:'SEO &amp; Technical', dot:'a', c:(D.seo.onpage||[]).length+' issues'},
-      {id:'geo', nm:'AI &amp; GEO', dot:'r', c:'SoV '+D.geo.shareOfVoice},
+      {id:'regulatory', nm:'Regulatory', dot:'r', c:(D.frameworks||[]).length+' '+plur((D.frameworks||[]).length,'framework')},
+      {id:'seo', nm:'SEO &amp; Technical', dot:'a', c:(D.seo.issueCount||(D.seo.onpage||[]).length)+' '+plur(D.seo.issueCount||(D.seo.onpage||[]).length,'issue')},
+      {id:'geo', nm:'AI &amp; GEO', dot:'r', c:(D.geo.issueCount||0)+' '+plur(D.geo.issueCount||0,'gap')},
       {id:'competitors', nm:'Competitors', dot:'a', c:Math.max(0,(D.competitors.rows||[]).length-1)+' ahead'},
       {id:'plan', nm:'Plan &amp; Pricing', dot:'g', c:''}
     ];
@@ -60,40 +63,61 @@
     ${D.fixes.map((f,i)=>CH.finding(f,i===0)).join('')}
     <div class="card pad" style="margin-top:15px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
-  P.regulatory = ()=>`
+  P.regulatory = ()=>{
+    // #3: only render the "breaches in full" subhead + cards when the Regulatory-filtered
+    // fixes list is non-empty, otherwise the heading/subhead sit above an empty body.
+    const regFixes=(D.fixes||[]).filter(f=>f.pillar==='Regulatory');
+  return `
     <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
-      <h2>We screened all ${D.rulesChecked} active frameworks. ${D.frameworksAssessed} of them legally bind you, and ${D.counts.critical} are breached on your live site right now.</h2>
+      <h2>${D.regulatoryHeadline || ('We screened all '+D.rulesChecked+' active frameworks. '+D.frameworksAssessed+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')}</h2>
       <p>We screen all ${D.rulesChecked} active frameworks every scan; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Your top ${D.frameworks.length} regulatory exposures</h3></div>
     <div class="card pad" style="margin-bottom:16px">${CH.frameworkBars()}</div>
-    <div class="subhead"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks, and the ${D.counts.critical} breached right now, worst exposure first.</h3></div>
+    <div class="subhead"><span class="nt">↳</span><h3>Your ${D.frameworksAssessed} binding frameworks${D.counts.critical>0?(', and the '+D.counts.critical+' breached right now'):''}, worst exposure first.</h3></div>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
     ${D.frameworks.map((fw,i)=>`<details class="fw" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary><span class="code">${fw.code}</span>
-        <div><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.findings} findings</div></div>
+        <div><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'finding'))}</div></div>
         <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
         <div class="fwe">${fw.exp}</div></summary>
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${fw.why}
         <div class="lbl">${fw.regulator} · recent enforcement</div><div class="action">${fw.action}</div>
       </div></details>`).join('')}
-    <div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
-    ${D.fixes.filter(f=>f.pillar==='Regulatory').map(f=>CH.finding(f,false)).join('')}`;
+    ${regFixes.length?`<div class="subhead"><span class="nt">↳</span><h3>The breaches in full, walk the chain</h3></div>
+    ${regFixes.map(f=>CH.finding(f,false)).join('')}`:''}`;
+  };
 
-  P.seo = ()=>`
+  P.seo = ()=>{
+    const ks=D.seo.keywordSummary||{};
+    const totalTracked=+ks.totalTracked||0, onPageOne=+ks.onPageOne||0;
+    const noKeywords=totalTracked===0;
+    // PSI is unavailable when the CWV builder fell back to its "not assessed" sentinel
+    // (no real CLS/PERF rows). Drives the speed clause + the "failing N of M" header.
+    const cwv=(D.seo.cwv||[]);
+    const cwvReal=cwv.filter(m=>m.k==='CLS'||m.k==='PERF');
+    const psiAvail=cwvReal.length>0;
+    const cwvFail=cwv.filter(m=>(m.st||m.state)==='fail').length;
+    const cwvN=psiAvail?cwvReal.length:cwv.length;
+    const seoHeadline=noKeywords
+      ? (psiAvail
+          ? 'Your buyers search specialist, commercial terms, not directory listings, and your live site is slow and thin when they do arrive.'
+          : 'Your buyers search specialist, commercial terms, not directory listings, and the technical signals below decide who the answer engines surface.')
+      : ('Off page one for '+(totalTracked-onPageOne)+' of '+totalTracked+' high-intent searches your buyers are typing'+(psiAvail?', and slow when they do arrive.':'.'));
+  return `
     <div class="pane-head"><span class="eyebrow">Search &amp; AI both read these signals</span>
-      <h2>Off page one for ${D.seo.keywordSummary.totalTracked-D.seo.keywordSummary.onPageOne} of ${D.seo.keywordSummary.totalTracked} high-intent searches your buyers are typing, and slow when they do arrive.</h2>
+      <h2>${seoHeadline}</h2>
       <p>Search engines and AI answer engines read the same things, speed, structure, security, depth. Every signal below was measured live on your site, and each one is a buyer a competitor is capturing instead of you. Here is the exact fix.</p></div>
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>SEO &amp; technical loopholes, measured live on your DOM by Google PageSpeed.</h3></div>
     <div class="card pad" style="margin-bottom:15px">${CH.psiAuditList()}</div>
     <div class="card pad" style="margin-bottom:15px"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
     <div class="grid g2">
-      <div class="card pad"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">real-user · failing 4 of 4</div></div>${CH.cwvMeters()}</div>
+      <div class="card pad"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?('real-user · failing '+cwvFail+' of '+cwvN):'real-user · not assessed'}</div></div>${CH.cwvMeters()}</div>
       <div style="display:flex;flex-direction:column;gap:15px">
         <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
         <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
           <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
-          <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile?'green':'red'})">${D.seo.tech.mobile?'Yes':'No'}</span></div>
+          <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
           <div class="fact"><span class="k">Trackers</span><span class="v">${D.seo.tech.trackers}</span></div>
           <div class="fact"><span class="k">Ad pixels</span><span class="v">${D.seo.tech.adPixels}</span></div>
           <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
@@ -106,18 +130,37 @@
     <div class="subhead"><span class="nt">↳</span><h3>${D.seo.keywordsThin?'The queries that actually fit a firm of your scale':'Keyword demand a rival is capturing'}</h3></div>
     <div class="card pad">
       ${D.seo.keywordsThin?`<div class="urgent" style="margin-bottom:13px;background:linear-gradient(100deg,var(--cream-2),#fff);border-left-color:var(--gold)"><span class="upulse" style="background:var(--gold);animation:none"></span><div><div class="ut">Local “near me” searches are not your battleground.</div><div class="us">For a firm of your size, buyers search specialist, commercial terms, not directory listings. We filtered out the low-intent and aggregator-led queries that would misrepresent you. Your real fight is brand authority and AI visibility, where the named rivals are pulling ahead.</div></div></div>`:''}
-      <div class="flexrow" style="justify-content:space-between;margin-bottom:12px">
+      ${noKeywords?'':`<div class="flexrow" style="justify-content:space-between;margin-bottom:12px">
         ${CH.stat(D.seo.keywordSummary.opportunity, D.seo.keywordSummary.oppLabel,{red:true,size:'30'})}
         ${CH.stat(D.seo.keywordSummary.onPageOne+' / '+D.seo.keywordSummary.totalTracked,'on page one today',{size:'30'})}
-      </div>${CH.keywordTable()}</div>`;
+      </div>`}${CH.keywordTable()}</div>`;
+  };
 
-  P.geo = ()=>`
+  P.geo = ()=>{
+    const aiKnows=!!D.geo.aiKnows;
+    // #6: the "no reliable information / vouch" boilerplate only holds when AI does NOT know the firm.
+    // For a recognised firm, swap in a positive, defend-the-position callout.
+    const aiCallout=aiKnows
+      ? CH.urgent('AI engines can already identify '+D.meta.company+', the work now is to make you the default named answer over the rivals named alongside you, and to defend that position before they close the gap.', 'Sentiment probe: '+D.geo.sentiment)
+      : CH.urgent('A live AI engine, asked who you are by name, returned “no reliable information.” It cannot vouch for you, and when pushed it may invent details you can’t control.', 'Sentiment probe: '+D.geo.sentiment);
+    // #10: bind the radar "Entity" axis to the SAME score the header shows (entityReadiness),
+    // not the hardcoded 80 the upstream radar may carry, so the 6-signals block and header agree.
+    const radarAxes=(D.geo.radar||[]).map(a=>(a&&(a.ax==='Entity'))?Object.assign({},a,{v:D.geo.entityReadiness}):a);
+    // #9: the "55% of UK SERPs" stat is UK-specific. For a non-UK firm, drop that clause
+    // and keep only the jurisdiction-neutral claims so we never show a UK stat to a US/UAE firm.
+    const _ctry=String((D.meta&&D.meta.country)||'').toLowerCase();
+    const _mkts=((D.meta&&D.meta.markets)||[]).map(m=>String(m).toUpperCase());
+    const isUK=/united kingdom|\buk\b|england|scotland|wales/.test(_ctry)||_mkts.includes('UK')||_mkts.includes('GB');
+    const aiOverview=isUK
+      ? D.geo.aiOverview
+      : String(D.geo.aiOverview||'').replace(/^[^.;]*AI Overviews[;.]?\s*/i,'AI Overviews now sit above the classic results for your category; ');
+  return `
     <div class="pane-head"><span class="eyebrow">When your buyers ask AI</span>
-      <h2>Are AI assistants recommending ${D.meta.company}? Right now, no, ${D.geo.citations.length} of ${D.geo.citations.length} answers name a competitor instead.</h2>
-      <p>${D.geo.rootCause?D.geo.rootCause.reason:'The answer engines decide who to name from structured signals you are missing.'} ${D.geo.aiOverview}</p></div>
-    ${CH.urgent('A live AI engine, asked who you are by name, returned “no reliable information.” It cannot vouch for you, and when pushed it may invent details you can’t control.', 'Sentiment probe: '+D.geo.sentiment)}
+      <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+D.meta.company+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+D.meta.company+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+D.meta.company+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
+      <p>${D.geo.rootCause?D.geo.rootCause.reason:'The answer engines decide who to name from structured signals you are missing.'} ${aiOverview}</p></div>
+    ${aiCallout}
     <div class="grid g-4-8" style="margin-top:16px">
-      <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(D.geo.radar,210)}</div>
+      <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(radarAxes,210)}</div>
       <div style="display:flex;flex-direction:column;gap:15px">
         <div class="card pad"><div class="card-h"><div class="t">Do AI engines cite you?</div><div class="meta">readiness /100 · ${D.geo.aiKnows?'recognised':'0 citing'}</div></div>${CH.engineGrid()}</div>
         <div class="flexrow" style="gap:15px">
@@ -137,6 +180,7 @@
     ${CH.finding(D.geo.fix,true)}
     <div class="subhead"><span class="nt">↳</span><h3>Plain-English glossary</h3></div>
     <div class="card pad"><div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${k}</b><span>${v}</span></div>`).join('')}</div></div>`;
+  };
 
   P.competitors = ()=>`
     <div class="pane-head"><span class="eyebrow">The firms being chosen over you</span>
@@ -147,7 +191,7 @@
     <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map(c=>`<div class="beatrow"><div class="bn">${c.name}<span class="bsig">${c.signal}</span></div><div class="bb"><b>Beat them by</b> ${c.beatBy.fix} <span class="barrow">→</span> <span class="bproof">${c.beatBy.proof}</span> <span class="barrow">→</span> <span class="bmetric">${c.beatBy.metric}</span></div></div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
-        ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} runs</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
+        ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} ${plur(D.competitors.sovBar.of,'run')}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
         : `<div class="card pad"><div class="card-h"><div class="t">AI citations &amp; page-one</div><div class="meta">you vs leader</div></div>${CH.bars(D.competitors.aiKwBars,{max:Math.max(2,...(D.competitors.aiKwBars||[{v:1}]).map(b=>b.v))})}</div>`}
       <div class="card pad"><div class="card-h"><div class="t">Domain rating vs rivals</div><div class="meta">0–100 authority</div></div>${CH.bars(D.competitors.drBars,{max:100})}</div>
     </div>
@@ -201,14 +245,22 @@
     if(!TIERS.some(t=>t.popular)) TIERS[1].popular=true;
     return TIERS;
   }
+  // #8: add-on copy must not leak wrong-sector regulators. MHRA (UK medicines) only fits
+  // healthcare; FCA/COBS (financial conduct) only fits financial firms. Detect from the sector
+  // label and swap to a generic, sector-correct phrase otherwise.
+  const _sectorStr=String((D.meta&&D.meta.sector)||'').toLowerCase();
+  const isHealthcare=/health|medic|clinic|dental|pharma|care|hospital|wellness|aesthet/.test(_sectorStr);
+  const isFinancial=/financ|bank|wealth|invest|insur|account|fintech|capital|asset manage|advis/.test(_sectorStr);
+  const gbpAdRule=isHealthcare?'MHRA and sector ad rules':'your sector’s advertising rules';
+  const coldSendRule=isFinancial?'FCA and COBS-compliant sends':'jurisdiction-compliant, opt-out-respecting sends';
   // Full add-on catalogue (value-only, leads with the outcome USP). Mirrors _commerce.js.
   const ADDONS=[
     {nm:'GEO / AI Search Presence', gbp:1800, was:950, unit:'mo', usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews. AI visitors convert 4.4 to 23 times organic. The only compliance-reviewed GEO for regulated firms.', spec:['Per-engine citation measurement across all 6 engines','Entity, schema, llms.txt and Wikidata build','Compliance review of what AI says about you','Monthly share of voice against named rivals'], hero:true},
-    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same engine that found you as a client.', spec:['Built on the 403-rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate','FCA and COBS-compliant sends'], hero:true},
+    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same engine that found you as a client.', spec:['Built on the 403-rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
     {nm:'Compliance Monitoring', gbp:399, was:0, unit:'mo', usp:'Monthly re-scan of the full 403-rule catalogue. The loss-leader every budget holder approves without escalation.', spec:['Catches new breaches the day the law changes','Alerts within 24 hours of a new gap','Quarterly board-ready certificate','8.9 percent of a core retainer'], hot:true},
     {nm:'LinkedIn Executive Authority', gbp:1100, was:750, unit:'mo', usp:'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.', spec:['Dual distribution, LinkedIn and Google','8 to 12 posts per month per executive','Every post compliance-checked','Builds the named-expert E-E-A-T signal']},
     {nm:'Reputation Monitoring + Crisis', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression, 24 hour crisis response. Share prices fall 35 percent on average after a reputational crisis.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Compliance-aware responses from minute one']},
-    {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against MHRA and sector ad rules.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
+    {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
     {nm:'AI Entity + Knowledge Panel', gbp:1200, was:0, unit:'mo', usp:'Your machine-readable entity: Organization schema, sameAs, Wikidata and llms.txt, so AI engines identify and cite you correctly.', spec:['Wikidata entry and Knowledge Panel build','sameAs across every verified profile','Wikipedia presence where eligible','Feeds the identity layer AI reads first']},
     {nm:'Regulatory Change Alerts', gbp:199, was:0, unit:'mo', usp:'Every new ruling in your sector, the day it lands. The loss-leader that keeps you ahead of enforcement.', spec:['Names the exact page and rule affected','Below the discretionary approval threshold','Sector and jurisdiction filtered','Every alert is a natural brief for a fix']},
     {nm:'YMYL Content', gbp:800, was:550, unit:'piece', usp:'Per compliance-reviewed piece. Health and legal grade, held to Google\'s highest YMYL standard, not generic.', spec:['1,200 or more words, reviewed before publish','Passes your compliance function first time','Held to Google\'s YMYL standard','Cheaper than fixing content that fails review']},
@@ -293,7 +345,7 @@
         <h3>Top 30 critical issues solved.</h3>
         <div class="fx-price"><b>${gbpFmt(7500)}</b><span>one-time, fixed scope</span></div>
         <ul class="fx-list">${fixOutcomes.map(o=>`<li>${o}</li>`).join('')}</ul>
-        <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} criticals closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
+        <p class="fx-line">For the firm that wants the bleeding stopped first. The ${crit} ${plur(crit,'critical')} closed in 8 weeks, in priority order, starting with ${topFix.toLowerCase()}.</p>
         <a class="btn solid block fx-cta" data-book="one_time_fix">Start the Fix Sprint, ${gbpFmt(7500)} →</a>
       </div>
       <div class="tiers">
@@ -338,7 +390,7 @@
         <p>A 30 minute confidential session with Aman Pareek. No sales team, no discovery loop. Your tier and strongest finding are carried into the call.</p>
         <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="Strategy call calendar"></div>
         <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a strategy call →</a></div>
-      <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>Close the ${crit} criticals in 8 weeks</h3>
+      <div class="bookcard"><div class="rt">Route 2 · Fix Sprint</div><h3>Close the ${crit} ${plur(crit,'critical')} in 8 weeks</h3>
         <p>A single fixed-scope engagement at ${gbpFmt(7500)}, not a retainer. For the firm that wants the bleeding stopped first. Logged as a distinct intent.</p>
         <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint calendar"></div>
         <a class="btn block" data-book="one_time_fix">Start the Fix Sprint →</a></div>
@@ -378,12 +430,15 @@
   const SECT=[['overview','Overview'],['regulatory','Regulatory'],['seo','SEO &amp; Technical'],['geo','AI &amp; GEO'],['competitors','Competitors'],['plan','Plan &amp; Pricing']];
   const chip=(t,c)=>`<span class="pkpi ${c||''}">${t}</span>`;
   const maxDr=Math.max(0,...(D.competitors.ladder||[]).map(c=>c.dr||0));
+  // DR chip: only show "vs N" when rival DR is actually known (adapter sets drHidden when <2 rivals have a DR);
+  // never render "DR X vs 0" or "DR — vs 0".
+  const drChip=(()=>{const y=((D.competitors.rows||[])[0]||{}).dr; if(y==null||y==='—'||y===''||y===', ')return ''; return D.competitors.drHidden?chip('DR '+y):chip('DR '+y+' vs '+maxDr,'red');})();
   const SUMM={
-    overview:{ico:'◆',nm:'Diagnostics &amp; scorecard',kpis:chip(D.score+'/100')+chip(D.grade,'red')+chip((D.dims||[]).filter(d=>d.st==='fail').length+' dims failing')},
+    overview:{ico:'◆',nm:'Diagnostics &amp; scorecard',kpis:chip(D.score+'/100')+chip(D.grade,'red')+chip(((D.dims||[]).filter(d=>d.st==='fail').length)+' '+plur((D.dims||[]).filter(d=>d.st==='fail').length,'dim')+' failing')},
     regulatory:{ico:'§',nm:'Regulatory exposure',kpis:chip(D.counts.critical+' critical','red')+(D.exposureFull>0?chip(D.exposure,'red'):'')+chip(D.frameworksAssessed+' frameworks bind')},
-    seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' issues','amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
+    seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' '+plur(D.seo.onpage.length,'issue'),'amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
     geo:{ico:'❖',nm:'AI &amp; GEO visibility',kpis:chip('SoV '+D.geo.shareOfVoice,'red')+chip(D.geo.aiKnows?'AI cites you':'AI can’t cite you','red')+chip('Entity '+D.geo.entityReadiness)},
-    competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' rivals ahead')+chip('DR '+((D.competitors.rows||[])[0]||{}).dr+' vs '+maxDr,'red')},
+    competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' '+plur(Math.max(0,(D.competitors.rows||[]).length-1),'rival')+' ahead')+drChip},
     plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+((D.pricing||[])[0]||{}).pr+'/mo')+chip(D.counts.critical+' to fix')},
   };
   app.innerHTML = rail() + `<main class="content">

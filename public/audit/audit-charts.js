@@ -29,8 +29,20 @@ window.CH = (function(){
 
   /* small dial (0-100) for PSI/sub-scores */
   function dial(v, label, o={}){
+    const size=o.size||78, sw=8, r=(size-sw)/2, c=2*Math.PI*r;
+    // A metric the scan could not assess arrives as null/undefined/NaN. Render a neutral "n/a" dial
+    // (grey ring, no score arc, no red 0) rather than a misleading red 0/100. (PSI-availability)
+    const na = (v==null || isNaN(+v));
+    if(na){
+      return `<div style="text-align:center"><div class="gauge" style="width:${size}px;height:${size}px;margin:0 auto">
+        <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+          <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#EFE6D8" stroke-width="${sw}"/>
+        </svg><div class="ctr"><div class="num" style="font-size:${size*.2}px;color:var(--muted)">n/a</div></div></div>
+        <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:5px">${label}</div>
+        <div class="mono" style="font-size:8px;color:var(--muted-2);letter-spacing:.04em">not assessed</div></div>`;
+    }
     v=Math.max(0,Math.min(100,+v||0));   // clamp 0–100 so a missing sub-score can't NaN the arc
-    const size=o.size||78, sw=8, r=(size-sw)/2, c=2*Math.PI*r, off=c*(1-v/100);
+    const off=c*(1-v/100);
     const col = v>=75?'#2F7A4A':v>=45?'#B6791F':'#B3261E';
     return `<div style="text-align:center"><div class="gauge" style="width:${size}px;height:${size}px;margin:0 auto">
       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
@@ -41,9 +53,20 @@ window.CH = (function(){
       <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:5px">${label}</div></div>`;
   }
 
+  /* tiny "data unavailable" note shared by charts that must degrade rather than draw an empty frame */
+  function naNote(t){ return `<div class="capt" style="margin:0;color:var(--muted)">${t||'Not available for this scan.'}</div>`; }
+
   /* gradient horizontal bars */
   function bars(data, o={}){
     data = Array.isArray(data)?data:[];
+    // Comparison bars are meaningless with no rival to compare against. When the adapter hands an empty
+    // array (or a flag), or only the lone "You" bar survives, degrade to a short note instead of drawing a
+    // single-bar chart that reads as broken. (DR-vs-rivals / sparse-comparison) — generic callers with real
+    // multi-bar data are unaffected; opt-in via o.compare for charts that should keep a single bar.
+    const onlyYou = data.length===1 && data[0] && data[0].you;
+    if(o.drHidden || data.length===0 || (onlyYou && o.compare!==false)){
+      return naNote(o.naText || 'Comparison data not available for this scan.');
+    }
     // Guard the denominator: empty data or all-zero values must never yield 0/-Infinity (→ NaN widths).
     const rawMax = o.max||Math.max(0,...data.map(d=>+d.v||0)), max=rawMax>0?rawMax:1, unit=o.unit||'', fmt=o.fmt||(v=>v);
     return `<div class="barset">${data.map(d=>{
@@ -76,6 +99,9 @@ window.CH = (function(){
 
   /* AI visibility radar */
   function radar(axes, size=210){
+    axes=Array.isArray(axes)?axes:[];
+    // With <3 axes the polygon math (360/n) degenerates / divides by zero and draws an empty broken frame.
+    if(axes.length<3) return naNote('AI-visibility signals not available for this scan.');
     const cx=size/2, cy=size/2, R=size*0.36, n=axes.length, id=uid();
     const ang=i=>(-90 + i*360/n)*Math.PI/180, pt=(i,rad)=>[cx+rad*Math.cos(ang(i)), cy+rad*Math.sin(ang(i))];
     let grid='',ax='',lab='';
@@ -93,6 +119,7 @@ window.CH = (function(){
   function trajectory(w=520,h=130){
     const pad=34, iW=w-pad*2, iH=h-34, id=uid();
     const T=Array.isArray(D.trajectory)?D.trajectory:[], denom=Math.max(1,T.length-1);   // never divide by 0 (single point)
+    if(!T.length) return naNote('Trajectory projection not available for this scan.');   // no points → no empty frame
     const xs=T.map((_,i)=>pad+iW*i/denom);
     const ys=T.map(p=>(h-20)-(Math.max(0,Math.min(100,+p.v||0))/100)*iH);
     const line=xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)} ${ys[i].toFixed(1)}`).join(' ');
@@ -160,10 +187,17 @@ window.CH = (function(){
 
   /* security headers grid */
   function securityGrid(){
-    return `<div class="secgrid">${D.seo.security.map(s=>`
-      <div class="seccell ${s.present?'ok':'no'}"><div class="mono" style="font-size:10px;font-weight:500">${s.h}</div>
-      <div class="mono" style="font-size:8px;letter-spacing:.04em;color:${s.present?'var(--green)':'var(--red)'};text-transform:uppercase">${s.present?'present':'missing'}</div>
-      <div class="capt" style="margin-top:4px">${s.note}</div></div>`).join('')}</div>`;
+    // present===null/undefined => site was not reachably scanned (not assessed). Never show the risk note
+    // when a header is PRESENT (that was the self-contradiction: "present" + "…missing/exposed" beneath it).
+    return `<div class="secgrid">${D.seo.security.map(s=>{
+      const na=(s.present===null||s.present===undefined);
+      const stt=na?'not assessed':(s.present?'present':'missing');
+      const col=na?'var(--ink)':(s.present?'var(--green)':'var(--red)');
+      const note=na?'Not assessed — your site was not reachably scanned this run.':(s.present?'Present and correctly configured.':s.note);
+      return `<div class="seccell ${na?'':(s.present?'ok':'no')}"><div class="mono" style="font-size:10px;font-weight:500">${s.h}</div>
+      <div class="mono" style="font-size:8px;letter-spacing:.04em;color:${col};text-transform:uppercase;${na?'opacity:.6':''}">${stt}</div>
+      <div class="capt" style="margin-top:4px">${note}</div></div>`;
+    }).join('')}</div>`;
   }
 
   /* AI engine grid */
@@ -211,8 +245,10 @@ window.CH = (function(){
       ${D.geo.citations.map(c=>`<tr><td>${c.q}</td><td class="nr">Not cited</td><td><b style="color:var(--ox)">${c.who}</b>${c.pos?` <span class="rk">#${c.pos}</span>`:''}</td></tr>`).join('')}</tbody></table>`;
   }
   function keywordTable(){
+    // Every cell value is DATA-sourced (keyword/leader-domain text); escape it so a stray glyph or a raw
+    // "<" in a term can't break out of its <td> and let the next section's icon bleed into this cell. (esc)
     return `<table class="tz-table"><thead><tr><th>Keyword</th><th>Volume</th><th>You</th><th>Who ranks</th></tr></thead><tbody>
-      ${D.seo.keywords.map(k=>`<tr><td>${k.kw}</td><td class="rk">${k.vol}</td><td class="${k.you==='#1'?'':'nr'}" style="${k.you==='#1'?'color:var(--green);font-family:var(--mono);font-size:11px':''}">${k.you}</td><td>${k.who===', '?'<span class="rk">, </span>':k.who+(k.pos?' <span class="rk">'+k.pos+'</span>':'')}</td></tr>`).join('')}</tbody></table>`;
+      ${D.seo.keywords.map(k=>`<tr><td>${esc(k.kw)}</td><td class="rk">${esc(k.vol)}</td><td class="${k.you==='#1'?'':'nr'}" style="${k.you==='#1'?'color:var(--green);font-family:var(--mono);font-size:11px':''}">${esc(k.you)}</td><td>${k.who===', '?'<span class="rk">—</span>':esc(k.who)+(k.pos?' <span class="rk">'+esc(k.pos)+'</span>':'')}</td></tr>`).join('')}</tbody></table>`;
   }
 
   /* big stat tile */
@@ -246,7 +282,7 @@ window.CH = (function(){
   }
 
   /* ---- money + deterministic regulator-badge colour ---- */
-  function money(n){n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return '£'+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return '£'+Math.round(n/1e3)+'k'; return '£'+n;}
+  function money(n){const c=(D&&D.cur)||'£';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+Math.round(n/1e3)+'k'; return c+n;}
   function badgeColor(code){const pal=['#5A1A2B','#2A5DA8','#2F7A4A','#B6791F','#7A2A3B','#8A1C16','#3a2d30','#2A0C14'];let h=0;for(const ch of String(code||'FW'))h=(h*31+ch.charCodeAt(0))>>>0;return pal[h%pal.length];}
 
   /* ---- rich 10-dimension scorecard card grid (Pass · Needs work · Fail) ---- */
@@ -264,10 +300,13 @@ window.CH = (function(){
   function waterfall(){
     const wf=D.exposureWaterfall; if(!wf||!wf.steps||wf.raw<=0) return '';
     const max=wf.raw||1;
-    return `<div class="wf">${wf.steps.map(s=>`<div class="wf-row"><div class="wf-l">${s.l}</div>
+    // Drop adjacent steps with an identical value: when nothing collapses (no overlapping DP ceilings),
+    // the raw/collapsed/real values are equal and would render as 3 identical bars (reads as broken).
+    const steps=wf.steps.filter((s,i,a)=> i===0 || s.v!==a[i-1].v);
+    return `<div class="wf">${steps.map(s=>`<div class="wf-row"><div class="wf-l">${s.l}</div>
       <div class="bar-track"><div class="bar-fill ${s.cls==='gold'?'gold':s.cls==='amber'?'amber':''}" style="width:${Math.max(3,(s.v/max)*100)}%"></div></div>
       <div class="wf-v ${s.final?'final':''}">${money(s.v)}</div></div>`).join('')}
-      ${wf.savedPct>0?`<div class="wf-note">We collapse overlapping data-protection ceilings instead of stacking them, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:''}</div>`;
+      ${wf.savedPct>0?`<div class="wf-note">We collapse overlapping data-protection ceilings instead of stacking them, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:`<div class="wf-note">This is the statutory ceiling across your binding frameworks — there were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`}</div>`;
   }
 
   /* ---- GEO "why AI can't see you" causal chain ---- */

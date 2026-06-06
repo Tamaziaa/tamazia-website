@@ -48,11 +48,26 @@ function firmName(payload, passed) {
 // Live screenshot of the exact page where a finding sits, the "show them the error on their own site" moment.
 const thum = (url) => 'https://image.thum.io/get/width/1100/crop/720/noanimate/' + String(url || '');
 const nameOf = (t) => (typeof t === 'string' ? t : (t && (t.name || t.type || t.vendor || t.platform))) || '';
-function gbp(n) {
+// Money formatter. `sym` defaults to '£' so every existing caller is unchanged; a US firm threads '$'. Only
+// the symbol changes — the magnitude formatting (M/k) is identical, and we deliberately do not convert FX. (currency)
+function gbp(n, sym) {
+  sym = sym || '£';
   n = Math.round(+n || 0);
-  if (n >= 1e6) { const m = n / 1e6; return '£' + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
-  if (n >= 1e3) return '£' + Math.round(n / 1e3) + 'k';
-  return '£' + n;
+  if (n >= 1e6) { const m = n / 1e6; return sym + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
+  if (n >= 1e3) return sym + Math.round(n / 1e3) + 'k';
+  return sym + n;
+}
+// Detect the firm's display currency symbol from its scanned markets, CONSERVATIVELY: only switch to '$' when
+// the firm is clearly US (USD is its sole/primary currency and it isn't a GBP firm). Default '£' when unknown,
+// mixed, or non-US. Never guess from a single foreign visitor currency. (currency)
+function moneySymbol(payload) {
+  const curs = arr(g(payload, 'scan.markets.currencies', [])).map((c) => String(c).toUpperCase());
+  const cc = String(payload.country || '').toUpperCase();
+  const isUS = cc === 'US' || cc === 'USA';
+  // Clearly USD: US firm whose currencies are USD-only (or USD-led and not GBP). Keep '£' for everyone else.
+  if (curs.length && curs.every((c) => c === 'USD')) return isUS ? '$' : (curs.length === 1 ? '$' : '£');
+  if (isUS && curs[0] === 'USD' && !curs.includes('GBP')) return '$';
+  return '£';
 }
 const SEV_BAND = { P0: 'critical', P1: 'high', P2: 'standard', P3: 'standard' };
 
@@ -66,6 +81,17 @@ const FW_NAME = {
   US_CCPA: 'US CCPA', US_CPRA: 'US CPRA', US_FTC: 'US FTC Act § 5', US_CAN_SPAM: 'US CAN-SPAM', FR_CNIL: 'France · CNIL', DE_BDSG: 'Germany · BDSG',
   US_STATE_PRIVACY: 'US State Privacy Laws', US_VCDPA: 'Virginia VCDPA', US_ADA: 'US ADA · Title III', US_ATTORNEY_ADVERTISING: 'US Attorney Advertising Rules', US_FTC_ENDORSE: 'FTC Endorsement Guides',
   EU_EAA_2025B2C: 'EU Accessibility Act 2025', UAE_PDPL: 'UAE PDPL', UK_CRA_2015: 'Consumer Rights Act 2015', UK_HSE: 'Health & Safety (HSE)', UK_CAA_ATOL: 'ATOL / Package Travel Rules', UK_CAAATOL: 'ATOL / Package Travel Rules',
+  // Sector / consumer / online-safety codes that previously fell through to raw title-case ("Uk Arla", "Eu Dsa").
+  UK_ARLA: 'ARLA Propertymark Rules', UK_RICS: 'RICS Rules of Conduct', UK_FCA_CONC25: 'FCA Consumer Credit (CONC)', EU_DSA: 'EU Digital Services Act',
+  UK_UKCA: 'UKCA Marking', UK_FOOD_INFO_2014: 'Food Information Regs 2014', UK_LICENSING_ACT: 'Licensing Act 2003', UK_OSA_2023: 'Online Safety Act 2023',
+  UK_OFSTED: 'Ofsted requirements', UK_DFE: 'DfE information duties', UK_OFS: 'OfS registration conditions',
+  // Further real codes present in the matrix fixtures that otherwise rendered raw title-case ("Uk Sra Coc"). (no-raw-framework-code)
+  UK_SRA_COC: 'SRA Code of Conduct', UK_SRA_TRANSPARENCY: 'SRA Transparency Rules', UK_FCA_MAR: 'FCA Market Abuse Regulation', UK_FSMA_S21: 'FSMA s.21 Financial Promotions',
+  UK_ACCA: 'ACCA Rulebook', UK_FRC: 'FRC Ethical Standard', UK_PRA: 'PRA Rulebook', UK_SMCR: 'Senior Managers & Certification Regime', UK_FOS_FSCS: 'FOS / FSCS Disclosure',
+  UK_CE_PLUS: 'Cyber Essentials Plus', UK_NCSC_CYBER_ESSENTIALS: 'Cyber Essentials', UK_DSIT_NIS2: 'UK NIS Regulations', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'UK Corporate Governance Code',
+  EU_CSRD: 'EU CSRD', EU_PSD2: 'EU PSD2', EU_DMA: 'EU Digital Markets Act', EU_DORA: 'EU DORA', EU_NIS2: 'EU NIS2 Directive', EU_AML6: 'EU 6th Anti-Money-Laundering Directive', EU_MIFID_II: 'EU MiFID II', EU_SFDR: 'EU SFDR', EU_GPSR: 'EU General Product Safety Regulation',
+  US_TCPA: 'US TCPA', US_TDPSA: 'Texas Data Privacy Act', US_FINRA_2210: 'FINRA Rule 2210', US_SEC_506C: 'SEC Rule 506(c)', US_SEC_REG_FD: 'SEC Regulation FD', US_NYDFS_500: 'NYDFS Part 500', US_GLBA: 'US GLBA', US_HIPAA: 'US HIPAA', US_COPPA: 'US COPPA', US_FERPA: 'US FERPA', US_MEDICAL_BOARD: 'State Medical Board Rules', US_FTC_ENDORSE: 'FTC Endorsement Guides',
+  UAE_CONSUMER: 'UAE Consumer Protection Law', UAE_ECOMMERCE: 'UAE E-Commerce Law', UAE_RERA: 'RERA (Dubai)', FR_CNIL_2025: 'France · CNIL',
 };
 const FW_REGULATOR = {
   UK_GDPR_A13: "Information Commissioner's Office", UK_DPA_2018: "Information Commissioner's Office", UK_PECR: "Information Commissioner's Office", UK_ICO_COOKIES: "Information Commissioner's Office",
@@ -75,7 +101,22 @@ const FW_REGULATOR = {
   UK_TRADING_STANDARDS: 'Trading Standards', UK_MODERN_SLAVERY: 'Home Office', UK_CAA: 'Civil Aviation Authority', UK_FSA: 'Food Standards Agency', GOOGLE_EEAT: 'Google Search',
   AE_PDPL: 'UAE Data Office', AE_RERA: 'RERA Dubai', DIFC_DPL: 'DIFC Commissioner of Data Protection', ADGM_DPR: 'ADGM Office of Data Protection', SAUDI_PDPL: 'Saudi Data & AI Authority', QATAR_PDPPL: 'Qatar NCSA',
   US_CCPA: 'California Privacy Protection Agency', US_CPRA: 'California Privacy Protection Agency', US_FTC: 'Federal Trade Commission', US_CAN_SPAM: 'Federal Trade Commission', FR_CNIL: 'CNIL (France)', DE_BDSG: 'German data-protection authorities',
+  UK_ARLA: 'Propertymark (NTSELAT)', UK_RICS: 'RICS', UK_FCA_CONC25: 'Financial Conduct Authority', EU_DSA: 'European Commission', UK_UKCA: 'Office for Product Safety & Standards',
+  UK_FOOD_INFO_2014: 'Food Standards Agency', UK_LICENSING_ACT: 'Local licensing authority', UK_OSA_2023: 'Ofcom', UK_OFSTED: 'Ofsted', UK_DFE: 'Department for Education', UK_OFS: 'Office for Students',
+  UK_SRA_COC: 'Solicitors Regulation Authority', UK_SRA_TRANSPARENCY: 'Solicitors Regulation Authority', UK_FCA_MAR: 'Financial Conduct Authority', UK_FSMA_S21: 'Financial Conduct Authority',
+  UK_ACCA: 'ACCA', UK_FRC: 'Financial Reporting Council', UK_PRA: 'Prudential Regulation Authority', UK_SMCR: 'FCA / PRA', UK_FOS_FSCS: 'Financial Ombudsman Service',
+  UK_CE_PLUS: 'NCSC / IASME', UK_NCSC_CYBER_ESSENTIALS: 'NCSC / IASME', UK_DSIT_NIS2: 'DSIT', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'Financial Reporting Council',
+  EU_CSRD: 'EU member-state authorities', EU_PSD2: 'European Banking Authority', EU_DMA: 'European Commission', EU_DORA: 'European Supervisory Authorities', EU_NIS2: 'EU member-state authorities', EU_AML6: 'EU member-state authorities', EU_MIFID_II: 'ESMA', EU_SFDR: 'ESMA', EU_GPSR: 'European Commission',
+  US_TCPA: 'Federal Communications Commission', US_TDPSA: 'Texas Attorney General', US_FINRA_2210: 'FINRA', US_SEC_506C: 'Securities & Exchange Commission', US_SEC_REG_FD: 'Securities & Exchange Commission', US_NYDFS_500: 'NY Department of Financial Services', US_GLBA: 'Federal Trade Commission', US_HIPAA: 'HHS Office for Civil Rights', US_COPPA: 'Federal Trade Commission', US_FERPA: 'US Department of Education', US_MEDICAL_BOARD: 'State Medical Board', US_FTC_ENDORSE: 'Federal Trade Commission',
+  UAE_CONSUMER: 'UAE Ministry of Economy', UAE_ECOMMERCE: 'UAE Ministry of Economy', UAE_RERA: 'RERA Dubai', FR_CNIL_2025: 'CNIL (France)',
+  UK_HSE: 'Health & Safety Executive', US_STATE_PRIVACY: 'US state attorneys general', US_VCDPA: 'Virginia Attorney General', US_ADA: 'US Department of Justice', US_ATTORNEY_ADVERTISING: 'State bar associations', US_CAN_SPAM: 'Federal Trade Commission',
 };
+// Frameworks that overlap so heavily they must render as ONE row, never two near-identical cards under the
+// same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the
+// Food Info Regs and the FSA "Natasha's Law" food card). Collapse the overlapping code into its canonical
+// sibling at the grouping step so findings merge into a single framework. (fw-overlap)
+const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA' };
+const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
 const NO_STATUTORY_FINE = new Set(['GOOGLE_EEAT', 'GOOGLE_EAT', 'SCHEMA', 'WIKIPEDIA', 'GEO', 'SEO']);
 // Framework display names render UNescaped in the framework/finding cards, so a name carrying raw
 // markup, e.g. a Lighthouse/axe audit title like "`<frame>` or `<iframe>` elements do not have a
@@ -210,14 +251,34 @@ function craftFix(p) {
   const verbs = ['Tamazia builds', 'Tamazia ships', 'Tamazia configures', 'Tamazia drafts', 'Tamazia engineers', 'Tamazia provisions'];
   return verbs[fw.length % verbs.length] + ' the control this finding flags, wires it into your live site, and re-scans to confirm it now passes.';
 }
-function bingoFromPointer(p, pillar, news, i) {
+// Correct pillar for a finding so a SEO/technical/AI-visibility pointer is never mislabelled "Regulatory"
+// (which filled the "breaches in full, walk the chain" Regulatory section with LCP/crawlability cards). Only
+// genuinely-regulatory buckets are Regulatory; everything else routes to its own pane. (pillar-misroute)
+function pillarOf(p) {
+  const b = String((p && p.bucket) || '').toLowerCase();
+  if (b === 'ai_visibility') return 'AI / GEO';
+  if (b === 'compliance' || b === 'public_records') return 'Regulatory';
+  if (b === 'seo' || b === 'technical' || b === 'technical_seo' || b === 'tls_dns' || b === 'tech' || b === 'performance' || b === 'accessibility') return 'SEO + Technical';
+  // Unknown bucket: fall back on the framework code (GEO→AI, SEO→SEO), else treat as Regulatory only if it
+  // actually carries a regulatory framework code, otherwise SEO + Technical.
+  const fw = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
+  if (/^GEO$/.test(fw)) return 'AI / GEO';
+  if (/^SEO$/.test(fw) || NO_STATUTORY_FINE.has(fw)) return 'SEO + Technical';
+  return FW_JUR(fw) !== 'GLOBAL' ? 'Regulatory' : 'SEO + Technical';
+}
+function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
   const noFine = NO_STATUTORY_FINE.has(p.framework_short) || p.bucket === 'ai_visibility' || p.bucket === 'seo';
   return {
     n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation) : pillar, pillar,
-    law: fwName(p.framework_short) || p.citation || pillar,
-    exp: (noFine || (!lowF && !hiF)) ? 'ranking impact' : gbp(lowF) + '–' + gbp(hiF),
+    // GEO/SEO/technical are not statutes; render the human "③ The law" layer, never the raw code title-cased
+    // ("Geo") and never a bare "Framework" for a non-regulatory finding that carries no framework code. (geo-law)
+    law: (/^GEO$/i.test(p.framework_short) || (p.bucket === 'ai_visibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Generative-engine visibility'
+      : (/^SEO$/i.test(p.framework_short) || (/^(seo|technical_seo|technical|tech|tls_dns|performance)$/.test(String(p.bucket || '')) && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Search-engine visibility'
+        : (p.bucket === 'accessibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || ''))) ? 'Accessibility (WCAG / Equality Act)'
+          : (fwName(p.framework_short) || p.citation || pillar),
+    exp: (noFine || (!lowF && !hiF)) ? 'ranking impact' : gbp(lowF, sym) + '–' + gbp(hiF, sym),
     title: p.fact || g(p, 'bingo.problem', 'Finding'),
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),
@@ -276,6 +337,11 @@ function authJurisdictions(payload) {
   const eng = arr(payload.engine_jurisdictions).map((j) => String(j).toUpperCase());
   const det = arr(payload.detected_jurisdictions).map((j) => String(j));
   const euByName = det.some((d) => /france|germany|italy|spain|netherlands|ireland|belgium|portugal|austria|sweden|denmark|finland|poland|luxembourg|european/i.test(d));
+  // A firm REGISTERED in an EU member state is bound by pan-EU regulation (GDPR / ePrivacy / DSA / EAA) — that is
+  // authoritative, not an over-attach, so 'EU' is added from the registered country alone. We deliberately do NOT
+  // blanket-add the OTHER member states here (that would wrongly attach e.g. France's CNIL to a German firm); the
+  // multi-country member fan-out stays gated on engine + name corroboration, exactly as before. (EU-member-authoritative)
+  if (EU_MEMBERS.includes(cc)) set.add('EU');
   if (eng.includes('EU') && (EU_MEMBERS.includes(cc) || euByName)) { set.add('EU'); ['FR', 'DE', 'IT', 'ES', 'NL', 'IE'].forEach((m) => set.add(m)); }
   // Trust the firm-profiler's CROSS-REFERENCED office countries (each backed by an evidence quote from the
   // site), this is how a genuinely international firm gets its REAL jurisdictions (Mishcon's Singapore, a US
@@ -339,10 +405,10 @@ function canonicalExposure(perFw) {
 }
 // Scrub any £/GBP figure out of LLM prose and replace with the canonical figure (no LLM number leaks).
 // The unit space is grouped WITH the unit so a trailing word (e.g. "fine") keeps its space. (P2)
-function scrubMoney(text, canonical) {
+function scrubMoney(text, canonical, sym) {
   if (!text) return '';
   return String(text)
-    .replace(/(?:GBP|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi, gbp(canonical))
+    .replace(/(?:GBP|USD|AED|SAR|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi, gbp(canonical, sym))
     .replace(/\s{2,}/g, ' ').trim();
 }
 
@@ -358,7 +424,8 @@ function gradeOf(score) {
 const bandOf = (s) => s >= 70 ? 'Strong' : s >= 55 ? 'Workable' : s >= 40 ? 'At risk' : 'Critical';
 
 /* ---------------- dimensions + strict score ---------------- */
-function buildDims(payload, sig, psi, pointers, aiR, authority) {
+function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
+  if (siteScanned === undefined) siteScanned = Object.keys(sig || {}).length > 0;
   const c = pointers.filter((p) => p.severity === 'P0').length;
   const h = pointers.filter((p) => p.severity === 'P1').length;
   const st = pointers.filter((p) => p.severity === 'P2' || p.severity === 'P3').length;
@@ -375,16 +442,21 @@ function buildDims(payload, sig, psi, pointers, aiR, authority) {
   const has = (k) => !!sig[k];
   const perf = isNum(psi.perf) ? Math.round(psi.perf * 100) : null;
   const dims = [
-    { nm: 'Regulatory compliance', key: 'compliance', _na: compNA, _cc: cc0, _ch: ch0, st: compNA ? 'na' : (cc0 > 0 ? 'fail' : ch0 > 0 ? 'warn' : 'pass'), v: compNA ? 0 : Math.round(compHealth * 100), sub: compNA ? 'not assessed, limited read of the live site' : `${cc0} critical · ${ch0} high · ${cs0} standard`, w: 2 },
-    { nm: 'On-page SEO', key: 'seo', v: Math.round(((has('title') && sig.title) ? 1 : 0) * 33 + (has('meta_description') ? 33 : 0) + (sig.h1_count > 0 ? 34 : 0)), sub: `${(sig.title ? '' : 'no title · ')}${sig.meta_description ? '' : 'no meta description · '}${sig.h1_count > 0 ? '' : 'no H1'}`.replace(/ · $/, '') || 'present', w: 1 },
-    { nm: 'Technical SEO', key: 'technical_seo', v: Math.round((has('canonical') ? 34 : 0) + (has('viewport') ? 33 : 0) + (has('lang') ? 33 : 0)), sub: `${sig.canonical ? '' : 'no canonical · '}${sig.viewport ? '' : 'no viewport · '}${sig.lang ? '' : 'no lang attribute'}`.replace(/ · $/, '') || 'ok', w: 1 },
-    { nm: 'Content & E-E-A-T', key: 'content', v: Math.round((has('json_ld') ? 40 : 0) + (has('open_graph') ? 20 : 0) + (sig.html_bytes > 4000 ? 40 : 15)), sub: `${sig.json_ld ? 'schema · ' : 'no schema · '}${sig.open_graph ? 'OG · ' : 'no OG · '}${sig.html_bytes > 4000 ? 'depth ok' : 'thin content'}`, w: 1 },
+    // Verdict: criticals→fail, highs→warn, standard-only→warn (NOT a confident green "PASS", which read as
+    // "Regulatory compliance PASS" under an F grade); only a genuinely clean sheet (no findings at all) passes. (zero-critical-honest)
+    { nm: 'Regulatory compliance', key: 'compliance', _na: compNA, _cc: cc0, _ch: ch0, st: compNA ? 'na' : (cc0 > 0 ? 'fail' : ch0 > 0 ? 'warn' : cs0 > 0 ? 'warn' : 'pass'), v: compNA ? 0 : Math.round(compHealth * 100), sub: compNA ? 'not assessed, limited read of the live site' : `${cc0} critical · ${ch0} high · ${cs0} standard`, w: 2 },
+    // On-page / technical / content / security / a11y / tracking dims INFER from the signal bag; with no readable
+    // scan that bag is empty and every value would read 0 (a fabricated F that also tanks the score). Pass null so
+    // they become "not assessed" (excluded from scoring) instead of confirmed-failing. (scan-fabrication)
+    { nm: 'On-page SEO', key: 'seo', v: siteScanned ? Math.round(((has('title') && sig.title) ? 1 : 0) * 33 + (has('meta_description') ? 33 : 0) + (sig.h1_count > 0 ? 34 : 0)) : null, sub: siteScanned ? (`${(sig.title ? '' : 'no title · ')}${sig.meta_description ? '' : 'no meta description · '}${sig.h1_count > 0 ? '' : 'no H1'}`.replace(/ · $/, '') || 'present') : 'not assessed', w: 1 },
+    { nm: 'Technical SEO', key: 'technical_seo', v: siteScanned ? Math.round((has('canonical') ? 34 : 0) + (has('viewport') ? 33 : 0) + (has('lang') ? 33 : 0)) : null, sub: siteScanned ? (`${sig.canonical ? '' : 'no canonical · '}${sig.viewport ? '' : 'no viewport · '}${sig.lang ? '' : 'no lang attribute'}`.replace(/ · $/, '') || 'ok') : 'not assessed', w: 1 },
+    { nm: 'Content & E-E-A-T', key: 'content', v: siteScanned ? Math.round((has('json_ld') ? 40 : 0) + (has('open_graph') ? 20 : 0) + (sig.html_bytes > 4000 ? 40 : 15)) : null, sub: siteScanned ? `${sig.json_ld ? 'schema · ' : 'no schema · '}${sig.open_graph ? 'OG · ' : 'no OG · '}${sig.html_bytes > 4000 ? 'depth ok' : 'thin content'}` : 'not assessed', w: 1 },
     { nm: 'Core Web Vitals', key: 'cwv', v: perf == null ? null : perf, sub: perf == null ? 'not assessed' : `perf ${perf} · CLS ${(+psi.cls || 0).toFixed(2)}`, w: 1 },
-    { nm: 'Security headers', key: 'security', v: Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100), sub: `${sig.hsts ? '' : 'no HSTS · '}${sig.csp ? '' : 'no CSP · '}${sig.xfo ? '' : 'no X-Frame'}`.replace(/ · $/, '') || 'ok', w: 1 },
-    { nm: 'Accessibility (WCAG)', key: 'a11y', v: Math.round((sig.lang ? 30 : 0) + (sig.viewport ? 30 : 0) + 40 * pointerHealth), sub: `${sig.lang ? '' : 'no lang · '}contrast/labels`, w: 1 },
+    { nm: 'Security headers', key: 'security', v: siteScanned ? Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100) : null, sub: siteScanned ? (`${sig.hsts ? '' : 'no HSTS · '}${sig.csp ? '' : 'no CSP · '}${sig.xfo ? '' : 'no X-Frame'}`.replace(/ · $/, '') || 'ok') : 'not assessed', w: 1 },
+    { nm: 'Accessibility (WCAG)', key: 'a11y', v: siteScanned ? Math.round((sig.lang ? 30 : 0) + (sig.viewport ? 30 : 0) + 40 * pointerHealth) : null, sub: siteScanned ? `${sig.lang ? '' : 'no lang · '}contrast/labels` : 'not assessed', w: 1 },
     { nm: 'AI / GEO visibility', key: 'ai_visibility', st: (aiR.score || 0) < 40 ? 'fail' : 'warn', v: aiR.score || 0, sub: `share of voice ${sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows'))} · entity ${aiR.score || 0}`, w: 1 },
-    { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', ', ')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
-    (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', st: has ? 'warn' : 'pass', v: has ? 45 : 85, sub: has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent', w: 1 }; })(),
+    { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', '—')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
+    (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent'), w: 1 }; })(),
   ];
   return dims.map((d) => {
     if (d.v == null) { d.st = 'na'; d.v = 0; d._na = true; }
@@ -426,6 +498,9 @@ const COMPETITOR_DENYLIST = new Set([
   // tech/SaaS/software listicle, review-aggregator & roundup blogs that co-rank for "saas"/"software"
   // category terms by aggregating vendors (NOT real vendors themselves — real vendors are kept).
   'geekflare.com','g2crowd.com','capterra.com','getapp.com','softwareadvice.com','trustradius.com','techradar.com','pcmag.com','cnet.com','techcrunch.com','venturebeat.com','producthunt.com','saashub.com','slashdot.org','sourceforge.net','financesonline.com','softwaresuggest.com','selecthub.com',
+  // listicle / magazine / no-name aggregator hosts the LLM surfaced as "leaders" whose stems dodge the token
+  // patterns (no separator before the keyword). These co-rank by aggregating firms and must never be peers. (citations-junk)
+  'topschoolguide.com','luxurycolumnist.com','britainsfinest.co.uk','retailgazette.co.uk','lawfuel.com','lawandlegal.co.uk','hrjforemanlaws.co.uk','robertsonmoss.com','counselindex.com','vault.com','thehotelguru.com','lhw.com',
 ]);
 const JUNK_PATTERNS = [
   /(^|\.)wikipedia\.org$/i, /(^|\.)(facebook|linkedin|youtube|instagram|tiktok|x)\.com$/i, /(^|\.)google\./i, /\.gov(\.[a-z]{2})?$/i, /(^|\.)nhs\.uk$/i,
@@ -603,10 +678,57 @@ function categoryLabel(payload) {
 // "Beat them by: {fix} → {proof} → {metric}" derived from the REAL gap vs this rival.
 function beatBy(c, ctx) {
   const nm = cleanDomain(c.name);
-  if (c.src === 'AI' && !ctx.aiKnows) return { fix: 'Build your machine-readable entity, Organization + sameAs schema + a Wikidata entry', proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set' };
+  if (c.src === 'AI' && !ctx.aiKnows) {
+    // The AI-named-peer branch was IDENTICAL for every rival (Al Tamimi/Fenwick/UCL all read "Build your
+    // machine-readable entity…"). Rotate the entity angle by ladder position so each row reads distinctly while
+    // staying true to the same underlying entity gap; the proof already names the specific rival. (beatby-variety)
+    const fixes = [
+      'Build your machine-readable entity, Organization + sameAs schema + a Wikidata entry',
+      'Publish an llms.txt and sourced sameAs links so answer engines can verify you',
+      'Stand up a sourced Wikidata entity and Knowledge-Panel profile AI can trust',
+      'Add FAQ/Service schema and named-expert pages the engines can quote',
+      'Consolidate your entity signals (schema + sameAs + citations) into one identity AI can read',
+    ];
+    return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' → 70+ to enter the AI answer set ahead of ' + nm };
+  }
   if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' → ' + (c.dr + 3) + ' to overtake ' + nm };
   if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”' };
-  return { fix: 'Build the entity, schema and topical depth they hold and you lack', proof: nm + ' owns the category surface today', metric: 'reach parity on Domain Rating + AI citations' };
+  // No DR / rank / AI-run signal for this rival: the generic fallback was IDENTICAL for every rival (Emaar's
+  // 5 cloned rows). Rotate the angle deterministically by ladder position AND name the rival in each, so the
+  // ladder reads as five distinct moves, never a templated wall. (beatby-variety)
+  const fb = [
+    { fix: 'Build the Organization + sameAs schema and Wikidata entity they already hold', proof: nm + ' is the name engines surface in your category; you return “no reliable information”', metric: 'become a citable entity (readiness ' + ctx.youEntity + ' → 70+) before ' + nm },
+    { fix: 'Earn authoritative, named-expert backlinks in your sector', proof: nm + ' carries the referring-domain authority Google trusts first', metric: 'close the authority gap to ' + nm + ' on Domain Rating' },
+    { fix: 'Publish compliance-reviewed pillar content for your priority terms', proof: nm + ' owns the answer surface for the queries your buyers actually search', metric: 'rank top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”, ahead of ' + nm },
+    { fix: 'Ship an llms.txt + FAQ/Service schema so AI can quote you', proof: nm + ' is machine-readable to answer engines today and you are not', metric: 'enter the AI answer set ' + nm + ' currently owns' },
+    { fix: 'Consolidate authority with canonical, internal links and topical depth', proof: nm + ' holds the topical depth and link equity you lack', metric: 'reach parity with ' + nm + ' on authority + AI citations' },
+  ];
+  return fb[(+ctx.i || 0) % fb.length];
+}
+
+// Conservative SECTOR-APPLICABILITY gate (membrane). A handful of frameworks are well-known mismatches for a
+// firm of a given sector and inflate the headline if the engine over-attaches them. We drop ONLY clear-cut
+// mismatches, never anything ambiguous: for higher-education/university firms the school regulators (Ofsted,
+// DfE) never apply, and the Online Safety Act 2023 gates on user-to-user (UGC) services, so it is dropped only
+// when the site shows no UGC capability. Returns true if the framework should be DROPPED for this firm. (sector-applicability)
+function sectorInapplicable(fw, payload) {
+  const code = String(fw || '').toUpperCase();
+  const sec = (String(payload.detected_sector || payload.sector || '') + ' ' + String(g(payload, 'firm_profile.primary_sector', '') || '') + ' ' + arr(g(payload, 'firm_profile.sectors', [])).join(' ')).toLowerCase();
+  const name = String(g(payload, 'firm_profile.name', '') || payload.firm_name || payload.company || '').toLowerCase();
+  const host = cleanDomain(payload.domain).toLowerCase();
+  // Higher-education / university: an explicit "university/college/HE" signal, OR an academic-institution TLD
+  // (.ac.uk / .edu) paired with the education sector. Never a school/nursery (those ARE Ofsted/DfE-regulated).
+  const academicTld = /\.ac\.uk$/.test(host) || /\.edu$/.test(host) || /\.ac\.[a-z]{2}$/.test(host);
+  const isHigherEd = (/\b(universit|higher.?education|college|institute of technology)\b/.test(sec + ' ' + name) || (academicTld && /\beducation\b/.test(sec)))
+    && !/\b(school|nursery|primary|secondary|academy trust|sixth.?form|kindergarten|preschool)\b/.test(sec + ' ' + name);
+  if (isHigherEd) {
+    if (code === 'UK_OFSTED' || code === 'UK_DFE') return true;                 // school regulators, not HE
+    if (code === 'UK_OSA_2023') {                                              // OSA gates on user-to-user services
+      const hasUGC = !!g(payload, 'scan.signals.ugc', false) || !!g(payload, 'scan.signals.user_content', false) || !!g(payload, 'scan.signals.forum', false) || !!g(payload, 'scan.signals.comments', false);
+      if (!hasUGC) return true;
+    }
+  }
+  return false;
 }
 
 /* ---------------- THE ADAPTER ---------------- */
@@ -618,6 +740,7 @@ export function payloadToD(payload, ctx = {}) {
   const allow = authJurisdictions(payload);
   const company = firmName(payload, ctx.company);
   const market = String(payload.country || '').toUpperCase();
+  const curSym = moneySymbol(payload);   // '£' unless the firm is clearly USD/US, then '$' (no FX conversion)
   // A safe absolute URL for screenshots even when payload.domain is missing, never "https://undefined".
   const siteUrl = cleanDomain(payload.domain) ? ('https://' + cleanDomain(payload.domain)) : '';
 
@@ -639,9 +762,10 @@ export function payloadToD(payload, ctx = {}) {
   const pointers = rawPointers.filter((p) => {
     const j = FW_JUR(p.framework_short || p.citation);
     if (!(j === 'GLOBAL' || allow.has(j))) return false;
+    if (sectorInapplicable(p.framework_short || p.citation, payload)) return false; // sector-mismatch frameworks (Ofsted/DfE/OSA on a university)
     return evidenced(p);
   });
-  const dropped = rawPointers.length - pointers.length; // jurisdiction + unevidenced suppressions
+  const dropped = rawPointers.length - pointers.length; // jurisdiction + unevidenced + sector-applicability suppressions
   // EXPOSURE CREDIBILITY: rescale turnover-based statutory fines (GDPR/PDPL/CCPA…) from the global-turnover CAP the
   // catalogue stores (£17.5M) down to 4% of THIS firm's estimated turnover, so a dental clinic shows ~£48k, not
   // £18M, while a bank/university (whose 4% already exceeds the cap) is left untouched. Mutating the gated pointers
@@ -658,6 +782,11 @@ export function payloadToD(payload, ctx = {}) {
 
   const sig = g(payload, 'scan.signals', {}) || {};
   const psi = g(payload, 'scan.psi', {}) || {};
+  // Was the live site actually read this scan? When it was bot-blocked / thin (site_scan_reachable===false)
+  // OR the on-page signal bag is empty, we have NOTHING to assert — so we must not FABRICATE absence-findings
+  // ("Missing <title>", "No H1", "HSTS MISSING", "6 KB / Not measured"). Those read as confirmed breaches when
+  // they are really "not assessed". Gate every absence-inference on this flag. (scan-fabrication / Emaar)
+  const siteScanned = g(payload, 'scan.site_scan_reachable', true) !== false && Object.keys(sig).length > 0;
   const aiR = g(payload, 'ai_readiness', {}) || {};
   const authority = g(payload, 'authority', {}) || {};
   const geoP = g(payload, 'geo_probe', {}) || {};
@@ -682,12 +811,24 @@ export function payloadToD(payload, ctx = {}) {
   };
 
   // --- dims + score + grade (strict, honest) ---
-  const dims = buildDims(payload, sig, psi, pointers, aiR, authority);
+  const dims = buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned);
   const score = scoreFromDims(dims, exposureN);
   const grade = gradeOf(score);
   const gap = Math.max(0, 90 - score);
   const wk12 = Math.min(95, Math.round(score + gap * 0.45));
   const wk24 = Math.min(96, Math.round(score + gap * 0.80));
+  // Honest regulatory headline. When ZERO confirmed-critical COMPLIANCE breaches exist, the audit must NOT
+  // assert "…N breached on your live site right now / Regulatory compliance PASS" under a low grade — the real
+  // exposure is the ranking + AI-visibility gaps, which do exist. Lead with those instead. Consumers that build
+  // the regulatory headline should prefer this string (audit-app.js §regulatory). (zero-critical-honest)
+  const compCriticals = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P0').length;
+  const compHighs = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P1').length;
+  const regulatoryHeadline = compCriticals > 0
+    ? `We screened all ${arr(payload.rules).length || 403} active frameworks. ${arr(payload.applicable_frameworks).length} of them legally bind you, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
+    : (compHighs > 0
+      ? `We screened all ${arr(payload.rules).length || 403} active frameworks. ${arr(payload.applicable_frameworks).length} of them legally bind you; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
+      : `We screened all ${arr(payload.rules).length || 403} active frameworks. ${arr(payload.applicable_frameworks).length} of them legally bind you, and none is confirmed breached on the live site this scan — so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+  const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
   const news = g(payload, 'news_map', {}) || {};
@@ -699,16 +840,18 @@ export function payloadToD(payload, ctx = {}) {
   // its literal <iframe> corrupted the DOM and swallowed every pillar after Regulatory. (C/S-021)
   const compForFw = pointers.filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records');
   const byFw = {};
-  for (const p of compForFw) { const fw = p.framework_short || p.citation || 'OTHER'; (byFw[fw] = byFw[fw] || []).push(p); }
+  // Canonicalise overlapping codes (DMCC→CMA, Food Info→FSA) so their findings merge into one framework row.
+  for (const p of compForFw) { const fw = fwCanon(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
     const c = ps.filter((p) => p.severity === 'P0').length;
     const h = ps.filter((p) => p.severity === 'P1').length;
-    const maxFine = NO_STATUTORY_FINE.has(fw) ? 0 : (perFw[fw] || 0);
+    // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
+    const maxFine = NO_STATUTORY_FINE.has(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => NO_STATUTORY_FINE.has(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
     const top = ps[0] || {};
     return {
       code: fwCode(fw), name: fwName(fw), regulator: fwRegulator(fw),
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
-      findings: ps.length, c, h, s: ps.length - c - h, exp: maxFine ? gbp(maxFine) : 'ranking', expN: maxFine / 1e6,
+      findings: ps.length, c, h, s: ps.length - c - h, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
       action: g(news, fw, '') || top.enforcement_example || (fwRegulator(fw) + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
     };
@@ -716,9 +859,45 @@ export function payloadToD(payload, ctx = {}) {
   if (!frameworks.length) { const _read = g(payload, 'scan.reachable', true) !== false; frameworks.push(_read
     ? { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'We screened the full regulatory catalogue against your jurisdiction and could not evidence a statutory breach on the live site this scan, your material gaps sit in the technical, AI-visibility and authority signals below, not in fines.', why: 'No in-jurisdiction statutory breach was evidenced this scan; the priority is the ranking, AI-visibility and trust work in the other pillars.' }
     : { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'Your live site blocked our deep read this scan (bot-challenge or JS-only render), so we show only what we could prove, honest suppression, not a clean bill of health. A re-scan completes it.', why: 'A re-scan with archive + rendered-DOM fallback completes the assessment.' }); }
+  // FLOOR: a readable site shows >=5 regulatory brackets (founder standing rule). We top up HONESTLY, never with a
+  // fabricated breach/fine and never with a law outside the firm's jurisdiction: (1) the firm's own BINDING
+  // frameworks that screened clean this scan, then (2) the baseline laws that apply to ANY commercial site in the
+  // firm's jurisdiction (data protection, e-privacy/cookies, accessibility, consumer/e-commerce, company
+  // disclosure). Each renders as "screened, controls to confirm" with the real regulator. (>=5 per pillar)
+  if (siteScanned && frameworks.length < 5) {
+    const _shownFw = new Set(frameworks.map((f) => f.name));
+    const _jurName = (fw) => ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || 'Global');
+    const _pushScreened = (fw) => {
+      if (frameworks.length >= 5) return;
+      if (NO_STATUTORY_FINE.has(fw) || sectorInapplicable(fw, payload)) return;
+      const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allow.has(j))) return;
+      const nm = fwName(fw); if (_shownFw.has(nm)) return; _shownFw.add(nm);
+      frameworks.push({
+        code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'controls to confirm', expN: 0, screened: true,
+        action: g(news, fw, '') || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
+        why: 'This framework legally binds you and we screened it against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.',
+      });
+    };
+    arr(payload.applicable_frameworks).map(fwCanon).filter((fw, i, a) => a.indexOf(fw) === i).forEach(_pushScreened);
+    if (frameworks.length < 5) {
+      const BASELINE = {
+        UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
+        EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
+        US: ['US_CCPA', 'US_ADA', 'US_FTC'],
+        AE: ['AE_PDPL', 'UAE_CONSUMER', 'UAE_ECOMMERCE'],
+        SA: ['SAUDI_PDPL'], QA: ['QATAR_PDPPL'], FR: ['FR_CNIL'], DE: ['DE_BDSG'],
+      };
+      for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
+    }
+  }
 
   // --- exposure bars (£M, chart max 18) ---
-  const exposureBars = Object.entries(perFw).sort((a, b) => b[1] - a[1]).slice(0, 8)
+  // Collapse overlapping codes (DMCC→CMA, Food Info→FSA) to one bar (max), matching the merged framework rows
+  // above, so a collapsed framework never appears as two near-identical bars. (fw-overlap)
+  const perFwBars = {};
+  for (const [fw, v] of Object.entries(perFw)) { const k = fwCanon(fw); perFwBars[k] = Math.max(perFwBars[k] || 0, v); }
+  const exposureBars = Object.entries(perFwBars).sort((a, b) => b[1] - a[1]).slice(0, 8)
     .map(([fw, v]) => ({ l: fwName(fw), v: Math.min(18, +(v / 1e6).toFixed(v >= 1e6 ? 1 : 3)) }));
 
   // --- 5x5 risk heatmap from findings (impact rows x likelihood cols) ---
@@ -731,15 +910,38 @@ export function payloadToD(payload, ctx = {}) {
   }
 
   // --- SEO section ---
+  // Every push below INFERS a problem from a MISSING signal. With no readable scan (siteScanned===false) that
+  // inference is unsafe (an empty bag is silence, not a confirmed absence), so we suppress all of them. (scan-fabrication)
   const onpage = [];
-  if (!sig.title) onpage.push({ issue: 'Missing &lt;title&gt; tag', sev: 'crit', impact: 'Right now Google and AI engines invent how you appear, you don’t control the words buyers judge you on.', fix: 'Tamazia writes keyword-led, jurisdiction-aware titles for every page.' });
-  if (!sig.meta_description) onpage.push({ issue: 'No meta description', sev: 'crit', impact: 'Right now Google writes your search snippet for you, and picks the words buyers decide on before they ever click.', fix: 'Compelling, compliant meta descriptions per page.' });
-  if (!sig.h1_count) onpage.push({ issue: 'No H1 heading', sev: 'high', impact: 'Without an H1, search and AI can’t tell what this page is about, so they rank a competitor who can.', fix: 'Semantic heading structure with one H1 per page.' });
-  if (!sig.canonical) onpage.push({ issue: 'No canonical tag', sev: 'high', impact: 'Duplicate-content dilution risk', fix: 'Canonical tags site-wide.' });
-  if (!sig.json_ld) onpage.push({ issue: 'No structured data (schema)', sev: 'high', impact: 'With no schema, AI can’t identify who you are, so when a buyer asks for a firm like you, it names someone it can read.', fix: 'Organization + sector schema across the site.' });
+  if (siteScanned && !sig.title) onpage.push({ issue: 'Missing &lt;title&gt; tag', sev: 'crit', impact: 'Right now Google and AI engines invent how you appear, you don’t control the words buyers judge you on.', fix: 'Tamazia writes keyword-led, jurisdiction-aware titles for every page.' });
+  if (siteScanned && !sig.meta_description) onpage.push({ issue: 'No meta description', sev: 'crit', impact: 'Right now Google writes your search snippet for you, and picks the words buyers decide on before they ever click.', fix: 'Compelling, compliant meta descriptions per page.' });
+  if (siteScanned && !sig.h1_count) onpage.push({ issue: 'No H1 heading', sev: 'high', impact: 'Without an H1, search and AI can’t tell what this page is about, so they rank a competitor who can.', fix: 'Semantic heading structure with one H1 per page.' });
+  if (siteScanned && !sig.canonical) onpage.push({ issue: 'No canonical tag', sev: 'high', impact: 'Duplicate-content dilution risk', fix: 'Canonical tags site-wide.' });
+  if (siteScanned && !sig.json_ld) onpage.push({ issue: 'No structured data (schema)', sev: 'high', impact: 'With no schema, AI can’t identify who you are, so when a buyer asks for a firm like you, it names someone it can read.', fix: 'Organization + sector schema across the site.' });
   if (sig.html_bytes && sig.html_bytes < 4000) onpage.push({ issue: 'Thin homepage content', sev: 'std', impact: 'Below the depth Google rewards', fix: 'Compliance-reviewed depth on every service page.' });
+  // Additional REAL on-page / structured-data checks (each evidenced from the live signal bag or the entity
+  // probe), framed as honest gaps, never fabricated. (depth · founder standing rule: every pillar shows >=5)
+  const _marketCountSEO = Array.from(allow).filter((j) => j !== 'GLOBAL').length;
+  const _multiMarketSEO = _marketCountSEO >= 2;
+  if (siteScanned && !sig.open_graph) onpage.push({ issue: 'No Open Graph / social-share tags', sev: 'std', impact: 'Shared to LinkedIn, WhatsApp or Slack your links render as a bare URL with no title or image, and AI social-preview crawlers read nothing.', fix: 'Tamazia adds Open Graph + Twitter-card tags so every shared link renders a branded preview.' });
+  if (siteScanned && !aiR.has_org_schema) onpage.push({ issue: 'No Organization schema', sev: 'high', impact: 'Without Organization markup Google and AI engines cannot tie your pages to one identifiable firm, so they cite a competitor they can.', fix: 'Tamazia ships Organization + sameAs schema so search and AI resolve you to a single trusted entity.' });
+  if (siteScanned) onpage.push({ issue: 'No FAQ / Q&amp;A schema', sev: 'std', impact: 'FAQPage markup is the one structured format AI answer engines quote most; without it your answers never become the cited source.', fix: 'Tamazia builds compliance-reviewed FAQ schema on every service page so AI can lift your answers verbatim.' });
+  if (siteScanned) onpage.push({ issue: 'No Service / Offer schema', sev: 'std', impact: 'Your services are not machine-readable, so category and "near me" AI answers cannot match a buyer to what you actually do.', fix: 'Tamazia marks up each service with Service/Offer schema mapped to your real offering.' });
+  if (siteScanned && _multiMarketSEO && !sig.hreflang) onpage.push({ issue: 'No hreflang for your ' + _marketCountSEO + ' markets', sev: 'high', impact: 'Operating across ' + _marketCountSEO + ' jurisdictions with no hreflang, Google serves the wrong-country page and splits your ranking authority.', fix: 'Tamazia sets correct hreflang per market so each jurisdiction sees its own page.' });
+  // FLOOR: a readable site must surface >=5 concrete on-page / technical issues. Top up ONLY from REAL measured
+  // Lighthouse SEO / best-practice / a11y failures on YOUR live DOM, de-duped by title, never fabricated. (>=5)
+  if (siteScanned && onpage.length < 5) {
+    const _seenOn = new Set(onpage.map((o) => String(o.issue).toLowerCase()));
+    const _lhMore = arr(g(payload, 'scan.psi.audits', []))
+      .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
+      .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { title, lane, fix, _w: lhImpact(a) }; })
+      .filter((a) => a.lane === 'seo' || a.lane === 'bp' || a.lane === 'a11y')
+      .sort((x, y) => y._w - x._w);
+    for (const a of _lhMore) { if (onpage.length >= 5) break; const k = a.title.toLowerCase(); if (_seenOn.has(k)) continue; _seenOn.add(k); onpage.push({ issue: a.title, sev: 'std', impact: 'Measured live on your DOM by Google PageSpeed; both search and AI answer engines read this signal.', fix: a.fix }); }
+  }
   const SEC = [['hsts', 'HSTS', 'Strict-Transport-Security absent, connection can be downgraded'], ['csp', 'Content-Security-Policy', 'No CSP, exposed to injection / XSS'], ['xfo', 'X-Frame-Options', 'Clickjacking protection missing'], ['xcto', 'X-Content-Type-Options', 'MIME-sniffing not blocked'], ['refpol', 'Referrer-Policy', 'Referrer leakage to third parties'], ['permpol', 'Permissions-Policy', 'Browser features not locked down']];
-  const security = SEC.map(([k, hh, note]) => ({ h: hh, present: !!sig[k], sev: 'high', note }));
+  // present:null = "not assessed" (no scan) so the consumer can show n/a instead of a confirmed "MISSING".
+  const security = SEC.map(([k, hh, note]) => ({ h: hh, present: siteScanned ? !!sig[k] : null, sev: 'high', note }));
   // Keyword RELEVANCE + ACCURACY filter (Gate 2 / Gate 7 / §5.5). A query is shown only if it genuinely
   // matches the firm's brand + vertical and reads in the right market. Three accuracy gates layer here:
   //  (1) RELEVANCE — you rank for it, OR a REAL firm (not a denylisted directory/aggregator) leads it AND
@@ -781,12 +983,15 @@ export function payloadToD(payload, ctx = {}) {
   const onPageOne = kws.filter((k) => k.you !== 'Not ranking').length;
   const isHttps = /^https:/i.test(g(payload, 'scan.final_url', '') || siteUrl);
   const seo = {
-    psi: { performance: isNum(psi.perf) ? Math.round(psi.perf * 100) : 0, seo: isNum(psi.seo) ? Math.round(psi.seo * 100) : 0, security: Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100), mobile: sig.viewport ? 92 : 28 },
+    // PSI: when a metric is unavailable, pass null (NOT 0) so the dials read n/a; security/mobile depend on the
+    // signal bag, so they read null too when the site wasn't scanned, never a fabricated 0%. (psi-null / scan-fabrication)
+    psi: { performance: isNum(psi.perf) ? Math.round(psi.perf * 100) : null, seo: isNum(psi.seo) ? Math.round(psi.seo * 100) : null, security: siteScanned ? Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100) : null, mobile: siteScanned ? (sig.viewport ? 92 : 28) : null },
     cwv: buildCwv(psi),
-    onpage: onpage.length ? onpage : [{ issue: 'On-page basics present', sev: 'std', impact: 'Title, meta and H1 detected, the deeper wins are schema, internal linking and content depth', fix: 'Tamazia layers compliant schema + topical depth on top of the basics.' }],
+    onpage: onpage.length ? onpage : [{ issue: siteScanned ? 'On-page basics present' : 'On-page not assessed this scan', sev: 'std', impact: siteScanned ? 'Title, meta and H1 detected, the deeper wins are schema, internal linking and content depth' : 'The live site was not readable this scan (bot-challenge / thin render), so on-page signals were not assessed, not confirmed absent. A re-scan completes it.', fix: siteScanned ? 'Tamazia layers compliant schema + topical depth on top of the basics.' : 'Tamazia re-scans with archive + rendered-DOM fallback to assess on-page signals on your live site.' }],
     security,
-    a11y: (function () { const l = []; if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); l.push('Unlabelled forms + low-contrast text block screen-reader users today, the Equality Act exposure most firms never see coming'); return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l }; })(),
-    tech: { ssl: isHttps ? 'Valid · HTTPS' : 'Not HTTPS', mobile: !!sig.viewport, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : 'None detected', adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : 'None detected', pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : 'Not measured', render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered') },
+    // Accessibility list also infers from missing signals; when unscanned, only the generic exposure note stands.
+    a11y: (function () { const l = []; if (siteScanned) { if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); } l.push('Unlabelled forms + low-contrast text block screen-reader users today, the Equality Act exposure most firms never see coming'); return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l }; })(),
+    tech: { ssl: siteScanned ? (isHttps ? 'Valid · HTTPS' : 'Not HTTPS') : 'Not assessed', mobile: siteScanned ? !!sig.viewport : null, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : (siteScanned ? 'None detected' : 'Not assessed'), adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : (siteScanned ? 'None detected' : 'Not assessed'), pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : (siteScanned ? 'Not measured' : 'Not assessed'), render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered') },
     keywords: kws.length ? kws : [{ kw: categoryLabel(payload), vol: 'specialist', you: 'Not ranking', who: ', ', pos: '', intent: 'high' }],
     keywordsThin: kwThin,
     keywordSummary: { onPageOne, totalTracked: kws.length || 0, opportunity: String(Math.max(0, (kws.length || 0) - onPageOne)), oppLabel: 'high-intent searches a rival captures instead of you' },
@@ -796,6 +1001,9 @@ export function payloadToD(payload, ctx = {}) {
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
     .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
+  // Total surfaced SEO/technical issues (drives the rail "N issues" chip): on-page + structured-data gaps +
+  // every missing security header + every failing Lighthouse audit measured on your DOM. Honest tally. (>=5)
+  seo.issueCount = (seo.onpage || []).length + (seo.security || []).filter((s) => s.present === false).length + (seo.psiAudits || []).length;
   // Real keyword rank-gap from the engine's keyword_leaders (you vs the real leader and their rank). (N3)
   // Same accuracy gates as the table: a credible IN-MARKET leader (not an aggregator / off-jurisdiction
   // firm), a brand-relevant cleaned term (no wrong-city / superlative noise), and you don't already win it.
@@ -836,15 +1044,33 @@ export function payloadToD(payload, ctx = {}) {
     { t: 'sameAs links', present: !!aiR.has_same_as, why: 'Nothing connects you to verified profiles' },
     { t: 'Wikidata entity', present: !!aiR.in_wikidata, why: 'Absent from the public knowledge graph' },
   ];
-  // GEO "who owns this query", keep only REAL leaders (drop directory/portal SERP #1s like
-  // investinreading.com); show their real rank. Falls back to the clean AI-named firms below. (S-010)
-  const citations = arr(cb.keyword_leaders).filter((k) => k.leader && isRealCompetitor(k.leader, market)).slice(0, 5)
+  // GEO "who owns this query", keep only REAL, IN-MARKET leaders. Apply the SAME gates the keyword/rankGap
+  // lists use — aggregator denylist (domain + name form) AND leaderInMarket — so junk aggregators and
+  // no-name/off-jurisdiction firms (goodfirms.co, aeroleads.com, f6s.com, robertsonmoss, retailgazette.co.uk…)
+  // never appear here. Show their real rank; fall back to clean AI-named firms below, else hide. (S-010 / citations-junk)
+  // The firm must never appear as its own citation/leader (UCL citing "ucl.ac.uk"). Drop a leader whose domain
+  // stem matches the firm's own brand stem. (self-competitor)
+  const _ownStem = cleanDomain(payload.domain).split('.')[0].replace(/[^a-z0-9]/gi, '').toLowerCase();
+  // Initials acronym of a multi-word firm/competitor name ("University College London" → "ucl").
+  const _acro = (name) => { const w = String(name || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((x) => x && !/^(the|of|and|for|de|la|le|al)$/.test(x)); return w.length >= 2 ? w.map((x) => x[0]).join('') : ''; };
+  const _companyKeyEarly = String(company || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Is this competitor NAME the firm itself? (acronym match, full-name match, or stem containment) (self-competitor)
+  const _isSelfName = (name) => { const k = String(name || '').toLowerCase().replace(/[^a-z0-9]/g, ''); if (!k) return false; if (k === _ownStem || k === _companyKeyEarly) return true; if (_ownStem.length > 3 && (k.includes(_ownStem) || _ownStem.includes(k))) return true; const a = _acro(name); return !!(a && (a === _ownStem || a === _companyKeyEarly)); };
+  const _notSelfLeader = (leader) => { const s = cleanDomain(leader).split('.')[0].replace(/[^a-z0-9]/gi, '').toLowerCase(); return !(s && _ownStem && (s === _ownStem || (_ownStem.length > 3 && (s.includes(_ownStem) || _ownStem.includes(s))))); };
+  // A SERP leader is shown as a citation only if it is real, in-market, not an aggregator, not the firm itself,
+  // AND CORROBORATED (appears in ≥2 of competitive_benchmark/ai_citation/authority or carries real DR). The
+  // corroboration gate drops one-off SERP listicles the LLM surfaced (premierinn, topschoolguide, robertsonmoss)
+  // that pass the denylist but are nobody's real competitor. When none survive, fall back to the clean AI-named
+  // peer set, else hide the row entirely. (citations-junk)
+  const citations = arr(cb.keyword_leaders)
+    .filter((k) => k.leader && isRealCompetitor(k.leader, market) && !looksAggregator(k.leader) && leaderInMarket(k.leader, _fc) && _notSelfLeader(k.leader) && corroborated(k.leader, payload))
+    .slice(0, 5)
     .map((k) => ({ q: k.keyword, who: compName(k.leader), pos: k.leader_position }));
   const geo = {
     entityReadiness: aiR.score || 0, shareOfVoice: sov, repeatability: `named ${geoP.repeatability || 0} of ${(geoP.samples || 2)} runs`,
     aiKnows: !!geoP.ai_knows, sentiment: geoP.ai_knows ? (geoP.ai_sentiment || 'neutral') : 'No reliable information, risk of hallucination',
     engines, engineEstimate: true, radar, schema,
-    citations: citations.length ? citations : arr(geoP.top_competitors).filter((t) => t && t.name && !looksAggregator(t.name)).slice(0, 5).map((t) => ({ q: km.service_noun || categoryLabel(payload), who: compName(t.name) })),
+    citations: citations.length ? citations : arr(geoP.top_competitors).filter((t) => t && t.name && !looksAggregator(t.name) && !_isSelfName(t.name)).slice(0, 5).map((t) => ({ q: km.service_noun || categoryLabel(payload), who: compName(t.name) })),
     sourceGap: [
       { src: 'Wikipedia / Wikidata', you: !!aiR.in_wikidata, note: "No entity, AI's primary trust source" },
       { src: 'Google Business Profile', you: 'unverified', note: 'Incomplete NAP + no posts' },
@@ -881,6 +1107,9 @@ export function payloadToD(payload, ctx = {}) {
       ],
     };
   }
+  // Total surfaced AI/GEO gaps (rail chip): missing structured-data anchors + authority sources you're absent
+  // from + unbuilt identity anchors. Deterministic from the entity-readiness probe; reliably >=5. (>=5 per pillar)
+  geo.issueCount = (geo.schema || []).filter((s) => !s.present).length + (geo.sourceGap || []).filter((s) => s.you === false || s.you === 'partial' || s.you === 'unverified').length + (geo.rootCause ? geo.rootCause.missingCount : 0);
 
   // --- competitors (from competitive_benchmark + authority; DR normalized 0-10 -> 0-100) ---
   // ONE competitor spine: real names from competitive_benchmark (primary) ∪ authority (for DR),
@@ -905,27 +1134,52 @@ export function payloadToD(payload, ctx = {}) {
     if (!dom || h === cleanDomain(payload.domain).toLowerCase()) return;
     if (isRealCompetitor(dom, market) && corroborated(dom, payload) && !serpFirms.some((s) => s.name.toLowerCase() === h)) serpFirms.push({ name: dom, pos: c.position || c.pos, dr: authDr[h], src: 'SERP' });
   });
+  // Word-initials acronym of a multi-word name ("University College London" → "ucl"). Used to catch a firm
+  // listed as its OWN competitor when one side is the acronym and the other the full name. (self-competitor)
+  const acronymOf = (name) => { const w = String(name || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((x) => x && !/^(the|of|and|for|de|la|le|al)$/.test(x)); return w.length >= 2 ? w.map((x) => x[0]).join('') : ''; };
+  // The firm's own self-keys: domain stem, the displayed company name as a key, and the company's acronym.
+  const companyKey = String(company || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const companyAcro = acronymOf(company);
+  const selfKeys = new Set([brandKey, companyKey, companyAcro].filter(Boolean));
   const seenC = []; const spine = [];
-  const isDup = (k) => !k || k === brandKey || (brandKey.length > 3 && (k.includes(brandKey) || brandKey.includes(k))) || seenC.some((s) => s.includes(k) || k.includes(s));
-  llmPeers.forEach((p) => { const k = p.name.toLowerCase().replace(/[^a-z0-9]/g, ''); if (!isDup(k)) { seenC.push(k); spine.push(p); } });
-  serpFirms.forEach((p) => { const k = cleanDomain(p.name).split('.')[0].replace(/[^a-z0-9]/g, ''); if (!isDup(k)) { seenC.push(k); spine.push(p); } });
+  // A competitor is the firm itself if: its key matches a self-key; a stem containment holds (≥4 chars); OR
+  // its acronym equals the firm's brand stem / a self-key (UCL vs University College London), or vice-versa.
+  const isSelf = (k, name) => {
+    if (!k) return true;
+    if (selfKeys.has(k)) return true;
+    if (brandKey.length > 3 && (k.includes(brandKey) || brandKey.includes(k))) return true;
+    const ka = acronymOf(name);
+    if (ka && (selfKeys.has(ka) || ka === brandKey)) return true;       // competitor's initials = the firm acronym
+    if (companyAcro && k === companyAcro) return true;                  // competitor key = the firm's acronym
+    return false;
+  };
+  const isDup = (k, name) => isSelf(k, name) || seenC.some((s) => s.includes(k) || k.includes(s));
+  llmPeers.forEach((p) => { const k = p.name.toLowerCase().replace(/[^a-z0-9]/g, ''); if (!isDup(k, p.name)) { seenC.push(k); spine.push(p); } });
+  serpFirms.forEach((p) => { const k = cleanDomain(p.name).split('.')[0].replace(/[^a-z0-9]/g, ''); if (!isDup(k, p.name)) { seenC.push(k); spine.push(p); } });
   const bestKw = bestSecondaryKeyword(payload, market);
-  const ladder = spine.slice(0, 5).map((c) => {
+  const ladder = spine.slice(0, 5).map((c, i) => {
     const h = cleanDomain(c.name).toLowerCase();
     const nk = h.replace(/[^a-z0-9]/g, '');
     let dr = c.dr != null ? c.dr : (authDr[h] != null ? authDr[h] : null);
     if (dr == null) { const sk = Object.keys(drByStem).find((s) => s.length > 3 && (nk.includes(s) || s.includes(nk))); if (sk) dr = drByStem[sk]; }
     const signal = c.src === 'AI' ? ('AI-named' + (c.runs && c.of ? ' ' + c.runs + '/' + c.of : '')) : (c.pos ? 'SERP #' + c.pos : (dr != null ? 'DR ' + dr : 'real peer'));
-    return { name: compName(c.name), dr, drKnown: dr != null, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload) }) };
+    return { name: compName(c.name), dr, drKnown: dr != null, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
   });
   const totalKw = arr(km.keywords).length;
+  // DR comparison chart needs at least 2 rivals with a KNOWN Domain Rating to be a meaningful "vs rivals"
+  // chart; with 0–1 it degenerates to a single "You" bar. When that happens we signal the chart to hide
+  // (empty bars + drHidden) and drop the "vs N" clause from the DR chip. (DR-single-bar)
+  const drRivals = ladder.filter((c) => c.drKnown);
+  const drHidden = drRivals.length < 2;
   const competitors = {
     you: company, bestKeyword: bestKw.term, youDr, youPos: bestKw.youPos, needsReview: ladder.length === 0,
     cols: ['Domain rating', 'AI answer set'],
     rows: [{ name: company, you: true, dr: youDr, cells: [{ v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
-      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.drKnown ? c.dr : ', ', cls: c.drKnown ? 'good' : 'mid' }, { v: c.signal, cls: 'good' }] }))],
+      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.drKnown ? c.dr : '—', cls: c.drKnown ? 'good' : 'mid' }, { v: c.signal, cls: 'good' }] }))],
     ladder,
-    drBars: [...ladder.filter((c) => c.drKnown).map((c) => ({ l: c.name, v: c.dr })), { l: 'You', v: youDr, you: true }],
+    // Empty bars + drHidden flag so audit-charts.js skips the single-bar DR chart; chip drops "vs N" when hidden.
+    drHidden, drRivalCount: drRivals.length,
+    drBars: drHidden ? [] : [...drRivals.map((c) => ({ l: c.name, v: c.dr })), { l: 'You', v: youDr, you: true }],
     aiKwBars: (function () { const t = ladder[0]; return t ? [{ l: 'AI names · you', v: 0, you: true }, { l: 'AI names · ' + t.name, v: 2 }, { l: 'Page-one · you', v: onPageOne, you: true }, { l: 'Page-one · ' + t.name, v: 1 }] : [{ l: 'AI names · you', v: 0, you: true }, { l: 'Page-one · you', v: onPageOne, you: true }]; })(),
   };
   // The single most persuasive bar in the product, straight from the engine's own metric{} object:
@@ -933,18 +1187,19 @@ export function payloadToD(payload, ctx = {}) {
   const sovM = arr(payload.pointers).map((p) => p.metric).find((m) => m && /share of voice/i.test(m.label || ''));
   if (sovM) {
     const of = +sovM.samples || (arr(sovM.competitors)[0] || {}).of || 2;
-    const rivals = arr(sovM.competitors).filter((c) => c && c.name).slice(0, 4).map((c) => ({ l: compName(c.name), v: c.in_runs != null ? c.in_runs : of, cls: 'bad' }));
+    // Drop the firm itself if the SoV metric names it as a rival (UCL vs "University College London"). (self-competitor)
+    const rivals = arr(sovM.competitors).filter((c) => c && c.name && !isSelf(String(c.name).toLowerCase().replace(/[^a-z0-9]/g, ''), c.name)).slice(0, 4).map((c) => ({ l: compName(c.name), v: c.in_runs != null ? c.in_runs : of, cls: 'bad' }));
     if (rivals.length) competitors.sovBar = { of, rows: [{ l: 'You', v: +sovM.you || 0, you: true }, ...rivals] };
   }
 
   // --- top-3 BINGO fixes ---
   const SEVRANK = { P0: 0, P1: 1, P2: 2, P3: 3 };
   const fixOrder = [...pointers].sort((a, b) => (SEVRANK[a.severity] - SEVRANK[b.severity]) || ((+b.fine_high_gbp || 0) - (+a.fine_high_gbp || 0)));
-  const fixes = fixOrder.slice(0, 3).map((p, i) => { const f = bingoFromPointer(p, p.bucket === 'ai_visibility' ? 'AI / GEO' : 'Regulatory', news, i); const shotUrl = p.evidence || arr(p.checked_urls)[0] || siteUrl; f.shot = shotUrl ? thum(shotUrl) : ''; return f; });
+  const fixes = fixOrder.slice(0, 3).map((p, i) => { const f = bingoFromPointer(p, pillarOf(p), news, i, curSym); const shotUrl = p.evidence || arr(p.checked_urls)[0] || siteUrl; f.shot = shotUrl ? thum(shotUrl) : ''; return f; });
   differentiateFixes(fixes); // each BINGO card must read as a distinct remediation (no shared templated prefix)
   // GEO pane needs its own GEO-specific BINGO card (never D.fixes[2], which may not exist / may be compliance).
   const geoPtr = pointers.find((p) => p.bucket === 'ai_visibility');
-  geo.fix = geoPtr ? bingoFromPointer(geoPtr, 'AI / GEO', news, 2) : {
+  geo.fix = geoPtr ? bingoFromPointer(geoPtr, 'AI / GEO', news, 2, curSym) : {
     n: 3, reg: 'AI / GEO', pillar: 'AI / GEO', law: 'Generative-engine visibility', exp: 'ranking impact',
     title: 'AI answer engines do not yet cite you',
     plain: 'With no Organization schema, sameAs links or Wikidata entity, AI engines cannot identify you as a citable provider in your category.',
@@ -960,7 +1215,7 @@ export function payloadToD(payload, ctx = {}) {
   // rescaled to its real size, the exec's magnitude language ("existential threat", "sheer scale", "millions") now
   // contradicts the figure. When the exposure is modest AND the exec carries that hyperbole, drop it for the
   // measured, always-consistent deterministic exec, never let a £207k clinic read "existential". (exec-credibility)
-  const _execRaw = scrubMoney(g(payload, 'exec_summary', ''), exposureN);
+  const _execRaw = scrubMoney(g(payload, 'exec_summary', ''), exposureN, curSym);
   const _execHype = exposureN < 2e6 && /existential|sheer scale|catastroph|devastat|bankrupt|crippl|millions?|billions?|wipe out|severe financial|enormous/i.test(_execRaw);
   // £0 exposure but the exec still talks about a fine/penalty ("fine exposure of up to £0") is self-contradictory, 
   // drop it for the ranking/AI-visibility framing.
@@ -985,22 +1240,30 @@ export function payloadToD(payload, ctx = {}) {
     // (shown only when a firm is genuinely multi-jurisdiction) and the per-framework jurisdiction badges.
     jurisdictions: Array.from(new Set((frameworks || []).map((f) => f.jur).filter((j) => j && j !== 'Global'))),
     projected: { wk12, wk24, wk12grade: gradeOf(wk12), wk24grade: gradeOf(wk24) },
-    exposure: gbp(exposureN), exposureFull: +(exposureN / 1e6).toFixed(1), exposureWaterfall,
+    cur: curSym, // display currency symbol ('£' default, '$' for clearly-US firms) — charts read this so bars match the headline
+    exposure: gbp(exposureN, curSym), exposureFull: +(exposureN / 1e6).toFixed(1), exposureWaterfall,
     // When no fineable framework is confirmed, "£0 / across 0 binding frameworks" reads as broken next to
     // the (ranking-only) frameworks shown. Present the exposure tile honestly instead. (£0-leak / consistency)
-    exposureHeadline: exposureN > 0 ? gbp(exposureN) : 'Ranking & AI',
+    exposureHeadline: exposureN > 0 ? gbp(exposureN, curSym) : 'Ranking & AI',
     exposureNote: exposureN > 0
       ? `Collapsed statutory ceiling across ${Object.keys(perFw).length} binding framework${Object.keys(perFw).length === 1 ? '' : 's'}`
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
     counts, confirmed: pointers.length,
-    frameworksAssessed: arr(payload.applicable_frameworks).length, rulesChecked: arr(payload.rules).length || 403, frameworksTotal: '400+',
+    // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
+    // consumer should use these instead of asserting "N breached / PASS". (zero-critical-honest)
+    regulatoryHeadline, regulatoryCriticalsZero,
+    // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
+    // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
+    frameworksAssessed: arr(payload.applicable_frameworks).length, rulesChecked: arr(payload.rules).length || 403, frameworksTotal: arr(payload.rules).length || 403,
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0–100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,
-      why: `Your ${score} is held down by two failing dimensions a regulator and an AI engine can both see on your live site today. Fix the ${counts.critical} criticals and the heaviest-weighted dimension lifts first, which is why ${wk12} by week 12 is realistic, not a hope.`,
+      why: counts.critical > 0
+        ? `Your ${score} is held down by the failing dimensions a regulator and an AI engine can both see on your live site today. Fix the ${counts.critical} critical ${counts.critical === 1 ? 'finding' : 'findings'} and the heaviest-weighted dimension lifts first, which is why ${wk12} by week 12 is realistic, not a hope.`
+        : `Your ${score} is held down by the ranking, authority and AI-visibility dimensions an AI engine and a buyer can both see today, not by a confirmed fine. Close the highest-weighted gaps below and the score lifts fast, which is why ${wk12} by week 12 is realistic, not a hope.`,
       inputs: `${arr(payload.applicable_frameworks).length} frameworks bind · ${pointers.length} findings confirmed against live evidence · ${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
     },
-    exec: exec || execFallback(exposureN, Object.keys(perFw).length, counts.critical),
+    exec: exec || execFallback(exposureN, Object.keys(perFw).length, counts.critical, curSym),
     jurisdiction,
     frameworks, exposureBars, heat,
     heatRows: ['£10M+', '£1M+', '£100k+', '£10k+', '<£10k'], heatCols: ['Rare', 'Low', 'Possible', 'High', 'Near-certain'],
@@ -1008,7 +1271,7 @@ export function payloadToD(payload, ctx = {}) {
     seo, geo, competitors,
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
     fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full 403-rule scan with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
-    glossary: buildGlossary(payload),
+    glossary: buildGlossary(payload, allow),
     // commerce scaffold (Slice 5 replaces with live config + Cal/Stripe wiring)
     pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, addons: COMMERCE.addons, addonsMore: COMMERCE.addonsMore, upsellProof: COMMERCE.upsellProof,
     _meta: { droppedByJurisdiction: dropped, exposureN, generatedAt: ctx.generated_at || null },
@@ -1042,11 +1305,29 @@ function buildCwv(psi) {
   if (!out.length) out.push({ k: 'CWV', label: 'Core Web Vitals', v: 'not assessed', target: 'PageSpeed unavailable', pct: 0, st: 'warn', plain: 'PageSpeed data was unavailable on this scan, the live site was unreachable or behind a bot-challenge. Speed is captured on the next live scan.' });
   return out;
 }
-function buildGlossary(payload) {
+// Region-specific legal glossary terms that must NOT be defined for a firm whose jurisdiction set doesn't
+// include that region (a UAE-only firm should never see GDPR / UK GDPR / PECR / CCPA defined). Term → the
+// jurisdiction(s) any of which must be in the firm's allow-set for the term to render. (glossary-jurisdiction)
+const GLOSSARY_TERM_JUR = {
+  gdpr: ['EU', 'UK'], 'uk gdpr': ['UK'], 'eu gdpr': ['EU'], pecr: ['UK'], 'dpa 2018': ['UK'], dpa: ['UK'],
+  ccpa: ['US'], cpra: ['US'], 'us state privacy': ['US'], hipaa: ['US'], ferpa: ['US'], coppa: ['US'], glba: ['US'], 'ada title iii': ['US'],
+  pdpl: ['AE', 'SA'], 'uae pdpl': ['AE'], rera: ['AE'], difc: ['AE'], adgm: ['AE'],
+};
+function buildGlossary(payload, allow) {
+  const allowSet = allow || authJurisdictions(payload);
+  // A term is allowed if it isn't region-scoped, OR the firm's jurisdictions include one of its regions.
+  const termAllowed = (k) => { const regions = GLOSSARY_TERM_JUR[String(k || '').toLowerCase().trim()]; return !regions || regions.some((r) => allowSet.has(r)); };
   const terms = g(payload, 'glossary.terms', null);
   if (terms && typeof terms === 'object' && !Array.isArray(terms)) {
+    // Prefer the jurisdiction-scoped `used[]` allow-list when the engine provides one; else take all terms.
+    const used = arr(g(payload, 'glossary.used', null)).map((u) => String(u).toLowerCase());
+    const usedSet = used.length ? new Set(used) : null;
     const out = {};
-    for (const [k, v] of Object.entries(terms)) out[k] = typeof v === 'string' ? v : (v && v.def) || '';
+    for (const [k, v] of Object.entries(terms)) {
+      if (usedSet && !usedSet.has(String(k).toLowerCase())) continue;   // not in the scoped used-set
+      if (!termAllowed(k)) continue;                                     // foreign-law term for this firm
+      out[k] = typeof v === 'string' ? v : (v && v.def) || '';
+    }
     if (Object.keys(out).length) return out;
   }
   return {
@@ -1078,14 +1359,14 @@ function jurStatement(company, allow) {
       : parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
   return `${company} is assessed under the law of ${where}, the jurisdiction(s) its own website shows it serves. Frameworks from every other region are screened but do not attach here, so only the law that genuinely binds this firm is shown.`;
 }
-function execFallback(exp, nfw, crit) {
+function execFallback(exp, nfw, crit, sym) {
   // £0 statutory exposure: never claim a fine. The value at stake is ranking, qualified buyers and AI-assistant
   // visibility, frame it as that, so the exec never contradicts a "no statutory fine confirmed" headline.
   if (!(+exp > 0)) return 'No statutory fine surfaced on the live site this scan, but you are losing rankings, qualified buyers and AI-assistant visibility to named competitors every day. That is the exposure that matters here, and it compounds while the gaps below stay open.';
-  const lead = `Right now you are carrying ${gbp(exp)} of avoidable statutory exposure across ${nfw} binding framework${nfw === 1 ? '' : 's'}.`;
+  const lead = `Right now you are carrying ${gbp(exp, sym)} of avoidable statutory exposure across ${nfw} binding framework${nfw === 1 ? '' : 's'}.`;
   return crit > 0 ? `${lead} Close the ${crit} critical finding${crit === 1 ? '' : 's'} first, they are the ones a regulator can act on today.` : `${lead} The high-severity gaps below are the priority.`;
 }
-function jurLabel(c) { c = String(c || '').toUpperCase(); return { UK: 'United Kingdom', USA: 'United States', US: 'United States', UAE: 'United Arab Emirates', AE: 'United Arab Emirates', KSA: 'Saudi Arabia' }[c] || c || ', '; }
+function jurLabel(c) { c = String(c || '').toUpperCase(); return { UK: 'United Kingdom', USA: 'United States', US: 'United States', UAE: 'United Arab Emirates', AE: 'United Arab Emirates', KSA: 'Saudi Arabia' }[c] || c || '—'; }
 function fmtArchive(d) { const s = String(d || ''); return s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` : s; }
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; } catch { return ''; } }

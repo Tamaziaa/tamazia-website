@@ -885,7 +885,7 @@ export function payloadToD(payload, ctx = {}) {
         UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
         EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
         US: ['US_CCPA', 'US_ADA', 'US_FTC'],
-        AE: ['AE_PDPL', 'UAE_CONSUMER', 'UAE_ECOMMERCE'],
+        AE: ['AE_PDPL', 'DIFC_DPL', 'ADGM_DPR', 'UAE_CONSUMER', 'UAE_ECOMMERCE'],
         SA: ['SAUDI_PDPL'], QA: ['QATAR_PDPPL'], FR: ['FR_CNIL'], DE: ['DE_BDSG'],
       };
       for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }

@@ -43,6 +43,14 @@ export async function onRequest(context) {
   let payload = row.payload_json;
   if (typeof payload === 'string') { try { payload = JSON.parse(payload); } catch { payload = {}; } }
 
+  // R2 dual-path: new rows store {r2:true} in Neon and the full payload in the AUDITS bucket.
+  // Old rows (full payload in Neon) render exactly as before.
+  if (!payload || payload.r2) {
+    const obj = env.AUDITS ? await env.AUDITS.get(`audits/${slug}/${hash}.json`) : null;
+    if (!obj) return htmlResponse(errorShell('Audit not found', 'This audit link is invalid or expired.'), 404);
+    payload = JSON.parse(await obj.text());
+  }
+
   let html;
   try {
     const D = payloadToD(payload, { company: row.company, now: Date.now(), generated_at: null });

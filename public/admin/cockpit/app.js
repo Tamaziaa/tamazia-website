@@ -74,6 +74,7 @@
       if (tab === 'now') await renderNow(root);
       else if (tab === 'pipeline') await renderPipeline(root);
       else if (tab === 'leads') await renderLeads(root);
+      else if (tab === 'pending') await renderPending(root);
       else if (tab === 'clients') await renderClients(root);
       else if (tab === 'forms') await renderForms(root);
       else if (tab === 'bookings') await renderBookings(root);
@@ -171,6 +172,26 @@
     `;
   }
 
+  async function renderPending(root){
+    const d = await api('/leads/pending?limit=100');
+    if (d.error) { root.innerHTML = `<h2>Pending approval</h2><p class="sub" style="color:var(--amber)">${esc(d.error)}${d.detail?' · '+esc(d.detail):''}</p>`; return; }
+    const rows = (d.leads||[]).map(l => `<tr>
+      <td>${esc(l.company||'?')}</td>
+      <td>${esc(l.domain||'?')}</td>
+      <td>${esc(l.primary_email||l.contact_email||'?')}${l.email_verified?' <span class="tag green">verified</span>':''}</td>
+      <td><span class="tag blue">${esc(l.sector||'?')}</span></td>
+      <td>${l.quality_score!=null?esc(String(l.quality_score)):'<span class="sub">·</span>'}${l.icp_tier?' <span class="tag">T'+esc(String(l.icp_tier))+'</span>':''}</td>
+      <td title="${esc(l.top_finding||'')}">${esc(l.lifecycle_stage||'?')}</td>
+      <td>${esc((l.updated_at||l.created_at||'').slice(0,16))}</td>
+      <td><button class="apbtn rowbtn" data-id="${esc(String(l.id))}">Approve</button></td>
+    </tr>`).join('');
+    root.innerHTML = `
+      <h2>Pending approval (Tier-2)</h2>
+      <p class="sub">${(d.leads||[]).length} leads scored but awaiting founder approval. Approve = quality_fit TRUE + stage qualified → auto mint + outreach.</p>
+      <table><thead><tr><th>Company</th><th>Domain</th><th>Email</th><th>Sector</th><th>Score</th><th>Stage</th><th>Updated</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="8">Queue is empty.</td></tr>'}</tbody></table>
+    `;
+    root.querySelectorAll('.apbtn').forEach(function(btn){ btn.addEventListener('click', function(){ var id=Number(btn.dataset.id); if(!id) return; btn.disabled=true; status('Approving lead '+id+'...','ok'); api('/leads/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(r){ status(r&&r.ok?('Lead '+id+' approved → qualified'):'Approve: '+JSON.stringify(r),'err'===(r&&r.ok?'ok':'err')?'err':'ok'); renderTab('pending'); }).catch(function(e){ btn.disabled=false; status('Approve failed: '+(e.message||'err'),'err'); }); }); });
+  }
   async function renderLeads(root){
     const d = await api('/leads?limit=100');
     if (d.error) {

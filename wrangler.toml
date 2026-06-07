@@ -18,3 +18,7 @@ EMAIL_VALIDATION_MODE = "tag"
 [[kv_namespaces]]
 binding = "FORM_SUBMISSIONS"
 id = "11971a76eda74339936dd7738680d973"
+
+[[r2_buckets]]
+binding = "AUDITS"
+bucket_name = "tamazia-audits"

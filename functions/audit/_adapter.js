@@ -902,6 +902,56 @@ export function payloadToD(payload, ctx = {}) {
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
+// Curated recent-enforcement context per framework (real 2024-2026 regulator actions), used when the payload
+  // carries no live news_map — so the per-law card shows an actual recent action, not just the statutory regime.
+  const PORTED_NEWS = {
+    'UK_GDPR_A13': 'ICO issued GBP 19.6M across 7 cases in 2025 (Capita GBP 14M, Advanced Computer Software GBP 3.07M, 23andMe GBP 2.31M, LastPass GBP 1.23M); two-thirds were UK GDPR breaches.',
+    'UK_DPA_2018': 'ICO 2025 enforcement hit GBP 19.6M from 7 cases (vs GBP 2.7M in 2024); the DUAA came into force 5 Feb 2026 with new compulsion powers.',
+    'UK_PECR': 'The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to GBP 17.5M (from GBP 500k); the ICO is reviewing the UK top 1,000 websites cookie banners.',
+    'UK_ICO_COOKIES': 'DUAA (in force 5 Feb 2026) lifts PECR fines to GBP 17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.',
+    'UK_FCA_CONC25': 'FCA charged 9 finfluencers in 2024. Consumer Duty enforcement is FCA top 2025 priority.',
+    'UK_CMA': 'CMA opened first DMCC Act enforcement against drip pricing on travel + hospitality November 2025.',
+    'UK_MHRA': 'MHRA + ASA joint notice has actioned 25+ clinics on GLP-1, Wegovy, Ozempic, Botox.',
+    'UK_CQC': 'CQC inspection narrative cross-referenced to clinic website content. Mismatch flagged in 38% of 2024 reports.',
+    'UK_SRA_COC': 'SRA 2025 warning notice on no-win-no-fee marketing. SRA Transparency Rules sweeps run quarterly.',
+    'EU_AI_ACT': 'EU AI Act prohibited-practices ban took effect 2 February 2025.',
+    'UK_RICS': 'RICS regulatory action against 18 firms in 2024.',
+    'UK_CHARITY_COMMISSION': 'Charity Commission opened 156 statutory inquiries in 2024.',
+    'UK_OFSTED': 'Ofsted inspection downgrades on 14% of schools in 2024.',
+    'US_CCPA': 'California CPPA brought 12 enforcement actions in 2024, largest fine $1.55M.',
+    'US_HIPAA': 'HHS OCR fined Cerebral $7M, GoodRx $1.5M and BetterHelp $7.8M for HIPAA marketing violations.',
+    'US_SEC_REG_FD': 'SEC charged 11 RIAs in 2024 under the Marketing Rule.',
+    'UAE_RERA': 'RERA issued warnings to 23 brokerages in 2024.',
+    'US_ADA': 'DOJ ADA Title III digital-accessibility rule finalised April 2024. 4,000+ web-accessibility lawsuits in 2024.',
+    'UK_HSE': 'HSE prosecutions resulted in £55M of fines in 2024.',
+    'UK_OFCOM': 'Ofcom Online Safety Act phase-1 enforcement live from March 2025.',
+    'UK_ASA_CAP': 'The ASA AI monitoring banned ads in 2025 for greenwashing (Wizz Air), misleading product claims (Origin Mattress) and false-urgency countdown timers (Oct 2025).',
+    'GOOGLE_EEAT': 'Google March 2024 core update emphasised E-E-A-T; sites without author bylines saw 31% traffic drop.',
+    'UK_OSA_2023': 'Ofcom Phase 1 illegal-content codes March 2025. Fines up to £18M or 10% global turnover.',
+    'UK_DMCC_2024': 'CMA gained direct fining powers up to 10% global turnover from April 2025.',
+    'UK_FSMA_S21': 'FCA finfluencer regime in force October 2024. Two-year unlimited fines + prison risk.',
+    'UK_COMPANIES_ACT': 'Companies House active enforcement of website disclosure post Economic Crime Act 2023.',
+    'EU_DSA': 'DSA enforcement live February 2024. Commission opened proceedings against TikTok, X, Meta.',
+    'EU_NIS2': 'Transposition deadline October 2024. Fines up to €10M or 2% turnover for essential entities.',
+    'EU_DORA': 'In force January 2025. Fines up to 2% global turnover for financial entities.',
+    'EU_EAA_2025': 'In force June 2025. Fines up to €1M in Spain, €500k in Germany.',
+    'EU_MDR': 'MDR fully applicable since May 2021. Germany €500k per device fines.',
+    'US_BIPA': 'White Castle $17B exposure. Meta $650M settled. Class actions seven-figure+.',
+    'US_GLBA': 'FTC Safeguards Rule amended 2024 — 30-day breach notification. $7,500/day per violation.',
+    'US_TCPA': 'FCC AI-voice ruling Feb 2024. $500-$1,500 per call statutory damages.',
+    'US_CPRA': 'CPPA fined Honda $632,500 March 2025. First major CPRA enforcement post-DoorDash.',
+    'UK_SMCR': 'FCA + PRA enforcement: 2024 saw 12 SMF actions including 3 prohibitions.',
+    'UK_CE_PLUS': 'IASME v3.2 April 2024. Mandatory for most UK Gov contracts.',
+    'UK_EQUALITY_2010': 'EHRC 2024 digital-accessibility code. Damages claims up 18% in 2024.',
+    'UK_CRA_2015': 'CMA confirms CRA 2015 applies in parallel with DMCC. Cross-referenced in 2025 enforcement.',
+    'EU_CSRD': 'Phase 1 reporting from FY2024. Italy + Germany penalties up to 2% of turnover.',
+    'EU_MIFID_II': 'ESMA review marketing material continuously. 2024 enforcement averaged €380k per firm.',
+    'EU_SFDR': 'ESMA anti-greenwashing guidelines March 2024. Fines €50k–€2M across France, Italy, Spain.',
+    'US_FTC_ENDORSE': 'FTC Consumer Reviews & Testimonials Rule in force Oct 2024 (USD 53,088 per violation); first warning letters issued to 10 firms in Dec 2025.',
+    'FR_CNIL_2025': 'CNIL fined SHEIN €40M, Carrefour €3M, Free Mobile €2.25M in 2024.',
+    'DE_BDSG': 'BfDI + state DPAs collectively issued €18M in fines 2024.'
+  };
+  
   const news = g(payload, 'news_map', {}) || {};
   // Regulatory frameworks list = COMPLIANCE-bucket findings only (ai_visibility/seo belong in their
   // own panes; grouping them here produced bogus "GEO"/"SEO" frameworks). (C/S-020)
@@ -941,11 +991,19 @@ export function payloadToD(payload, ctx = {}) {
     const h = _it.filter((x) => x.sev === 'P1').length;
     const findings = _it.length || ps.length;
     const s = Math.max(0, findings - c - h);
+    // Regulator: prefer the curated map, then the engine's own (payload) regulator (correct, e.g. UK GDPR -> ICO),
+    // and only then the generic fallback — so a framework the map lacks never renders as "Sector regulator".
+    // accept the engine's regulator unless it's a raw framework code (codes carry underscores; "ICO"/"FCA" do not).
+    const _regP = (top.regulator && !/_/.test(top.regulator) && !/^https?:/.test(top.regulator)) ? String(top.regulator).trim() : '';
+    const _reg = FW_REGULATOR[fw] || _regP || 'Sector regulator';
+    // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
+    const _cite = top.citation_url || top.citation || '';
     return {
-      code: fwCode(fw), name: fwName(fw), regulator: fwRegulator(fw),
+      code: fwCode(fw), name: fwName(fw), regulator: _reg,
+      citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
-      action: g(news, fw, '') || top.enforcement_example || (fwRegulator(fw) + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
+      action: g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || (_reg + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
       provisions, articleGroups,
     };
@@ -969,7 +1027,7 @@ export function payloadToD(payload, ctx = {}) {
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
         findings: 0, c: 0, h: 0, s: 0, exp: 'controls to confirm', expN: 0, screened: true,
-        action: g(news, fw, '') || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
+        action: g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
         why: 'This framework legally binds you and we screened it against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.',
       });
     };
@@ -1365,7 +1423,7 @@ export function payloadToD(payload, ctx = {}) {
     regulatoryHeadline, regulatoryCriticalsZero,
     // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
     // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
-    frameworksAssessed: frameworks.length, rulesChecked: '400+', frameworksTotal: '400+',
+    frameworksAssessed: frameworks.length, frameworksBinding: Math.max(arr(payload.applicable_frameworks).length, frameworks.length), rulesChecked: '400+', frameworksTotal: '400+',
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0–100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,

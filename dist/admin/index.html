@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Tamazia Cockpit</title>
+<style>
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:400;font-display:swap;src:url('/admin/cockpit-v2/fonts/source-serif-4-400.woff2') format('woff2');}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:600;font-display:swap;src:url('/admin/cockpit-v2/fonts/source-serif-4-600.woff2') format('woff2');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/inter-400-normal-latin.woff2') format('woff2');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/inter-500-normal-latin.woff2') format('woff2');}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/audit/fonts/jetbrains-mono-400.woff2') format('woff2');}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:500;font-display:swap;src:url('/audit/fonts/jetbrains-mono-500.woff2') format('woff2');}
+#boot-splash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#faf9f5;color:#6a6860;font:14px/1.5 'Inter',system-ui,sans-serif;z-index:9}
+</style>
+<link rel="stylesheet" href="/admin/cockpit-v2/tokens.css" />
+</head>
+<body>
+<div id="boot-splash">Opening the cockpit…</div>
+<div id="root"></div>
+<script src="/admin/cockpit-v2/vendor/react.production.min.js"></script>
+<script src="/admin/cockpit-v2/vendor/react-dom.production.min.js"></script>
+<script src="/admin/cockpit-v2/app.js"></script>
+<script>
+  (function(){
+    var s = document.getElementById('boot-splash');
+    if (s) { var n = 0; var iv = setInterval(function(){ if (document.querySelector('#root .app')) { s.remove(); clearInterval(iv); } else if (++n > 60) { clearInterval(iv); } }, 80); }
+  })();
+</script>
+</body>
+</html>

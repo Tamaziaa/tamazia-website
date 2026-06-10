@@ -8,7 +8,7 @@ Disallow: /api/csp-report
 
 # AI training opt-outs · we permit search but withhold training data
 User-agent: GPTBot
-Disallow: /
+Allow: /
 
 User-agent: ChatGPT-User
 Disallow: /
@@ -17,22 +17,22 @@ User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: ClaudeBot
-Disallow: /
+Allow: /
 
 User-agent: Claude-Web
-Disallow: /
+Allow: /
 
 User-agent: anthropic-ai
-Disallow: /
+Allow: /
 
 User-agent: CCBot
 Disallow: /
 
 User-agent: Google-Extended
-Disallow: /
+Allow: /
 
 User-agent: PerplexityBot
-Disallow: /
+Allow: /
 
 User-agent: Perplexity-User
 Allow: /
@@ -73,3 +73,4 @@ Disallow: /
 # Single canonical sitemap pointer
 Sitemap: https://tamazia.co.uk/sitemap-index.xml
 Sitemap: https://tamazia.co.uk/insights/feed.xml
+Sitemap: https://tamazia.co.uk/sitemap-blog.xml

@@ -13,8 +13,8 @@ export const onRequestGet = async ({ request, env }) => {
   if (env.NEON_URL) {
     try {
       const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
-      const r = await fetch('https://' + host + '/sql', { method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' }, body: JSON.stringify({ query: "SELECT ap.id, ap.slug, ap.hash, ap.domain, ap.sector, ap.generated_at, ap.status, ap.open_count, ap.last_opened_at, l.company FROM audit_pages ap LEFT JOIN leads l ON l.id=ap.lead_id ORDER BY ap.generated_at DESC LIMIT $1", params: [limit] }) });
-      if (r.ok) { const d = await r.json(); engine = (d.rows || d.results || []).map(a => ({ id: 'ap-' + a.id, kind: 'full', source: 'engine', input: a.domain, sector: a.sector, company: a.company, created_at: a.generated_at, status: a.status, open_count: a.open_count, last_opened_at: a.last_opened_at, live_url: '/audit/' + a.slug + '/' + a.hash })); }
+      const r = await fetch('https://' + host + '/sql', { method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' }, body: JSON.stringify({ query: "SELECT ap.id, ap.slug, ap.hash, ap.domain, ap.sector, ap.generated_at, ap.status, ap.open_count, ap.last_opened_at, l.company, COALESCE(mq.source,'auto') AS mint_source FROM audit_pages ap LEFT JOIN leads l ON l.id=ap.lead_id LEFT JOIN minting_queue mq ON mq.slug=ap.slug ORDER BY ap.generated_at DESC LIMIT $1", params: [limit] }) });
+      if (r.ok) { const d = await r.json(); engine = (d.rows || d.results || []).map(a => ({ id: 'ap-' + a.id, kind: 'full', source: 'engine', tag: a.mint_source === 'manual' ? 'manual' : 'auto', input: a.domain, sector: a.sector, company: a.company, created_at: a.generated_at, status: a.status, open_count: a.open_count, last_opened_at: a.last_opened_at, live_url: '/audit/' + a.slug + '/' + a.hash })); }
     } catch (_e) {}
   }
   let all = kvAudits.concat(engine);

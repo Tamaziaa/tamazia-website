@@ -16,12 +16,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'admin-v2-src');
 const OUT = join(ROOT, 'public', 'admin', 'cockpit-v2', 'app.js');
 
-// Fixed concat order: boot (globals + fetch) → lib (primitives) → drawer → tabs → app (root).
+// Fixed concat order: boot (globals + fetch) → lib (primitives) → mint-box → drawer → tabs → app.
+// Simplified cockpit: 6 core tabs only (now/leads/audits/inbox/bookings/settings).
 const ORDER = [
-  'boot.jsx', 'lib.jsx', 'lead-drawer.jsx',
-  'tab-now.jsx', 'tab-pipeline.jsx', 'tab-leads.jsx', 'tab-outbox.jsx', 'tab-inbox.jsx',
-  'tab-aliases.jsx', 'tab-audits.jsx', 'tab-bookings.jsx', 'tab-forms.jsx',
-  'tab-health.jsx', 'tab-intel.jsx', 'tab-settings.jsx',
+  'boot.jsx', 'lib.jsx', 'mint-box.jsx', 'lead-drawer.jsx',
+  'tab-now.jsx', 'tab-leads.jsx', 'tab-audits.jsx', 'tab-inbox.jsx', 'tab-bookings.jsx', 'tab-settings.jsx',
   'app.jsx',
 ];
 

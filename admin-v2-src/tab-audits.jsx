@@ -1,90 +1,69 @@
-// tab-audits.jsx — audit micro-site stats
-
-const TabAudits = ({ setTab }) => {
-  const openLead = useOpenLead();
-  const totalMinted = 3826;
-  const t1Coverage = 88;
-  const totalViews = AUDITS.reduce((s, a) => s + a.views, 0) + 1284;
-  const replyAttributed = AUDITS.filter(a => a.attributed_reply).length;
+// tab-audits.jsx — mint any brand + the tagged audit History. All live data.
+const TabAudits = () => {
+  const [filter, setFilter] = React.useState('all'); // all | manual | auto
+  const audits = (window.AUDITS || []);
+  const manual = audits.filter(a => a.tag === 'manual');
+  const opened = audits.filter(a => (a.views || 0) > 0);
+  const rows = filter === 'all' ? audits : audits.filter(a => a.tag === filter);
 
   return (
     <Page wide>
       <PageHead
         eyebrow="Audit micro-sites"
         title="Audits"
-        lede="A personalised audit page for each lead, signed and time-limited, linked from Touch-1. The strongest single signal we have for reply intent."
-        action={<button className="btn">Re-mint failed</button>}
+        lede="Mint a £1,500 audit for any brand, then track every minted page here. Manual mints (from the box below) are tagged so you can tell them apart from the engine's auto-mints."
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 22 }}>
-        <Stat label="Audits minted" value={fmt(totalMinted)} sub="all-time" />
-        <Stat label="Touch-1 coverage" value={`${t1Coverage}%`} sub="audits in T1 email" kind="ok" />
-        <Stat label="Total page views" value={fmt(totalViews)} sub="across all audits" />
-        <Stat label="Reply-attributed" value={`${replyAttributed} / ${AUDITS.length}`} sub="audits → reply" kind="ok" />
+      <MintBox />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, margin: '22px 0' }}>
+        <Stat label="Total audits" value={fmt(audits.length)} sub="minted pages" />
+        <Stat label="Manual mints" value={fmt(manual.length)} sub="from the box" kind={manual.length ? 'ok' : undefined} />
+        <Stat label="Opened" value={fmt(opened.length)} sub="prospect viewed" kind={opened.length ? 'ok' : undefined} />
+        <Stat label="Auto mints" value={fmt(audits.length - manual.length)} sub="from the engine" />
       </div>
 
-      <Section title="14-day mint volume" action={<button className="btn ghost sm">view all metrics</button>}>
-        <Card padding={20}>
-          <LineChart
-            points={[82, 94, 118, 102, 134, 141, 128, 156, 167, 178, 164, 188, 176, 182]}
-            labels={days14().map(d => `${d}`)}
-            w={820} h={200}
-          />
-        </Card>
-      </Section>
-
-      <Section title="Live audits" lede="Recent mints with view counts and reply attribution.">
-        <Card padding={0}>
-          <table className="tbl">
-            <thead><tr><th>Audit</th><th>Lead</th><th>Minted</th><th>Views</th><th>Last view</th><th>Reply?</th><th></th></tr></thead>
-            <tbody>
-              {AUDITS.map(a => (
-                <tr key={a.id} onClick={() => openLead(a.lead)} style={{ cursor: 'pointer' }}>
-                  <td>
-                    <div className="t-mono t-11" style={{ fontWeight: 500 }}>{a.id}</div>
-                    <a className="t-mono t-11" style={{ color: 'var(--clay)' }} href={a.url} onClick={e => e.stopPropagation()} target="_blank">{a.url.replace('https://','').slice(0, 38)}…</a>
-                  </td>
-                  <td>
-                    <div className="t-13" style={{ fontWeight: 500 }}>{a.lead.company}</div>
-                    <div className="t-11 t-muted">{a.lead.sector}</div>
-                  </td>
-                  <td className="t-11 t-muted">{a.minted_at}</td>
-                  <td>
-                    <span className="t-num t-13" style={{ color: a.views > 5 ? 'var(--ok)' : 'var(--ink-1)' }}>{a.views}</span>
-                  </td>
-                  <td className="t-11 t-muted">{a.last_view || '—'}</td>
-                  <td>{a.attributed_reply ? <StatusChip status="ok" label="attributed" sm /> : <span className="t-11 t-muted">—</span>}</td>
-                  <td onClick={e => e.stopPropagation()}><button className="btn ghost xs">preview</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
-      </Section>
-
-      <Section title="Attribution funnel · 30 days" lede="Multi-view audits convert 10× the baseline reply rate.">
-        <Card padding={22}>
-          <div className="row" style={{ gap: 16, flexWrap: 'wrap' }}>
-            <FunnelStep label="Minted"      value="3,826"  pct="100%" />
-            <FunnelStep label="Viewed"      value="1,284"  pct="34%" />
-            <FunnelStep label="Multi-view"  value="284"    pct="7%" />
-            <FunnelStep label="Attributed"  value="48"     pct="1.3%" kind="ok" last />
+      <Section
+        title="History"
+        lede="Every minted audit, newest first. Click the link to open the live page."
+        action={
+          <div className="row" style={{ gap: 4 }}>
+            {['all', 'manual', 'auto'].map(f => (
+              <button key={f} className={`btn ${filter === f ? 'primary' : 'ghost'} sm`} onClick={() => setFilter(f)}>{f}</button>
+            ))}
           </div>
+        }
+      >
+        <Card padding={0}>
+          {rows.length === 0 ? (
+            <Empty title="No audits yet" lede="Mint one with the box above, or the engine will mint qualified leads automatically." />
+          ) : (
+            <table className="tbl">
+              <thead><tr><th>Brand</th><th>Tag</th><th>Minted</th><th>Views</th><th>Last view</th><th>Link</th></tr></thead>
+              <tbody>
+                {rows.map(a => (
+                  <tr key={a.id}>
+                    <td>
+                      <div className="t-13" style={{ fontWeight: 500 }}>{a.company}</div>
+                      <div className="t-11 t-muted">{a.domain}{a.sector ? ` · ${a.sector}` : ''}</div>
+                    </td>
+                    <td>
+                      {a.tag === 'manual'
+                        ? <span className="chip clay sm">Manual</span>
+                        : <span className="chip sm">Auto</span>}
+                    </td>
+                    <td className="t-11 t-muted">{a.minted_at || '—'}</td>
+                    <td><span className="t-num t-13" style={{ color: (a.views || 0) > 0 ? 'var(--ok)' : 'var(--ink-3)' }}>{a.views || 0}</span></td>
+                    <td className="t-11 t-muted">{a.last_view ? String(a.last_view).slice(0, 16).replace('T', ' ') : '—'}</td>
+                    <td>{a.url ? <a className="btn ghost xs" href={a.url.startsWith('http') ? a.url : a.url} target="_blank" rel="noopener">open ↗</a> : <span className="t-11 t-muted">—</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </Card>
       </Section>
     </Page>
   );
 };
-
-const FunnelStep = ({ label, value, pct, kind, last }) => (
-  <React.Fragment>
-    <div style={{ flex: 1, minWidth: 120, padding: 14, border: '1px solid var(--line-1)', borderRadius: 7, background: kind === 'ok' ? 'var(--ok-tint)' : 'var(--card)' }}>
-      <div className="eyebrow" style={{ marginBottom: 4 }}>{label}</div>
-      <div className="t-num" style={{ fontSize: 24, lineHeight: 1.1, color: kind === 'ok' ? 'var(--ok)' : 'var(--ink-1)' }}>{value}</div>
-      <div className="t-11 t-muted" style={{ marginTop: 2 }}>{pct}</div>
-    </div>
-    {!last && <div style={{ display: 'flex', alignItems: 'center', color: 'var(--ink-4)' }}><Icon name="arrowR" sm /></div>}
-  </React.Fragment>
-);
-
 window.TabAudits = TabAudits;

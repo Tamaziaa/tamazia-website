@@ -43,98 +43,69 @@ const TabNow = ({ setTab }) => {
         </p>
       </header>
 
+      {/* Mint any brand + run controls */}
+      <MintBox />
+      <QuickActions />
+
       {/* The cards (live) */}
-      <div className="col" style={{ gap: 14, marginBottom: 40 }}>
+      <div className="col" style={{ gap: 14, margin: '24px 0 40px' }}>
         {todo.length
           ? todo.map((t, i) => <TodoCard key={i} t={t} setTab={setTab} />)
           : <Card padding={22}><div className="row" style={{ gap: 12 }}><span style={{ fontSize: 20, color: 'var(--ok)' }}>✓</span><div><div className="h3" style={{ marginBottom: 2 }}>You're all caught up.</div><div className="body-sm t-muted">No positive replies or pending approvals waiting. New items appear here the moment they land.</div></div></div></Card>}
       </div>
 
-      {/* Intel brief */}
-      <Section title="What the engine learned in the last hour" lede="Hourly brief #1283 — intel-pulse worker."
-        action={<button className="btn ghost sm" onClick={() => setTab('intel')}>Read all 1,283 →</button>}>
-        <Card padding={20}>
-          <p className="body" style={{ fontFamily: 'var(--serif)', fontSize: 16, lineHeight: 1.6, color: 'var(--ink-1)', margin: 0 }}>
-            {BRIEFS[0].summary}
-          </p>
-          <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--line-2)' }}>
-            <div className="eyebrow" style={{ marginBottom: 10 }}>Recommended actions</div>
-            <ol style={{ margin: 0, paddingLeft: 0, listStyle: 'none' }}>
-              {BRIEFS[0].improvements.map((imp, k) => (
-                <li key={k} style={{ display: 'flex', gap: 12, padding: '8px 0', borderBottom: k < 2 ? '1px solid var(--line-2)' : 'none' }}>
-                  <div style={{
-                    width: 22, height: 22, borderRadius: '50%',
-                    background: 'var(--clay-tint)', color: 'var(--clay-2)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: 'var(--mono)', fontWeight: 600, fontSize: 11,
-                    flexShrink: 0,
-                  }}>{k + 1}</div>
-                  <span className="body-sm grow" style={{ paddingTop: 2 }}>{imp}</span>
-                  <button className="btn ghost sm">Apply</button>
-                </li>
-              ))}
-            </ol>
-          </div>
-          {BRIEFS[0].question && (
-            <div style={{ marginTop: 18, padding: 14, background: 'var(--clay-tint)', borderRadius: 8, border: '1px solid var(--clay-soft)' }}>
-              <div className="eyebrow" style={{ color: 'var(--clay-2)', marginBottom: 4 }}>Question for you</div>
-              <div className="body-sm" style={{ color: 'var(--ink-1)', marginBottom: 10 }}>{BRIEFS[0].question}</div>
-              <div className="row" style={{ gap: 6 }}>
-                <button className="btn clay sm">Approve</button>
-                <button className="btn sm">Defer 1h</button>
+      {/* The funnel — live counts straight from Neon (window.TRUTH.funnel) */}
+      <Section title="The pipeline, right now" lede="Every lead's stage, live from the database.">
+        {(() => {
+          const f = (TRUTH && TRUTH.funnel) || {};
+          const n = k => f[k] != null ? f[k] : 0;
+          const total = Object.values(f).reduce((s, v) => s + (Number(v) || 0), 0);
+          const emailReady = (window.AUDITS || []).length ? n('qualified') : n('qualified'); // qualified leads are mint-eligible
+          const cells = [
+            { l: 'In pipeline', v: total, k: undefined },
+            { l: 'Sourced', v: n('sourced'), k: undefined },
+            { l: 'Enriched', v: n('enriched'), k: undefined },
+            { l: 'Qualified (Tier-1)', v: n('qualified'), k: 'ok' },
+            { l: 'Pending approval', v: n('pending_approval'), k: n('pending_approval') ? 'warn' : undefined },
+            { l: 'Replied', v: n('replied'), k: n('replied') ? 'ok' : undefined },
+            { l: 'Booked', v: n('booked'), k: n('booked') ? 'ok' : undefined },
+            { l: 'Rejected', v: n('rejected'), k: undefined },
+          ];
+          return (
+            <Card padding={24}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
+                {cells.map((c, i) => <Stat key={i} label={c.l} value={fmt(c.v)} kind={c.k} />)}
               </div>
-            </div>
-          )}
-        </Card>
-      </Section>
-
-      {/* Today's pipeline summary */}
-      <Section title="Today, in numbers" lede="From the 30-minute cron and the hourly pulse."
-        action={<button className="btn ghost sm" onClick={() => setTab('pipeline')}>Open the pipeline →</button>}>
-        <Card padding={24}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
-            <Stat label="Sourced today"   value={fmt(412)} sub="+8% vs yesterday" kind="ok" />
-            <Stat label="Drafts ready"    value={fmt(287)} sub="of 1,800 daily cap" />
-            <Stat label="Sent"            value={fmt(287)} sub="6 relays, all green" kind="ok" />
-            <Stat label="Replies today"   value="7" sub="3 interest · 2 meeting" kind="ok" />
-          </div>
-          <div className="divider-soft" style={{ margin: '24px 0 18px' }} />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
-            <Stat label="Reply rate · 30d" value={`${TRUTH.replyRate}%`} sub="+0.2 wow" kind="ok" />
-            <Stat label="Open rate · 30d"  value={`${TRUTH.openRate}%`} sub="Cloudflare pixel" />
-            <Stat label="Bookings today"   value="3" sub="2 confirmed · 1 reschedule" />
-            <Stat label="Bounce rate · 7d" value={`${TRUTH.bounceRate7d}%`} sub="warn at 3%" kind="ok" />
-          </div>
-        </Card>
-      </Section>
-
-      {/* What everything's doing */}
-      <Section title="What each part of the engine is doing" lede="Every stage of the conveyor, at this moment."
-        action={<button className="btn ghost sm" onClick={() => setTab('pipeline')}>See the conveyor →</button>}>
-        <div className="col" style={{ gap: 8 }}>
-          {CONVEYOR.map(s => (
-            <ConveyorRow key={s.key} s={s} onClick={() => setTab('pipeline')} />
-          ))}
-        </div>
-      </Section>
-
-      {/* Quiet stat about open-tracking */}
-      <Section>
-        <Card padding={18} kind="soft">
-          <div className="row" style={{ gap: 14, alignItems: 'flex-start' }}>
-            <div style={{ fontSize: 22, lineHeight: 1, color: 'var(--clay)', flexShrink: 0 }}>◐</div>
-            <div className="grow">
-              <div className="t-13" style={{ fontWeight: 500, marginBottom: 2 }}>Open and click numbers are placeholder until Phase 4.</div>
-              <div className="body-sm t-muted">
-                The Cloudflare worker pixel and click-redirect are scheduled — once they ship, <code className="t-mono">sends.opened_at</code> populates and alias-health
-                demotion gets a real signal. Until then, treat opens and clicks as illustrative.
-              </div>
-            </div>
-            <button className="btn ghost sm" onClick={() => setTab('health')}>Open Health</button>
-          </div>
-        </Card>
+            </Card>
+          );
+        })()}
       </Section>
     </Page>
+  );
+};
+
+// ── Quick actions — run the engine / re-score the pile (wired to engine/dispatch) ──
+const QuickActions = () => {
+  const [busy, setBusy] = React.useState(null);
+  const [msg, setMsg] = React.useState(null);
+  const fire = async (workflow, label) => {
+    setBusy(workflow); setMsg(null);
+    const r = window.POST ? await window.POST('engine/dispatch', { workflow }) : { ok: false };
+    setBusy(null);
+    setMsg(r && r.ok ? `${label} started — it runs in GitHub Actions (no sending).` : `Could not start ${label}.`);
+  };
+  return (
+    <Card padding={16} style={{ marginBottom: 0 }}>
+      <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
+        <div className="grow">
+          <div className="t-13" style={{ fontWeight: 500 }}>Run the engine</div>
+          <div className="body-sm t-muted">Source, enrich, qualify, mint — all £0, no emails sent (paused).</div>
+        </div>
+        <button className="btn" disabled={!!busy} onClick={() => fire('engine', 'Engine cycle')}>{busy === 'engine' ? 'Starting…' : 'Run engine now'}</button>
+        <button className="btn" disabled={!!busy} onClick={() => fire('requalify', 'Re-qualify')}>{busy === 'requalify' ? 'Starting…' : 'Re-qualify the pile'}</button>
+      </div>
+      {msg && <div className="body-sm" style={{ marginTop: 8, color: /Could not/.test(msg) ? 'var(--clay-2)' : 'var(--ok)' }}>{msg}</div>}
+    </Card>
   );
 };
 
@@ -165,31 +136,5 @@ const TodoCard = ({ t, setTab }) => {
     </article>
   );
 };
-
-// ── Conveyor row (compact view used on Now page) ─────────────────────────────
-const ConveyorRow = ({ s, onClick }) => (
-  <button onClick={onClick} className="card" style={{
-    display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px',
-    width: '100%', textAlign: 'left', cursor: 'pointer',
-    transition: 'border-color 0.12s, background 0.12s',
-  }}
-    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--ink-4)'}
-    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--line-1)'}
-  >
-    <span style={{
-      width: 28, height: 28, borderRadius: '50%',
-      background: 'var(--ink-1)', color: 'var(--bg)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontFamily: 'var(--serif)', fontSize: 13, fontWeight: 600, flexShrink: 0,
-    }}>{s.letter}</span>
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <div className="t-14" style={{ fontWeight: 500, color: 'var(--ink-1)' }}>{s.label}</div>
-      <div className="body-sm t-muted ellip">{s.one_liner}</div>
-    </div>
-    <span className="t-num t-13" style={{ flexShrink: 0, color: 'var(--ink-1)' }}>{s.today != null ? `+${s.today}` : '—'} <span className="t-11 t-muted">today</span></span>
-    <span className="dot ok" style={{ flexShrink: 0 }} />
-    <span style={{ color: 'var(--ink-4)', display: 'flex' }}><Icon name="chev" sm /></span>
-  </button>
-);
 
 window.TabNow = TabNow;

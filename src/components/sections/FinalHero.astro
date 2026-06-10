@@ -115,7 +115,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
 
   <div class="tz-colophon">
     <span>LONDON</span><span class="tz-dot">·</span>
-    <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU</span>
+    <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide</span>
   </div>
 
   {/* G2 · Primary CTA docked under the engagements colophon */}
@@ -586,6 +586,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
     border-radius: 10px;
     background: linear-gradient(180deg, rgba(201,167,114,0.08), rgba(201,167,114,0.02));
     box-shadow: 0 4px 14px rgba(26,20,15,0.05);
+    /* Founder directive 2026-06-10: socials anchor to the pill's top-right corner */
+    position: relative;
   }
   .tz-founder-head {
     display: flex;
@@ -994,14 +996,17 @@ const ribbonDouble = [...frameworks, ...frameworks];
     .nav-cta, .tz-cta, .briefings-btn { border: 1px solid CanvasText; }
   }
 
-  /* G1 · compact socials — smaller, snug */
+  /* G1 · compact socials — smaller, snug.
+     Founder directive 2026-06-10: pinned to the top-right corner of the founder box. */
   .tz-founder-socials {
     display: flex;
     flex-direction: row;
     gap: 6px;
     flex-shrink: 0;
     margin-top: 0;
-    align-self: flex-start;
+    position: absolute;
+    top: 10px;
+    right: 12px;
   }
   .tz-founder-li,
   .tz-founder-ig {

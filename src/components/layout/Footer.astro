@@ -31,7 +31,7 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
         <p class="tagline">{tagline}</p>
 
         {/* G3 · 'London' chip removed per founder direction (still appears inside the address line below). */}
-        <p class="presence">Engagements delivered across UK, UAE, USA, EU.</p>
+        <p class="presence">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide.</p>
 
         <div class="credentials">
           {credentials.map((c, i) => (
@@ -97,7 +97,8 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     <!-- Small print -->
     <div class="small-print">
       <div class="copyright">{copyright.replace('2026', year.toString())}</div>
-        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact} · {legalEntity?.icoRegistration}</p>
+        {/* Founder directive 2026-06-10: Article 27 line removed; legal lines render white */}
+        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact}</p>
         <ul class="extra-legal-links" aria-label="Legal disclosures">
           <li><a href={legalEntity?.dataProtectionNoticeHref || '/legal/data-protection/'}>Data Protection Notice</a></li>
           <li><a href={legalEntity?.dpaHref || '/legal/dpa/'}>DPA</a></li>
@@ -457,12 +458,12 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     font-family: var(--ff-body);
     font-size: 11px;
     color: var(--pearl);
-    opacity: 0.6;
     font-weight: 400;
   }
 
   .copyright {
     letter-spacing: 0.05em;
+    opacity: 0.6;
   }
 
   .legal-links {
@@ -471,6 +472,7 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     flex-wrap: wrap;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    opacity: 0.6;
   }
 
   .legal-links a {
@@ -575,9 +577,10 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   }
   .partner-badge:hover { opacity: 1; transform: translateY(-1px); }
 
-  .legal-entity { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; color: var(--ink-muted, #5C4047); margin-top: 6px; line-height: 1.55; }
+  /* Founder directive 2026-06-10: legal entity line + disclosure links visible in white */
+  .legal-entity { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; color: #FFFFFF; margin-top: 6px; line-height: 1.55; }
   .extra-legal-links { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 14px; font-family: 'Inter', system-ui, sans-serif; font-size: 11px; }
-  .extra-legal-links a { color: var(--ink-muted, #5C4047); text-decoration: none; border-bottom: 1px solid transparent; }
+  .extra-legal-links a { color: #FFFFFF; text-decoration: none; border-bottom: 1px solid transparent; }
   .extra-legal-links a:hover { border-bottom-color: var(--gold-soft, #C9A772); }
   /* G3 · address line matches .presence scale, carries a subtle gold left rule for emphasis */
   .brand-address {

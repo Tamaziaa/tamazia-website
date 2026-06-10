@@ -103,7 +103,8 @@ export const heroContent = {
     'Google E-E-A-T Guidelines',
   ],
 
-  ribbonLabel: 'Live regulatory register · 30 frameworks shown · selected from 400+ applied to client work',
+  // Founder directive 2026-06-10 · simplified register label
+  ribbonLabel: 'Live 400+ regulatory register applied to client work',
 
   // Client ribbon — verbatim live site. Kamat stays here (live site confirms).
   // Case-study panel is Orchid (not Kamat) — handled separately in caseStudies.ts.
@@ -114,7 +115,7 @@ export const heroContent = {
     'MERAAS (DUBAI HOLDING)',
   ],
   clientRibbonSuffix:
-    'Engagements delivered across UK, UAE, USA, and EU.',
+    'Engagements delivered in UK, UAE, USA, EU & Worldwide.',
 
   // Legacy ticker — kept as below-fold strip for scrolling marquee.
   // Dates removed per filler-removal rule.

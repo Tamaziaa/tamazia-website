@@ -64,7 +64,7 @@
     <div class="tz-panel-foot">
       <span class="tz-foot-kicker">Trusted by</span>
       <span class="tz-foot-clients">KAMAT HOTELS (NSE) &middot; CG ONCOLOGY (NASDAQ: CGON) &middot; MERAAS (DUBAI HOLDING)</span>
-      <span class="tz-foot-tail">Engagements delivered across UK, UAE, USA, and EU.</span>
+      <span class="tz-foot-tail">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide.</span>
     </div>
   </div>
 
@@ -1036,7 +1036,9 @@
     const STEP_MS = 6500;  // sweep-3 · 6.5s rotation so users can read 10+ laws
     const SWAP_MS = 240;
 
-    const root = document.querySelector('.tz-mhero');
+    /* Scoped to this component's wrapper: on the homepage the FinalHero section is
+       also a .tz-mhero, and the two scripts must never grab each other's DOM. */
+    const root = document.querySelector('.tz-instrument-page .tz-mhero');
     if (!root) return;
 
     // ---- 2. Build rim ticks + abbreviations ----

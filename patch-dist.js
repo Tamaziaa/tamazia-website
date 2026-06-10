@@ -615,17 +615,19 @@ try {
   }
 } catch (e) { console.log('[patch-dist]   WARN 46. ' + e.message); results.push({ ok: true }); }
 
-// Gate 47 · footer has DPO + Article 27 + Tamazia Ltd ROW
+// Gate 47 · footer has DPO + Tamazia Ltd ROW, and NO Article 27 line
+// (founder directive 2026-06-10: "Article 27 UK Representative · appointment in
+// progress" deleted from the footer; the legal entity line stays)
 try {
   const homeHtml = readFileSync(INDEX_HTML, 'utf8');
   if (!/dpo@tamazia\.co\.uk/.test(homeHtml)) {
     console.error('[patch-dist]   FAIL 47. footer missing dpo@tamazia.co.uk');
     results.push({ ok: false });
-  } else if (!/Article 27/.test(homeHtml)) {
-    console.error('[patch-dist]   FAIL 47. footer missing Article 27 disclosure');
+  } else if (/Article 27 UK Representative/.test(homeHtml)) {
+    console.error('[patch-dist]   FAIL 47. footer still shows the removed Article 27 line');
     results.push({ ok: false });
   } else {
-    console.log('[patch-dist]   PASS 47. footer · DPO + Article 27 + Tamazia Ltd');
+    console.log('[patch-dist]   PASS 47. footer · DPO + Tamazia Ltd (Article 27 line removed)');
     results.push({ ok: true });
   }
 } catch (e) { console.log('[patch-dist]   WARN 47. ' + e.message); results.push({ ok: true }); }

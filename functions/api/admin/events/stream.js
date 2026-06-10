@@ -1,10 +1,14 @@
 import { authed, unauth } from '../_lib.js';
 // CF Pages Functions support streaming responses · SSE works natively
 export const onRequestGet = async ({ request, env }) => {
-  // Auth from query (EventSource doesn't support custom headers)
+  // Auth from query (EventSource doesn't support custom headers) OR a Cloudflare
+  // Access JWT — /api/admin/_middleware.js has already verified the JWT signature
+  // before this handler runs, so header presence here means cryptographically verified.
   const url = new URL(request.url);
   const secret = url.searchParams.get('s');
-  if (!env.ADMIN_SECRET || secret !== env.ADMIN_SECRET) return unauth();
+  const accessJwt = request.headers.get('cf-access-jwt-assertion');
+  const secretOk = !!env.ADMIN_SECRET && secret === env.ADMIN_SECRET;
+  if (!secretOk && !accessJwt) return unauth();
   // SSE stream · CF Workers v8 streams API
   const encoder = new TextEncoder();
   const stream = new ReadableStream({

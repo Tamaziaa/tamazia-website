@@ -4,10 +4,19 @@
 // then fetches the real /api/admin/* endpoints and re-renders when data lands.
 // One file = one contract: the tab files are used VERBATIM from the design.
 
-// ── tiny api client (same-origin; Access cookie / x-admin-secret rides along) ──
+// ── auth key (behind Cloudflare Access; the key is the second factor) ──────────
+// If the Access app covers /api/admin*, the injected JWT auths every call and no key
+// is needed. Otherwise the cockpit sends x-admin-secret from a key the founder pastes
+// ONCE (stored in this browser only). Never hardcoded.
+const getKey = () => { try { return localStorage.getItem('tz_admin_key') || ''; } catch (_) { return ''; } };
+const setKey = (k) => { try { localStorage.setItem('tz_admin_key', k); } catch (_) {} };
+const authHeaders = () => { const k = getKey(); return k ? { 'x-admin-secret': k } : {}; };
+window.tzSetKey = (k) => { setKey(k); location.reload(); };
+
+// ── tiny api client (same-origin; Access cookie + x-admin-secret ride along) ──
 const API = (p, opts) =>
-  fetch('/api/admin/' + p, { credentials: 'same-origin', ...(opts || {}) })
-    .then(r => (r.ok ? r.json() : null))
+  fetch('/api/admin/' + p, { credentials: 'same-origin', headers: authHeaders(), ...(opts || {}) })
+    .then(r => { if (r.status === 401) window.__authFailed = true; return r.ok ? r.json() : null; })
     .catch(() => null);
 window.API = API;
 
@@ -15,7 +24,7 @@ window.API = API;
 const POST = (p, body) =>
   fetch('/api/admin/' + p, {
     method: 'POST', credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify(body || {}),
   }).then(r => r.json().catch(() => ({ ok: r.ok }))).catch(e => ({ ok: false, error: e.message }));
 window.POST = POST;
@@ -274,7 +283,29 @@ async function hydrate() {
   // CONNECTORS from health probes (so the Health tab connector grid is real)
   window.CONNECTORS = probes.map(p => ({ name: p.name || titleCase(p.k), category: p.c, status: p.s === 'ok' ? 'ok' : p.s === 'warn' ? 'warn' : 'bad', detail: p.d }));
 
+  // If every call 401'd and we have no key, the cockpit is reachable (Access passed
+  // to /admin) but the API isn't authed — offer a one-time key entry.
+  const allEmpty = !((leads && leads.leads) || []).length && !((now && now.cards));
+  if (window.__authFailed && !getKey() && allEmpty) showKeyGate();
+
   renderApp();
+}
+
+function showKeyGate() {
+  if (document.getElementById('tz-keygate')) return;
+  const d = document.createElement('div');
+  d.id = 'tz-keygate';
+  d.className = 'tz-keygate';
+  d.innerHTML =
+    '<div class="tz-keygate-card">' +
+    '<div class="tz-keygate-title">Unlock the cockpit</div>' +
+    '<div class="tz-keygate-desc">You are behind Cloudflare Access. Paste the cockpit key once to load live data (or add <code>/api/admin*</code> to the Access app to skip this).</div>' +
+    '<input id="tz-key" type="password" placeholder="ADMIN_SECRET" class="tz-keygate-input" />' +
+    '<button id="tz-key-go" class="tz-keygate-btn">Unlock</button></div>';
+  document.body.appendChild(d);
+  const go = () => { const v = document.getElementById('tz-key').value.trim(); if (v) window.tzSetKey(v); };
+  document.getElementById('tz-key-go').onclick = go;
+  document.getElementById('tz-key').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
 }
 
 // initial paint (empty-but-valid), then hydrate, then poll every 60s

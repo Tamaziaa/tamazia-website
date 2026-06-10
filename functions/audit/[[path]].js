@@ -29,6 +29,7 @@ export async function onRequest(context) {
   const hash = decodeURIComponent(m[2]);
 
   const q = `SELECT payload_json, domain, sector, country, lead_id, expires_at,
+    COALESCE(unlocked, false) AS unlocked,
     (SELECT company FROM leads WHERE id = audit_pages.lead_id) AS company
     FROM audit_pages WHERE slug = $1 AND hash = $2 LIMIT 1`;
   const r = await neonQuery(env, q, [slug, hash]);
@@ -45,7 +46,7 @@ export async function onRequest(context) {
 
   let html;
   try {
-    const D = payloadToD(payload, { company: row.company, now: Date.now(), generated_at: null });
+    const D = payloadToD(payload, { company: row.company, now: Date.now(), generated_at: null, unlocked: row.unlocked === true || row.unlocked === 't' });
     html = renderShell(D);
   } catch (e) {
     return htmlResponse(errorShell('Audit could not be rendered', 'Our team has been notified.'), 500);

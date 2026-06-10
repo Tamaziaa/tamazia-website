@@ -96,6 +96,10 @@ export async function onRequestPost(context) {
 
   const s = (event.data && event.data.object) || {};
   const md = s.metadata || {};
+  // Route 3 unlock: a successful payment that carries the audit slug+hash unlocks THAT report for everyone who
+  // opens the link (founder's "unlock the whole link" model). Sanitised to the slug/hash charset.
+  const unlockSlug = clip(md.audit_slug, 120).replace(/[^a-zA-Z0-9_-]/g, '');
+  const unlockHash = clip(md.audit_hash, 64).replace(/[^a-zA-Z0-9_-]/g, '');
   const order = {
     stripe_session: clip(s.id, 120),
     stripe_customer: clip(typeof s.customer === 'string' ? s.customer : (s.customer && s.customer.id), 120),
@@ -127,6 +131,10 @@ export async function onRequestPost(context) {
     const r = await neonQuery(env, sql, params);
     saved = r.ok;
     if (!r.ok) dbError = r.error;
+    // Unlock the audit link (whole-link model) when the payment carries a slug+hash. Best-effort; never blocks.
+    if (unlockSlug && unlockHash) {
+      try { await neonQuery(env, 'UPDATE audit_pages SET unlocked = true WHERE slug = $1 AND hash = $2', [unlockSlug, unlockHash]); } catch (_e) { /* non-fatal */ }
+    }
   } else {
     dbError = 'neon_unconfigured';
   }

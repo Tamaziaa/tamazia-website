@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tamazia Cockpit</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="/admin/cockpit/tokens.css" />
+</head>
+<body>
+<div id="app">
+  <div id="login-wrap">
+    <form id="login-form" autocomplete="off">
+      <div class="login-card">
+        <h1>Tamazia Cockpit</h1>
+        <p class="login-sub">Auth-gated founder console.</p>
+        <input type="password" id="adminkey" placeholder="ADMIN_SECRET" autocomplete="current-password" required />
+        <button type="submit">Enter</button>
+      </div>
+    </form>
+  </div>
+  <div id="cockpit" hidden>
+    <aside id="rail">
+      <div class="brand">TAMAZIA</div>
+      <nav id="tabs">
+        <button data-tab="now" class="tab active">Now</button>
+        <button data-tab="pipeline" class="tab">Pipeline</button>
+        <button data-tab="leads" class="tab">Leads</button>
+        <button data-tab="clients" class="tab">Clients</button>
+        <button data-tab="inbox" class="tab">Inbox</button>
+        <button data-tab="outbox" class="tab">Outbox</button>
+        <button data-tab="forms" class="tab">Forms</button>
+        <button data-tab="bookings" class="tab">Bookings</button>
+        <button data-tab="mystrika" class="tab">Mystrika</button>
+        <button data-tab="icemail" class="tab">IceMail</button>
+        <button data-tab="audits" class="tab">Audits</button>
+        <button data-tab="sources" class="tab">Sources</button>
+        <button data-tab="editor" class="tab">Editor</button>
+        <button data-tab="health" class="tab">Health</button>
+        <button data-tab="settings" class="tab">Settings</button>
+      </nav>
+      <div class="rail-foot">
+        <button id="signout" class="btn-ghost">Sign out</button>
+        <div class="rail-build" id="build-sha">·</div>
+      </div>
+    </aside>
+    <main id="content">
+      <div id="status-bar"></div>
+      <div id="tab-now" class="panel active"></div>
+      <div id="tab-pipeline" class="panel"></div>
+      <div id="tab-leads" class="panel"></div>
+      <div id="tab-clients" class="panel"></div>
+      <div id="tab-inbox" class="panel"></div>
+      <div id="tab-outbox" class="panel"></div>
+      <div id="tab-forms" class="panel"></div>
+      <div id="tab-bookings" class="panel"></div>
+      <div id="tab-mystrika" class="panel"></div>
+      <div id="tab-icemail" class="panel"></div>
+      <div id="tab-audits" class="panel"></div>
+      <div id="tab-sources" class="panel"></div>
+      <div id="tab-editor" class="panel"></div>
+      <div id="tab-health" class="panel"></div>
+      <div id="tab-settings" class="panel"></div>
+    </main>
+    <aside id="dock">
+      <div class="dock-h">LIVE</div>
+      <ul id="dock-feed"></ul>
+    </aside>
+  </div>
+</div>
+<script src="/admin/cockpit/app.js"></script>
+</body>
+</html>

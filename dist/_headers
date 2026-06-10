@@ -10,15 +10,33 @@
   Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(self), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(self), xr-spatial-tracking=(), interest-cohort=(), browsing-topics=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Embedder-Policy: credentialless
   Cross-Origin-Resource-Policy: same-site
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com; font-src 'self' data:; img-src 'self' data: https: https://*.google-analytics.com https://www.google-analytics.com; connect-src 'self' https://api.resend.com https://app.cal.com https://embed.cal.com https://script.google.com https://script.googleusercontent.com https://cloudflareinsights.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://challenges.cloudflare.com; frame-src 'self' https://app.cal.com https://embed.cal.com https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests; report-to csp-endpoint
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://challenges.cloudflare.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://app.cal.com https://embed.cal.com; font-src 'self' data:; img-src 'self' data: https: https://*.google-analytics.com https://www.google-analytics.com; connect-src 'self' https://api.resend.com https://app.cal.com https://embed.cal.com https://script.google.com https://script.googleusercontent.com https://cloudflareinsights.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://challenges.cloudflare.com https://api.stripe.com; frame-src 'self' https://app.cal.com https://embed.cal.com https://challenges.cloudflare.com https://js.stripe.com https://hooks.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com; object-src 'none'; upgrade-insecure-requests; report-to csp-endpoint
   Reporting-Endpoints: csp-endpoint="/api/csp-report", nel-endpoint="/api/nel-report"
   NEL: {"report_to":"nel-endpoint","max_age":2592000,"include_subdomains":true,"failure_fraction":0.05}
   Server: Tamazia
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Self-hosted audit fonts (woff2). Loaded by functions/audit/_shell.js via @font-face;
+# allowed by the global `font-src 'self'` CSP. Filenames are stable per family+weight, so
+# cache them hard — a font change would ship under a new filename.
+/audit/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Audit render bundle (JS/CSS) — served at stable paths, so revalidate on every load. Without this
+# they fall back to Cloudflare's 4h default, and a fresh deploy is masked by the stale cached copy
+# (the "old render after deploy" trap). no-cache = cache but ALWAYS revalidate via ETag → cheap 304
+# when unchanged, fresh 200 the instant a deploy changes the file.
+/audit/audit-app.js
+  Cache-Control: no-cache
+/audit/audit-charts.js
+  Cache-Control: no-cache
+/audit/audit.css
+  Cache-Control: no-cache
+/audit/kings-logo.png
+  Cache-Control: no-cache
 
 /api/*
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
@@ -36,3 +54,4 @@
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
   Referrer-Policy: no-referrer
   X-Frame-Options: DENY
+

@@ -95,9 +95,28 @@ function checkDom(doc) {
     ['#sec-seo .issrow', 1, '>='], ['#sec-seo .seccell', 6, '>='], ['#sec-seo table tbody tr', 1, '>='],
     ['#sec-geo .engcell', 8, '='], ['#sec-geo .checkrow', 4, '>='], ['#sec-geo table tbody tr', 1, '>='],
     ['#sec-competitors table.cmp tbody tr', 2, '>='], ['#sec-competitors .bar-row', 2, '>='],
-    ['#sec-plan .fixbox', 1, '>='], ['#sec-plan .addon', 3, '>='],
+    ['#sec-plan .route1', 1, '>='], ['#sec-plan .addon', 3, '>='],
+    // conversion round: Route 1 toggle (3), dual founder calendars (2), summary bullets,
+    // rail socials (3), and the freemium lock present when the report is not unlocked.
+    ['#sec-plan .r1-tab', 3, '='], ['#sec-plan .booking .bookcard', 2, '='],
+    ['.verdict-bullets li', 3, '>='], ['.rail-social a', 3, '='], ['.vfix-dot', 0, '='],
+    // r22: burgundy Route-1 anchor restored + scaling-anchor + Most-chosen + founder credential
+    ['#sec-plan .r1-fixbox', 1, '>='], ['#sec-plan .fx-rib', 1, '>='], ['#sec-plan .r1-was', 1, '>='],
+    ['#sec-plan .tier3.pop', 1, '='], ['.founder-cred', 1, '='],
+    // r25: currency-by-region toggle (GBP/USD/EUR/AED), luxury Route-2 tiers (3 priceline + 3 CTA),
+    // and every price token is a currency-aware .cmoney carrying its GBP base.
+    ['#sec-plan .cur-btn', 4, '='], ['#sec-plan .tiers-lux .tl-priceline', 3, '='],
+    ['#sec-plan .tiers-lux .tl-cta', 3, '='], ['#sec-plan .cmoney', 8, '>='],
+    // r22 half-visible lock: at least one fix renders free (⌈N/2⌉). The locked/free split invariant is checked below.
   ];
   for (const [sel, n, op] of expect) { const c = q(sel); const ok = op === '=' ? c === n : c >= n; if (!ok) out.push(`${sel} = ${c} (expected ${op}${n})`); }
+  // r22 half-visible-lock invariant: with N total Tamazia-fix values, locked = ⌊N/2⌋ and free = ⌈N/2⌉.
+  // So locked must be < free always (never all-locked), free >= 1 when any fix renders, and a rich report
+  // (N>=2) must lock at least one (drives Route 3). Thin reports (N<2) legitimately lock none.
+  const _locked = q('.tz-lock-blur'); const _free = q('.tz-fixv') - _locked;
+  if (q('.tz-fixv') > 0 && _free < 1) out.push(`half-lock: no FREE fix rendered (locked ${_locked}/${q('.tz-fixv')})`);
+  if (_locked > _free) out.push(`half-lock: more locked (${_locked}) than free (${_free}) — should be ⌊N/2⌋ locked, ⌈N/2⌉ free`);
+  if (q('.beatcard .tz-lock') > 0) out.push(`beat-cards must never lock (found ${q('.beatcard .tz-lock')})`);
   app.querySelectorAll('.num, .val, .v, .cmpv, .kpi .v, .sbg').forEach((el) => {
     const t = (el.textContent || '').trim();
     if (t === '' || /NaN|undefined/.test(t)) out.push(`empty/NaN value node <${el.className}>: "${t}"`);

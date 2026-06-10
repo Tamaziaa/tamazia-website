@@ -199,7 +199,7 @@ const LH = {
   'unused-javascript': ['Unused JavaScript is downloaded and parsed needlessly', 'speed', 'Tamazia code-splits and removes dead JavaScript to cut parse time.'],
   'legacy-javascript-insight': ['Legacy JavaScript is served to modern browsers', 'speed', 'Tamazia ships modern bundles so 90% of visitors download far less code.'],
   'duplicated-javascript-insight': ['The same JavaScript module is bundled more than once', 'speed', 'Tamazia de-duplicates shared modules across bundles.'],
-  'modern-image-formats': ['Images are not in next-gen formats (WebP/AVIF)', 'speed', 'Tamazia converts and serves WebP/AVIF with fallbacks, typically 25–50% smaller.'],
+  'modern-image-formats': ['Images are not in next-gen formats (WebP/AVIF)', 'speed', 'Tamazia converts and serves WebP/AVIF with fallbacks, typically 25 to 50% smaller.'],
   'uses-optimized-images': ['Images are not efficiently encoded', 'speed', 'Tamazia compresses every image without visible quality loss.'],
   'uses-responsive-images': ['Oversized images are served to small screens', 'speed', 'Tamazia serves correctly-sized images per device with srcset.'],
   'unsized-images': ['Images have no width/height, they shift the layout as they load', 'speed', 'Tamazia sets explicit dimensions so content never jumps (fixes CLS).'],
@@ -324,6 +324,23 @@ function pillarOf(p) {
   if (/^SEO$/.test(fw) || NO_STATUTORY_FINE.has(fw)) return 'SEO + Technical';
   return FW_JUR(fw) !== 'GLOBAL' ? 'Regulatory' : 'SEO + Technical';
 }
+// A3 — turn the engine's nearest-miss absence_evidence into a real per-breach line for the finding card, so an
+// absence breach shows WHAT we read on the page that should carry the disclosure vs the SPECIFIC missing element —
+// never the bare "we inspected your homepage". Falls back to '' when there is no structured absence evidence.
+function absenceLine(ae) {
+  if (!ae || typeof ae !== 'object') return '';
+  const page = ae.target_url ? humanUrl(ae.target_url) : '';
+  if (ae.state === 'related_present_requirement_absent' && ae.nearest_quote) {
+    return `On ${page || 'your site'} we read “${String(ae.nearest_quote).slice(0, 150)}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
+  }
+  if (ae.state === 'page_silent' && page) {
+    return `We inspected ${page} and it makes no mention of ${ae.requirement || 'this disclosure'}.`;
+  }
+  if (ae.pages_checked) {
+    return `Across the ${ae.pages_checked} page${ae.pages_checked === 1 ? '' : 's'} we crawled, ${ae.requirement || 'this disclosure'} appears nowhere.`;
+  }
+  return '';
+}
 function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
@@ -336,13 +353,17 @@ function bingoFromPointer(p, pillar, news, i, sym) {
       : (/^SEO$/i.test(p.framework_short) || (/^(seo|technical_seo|technical|tech|tls_dns|performance)$/.test(String(p.bucket || '')) && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Search-engine visibility'
         : (p.bucket === 'accessibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || ''))) ? 'Accessibility (WCAG / Equality Act)'
           : (fwName(p.framework_short) || p.citation || pillar),
-    exp: (noFine || (!lowF && !hiF)) ? 'ranking impact' : gbp(lowF, sym) + '–' + gbp(hiF, sym),
+    // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
+    // "Signal" — never label a non-statutory finding "③ Law".
+    labelKind: /GEO|AI/.test(pillar) ? 'Signal' : /SEO|Technical/.test(pillar) ? 'Standard' : 'Law',
+    exp: (noFine || (!lowF && !hiF)) ? 'ranking impact' : gbp(lowF, sym) + ' to ' + gbp(hiF, sym),
     title: p.fact || g(p, 'bingo.problem', 'Finding'),
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),
-    quote: p.evidence_quote || g(p, 'bingo.problem', ''),
+    // Prefer a verbatim on-site quote; else the engine's real nearest-miss absence line; else the bingo problem.
+    quote: p.evidence_quote || absenceLine(p.absence_evidence) || g(p, 'bingo.problem', ''),
     fix: craftFix(p),
-    plan: 'Severity ' + (p.severity || 'P1') + ' · ' + (i === 0 ? 'Week 1' : 'Weeks 1–4') + ' · every mandate',
+    plan: 'Severity ' + (p.severity || 'P1') + ' · ' + (i === 0 ? 'Week 1' : 'Weeks 1 to 4') + ' · every mandate',
   };
 }
 // The engine emits a templated remediation, `Tamazia implements and verifies "{finding}" on your site
@@ -472,8 +493,8 @@ function scrubMoney(text, canonical, sym) {
 
 /* ---------------- static commerce + scoring scaffold (Slice 5 wires live config) ---------------- */
 const SCORING_BANDS = [
-  { g: 'A', r: '85–100', d: 'Investor-grade' }, { g: 'B', r: '70–84', d: 'Strong' },
-  { g: 'C', r: '55–69', d: 'Workable' }, { g: 'D', r: '40–54', d: 'At risk' }, { g: 'F', r: '0–39', d: 'Critical' },
+  { g: 'A', r: '85 to 100', d: 'Investor-grade' }, { g: 'B', r: '70 to 84', d: 'Strong' },
+  { g: 'C', r: '55 to 69', d: 'Workable' }, { g: 'D', r: '40 to 54', d: 'At risk' }, { g: 'F', r: '0 to 39', d: 'Critical' },
 ];
 function gradeOf(score) {
   if (score >= 85) return 'A'; if (score >= 70) return 'B'; if (score >= 55) return 'C';
@@ -513,7 +534,7 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
     { nm: 'Security headers', key: 'security', v: siteScanned ? Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100) : null, sub: siteScanned ? (`${sig.hsts ? '' : 'no HSTS · '}${sig.csp ? '' : 'no CSP · '}${sig.xfo ? '' : 'no X-Frame'}`.replace(/ · $/, '') || 'ok') : 'not assessed', w: 1 },
     { nm: 'Accessibility (WCAG)', key: 'a11y', v: siteScanned ? Math.round((sig.lang ? 30 : 0) + (sig.viewport ? 30 : 0) + 40 * pointerHealth) : null, sub: siteScanned ? `${sig.lang ? '' : 'no lang · '}contrast/labels` : 'not assessed', w: 1 },
     { nm: 'AI / GEO visibility', key: 'ai_visibility', st: (aiR.score || 0) < 40 ? 'fail' : 'warn', v: aiR.score || 0, sub: `share of voice ${sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows'))} · entity ${aiR.score || 0}`, w: 1 },
-    { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', '—')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
+    { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', 'n/a')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
     (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent'), w: 1 }; })(),
   ];
   return dims.map((d) => {
@@ -559,6 +580,24 @@ const COMPETITOR_DENYLIST = new Set([
   // listicle / magazine / no-name aggregator hosts the LLM surfaced as "leaders" whose stems dodge the token
   // patterns (no separator before the keyword). These co-rank by aggregating firms and must never be peers. (citations-junk)
   'topschoolguide.com','luxurycolumnist.com','britainsfinest.co.uk','retailgazette.co.uk','lawfuel.com','lawandlegal.co.uk','hrjforemanlaws.co.uk','robertsonmoss.com','counselindex.com','vault.com','thehotelguru.com','lhw.com',
+  // fintech / banking & real-estate comparison + directory hosts that co-rank for the category but are NOT real
+  // operating rivals (mirrors the engine per-sector blocklist; belt-and-braces for SERP-cache artifacts). (P7)
+  'monito.com','pocketwise.co.uk','idobusiness.co.uk','comparebanks.co.uk','moneyfactscompare.co.uk','moneyfacts.co.uk','thebanks.eu','moneyzine.com','compareremit.com','bankofengland.co.uk','fca.org.uk',
+  'agentseeker.co.uk','estateagentfinder.co.uk','britishproperty.uk','nethouseprices.com','mouseprice.com','startood.com',
+  // e-commerce / retail PLATFORMS — tools a retailer is built ON, never a retail rival (the Gymshark fix). (E2b)
+  'shopify.com','woocommerce.com','bigcommerce.com','magento.com','squarespace.com','wix.com','prestashop.com','wordpress.com','weebly.com','ecwid.com','bigcartel.com','volusion.com','godaddy.com',
+  // 20-sector directory/platform/news hosts most likely to co-rank as false competitors (E4 mirror of the engine 20-sector blocklist)
+  'realself.com','consultingroom.com','glowday.com','save-face.co.uk',
+  'coinmarketcap.com','coingecko.com','etherscan.io','blockchain.com','cointelegraph.com','coindesk.com','messari.io','glassnode.com','cryptocompare.com','dappradar.com','defillama.com','cryptoslate.com','decrypt.co','bitcoinmagazine.com','coinjournal.net','cryptonews.com','invezz.com','coingabbar.com','tradingguide.co.uk','theinvestorscentre.co.uk','newsbtc.com','beincrypto.com','cryptopotato.com','ambcrypto.com','u.today','bitcoinist.com','blockworks.co','theblock.co','99bitcoins.com','benzinga.com','coinbureau.com','webopedia.com','investing.com','fool.com','datawallet.com','milkroad.com','techopedia.com','koinly.io','cointracker.io',
+  'coursera.org','udemy.com','edx.org','khanacademy.org','greatschools.org','niche.com','qs.com','timeshighereducation.com','topuniversities.com','ratemyprofessors.com','whatuni.com','thecompleteuniversityguide.co.uk','studyportals.com',
+  'autotrader.com','autotrader.co.uk','edmunds.com','cars.com','carvana.com','vroom.com','kbb.com','carfax.com','truecar.com','whatcar.com','carwow.co.uk','parkers.co.uk','heycar.co.uk','motors.co.uk','cinch.co.uk','honestjohn.co.uk','mobile.de','autoscout24.de',
+  'viator.com','getyourguide.com','klook.com','musement.com','tripadvisor.co.uk','lonelyplanet.com','loveholidays.com','secretescapes.com','civitatis.com',
+  'clutch.co','upwork.com','goodfirms.co','toptal.com','fiverr.com','designrush.com','sortlist.com','manta.com','thumbtack.com',
+  'labdoor.com','supplementreviews.com','examine.com','iherb.com','leafly.com','weedmaps.com','cbdoracle.com',
+  'energysage.com','solarreviews.com','cleanenergyreviews.info','pv-magazine.com','rechargenews.com','energysavingtrust.org.uk',
+  'rover.com','care.com','vetster.com','petmd.com','vethelpdirect.com','find-a-vet.co.uk','thedodo.com',
+  'treatwell.com','treatwell.co.uk','mindbody.com','classpass.com','fresha.com','booksy.com','wahanda.com','spafinder.com',
+  'muckrack.com','about.me','crunchbase.com','pitchbook.com',
 ]);
 const JUNK_PATTERNS = [
   /(^|\.)wikipedia\.org$/i, /(^|\.)(facebook|linkedin|youtube|instagram|tiktok|x)\.com$/i, /(^|\.)google\./i, /\.gov(\.[a-z]{2})?$/i, /(^|\.)nhs\.uk$/i,
@@ -568,6 +607,10 @@ const JUNK_PATTERNS = [
   /(^|[.\-])(magazine|magazines|news|times|weekly|daily|journal|gazette|press|blog|wiki)([.\-]|$)/i,
   /(^|[.\-])(marketplace|aggregat|leadgen|lead-?gen)([.\-]|$)/i,
 ];
+// Directory/listicle signal at the START of the registrable stem with NO trailing separator — e.g. reviewbritain.com,
+// directorylaw.co.uk, comparethefirm.com, top10lawyers.com. The token-bounded JUNK_PATTERNS miss these because the
+// keyword runs straight into the next word. Conservative set (clear directory verbs only) so real brands are kept.
+const STEM_JUNK_RX = /^(reviews?|directory|directories|compare|comparison|rated|ranking|rankings|listings?|top\d+|bestrated|bestof|find(a|an|my)|nearme|nearby)/i;
 const parentDomain = (host) => { const p = String(host).split('.'); return p.length > 2 ? p.slice(-2).join('.') : host; };
 const MARKET_TLD = { UK: ['co.uk', 'uk', 'org.uk'], GB: ['co.uk', 'uk', 'org.uk'], US: ['com', 'us'], USA: ['com', 'us'], UAE: ['ae', 'com'], AE: ['ae', 'com'], SA: ['sa', 'com'], KSA: ['sa', 'com'], QA: ['qa', 'com'] };
 function isRealCompetitor(domain, firmMarket) {
@@ -575,6 +618,11 @@ function isRealCompetitor(domain, firmMarket) {
   if (!host || !host.includes('.')) return false;
   if (COMPETITOR_DENYLIST.has(host) || COMPETITOR_DENYLIST.has(parentDomain(host))) return false;
   if (JUNK_PATTERNS.some((rx) => rx.test(host))) return false;
+  if (STEM_JUNK_RX.test(parentDomain(host).split('.')[0])) return false;   // directory verb at the stem start (reviewbritain)
+  // strong directory/comparison SUBSTRING signal anywhere in the registrable label (catches comparebanks,
+  // moneyfactscompare, agentseeker, estateagentfinder that the token-bounded patterns miss). (P7)
+  const _stem = host.split('.')[0].replace(/[^a-z0-9]/g, '');
+  if (/compare|comparison|finder|seeker|directory|listings?|whatclinic|bestbanks?|whichbank|ratemy|news|magazine|gazette|herald|tribune/.test(_stem)) return false;
   const allowed = MARKET_TLD[String(firmMarket || '').toUpperCase()];
   if (allowed) { const tld1 = host.split('.').pop(); const tld2 = host.split('.').slice(-2).join('.'); if (/^(ae|sa|qa|in|de|fr|it|es|ca|au)$/i.test(tld1) && !allowed.includes(tld1) && !allowed.includes(tld2)) return false; }
   return true;
@@ -594,7 +642,7 @@ function corroborated(host, payload) {
 const AGG_BRANDS = new Set(['booking', 'expedia', 'hotels', 'agoda', 'trivago', 'kayak', 'tripadvisor', 'trustpilot', 'yelp', 'glassdoor', 'indeed', 'forbes', 'timeout', 'findlaw', 'justia', 'bestlawfirms', 'lawyers', 'avvo', 'zocdoc', 'healthgrades', 'rightmove', 'zoopla', 'onthemarket', 'zillow', 'realtor', 'amazon', 'ebay', 'etsy', 'aliexpress', 'walmart', 'yell', 'thomson', 'clutch', 'g2', 'capterra', 'wikipedia', 'reddit']);
 function looksAggregator(name) {
   const h = cleanDomain(name).toLowerCase();
-  if (h.includes('.') && (COMPETITOR_DENYLIST.has(h) || COMPETITOR_DENYLIST.has(parentDomain(h)) || JUNK_PATTERNS.some((rx) => rx.test(h)))) return true;
+  if (h.includes('.') && (COMPETITOR_DENYLIST.has(h) || COMPETITOR_DENYLIST.has(parentDomain(h)) || JUNK_PATTERNS.some((rx) => rx.test(h)) || STEM_JUNK_RX.test(parentDomain(h).split('.')[0]))) return true;
   const first = String(name || '').toLowerCase().replace(/[^a-z0-9 .]/g, '').split(/[ .]/)[0];
   return AGG_BRANDS.has(first);
 }
@@ -898,7 +946,7 @@ export function payloadToD(payload, ctx = {}) {
     ? `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
     : (compHighs > 0
       ? `We screened all ${'400+'} active frameworks. The ones that legally bind you are below; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
-      : `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and none is confirmed breached on the live site this scan — so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+      : `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and none is confirmed breached on the live site this scan, so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
@@ -937,7 +985,7 @@ export function payloadToD(payload, ctx = {}) {
     'EU_EAA_2025': 'In force June 2025. Fines up to €1M in Spain, €500k in Germany.',
     'EU_MDR': 'MDR fully applicable since May 2021. Germany €500k per device fines.',
     'US_BIPA': 'White Castle $17B exposure. Meta $650M settled. Class actions seven-figure+.',
-    'US_GLBA': 'FTC Safeguards Rule amended 2024 — 30-day breach notification. $7,500/day per violation.',
+    'US_GLBA': 'FTC Safeguards Rule amended 2024, 30-day breach notification. $7,500/day per violation.',
     'US_TCPA': 'FCC AI-voice ruling Feb 2024. $500-$1,500 per call statutory damages.',
     'US_CPRA': 'CPPA fined Honda $632,500 March 2025. First major CPRA enforcement post-DoorDash.',
     'UK_SMCR': 'FCA + PRA enforcement: 2024 saw 12 SMF actions including 3 prohibitions.',
@@ -946,7 +994,7 @@ export function payloadToD(payload, ctx = {}) {
     'UK_CRA_2015': 'CMA confirms CRA 2015 applies in parallel with DMCC. Cross-referenced in 2025 enforcement.',
     'EU_CSRD': 'Phase 1 reporting from FY2024. Italy + Germany penalties up to 2% of turnover.',
     'EU_MIFID_II': 'ESMA review marketing material continuously. 2024 enforcement averaged €380k per firm.',
-    'EU_SFDR': 'ESMA anti-greenwashing guidelines March 2024. Fines €50k–€2M across France, Italy, Spain.',
+    'EU_SFDR': 'ESMA anti-greenwashing guidelines March 2024. Fines €50k to €2M across France, Italy, Spain.',
     'US_FTC_ENDORSE': 'FTC Consumer Reviews & Testimonials Rule in force Oct 2024 (USD 53,088 per violation); first warning letters issued to 10 firms in Dec 2025.',
     'FR_CNIL_2025': 'CNIL fined SHEIN €40M, Carrefour €3M, Free Mobile €2.25M in 2024.',
     'DE_BDSG': 'BfDI + state DPAs collectively issued €18M in fines 2024.'
@@ -979,6 +1027,9 @@ export function payloadToD(payload, ctx = {}) {
       const items = aps.map((p) => ({
         subject: subjectOf(p, 84) || 'Required disclosure',
         quote: String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ').slice(0, 180),
+        // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
+        // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
+        absence: String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence),
         fix: craftFix(p), sev: p.severity,
       })).filter((it, i, a2) => a2.findIndex((x) => x.subject.toLowerCase() === it.subject.toLowerCase()) === i).slice(0, 12);
       return { article, inspected, items };
@@ -995,7 +1046,9 @@ export function payloadToD(payload, ctx = {}) {
     // and only then the generic fallback — so a framework the map lacks never renders as "Sector regulator".
     // accept the engine's regulator unless it's a raw framework code (codes carry underscores; "ICO"/"FCA" do not).
     const _regP = (top.regulator && !/_/.test(top.regulator) && !/^https?:/.test(top.regulator)) ? String(top.regulator).trim() : '';
-    const _reg = FW_REGULATOR[fw] || _regP || 'Sector regulator';
+    // The regulatory MERGE can key the box on a synthesised code (e.g. UK_GDPR) the map lacks while the
+    // representative finding's own framework_short (UK_GDPR_A13) IS mapped — try both before the generic fallback.
+    const _reg = FW_REGULATOR[fw] || FW_REGULATOR[top.framework_short] || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || 'Sector regulator';
     // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
     const _cite = top.citation_url || top.citation || '';
     return {
@@ -1203,11 +1256,13 @@ export function payloadToD(payload, ctx = {}) {
     { ax: 'Share of voice', v: sov }, { ax: 'Schema', v: sig.json_ld ? 80 : 0 },
     { ax: 'Knowledge graph', v: aiR.in_wikidata ? 90 : 0 }, { ax: 'Citations', v: sov > 0 ? 60 : 0 },
   ];
+  // B6 — REAL per-type detection from the engine's JSON-LD @type scan (aiR.has_localbusiness/has_service/has_faq),
+  // not hardcoded false. Missing types render as red ✗ (gaps); present types as a muted ✓.
   const schema = [
     { t: 'Organization', present: !!aiR.has_org_schema, why: "AI can't identify who you are" },
-    { t: 'LocalBusiness', present: !!sig.json_ld && !!aiR.has_org_schema, why: "Invisible to 'near me' + map AI answers" },
-    { t: 'Service / Offer', present: false, why: "Your services aren't machine-readable" },
-    { t: 'FAQPage', present: false, why: 'The single format LLMs quote most' },
+    { t: 'LocalBusiness', present: !!aiR.has_localbusiness, why: "Invisible to 'near me' + map AI answers" },
+    { t: 'Service / Offer', present: !!aiR.has_service, why: "Your services aren't machine-readable" },
+    { t: 'FAQPage', present: !!aiR.has_faq, why: 'The single format LLMs quote most' },
     { t: 'sameAs links', present: !!aiR.has_same_as, why: 'Nothing connects you to verified profiles' },
     { t: 'Wikidata entity', present: !!aiR.in_wikidata, why: 'Absent from the public knowledge graph' },
   ];
@@ -1375,8 +1430,9 @@ export function payloadToD(payload, ctx = {}) {
     prec: 'AI Overviews now sit above the classic results on a large, growing share of searches; AI-referred visitors arrive ready to buy.',
     quote: 'entity readiness ' + (aiR.score || 0) + ' / 100',
     fix: 'Tamazia builds your machine-readable entity, Organization/LocalBusiness schema, sameAs, a Wikidata entry and an llms.txt, so answer engines can identify and cite you.',
-    plan: 'GEO programme · Weeks 1–12',
+    plan: 'GEO programme · Weeks 1 to 12',
   };
+  geo.fix.labelKind = 'Signal';   // GEO/AI visibility is a SIGNAL, not a law — the ③ row must read "③ Signal", never "③ Law"
   geo.fix.shot = g(payload, 'screenshots.homepage', '') || (siteUrl ? thum(siteUrl) : '');
 
   // --- exec (numeric-locked) + jurisdiction ---
@@ -1405,6 +1461,10 @@ export function payloadToD(payload, ctx = {}) {
 
   const D = {
     meta, score, grade, scoreBand: bandOf(score),
+    // Freemium unlock flag (set by [[path]].js from the audit_pages.unlocked column, flipped true by the
+    // Stripe webhook on a successful Route 3 payment). When true the render shows every Tamazia-fix in full
+    // for everyone who opens the link; when false each fix is locked behind the green-gradient veil. (founder)
+    unlocked: !!ctx.unlocked,
     // Distinct jurisdictions actually present in the rendered regulatory layer — drives the Gate-1 selector
     // (shown only when a firm is genuinely multi-jurisdiction) and the per-framework jurisdiction badges.
     jurisdictions: Array.from(new Set((frameworks || []).map((f) => f.jur).filter((j) => j && j !== 'Global'))),
@@ -1425,7 +1485,7 @@ export function payloadToD(payload, ctx = {}) {
     // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
     frameworksAssessed: frameworks.length, frameworksBinding: Math.max(arr(payload.applicable_frameworks).length, frameworks.length), rulesChecked: '400+', frameworksTotal: '400+',
     scoring: {
-      formula: 'Weighted mean of the assessed dimensions, scaled 0–100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
+      formula: 'Weighted mean of the assessed dimensions, scaled 0 to 100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,
       why: counts.critical > 0
         ? `Your ${score} is held down by the failing dimensions a regulator and an AI engine can both see on your live site today. Fix the ${counts.critical} critical ${counts.critical === 1 ? 'finding' : 'findings'} and the heaviest-weighted dimension lifts first, which is why ${wk12} by week 12 is realistic once those gaps close.`
@@ -1493,7 +1553,7 @@ function buildPsiStrat(strat) {
   const sc = strat.scores, dial = (v) => isNum(v) ? Math.round(v * 100) : null;
   const audits = arr(strat.audits)
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix: String(a.fix || fixFb || '').trim(), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
 }
@@ -1558,7 +1618,7 @@ function execFallback(exp, nfw, crit, sym) {
   const lead = `Right now you are carrying ${gbp(exp, sym)} of avoidable statutory exposure across ${nfw} binding framework${nfw === 1 ? '' : 's'}.`;
   return crit > 0 ? `${lead} Close the ${crit} critical finding${crit === 1 ? '' : 's'} first, they are the ones a regulator can act on today.` : `${lead} The high-severity gaps below are the priority.`;
 }
-function jurLabel(c) { c = String(c || '').toUpperCase(); return { UK: 'United Kingdom', USA: 'United States', US: 'United States', UAE: 'United Arab Emirates', AE: 'United Arab Emirates', KSA: 'Saudi Arabia' }[c] || c || '—'; }
+function jurLabel(c) { c = String(c || '').toUpperCase(); return { UK: 'United Kingdom', USA: 'United States', US: 'United States', UAE: 'United Arab Emirates', AE: 'United Arab Emirates', KSA: 'Saudi Arabia' }[c] || c || 'n/a'; }
 function fmtArchive(d) { const s = String(d || ''); return s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` : s; }
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; } catch { return ''; } }
@@ -1566,7 +1626,7 @@ function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.g
 /* ---------------- commerce scaffold (Tamazia live tiers/add-ons; Slice 5 = live config) ---------------- */
 const COMMERCE = {
   pricingNotes: '90-day rolling · no long-term contract · work belongs to you once paid · founder reviews every onboarding personally.',
-  upsellProof: 'Each add-on layers onto your core programme as it proves out — start with the audit\'s top priority, add the next lever once it is working.',
+  upsellProof: 'Each add-on layers onto your core programme as it proves out. Start with the audit\'s top priority, then add the next lever once it is working.',
   pricing: [
     { tier: 'Foundation', pr: '£2,500', wk: '4-week onboarding', blurb: 'Single-site independent firm getting compliant and found.', feats: ['Full prosecution-grade audit + re-scan', '1 compliance-reviewed content piece / month', 'Google Business Profile optimisation', 'Core technical + on-page fixes', 'Single jurisdiction'], more: ['10 tracked keywords', 'Monthly compliance monitoring', 'Quarterly re-audit', 'Email support · 48h'], rec: false },
     { tier: 'Authority', pr: '£4,500', wk: '8-week programme', popular: true, blurb: 'Multi-partner / multi-location firm building category authority.', feats: ['Everything in Foundation', '30 keywords · 4 content pieces / month', 'Editorial placements + GEO programme', 'AI entity + schema build', 'Two jurisdictions'], more: ['LinkedIn executive authority for 2 partners', 'Competitor displacement tracking', 'Knowledge-panel build', 'Priority support · 24h', 'Pilot available at £3,600 on 6-month'], rec: false },

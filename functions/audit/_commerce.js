@@ -32,10 +32,12 @@
 //   spec  the full-detail bullets revealed on hover / tap
 export const ADDON_CATALOGUE = {
   geo: {
+    // GEO now ABSORBS the former "AI Entity + Knowledge Panel" add-on (founder merge): the entity/Wikidata/
+    // knowledge-panel build is folded into the GEO spec, so there is no standalone entity card.
     key: 'geo', name: 'GEO / AI Search Presence', envKey: 'STRIPE_PRICE_GEO',
     gbp: 1800, was: 950, unit: 'mo', market: 'vs market £1,900 to £6,300/mo',
-    usp: 'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews. AI visitors convert 4.4 to 23 times organic. The only compliance-reviewed GEO for regulated firms.',
-    spec: ['Per-engine citation measurement across all 6 engines', 'Entity, schema, llms.txt and Wikidata build', 'Compliance review of what AI says about you, which no other agency offers', 'Monthly share of voice tracking against named rivals', 'Best for every regulated firm, because AI is now the first research step'],
+    usp: 'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the machine-readable entity they read first. AI visitors convert 4.4 to 23 times organic. The only compliance-reviewed GEO for regulated firms.',
+    spec: ['Per-engine citation measurement across all 6 engines', 'Entity, schema, llms.txt and Wikidata build', 'Google Knowledge Panel and sameAs across every verified profile', 'Compliance review of what AI says about you, which no other agency offers', 'Monthly share of voice tracking against named rivals'],
   },
   cold_email: {
     key: 'cold_email', name: 'Cold Email Outreach Engine', envKey: 'STRIPE_PRICE_COLD_EMAIL',
@@ -44,40 +46,31 @@ export const ADDON_CATALOGUE = {
     spec: ['Built on the 400+ rule compliance database, so FCA and COBS sends stay compliant', 'Self-healing deliverability with inbox rotation', 'Personalised per prospect and classified by intent', '3 to 8 percent target reply rate, pure pipeline margin', 'Best for clinics building patient lists and firms doing active business development'],
   },
   compliance: {
+    // Route 3 "Monthly Compliance + SEO + AI report". Display price £1,500→£750/mo with a first-month-free trial
+    // (the audit page sends trial_days=30). STRIPE_PRICE_COMPLIANCE must point at a £750/mo recurring Stripe price.
     key: 'compliance', name: 'Compliance Monitoring', envKey: 'STRIPE_PRICE_COMPLIANCE',
-    gbp: 399, was: 0, unit: 'mo', market: 'correctly priced, highest uptake',
-    usp: 'Monthly re-scan of the full 400+ rule catalogue. The loss-leader every budget holder approves without escalation.',
-    spec: ['Catches new breaches the day the law changes', 'Alerts within 24 hours of a new gap appearing', 'Quarterly board-ready compliance certificate', 'Sits at 8.9 percent of a core retainer, frictionless to approve', 'Best for any firm that wants the audit to stay live, not a one-off'],
+    gbp: 750, was: 1500, unit: 'mo', market: 'board-room standard, highest uptake',
+    usp: 'This exact audit, re-run every month with your latest live data. The report General Counsels, Heads of Compliance, Marketing Directors and CFOs quote in board packs.',
+    spec: ['Any change in the law in your sector notified within 72 hours', 'Monthly compliance + SEO + AI-visibility position report', 'Enhanced quarterly board-ready certificate', 'Benchmarked against your named competitors', 'First month free, then £750/mo — cancel anytime'],
   },
   linkedin: {
     key: 'linkedin', name: 'LinkedIn Executive Authority', envKey: 'STRIPE_PRICE_LINKEDIN',
     gbp: 1100, was: 750, unit: 'mo', market: 'vs market £600 to £5,800/mo',
     usp: 'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.',
-    spec: ['Dual distribution, so every post works on LinkedIn and Google', '8 to 12 posts per month per executive', 'Every post compliance-checked before it publishes', 'Builds the named-expert E-E-A-T signal Google rewards', 'Best for law and finance partners and clinic founders'],
+    spec: ['Dual distribution, so every post works on LinkedIn and Google', '8 to 12 posts per month', 'Every post compliance-checked before it publishes', 'Builds the named-expert E-E-A-T signal Google rewards', 'Best for law and finance partners and clinic founders'],
   },
   reputation: {
-    key: 'reputation', name: 'Reputation Monitoring + Crisis', envKey: 'STRIPE_PRICE_REPUTATION',
+    // MERGED card (founder): "Reputation Monitoring + Crisis" now also carries "Regulatory Change Alerts".
+    key: 'reputation', name: 'Reputation, Crisis + Regulatory Alerts', envKey: 'STRIPE_PRICE_REPUTATION',
     gbp: 1500, was: 0, unit: 'mo', market: 'at market',
-    usp: 'Real-time monitoring, pre-built suppression, 24-hour crisis response — protect the reputation your referrals and pipeline depend on, before a problem spreads.',
-    spec: ['Real-time review, mention and press monitoring', 'Crisis playbook on standby with the founder', 'Suppression architecture, not just alerting', 'Compliance-aware responses from minute one', 'Best for any firm with £5M or more of revenue to protect'],
-  },
-  entity: {
-    key: 'entity', name: 'AI Entity + Knowledge Panel', envKey: 'STRIPE_PRICE_ENTITY',
-    gbp: 1200, was: 0, unit: 'mo', market: 'at market, bundles with GEO',
-    usp: 'Your machine-readable entity: Organization schema, sameAs, Wikidata and llms.txt, so AI engines identify and cite you correctly.',
-    spec: ['Wikidata entry and Google Knowledge Panel build', 'sameAs across every verified profile', 'Notability-backed Wikipedia presence where eligible', 'Feeds the identity layer every AI engine reads first', 'Best for firms invisible in AI today, with entity readiness below 70'],
+    usp: 'Real-time monitoring, pre-built suppression and 24-hour crisis response, plus every new ruling in your sector the day it lands. Protect the reputation your pipeline depends on, and move before enforcement does.',
+    spec: ['Real-time review, mention and press monitoring', 'Crisis playbook on standby with the founder', 'Suppression architecture, not just alerting', 'Every new sector ruling flagged with the exact page and rule affected', 'Sector and jurisdiction filtered, never generic noise'],
   },
   gbp_dom: {
     key: 'gbp_dom', name: 'GBP Domination', envKey: 'STRIPE_PRICE_GBP',
     gbp: 650, was: 850, unit: 'mo', market: 'up to 3 locations',
     usp: '30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against MHRA and sector ad rules.',
     spec: ['Up to 3 locations, each with its own category strategy', 'Every GBP element checked against MHRA and sector ad rules', 'Posting schedule, Q&A and review response system', 'Local pack drives 44 percent of all search clicks', 'Best for healthcare, hospitality and multi-branch firms'],
-  },
-  reg_alerts: {
-    key: 'reg_alerts', name: 'Regulatory Change Alerts', envKey: 'STRIPE_PRICE_REG_ALERTS',
-    gbp: 199, was: 0, unit: 'mo', market: 'loss-leader, 71% uptake',
-    usp: 'Every new ruling in your sector, the day it lands. The loss-leader that keeps you ahead of enforcement.',
-    spec: ['Names the exact page affected and the exact rule that applies', 'Sits below the discretionary approval threshold', 'Sector and jurisdiction filtered, never generic noise', 'Every alert is a natural brief for a fix', 'Best for any regulated firm that wants early warning, not a fine'],
   },
   ymyl: {
     key: 'ymyl', name: 'YMYL Content', envKey: 'STRIPE_PRICE_YMYL',
@@ -115,10 +108,11 @@ const ADDON_ALIASES = (() => {
   m['cold email outreach engine'] = 'cold_email';
   m['compliance monitoring'] = 'compliance';
   m['linkedin executive authority'] = 'linkedin';
-  m['reputation monitoring + crisis'] = 'reputation';
-  m['ai entity + knowledge panel'] = 'entity';
+  m['reputation, crisis + regulatory alerts'] = 'reputation';
+  m['reputation monitoring + crisis'] = 'reputation';   // legacy label, pre-merge
+  m['ai entity + knowledge panel'] = 'geo';              // merged INTO geo
   m['gbp domination'] = 'gbp_dom';
-  m['regulatory change alerts'] = 'reg_alerts';
+  m['regulatory change alerts'] = 'reputation';          // merged INTO reputation
   m['ymyl content'] = 'ymyl';
   return m;
 })();

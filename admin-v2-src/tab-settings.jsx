@@ -48,6 +48,43 @@ const TabSettings = ({ killOn, onKillToggle }) => {
           )}
       </Section>
 
+      {/* Engine workflows — live from GitHub Actions */}
+      <Section title="Engine runs" lede="The 30-minute cycle and the hourly intel pulse, live from GitHub Actions.">
+        {(() => {
+          const es = window.ENGINE_STATUS;
+          const one = (label, r) => (
+            <Card padding={14} key={label}>
+              <div className="row" style={{ gap: 8 }}>
+                <span className={`dot ${r ? (r.conclusion === 'success' ? 'ok' : r.status === 'in_progress' || r.status === 'queued' ? 'warn' : 'bad') : 'idle'}`} />
+                <span className="t-13" style={{ fontWeight: 500 }}>{label}</span>
+                <span className="t-11 t-muted" style={{ marginLeft: 'auto' }}>{r ? `${r.status}${r.conclusion ? ' · ' + r.conclusion : ''} · ${(r.at || '').slice(0, 16).replace('T', ' ')}` : 'no data'}</span>
+                {r && r.url && <a className="btn ghost xs" href={r.url} target="_blank" rel="noopener">logs ↗</a>}
+              </div>
+            </Card>
+          );
+          return <div className="col" style={{ gap: 8 }}>{one('Engine cycle (every 30 min)', es && es.engine)}{one('Intel pulse (hourly)', es && es.intel)}</div>;
+        })()}
+      </Section>
+
+      {/* Suppression — the do-not-contact truth (Neon suppression table) */}
+      <Section title="Suppression list" lede="Anyone here is never contacted again. Repliers and opt-outs are added automatically; you can add manually from the Inbox.">
+        {(() => {
+          const s = window.SUPPRESSION_LIVE || { count: 0, rows: [] };
+          return (
+            <Card padding={s.rows.length ? 0 : 20}>
+              {s.rows.length === 0 ? <div className="body-sm t-muted">Empty ({s.count} total). Suppressions appear here as replies and opt-outs land.</div> : (
+                <table className="tbl">
+                  <thead><tr><th>Email</th><th>Reason</th><th>When</th></tr></thead>
+                  <tbody>{s.rows.slice(0, 10).map((r, i) => (
+                    <tr key={i}><td className="t-mono t-12">{r.email}</td><td><span className="chip sm">{r.reason || '—'}</span></td><td className="t-11 t-muted">{(r.suppressed_at || '').slice(0, 10)}</td></tr>
+                  ))}</tbody>
+                </table>
+              )}
+            </Card>
+          );
+        })()}
+      </Section>
+
       {/* Read-only facts the admin should be able to see at a glance */}
       <Section title="How the engine is configured" lede="The standing policy. These are facts, not toggles.">
         <Card padding={22}>

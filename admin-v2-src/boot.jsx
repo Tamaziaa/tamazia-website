@@ -99,6 +99,7 @@ function mapLeads(d) {
       geo: l.jurisdiction || '', jurisdiction: l.jurisdiction || '',
       stream: l.acquisition_channel || 'organic',
       score, fit: l.quality_fit === true || l.quality_fit === 't',
+      icp_tier: l.icp_tier != null ? Number(l.icp_tier) : null,
       stage: l.lifecycle_stage || l.status || 'sourced',
       contact_email: l.best_email || l.contact_email || '',
       contact_first: (l.contact_first || (l.contact_email || '').split('@')[0] || '').slice(0, 24),
@@ -175,11 +176,23 @@ function mapAudits(d) {
 
 function mapBookings(d) {
   const rows = (d && d.bookings) || [];
-  return rows.map((b, i) => ({
-    id: b.id || 'CB' + i, lead: { company: b.company || b.name || b.attendee || '—', domain: b.domain || '' },
-    when: b.when || b.start_time || b.start || '—', duration: b.duration || 30,
-    status: b.status || 'confirmed', source: b.source || 'reply-link', notes: b.notes || '',
-  }));
+  return rows.map((b, i) => {
+    const startRaw = b.start_at || b.cal_start_time || b.when || b.start_time || b.start || '';
+    const t = Date.parse(startRaw);
+    const today = new Date(); const isSameDay = t && new Date(t).toDateString() === today.toDateString();
+    return {
+      id: b.id || b.cal_event_id || 'CB' + i,
+      lead: { company: b.attendee_company || b.company || b.attendee_name || b.name || '—', domain: b.domain || '', contact_email: b.attendee_email || b.email || '' },
+      name: b.attendee_name || b.name || '—', email: b.attendee_email || b.email || '',
+      event_type: b.event_type || b.cal_event_type || '',
+      when: startRaw ? String(startRaw).slice(0, 16).replace('T', ' ') : '—',
+      ts: t || 0, bucket: !t ? 'unknown' : (isSameDay ? 'today' : (t > Date.now() ? 'upcoming' : 'past')),
+      duration: b.duration || 30,
+      status: (b.status || b.cal_status || 'confirmed').toLowerCase(),
+      source: b.source || 'cal.com', outcome: b.outcome || '', notes: b.notes || b.next_step || '',
+      lead_id: b.lead_id || null,
+    };
+  });
 }
 
 function mapForms(d) {
@@ -196,11 +209,16 @@ function mapReplies(d) {
   const rows = (d && d.replies) || [];
   return rows.map((r, i) => ({
     id: r.id || 'R' + i,
-    lead: { company: r.company || r.from_name || r.from || '—', domain: r.domain || '' },
+    lead: {
+      company: r.company || r.from_name || r.from || r.from_email || '—',
+      domain: r.domain || '',
+      contact_email: r.from_email || r.email || r.from || '',
+    },
     cat: r.category || r.classification || r.cat || 'unmatched',
     conf: r.confidence != null ? Number(r.confidence) : (r.conf != null ? Number(r.conf) : 0),
-    t: (r.received_at || r.t || '').slice(11, 16) || '—',
-    preview: r.preview || r.snippet || r.subject || '', drafted: !!r.drafted, reviewed: !!r.reviewed,
+    received_at: r.received_at || r.created_at || '',
+    t: (r.received_at || r.created_at || r.t || '').slice(11, 16) || '—',
+    preview: r.preview || r.snippet || r.body_preview || r.subject || '', drafted: !!r.drafted, reviewed: !!r.reviewed,
   }));
 }
 
@@ -258,11 +276,12 @@ function renderApp() {
 window.__rerender = renderApp;
 
 async function hydrate() {
-  const [now, leads, pipeline, health, audits, bookings, forms, inbox, outbox, pending, events, intel] =
+  const [now, leads, pipeline, health, audits, bookings, forms, inbox, outbox, pending, events, queue, suppression, engineStatus] =
     await Promise.all([
       API('now'), API('leads?limit=300'), API('pipeline'), API('health'),
       API('audits?limit=100'), API('bookings'), API('forms'), API('inbox'),
-      API('outbox'), API('leads/pending'), API('events/recent'), API('intel').catch(() => null),
+      API('outbox'), API('leads/pending'), API('events/recent'),
+      API('queue'), API('suppression'), API('engine/status'),
     ]);
 
   // funnel from pipeline + now
@@ -292,7 +311,10 @@ async function hydrate() {
   window.DRAFTS = mapDrafts(outbox);
   window.PENDING = mapLeads(pending);
   const ev = mapEvents(events); if (ev) window.EVENTS = ev;
-  const br = mapBriefs(intel); if (br) window.BRIEFS = br;
+  // mint queue + suppression + engine workflow truth (live Neon/GitHub)
+  window.QUEUE = (queue && { counts: queue.counts || {}, rows: queue.rows || [] }) || { counts: {}, rows: [] };
+  window.SUPPRESSION_LIVE = (suppression && { count: suppression.count || 0, rows: suppression.rows || [] }) || { count: 0, rows: [] };
+  window.ENGINE_STATUS = engineStatus || null;
 
   // CONNECTORS from health probes (so the Health tab connector grid is real)
   window.CONNECTORS = probes.map(p => ({ name: p.name || titleCase(p.k), category: p.c, status: p.s === 'ok' ? 'ok' : p.s === 'warn' ? 'warn' : 'bad', detail: p.d }));

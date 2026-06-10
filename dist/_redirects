@@ -21,14 +21,3 @@
 # Legacy alias · privacy-policy slug 301 to canonical.
 /privacy-policy/   /privacy-notice/  301
 
-# Legal blog posts - Astro insights cards link here, static /blog/ pages serve content.
-/insights/legal/sra-transparency-rules-law-firm-seo-2026/  /blog/sra-transparency-rules-law-firm-seo-2026/  301
-/insights/legal/top-50-law-firms-in-london-2026/  /blog/top-50-law-firms-in-london-2026/  301
-/insights/legal/law-firm-seo-agency-london-2026-buying-guide/  /blog/law-firm-seo-agency-london-2026-buying-guide/  301
-/insights/legal/boutique-law-firm-seo-mid-market-2026/  /blog/boutique-law-firm-seo-mid-market-2026/  301
-/insights/legal/difc-law-firm-seo-dubai-adgm-2026/  /blog/difc-law-firm-seo-dubai-adgm-2026/  301
-/insights/legal/family-law-solicitor-seo-london-2026/  /blog/family-law-solicitor-seo-london-2026/  301
-/insights/legal/international-arbitration-counsel-seo-2026/  /blog/international-arbitration-counsel-seo-2026/  301
-/insights/legal/law-firm-wikipedia-ai-entity-authority-2026/  /blog/law-firm-wikipedia-ai-entity-authority-2026/  301
-/insights/legal/personal-injury-attorney-seo-california-2026/  /blog/personal-injury-attorney-seo-california-2026/  301
-/insights/legal/pre-ipo-law-firm-marketing-seo-2026/  /blog/pre-ipo-law-firm-marketing-seo-2026/  301

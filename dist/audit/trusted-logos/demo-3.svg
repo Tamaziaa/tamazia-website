@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 40" role="img" aria-label="Demo placeholder logo">
-  <title>Demo placeholder logo</title>
-  <g fill="currentColor">
-    <path d="M20 8 L31 26 L9 26 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-    <text x="42" y="26" font-family="Georgia, serif" font-size="17" font-style="italic" letter-spacing="0.5">Halcyon</text>
-  </g>
-</svg>

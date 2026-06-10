@@ -1,0 +1,24 @@
+---
+// /instrument/ — the Tamazia Instrument page. Reached from the homepage "Run my free
+// audit" button. Founder directive 2026-06-10: the audit widget only — The Sextant
+// lives at the end of the homepage. The pricing bio lives inside the instrument
+// (QuickAudit header).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import QuickAudit from '../components/sections/QuickAudit.astro';
+
+const canonical = 'https://tamazia.co.uk/instrument/';
+---
+
+<BaseLayout
+  title="The Tamazia Instrument · Run your audit"
+  description="Benchmark your compliance and SEO exposure against your sector's regulatory framework. Compliance exposure, Core Web Vitals, and AI-search visibility in one audit."
+  canonical={canonical}
+>
+  <Header />
+  <main id="main">
+    <QuickAudit />
+  </main>
+  <Footer />
+</BaseLayout>

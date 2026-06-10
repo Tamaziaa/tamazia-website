@@ -76,31 +76,15 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
         <button type="button" class="success-reset" id="success-reset">Submit another request</button>
       </div>
 
-      <!-- Calendly embed placeholder (live iframe loads on CSR to keep LCP fast) -->
+      <!-- Founder directive 2026-06-10: show the original Cal.com calendar inline
+           (same embed as /book/, bound to cal.com/tamazia/strategy-call) -->
       <aside class="calendly-pane" aria-label="Schedule directly">
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
-        <div class="calendly-embed" id="calendly-embed" data-url={calendlyUrl}>
-          <a href={calendlyUrl} class="calendly-fallback" target="_blank" rel="noopener">
-            <div class="cal-icon">
-              <svg viewBox="0 0 40 40" aria-hidden="true">
-                <rect x="6" y="8" width="28" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/>
-                <line x1="6" y1="14" x2="34" y2="14" stroke="currentColor" stroke-width="1.2"/>
-                <line x1="12" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                <line x1="28" y1="4" x2="28" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                <circle cx="12" cy="20" r="1.5" fill="currentColor"/>
-                <circle cx="20" cy="20" r="1.5" fill="currentColor"/>
-                <circle cx="28" cy="20" r="1.5" fill="currentColor"/>
-                <circle cx="12" cy="26" r="1.5" fill="currentColor"/>
-                <circle cx="20" cy="26" r="1.5" fill="currentColor"/>
-              </svg>
-            </div>
-            <div class="cal-text">
-              <div class="cal-label">Open the founder's calendar</div>
-              <div class="cal-note">cal.com/tamazia</div>
-            </div>
-            <span class="cal-arrow" aria-hidden="true">&rarr;</span>
-          </a>
+        <div class="calendly-embed" id="contact-cal-inline" aria-label="Cal.com booking calendar">
+          <noscript>
+            <a href="https://cal.com/tamazia/strategy-call" rel="noopener" target="_blank">Open the founder's calendar at cal.com/tamazia/strategy-call</a>
+          </noscript>
         </div>
       </aside>
     </div>
@@ -366,7 +350,8 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     margin-bottom: 24px;
   }
 
-  .calendly-embed { min-height: 400px; display: flex; align-items: center; justify-content: center; }
+  /* Founder directive 2026-06-10 · inline Cal.com calendar gets room to render */
+  .calendly-embed { min-height: 560px; display: block; }
 
   .calendly-fallback {
     display: flex;
@@ -633,4 +618,69 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
       el.value = String(Date.now());
     });
   })();
+</script>
+
+<script is:inline>
+  // Founder directive 2026-06-10 · the original Cal.com inline calendar in the
+  // contact pane (same embed pattern + brand theme as /book/, event strategy-call).
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal;
+      let ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement('script')).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ['initNamespace', namespace]);
+        } else {
+          p(cal, ar);
+        }
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+  Cal('init', 'contact-pane', { origin: 'https://app.cal.com' });
+
+  Cal.ns['contact-pane']('inline', {
+    elementOrSelector: '#contact-cal-inline',
+    config: { layout: 'month_view' },
+    calLink: 'tamazia/strategy-call',
+  });
+
+  Cal.ns['contact-pane']('ui', {
+    theme: 'light',
+    cssVarsPerTheme: {
+      light: {
+        'cal-brand': '#5A1A2B',
+        'cal-text': '#2A0C14',
+        'cal-text-emphasis': '#2A0C14',
+        'cal-bg': '#FAF7F2',
+        'cal-bg-emphasis': '#F1EADC',
+        'cal-border': '#E5DDCB',
+      },
+      dark: {
+        'cal-brand': '#C9A772',
+        'cal-text': '#FAF7F2',
+        'cal-text-emphasis': '#FAF7F2',
+        'cal-bg': '#2A0C14',
+        'cal-bg-emphasis': '#3A1622',
+        'cal-border': '#5A1A2B',
+      },
+    },
+    hideEventTypeDetails: false,
+    layout: 'month_view',
+  });
 </script>

@@ -9,8 +9,8 @@ export const footerContent = {
   // S44 (Impl Doc v1.0) · 2-segment line rendered with `·` separator → "London · Engagements delivered across UK, UAE, USA, EU"
   locations: ['London', 'Engagements delivered across UK, UAE, USA, EU'],
 
-  // S44 (Impl Doc v1.0) · founder-confirmed office address
-  address: 'C1, Barking Wharf Square, London, IG11 7ZQ',
+  // Founder directive 2026-06-10 · registered office updated
+  address: 'Tamazia Ltd, 124 City Road, London, EC1V 2NX',
 
   // Verbatim credentials line from live site footer
   // Phase 10 founder decision · ABA line removed pending verification (credibility risk)

@@ -1,133 +1,75 @@
 ---
-// FinalHero.astro — Sextant sector compass hero
-// Inserted in index.astro: after <Header />, before <LawsStrip />
-// Founder portrait: /public/aman-portrait.webp (already in repo)
-// No external font imports — site uses self-hosted WOFF2
-import { heroContent } from '../../content/hero';
-const frameworks = (heroContent as any).regulationFrameworks || [];
-const goldFrameworks: string[] = (heroContent as any).goldHighlightedFrameworks || [];
-const ribbonDouble = [...frameworks, ...frameworks];
+// SextantInstrument.astro — The Sextant (Tamazia's regulatory orientation system),
+// extracted verbatim from FinalHero per founder: the instrument lives on its own page
+// (/instrument/), reached from the homepage "Run my free audit" button. Markup, CSS and
+// JS are copies of the FinalHero originals (the script is fully null-checked, so the
+// missing headline/founder elements no-op here, exactly as the missing panel no-ops on
+// the homepage hero).
 ---
 
-<div class="tz-hero-wrap">
-<aside class="tz-laws-ribbon" aria-hidden="true">
-  <div class="tz-laws-ribbon-track">
-    {ribbonDouble.map((reg: string) => (
-      <span class={goldFrameworks.includes(reg) ? 'gold' : ''}>{reg}</span>
-    ))}
+<div class="tz-hero-wrap tz-instrument-page">
+<section class="tz-mhero" aria-label="The Tamazia Sextant: regulatory orientation system">
+
+  <div class="tz-rail" data-reveal="fade">
+    <span>§ I</span>
+    <span class="tz-rail-title"><em>The Sextant</em></span>
+    <span class="tz-rail-year">MMXVIII</span>
   </div>
-</aside>
-<section class="tz-mhero" aria-label="Tamazia sector compass hero">
+  {/* sweep-3 · Sextant micro-copy with clearer instruction */}
+  <p class="tz-rail-microcopy" data-reveal="fade" style="--rd:80ms"><em>Tamazia's regulatory orientation system. Every campaign reviewed against 400+ frameworks before a word goes live. The sector ticker below shows what we benchmark each sector against · live, rotating, real.</em></p>
 
-
-
-  {/* F1 · Eyebrow principle — restyled, 'legal' standout */}
-  <p class="tz-eyebrow-principle" data-reveal="fade" style="--rd:40ms">
-    <span class="tz-eyebrow-orn" aria-hidden="true"></span>
-    <span class="tz-eyebrow-text">Ranking is only valuable if it is <em><span class="tz-eyebrow-legal">legal.</span></em></span>
-    <span class="tz-eyebrow-orn" aria-hidden="true"></span>
-  </p>
-
-  <h2 class="tz-headline">
-    <span class="tz-line tz-tw-line" data-text="Outrank {{competitors.}}"></span>
-    <span class="tz-line tz-tw-line" data-text="Master {{regulators.}}"></span>
-    <span class="tz-line tz-line-em tz-tw-line" data-text="One agency."></span>
-  </h2>
-
-  <div class="tz-subs">
-    <div class="tz-sub" data-reveal="slide" style="--rd:480ms"><span class="tz-sub-rule"></span><em>Search dominance, every market.</em></div>
-    <div class="tz-sub" data-reveal="slide" style="--rd:580ms"><span class="tz-sub-rule"></span><em>400+ frameworks reviewed, every word.</em></div>
-    <div class="tz-sub" data-reveal="slide" style="--rd:680ms"><span class="tz-sub-rule"></span><em>Counsel-led, every campaign.</em></div>
-  </div>
-
-  <div class="tz-body tz-body-compact" data-reveal="slide">
-    {/* F8 · single-line compliance line — dropcap dropped, sized as a balanced statement */}
-    <p>Compliance reviewed before publication, every engagement.</p>
-  </div>
-
-  <div class="tz-pull-left" data-reveal="lift">
-    <p>Your SEO agency doesn't have a <em>lawyer.</em> <em>Ours is run by one.</em></p>
-  </div>
-
-  <div class="tz-body tz-body-tight" data-reveal="slide">
-    <p>Every campaign executed through us passes through <strong>400+ laws</strong> before anything goes live:</p>
-  </div>
-  {/* S11 (Impl Doc v1.0) · Hero chip row clickable to sector cards + hover tooltips */}
-  <div class="tz-chips" data-reveal="fade" style="--rd:80ms">
-    <a class="tz-chip" href="#sectors" title="Universal data-protection baseline · UK + EU + processor obligations" aria-label="GDPR · Universal data-protection baseline · UK + EU + processor obligations"><span>GDPR</span></a><a class="tz-chip" href="#sectors" title="Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear" aria-label="FCA · Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear"><span>FCA</span></a><a class="tz-chip" href="#sector-legal" title="UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018" aria-label="SRA · UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018"><span>SRA</span></a><a class="tz-chip" href="#sector-healthcare" title="UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement" aria-label="MHRA · UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement"><span>MHRA</span></a><a class="tz-chip" href="#sectors" title="UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)" aria-label="ASA · UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)"><span>ASA</span></a><a class="tz-chip" href="#sector-healthcare" title="US protected health information · 45 CFR 164.508/164.502 marketing rules" aria-label="HIPAA · US protected health information · 45 CFR 164.508/164.502 marketing rules"><span>HIPAA</span></a><a class="tz-chip" href="#sectors" title="AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems" aria-label="EU AI ACT · AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems"><span>EU AI ACT</span></a>
-  </div>
-  <p class="tz-chips-suffix" data-reveal="fade" style="--rd:160ms"><em>and international advertising laws.</em></p>
-
-  <div class="tz-founder-cta-row">
-  <aside class="tz-founder" data-reveal="lift">
-    <div class="tz-founder-rule"><span></span><em>Founder</em><span></span></div>
-    <div class="tz-founder-pill">
-      <div class="tz-founder-head">
-        <div class="tz-founder-photo">
-          <img
-            class="tz-founder-photo-img"
-            src="/aman-portrait.webp"
-            alt="Aman Pareek, founder of Tamazia"
-            width="120"
-            height="120"
-            loading="lazy"
-          />
-          <span class="tz-founder-photo-mark" aria-hidden="true">AP</span>
-        </div>
-        <div class="tz-founder-body">
-          <div class="tz-founder-name">Aman Pareek</div>
-          <div class="tz-founder-creds">Founder · LLM in International Business Law<br/>King’s College London</div>
-        </div>
-      </div>
-      {/* F3 · Founder quotation block per founder direction */}
-      <blockquote class="tz-founder-quote">
-        <p>We onboard a limited number of clients per practice area per jurisdiction, to ensure no competition between clients. Led personally by the founder from the first conversation. <em>£110M+</em> client revenue generated.</p>
-      </blockquote>
-      <div class="tz-founder-socials">
-        <a
-          class="tz-founder-li"
-          href="https://www.linkedin.com/in/amanpareektamazia/"
-          aria-label="Aman Pareek on LinkedIn"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" width="15" height="15" fill="currentColor">
-            <path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.7c-1 0-1.7-.8-1.7-1.7s.7-1.7 1.7-1.7 1.7.8 1.7 1.7-.7 1.7-1.7 1.7zM20 19h-3v-5.6c0-3.4-4-3.1-4 0V19h-3V8h3v1.8c1.4-2.6 7-2.8 7 2.5V19z"/>
-          </svg>
-        </a>
-        <a
-          class="tz-founder-ig"
-          href="https://www.instagram.com/tamaziauk/"
-          aria-label="Tamazia on Instagram"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" width="15" height="15" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
-          </svg>
-        </a>
-      </div>
+  <div class="tz-panel" data-reveal="slide" style="--rd:60ms">
+    <div class="tz-panel-head">
+      {/* S4 (Impl Doc v1.0) · LIVE — Sector enforcement watch */}
+      <span class="tz-panel-live"><span class="tz-live-dot" aria-hidden="true"></span>LIVE · Sector enforcement watch</span>
+      <span class="tz-panel-mid"><em>Your sector is on the rotation</em></span>
+      <span>§ <strong id="tz-idx">01</strong> / 06</span>
     </div>
-  </aside>
-  <div class="tz-ribbon-caption" aria-hidden="true"><span>400+ Frameworks reviewed every campaign</span></div>
-
-  </div><!-- /.tz-founder-cta-row -->
-
-  <div class="tz-colophon">
-    <span>LONDON</span><span class="tz-dot">·</span>
-    <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide</span>
-  </div>
-
-  {/* G2 · Primary CTA docked under the engagements colophon */}
-  <div class="tz-cta-wrap tz-cta-wrap--colophon" data-reveal="lift">
-    <a href="/instrument/" class="tz-cta">
-      <span>Run my free audit</span>
-      <span class="tz-cta-arr" aria-hidden="true">→</span>
-    </a>
+    <div class="tz-cp">
+      <svg viewBox="0 0 300 130" aria-hidden="true">
+        <path class="tz-cp-arc" d="M 30 130 A 120 120 0 0 1 270 130"/>
+        <path class="tz-cp-arc-inner" d="M 60 130 A 90 90 0 0 1 240 130"/>
+        <line x1="0" y1="130" x2="300" y2="130" stroke="#1A1A1D" stroke-width="0.3" opacity="0.4"/>
+        <text x="30" y="144" class="tz-cp-deg" text-anchor="middle">0°</text>
+        <text x="150" y="6" class="tz-cp-deg" text-anchor="middle">45°</text>
+        <text x="270" y="144" class="tz-cp-deg" text-anchor="middle">90°</text>
+        <g id="tz-secs"></g>
+        <g class="tz-cp-needle-g">
+          <line class="tz-cp-needle" x1="150" y1="130" x2="150" y2="20"/>
+          <circle class="tz-cp-needle-tip" cx="150" cy="20" r="3"/>
+          <circle class="tz-cp-needle-halo" cx="150" cy="20" r="6.5"/>
+        </g>
+        <circle cx="150" cy="130" r="3.4" fill="#1A1A1D"/>
+        <circle cx="150" cy="130" r="1.4" fill="#C9A772"/>
+        <text x="150" y="122" class="tz-cp-sx-label" text-anchor="middle">sextant · TMZ</text>
+      </svg>
+    </div>
+    <div class="tz-band">
+      <div class="tz-band-l">
+        <div class="tz-band-l-kicker">NOW</div>
+        <div class="tz-band-l-name" id="tz-name">Legal</div>
+        <div class="tz-band-l-idx">§ <span id="tz-idx-inline">01</span> / 06</div>
+      </div>
+      <div class="tz-band-laws" id="tz-laws"></div>
+    </div>
+    <div class="tz-fine">
+      <span class="tz-fine-rule"></span>
+      <span class="tz-fine-pill">
+        <span class="tz-fine-dot"></span>
+        <span class="tz-fine-lab">Fined ·</span>
+        <span id="tz-fine"><em>£25,000</em> · AML control failures · SRA · MLR 2017 · <em>2024</em></span>
+      </span>
+      <span class="tz-fine-rule"></span>
+    </div>
+    <div class="tz-panel-foot">
+      <span class="tz-foot-kicker">Trusted by</span>
+      <span class="tz-foot-clients">KAMAT HOTELS (NSE) &middot; CG ONCOLOGY (NASDAQ: CGON) &middot; MERAAS (DUBAI HOLDING)</span>
+      <span class="tz-foot-tail">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide.</span>
+    </div>
   </div>
 
 </section>
-</div><!-- /.tz-hero-wrap -->
+</div>
 
 <style is:global>
   /* ===== FinalHero - Sextant component ===== */
@@ -586,8 +528,6 @@ const ribbonDouble = [...frameworks, ...frameworks];
     border-radius: 10px;
     background: linear-gradient(180deg, rgba(201,167,114,0.08), rgba(201,167,114,0.02));
     box-shadow: 0 4px 14px rgba(26,20,15,0.05);
-    /* Founder directive 2026-06-10: socials anchor to the pill's top-right corner */
-    position: relative;
   }
   .tz-founder-head {
     display: flex;
@@ -996,17 +936,14 @@ const ribbonDouble = [...frameworks, ...frameworks];
     .nav-cta, .tz-cta, .briefings-btn { border: 1px solid CanvasText; }
   }
 
-  /* G1 · compact socials — smaller, snug.
-     Founder directive 2026-06-10: pinned to the top-right corner of the founder box. */
+  /* G1 · compact socials — smaller, snug */
   .tz-founder-socials {
     display: flex;
     flex-direction: row;
     gap: 6px;
     flex-shrink: 0;
     margin-top: 0;
-    position: absolute;
-    top: 10px;
-    right: 12px;
+    align-self: flex-start;
   }
   .tz-founder-li,
   .tz-founder-ig {
@@ -1099,7 +1036,9 @@ const ribbonDouble = [...frameworks, ...frameworks];
     const STEP_MS = 6500;  // sweep-3 · 6.5s rotation so users can read 10+ laws
     const SWAP_MS = 240;
 
-    const root = document.querySelector('.tz-mhero');
+    /* Scoped to this component's wrapper: on the homepage the FinalHero section is
+       also a .tz-mhero, and the two scripts must never grab each other's DOM. */
+    const root = document.querySelector('.tz-instrument-page .tz-mhero');
     if (!root) return;
 
     // ---- 2. Build rim ticks + abbreviations ----

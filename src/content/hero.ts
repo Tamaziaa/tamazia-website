@@ -16,18 +16,22 @@ export const heroContent = {
   // G.1/G.2/G.5 · Full nav with absolute paths for new deep pages
   // NOTE: "About" removed from header — one-page site, About lives in footer only.
   // "Insights" renamed to "Resources" sitewide.
+  // FOUNDER DIRECTIVE (2026-06-10): one-page nav. Every header item scrolls to its
+  // homepage section (html{scroll-behavior:smooth} + scroll-padding-top animate it),
+  // EXCEPT Resources, which stays a standalone page. Restored verbatim from e13eb6a.
   headerNav: [
-    { label: 'Why Us',    href: '/why-us/' },
-    { label: 'Sectors',   href: '/sectors/' },
-    { label: 'Cases',     href: '/cases/' },
-    { label: 'Process',   href: '/process/' },
-    { label: 'Pricing',   href: '/pricing/' },
-    { label: 'FAQ',       href: '/faq/' },
+    { label: 'Why Us',    href: '/#why-us' },
+    { label: 'Sectors',   href: '/#sectors' },
+    { label: 'Cases',     href: '/#cases' },
+    { label: 'Process',   href: '/#process' },
+    { label: 'Pricing',   href: '/#pricing' },
+    { label: 'FAQ',       href: '/#faq' },
     { label: 'Resources', href: '/resources/' },
   ],
 
   navCta: 'Book a Strategy Call',
-  navCtaUrl: '/book/',
+  // The box just below FAQ (the Contact section: briefing form + cal.com pane).
+  navCtaUrl: '/#contact',
 
   // Subhead (above H1). Verbatim live site. Restored — was missing from prior rebuild.
   // F2 · founder credential trimmed — name + credential moved to founder pill
@@ -99,7 +103,8 @@ export const heroContent = {
     'Google E-E-A-T Guidelines',
   ],
 
-  ribbonLabel: 'Live regulatory register · 30 frameworks shown · selected from 400+ applied to client work',
+  // Founder directive 2026-06-10 · simplified register label
+  ribbonLabel: 'Live 400+ regulatory register applied to client work',
 
   // Client ribbon — verbatim live site. Kamat stays here (live site confirms).
   // Case-study panel is Orchid (not Kamat) — handled separately in caseStudies.ts.
@@ -110,7 +115,7 @@ export const heroContent = {
     'MERAAS (DUBAI HOLDING)',
   ],
   clientRibbonSuffix:
-    'Engagements delivered across UK, UAE, USA, and EU.',
+    'Engagements delivered in UK, UAE, USA, EU & Worldwide.',
 
   // Legacy ticker — kept as below-fold strip for scrolling marquee.
   // Dates removed per filler-removal rule.

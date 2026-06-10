@@ -53,6 +53,11 @@ export async function onRequestPost(context) {
   const origin = (env.SITE_ORIGIN || new URL(request.url).origin).replace(/\/$/, '');
   const auditDomain = clip(body.audit_domain || body.audit, 200);
   const company = clip(body.company, 200);
+  // The audit slug+hash identify the exact report to unlock after a successful Route 3 (compliance) payment.
+  // Sent by the client from window.location. Carried in metadata so the webhook can flip audit_pages.unlocked.
+  const auditSlug = clip(body.audit_slug, 120).replace(/[^a-zA-Z0-9_-]/g, '');
+  const auditHash = clip(body.audit_hash, 64).replace(/[^a-zA-Z0-9_-]/g, '');
+  const backToAudit = (auditSlug && auditHash) ? `${origin}/audit/${auditSlug}/${auditHash}?unlocked=1` : '';
 
   // Stripe Checkout Session. x-www-form-urlencoded per Stripe's API.
   // Recurring add-ons (unit 'mo') → subscription; one-time add-ons (unit 'piece', e.g. YMYL Content)
@@ -62,7 +67,8 @@ export async function onRequestPost(context) {
   form.set('mode', oneTime ? 'payment' : 'subscription');
   form.set('line_items[0][price]', priceId);
   form.set('line_items[0][quantity]', '1');
-  form.set('success_url', `${origin}/audit/checkout-complete?status=success&session_id={CHECKOUT_SESSION_ID}`);
+  // On success, return to the audit page itself when we have its slug+hash (Route 3 unlock), else the generic page.
+  form.set('success_url', backToAudit || `${origin}/audit/checkout-complete?status=success&session_id={CHECKOUT_SESSION_ID}`);
   form.set('cancel_url', `${origin}/audit/checkout-complete?status=cancel`);
   form.set('allow_promotion_codes', 'true');
   form.set('billing_address_collection', 'required');
@@ -72,10 +78,18 @@ export async function onRequestPost(context) {
   form.set('metadata[addon_name]', ADDON_CATALOGUE[key].name);
   form.set('metadata[audit_domain]', auditDomain);
   form.set('metadata[company]', company);
+  if (auditSlug) form.set('metadata[audit_slug]', auditSlug);
+  if (auditHash) form.set('metadata[audit_hash]', auditHash);
   // mirror onto the durable object (subscription vs payment_intent) so the webhook sees it there too
   const metaPrefix = oneTime ? 'payment_intent_data' : 'subscription_data';
   form.set(`${metaPrefix}[metadata][addon_key]`, key);
   form.set(`${metaPrefix}[metadata][audit_domain]`, auditDomain);
+  if (auditSlug) form.set(`${metaPrefix}[metadata][audit_slug]`, auditSlug);
+  if (auditHash) form.set(`${metaPrefix}[metadata][audit_hash]`, auditHash);
+  // First-month-free trial (Route 3 Compliance Monitoring sends trial_days=30): subscription mode only.
+  // Card is captured at signup and the first charge is deferred by the trial — the founder's "first month free".
+  const trialDays = Math.max(0, Math.min(90, parseInt(body.trial_days, 10) || 0));
+  if (!oneTime && trialDays) form.set('subscription_data[trial_period_days]', String(trialDays));
   if (company) form.set('customer_email', ''); // left blank → Stripe collects it on the hosted page
 
   let resp, data;

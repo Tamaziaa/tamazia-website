@@ -49,9 +49,10 @@ export function renderShell(D, opts) {
   opts = opts || {};
   const inline = !!opts.inline;
   const a = opts.assets || {};
-  const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : '<link rel="stylesheet" href="/audit/audit.css">';
-  const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : '<script src="/audit/audit-charts.js"></script>';
-  const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : '<script src="/audit/audit-app.js"></script>';
+  const _av = 'r25';  // asset version — bump on every deploy so the 4h-cached audit JS/CSS busts immediately
+  const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : ('<link rel="stylesheet" href="/audit/audit.css?v=' + _av + '">');
+  const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : ('<script src="/audit/audit-charts.js?v=' + _av + '"></script>');
+  const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : ('<script src="/audit/audit-app.js?v=' + _av + '"></script>');
   return HEAD + '\n' + styleBlock + '\n</head>\n<body>\n'
     + '<div class="tz-shell" id="app"></div>\n'
     + NOTES_BTN + '\n'

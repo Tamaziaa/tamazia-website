@@ -7,7 +7,10 @@ window.CH = (function(){
   // Escape any DATA-sourced string before it enters innerHTML. Lighthouse/axe titles, live evidence quotes
   // and LLM text can contain literal "<iframe>"/"<frame>"/"<", injected raw they corrupt the DOM (an axe
   // rule name once swallowed every pillar after Regulatory). Display text only; never wrap intentional markup.
-  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // De-dash THEN escape: neutralise any em/en dash baked into an engine payload (PSI fix text, evidence quote,
+  // competitor name) to a comma at the render chokepoint, per the founder's "no dashes anywhere" rule. Regular
+  // hyphens are left intact.
+  const esc = s => String(s==null?'':s).replace(/\s*[—–]\s*/g, ', ').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
   /* radial gauge with gradient stroke */
   function gauge(score, grade, o={}){
@@ -55,6 +58,21 @@ window.CH = (function(){
 
   /* tiny "data unavailable" note shared by charts that must degrade rather than draw an empty frame */
   function naNote(t){ return `<div class="capt" style="margin:0;color:var(--muted)">${t||'Not available for this scan.'}</div>`; }
+
+  /* FREEMIUM LOCK — wrap a Tamazia-fix value behind a green-gradient blur + lock veil. The "Tamazia fix" label
+     above stays visible as the teaser; the prose is blurred, and clicking the veil opens Route 3 (unlock). When
+     window.D.unlocked is true (a successful Route 3 payment unlocked the whole link), the fix renders in full for
+     everyone. Used ONLY on the finding fix, the PSI fix and the regulatory art-fix — NEVER on the beat-cards. */
+  function lockFix(innerHTML, locked){
+    // Per-group half-visible model: a call site passes locked=false for the first ⌈N/2⌉ fixes (free) and
+    // locked=true for the last ⌊N/2⌋. Omitting the arg keeps the old "always lock" behaviour (back-compat).
+    // A successful Route 3 payment (window.D.unlocked) opens everything regardless of the flag.
+    if (locked === false || (window.D && window.D.unlocked)) return '<div class="tz-fixv">'+innerHTML+'</div>';
+    return '<div class="tz-lock"><div class="tz-lock-blur tz-fixv">'+innerHTML+'</div>'
+      +'<div class="tz-lock-veil" role="button" tabindex="0" aria-label="Unlock the full report, first month free">'
+      +'<svg class="tz-lock-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'
+      +'<span class="tz-lock-t">Unlock the fix</span></div></div>';
+  }
 
   /* gradient horizontal bars */
   function bars(data, o={}){
@@ -192,7 +210,7 @@ window.CH = (function(){
       const na=(s.present===null||s.present===undefined);
       const stt=na?'not assessed':(s.present?'present':'missing');
       const col=na?'var(--ink)':(s.present?'var(--green)':'var(--red)');
-      const note=na?'Not assessed — your site was not reachably scanned this run.':(s.present?'Present and correctly configured.':s.note);
+      const note=na?'Not assessed, your site was not reachably scanned this run.':(s.present?'Present and correctly configured.':s.note);
       return `<div class="seccell ${na?'':(s.present?'ok':'no')}"><div class="mono" style="font-size:10px;font-weight:500">${s.h}</div>
       <div class="mono" style="font-size:8px;letter-spacing:.04em;color:${col};text-transform:uppercase;${na?'opacity:.6':''}">${stt}</div>
       <div class="capt" style="margin-top:4px">${note}</div></div>`;
@@ -202,21 +220,26 @@ window.CH = (function(){
   /* AI engine grid */
   const ENG_SLUG={'ChatGPT':'chatgpt','Gemini':'gemini','Perplexity':'perplexity','Claude':'claude','Copilot':'copilot','Grok':'grok','Meta AI':'meta-ai','Google AI':'google-ai'};
   const ENG_LOGO={"chatgpt":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" role=\"img\" aria-label=\"ChatGPT\"><title>ChatGPT</title><path d=\"M21.18 9.83a5.6 5.6 0 0 0-.49-4.6 5.69 5.69 0 0 0-6.12-2.72A5.62 5.62 0 0 0 4.9 4.55a5.6 5.6 0 0 0-3.75 2.72 5.68 5.68 0 0 0 .7 6.66 5.6 5.6 0 0 0 .49 4.61 5.69 5.69 0 0 0 6.12 2.72 5.6 5.6 0 0 0 4.23 1.89 5.69 5.69 0 0 0 5.42-3.94 5.6 5.6 0 0 0 3.75-2.72 5.68 5.68 0 0 0-.7-6.66Zm-8.49 11.86a4.21 4.21 0 0 1-2.7-.98l.13-.07 4.49-2.6a.74.74 0 0 0 .37-.63v-6.34l1.9 1.1v5.24a4.23 4.23 0 0 1-4.19 4.28Zm-9.06-3.87a4.22 4.22 0 0 1-.5-2.83l.13.08 4.49 2.6a.73.73 0 0 0 .73 0l5.49-3.17v2.19l-4.55 2.63a4.23 4.23 0 0 1-5.78-1.5Zm-1.18-9.8A4.21 4.21 0 0 1 4.66 6.2v5.33a.73.73 0 0 0 .37.63l5.48 3.17-1.9 1.1L4.07 13.9a4.23 4.23 0 0 1-1.62-5.88Zm15.6 3.63-5.49-3.18 1.9-1.09 4.55 2.62a4.22 4.22 0 0 1-.65 7.62v-5.34a.74.74 0 0 0-.37-.63ZM20.43 7.7l-.13-.08-4.48-2.62a.74.74 0 0 0-.74 0L9.6 8.18V5.99l4.54-2.62a4.22 4.22 0 0 1 6.28 4.37ZM8.56 12.6l-1.9-1.1V6.26a4.22 4.22 0 0 1 6.92-3.24l-.13.07-4.49 2.6a.73.73 0 0 0-.37.63Zm1.03-2.23 2.45-1.41 2.45 1.41v2.83l-2.45 1.41-2.45-1.41Z\"/></svg>","claude":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" role=\"img\" aria-label=\"Claude\"><title>Claude</title><path d=\"M12 2.2c.28 3.05.62 4.27 1.46 5.1.85.85 2.07 1.19 5.12 1.47-3.05.28-4.27.62-5.12 1.46-.84.84-1.18 2.06-1.46 5.11-.28-3.05-.62-4.27-1.46-5.11-.85-.84-2.07-1.18-5.12-1.46 3.05-.28 4.27-.62 5.12-1.47.84-.83 1.18-2.05 1.46-5.1Z\"/><path d=\"M17.4 13.3c.16 1.74.35 2.44.83 2.92.48.48 1.18.67 2.92.83-1.74.16-2.44.35-2.92.83-.48.48-.67 1.18-.83 2.92-.16-1.74-.35-2.44-.83-2.92-.48-.48-1.18-.67-2.92-.83 1.74-.16 2.44-.35 2.92-.83.48-.48.67-1.18.83-2.92Z\"/></svg>","copilot":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" role=\"img\" aria-label=\"Microsoft Copilot\"><title>Microsoft Copilot</title><path d=\"M4 14.5c0-2.8 1.5-5.5 3.8-5.5 1.9 0 2.7 1.7 3.5 3.7.7 1.9 1.5 3.8 3.4 3.8 2 0 3.3-2.1 3.3-4.3\"/><path d=\"M20 11.5c0-2.2-1.3-4.3-3.3-4.3-1.9 0-2.7 1.9-3.4 3.8-.8 2-1.6 3.7-3.5 3.7C7.5 14.5 6 11.8 6 9\"/></svg>","gemini":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" role=\"img\" aria-label=\"Google Gemini\"><title>Google Gemini</title><path d=\"M12 1.5c.33 5.55 4.95 10.17 10.5 10.5-5.55.33-10.17 4.95-10.5 10.5C11.67 16.95 7.05 12.33 1.5 12 7.05 11.67 11.67 7.05 12 1.5Z\"/></svg>","google-ai":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" role=\"img\" aria-label=\"Google AI\"><title>Google AI</title><path d=\"M12 3a9 9 0 1 0 8.78 11h-8.78v-3.6h12.2c.12.78.18 1.4.18 2.1 0 5.46-3.66 9.5-9.38 9.5a9.5 9.5 0 0 1 0-19 9.13 9.13 0 0 1 6.38 2.5l-2.6 2.5A5.3 5.3 0 0 0 12 6.6 5.4 5.4 0 0 0 12 17.4 5.36 5.36 0 0 0 17.1 14H12V3Z\"/></svg>","grok":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" role=\"img\" aria-label=\"Grok\"><title>Grok</title><path d=\"M7.1 18.3 16.4 6.4h2.7L9.8 18.3a.9.9 0 0 1-.71.35H7a.5.5 0 0 1-.4-.8l.5-.65a.9.9 0 0 1 .01-.01Z\"/><path d=\"M5.2 6.4h2.7l3.05 4-1.45 1.85L5.2 6.4Z\"/><path d=\"M14.6 12.85 16.05 14.7v2.75a1.2 1.2 0 0 0 1.2 1.2h1.55V12.5a.9.9 0 0 0-.18-.54l-.62-.83-2.4 1.72Z\"/></svg>","meta-ai":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" role=\"img\" aria-label=\"Meta AI\"><title>Meta AI</title><path d=\"M2.5 16.5c0-4 1.9-8 4.4-8 1.7 0 2.9 1.6 4.1 4 .6 1.2 1.1 2.2 1.6 3\"/><path d=\"M21.5 16.5c0-4-1.9-8-4.4-8-1.7 0-2.9 1.6-4.1 4-.6 1.2-1.1 2.2-1.6 3\"/><path d=\"M4.7 16.5c1.5 0 2.5-1.3 3.8-3.5C9.9 10.6 10.9 8.5 12 8.5s2.1 2.1 3.5 4.5c1.3 2.2 2.3 3.5 3.8 3.5\"/></svg>","perplexity":"<svg width=\"20\" height=\"20\" style=\"display:block\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" role=\"img\" aria-label=\"Perplexity\"><title>Perplexity</title><path d=\"M12 3.6v16.8\"/><path d=\"M12 8.2 6 4.4v6.2l6 4 6-4V4.4l-6 3.8Z\"/><path d=\"M6 13.6v5.2l6-4M18 13.6v5.2l-6-4\"/></svg>"};
+  // A–E letter grade from a 0–100 readiness score (founder: "show A to E grades not numbers").
+  function gradeOf(score){ const n=+score; if(!isFinite(n)) return 'NA'; if(n>=85)return 'A'; if(n>=70)return 'B'; if(n>=55)return 'C'; if(n>=40)return 'D'; return 'E'; }
+  function gradeColor(g){ return g==='A'?'var(--green)':g==='B'?'var(--ox)':g==='C'?'var(--amber)':'var(--red)'; }
   function engineGrid(){
-    // Logo-hero: the 8 engine LOGOS lead (28px), name demoted to a tiny caption, readiness + cite status kept.
+    // Logo-hero: the 8 engine LOGOS lead (28px), name demoted to a tiny caption. Readiness shown as an A–E GRADE
+    // (big) with the raw score small/secondary, per founder. Cite status kept.
     return `<div class="enggrid">${D.geo.engines.map(e=>{
       const slug=ENG_SLUG[e.nm]||String(e.nm||'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      const g=gradeOf(e.readiness);
       return `<div class="engcell ${e.cites?'':'no'}"><span class="eng-logo" style="${e.cites?'':'opacity:.4;filter:grayscale(1)'}">${ENG_LOGO[slug]||''}</span>
       <div class="eng-nm">${esc(e.nm)}</div>
-      <div class="num" style="font-size:17px;color:var(--${e.readiness<20?'red':'ox'})">${e.readiness}</div>
+      <div class="eng-grade"><b class="gr" style="color:${gradeColor(g)}">${g}</b><span class="gn">${e.readiness}</span></div>
       <div class="st">${e.cites?'✓ citing':'✕ not citing'}</div></div>`;
     }).join('')}</div>`;
   }
 
-  /* schema checklist */
+  /* structured-data GAPS: a missing type is a red ✗ (the gap), a present type a muted ✓. */
   function schemaChecklist(){
     return `<div class="checklist">${D.geo.schema.map(s=>`
-      <div class="checkrow"><span class="xmark">${s.present?'✓':'✕'}</span>
+      <div class="checkrow"><span class="xmark" style="color:var(--${s.present?'green':'red'})">${s.present?'✓':'✗'}</span>
       <div><span class="mono" style="font-size:11px;color:var(--ink)">${s.t}</span>
       <div class="capt">${s.why}</div></div></div>`).join('')}</div>`;
   }
@@ -236,7 +259,7 @@ window.CH = (function(){
     return `<table class="tz-table cmp"><thead><tr><th>Firm</th>${c.cols.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>
       ${c.rows.map(r=>`<tr class="${r.you?'you-row':''}">
         <td><b>${r.name}</b>${r.you?' <span class="mono" style="font-size:8px;color:var(--red)">YOU</span>':''}</td>
-        ${(r.cells||[]).map(cell=>`<td><span class="cmpv ${cell.cls||(r.you?'bad':'good')}">${cell.v}</span>${cell.est?'<span class="est" data-tip="Estimated from authority signals — this rival publishes no Domain Rating">est</span>':''}</td>`).join('')}
+        ${(r.cells||[]).map(cell=>`<td><span class="cmpv ${cell.cls||(r.you?'bad':'good')}">${cell.v}</span>${cell.est?'<span class="est" data-tip="Estimated from authority signals, this rival publishes no Domain Rating">est</span>':''}</td>`).join('')}
       </tr>`).join('')}</tbody></table>`;
   }
 
@@ -249,7 +272,7 @@ window.CH = (function(){
     // Every cell value is DATA-sourced (keyword/leader-domain text); escape it so a stray glyph or a raw
     // "<" in a term can't break out of its <td> and let the next section's icon bleed into this cell. (esc)
     return `<table class="tz-table"><thead><tr><th>Keyword</th><th>Volume</th><th>You</th><th>Who ranks</th></tr></thead><tbody>
-      ${D.seo.keywords.map(k=>`<tr><td>${esc(k.kw)}</td><td class="rk">${esc(k.vol)}</td><td class="${k.you==='#1'?'':'nr'}" style="${k.you==='#1'?'color:var(--green);font-family:var(--mono);font-size:11px':''}">${esc(k.you)}</td><td>${k.who===', '?'<span class="rk">—</span>':esc(k.who)+(k.pos?' <span class="rk">'+esc(k.pos)+'</span>':'')}</td></tr>`).join('')}</tbody></table>`;
+      ${D.seo.keywords.map(k=>`<tr><td>${esc(k.kw)}</td><td class="rk">${esc(k.vol)}</td><td class="${k.you==='#1'?'':'nr'}" style="${k.you==='#1'?'color:var(--green);font-family:var(--mono);font-size:11px':''}">${esc(k.you)}</td><td>${k.who===', '?'<span class="rk">n/a</span>':esc(k.who)+(k.pos?' <span class="rk">'+esc(k.pos)+'</span>':'')}</td></tr>`).join('')}</tbody></table>`;
   }
 
   /* big stat tile */
@@ -281,10 +304,10 @@ window.CH = (function(){
           <div class="lk">② What it means</div><div class="lv">${esc(f.plain)}</div>
         </div>
         <div class="fcol fcol-case">
-          <div class="meta-row"><span class="mk">③ Law</span><b>${esc(f.law)}</b></div>
+          <div class="meta-row"><span class="mk">③ ${esc(f.labelKind||'Law')}</span><b>${esc(f.law)}</b></div>
           ${f.prec?`<div class="meta-row"><span class="mk">④ Ruling</span><span>${esc(f.prec)}</span></div>`:''}
           <div class="meta-row"><span class="mk">⑤ Exposure</span><span><span class="num exp">${f.exp}</span> <span class="cap">${expCaption}</span></span></div>
-          <div class="fix-block"><div class="fix-h"><span class="lk">⑥ Tamazia fix</span><span class="fix-rib">✓ every mandate</span></div><div class="lv">${esc(f.fix)}</div></div>
+          <div class="fix-block"><div class="fix-h"><span class="lk">⑥ Tamazia fix</span><span class="fix-rib">✓ every mandate</span></div>${lockFix('<div class="lv">'+esc(f.fix)+'</div>', opts.locked)}</div>
           <div class="plan-line">⑦ ${f.plan}</div>
         </div>
       </div></details>`;
@@ -316,7 +339,7 @@ window.CH = (function(){
     return `<div class="wf">${steps.map(s=>`<div class="wf-row"><div class="wf-l">${s.l}</div>
       <div class="bar-track"><div class="bar-fill ${s.cls==='gold'?'gold':s.cls==='amber'?'amber':''}" style="width:${Math.max(3,(s.v/max)*100)}%"></div></div>
       <div class="wf-v ${s.final?'final':''}">${money(s.v)}</div></div>`).join('')}
-      ${wf.savedPct>0?`<div class="wf-note">We collapse overlapping data-protection ceilings instead of stacking them, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:`<div class="wf-note">This is the statutory ceiling across your binding frameworks — there were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`}</div>`;
+      ${wf.savedPct>0?`<div class="wf-note">We collapse overlapping data-protection ceilings instead of stacking them, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:`<div class="wf-note">This is the statutory ceiling across your binding frameworks. There were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`}</div>`;
   }
 
   /* ---- GEO "why AI can't see you" causal chain ---- */
@@ -351,12 +374,13 @@ window.CH = (function(){
     }).join('')}</div>`;
   }
   function psiAuditRow(a,strat){ a=a||[];
-    if(!a.length) return `<div class="capt" style="margin:0">No failing audits surfaced for ${esc(strat||'this strategy')} this scan — your live site cleared this lane.</div>`;
-    return `<div class="psi-list">${a.map(x=>`<div class="psi-row"><div class="psi-h"><span class="psi-t">${esc(x.title)}</span><span class="psi-lane l-${x.laneKey}">${esc(x.lane)}</span></div>
+    if(!a.length) return `<div class="capt" style="margin:0">No failing audits surfaced for ${esc(strat||'this strategy')} this scan, your live site cleared this lane.</div>`;
+    const half=Math.ceil(a.length/2);   // first ⌈N/2⌉ fixes free, rest locked
+    return `<div class="psi-list">${a.map((x,i)=>`<div class="psi-row"><div class="psi-h"><span class="psi-t">${esc(x.title)}</span><span class="psi-lane l-${x.laneKey}">${esc(x.lane)}</span></div>
       <div class="psi-ev">Evidence · Google PageSpeed (${esc(strat||'mobile')}) · <span class="mono">${esc(x.id)}</span>${x.disp?' · '+esc(x.disp):''}${x.nodes?' · '+x.nodes+' element'+(x.nodes>1?'s':''):''}</div>
       ${x.sel?`<div class="psi-sel mono">${esc(x.sel)}</div>`:''}
       ${x.wcag?`<div class="psi-wcag">⚖ ${esc(x.wcag)}, enforceable under ADA Title III &amp; the EU Accessibility Act</div>`:''}
-      ${x.fix?`<div class="psi-fix"><b>Tamazia fix</b> ${esc(x.fix)}</div>`:''}</div>`).join('')}</div>`;
+      ${x.fix?`<div class="psi-fix"><b>Tamazia fix</b>${lockFix(esc(x.fix), i>=half)}</div>`:''}</div>`).join('')}</div>`;
   }
 
   /* ---- framework severity bars + regulator badges ("Your top N regulatory exposures") ---- */
@@ -372,7 +396,7 @@ window.CH = (function(){
   }
 
   return {gauge,dial,bars,exposureBars,heatmap,radar,trajectory,donut,pill,dimScorecard,dimCardGrid,
-    waterfall,causalChain,psiAuditList,frameworkBars,
+    waterfall,causalChain,psiAuditList,frameworkBars,lockFix,
     cwvMeters,psiDials,psiDialRow,cwvMeterRow,psiAuditRow,issueList,securityGrid,engineGrid,schemaChecklist,sourceGap,
     competitorTable,citationTable,keywordTable,stat,urgent,finding};
 })();

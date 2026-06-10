@@ -40,12 +40,19 @@ export const onRequestPost = async ({ request, env }) => {
   const detail = `*Status:* ${run.conclusion}\n*Branch:* ${run.head_branch}\n*SHA:* \`${run.head_sha}\`\n*Title:* ${run.display_title || ''}\n*Triggered:* ${run.created_at}\n*URL:* ${url}`;
   const tg = `<b>Status:</b> ${run.conclusion}\n<b>Branch:</b> ${run.head_branch}\n<b>SHA:</b> <code>${(run.head_sha||'').slice(0,8)}</code>\n<b>Title:</b> ${(run.display_title||'').slice(0,180)}\n<b>URL:</b> ${url}`;
 
-  await Promise.allSettled([
-    notifySlack(env, { level: 'p0', summary, detail }),
-    notifyTelegram(env, { level: 'p0', summary, detail: tg }),
-  ]);
+  // W-2: a deploy failure is infra noise, not a customer event — route it to the cockpit
+  // Health tab (KV) instead of the founder's phone. Slack/Telegram stay quiet for it.
+  let routed = false;
+  if (env.FORM_SUBMISSIONS) {
+    try {
+      await env.FORM_SUBMISSIONS.put('health-events:deploy:' + run_id + ':' + Date.now(),
+        JSON.stringify({ at: new Date().toISOString(), kind: 'deploy', event: run.conclusion, detail: summary, url }),
+        { expirationTtl: 60 * 60 * 24 * 30 });
+      routed = true;
+    } catch (_e) {}
+  }
 
-  return new Response(JSON.stringify({ ok: true, fired: true, run_id, conclusion: run.conclusion }), {
+  return new Response(JSON.stringify({ ok: true, routed_to: 'health_tab', fired_phone: false, run_id, conclusion: run.conclusion, health_logged: routed }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });

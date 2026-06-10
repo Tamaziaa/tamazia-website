@@ -5,7 +5,6 @@ import { parseEmph } from '../../content/hero';
 const { eyebrow, h2, paragraphs, pullQuote, stats, credentialStripHeading, credentials } = whyUsContent;
 const microLine = (whyUsContent as any).microLine;
 const proofStrip = (whyUsContent as any).proofStrip;
-const pricingLine = (whyUsContent as any).pricingLine;
 ---
 <section class="why-us" id="why-us" aria-labelledby="why-us-heading">
   <!-- Subtle monogram watermark -->
@@ -42,10 +41,6 @@ const pricingLine = (whyUsContent as any).pricingLine;
 
     {proofStrip && (
       <div class="proof-strip" aria-label="Compliance track record">{proofStrip}</div>
-    )}
-
-    {pricingLine && (
-      <div class="pricing-line">{pricingLine}</div>
     )}
 
     <!-- Credential strip -->
@@ -88,17 +83,6 @@ const pricingLine = (whyUsContent as any).pricingLine;
     text-align: center;
     border-radius: 2px;
     border: 1px solid var(--gold-hairline);
-  }
-  .pricing-line {
-    margin-top: 18px;
-    text-align: center;
-    font-family: var(--ff-serif, Georgia, serif);
-    font-size: 16px;
-    line-height: 1.55;
-    color: var(--ink, #2A0C14);
-    max-width: 56ch;
-    margin-left: auto;
-    margin-right: auto;
   }
 
   /* Micro-line at section bottom (B-46 fix) · Round-7 contrast fix */

@@ -164,27 +164,53 @@ export const onRequestPost = async ({ request, env }) => {
     }).catch(() => {});
   }
 
-  // sweep-4 · Slack + Telegram booking alert (fail-open, CEO-priority for new bookings)
+  // CC-6 · ALSO persist to Neon cal_bookings so bookings join to leads and the cockpit
+  // Bookings tab shows real data (KV stays the buffer). Best-effort; never blocks the webhook.
+  if (env.NEON_URL) {
+    try {
+      const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
+      const nq = (query, params) => fetch('https://' + host + '/sql', {
+        method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, params }),
+      });
+      // best-effort lead match by attendee email (so the booking links to its lead)
+      let leadId = null;
+      if (record.email) {
+        const lr = await nq('SELECT id FROM leads WHERE lower(COALESCE(primary_email,contact_email,email,$2))=lower($1) LIMIT 1', [record.email, '']).then(r => r.ok ? r.json() : null).catch(() => null);
+        const rows = lr && (lr.rows || lr.results) || [];
+        if (rows[0]) leadId = rows[0].id;
+      }
+      const calId = record.cal_uid || record.cal_booking_id || record.request_id;
+      await nq(
+        `INSERT INTO cal_bookings (cal_event_id, event_type, lead_id, attendee_name, attendee_email, start_at, end_at, status, created_at)
+         VALUES ($1,$2,$3,$4,$5,NULLIF($6,'')::timestamptz,NULLIF($7,'')::timestamptz,$8,now())
+         ON CONFLICT (cal_event_id) DO UPDATE SET status=EXCLUDED.status, start_at=EXCLUDED.start_at, end_at=EXCLUDED.end_at`,
+        [calId, record.cal_event_type || triggerEvent, leadId, record.name || '', record.email || '', record.cal_start_time || '', record.cal_end_time || '', record.cal_status || lifecycleStatus(triggerEvent)]
+      ).catch(() => {});
+    } catch (_e) { /* fail-open: KV already has it */ }
+  }
+
+  // W-2 · customer-only notifications: ONLY a real new booking pings Slack+Telegram.
+  // Reschedule / cancel / no-show / meeting-lifecycle are operational noise -> Health tab only.
   try {
     const isNew = (triggerEvent === 'BOOKING_CREATED');
-    const isCancel = (triggerEvent === 'BOOKING_CANCELLED' || triggerEvent === 'BOOKING_CANCELED');
-    const level = isNew ? 'p1' : (isCancel ? 'p2' : 'info');
-    const summary = '[cal] ' + humanTrigger(triggerEvent) + ' · ' + (record.name || '?') + ' · ' + (record.cal_event_type || 'strategy-call') + ' · ' + (record.cal_start_time || '?');
-    const detail = [
-      '*Name:* ' + (record.name || '?'),
-      '*Email:* ' + (record.email || '?'),
-      '*Event:* ' + (record.cal_event_type || 'strategy-call'),
-      '*Time:* ' + (record.cal_start_time || '?') + ' → ' + (record.cal_end_time || '?'),
-      '*Cal UID:* ' + (record.request_id || '?'),
-    ].join('\n');
-    const tg = [
-      '<b>Name:</b> ' + (record.name || '?'),
-      '<b>Email:</b> ' + (record.email || '?'),
-      '<b>Event:</b> ' + (record.cal_event_type || 'strategy-call'),
-      '<b>Time:</b> ' + (record.cal_start_time || '?'),
-    ].join('\n');
-    notifySlack(env, { level, summary, detail });
-    notifyTelegram(env, { level, summary, detail: tg });
+    if (isNew) {
+      const summary = '[cal] New booking · ' + (record.name || '?') + ' · ' + (record.cal_event_type || 'strategy-call') + ' · ' + (record.cal_start_time || '?');
+      const detail = [
+        '*Name:* ' + (record.name || '?'), '*Email:* ' + (record.email || '?'),
+        '*Event:* ' + (record.cal_event_type || 'strategy-call'),
+        '*Time:* ' + (record.cal_start_time || '?') + ' → ' + (record.cal_end_time || '?'),
+      ].join('\n');
+      const tg = [ '<b>Name:</b> ' + (record.name || '?'), '<b>Email:</b> ' + (record.email || '?'),
+        '<b>Event:</b> ' + (record.cal_event_type || 'strategy-call'), '<b>Time:</b> ' + (record.cal_start_time || '?') ].join('\n');
+      notifySlack(env, { level: 'p1', summary, detail });
+      notifyTelegram(env, { level: 'p1', summary, detail: tg });
+    } else if (env.FORM_SUBMISSIONS) {
+      // route non-booking lifecycle to the cockpit Health tab (no phone)
+      await env.FORM_SUBMISSIONS.put('health-events:cal:' + record.request_id + ':' + Date.now(),
+        JSON.stringify({ at: new Date().toISOString(), kind: 'cal', event: triggerEvent, detail: humanTrigger(triggerEvent) + ' · ' + (record.name || '?') }),
+        { expirationTtl: 60 * 60 * 24 * 30 }).catch(() => {});
+    }
   } catch (_e) { /* fail-open */ }
   log('persisted', { trigger: triggerEvent, request_id: record.request_id });
   return new Response(JSON.stringify({ ok: true, request_id: record.request_id, event: triggerEvent }), {

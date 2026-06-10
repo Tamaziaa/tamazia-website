@@ -160,14 +160,16 @@ function mapAudits(d) {
   const rows = (d && d.audits) || [];
   return rows.map((a, i) => ({
     id: a.id || a.slug || 'AU-' + i,
-    lead: { company: a.company || a.domain || '—', domain: a.domain || '', sector: a.sector || '' },
-    url: a.url || (a.slug && a.hash ? `https://tamazia.co.uk/audit/${a.slug}/${a.hash}` : ''),
+    company: a.company || a.input || a.domain || '—',
+    domain: a.input || a.domain || '',
+    sector: a.sector || '',
+    url: a.live_url || a.url || (a.slug && a.hash ? `/audit/${a.slug}/${a.hash}` : ''),
     minted_at: (a.created_at || a.minted_at || '').slice(0, 16).replace('T', ' '),
-    views: a.views != null ? a.views : (a.opens || 0),
-    last_view: a.last_view || null,
-    attributed_reply: !!a.attributed_reply,
-    grade: a.grade || '', score: a.score != null ? a.score : null,
-    unlocked: a.unlocked === true, status: a.status || 'live',
+    views: a.open_count != null ? a.open_count : (a.views != null ? a.views : 0),
+    last_view: a.last_opened_at || a.last_view || null,
+    kind: a.kind || 'full',
+    tag: a.tag || (a.kind === 'manual' ? 'manual' : 'auto'),  // manual vs auto mint
+    status: a.status || 'live',
   }));
 }
 

@@ -1,26 +1,20 @@
 // app.jsx — Tamazia Cockpit v2 shell
 // Slim sidebar · header with kill-switch · slim bottom dock · ⌘K palette · hash routing.
 
+// Simplified to the core loop the admin actually works every day. Badges are LIVE
+// (computed from real data in the Sidebar): leads = pending approvals, inbox = replies.
 const NAV = [
-  { id: 'now',       label: 'Now',          icon: 'home',     badge: 7 },
-  { id: 'pipeline',  label: 'Pipeline',     icon: 'pipeline' },
-  { id: 'leads',     label: 'Leads',        icon: 'users' },
-  { id: 'outbox',    label: 'Outbox',       icon: 'outbox',   badge: 6 },
-  { id: 'inbox',     label: 'Inbox',        icon: 'inbox',    badge: 7 },
-  { id: 'aliases',   label: 'Aliases',      icon: 'layers' },
-  { id: 'audits',    label: 'Audits',       icon: 'file' },
-  { id: 'bookings',  label: 'Bookings',     icon: 'calendar' },
-  { id: 'forms',     label: 'Website forms',icon: 'form' },
-  { id: 'health',    label: 'Health',       icon: 'pulse' },
-  { id: 'intel',     label: 'Intelligence', icon: 'bot' },
-  { id: 'settings',  label: 'Settings',     icon: 'cog' },
+  { id: 'now',       label: 'Now',       icon: 'home' },
+  { id: 'leads',     label: 'Leads',     icon: 'users',    badge: () => (window.PENDING || []).length },
+  { id: 'audits',    label: 'Audits',    icon: 'file' },
+  { id: 'inbox',     label: 'Inbox',     icon: 'inbox',    badge: () => (window.REPLIES || []).length },
+  { id: 'bookings',  label: 'Bookings',  icon: 'calendar' },
+  { id: 'settings',  label: 'Settings',  icon: 'cog' },
 ];
 
 const TAB_COMPS = {
-  now: 'TabNow', pipeline: 'TabPipeline', leads: 'TabLeads',
-  outbox: 'TabOutbox', inbox: 'TabInbox', aliases: 'TabAliases',
-  audits: 'TabAudits', bookings: 'TabBookings', forms: 'TabForms',
-  health: 'TabHealth', intel: 'TabIntel', settings: 'TabSettings',
+  now: 'TabNow', leads: 'TabLeads', audits: 'TabAudits',
+  inbox: 'TabInbox', bookings: 'TabBookings', settings: 'TabSettings',
 };
 
 // ── Sidebar ──────────────────────────────────────────────────────────────────
@@ -75,13 +69,16 @@ const Sidebar = ({ tab, onTab, min, onToggleMin, mode }) => (
           >
             <span style={{ display: 'flex', flexShrink: 0 }}><Icon name={it.icon} sm /></span>
             {!min && <span className="grow ellip">{it.label}</span>}
-            {!min && it.badge && (
-              <span className="t-num" style={{
-                background: 'var(--clay)', color: 'white',
-                fontSize: 10, padding: '0 6px',
-                borderRadius: 999, lineHeight: '16px', minWidth: 18, textAlign: 'center',
-              }}>{it.badge}</span>
-            )}
+            {(() => {
+              const bv = typeof it.badge === 'function' ? it.badge() : it.badge;
+              return (!min && bv) ? (
+                <span className="t-num" style={{
+                  background: 'var(--clay)', color: 'white',
+                  fontSize: 10, padding: '0 6px',
+                  borderRadius: 999, lineHeight: '16px', minWidth: 18, textAlign: 'center',
+                }}>{bv}</span>
+              ) : null;
+            })()}
           </button>
         );
       })}
@@ -129,16 +126,14 @@ const Header = ({ mode, setMode, onCmd, killOn, onKillToggle }) => {
         <kbd>⌘K</kbd>
       </button>
 
-      {/* center — time + uptime */}
+      {/* center — time */}
       <div className="row" style={{ gap: 10, color: 'var(--ink-3)' }}>
         <span className="t-mono t-12">{tStr}</span>
-        <span className="t-12" style={{ color: 'var(--ink-4)' }}>·</span>
-        <span className="t-12">uptime {TRUTH.uptime}</span>
       </div>
 
       <div style={{ flex: 1 }} />
 
-      {/* right — kill switch + mode toggle */}
+      {/* right — the one control that matters: the send kill-switch (writes engine system_state.paused) */}
       <button
         onClick={onKillToggle}
         className="btn"
@@ -152,19 +147,6 @@ const Header = ({ mode, setMode, onCmd, killOn, onKillToggle }) => {
         <Icon name={killOn ? 'play' : 'pause'} sm />
         {killOn ? 'Sending paused — resume' : 'Pause all sending'}
       </button>
-
-      <div className="row" style={{
-        border: '1px solid var(--line-1)', borderRadius: 999, padding: 2, background: 'var(--card)',
-      }}>
-        {['real', 'both', 'test'].map(m => (
-          <button key={m} onClick={() => setMode(m)} style={{
-            padding: '3px 11px', borderRadius: 999,
-            background: mode === m ? 'var(--ink-1)' : 'transparent',
-            color: mode === m ? 'var(--bg)' : 'var(--ink-2)',
-            fontSize: 11, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.6,
-          }}>{m}</button>
-        ))}
-      </div>
     </header>
   );
 };

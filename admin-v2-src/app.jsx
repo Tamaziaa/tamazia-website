@@ -6,14 +6,15 @@
 const NAV = [
   { id: 'now',       label: 'Now',       icon: 'home' },
   { id: 'leads',     label: 'Leads',     icon: 'users',    badge: () => (window.PENDING || []).length },
-  { id: 'audits',    label: 'Audits',    icon: 'file' },
+  { id: 'outreach',  label: 'Outreach',  icon: 'outbox',   badge: () => ((window.OUTBOX || {}).count) || 0 },
   { id: 'inbox',     label: 'Inbox',     icon: 'inbox',    badge: () => (window.REPLIES || []).length },
+  { id: 'audits',    label: 'Audits',    icon: 'file' },
   { id: 'bookings',  label: 'Bookings',  icon: 'calendar' },
   { id: 'settings',  label: 'Settings',  icon: 'cog' },
 ];
 
 const TAB_COMPS = {
-  now: 'TabNow', leads: 'TabLeads', audits: 'TabAudits',
+  now: 'TabNow', leads: 'TabLeads', outreach: 'TabOutreach', audits: 'TabAudits',
   inbox: 'TabInbox', bookings: 'TabBookings', settings: 'TabSettings',
 };
 

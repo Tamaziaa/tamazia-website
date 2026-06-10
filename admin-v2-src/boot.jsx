@@ -276,12 +276,13 @@ function renderApp() {
 window.__rerender = renderApp;
 
 async function hydrate() {
-  const [now, leads, pipeline, health, audits, bookings, forms, inbox, outbox, pending, events, queue, suppression, engineStatus] =
+  const [now, leads, pipeline, health, audits, bookings, forms, inbox, outbox, pending, events, queue, suppression, engineStatus, sends, sequences, n8n] =
     await Promise.all([
       API('now'), API('leads?limit=300'), API('pipeline'), API('health'),
       API('audits?limit=100'), API('bookings'), API('forms'), API('inbox'),
       API('outbox'), API('leads/pending'), API('events/recent'),
       API('queue'), API('suppression'), API('engine/status'),
+      API('sends?limit=200'), API('sequences?limit=200'), API('n8n'),
     ]);
 
   // funnel from pipeline + now
@@ -315,6 +316,11 @@ async function hydrate() {
   window.QUEUE = (queue && { counts: queue.counts || {}, rows: queue.rows || [] }) || { counts: {}, rows: [] };
   window.SUPPRESSION_LIVE = (suppression && { count: suppression.count || 0, rows: suppression.rows || [] }) || { count: 0, rows: [] };
   window.ENGINE_STATUS = engineStatus || null;
+  // outreach: every email sent + the follow-up cadence + drafts + the n8n automation layer
+  window.SENDS = sends || { sends: [], counts: {}, total: 0, opened: 0, replied: 0, today: 0 };
+  window.SEQUENCES = sequences || { rows: [], byTouch: {}, active: 0, dueNow: 0 };
+  window.OUTBOX = (outbox && { drafts: outbox.drafts || [], count: outbox.count || 0 }) || { drafts: [], count: 0 };
+  window.N8N = n8n || { reachable: false, workflows: [] };
 
   // CONNECTORS from health probes (so the Health tab connector grid is real)
   window.CONNECTORS = probes.map(p => ({ name: p.name || titleCase(p.k), category: p.c, status: p.s === 'ok' ? 'ok' : p.s === 'warn' ? 'warn' : 'bad', detail: p.d }));

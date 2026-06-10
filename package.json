@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/generate-og.js && astro build",
+    "build": "node scripts/generate-og.js && node scripts/build-cockpit.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@netlify/functions": "^5.2.0",
     "@playwright/test": "^1.59.1",
+    "esbuild": "^0.21.5",
     "jsdom": "^24.1.3",
     "typescript": "^5.5.0"
   }

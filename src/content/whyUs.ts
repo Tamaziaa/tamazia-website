@@ -46,9 +46,6 @@ export const whyUsContent = {
   // Zero-compliance-incident proof (B-38 fix · SWF allocator persona)
   proofStrip: 'Zero compliance incidents · Nasdaq IPO listing · Dubai Holding standard · Verified per SEC filings + GA4',
 
-  // Pricing, stated once and plainly: the audit is the product; it pays for itself if you engage.
-  pricingLine: 'The £1,500 audit covers compliance, SEO and GEO in one. Credited in full to your first month if we work together.',
-
   cta: {
     label: 'Request SEO & Compliance Audit',
     href: '#contact',

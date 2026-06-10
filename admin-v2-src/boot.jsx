@@ -8,10 +8,22 @@
 // If the Access app covers /api/admin*, the injected JWT auths every call and no key
 // is needed. Otherwise the cockpit sends x-admin-secret from a key the founder pastes
 // ONCE (stored in this browser only). Never hardcoded.
-const getKey = () => { try { return localStorage.getItem('tz_admin_key') || ''; } catch (_) { return ''; } };
+let _memKey = '';  // auto-acquired from the Access-gated /admin/session (in-memory only)
+const getKey = () => { if (_memKey) return _memKey; try { return localStorage.getItem('tz_admin_key') || ''; } catch (_) { return ''; } };
 const setKey = (k) => { try { localStorage.setItem('tz_admin_key', k); } catch (_) {} };
 const authHeaders = () => { const k = getKey(); return k ? { 'x-admin-secret': k } : {}; };
 window.tzSetKey = (k) => { setKey(k); location.reload(); };
+
+// Auto-unlock: /admin/* is behind Cloudflare Access, so the founder's authenticated
+// session can fetch the cockpit key from /admin/session (which verifies the Access JWT
+// before returning it). Zero paste, no dashboard change. Falls back to the paste modal.
+async function acquireKey() {
+  if (getKey()) return;
+  try {
+    const r = await fetch('/admin/session', { credentials: 'same-origin' });
+    if (r.ok) { const d = await r.json(); if (d && d.key) _memKey = d.key; }
+  } catch (_) {}
+}
 
 // ── tiny api client (same-origin; Access cookie + x-admin-secret ride along) ──
 const API = (p, opts) =>
@@ -308,7 +320,8 @@ function showKeyGate() {
   document.getElementById('tz-key').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
 }
 
-// initial paint (empty-but-valid), then hydrate, then poll every 60s
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { renderApp(); hydrate(); });
-else { renderApp(); hydrate(); }
+// initial paint (empty-but-valid), auto-acquire the key behind Access, hydrate, poll 60s
+async function start() { renderApp(); await acquireKey(); hydrate(); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+else start();
 setInterval(hydrate, 60000);

@@ -25,6 +25,19 @@
 /audit/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Audit render bundle (JS/CSS) — served at stable paths, so revalidate on every load. Without this
+# they fall back to Cloudflare's 4h default, and a fresh deploy is masked by the stale cached copy
+# (the "old render after deploy" trap). no-cache = cache but ALWAYS revalidate via ETag → cheap 304
+# when unchanged, fresh 200 the instant a deploy changes the file.
+/audit/audit-app.js
+  Cache-Control: no-cache
+/audit/audit-charts.js
+  Cache-Control: no-cache
+/audit/audit.css
+  Cache-Control: no-cache
+/audit/kings-logo.png
+  Cache-Control: no-cache
+
 /api/*
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet

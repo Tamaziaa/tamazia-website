@@ -24,8 +24,12 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spa
 .capt{font-family:var(--body);font-size:11px;color:var(--muted);line-height:1.4;margin-top:2px}
 
 /* ---- shell: two-pane console ---- */
-.tz-shell{display:grid;grid-template-columns:232px 1fr;gap:0;max-width:1340px;margin:0 auto;min-height:100vh}
-.rail{background:linear-gradient(168deg,var(--ox-deep),#1c0810 78%);color:var(--gold-pale);padding:18px 18px 22px;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid #170709}
+.tz-shell{display:grid;grid-template-columns:256px 1fr;gap:0;max-width:1360px;margin:0 auto;min-height:100vh}
+/* Rail: NO inner scroll — sizes to its content, sticky to the top, hands off to the PAGE scroll if taller than the
+   viewport (founder: "left pane should not have any scrolling element; full info in one view"). */
+.rail{background:linear-gradient(168deg,var(--ox-deep),#1c0810 78%);color:var(--gold-pale);padding:18px 18px 18px;position:sticky;top:0;align-self:flex-start;border-right:1px solid #170709;display:flex;flex-direction:column;min-height:100svh;max-height:100svh;overflow-y:auto;overscroll-behavior:contain}
+.rail-inner{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.rail-prep{margin-top:auto}   /* push the credential + socials to the very bottom so the rail fills with NO empty gap or stray line */
 .rail::-webkit-scrollbar{width:6px} .rail::-webkit-scrollbar-thumb{background:rgba(201,168,124,.25);border-radius:3px}
 .content{padding:22px 30px 44px;min-width:0;max-width:1040px}
 
@@ -80,7 +84,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spa
 .card-h .meta{font-family:var(--mono);font-size:9.5px;color:var(--muted-2);letter-spacing:.04em;text-transform:uppercase}
 .hairline{height:1px;background:var(--line);border:0;margin:15px 0}
 .grid{display:grid;gap:12px}
-.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.g2{grid-template-columns:1fr 1fr;align-items:start}.g3{grid-template-columns:1fr 1fr 1fr}  /* align-items:start: a short column (Tech & tracking) leaves no wasted space below */
 .g-5-7{grid-template-columns:5fr 7fr}.g-7-5{grid-template-columns:7fr 5fr}.g-4-8{grid-template-columns:4fr 8fr}.g-8-4{grid-template-columns:8fr 4fr}
 .flexrow{display:flex;gap:11px;flex-wrap:wrap}
 .subhead{display:flex;align-items:baseline;gap:10px;margin:18px 0 9px}
@@ -294,7 +298,7 @@ body.no-notes .engnote{display:none}
 .railtoggle{display:none}
 @media(max-width:1080px){
   .tz-shell{grid-template-columns:1fr}
-  .rail{position:relative;height:auto;top:auto}
+  .rail{position:relative;height:auto;top:auto;max-height:none;overflow:visible}
   .g2,.g3,.g-5-7,.g-7-5,.g-4-8,.g-8-4{grid-template-columns:1fr}
   .price-grid,.addon-grid,.secgrid,.enggrid{grid-template-columns:1fr 1fr}
   .booking{grid-template-columns:1fr}
@@ -322,7 +326,7 @@ body.no-notes .engnote{display:none}
 .pillar>summary:hover{background:var(--cream)}
 .pillar .pico{font-family:var(--serif);font-size:15px;color:var(--gold);text-align:center}
 .pillar .pname{font-family:var(--serif);font-size:14px;color:var(--ox-deep);line-height:1.05}
-.pillar .pkpis{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.pillar .pkpis{display:flex;gap:5px;flex-wrap:nowrap;justify-content:flex-end}  /* B10: "N frameworks · N issues" stay on one line */
 .pkpi{font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:var(--ink);background:var(--cream-2);border:1px solid var(--line);padding:2px 7px;border-radius:30px;white-space:nowrap}
 .pkpi.red{color:var(--red-deep);background:var(--red-bg);border-color:rgba(179,38,30,.22)}
 .pkpi.amber{color:var(--amber);background:var(--amber-bg);border-color:rgba(182,121,31,.25)}
@@ -603,9 +607,11 @@ body.cmx-lock{overflow:hidden}
 :root{ --vp-cap:calc(100svh - 96px); }   /* svh = mobile-safe; ~96px sticky/header allowance */
 /* Cap the COLLAPSIBLE BOXES (a finding, a framework), not the pillar pane: an open box fits one
    viewport with internal scroll; the pane itself page-scrolls (no awkward nested pane+box scroll). */
+/* overscroll-behavior:auto so when an inner box's scroll REACHES ITS END, the gesture HANDS OFF to the page scroll
+   (founder: "once the scroll ends on any element auto scroll should trigger") — never a dead stuck scroll. */
 .finding .fbody,
 .fw .fwbody,
-.reg-fixwrap{ max-height:var(--vp-cap); overflow:auto; overscroll-behavior:contain; }
+.reg-fixwrap{ max-height:var(--vp-cap); overflow:auto; overscroll-behavior:auto; }
 .finding .fbody::-webkit-scrollbar,.fw .fwbody::-webkit-scrollbar{width:7px}
 .finding .fbody::-webkit-scrollbar-thumb,.fw .fwbody::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:4px}
 .pillar,.finding,.fw,.reg-card,.price,.addon{ scroll-margin-top:12px; }
@@ -633,8 +639,10 @@ body.cmx-lock{overflow:hidden}
 .meta-row .mk{font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--ox);padding-top:2px}
 .meta-row b{font-family:var(--body);font-size:12.5px;color:var(--ink);font-weight:600}
 .meta-row>span:not(.mk){font-family:var(--body);font-size:12px;color:#3a2d30;line-height:1.4}
-.meta-row .num.exp{font-family:var(--serif);font-size:16px;color:var(--red)}
-.meta-row .cap{font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:6px}
+/* ⑤ Exposure on ONE line: value + caption never wrap (founder). */
+.meta-row .num.exp{font-family:var(--serif);font-size:16px;color:var(--red);white-space:nowrap}
+.meta-row .cap{font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:6px;white-space:nowrap}
+.meta-row>span:not(.mk){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fix-block{background:var(--green-bg);border-radius:8px;padding:8px 11px;margin-top:9px;box-shadow:inset 0 0 0 1px rgba(47,122,74,.18)}
 .fix-block .fix-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fix-block .fix-h .lk{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin:0}
@@ -788,6 +796,8 @@ body.cmx-lock{overflow:hidden}
 .art-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;align-self:flex-start;margin-top:3px}
 .art-dot.c{background:var(--red)} .art-dot.h{background:var(--amber)} .art-dot.s{background:var(--gold)}
 .art-quote{font-style:italic;color:var(--ox);border-left:2px solid var(--line-2);padding-left:9px;margin:4px 0 0 15px;font-size:11.5px;line-height:1.4}
+/* real per-breach absence analysis (what's on the page vs the missing element) — our analysis, NOT a verbatim quote */
+.art-absence{color:#3a2d30;border-left:2px solid var(--red);padding-left:9px;margin:4px 0 0 15px;font-size:11.5px;line-height:1.45}
 .art-fix{background:var(--green-bg);border-radius:7px;padding:5px 9px;margin:5px 0 0 15px;font-family:var(--body);font-size:11.5px;color:#26402f;line-height:1.4}
 .art-fix b{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-right:6px}
 
@@ -883,3 +893,305 @@ html{scroll-behavior:smooth}
 .addon .foot .btn.gold{flex:0 0 auto;width:auto;display:inline-block;padding:8px 13px}
 .dimcard{padding:8px 11px}
 .dimcard .bar-track{margin:5px 0 6px!important}
+
+/* ============ Overhaul-wave additions (B1/B5/B11/B13) ============ */
+/* B5 — AI-engine cite GRADE (A–E big, raw score small) */
+.eng-grade{display:flex;align-items:baseline;justify-content:center;gap:4px;margin-top:2px}
+.eng-grade .gr{font-family:var(--serif);font-size:22px;font-weight:600;line-height:1}
+.eng-grade .gn{font-family:var(--mono);font-size:10px;color:var(--muted-2);opacity:.7}
+.engcell .eng-nm{font-family:var(--mono);font-size:9px;letter-spacing:.03em;color:var(--ink);text-transform:uppercase;margin:3px 0 1px;line-height:1.1}
+
+/* B11 — three highest-priority breaches: heading + RED PULSING dot on each (reuses @keyframes pulse) */
+.vfix-head{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--red-deep);font-weight:600;margin:13px 0 8px}
+.vfix-head .vfix-dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(179,38,30,.5);animation:pulse 2s infinite;flex-shrink:0}
+.vfix{position:relative}
+.vfix .vfix-pulse{position:absolute;top:-4px;left:-4px;width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(179,38,30,.5);animation:pulse 2s infinite}
+
+/* B1 — small note under the SEO subhead pointing at the PSI box now in the scorecard */
+.subhead-note{font-family:var(--mono);font-size:9.5px;color:var(--muted-2);letter-spacing:.02em;opacity:.8}
+
+/* B13 — "How you beat each of them": a strong rival-by-rival play card (burgundy/gold hierarchy) */
+.beatcard{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.beatcard:last-child{border-bottom:0}
+.beatcard .bc-rank{font-family:var(--serif);font-size:21px;color:var(--gold);line-height:1;text-align:center;padding-top:1px}
+.beatcard .bc-top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:5px}
+.beatcard .bc-rival{font-family:var(--serif);font-size:14.5px;color:var(--ox-deep)}
+.beatcard .bc-sig{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2);background:var(--cream-2);border:1px solid var(--line);border-radius:30px;padding:2px 8px}
+.beatcard .bc-move{font-family:var(--body);font-size:13px;color:#2A0C14;line-height:1.4;margin-bottom:3px}
+.beatcard .bc-move .bc-k{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-right:6px;font-weight:600}
+.beatcard .bc-move b{color:var(--ox-deep)}
+.beatcard .bc-proof{font-family:var(--body);font-size:12px;color:var(--muted);line-height:1.45;margin-bottom:7px}
+.beatcard .bc-proof .bc-arrow{color:var(--gold);margin-right:3px}
+.beatcard .bc-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.beatcard .bc-metric{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--ox);background:var(--gold-bg,rgba(201,168,124,.14));border:1px solid rgba(201,168,124,.4);border-radius:6px;padding:3px 9px;font-weight:500}
+.beatcard .bc-lever{font-family:var(--body);font-size:11px;color:var(--muted);line-height:1.4;border-left:2px solid var(--green);padding-left:9px}
+.beatcard .bc-lever .bc-lk{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-right:5px}
+
+/* ============ PART D — PLAN & PRICING: three routes ============ */
+.route{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;margin-bottom:4px}
+/* Route 1 — One-time Fix Sprint with top10/20/all toggle */
+.route1{background:linear-gradient(160deg,#fff,var(--cream-2))}
+.r1-toggle{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:13px;background:var(--paper)}
+.r1-tab{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 18px;border:0;background:transparent;cursor:pointer;font-weight:500;transition:.13s}
+.r1-tab small{font-family:var(--serif);font-size:14px;color:var(--ox-deep);letter-spacing:0;text-transform:none}
+.r1-tab+.r1-tab{border-left:1px solid var(--line)}
+.r1-tab.active{background:var(--ox);color:var(--gold-pale)} .r1-tab.active small{color:#fff}
+.r1-tab:not(.active):hover{background:var(--cream-2)}
+.r1-body{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.r1-main .fx-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.r1-main .r1-scope{color:var(--red-deep);font-weight:600}
+.r1-main .fx-line{font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5;margin:0 0 9px}
+.r1-main .fx-list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.r1-main .fx-list li{font-family:var(--body);font-size:12.5px;color:var(--ink);line-height:1.45;padding-left:18px;position:relative}
+.r1-main .fx-list li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.r1-side{background:var(--ox-deep);border-radius:12px;padding:16px;text-align:center;color:var(--gold-pale)}
+.r1-side .fx-price b{display:block;font-family:var(--serif);font-size:34px;color:#fff;line-height:1.05}
+.r1-side .fx-price span{font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-light);opacity:.8;display:block;margin-top:3px}
+.r1-side .btn.solid{margin-top:13px;background:var(--gold);color:var(--ox-deep);border:0}
+.r1-side .btn.solid:hover{background:var(--gold-light)}
+/* Route 2 — three retainer tier cards (all prices shown collapsed) */
+.tiers3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:transparent;border:0;padding:0}
+.tier3{border:1px solid var(--line);border-radius:13px;background:#fff;padding:15px;display:flex;flex-direction:column}
+.tier3.rec{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 8px 26px -16px rgba(90,26,43,.4)}
+.tier3 .t3-nm{font-family:var(--serif);font-size:17px;color:var(--ox-deep);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.t3-rec{font-family:var(--mono);font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--ox-deep);background:var(--gold);padding:2px 7px;border-radius:30px;font-weight:600}
+.t3-pop{font-family:var(--mono);font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--ox);background:var(--cream-2);border:1px solid var(--line);padding:2px 7px;border-radius:30px}
+.t3-price{margin:7px 0 6px;display:flex;align-items:baseline;gap:6px}
+.t3-price b{font-family:var(--serif);font-size:26px;color:var(--ox-deep);line-height:1}
+.t3-price .t3-was{font-family:var(--mono);font-size:12px;color:var(--muted-2);text-decoration:line-through}
+.t3-price small{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.t3-blurb{font-family:var(--body);font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:9px}
+.t3-feats,.t3-more ul{list-style:none;padding:0;margin:0;display:grid;gap:5px}
+.t3-feats li,.t3-more li{font-family:var(--body);font-size:11.5px;color:var(--ink);line-height:1.4;padding-left:15px;position:relative}
+.t3-feats li:before,.t3-more li:before{content:"›";position:absolute;left:0;color:var(--gold);font-weight:700}
+.t3-more{margin-top:5px;border-top:1px dashed var(--line-2);padding-top:7px}
+.t3-foot{margin-top:auto;padding-top:11px;display:flex;flex-direction:column;gap:7px}
+.t3-toggle{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:var(--ox);background:transparent;border:0;cursor:pointer;text-align:left;padding:0;text-transform:none}
+.t3-cta{width:100%;text-align:center}
+/* Route 3 — Monthly Compliance + SEO + AI report (the special box) */
+.route3{position:relative;background:linear-gradient(155deg,#fff,var(--cream-2));border-color:var(--gold)}
+.r3-rib{position:absolute;top:-9px;left:16px;font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ox-deep);background:var(--gold);padding:3px 10px;border-radius:30px;font-weight:600}
+.r3-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:center;margin-top:5px}
+.r3-main .fx-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.r3-h{font-family:var(--serif);font-size:18px;color:var(--ox-deep);line-height:1.2;margin:0 0 7px;font-weight:400}
+.r3-line{font-family:var(--body);font-size:12.5px;color:#3a2d30;line-height:1.5;margin:0 0 9px}
+.r3-list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.r3-list li{font-family:var(--body);font-size:12.5px;color:var(--ink);line-height:1.45;padding-left:18px;position:relative}
+.r3-list li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.r3-side{background:var(--ox-deep);border-radius:12px;padding:17px;text-align:center;color:var(--gold-pale)}
+.r3-price{display:flex;align-items:baseline;gap:7px;justify-content:center}
+.r3-price .r3-was{font-family:var(--mono);font-size:15px;color:var(--gold-light);opacity:.7;text-decoration:line-through}
+.r3-price b{font-family:var(--serif);font-size:38px;color:#fff;line-height:1}
+.r3-price small{font-family:var(--mono);font-size:10px;color:var(--gold-light)}
+.r3-free{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:6px 0 11px}
+.r3-side .btn.solid{background:var(--gold);color:var(--ox-deep);border:0}
+.r3-side .btn.solid:hover{background:var(--gold-light)}
+.r3-terms{font-family:var(--mono);font-size:8.5px;line-height:1.5;color:var(--gold-light);opacity:.72;margin-top:10px}
+.booking.single{grid-template-columns:1fr}
+@media(max-width:820px){.r1-body,.r3-grid{grid-template-columns:1fr}.tiers3{grid-template-columns:1fr}}
+
+/* ============================================================
+   CONVERSION ROUND (P1–P6) — rail socials + ghost nav · summary bullets ·
+   freemium green-gradient lock · failing-audits two-up · Route-2 pilot toggle.
+   Appended; overrides only what it names.
+   ============================================================ */
+
+/* P1 — rail social row (tiny icon buttons at the very bottom of the rail) */
+.rail-social{display:flex;justify-content:center;gap:9px;margin-top:11px;padding-top:11px;border-top:1px solid rgba(201,168,124,.18)}
+.rail-social a{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;border:1px solid rgba(201,168,124,.28);color:var(--gold-light);background:rgba(201,168,124,.06);transition:.13s}
+.rail-social a:hover{background:rgba(201,168,124,.16);border-color:var(--gold);color:#fff}
+.rail-social svg{display:block}
+
+/* P1 — "Jump to" nav as very minimal ghost rows (constant, all six sections) */
+.railnav button{border:1px solid transparent}
+.railnav button:hover{background:rgba(201,168,124,.07);border-color:rgba(201,168,124,.14)}
+.railnav button.active{background:rgba(201,168,124,.13);border-color:rgba(201,168,124,.22)}
+
+/* P2 — verdict summary as crisp, personalised bullet points */
+.verdict-bullets{list-style:none;display:flex;flex-direction:column;gap:5px;margin:8px 0 4px;max-width:840px}
+.verdict-bullets li{font-family:var(--body);font-size:12.5px;color:#3a2d30;line-height:1.45;padding-left:18px;position:relative}
+.verdict-bullets li::before{content:'▸';position:absolute;left:0;top:0;color:var(--gold);font-family:var(--mono);font-size:10px}
+.verdict-bullets li b{color:var(--ox-deep);font-weight:600}
+
+/* P4 — freemium lock: green-gradient blurred veil over the Tamazia-fix prose only (never the beat-cards) */
+.tz-lock{position:relative;display:block;border-radius:8px;overflow:hidden;margin-top:4px;min-height:30px}
+.tz-lock-blur{filter:blur(4.5px);-webkit-filter:blur(4.5px);user-select:none;pointer-events:none}
+.tz-lock-veil{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(47,122,74,.34),rgba(47,122,74,.62));border:1px solid rgba(47,122,74,.5);border-radius:8px;
+  color:#fff;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;transition:.14s}
+.tz-lock-veil:hover{background:linear-gradient(135deg,rgba(47,122,74,.46),rgba(47,122,74,.74))}
+.tz-lock-veil .tz-lock-ic{flex-shrink:0}
+.tz-lock-veil .tz-lock-t{white-space:nowrap}
+.psi-fix .tz-lock,.art-fix .tz-lock{margin-top:4px}
+.psi-fix>b,.art-fix>b{display:inline-block;margin-bottom:2px}
+
+/* P6 — "Failing audits on your live DOM": two boxes side by side (was one full-width column) */
+.psi-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:760px){.psi-list{grid-template-columns:1fr}}
+
+/* P3 — Route 2 "Monthly | 6-month pilot" segmented toggle + per-tier saves line */
+.r2-modes{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--paper);margin:0 0 11px}
+.r2-mode{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 16px;border:0;background:transparent;cursor:pointer;font-weight:600;transition:.13s}
+.r2-mode small{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;text-transform:none;color:var(--green);font-weight:500}
+.r2-mode+.r2-mode{border-left:1px solid var(--line)}
+.r2-mode.active{background:var(--ox);color:#fff}
+.r2-mode.active small{color:var(--gold-light)}
+.r2-mode:not(.active):hover{background:var(--cream-2)}
+.t3-saves{font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:var(--green);background:var(--green-bg);border-radius:5px;padding:2px 7px;display:inline-block;margin:0 0 7px}
+/* one aligned line for every tier price (no wrap of /mo) */
+.t3-price{flex-wrap:nowrap;white-space:nowrap}
+.t3-price b{white-space:nowrap}
+
+/* ============================================================
+   ROUND r22 — A1 Route-1 burgundy anchor restored (integrated scope toggle)
+   ============================================================ */
+.route1{background:transparent;border:0;padding:0}                 /* .fixbox owns the surface */
+.r1-fixbox{padding:18px 22px 18px}
+/* toggle re-skinned onto the burgundy: gold/oxblood segmented control */
+/* r25 — equal-width segmented control on a padded track; active = soft gold-pale panel
+   (the old full-saturation gold fill read as garish/"messed up" when clicked). */
+.r1-toggle-dark{display:flex;width:100%;gap:4px;padding:4px;background:rgba(201,168,124,.08);border:1px solid rgba(201,168,124,.28);border-radius:11px;margin-bottom:14px}
+.r1-toggle-dark .r1-tab{flex:1 1 0;min-width:0;border-radius:8px;padding:7px 8px;color:var(--gold-light);opacity:.85;transition:background .14s,color .14s,box-shadow .14s}
+.r1-toggle-dark .r1-tab .r1t-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.r1-toggle-dark .r1-tab small{color:var(--gold-pale);font-size:13.5px}
+.r1-toggle-dark .r1-tab+.r1-tab{border-left:0}
+.r1-toggle-dark .r1-tab.active{background:linear-gradient(180deg,var(--gold-pale),var(--gold-light));color:var(--ox-deep);opacity:1;box-shadow:0 1px 0 rgba(255,255,255,.45) inset,0 4px 12px -6px rgba(0,0,0,.5)}
+.r1-toggle-dark .r1-tab.active small{color:var(--ox-deep)}
+.r1-toggle-dark .r1-tab.active .r1t-l{color:var(--ox)}
+.r1-toggle-dark .r1-tab:not(.active):hover{background:rgba(201,168,124,.16)}
+/* price line = struck anchor + huge price ONLY; caption drops to its own line (kills the wrap) */
+.r1-fixbox .fx-price{align-items:baseline;gap:10px;border-bottom:0;padding-bottom:0;margin:0 0 4px}
+.r1-fixbox .fx-was{font-size:19px;align-self:baseline}
+.r1-fixbox .r1-cap{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-light);opacity:.72;line-height:1.4;margin:0 0 2px}
+.r1-fixbox .fx-side{justify-content:center}
+.r1-fixbox .r1-anchor{color:var(--gold);font-style:normal}
+/* keep the CTA GOLD on the burgundy (overrides the orange rule at audit.css:817 — appended later, wins) */
+.r1-fixbox .fx-cta{background:var(--gold);border-color:var(--gold);color:var(--ox-deep)}
+.r1-fixbox .fx-cta:hover{background:var(--gold-light);border-color:var(--gold-light)}
+
+/* ============================================================
+   ROUND r22 — A2 Route-2 luxury tiers: aligned price line, equal height, "Most chosen"
+   ============================================================ */
+.tiers3{align-items:stretch}                                       /* equal-height cards */
+.tier3{padding:16px 16px 15px}
+.t3-head{min-height:46px}                                          /* name + "who" reserve → prices align */
+.tier3 .t3-nm{font-size:17px;gap:7px}
+.t3-who{font-family:var(--body);font-size:11px;color:var(--muted);line-height:1.35;margin-top:3px}
+/* the ONE price line: fixed height so all 3 prices share a Y, never wraps */
+.t3-priceline{min-height:48px;display:flex;flex-direction:column;justify-content:center;gap:3px;margin:9px 0 7px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0}
+.t3-priceline .t3-price{margin:0}
+.t3-priceline .t3-saves{margin:0}
+.t3-feats{margin-top:9px}
+/* Authority = Most chosen: gold border + cream tint */
+.tier3.pop{border-color:var(--gold);background:linear-gradient(168deg,#fff,var(--gold-pale));box-shadow:0 0 0 1px var(--gold-light),0 10px 30px -18px rgba(90,26,43,.4)}
+.tier3.pop .t3-pop{background:var(--gold);color:var(--ox-deep);border:0}
+
+/* ============================================================
+   ROUND r22 — A3 Route-3 spacing · D founder credential line
+   ============================================================ */
+.route3 .r3-side .btn.solid{margin-top:11px}
+.founder-subhead h3{text-transform:uppercase;letter-spacing:.04em;font-family:var(--mono);font-size:12px;color:var(--ox-deep)}
+.founder-cred{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--muted);opacity:.85;margin:-2px 0 9px;line-height:1.4}
+
+/* ============================================================
+   ROUND r22 — B2 RAIL one-viewport fit (≥1081px desktop).
+   .rail has max-height:100svh + overflow (B1) as the never-clip safety net;
+   this clamp pack keys every size to viewport height so a 720px-tall screen
+   compacts to the min and the safety-net scrollbar never actually appears at
+   1280×720 / 1366×768 / 1440×900 / 1920×1080. Mobile/tablet (≤1080px) untouched.
+   ============================================================ */
+@media (min-width:1081px){
+  .rail{padding:clamp(11px,1.4vh,16px) 18px clamp(11px,1.4vh,18px)}
+  .rail-logo{max-width:clamp(150px,15vh,192px);margin:0 0 clamp(8px,1.2vh,13px)}
+  .rail h1{font-size:clamp(15px,1.9vh,18px);margin-bottom:clamp(3px,.5vh,5px)}
+  .rail-meta{font-size:clamp(8.5px,1.1vh,9.5px);line-height:1.35}
+  .rail-gauge{margin:clamp(3px,.6vh,8px) 0 clamp(2px,.4vh,5px)}
+  .rail-gauge svg{width:clamp(74px,9vh,96px);height:auto}
+  .rail-band{margin-bottom:clamp(7px,1.1vh,12px);font-size:clamp(8.5px,1.05vh,9.5px)}
+  .rail-exposure{padding:clamp(6px,.9vh,10px);margin-bottom:clamp(7px,1vh,11px)}
+  .rail-exposure .v{font-size:clamp(20px,2.7vh,28px)}
+  .rail-navtitle{margin:clamp(3px,.5vh,6px) 0 clamp(5px,.7vh,8px)}
+  .railnav{margin-bottom:clamp(7px,1.1vh,14px);gap:clamp(1px,.25vh,3px)}
+  .railnav button{padding:clamp(4px,.7vh,7px) 10px;font-size:clamp(12px,1.5vh,13px)}
+  .rail-jump{padding:clamp(7px,.9vh,9px);margin-bottom:clamp(6px,.8vh,9px)}
+  .rail-cta{padding:clamp(8px,1.1vh,12px)}
+  .rail-prep{margin-top:auto;padding-top:clamp(8px,1.1vh,12px)}
+  .rail-prep .rp-name{font-size:clamp(13px,1.7vh,15.5px)}
+  .rail-prep .rp-deg{font-size:clamp(9.5px,1.2vh,10.5px)}
+  .rail-prep .rp-rules{margin-top:clamp(5px,.8vh,8px)}
+  .rail-social{margin-top:clamp(7px,1vh,11px);padding-top:clamp(7px,1vh,11px)}
+}
+/* B (r25) — rail fills the viewport column; credential+socials pinned to the bottom via .rail-prep{margin-top:auto}.
+   No transform scaling (it left an empty gap + a stray border line). Content scrolls internally only on a
+   genuinely short viewport (the overflow cap); at desktop it fills cleanly top-to-bottom. */
+@media (max-width:1080px){ .rail-inner{flex:0 0 auto} .rail-prep{margin-top:14px} }
+
+/* ============================================================
+   ROUND r25 — Currency-by-region toggle + Route-2/3 luxury rebuild.
+   Palette learned from tamazia.co.uk/pricing (cream/taupe cards, gold #C9A87C,
+   oxblood #2A0C14 ink) — the same oxblood-gold family as the Route-1 burgundy
+   anchor, kept lighter so the routes read as one system yet each stands apart.
+   Foundation/Enterprise = warm cream-gold cards; Authority ("Most popular") =
+   inverted burgundy that echoes Route 1 and pulls the eye to the recommended tier.
+   ============================================================ */
+
+/* — currency segmented control — */
+.cur-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:3px 0 11px}
+.cur-bar .cur-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+.cur-btn{font-family:var(--mono);font-size:9.5px;letter-spacing:.03em;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:4px 10px;cursor:pointer;transition:.13s;white-space:nowrap}
+.cur-btn:hover{border-color:var(--gold);color:var(--ox)}
+.cur-btn.active{background:var(--ox);border-color:var(--ox);color:var(--gold-pale);font-weight:500}
+.cur-note{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-2);opacity:.8;margin-left:3px}
+.cmoney{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* — Route 2 luxury tiers — */
+.tiers-lux{align-items:stretch}
+.tiers-lux .tier3{position:relative;overflow:hidden;border-radius:16px;padding:18px 17px 16px;background:linear-gradient(168deg,var(--paper),var(--cream-2));border:1px solid var(--line-2);box-shadow:0 1px 2px rgba(42,12,20,.04),0 14px 34px -22px rgba(42,12,20,.4)}
+.tiers-lux .tl-rib{position:absolute;top:0;right:0;font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox-deep);background:var(--gold);padding:4px 11px;border-bottom-left-radius:11px;font-weight:600;z-index:2}
+.tiers-lux .tl-rib-rec{background:var(--cream-2);color:var(--ox);border:1px solid var(--gold);border-top:0;border-right:0}
+.tiers-lux .tl-head{min-height:50px}
+.tiers-lux .tl-nm{font-family:var(--serif);font-size:19px;color:var(--ox-deep);line-height:1.05}
+.tiers-lux .tl-who{font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold);margin-top:5px}
+.tiers-lux .tl-priceline{display:flex;align-items:baseline;gap:5px;min-height:46px;margin:10px 0 9px;padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+.tiers-lux .tl-from{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2)}
+.tiers-lux .tl-priceline b{font-family:var(--serif);font-size:29px;font-weight:400;color:var(--ox-deep);line-height:.9;font-variant-numeric:tabular-nums}
+.tiers-lux .tl-per{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.tiers-lux .tl-blurb{font-family:var(--body);font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:10px}
+.tiers-lux .tl-feats,.tiers-lux .tl-more ul{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.tiers-lux .tl-feats li,.tiers-lux .tl-more li{font-family:var(--body);font-size:11.5px;color:var(--ink);line-height:1.4;padding-left:16px;position:relative}
+.tiers-lux .tl-feats li:before,.tiers-lux .tl-more li:before{content:"✓";position:absolute;left:0;color:var(--gold);font-family:var(--mono);font-size:10px;font-weight:600}
+.tiers-lux .tl-more{margin-top:7px;border-top:1px dashed var(--line-2);padding-top:8px}
+.tiers-lux .tl-foot{margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.tiers-lux .tl-toggle{text-transform:none;color:var(--ox);opacity:.82}
+.tiers-lux .tl-toggle:hover{opacity:1;text-decoration:underline}
+.tiers-lux .tl-cta{width:100%;text-align:center;text-transform:none;letter-spacing:.01em;font-size:11px;background:var(--ox);border:1px solid var(--ox);color:var(--gold-pale)}
+.tiers-lux .tl-cta:hover{background:var(--ox-deep);border-color:var(--ox-deep);color:#fff}
+/* rec (engine "recommended") = gold-bordered light card */
+.tiers-lux .tier3.rec{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 14px 34px -20px rgba(90,26,43,.45)}
+/* pop (Authority "Most popular") = inverted burgundy, echoes Route 1 */
+.tiers-lux .tier3.pop{background:linear-gradient(158deg,var(--ox) 0%,var(--ox-deep) 92%);border:1px solid var(--ox-deep);box-shadow:0 0 0 1px var(--gold-light),0 20px 44px -20px rgba(42,12,20,.6)}
+.tiers-lux .tier3.pop::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(201,168,124,.05) 0,rgba(201,168,124,.05) 1px,transparent 1px,transparent 9px);pointer-events:none}
+.tiers-lux .tier3.pop>*{position:relative}
+.tiers-lux .tier3.pop .tl-nm{color:#fff}
+.tiers-lux .tier3.pop .tl-who{color:var(--gold)}
+.tiers-lux .tier3.pop .tl-priceline{border-color:rgba(201,168,124,.24)}
+.tiers-lux .tier3.pop .tl-priceline b{color:var(--gold)}
+.tiers-lux .tier3.pop .tl-from,.tiers-lux .tier3.pop .tl-per{color:var(--gold-light);opacity:.82}
+.tiers-lux .tier3.pop .tl-blurb{color:var(--gold-light);opacity:.85}
+.tiers-lux .tier3.pop .tl-feats li,.tiers-lux .tier3.pop .tl-more li{color:var(--gold-pale)}
+.tiers-lux .tier3.pop .tl-feats li:before,.tiers-lux .tier3.pop .tl-more li:before{color:var(--gold)}
+.tiers-lux .tier3.pop .tl-more{border-top-color:rgba(201,168,124,.24)}
+.tiers-lux .tier3.pop .tl-toggle{color:var(--gold-light)}
+.tiers-lux .tier3.pop .tl-cta{background:var(--gold);border-color:var(--gold);color:var(--ox-deep)}
+.tiers-lux .tier3.pop .tl-cta:hover{background:var(--gold-light);border-color:var(--gold-light);color:var(--ox-deep)}
+.tl-note{font-family:var(--body);font-size:11px;color:var(--muted);line-height:1.5;margin:11px 0 2px}
+.tl-note .cmoney{color:var(--ox);font-weight:600}
+
+/* — Route 3 harmonised with the family (light card + burgundy price panel already present) — */
+.route3{border:1px solid var(--gold);box-shadow:0 1px 2px rgba(42,12,20,.04),0 16px 38px -22px rgba(42,12,20,.4)}
+
+/* — CTA + the founder title share one type treatment ("WALK REPORT WITH THE FOUNDER") — */
+.founder-subhead h3{text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ox-deep)}
+
+/* tablet/mobile: the inverted Authority card flattens its lift so the stack stays even */
+@media(max-width:820px){ .tiers-lux .tier3.pop{box-shadow:0 0 0 1px var(--gold-light),0 12px 28px -18px rgba(42,12,20,.5)} }

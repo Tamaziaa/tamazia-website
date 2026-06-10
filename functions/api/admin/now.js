@@ -22,7 +22,17 @@ export const onRequestGet = async ({ request, env }) => {
   const flags = [];
   if (highIntentToday.length) flags.push({ level: 'p1', msg: highIntentToday.length + ' high-intent form(s) today' });
   if (todayBookings.length) flags.push({ level: 'p1', msg: todayBookings.length + ' new Cal booking(s) today' });
+  // Engine kill-switch truth (system_state.paused in Neon — what send-due actually checks)
+  let paused = null;
+  if (env.NEON_URL) {
+    try {
+      const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
+      const r = await fetch('https://' + host + '/sql', { method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' }, body: JSON.stringify({ query: "SELECT value FROM system_state WHERE key='paused'", params: [] }) });
+      if (r.ok) { const d = await r.json(); const rows = d.rows || d.results || []; paused = String((rows[0] || {}).value || '').toLowerCase() === 'true'; }
+    } catch (_e) {}
+  }
   return json({
+    paused,
     greeting,
     truth: {
       real: { prospects: contact.length + briefings.length, sent: 0, replies: 0, booked: bookings.length, won: 0 },

@@ -8,7 +8,8 @@ export const onRequestGet = async ({ request, env }) => {
     // Use Neon Serverless HTTP driver via fetch
     // Extract host from connection string
     const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
-    const sql = `SELECT id, company, domain, contact_email, sector, lifecycle_stage, status, acquisition_channel, quality_fit, quality_score, personalisation_pointers->>'top_finding' AS top_finding, created_at, updated_at FROM leads ORDER BY (quality_fit IS TRUE) DESC, quality_score DESC NULLS LAST, updated_at DESC NULLS LAST LIMIT $1`;
+    // CW-1.1: read the clean v_admin_leads projection (never the 124 raw columns)
+    const sql = `SELECT id, company, domain, sector, icp_guess, jurisdiction, lifecycle_stage, conversion_tier, icp_tier, quality_fit, quality_score, status, verify_status, best_email AS contact_email, replied, first_contacted_at, last_reply_received_at, next_touch_date, audit_url, acquisition_channel, priority_source, created_at, updated_at FROM v_admin_leads ORDER BY (priority_source='manual') DESC, (quality_fit IS TRUE) DESC, quality_score DESC NULLS LAST, updated_at DESC NULLS LAST LIMIT $1`;
     const r = await fetch(`https://${host}/sql`, {
       method: 'POST',
       headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' },

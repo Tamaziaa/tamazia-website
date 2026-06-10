@@ -16,6 +16,25 @@ const TabAudits = () => {
 
       <MintBox />
 
+      {/* live mint queue (minting_queue) */}
+      {(() => {
+        const qd = window.QUEUE || { counts: {}, rows: [] };
+        const c = qd.counts || {};
+        const active = (c.pending || 0) + (c.minting || 0);
+        return (
+          <Card padding={14} style={{ margin: '14px 0 0' }}>
+            <div className="row" style={{ gap: 14, flexWrap: 'wrap' }}>
+              <span className="eyebrow">Mint queue</span>
+              <span className={`chip sm ${active ? 'warn' : 'ok'}`}>{c.pending || 0} pending</span>
+              <span className="chip sm">{c.minting || 0} minting</span>
+              <span className="chip ok sm">{c.done || 0} done</span>
+              {c.failed ? <span className="chip bad sm">{c.failed} failed</span> : null}
+              <span className="t-11 t-muted" style={{ marginLeft: 'auto' }}>{active ? 'The engine drains this every cycle (~30 min) or instantly after a manual mint.' : 'Queue clear.'}</span>
+            </div>
+          </Card>
+        );
+      })()}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, margin: '22px 0' }}>
         <Stat label="Total audits" value={fmt(audits.length)} sub="minted pages" />
         <Stat label="Manual mints" value={fmt(manual.length)} sub="from the box" kind={manual.length ? 'ok' : undefined} />

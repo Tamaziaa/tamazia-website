@@ -178,8 +178,8 @@ const BottomDock = ({ open, onToggle }) => {
         <span className="t-mono t-11" style={{ color: 'var(--ink-3)' }}>{latest.t}</span>
         <span className="t-12 t-mono" style={{ color: srcColor(latest.src), fontWeight: 600, textTransform: 'lowercase' }}>{latest.src}</span>
         <span className="t-12 ellip grow">{latest.m}</span>
-        <span className="chip sm">7 replies · 287 sent today</span>
-        <span className="t-11 t-muted">mirrors Slack + Telegram</span>
+        <span className="chip sm">{(window.REPLIES || []).length} replies · {((window.TRUTH || {}).funnel || {}).qualified || 0} qualified</span>
+        <span className="t-11 t-muted">live feed</span>
         <span style={{ display: 'flex', color: 'var(--ink-3)' }}>
           <Icon name="chev" sm />
         </span>
@@ -225,16 +225,8 @@ const CommandPalette = ({ open, onClose, onNav }) => {
   React.useEffect(() => { if (open) setQ(''); }, [open]);
   const items = React.useMemo(() => {
     const tabs = NAV.map(n => ({ kind: 'tab', label: n.label, id: n.id, hint: 'go to' }));
-    const actions = [
-      { kind: 'action', label: 'Approve all ready drafts', id: 'a:approve' },
-      { kind: 'action', label: 'Run scrape now',           id: 'a:scrape' },
-      { kind: 'action', label: 'Pause all sending',        id: 'a:kill' },
-      { kind: 'action', label: 'Re-run hourly intel brief',id: 'a:intel' },
-      { kind: 'action', label: 'Restart IMAP poller',      id: 'a:imap' },
-      { kind: 'action', label: 'Toggle Real / Test',       id: 'a:mode' },
-    ];
-    const leads = LEADS.slice(0, 8).map(l => ({ kind: 'lead', label: l.company, id: l.id, hint: l.sector }));
-    const all = [...tabs, ...actions, ...leads];
+    const leads = (window.LEADS || []).slice(0, 200).map(l => ({ kind: 'lead', label: l.company, id: l.id, hint: l.sector, lead: l }));
+    const all = [...tabs, ...leads];
     return q ? all.filter(x => (x.label + (x.hint || '')).toLowerCase().includes(q.toLowerCase())) : all;
   }, [q]);
 
@@ -257,7 +249,7 @@ const CommandPalette = ({ open, onClose, onNav }) => {
         </div>
         <div style={{ maxHeight: 420, overflowY: 'auto' }}>
           {items.slice(0, 16).map((it, i) => (
-            <button key={`${it.kind}-${it.id}`} onClick={() => { if (it.kind === 'tab') onNav(it.id); onClose(); }} style={{
+            <button key={`${it.kind}-${it.id}`} onClick={() => { if (it.kind === 'tab') onNav(it.id); else if (it.kind === 'lead' && it.lead && window.__openLead) window.__openLead(it.lead); onClose(); }} style={{
               display: 'flex', width: '100%', padding: '11px 16px', alignItems: 'center', gap: 10,
               textAlign: 'left', borderBottom: i < Math.min(15, items.length - 1) ? '1px solid var(--line-2)' : 'none',
               fontSize: 13, color: 'var(--ink-1)',
@@ -315,6 +307,13 @@ const KillSwitchModal = ({ open, action, onConfirm, onCancel }) => {
   );
 };
 
+// expose the drawer-opener globally for the command palette (lives INSIDE the provider)
+const PaletteBridge = () => {
+  const o = useOpenLead();
+  React.useEffect(() => { window.__openLead = o; }, [o]);
+  return null;
+};
+
 // ── Root app ─────────────────────────────────────────────────────────────────
 const App = () => {
   const [tab, _setTab] = React.useState(() => location.hash.replace('#', '') || 'now');
@@ -360,6 +359,7 @@ const App = () => {
   return (
     <DrawerProvider>
       <ModalProvider>
+        <PaletteBridge />
         <div className="app" data-sidebar={sidebarMin ? 'min' : 'full'} data-dock={dockOpen ? 'open' : 'closed'}>
           <Sidebar tab={tab} onTab={setTab} min={sidebarMin} onToggleMin={() => setSidebarMin(m => !m)} mode={mode} />
           <Header mode={mode} setMode={setMode} onCmd={() => setCmdOpen(true)} killOn={killOn} onKillToggle={onKillToggle} />

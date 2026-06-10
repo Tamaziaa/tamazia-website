@@ -72,9 +72,11 @@ check "12. DMARC postmarkapp on .in" "$dm" "1"
 gp=$(curl -sS "$BASE/robots.txt" | grep -c 'User-agent: GPTBot' || true)
 check "13. robots blocks GPTBot" "$gp" "1"
 
-# 14. Headers · COOP+COEP present
-hd=$(curl -sSI "$BASE/" | grep -i -E 'cross-origin-(opener|embedder)-policy' | wc -l)
-check "14. COOP+COEP headers present (=2)" "$hd" "2"
+# 14. Headers · COOP present. COEP is INTENTIONALLY OFF (Cal.com + Stripe iframes
+# break under require-corp) — do not "fix" by adding the header. Baselined to the
+# intended state so a red run always means a real regression.
+hd=$(curl -sSI "$BASE/" | grep -i -c 'cross-origin-opener-policy' || true)
+check "14. COOP header present (=1; COEP intentionally absent)" "$hd" "1"
 
 echo ""
 echo "Result: $PASS passed, $FAIL failed."

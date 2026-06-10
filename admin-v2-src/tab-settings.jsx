@@ -48,6 +48,27 @@ const TabSettings = ({ killOn, onKillToggle }) => {
           )}
       </Section>
 
+      {/* n8n automation layer — the email/send/warmup/reply pipeline (24x7) */}
+      <Section title="Automation pipelines (n8n)" lede="The email layer: warmup, send orchestration, reply handling, bounce kill-switch, audit delivery. Live from n8n.">
+        {(() => {
+          const n = window.N8N || { reachable: false, workflows: [] };
+          if (!n.reachable) return <Card padding={16}><div className="body-sm t-muted">n8n not reachable (or not configured). The GitHub-Actions engine below still runs independently.</div></Card>;
+          return (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+              {n.workflows.map((w, i) => (
+                <Card key={i} padding={12}>
+                  <div className="row" style={{ gap: 8 }}>
+                    <span className={`dot ${w.active ? 'ok' : 'idle'}`} />
+                    <span className="t-13" style={{ fontWeight: 500 }}>{w.name}</span>
+                    <span className="chip sm" style={{ marginLeft: 'auto' }}>{w.active ? 'active' : 'off'}</span>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          );
+        })()}
+      </Section>
+
       {/* Engine workflows — live from GitHub Actions */}
       <Section title="Engine runs" lede="The 30-minute cycle and the hourly intel pulse, live from GitHub Actions.">
         {(() => {

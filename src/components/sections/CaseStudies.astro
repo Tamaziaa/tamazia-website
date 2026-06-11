@@ -48,7 +48,7 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
                 <div class="metric">
                   <div class="metric-value">{m.value}</div>
                   <div class="metric-label">{m.label}</div>
-                  {m.note && <div class="metric-note">{m.note}</div>}
+                  {m.note && <div class="metric-note" set:html={m.note} />}
                 </div>
               ))}
             </div>

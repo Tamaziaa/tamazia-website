@@ -287,13 +287,14 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     border-bottom: 1px solid rgba(201, 167, 114, 0.3);
   }
 
+  /* M-punch 7: navigation links side by side to save vertical space */
   .col-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
   }
 
   .col-nav a {

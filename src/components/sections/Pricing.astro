@@ -442,7 +442,9 @@ const featureIcons: Record<string, string> = {
     gap: 32px;
     margin-bottom: clamp(32px, 5vw, 48px); /* R10 · was 64-96 */
   }
-  .tier-card { height: 100%; }
+  .tier-card { height: 100%; display: flex; flex-direction: column; }
+  /* M-punch 11: CTAs sit parallel across all three tiers */
+  .tier-card .tier-cta { margin-top: auto; }
 
   .tier-card {
     container-type: inline-size;

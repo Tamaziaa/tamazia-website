@@ -353,6 +353,22 @@ if (_segs.length > 0) {
           setTimeout(function () { host.classList.remove('draw-replay'); }, 900);
         });
       });
+      /* M-punch 4 · auto-tag top-level sections for luxury entrances (skip the
+         hero wrap + anything already running its own reveal system). */
+      try {
+        var main = document.querySelector('main');
+        if (main) {
+          var kids = [].slice.call(main.children);
+          var srIo = new IntersectionObserver(function (es) {
+            es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('sr-in'); srIo.unobserve(en.target); } });
+          }, { threshold: 0.12 });
+          kids.forEach(function (k) {
+            if (k.classList.contains('tz-hero-wrap') || k.querySelector('[data-reveal]')) return;
+            k.classList.add('sr-reveal');
+            srIo.observe(k);
+          });
+        }
+      } catch (e) {}
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
           if (en.isIntersecting) { en.target.classList.add('draw-in'); io.unobserve(en.target); }

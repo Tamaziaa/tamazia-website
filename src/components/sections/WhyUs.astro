@@ -443,7 +443,7 @@ const proofStrip = (whyUsContent as any).proofStrip;
         const final = el.dataset.value || '';
 
         // Extract numeric portion · supports "882%", "$110M+", "400+", "4×"
-        const match = final.match(/^(\$?)(\d+)([%+×MKB]*)$/);
+        const match = final.match(/^([£$€]?)(\d+)([%+×MKB]*)$/);  // M-punch: £110M+ now counts like the others
         if (!match) return;
 
         const prefix = match[1] || '';

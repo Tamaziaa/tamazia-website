@@ -59,6 +59,8 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
 
 <div class="tz-hero-wrap">
 <aside class="tz-laws-ribbon" aria-hidden="true">
+  {/* M-punch 10: the caption sits with the moving laws so the ribbon is explained */}
+  <div class="tz-ribbon-caption"><span>400+ Frameworks reviewed every campaign</span></div>
   <div class="tz-laws-ribbon-track">
     {ribbonDouble.map((reg: string) => (
       <span class={goldFrameworks.includes(reg) ? 'gold' : ''}>{reg}</span>
@@ -94,6 +96,47 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     ))}
     <span class="tz-caret" aria-hidden="true"></span>
   </h1>
+  <script is:inline>
+    /* M-punch 2 · classic typewriter over the server-rendered headline.
+       Runs during parse (before paint of later frames): locks line heights
+       (CLS 0), hides the words, then types each line char-by-char at 42ms,
+       preserving the gold-italic emphasis. Reduced motion: leave as rendered. */
+    (function () {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var h1 = document.querySelector('.tz-headline');
+      if (!h1) return;
+      var lines = [].slice.call(h1.querySelectorAll('.tz-line'));
+      var plan = lines.map(function (line) {
+        var segs = [].slice.call(line.querySelectorAll('.tz-tw-w')).map(function (w) {
+          return { text: w.textContent, emph: !!w.closest('em') };
+        });
+        line.style.minHeight = line.getBoundingClientRect().height + 'px';
+        return { el: line, segs: segs };
+      });
+      plan.forEach(function (l) { l.el.innerHTML = ''; });
+      var SPEED = 42, GAP = 280;
+      function typeLine(idx) {
+        if (idx >= plan.length) return;
+        var l = plan[idx], si = 0, ci = 0;
+        function frame() {
+          var html = '';
+          for (var j = 0; j < si; j++) html += render(l.segs[j], l.segs[j].text.length, j < l.segs.length - 1);
+          if (si < l.segs.length) html += render(l.segs[si], ci, false);
+          l.el.innerHTML = html;
+          if (si >= l.segs.length) { setTimeout(function () { typeLine(idx + 1); }, GAP); return; }
+          ci++;
+          if (ci > l.segs[si].text.length) { si++; ci = 0; }
+          setTimeout(frame, SPEED);
+        }
+        function render(seg, n, trailingSpace) {
+          var t = seg.text.slice(0, n) + (trailingSpace && n >= seg.text.length ? ' ' : '');
+          return seg.emph ? '<em class="tz-word">' + t + '</em>' : t;
+        }
+        frame();
+      }
+      typeLine(0);
+    })();
+  </script>
 
   <div class="tz-subs">
     <div class="tz-sub" data-reveal="slide" style="--rd:480ms"><span class="tz-sub-rule"></span><em>Search dominance, every market.</em></div>
@@ -186,7 +229,6 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
       the greyscale rating strip (trust-spec placement 1) over the ribbon caption. */}
   <div class="tz-hero-proof" data-reveal="fade" style="--rd:240ms">
     <RatingStrip tone="light" align="start" />
-    <div class="tz-ribbon-caption" aria-hidden="true"><span>400+ Frameworks reviewed every campaign</span></div>
   </div>
 
   </div><!-- /.tz-founder-cta-row -->
@@ -583,15 +625,10 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   /* M3 · word-level typing reveal: full text is in the HTML; each word snaps in
      (steps(1) = typewriter pop, no fade) at the moment it would finish typing.
      Opacity-only: no layout shift, kerning preserved within words. */
-  .tz-tw-w {
-    opacity: 0;
-    animation-name: tz-tw-in;
-    animation-duration: 2ms;       /* imperceptible: reads as a typewriter pop */
-    animation-timing-function: linear;
-    animation-delay: var(--d, 0ms);
-    animation-fill-mode: forwards;
-  }
-  @keyframes tz-tw-in { from { opacity: 0; } to { opacity: 1; } }
+  /* M-punch 2: true char-by-char typing restored (founder). Words are visible
+     by default (SEO/no-JS); the inline script below the h1 hides them pre-paint
+     and retypes at classic pacing. */
+  .tz-tw-w { opacity: 1; }
   .tz-caret {
     display: inline-block;
     width: 0.45em;
@@ -601,7 +638,6 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     margin-left: 0.12em;
     opacity: 0;
     animation: tz-caret-blink 0.7s step-end infinite;
-    animation-delay: var(--tw-total, 2400ms);
   }
   @keyframes tz-caret-blink { 0%, 100% { opacity: 0; } 50% { opacity: 0.9; } }
   @media (prefers-reduced-motion: reduce) {
@@ -1041,15 +1077,7 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     gap: 10px;
     padding: 2px 0 0;
   }
-  /* The caption was absolute-pinned to the laws ribbon; inside the proof rail
-     it flows statically. */
-  .tz-hero-proof .tz-ribbon-caption {
-    display: block;
-    position: static;
-    width: auto;
-    text-align: left;
-    padding: 0;
-  }
+
   @media (min-width: 1024px) {
     .tz-founder-cta-row {
       flex-direction: row;
@@ -1169,6 +1197,12 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   @media (min-width: 1024px) {
     .tz-band-laws { gap: 8px 18px; }
     .tz-band-laws span { font-size: 12.5px; }
+  }
+  /* M-punch 13: long law names were clipping at 1180-1439px ribbon widths */
+  @media (min-width: 1180px) and (max-width: 1439px) {
+    .tz-laws-ribbon { width: 250px; }
+    .tz-ribbon-caption { width: 250px; }
+    .tz-laws-ribbon-track span { font-size: 10px; letter-spacing: 0.12em; padding-right: 6px; }
   }
 </style>
 

@@ -21,7 +21,7 @@ const meraasMetrics = [
 ];
 
 const cgoncMetrics = [
-  { value: '96%',    label: 'Share price increase at IPO', note: "Tamazia's digital content and marketing strategy was one of the factors contributing to that outcome." },
+  { value: '96%',    label: 'Share price increase at IPO', note: 'Tamazia\'s <a href="https://synthetic.com/cg-oncology-enters-bladder-cancer-therapy-space-with-ipo/" target="_blank" rel="noopener noreferrer">digital content</a> and marketing strategy was one of the factors contributing to that outcome.' },
   { value: 'Nasdaq', label: 'Listed: CGON',                note: '' },
   { value: 'Zero',   label: 'Compliance incidents',        note: '' },
 ];

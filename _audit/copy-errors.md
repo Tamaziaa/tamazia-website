@@ -43,3 +43,15 @@ Rationale: diagnosis/empathy framing (benchmarks §3 Graphite ⭐), confidence p
 - B: "Choose the mandate that matches your footprint. Foundation for a single location building authority. Authority for groups scaling across regions. Enterprise for regulated brands operating across jurisdictions. Every tier carries the same standard: nothing is published until it has been reviewed against the frameworks that govern you."
 - C: "Most agencies price by deliverables. We price by responsibility: the size of your footprint, the number of jurisdictions you operate in, and how much regulatory weight your sector carries. Three mandates cover that range. The standard of review never changes."
 - D: "Retainers, not projects. Your mandate reflects three things: locations, jurisdictions, and the regulatory weight your sector carries. The review standard is identical at every tier."
+
+## Appendix — Sextant enforcement lines: verified replacements (M5, all sourced)
+4 of 6 prior lines were inaccurate/unverifiable (a compliance exposure on a compliance brand). All six now verified:
+| Sector | New line | Source |
+|---|---|---|
+| Legal | £300,000 · AML control failures · SRA/SDT · MLR 2017 · 2025 | lawgazette.co.uk/news/300000-fine-for-us-firm-over-historical-aml-breaches/5122645.article (Simpson Thacher, Mar 2025) |
+| Healthcare | 25+ firms actioned · illegal POM weight-loss ads · MHRA · HMR 2012 · 2025 | gov.uk/government/news/mhra-and-partners-unite-to-reaffirm-prescription-weight-loss-medicine-advertising-rules (26 Sep 2025) |
+| Hospitality | 4 brands' ads banned · misleading "from £" hotel rates · ASA · CAP Code · 2025 | lewissilkin.com (19 Nov 2025 rulings: Hilton, Travelodge, Accor, Booking.com). Prior £4.2M CMA line was actually driving schools, Apr 2026, not hospitality. |
+| Real Estate | £100M payment · housebuilders shared pricing data · CMA · Competition Act 1998 · 2025 | gov.uk/government/news/affordable-housing-set-to-benefit-from-100-million-following-cma-probe ("payment" not "fine": voluntary commitments, no liability admission). Prior $19M SEC/Reg FD line unverifiable + incoherent. |
+| F&B | First ads banned · Lidl and Iceland breach LHF ban · ASA · Health and Care Act 2022 · 2026 | asa.org.uk/news/from-principle-to-practice-how-we-re-enforcing-the-new-less-healthy-ad-rules.html (16 Apr 2026). Prior "£500K cap" had no source. |
+| Every sector | 60M ads scanned · proactive AI enforcement at scale · ASA · CAP Code · 2025 | asa.org.uk/news/annual-report-2025.html (published 14 Apr 2026) |
+Caveats logged: SRA/SDT attribution; "payment" wording mandatory for the CMA housebuilders line; LHF supersedes HFSS terminology.

@@ -181,6 +181,12 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     <div class="tz-sub" data-reveal="slide" style="--rd:680ms"><span class="tz-sub-rule"></span><em>Counsel-led, every campaign.</em></div>
   </div>
 
+  {/* Founder directive r2: the three rating marks (Trustpilot · Google · Clutch)
+      sit with the title cluster, not beside the founder pill. */}
+  <div class="tz-hero-rating" data-reveal="fade" style="--rd:760ms">
+    <RatingStrip tone="light" align="start" />
+  </div>
+
   <div class="tz-body tz-body-compact">
     {/* M4 (founder directive 2026-06-11): the category diagnosis leads — then the
         lawyer line answers it. The old "Compliance reviewed before publication"
@@ -201,15 +207,6 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     <a class="tz-chip" href="#sectors" title="Universal data-protection baseline · UK + EU + processor obligations" aria-label="GDPR · Universal data-protection baseline · UK + EU + processor obligations"><span>GDPR</span></a><a class="tz-chip" href="#sectors" title="Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear" aria-label="FCA · Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear"><span>FCA</span></a><a class="tz-chip" href="#sectors" title="UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018" aria-label="SRA · UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018"><span>SRA</span></a><a class="tz-chip" href="#sectors" title="UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement" aria-label="MHRA · UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement"><span>MHRA</span></a><a class="tz-chip" href="#sectors" title="UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)" aria-label="ASA · UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)"><span>ASA</span></a><a class="tz-chip" href="#sectors" title="US protected health information · 45 CFR 164.508/164.502 marketing rules" aria-label="HIPAA · US protected health information · 45 CFR 164.508/164.502 marketing rules"><span>HIPAA</span></a><a class="tz-chip" href="#sectors" title="AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems" aria-label="EU AI ACT · AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems"><span>EU AI ACT</span></a>
   </div>
   <p class="tz-chips-suffix" data-reveal="fade" style="--rd:160ms"><em>and international advertising laws.</em></p>
-
-  {/* M4 · primary CTA moved ABOVE the founder card (benchmarks §1: one CTA above
-      the fold, proof adjacent below). Was docked under the colophon. */}
-  <div class="tz-cta-wrap tz-cta-wrap--mid" data-reveal="lift">
-    <a href="/instrument/" class="tz-cta">
-      <span>Run my free audit</span>
-      <span class="tz-cta-arr" aria-hidden="true">→</span>
-    </a>
-  </div>
 
   <div class="tz-founder-cta-row">
   <aside class="tz-founder" data-reveal="lift">
@@ -262,17 +259,20 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
       </div>
     </div>
   </aside>
-  {/* M4 · the right-side void beside the founder pill now carries the proof rail:
-      the greyscale rating strip (trust-spec placement 1) over the ribbon caption. */}
-  <div class="tz-hero-proof" data-reveal="fade" style="--rd:240ms">
-    <RatingStrip tone="light" align="start" />
-  </div>
-
   </div><!-- /.tz-founder-cta-row -->
 
   <div class="tz-colophon">
     <span>LONDON</span><span class="tz-dot">·</span>
     <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide</span>
+  </div>
+
+  {/* Founder directive r2: primary CTA docked under the engagements colophon
+      (the previous founder-box structure). */}
+  <div class="tz-cta-wrap tz-cta-wrap--colophon" data-reveal="lift">
+    <a href="/instrument/" class="tz-cta">
+      <span>Run my audit</span>
+      <span class="tz-cta-arr" aria-hidden="true">→</span>
+    </a>
   </div>
 
 </section>
@@ -332,16 +332,20 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   /* M-punch 16 · Rail block(s) removed: the sextant panel lives in SextantInstrument.astro; these styles were dead weight duplicated on every page render. */
   /* ===== Headline ===== */
   .tz-headline {
-    padding: 4px 22px 0;
+    padding: 4px 16px 0;
     font-family: var(--tz-display);
-    font-size: 42px;
+    /* Founder directive r2: each line renders on ONE line (white-space:nowrap on
+       .tz-line). Sizes are tuned per breakpoint so the longest line ("Outrank
+       competitors.") fits the content box — which the .tz-mhero max-width caps
+       below the viewport, so a pure vw can't be used. Verified 320–2560px. */
+    font-size: clamp(20px, 6.4vw, 44px);
     font-weight: 500;
     line-height: 0.96;
     letter-spacing: -0.015em;
     margin: 0;
     color: var(--tz-obsidian);
   }
-  .tz-headline .tz-line    { display: block; }
+  .tz-headline .tz-line    { display: block; white-space: nowrap; }
   .tz-headline em.tz-word  { font-style: italic; color: var(--tz-oxblood); font-weight: 400; }
   .tz-line-em              { color: var(--tz-oxblood); }
   .tz-headline .tz-word    { display: inline-block; }
@@ -633,7 +637,7 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   /* ===== Responsive - Tablet 640px+ ===== */
   @media (min-width: 640px) {
     .tz-mhero { max-width: 680px; }
-    .tz-headline { font-size: 52px; }
+    .tz-headline { font-size: 46px; }
     .tz-cp { max-height: 180px; }
     .tz-band { grid-template-columns: 135px 1fr; gap: 16px; }
     .tz-body p { font-size: 15px; }
@@ -644,7 +648,7 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   /* ===== Responsive - Desktop 1024px+ ===== */
   @media (min-width: 1024px) {
     .tz-mhero { max-width: 860px; }
-    .tz-headline { font-size: 68px; line-height: 0.94; }
+    .tz-headline { font-size: 58px; line-height: 0.94; }
     .tz-cp { max-height: 210px; }
     .tz-band { grid-template-columns: 155px 1fr; gap: 20px; }
     .tz-panel { padding: 14px 18px 10px; }
@@ -671,12 +675,13 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   /* ===== Responsive - Large 1280px+ ===== */
   @media (min-width: 1280px) {
     .tz-mhero { max-width: 1080px; }
-    .tz-headline { font-size: 76px; }
+    .tz-headline { font-size: 72px; }
   }
 
   /* ===== Responsive - Small mobile <380px ===== */
   @media (max-width: 380px) {
-    .tz-headline { font-size: 36px; }
+    /* .tz-headline size governed by the fluid clamp() — no fixed override here,
+       or the long line would re-wrap on narrow phones. */
     .tz-pull-centre p { font-size: 18px; }
     .tz-founder-name { font-size: 17px; }
     .tz-fine-pill { padding: 3px 7px; }
@@ -786,47 +791,27 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
      desktop the rail occupies the void the founder flagged ("optimise the empty
      space near the founder box"): rating strip over the 400+ caption, anchored
      to the pill's baseline (whitespace rule 1: every void gets one anchor). */
+  /* Founder directive r2: the row carries the founder pill alone (proof rail
+     relocated to the title cluster). Centre it so there is no dead void. */
   .tz-founder-cta-row {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 14px 22px 6px;
   }
-  .tz-hero-proof {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 2px 0 0;
-  }
 
   @media (min-width: 1024px) {
-    .tz-founder-cta-row {
-      flex-direction: row;
-      align-items: flex-end;
-      gap: 28px;
-    }
-    .tz-founder-cta-row .tz-founder { flex: 0 1 560px; }
-    .tz-hero-proof {
-      flex: 1 1 auto;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(201, 167, 114, 0.35);
-    }
+    .tz-founder-cta-row .tz-founder { width: 100%; max-width: 620px; margin-inline: auto; }
   }
-  /* M4 · primary CTA above the founder card */
-  .tz-cta-wrap--mid {
-    padding: 10px 22px 4px;
+
+  /* Hero rating marks — the three brand SVGs sit by the title cluster. */
+  .tz-hero-rating {
+    padding: 14px 16px 4px;
     display: flex;
     justify-content: flex-start;
   }
-  .tz-cta-wrap--mid .tz-cta {
-    width: 100%;
-    max-width: 360px;
-    padding: 14px 20px;
-    font-size: 11px;
-  }
   @media (min-width: 1024px) {
-    .tz-cta-wrap--mid { padding: 14px 22px 6px; }
-    .tz-cta-wrap--mid .tz-cta { max-width: 320px; padding: 16px 22px; font-size: 12px; }
+    .tz-hero-rating { padding: 16px 28px 4px; }
   }
   .tz-founder-cta-row .tz-founder {
     margin: 0;

@@ -1,0 +1,346 @@
+---
+// InstrumentAudit · /instrument/ (founder directive r2, 2026-06-11).
+// Two halves: (1) a compact intro showing the ten strongest things the audit
+// delivers — drawn faithfully from the live Monzo specimen — with a link to read
+// the real one; (2) a lean capture form. On submit the request is stored, synced
+// to the Neon leads pipeline and pushed to Slack + Telegram (/api/audit-request),
+// and the visitor is told the report is on its way. No live score is run here.
+import RatingStrip from '../ui/RatingStrip.astro';
+
+const MONZO = 'https://tamazia.co.uk/audit/monzo/yTn7BIzS';
+
+// Ten capability cards. `proof` quotes the real figure from the Monzo audit so
+// the claim is evidenced, not asserted.
+const features = [
+  { n: '01', t: 'One grade out of 100', d: 'Your whole digital standing on a single weighted score, with regulatory compliance weighted twice as heavily as page speed.', proof: 'Monzo scored 39/100' },
+  { n: '02', t: 'Statutory exposure, in pounds', d: 'Live legal liability quantified in money, with overlapping fines collapsed to your real maximum exposure.', proof: '£23M flagged' },
+  { n: '03', t: '400+ frameworks screened', d: 'Every active UK, EU, US and Gulf framework checked against your published content; the ones you are breaching named.', proof: '33 bind, 4 breached live' },
+  { n: '04', t: 'Findings, severity-tiered', d: 'Each confirmed issue graded critical, high or standard, and tied to live evidence on your own pages.', proof: '49 confirmed' },
+  { n: '05', t: 'Ten scored dimensions', d: 'Regulatory, on-page SEO, technical SEO, content and E-E-A-T, Core Web Vitals, security, accessibility, AI, authority and tracking.', proof: 'pass / warn / fail' },
+  { n: '06', t: 'AI-search visibility', d: 'How often ChatGPT, Gemini, Perplexity, Claude, Copilot and Google AI name you when buyers ask. Scored as share of voice.', proof: '8 engines' },
+  { n: '07', t: 'Why AI cannot cite you', d: 'The exact entity gaps, Wikidata, schema and knowledge graph, keeping you out of AI answers, on a readiness radar.', proof: '6-point radar' },
+  { n: '08', t: 'Real Core Web Vitals', d: 'Your measured PageSpeed pulled live from Google for mobile and desktop, with the elements costing you load time.', proof: 'mobile + desktop' },
+  { n: '09', t: 'Competitor AI ladder', d: 'The named rivals the AI engines cite instead of you, and the readiness score you need to overtake each one.', proof: 'named head-to-head' },
+  { n: '10', t: 'A prioritised fix roadmap', d: 'Every fix ranked P0 or P1 with the law it closes, the exposure it removes and a week-by-week trajectory.', proof: '39 → 62 → 80' },
+];
+
+const sectors = ['Law Firm', 'Healthcare and Clinics', 'Financial Services', 'Real Estate', 'Hotels and Hospitality', 'Restaurants and F&B', 'Education', 'E-commerce', 'Automotive', 'Wellness and Fitness', 'Executive Personal Brand', 'Other'];
+---
+
+<section class="ia" id="instrument-audit" aria-labelledby="ia-heading">
+  <!-- ===== Intro half ===== -->
+  <div class="ia-intro">
+    <div class="ia-head">
+      <p class="ia-eyebrow">The Tamazia Instrument</p>
+      <h1 class="ia-h1" id="ia-heading">See your site the way a regulator and an AI engine do.</h1>
+      <p class="ia-sub">One scored document covering compliance, search and AI visibility, with a prioritised fix for everything it finds. Enter your details below and your audit is prepared and emailed to you.</p>
+      <div class="ia-rating"><RatingStrip tone="light" align="center" /></div>
+    </div>
+
+    <ul class="ia-grid" role="list">
+      {features.map((f) => (
+        <li class="ia-card">
+          <span class="ia-card-n" aria-hidden="true">{f.n}</span>
+          <div class="ia-card-body">
+            <h2 class="ia-card-t">{f.t}</h2>
+            <p class="ia-card-d">{f.d}</p>
+            <span class="ia-card-proof">{f.proof}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <a class="ia-specimen" href={MONZO} target="_blank" rel="noopener">
+      <span class="ia-specimen-l">
+        <span class="ia-specimen-ey">Read a real one</span>
+        <span class="ia-specimen-t">The full Monzo audit, scored and public</span>
+      </span>
+      <span class="ia-specimen-arr" aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <!-- ===== Capture half ===== -->
+  <div class="ia-capture">
+    <div class="ia-form-card">
+      <p class="ia-form-eyebrow">Run my audit</p>
+      <p class="ia-form-lead">Tell us where to look and where to send it. No call required.</p>
+
+      <form class="ia-form" id="ia-form" novalidate>
+        <input type="text" name="bot-field" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
+        <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
+        <input type="url" name="c_homepage_url" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
+        <input type="hidden" name="ts_form_open" id="ia-ts" value="" />
+
+        <div class="ia-field">
+          <label for="ia-name">Your name</label>
+          <input type="text" id="ia-name" name="name" autocomplete="name" placeholder="Jane Okafor" />
+        </div>
+        <div class="ia-field">
+          <label for="ia-site">Your website</label>
+          <input type="text" id="ia-site" name="audit-input" inputmode="url" autocomplete="url" placeholder="yourfirm.com" required />
+        </div>
+        <div class="ia-field">
+          <label for="ia-email">Work email</label>
+          <input type="email" id="ia-email" name="email" autocomplete="email" placeholder="you@yourfirm.com" required />
+        </div>
+        <div class="ia-field">
+          <label for="ia-sector">Sector</label>
+          <select id="ia-sector" name="sector" required>
+            <option value="">Select your sector…</option>
+            {sectors.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </div>
+
+        <button type="submit" class="ia-submit" id="ia-submit">
+          <span class="ia-submit-label">Email me my audit</span>
+          <span class="ia-submit-arr" aria-hidden="true">→</span>
+        </button>
+        <p class="ia-micro">
+          <span class="ia-lock" aria-hidden="true">◆</span>
+          Used only to prepare and deliver your audit. Never sold or shared.
+        </p>
+      </form>
+
+      <div class="ia-success" id="ia-success" hidden role="status" aria-live="polite">
+        <div class="ia-success-mark" aria-hidden="true">✓</div>
+        <h2 class="ia-success-t">Your audit is being prepared.</h2>
+        <p class="ia-success-d">It will arrive in your inbox shortly, scored against your sector's full regulatory framework. Reference <span id="ia-ref">—</span>.</p>
+      </div>
+      <div class="ia-error" id="ia-error" hidden role="alert">
+        <p id="ia-error-msg">Something interrupted the request. Please email founder@tamazia.co.uk and we will run it by hand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var form = document.getElementById('ia-form');
+    if (!form) return;
+    var ts = document.getElementById('ia-ts');
+    if (ts) ts.value = String(Date.now());
+    var btn = document.getElementById('ia-submit');
+    var success = document.getElementById('ia-success');
+    var errBox = document.getElementById('ia-error');
+    var errMsg = document.getElementById('ia-error-msg');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (errBox) errBox.hidden = true;
+      var site = document.getElementById('ia-site');
+      var email = document.getElementById('ia-email');
+      var sector = document.getElementById('ia-sector');
+      if (!site.value.trim() || !email.value.trim() || !sector.value) {
+        show(errBox, errMsg, 'Please add your website, work email and sector.');
+        return;
+      }
+      btn.disabled = true;
+      btn.querySelector('.ia-submit-label').textContent = 'Sending…';
+      var payload = {};
+      new FormData(form).forEach(function (v, k) { payload[k] = v; });
+      try {
+        var res = await fetch('/api/audit-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        var j = {};
+        try { j = await res.json(); } catch (e2) {}
+        if (res.ok && j && j.ok) {
+          form.hidden = true;
+          var ref = document.getElementById('ia-ref');
+          if (ref && j.request_id) ref.textContent = String(j.request_id).slice(0, 8);
+          success.hidden = false;
+          success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          var m = (j && j.error) ? humanise(j.error) : 'Something interrupted the request. Please email founder@tamazia.co.uk and we will run it by hand.';
+          show(errBox, errMsg, m);
+          reset();
+        }
+      } catch (err) {
+        show(errBox, errMsg, 'Network hiccup. Please try again, or email founder@tamazia.co.uk.');
+        reset();
+      }
+    });
+
+    function reset() {
+      btn.disabled = false;
+      btn.querySelector('.ia-submit-label').textContent = 'Email me my audit';
+    }
+    function show(box, msgEl, msg) { if (msgEl) msgEl.textContent = msg; if (box) box.hidden = false; }
+    function humanise(code) {
+      if (/email/i.test(code)) return 'That email did not look deliverable. Please use your work address.';
+      return 'Something interrupted the request. Please email founder@tamazia.co.uk and we will run it by hand.';
+    }
+  })();
+</script>
+
+<style>
+  .ia {
+    background: var(--ivory, #FAF7F2);
+    color: var(--ink, #2A0C14);
+    padding: clamp(72px, 9vw, 120px) 0 clamp(56px, 7vw, 96px);
+  }
+  .ia-intro, .ia-capture {
+    max-width: 1080px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 4vw, 48px);
+  }
+
+  /* ----- intro head ----- */
+  .ia-head { max-width: 760px; margin: 0 auto clamp(28px, 4vw, 44px); text-align: center; }
+  .ia-eyebrow {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-text, #8A6520); font-weight: 600; margin: 0 0 14px;
+  }
+  .ia-h1 {
+    font-family: var(--ff-display, Georgia, serif);
+    font-weight: 500; font-style: italic;
+    font-size: clamp(28px, 5vw, 46px); line-height: 1.1; letter-spacing: -0.01em;
+    color: var(--ink, #2A0C14); margin: 0 0 16px;
+  }
+  .ia-sub {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: clamp(14px, 1.6vw, 16px); line-height: 1.6;
+    color: var(--ink-soft, #5C3F40); margin: 0 auto; max-width: 620px;
+  }
+  .ia-rating { margin-top: 22px; display: flex; justify-content: center; }
+
+  /* ----- 10-feature grid ----- */
+  .ia-grid {
+    list-style: none; margin: 0 0 clamp(28px, 4vw, 40px); padding: 0;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--gold-hairline, rgba(201,167,114,0.34));
+    border: 1px solid var(--gold-hairline, rgba(201,167,114,0.34));
+    border-radius: 10px; overflow: hidden;
+  }
+  .ia-card {
+    display: flex; gap: 14px; padding: 20px clamp(16px, 2vw, 24px);
+    background: var(--pearl, #FAF7F2);
+  }
+  .ia-card-n {
+    font-family: var(--ff-display, Georgia, serif); font-style: italic;
+    font-size: 15px; color: var(--gold-text, #8A6520); font-weight: 600;
+    line-height: 1.4; flex: 0 0 auto; min-width: 22px;
+  }
+  .ia-card-t {
+    font-family: var(--ff-display, Georgia, serif);
+    font-size: 17px; font-weight: 600; line-height: 1.25;
+    color: var(--ink, #2A0C14); margin: 0 0 6px; letter-spacing: -0.005em;
+  }
+  .ia-card-d {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 12.5px; line-height: 1.5; color: var(--ink-soft, #5C3F40); margin: 0 0 8px;
+  }
+  .ia-card-proof {
+    display: inline-block; font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+    color: var(--gold-text, #8A6520);
+    border: 1px solid var(--gold-hairline, rgba(201,167,114,0.4));
+    border-radius: 999px; padding: 3px 9px;
+  }
+
+  /* ----- specimen link ----- */
+  .ia-specimen {
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    text-decoration: none; padding: 18px clamp(20px, 3vw, 28px);
+    background: var(--ink, #2A0C14); border-radius: 10px;
+    transition: transform 240ms ease, box-shadow 240ms ease;
+  }
+  .ia-specimen:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -16px rgba(42,12,20,0.5); }
+  .ia-specimen-l { display: flex; flex-direction: column; gap: 4px; }
+  .ia-specimen-ey {
+    font-family: var(--ff-body, Inter, sans-serif); font-size: 10px;
+    letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold, #C9A772); font-weight: 600;
+  }
+  .ia-specimen-t {
+    font-family: var(--ff-display, Georgia, serif); font-style: italic;
+    font-size: clamp(16px, 2vw, 20px); color: var(--ivory, #FAF7F2);
+  }
+  .ia-specimen-arr { color: var(--gold, #C9A772); font-size: 22px; flex: 0 0 auto; }
+
+  /* ----- capture half ----- */
+  .ia-capture { margin-top: clamp(40px, 5vw, 64px); }
+  .ia-form-card {
+    max-width: 560px; margin-inline: auto;
+    background: var(--ink, #2A0C14);
+    border: 1px solid var(--gold, #C9A772);
+    border-radius: 14px; padding: clamp(28px, 4vw, 44px);
+  }
+  .ia-form-eyebrow {
+    font-family: var(--ff-display, Georgia, serif); font-style: italic;
+    font-size: clamp(22px, 3vw, 30px); color: var(--gold, #C9A772); margin: 0 0 6px;
+  }
+  .ia-form-lead {
+    font-family: var(--ff-body, Inter, sans-serif); font-size: 13.5px; line-height: 1.55;
+    color: var(--pearl, #E8E4DC); opacity: 0.9; margin: 0 0 22px;
+  }
+  .tamz-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .ia-field { margin-bottom: 16px; }
+  .ia-field label {
+    display: block; font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+    color: var(--gold, #C9A772); margin-bottom: 7px;
+  }
+  .ia-field input, .ia-field select {
+    width: 100%; box-sizing: border-box; min-height: 48px;
+    background: var(--ivory, #FAF7F2); color: var(--ink, #2A0C14);
+    border: 1px solid var(--gold-hairline, rgba(201,167,114,0.45)); border-radius: 8px;
+    padding: 12px 14px; font-family: var(--ff-body, Inter, sans-serif); font-size: 15px;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .ia-field input::placeholder { color: #9b8478; }
+  .ia-field input:focus, .ia-field select:focus {
+    outline: none; border-color: var(--gold, #C9A772);
+    box-shadow: 0 0 0 3px rgba(201,167,114,0.25);
+  }
+  .ia-submit {
+    width: 100%; min-height: 52px; margin-top: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--ivory, #FAF7F2); color: var(--ink, #2A0C14);
+    border: 1px solid var(--gold, #C9A772); border-radius: 8px; cursor: pointer;
+    font-family: var(--ff-body, Inter, sans-serif); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    transition: background 220ms ease, color 220ms ease, transform 220ms ease;
+  }
+  .ia-submit:hover:not(:disabled) { background: var(--gold, #C9A772); }
+  .ia-submit:disabled { opacity: 0.7; cursor: default; }
+  .ia-submit-arr { font-size: 16px; }
+  .ia-micro {
+    margin: 14px 0 0; font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 11px; line-height: 1.5; color: var(--pearl, #E8E4DC); opacity: 0.7;
+    display: flex; gap: 7px; align-items: baseline;
+  }
+  .ia-lock { color: var(--gold, #C9A772); font-size: 9px; }
+
+  .ia-success { text-align: center; padding: 12px 0; }
+  .ia-success-mark {
+    width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(201,167,114,0.16); color: var(--gold, #C9A772);
+    border: 1px solid var(--gold, #C9A772); font-size: 24px;
+  }
+  .ia-success-t {
+    font-family: var(--ff-display, Georgia, serif); font-style: italic;
+    font-size: 24px; color: var(--ivory, #FAF7F2); margin: 0 0 10px;
+  }
+  .ia-success-d {
+    font-family: var(--ff-body, Inter, sans-serif); font-size: 14px; line-height: 1.6;
+    color: var(--pearl, #E8E4DC); margin: 0 auto; max-width: 420px;
+  }
+  .ia-success-d span { color: var(--gold, #C9A772); font-weight: 600; }
+  .ia-error { margin-top: 16px; }
+  .ia-error p {
+    font-family: var(--ff-body, Inter, sans-serif); font-size: 13px; line-height: 1.55;
+    color: #F3C9C9; background: rgba(160,40,40,0.18);
+    border: 1px solid rgba(201,120,120,0.5); border-radius: 8px; padding: 12px 14px; margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .ia-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ia-specimen, .ia-submit { transition: none; }
+  }
+</style>

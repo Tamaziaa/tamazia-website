@@ -447,7 +447,7 @@ import Motif from "../ui/Motif.astro";
   /* ===== Responsive - Tablet 640px+ ===== */
   @media (min-width: 640px) {
     .tz-mhero { max-width: 680px; }
-    .tz-headline { font-size: 52px; }
+    .tz-headline { font-size: 46px; } /* sync w/ FinalHero nowrap sizing (shared global class) */
     .tz-cp { max-height: 180px; }
     .tz-band { grid-template-columns: 135px 1fr; gap: 16px; }
     .tz-body p { font-size: 15px; }
@@ -458,7 +458,7 @@ import Motif from "../ui/Motif.astro";
   /* ===== Responsive - Desktop 1024px+ ===== */
   @media (min-width: 1024px) {
     .tz-mhero { max-width: 860px; }
-    .tz-headline { font-size: 68px; line-height: 0.94; }
+    .tz-headline { font-size: 58px; line-height: 0.94; }
     .tz-cp { max-height: 210px; }
     .tz-band { grid-template-columns: 155px 1fr; gap: 20px; }
     .tz-panel { padding: 14px 18px 10px; }
@@ -485,12 +485,12 @@ import Motif from "../ui/Motif.astro";
   /* ===== Responsive - Large 1280px+ ===== */
   @media (min-width: 1280px) {
     .tz-mhero { max-width: 1080px; }
-    .tz-headline { font-size: 76px; }
+    .tz-headline { font-size: 72px; }
   }
 
   /* ===== Responsive - Small mobile <380px ===== */
   @media (max-width: 380px) {
-    .tz-headline { font-size: 36px; }
+    /* .tz-headline size governed by FinalHero's fluid clamp() — no fixed override. */
     .tz-pull-centre p { font-size: 18px; }
     .tz-founder-name { font-size: 17px; }
     .tz-fine-pill { padding: 3px 7px; }

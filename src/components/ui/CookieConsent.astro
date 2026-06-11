@@ -17,8 +17,7 @@
     <div class="tzc-copy">
       <p class="tzc-head">Cookies, with your consent.</p>
       <p class="tzc-body">
-        We use strictly necessary cookies to run this site, and optional analytics cookies to understand
-        how it is used. Nothing optional is set until you choose.
+        Strictly necessary cookies run the site; optional analytics only with your consent.
         <a href="/cookie-policy/">Cookie policy</a><span class="tzc-gpc" id="tzc-gpc" hidden> · Global Privacy Control detected and honoured.</span>
       </p>
       <div class="tzc-prefs" id="tzc-prefs" hidden>
@@ -80,6 +79,16 @@
   var stored = read();
 
   if (!valid(stored)) {
+    /* M-punch 16: the banner was registering as the mobile LCP element. Defer
+       its entrance past first paint (idle + 1.6s floor) — compliance unchanged:
+       no non-essential cookie exists until consent regardless of banner timing. */
+    var defer = function (fn) {
+      var fired = false; var go = function () { if (!fired) { fired = true; fn(); } };
+      if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 2600 });
+      setTimeout(go, 1600);
+    };
+    var origShow = show;
+    show = function (openPrefs) { defer(function () { origShow(openPrefs); }); };
     if (gpc) {
       // CCPA/CPRA + ICO-friendly: honour the signal as an opt-out immediately,
       // still show the bar so the choice is visible and changeable.
@@ -153,7 +162,8 @@
   }
   .tzc-body {
     font-family: var(--ff-body, Inter, sans-serif);
-    font-size: 13px;
+    font-size: 12px;
+    max-width: 520px;
     line-height: 1.55;
     color: var(--pearl, #E8E4DC);
     margin: 0;

@@ -2,128 +2,128 @@
  "/@320": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 479,
-    "vw": 320
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 479,
-    "vw": 320
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 479,
-    "vw": 320
-   },
-   {
     "sel": "div.laws-track",
-    "right": 5679,
+    "right": 5702,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 358,
+    "right": 381,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 474,
+    "right": 497,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 591,
+    "right": 614,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 810,
+    "right": 834,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 901,
+    "right": 924,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 1026,
+    "right": 1049,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 1116,
+    "right": 1139,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 1207,
+    "right": 1230,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 1411,
+    "right": 1434,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 1657,
+    "right": 1680,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 1823,
+    "right": 1846,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 2058,
+    "right": 2081,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 2283,
+    "right": 2306,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 2483,
+    "right": 2506,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 2763,
+    "right": 2786,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 2967,
+    "right": 2990,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 3123,
+    "right": 3146,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 3310,
+    "right": 3333,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 3483,
+    "right": 3506,
     "vw": 320
    },
    {
     "sel": "span.gold",
-    "right": 3618,
+    "right": 3641,
     "vw": 320
    },
    {
     "sel": "span",
-    "right": 3734,
+    "right": 3757,
+    "vw": 320
+   },
+   {
+    "sel": "span.gold",
+    "right": 3894,
+    "vw": 320
+   },
+   {
+    "sel": "span.gold",
+    "right": 4126,
+    "vw": 320
+   },
+   {
+    "sel": "span.gold",
+    "right": 4351,
     "vw": 320
    }
   ],
@@ -137,43 +137,43 @@
    {
     "label": "GDPR · Universal data-protection baselin",
     "w": 49,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "FCA · Financial promotion + COBS 4 + MAR",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "SRA · UK solicitor advertising · Standar",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "MHRA · UK medicines advertising · Human ",
     "w": 51,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "ASA · UK advertising claims · CAP Code +",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "HIPAA · US protected health information ",
     "w": 53,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "EU AI ACT · AI system risk-tier rules · ",
     "w": 75,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
@@ -371,26 +371,18 @@
   ],
   "contrast": [
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 14,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "400+ Frameworks reviewed every campaign",
+    "ratio": 2.12,
+    "min": 4.5,
+    "fs": 8,
     "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
@@ -403,19 +395,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -483,7 +475,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 13,
@@ -507,7 +499,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 13,
@@ -630,7 +622,7 @@
     "text": "Email address",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -638,7 +630,7 @@
     "text": "Leave this field empty",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -651,27 +643,51 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Terms of Service",
-    "ratio": 1.19,
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Privacy Notice",
-    "ratio": 1.19,
+    "text": "Data Protection Notice",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Cookie Policy",
-    "ratio": 1.19,
+    "text": "DPA",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Sub-processors",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Modern Slavery Statement",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Complaints",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    }
   ],
@@ -680,36 +696,43 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1484,
-    "kids": 23
+    "h": 1108,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1484,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 28,
-    "pb": 28,
-    "h": 920,
-    "kids": 8
+    "h": 1108,
+    "kids": 24
    },
    {
     "id": "laws-strip",
     "pt": 14,
     "pb": 16,
-    "h": 120,
+    "h": 106,
     "kids": 0
    },
    {
     "id": "why-us",
     "pt": 40,
     "pb": 40,
-    "h": 1734,
+    "h": 1735,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 741,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 741,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -729,8 +752,15 @@
     "id": "cases",
     "pt": 0,
     "pb": 0,
-    "h": 3812,
+    "h": 3813,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 40,
+    "pb": 48,
+    "h": 561,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -757,7 +787,7 @@
     "id": "pricing",
     "pt": 40,
     "pb": 40,
-    "h": 5054,
+    "h": 5223,
     "kids": 107
    },
    {
@@ -778,18 +808,38 @@
     "id": "contact",
     "pt": 28,
     "pb": 28,
-    "h": 1610,
-    "kids": 7
+    "h": 2807,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 56,
     "pb": 24,
-    "h": 1697,
-    "kids": 59
+    "h": 1742,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -842,9 +892,9 @@
    },
    {
     "tag": "p",
-    "fs": "15px",
+    "fs": "16px",
     "fw": "300",
-    "lh": "24px",
+    "lh": "25.6px",
     "ls": "normal",
     "ff": "Inter",
     "sample": "See the Process section above ",
@@ -891,16 +941,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "36px",
-    "fw": "500",
-    "lh": "36px",
-    "ls": "-0.72px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -908,6 +948,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "36px",
+    "fw": "500",
+    "lh": "36px",
+    "ls": "-0.72px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -1031,16 +1081,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -1121,6 +1161,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -1149,16 +1209,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -1231,16 +1281,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -1281,6 +1321,16 @@
     "count": 3
    },
    {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
+    "count": 3
+   },
+   {
     "tag": "a",
     "fs": "11px",
     "fw": "600",
@@ -1288,36 +1338,6 @@
     "ls": "1.32px",
     "ff": "Inter",
     "sample": "Book a Strategy Call",
-    "count": 2
-   },
-   {
-    "tag": "div",
-    "fs": "7px",
-    "fw": "600",
-    "lh": "normal",
-    "ls": "2.1px",
-    "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
     "count": 2
    },
    {
@@ -1352,12 +1372,32 @@
    },
    {
     "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
+    "tag": "div",
     "fs": "14px",
     "fw": "400",
     "lh": "22.4px",
     "ls": "normal",
     "ff": "Playfair Display",
     "sample": "Everything in Foundation, incl",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
     "count": 2
    },
    {
@@ -1379,23 +1419,13 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [
    {
     "fs": 14,
-    "sample": "Compliance reviewed before publication, "
+    "sample": "If you market online, you are regulated."
    },
    {
     "fs": 14,
@@ -1404,34 +1434,6 @@
    {
     "fs": 10,
     "sample": "We onboard a limited number of clients p"
-   },
-   {
-    "fs": 15,
-    "sample": "Enter your domain or a primary commercia"
-   },
-   {
-    "fs": 10,
-    "sample": "Used only to deliver your findings. Neve"
-   },
-   {
-    "fs": 14,
-    "sample": "—"
-   },
-   {
-    "fs": 14,
-    "sample": "—"
-   },
-   {
-    "fs": 11,
-    "sample": "—"
-   },
-   {
-    "fs": 12,
-    "sample": "Findings belong to you whether you proce"
-   },
-   {
-    "fs": 13,
-    "sample": "—"
    },
    {
     "fs": 14,
@@ -1452,10 +1454,38 @@
    {
     "fs": 14,
     "sample": "Restaurant groups, fine-dining venues, b"
+   },
+   {
+    "fs": 14,
+    "sample": "We have built for private schools and un"
+   },
+   {
+    "fs": 14,
+    "sample": "A nationally recognised hotel group was "
+   },
+   {
+    "fs": 14,
+    "sample": "We built direct search visibility across"
+   },
+   {
+    "fs": 14,
+    "sample": "Meraas is a subsidiary of Dubai Holding,"
+   },
+   {
+    "fs": 14,
+    "sample": "We built the digital presence and conten"
+   },
+   {
+    "fs": 14,
+    "sample": "CG Oncology was preparing for its Nasdaq"
+   },
+   {
+    "fs": 14,
+    "sample": "Tamazia produced and reviewed every IPO-"
    }
   ],
   "hero": {
-   "heightPx": 1484,
+   "heightPx": 1108,
    "viewportH": 568,
    "heroVsViewport": 100
   },
@@ -1464,135 +1494,135 @@
    "rowW": 318,
    "leftGap": 14,
    "rightGap": 14,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  },
  "/@375": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 562,
-    "vw": 375
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 562,
-    "vw": 375
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 562,
-    "vw": 375
-   },
-   {
     "sel": "div.laws-track",
-    "right": 5630,
+    "right": 5649,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 425,
+    "right": 445,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 542,
+    "right": 561,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 761,
+    "right": 781,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 852,
+    "right": 872,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 976,
+    "right": 996,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 1067,
+    "right": 1087,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 1158,
+    "right": 1178,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 1362,
+    "right": 1381,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 1608,
+    "right": 1628,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 1774,
+    "right": 1794,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 2009,
+    "right": 2029,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 2234,
+    "right": 2253,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 2434,
+    "right": 2454,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 2714,
+    "right": 2733,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 2918,
+    "right": 2937,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 3074,
+    "right": 3094,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 3261,
+    "right": 3280,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 3433,
+    "right": 3453,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 3569,
+    "right": 3588,
     "vw": 375
    },
    {
     "sel": "span",
-    "right": 3685,
+    "right": 3705,
     "vw": 375
    },
    {
     "sel": "span.gold",
-    "right": 3822,
+    "right": 3842,
+    "vw": 375
+   },
+   {
+    "sel": "span.gold",
+    "right": 4074,
+    "vw": 375
+   },
+   {
+    "sel": "span.gold",
+    "right": 4298,
+    "vw": 375
+   },
+   {
+    "sel": "span.gold",
+    "right": 4432,
     "vw": 375
    }
   ],
@@ -1606,43 +1636,43 @@
    {
     "label": "GDPR · Universal data-protection baselin",
     "w": 49,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "FCA · Financial promotion + COBS 4 + MAR",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "SRA · UK solicitor advertising · Standar",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "MHRA · UK medicines advertising · Human ",
     "w": 51,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "ASA · UK advertising claims · CAP Code +",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "HIPAA · US protected health information ",
     "w": 53,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "EU AI ACT · AI system risk-tier rules · ",
     "w": 75,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
@@ -1840,26 +1870,18 @@
   ],
   "contrast": [
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 14,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "400+ Frameworks reviewed every campaign",
+    "ratio": 2.12,
+    "min": 4.5,
+    "fs": 8,
     "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
@@ -1872,19 +1894,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -1952,7 +1974,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 13,
@@ -1976,7 +1998,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 13,
@@ -2099,7 +2121,7 @@
     "text": "Email address",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -2107,7 +2129,7 @@
     "text": "Leave this field empty",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -2120,27 +2142,51 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Terms of Service",
-    "ratio": 1.19,
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Privacy Notice",
-    "ratio": 1.19,
+    "text": "Data Protection Notice",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Cookie Policy",
-    "ratio": 1.19,
+    "text": "DPA",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Sub-processors",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Modern Slavery Statement",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Complaints",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    }
   ],
@@ -2149,22 +2195,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1339,
-    "kids": 23
+    "h": 933,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1339,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 28,
-    "pb": 28,
-    "h": 833,
-    "kids": 8
+    "h": 933,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -2177,8 +2216,22 @@
     "id": "why-us",
     "pt": 40,
     "pb": 40,
-    "h": 1642,
+    "h": 1643,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 714,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 714,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -2198,8 +2251,15 @@
     "id": "cases",
     "pt": 0,
     "pb": 0,
-    "h": 3595,
+    "h": 3596,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 40,
+    "pb": 48,
+    "h": 541,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -2226,7 +2286,7 @@
     "id": "pricing",
     "pt": 40,
     "pb": 40,
-    "h": 4630,
+    "h": 4751,
     "kids": 107
    },
    {
@@ -2247,18 +2307,38 @@
     "id": "contact",
     "pt": 28,
     "pb": 28,
-    "h": 1610,
-    "kids": 7
+    "h": 2787,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 56,
     "pb": 24,
-    "h": 1618,
-    "kids": 59
+    "h": 1628,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -2311,9 +2391,9 @@
    },
    {
     "tag": "p",
-    "fs": "15px",
+    "fs": "16px",
     "fw": "300",
-    "lh": "24px",
+    "lh": "25.6px",
     "ls": "normal",
     "ff": "Inter",
     "sample": "See the Process section above ",
@@ -2360,16 +2440,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "36px",
-    "fw": "500",
-    "lh": "36px",
-    "ls": "-0.72px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -2377,6 +2447,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "36px",
+    "fw": "500",
+    "lh": "36px",
+    "ls": "-0.72px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -2500,16 +2580,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -2590,6 +2660,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -2618,16 +2708,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -2700,16 +2780,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -2750,6 +2820,16 @@
     "count": 3
    },
    {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
+    "count": 3
+   },
+   {
     "tag": "a",
     "fs": "11.25px",
     "fw": "600",
@@ -2757,36 +2837,6 @@
     "ls": "1.35px",
     "ff": "Inter",
     "sample": "Book a Strategy Call",
-    "count": 2
-   },
-   {
-    "tag": "div",
-    "fs": "7px",
-    "fw": "600",
-    "lh": "normal",
-    "ls": "2.1px",
-    "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
     "count": 2
    },
    {
@@ -2821,12 +2871,32 @@
    },
    {
     "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
+    "tag": "div",
     "fs": "14px",
     "fw": "400",
     "lh": "22.4px",
     "ls": "normal",
     "ff": "Playfair Display",
     "sample": "Everything in Foundation, incl",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
     "count": 2
    },
    {
@@ -2848,23 +2918,13 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [
    {
     "fs": 14,
-    "sample": "Compliance reviewed before publication, "
+    "sample": "If you market online, you are regulated."
    },
    {
     "fs": 14,
@@ -2873,34 +2933,6 @@
    {
     "fs": 10,
     "sample": "We onboard a limited number of clients p"
-   },
-   {
-    "fs": 15,
-    "sample": "Enter your domain or a primary commercia"
-   },
-   {
-    "fs": 10,
-    "sample": "Used only to deliver your findings. Neve"
-   },
-   {
-    "fs": 14,
-    "sample": "—"
-   },
-   {
-    "fs": 14,
-    "sample": "—"
-   },
-   {
-    "fs": 11,
-    "sample": "—"
-   },
-   {
-    "fs": 12,
-    "sample": "Findings belong to you whether you proce"
-   },
-   {
-    "fs": 13,
-    "sample": "—"
    },
    {
     "fs": 14,
@@ -2921,10 +2953,38 @@
    {
     "fs": 14,
     "sample": "Restaurant groups, fine-dining venues, b"
+   },
+   {
+    "fs": 14,
+    "sample": "We have built for private schools and un"
+   },
+   {
+    "fs": 14,
+    "sample": "A nationally recognised hotel group was "
+   },
+   {
+    "fs": 14,
+    "sample": "We built direct search visibility across"
+   },
+   {
+    "fs": 14,
+    "sample": "Meraas is a subsidiary of Dubai Holding,"
+   },
+   {
+    "fs": 14,
+    "sample": "We built the digital presence and conten"
+   },
+   {
+    "fs": 14,
+    "sample": "CG Oncology was preparing for its Nasdaq"
+   },
+   {
+    "fs": 14,
+    "sample": "Tamazia produced and reviewed every IPO-"
    }
   ],
   "hero": {
-   "heightPx": 1339,
+   "heightPx": 933,
    "viewportH": 812,
    "heroVsViewport": 100
   },
@@ -2933,7 +2993,7 @@
    "rowW": 373,
    "leftGap": 14,
    "rightGap": 14,
-   "pillH": 167
+   "pillH": 137
   },
   "images": []
  },
@@ -3079,9 +3139,21 @@
     "tag": "a"
    },
    {
+    "label": "Manage cookies",
+    "w": 85,
+    "h": 15,
+    "tag": "a"
+   },
+   {
     "label": "Back to top",
     "w": 40,
     "h": 40,
+    "tag": "a"
+   },
+   {
+    "label": "Cookie policy",
+    "w": 83,
+    "h": 16,
     "tag": "a"
    }
   ],
@@ -3092,6 +3164,14 @@
     "min": 4.5,
     "fs": 8,
     "color": "rgba(201, 167, 114, 0.35)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": ".",
+    "ratio": 2.12,
+    "min": 3,
+    "fs": 34,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -3258,7 +3338,7 @@
     "text": "Email address",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -3266,7 +3346,7 @@
     "text": "Leave this field empty",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -3279,7 +3359,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Tamazia Ltd · Registered office Registered in Engl",
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
     "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
@@ -3359,6 +3439,14 @@
     "bg": "rgb(250,247,242)"
    },
    {
+    "text": "Manage cookies",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
     "text": "Terms of Service",
     "ratio": 1.19,
     "min": 4.5,
@@ -3392,11 +3480,18 @@
     "kids": 14
    },
    {
+    "id": "ishow",
+    "pt": 48,
+    "pb": 48,
+    "h": 3025,
+    "kids": 26
+   },
+   {
     "id": "footer",
     "pt": 56,
     "pb": 24,
-    "h": 1617,
-    "kids": 59
+    "h": 1628,
+    "kids": 61
    }
   ],
   "typography": [
@@ -3418,7 +3513,7 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
-    "count": 9
+    "count": 10
    },
    {
     "tag": "a",
@@ -3451,6 +3546,36 @@
     "count": 4
    },
    {
+    "tag": "h3",
+    "fs": "22px",
+    "fw": "500",
+    "lh": "24.2px",
+    "ls": "-0.22px",
+    "ff": "Playfair Display",
+    "sample": "Technical",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Core Web Vitals benchmarked. R",
+    "count": 4
+   },
+   {
+    "tag": "li",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Scored against the register. T",
+    "count": 3
+   },
+   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -3458,6 +3583,16 @@
     "ls": "1.1px",
     "ff": "Inter",
     "sample": "Terms of Service",
+    "count": 3
+   },
+   {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
     "count": 3
    },
    {
@@ -3488,6 +3623,26 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "—",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "11px",
+    "fw": "500",
+    "lh": "17.6px",
+    "ls": "3.52px",
+    "ff": "Inter",
+    "sample": "The full audit · £1,500",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "16px",
+    "fw": "400",
+    "lh": "25.6px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Credited in full to your first",
     "count": 2
    },
    {
@@ -3661,13 +3816,63 @@
     "count": 1
    },
    {
+    "tag": "h2",
+    "fs": "32px",
+    "fw": "500",
+    "lh": "36.8px",
+    "ls": "-0.64px",
+    "ff": "Playfair Display",
+    "sample": "One document. Every exposure o",
+    "count": 1
+   },
+   {
     "tag": "p",
     "fs": "16px",
     "fw": "400",
     "lh": "25.6px",
     "ls": "normal",
+    "ff": "Inter",
+    "sample": "Four disciplines read your sit",
+    "count": 1
+   },
+   {
+    "tag": "h3",
+    "fs": "24px",
+    "fw": "500",
+    "lh": "28.8px",
+    "ls": "-0.24px",
     "ff": "Playfair Display",
-    "sample": "International SEO for regulate",
+    "sample": "This is not a sample template.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "34px",
+    "fw": "500",
+    "lh": "54.4px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "£1,500. Fixed.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24.75px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "You receive the complete findi",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "12px",
+    "fw": "500",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "Request your audit above ↑",
     "count": 1
    },
    {
@@ -3717,7 +3922,37 @@
     "lh": "17.05px",
     "ls": "normal",
     "ff": "Inter",
-    "sample": "Tamazia Ltd · Registered offic",
+    "sample": "Tamazia Ltd · Registered in En",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "17px",
+    "fw": "400",
+    "lh": "27.2px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Cookies, with your consent.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "We use strictly necessary cook",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Cookie policy",
     "count": 1
    }
   ],
@@ -3760,24 +3995,28 @@
     "sample": "—"
    },
    {
-    "fs": 13,
-    "sample": "Engagements delivered in UK, UAE, USA, E"
+    "fs": 11,
+    "sample": "The full audit · £1,500"
    },
    {
-    "fs": 13,
-    "sample": "Tamazia Ltd, 124 City Road, London, EC1V"
+    "fs": 15,
+    "sample": "Core Web Vitals benchmarked. Redirect ch"
    },
    {
-    "fs": 14,
-    "sample": "Receive a quarterly briefing on regulato"
+    "fs": 15,
+    "sample": "Existing content scanned against the spe"
+   },
+   {
+    "fs": 15,
+    "sample": "Keyword gap analysis showing exactly whi"
+   },
+   {
+    "fs": 15,
+    "sample": "Where your brand currently appears in Ch"
    },
    {
     "fs": 11,
-    "sample": "By submitting you consent to receive reg"
-   },
-   {
-    "fs": 11,
-    "sample": "Tamazia Ltd · Registered office Register"
+    "sample": "Read one before you buy one"
    }
   ],
   "hero": {
@@ -3928,6 +4167,12 @@
     "w": 44,
     "h": 14,
     "tag": "a"
+   },
+   {
+    "label": "Cookie policy",
+    "w": 83,
+    "h": 16,
+    "tag": "a"
    }
   ],
   "contrast": [
@@ -4022,7 +4267,7 @@
     "id": "footer",
     "pt": 64,
     "pb": 48,
-    "h": 414,
+    "h": 419,
     "kids": 17
    }
   ],
@@ -4075,6 +4320,16 @@
     "ls": "2.6px",
     "ff": "Playfair Display",
     "sample": "The Regulatory Problem",
+    "count": 3
+   },
+   {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
     "count": 3
    },
    {
@@ -4236,6 +4491,36 @@
     "ff": "Inter",
     "sample": "© 2026 Tamazia Ltd. Registered",
     "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "17px",
+    "fw": "400",
+    "lh": "27.2px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Cookies, with your consent.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "We use strictly necessary cook",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Cookie policy",
+    "count": 1
    }
   ],
   "h1s": 1,
@@ -4259,6 +4544,10 @@
    {
     "fs": 11,
     "sample": "© 2026 Tamazia Ltd. Registered in Englan"
+   },
+   {
+    "fs": 13,
+    "sample": "We use strictly necessary cookies to run"
    }
   ],
   "hero": {
@@ -4272,128 +4561,128 @@
  "/@430": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 644,
-    "vw": 430
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 644,
-    "vw": 430
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 644,
-    "vw": 430
-   },
-   {
     "sel": "div.laws-track",
-    "right": 5621,
+    "right": 5639,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 533,
+    "right": 550,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 752,
+    "right": 770,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 843,
+    "right": 861,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 968,
+    "right": 985,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 1058,
+    "right": 1076,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 1149,
+    "right": 1167,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 1353,
+    "right": 1371,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 1599,
+    "right": 1617,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 1765,
+    "right": 1783,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 2000,
+    "right": 2018,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 2225,
+    "right": 2243,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 2425,
+    "right": 2443,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 2705,
+    "right": 2723,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 2909,
+    "right": 2927,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 3065,
+    "right": 3083,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 3252,
+    "right": 3270,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 3425,
+    "right": 3442,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 3560,
+    "right": 3578,
     "vw": 430
    },
    {
     "sel": "span",
-    "right": 3676,
+    "right": 3694,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 3813,
+    "right": 3831,
     "vw": 430
    },
    {
     "sel": "span.gold",
-    "right": 4045,
+    "right": 4063,
+    "vw": 430
+   },
+   {
+    "sel": "span.gold",
+    "right": 4288,
+    "vw": 430
+   },
+   {
+    "sel": "span.gold",
+    "right": 4421,
+    "vw": 430
+   },
+   {
+    "sel": "span",
+    "right": 4683,
     "vw": 430
    }
   ],
@@ -4407,43 +4696,43 @@
    {
     "label": "GDPR · Universal data-protection baselin",
     "w": 49,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "FCA · Financial promotion + COBS 4 + MAR",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "SRA · UK solicitor advertising · Standar",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "MHRA · UK medicines advertising · Human ",
     "w": 51,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "ASA · UK advertising claims · CAP Code +",
     "w": 41,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "HIPAA · US protected health information ",
     "w": 53,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
     "label": "EU AI ACT · AI system risk-tier rules · ",
     "w": 75,
-    "h": 26,
+    "h": 27,
     "tag": "a"
    },
    {
@@ -4641,26 +4930,18 @@
   ],
   "contrast": [
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 14,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "400+ Frameworks reviewed every campaign",
+    "ratio": 2.12,
+    "min": 4.5,
+    "fs": 8,
     "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
@@ -4673,19 +4954,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -4753,7 +5034,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 13,
@@ -4777,7 +5058,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 13,
@@ -4900,7 +5181,7 @@
     "text": "Email address",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -4908,7 +5189,7 @@
     "text": "Leave this field empty",
     "ratio": 1.19,
     "min": 4.5,
-    "fs": 15,
+    "fs": 16,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
    },
@@ -4921,27 +5202,51 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Terms of Service",
-    "ratio": 1.19,
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Privacy Notice",
-    "ratio": 1.19,
+    "text": "Data Protection Notice",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Cookie Policy",
-    "ratio": 1.19,
+    "text": "DPA",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Sub-processors",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Modern Slavery Statement",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Complaints",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    }
   ],
@@ -4950,36 +5255,43 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1355,
-    "kids": 23
+    "h": 934,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1355,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 28,
-    "pb": 28,
-    "h": 833,
-    "kids": 8
+    "h": 934,
+    "kids": 24
    },
    {
     "id": "laws-strip",
     "pt": 14,
     "pb": 16,
-    "h": 106,
+    "h": 92,
     "kids": 0
    },
    {
     "id": "why-us",
     "pt": 40,
     "pb": 40,
-    "h": 1514,
+    "h": 1515,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 658,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 658,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -4999,8 +5311,15 @@
     "id": "cases",
     "pt": 0,
     "pb": 0,
-    "h": 3391,
+    "h": 3392,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 40,
+    "pb": 48,
+    "h": 536,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -5027,7 +5346,7 @@
     "id": "pricing",
     "pt": 40,
     "pb": 40,
-    "h": 4399,
+    "h": 4519,
     "kids": 107
    },
    {
@@ -5048,18 +5367,38 @@
     "id": "contact",
     "pt": 28,
     "pb": 28,
-    "h": 1574,
-    "kids": 7
+    "h": 2776,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 56,
     "pb": 24,
-    "h": 1596,
-    "kids": 59
+    "h": 1606,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -5112,9 +5451,9 @@
    },
    {
     "tag": "p",
-    "fs": "15px",
+    "fs": "16px",
     "fw": "300",
-    "lh": "24px",
+    "lh": "25.6px",
     "ls": "normal",
     "ff": "Inter",
     "sample": "See the Process section above ",
@@ -5161,16 +5500,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "36px",
-    "fw": "500",
-    "lh": "36px",
-    "ls": "-0.72px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -5178,6 +5507,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "36px",
+    "fw": "500",
+    "lh": "36px",
+    "ls": "-0.72px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -5301,16 +5640,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -5391,6 +5720,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -5419,16 +5768,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -5501,16 +5840,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -5551,6 +5880,16 @@
     "count": 3
    },
    {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
+    "count": 3
+   },
+   {
     "tag": "a",
     "fs": "12.9px",
     "fw": "600",
@@ -5558,36 +5897,6 @@
     "ls": "1.548px",
     "ff": "Inter",
     "sample": "Book a Strategy Call",
-    "count": 2
-   },
-   {
-    "tag": "div",
-    "fs": "7px",
-    "fw": "600",
-    "lh": "normal",
-    "ls": "2.1px",
-    "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
     "count": 2
    },
    {
@@ -5622,12 +5931,32 @@
    },
    {
     "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
+    "tag": "div",
     "fs": "14px",
     "fw": "400",
     "lh": "22.4px",
     "ls": "normal",
     "ff": "Playfair Display",
     "sample": "Everything in Foundation, incl",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
     "count": 2
    },
    {
@@ -5649,23 +5978,13 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [
    {
     "fs": 14,
-    "sample": "Compliance reviewed before publication, "
+    "sample": "If you market online, you are regulated."
    },
    {
     "fs": 14,
@@ -5674,34 +5993,6 @@
    {
     "fs": 10,
     "sample": "We onboard a limited number of clients p"
-   },
-   {
-    "fs": 15,
-    "sample": "Enter your domain or a primary commercia"
-   },
-   {
-    "fs": 10,
-    "sample": "Used only to deliver your findings. Neve"
-   },
-   {
-    "fs": 14,
-    "sample": "—"
-   },
-   {
-    "fs": 14,
-    "sample": "—"
-   },
-   {
-    "fs": 11,
-    "sample": "—"
-   },
-   {
-    "fs": 12,
-    "sample": "Findings belong to you whether you proce"
-   },
-   {
-    "fs": 13,
-    "sample": "—"
    },
    {
     "fs": 14,
@@ -5722,10 +6013,38 @@
    {
     "fs": 14,
     "sample": "Restaurant groups, fine-dining venues, b"
+   },
+   {
+    "fs": 14,
+    "sample": "We have built for private schools and un"
+   },
+   {
+    "fs": 14,
+    "sample": "A nationally recognised hotel group was "
+   },
+   {
+    "fs": 14,
+    "sample": "We built direct search visibility across"
+   },
+   {
+    "fs": 14,
+    "sample": "Meraas is a subsidiary of Dubai Holding,"
+   },
+   {
+    "fs": 14,
+    "sample": "We built the digital presence and conten"
+   },
+   {
+    "fs": 14,
+    "sample": "CG Oncology was preparing for its Nasdaq"
+   },
+   {
+    "fs": 14,
+    "sample": "Tamazia produced and reviewed every IPO-"
    }
   ],
   "hero": {
-   "heightPx": 1355,
+   "heightPx": 934,
    "viewportH": 932,
    "heroVsViewport": 100
   },
@@ -5734,135 +6053,135 @@
    "rowW": 428,
    "leftGap": 16,
    "rightGap": 16,
-   "pillH": 167
+   "pillH": 137
   },
   "images": []
  },
  "/@768": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 1151,
-    "vw": 768
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1151,
-    "vw": 768
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1151,
-    "vw": 768
-   },
-   {
     "sel": "div.laws-track",
-    "right": 6541,
+    "right": 6568,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 861,
+    "right": 888,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 967,
+    "right": 994,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 1112,
+    "right": 1139,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 1218,
+    "right": 1245,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 1324,
+    "right": 1351,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 1561,
+    "right": 1588,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 1849,
+    "right": 1876,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 2042,
+    "right": 2069,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 2317,
+    "right": 2344,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 2579,
+    "right": 2606,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 2813,
+    "right": 2840,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 3139,
+    "right": 3166,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 3377,
+    "right": 3404,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 3559,
+    "right": 3586,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 3777,
+    "right": 3804,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 3978,
+    "right": 4005,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 4136,
+    "right": 4163,
     "vw": 768
    },
    {
     "sel": "span",
-    "right": 4272,
+    "right": 4299,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 4432,
+    "right": 4459,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 4703,
+    "right": 4730,
     "vw": 768
    },
    {
     "sel": "span.gold",
-    "right": 4964,
+    "right": 4991,
+    "vw": 768
+   },
+   {
+    "sel": "span.gold",
+    "right": 5148,
+    "vw": 768
+   },
+   {
+    "sel": "span",
+    "right": 5453,
+    "vw": 768
+   },
+   {
+    "sel": "span",
+    "right": 5603,
     "vw": 768
    }
   ],
@@ -6110,26 +6429,18 @@
   ],
   "contrast": [
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 16,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "400+ Frameworks reviewed every campaign",
+    "ratio": 2.12,
+    "min": 4.5,
+    "fs": 8,
     "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
@@ -6142,19 +6453,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -6222,7 +6533,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -6246,7 +6557,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -6390,27 +6701,51 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Terms of Service",
-    "ratio": 1.19,
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Privacy Notice",
-    "ratio": 1.19,
+    "text": "Data Protection Notice",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Cookie Policy",
-    "ratio": 1.19,
+    "text": "DPA",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Sub-processors",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Modern Slavery Statement",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Complaints",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    }
   ],
@@ -6419,28 +6754,21 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1299,
-    "kids": 23
+    "h": 893,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1299,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 31,
-    "pb": 31,
-    "h": 806,
-    "kids": 8
+    "h": 893,
+    "kids": 24
    },
    {
     "id": "laws-strip",
     "pt": 16,
     "pb": 20,
-    "h": 118,
+    "h": 102,
     "kids": 0
    },
    {
@@ -6449,6 +6777,20 @@
     "pb": 40,
     "h": 1179,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 513,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 513,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -6470,6 +6812,13 @@
     "pb": 0,
     "h": 3339,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 504,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -6496,7 +6845,7 @@
     "id": "pricing",
     "pt": 40,
     "pb": 40,
-    "h": 3900,
+    "h": 3973,
     "kids": 107
    },
    {
@@ -6517,18 +6866,38 @@
     "id": "contact",
     "pt": 31,
     "pb": 31,
-    "h": 1500,
-    "kids": 7
+    "h": 2898,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
-    "h": 1478,
-    "kids": 59
+    "h": 1509,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -6571,9 +6940,9 @@
    },
    {
     "tag": "p",
-    "fs": "15.84px",
+    "fs": "16px",
     "fw": "300",
-    "lh": "25.344px",
+    "lh": "25.6px",
     "ls": "normal",
     "ff": "Inter",
     "sample": "See the Process section above ",
@@ -6620,16 +6989,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "38.72px",
-    "fw": "500",
-    "lh": "38.72px",
-    "ls": "-0.7744px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -6637,6 +6996,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "38.72px",
+    "fw": "500",
+    "lh": "38.72px",
+    "ls": "-0.7744px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -6780,16 +7149,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -6860,6 +7219,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -6888,16 +7267,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -6970,16 +7339,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -7020,34 +7379,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -7080,6 +7419,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -7101,6 +7450,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -7118,159 +7477,149 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1299,
+   "heightPx": 893,
    "viewportH": 1024,
-   "heroVsViewport": 100
+   "heroVsViewport": 87
   },
   "founderBox": {
    "pillW": 634,
    "rowW": 678,
    "leftGap": 22,
    "rightGap": 22,
-   "pillH": 161
+   "pillH": 131
   },
   "images": []
  },
  "/@1024": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 1535,
-    "vw": 1024
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1535,
-    "vw": 1024
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1535,
-    "vw": 1024
-   },
-   {
     "sel": "div.laws-track",
-    "right": 6563,
+    "right": 6581,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 1134,
+    "right": 1152,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 1240,
+    "right": 1258,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 1346,
+    "right": 1364,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 1584,
+    "right": 1601,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 1871,
+    "right": 1889,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 2065,
+    "right": 2083,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 2339,
+    "right": 2357,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 2601,
+    "right": 2619,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 2835,
+    "right": 2853,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 3161,
+    "right": 3179,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 3399,
+    "right": 3417,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 3582,
+    "right": 3599,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 3800,
+    "right": 3817,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 4001,
+    "right": 4019,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 4159,
+    "right": 4176,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 4295,
+    "right": 4312,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 4455,
+    "right": 4472,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 4725,
+    "right": 4743,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 4987,
+    "right": 5005,
     "vw": 1024
    },
    {
     "sel": "span.gold",
-    "right": 5143,
+    "right": 5161,
     "vw": 1024
    },
    {
     "sel": "span",
-    "right": 5449,
+    "right": 5466,
+    "vw": 1024
+   },
+   {
+    "sel": "span",
+    "right": 5616,
+    "vw": 1024
+   },
+   {
+    "sel": "span",
+    "right": 5870,
+    "vw": 1024
+   },
+   {
+    "sel": "span",
+    "right": 6267,
     "vw": 1024
    }
   ],
@@ -7518,26 +7867,18 @@
   ],
   "contrast": [
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 19,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "400+ Frameworks reviewed every campaign",
+    "ratio": 2.12,
+    "min": 4.5,
+    "fs": 8,
     "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
@@ -7550,19 +7891,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -7630,7 +7971,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -7654,7 +7995,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -7798,27 +8139,51 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Terms of Service",
-    "ratio": 1.19,
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Privacy Notice",
-    "ratio": 1.19,
+    "text": "Data Protection Notice",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Cookie Policy",
-    "ratio": 1.19,
+    "text": "DPA",
+    "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
-    "color": "rgb(232, 228, 220)",
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Sub-processors",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Modern Slavery Statement",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Complaints",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
     "bg": "rgb(250,247,242)"
    }
   ],
@@ -7827,22 +8192,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1470,
-    "kids": 23
+    "h": 1043,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1470,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 41,
-    "pb": 41,
-    "h": 833,
-    "kids": 8
+    "h": 1043,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -7857,6 +8215,20 @@
     "pb": 51,
     "h": 991,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -7878,6 +8250,13 @@
     "pb": 0,
     "h": 3694,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 510,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -7904,7 +8283,7 @@
     "id": "pricing",
     "pt": 51,
     "pb": 51,
-    "h": 3760,
+    "h": 3832,
     "kids": 107
    },
    {
@@ -7925,18 +8304,38 @@
     "id": "contact",
     "pt": 41,
     "pb": 41,
-    "h": 1580,
-    "kids": 7
+    "h": 1740,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
-    "h": 1450,
-    "kids": 59
+    "h": 1428,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -8028,16 +8427,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "48.96px",
-    "fw": "500",
-    "lh": "48.96px",
-    "ls": "-0.9792px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -8045,6 +8434,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "48.96px",
+    "fw": "500",
+    "lh": "48.96px",
+    "ls": "-0.9792px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -8188,16 +8587,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -8268,6 +8657,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -8296,16 +8705,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -8378,16 +8777,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -8428,34 +8817,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -8488,6 +8857,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -8509,6 +8888,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -8526,22 +8915,12 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1470,
+   "heightPx": 1043,
    "viewportH": 768,
    "heroVsViewport": 100
   },
@@ -8550,135 +8929,135 @@
    "rowW": 858,
    "leftGap": 159,
    "rightGap": 159,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  },
  "/@1280": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 1919,
-    "vw": 1280
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1919,
-    "vw": 1280
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1919,
-    "vw": 1280
-   },
-   {
     "sel": "div.laws-track",
-    "right": 6542,
+    "right": 6556,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 1325,
+    "right": 1339,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 1562,
+    "right": 1576,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 1850,
+    "right": 1864,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 2044,
+    "right": 2058,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 2318,
+    "right": 2332,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 2580,
+    "right": 2594,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 2814,
+    "right": 2828,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 3140,
+    "right": 3154,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 3378,
+    "right": 3392,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 3560,
+    "right": 3574,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 3778,
+    "right": 3792,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 3980,
+    "right": 3994,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 4137,
+    "right": 4151,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 4273,
+    "right": 4287,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 4433,
+    "right": 4447,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 4704,
+    "right": 4718,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 4966,
+    "right": 4980,
     "vw": 1280
    },
    {
     "sel": "span.gold",
-    "right": 5122,
+    "right": 5136,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 5427,
+    "right": 5442,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 5577,
+    "right": 5591,
     "vw": 1280
    },
    {
     "sel": "span",
-    "right": 5831,
+    "right": 5845,
+    "vw": 1280
+   },
+   {
+    "sel": "span",
+    "right": 6242,
+    "vw": 1280
+   },
+   {
+    "sel": "span.gold",
+    "right": 6556,
+    "vw": 1280
+   },
+   {
+    "sel": "div.parallax-bg",
+    "right": 1408,
     "vw": 1280
    }
   ],
@@ -8907,20 +9286,20 @@
    },
    {
     "label": "LinkedIn and Instagram authority grown a",
-    "w": 286,
-    "h": 39,
+    "w": 278,
+    "h": 38,
     "tag": "h4"
    },
    {
     "label": "Your brand established as the source AI ",
-    "w": 286,
-    "h": 39,
+    "w": 278,
+    "h": 38,
     "tag": "h4"
    },
    {
     "label": "Ten compliance-reviewed content pieces m",
-    "w": 286,
-    "h": 39,
+    "w": 278,
+    "h": 38,
     "tag": "h4"
    }
   ],
@@ -9038,22 +9417,6 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
@@ -9062,7 +9425,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "200+ Frameworks reviewed every campaign",
+    "text": "400+ Frameworks reviewed every campaign",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 8,
@@ -9078,19 +9441,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -9158,7 +9521,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -9182,7 +9545,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -9244,6 +9607,22 @@
     "fs": 14,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "FAQ",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Contact",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
    }
   ],
   "sections": [
@@ -9251,22 +9630,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 44,
-    "pb": 44,
-    "h": 839,
-    "kids": 8
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -9281,6 +9653,20 @@
     "pb": 64,
     "h": 1100,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -9302,6 +9688,13 @@
     "pb": 0,
     "h": 2424,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 510,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -9328,7 +9721,7 @@
     "id": "pricing",
     "pt": 64,
     "pb": 64,
-    "h": 2160,
+    "h": 2232,
     "kids": 107
    },
    {
@@ -9349,18 +9742,38 @@
     "id": "contact",
     "pt": 44,
     "pb": 44,
-    "h": 1042,
-    "kids": 7
+    "h": 2253,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
-    "h": 768,
-    "kids": 59
+    "h": 814,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -9452,16 +9865,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "59.2px",
-    "fw": "500",
-    "lh": "59.2px",
-    "ls": "-1.184px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -9469,6 +9872,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "59.2px",
+    "fw": "500",
+    "lh": "59.2px",
+    "ls": "-1.184px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -9612,16 +10025,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -9702,6 +10105,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -9730,16 +10153,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -9802,16 +10215,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -9852,34 +10255,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -9912,6 +10295,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -9933,6 +10326,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -9950,22 +10353,12 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1492,
+   "heightPx": 1073,
    "viewportH": 800,
    "heroVsViewport": 100
   },
@@ -9974,7 +10367,7 @@
    "rowW": 1078,
    "leftGap": 269,
    "rightGap": 269,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  },
@@ -10148,6 +10541,18 @@
     "w": 21,
     "h": 15,
     "tag": "a"
+   },
+   {
+    "label": "Manage cookies",
+    "w": 85,
+    "h": 15,
+    "tag": "a"
+   },
+   {
+    "label": "Cookie policy",
+    "w": 83,
+    "h": 16,
+    "tag": "a"
    }
   ],
   "contrast": [
@@ -10157,6 +10562,14 @@
     "min": 4.5,
     "fs": 8,
     "color": "rgba(201, 167, 114, 0.35)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": ".",
+    "ratio": 2.12,
+    "min": 3,
+    "fs": 46,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -10344,7 +10757,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Tamazia Ltd · Registered office Registered in Engl",
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
     "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
@@ -10424,6 +10837,14 @@
     "bg": "rgb(250,247,242)"
    },
    {
+    "text": "Manage cookies",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
     "text": "Terms of Service",
     "ratio": 1.19,
     "min": 4.5,
@@ -10457,11 +10878,18 @@
     "kids": 14
    },
    {
+    "id": "ishow",
+    "pt": 77,
+    "pb": 77,
+    "h": 2138,
+    "kids": 26
+   },
+   {
     "id": "footer",
     "pt": 48,
     "pb": 28,
-    "h": 768,
-    "kids": 59
+    "h": 814,
+    "kids": 61
    }
   ],
   "typography": [
@@ -10483,7 +10911,7 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
-    "count": 9
+    "count": 10
    },
    {
     "tag": "a",
@@ -10516,6 +10944,36 @@
     "count": 4
    },
    {
+    "tag": "h3",
+    "fs": "22px",
+    "fw": "500",
+    "lh": "24.2px",
+    "ls": "-0.22px",
+    "ff": "Playfair Display",
+    "sample": "Technical",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Core Web Vitals benchmarked. R",
+    "count": 4
+   },
+   {
+    "tag": "li",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Scored against the register. T",
+    "count": 3
+   },
+   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -10523,6 +10981,16 @@
     "ls": "1.1px",
     "ff": "Inter",
     "sample": "Terms of Service",
+    "count": 3
+   },
+   {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
     "count": 3
    },
    {
@@ -10543,6 +11011,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "—",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "11px",
+    "fw": "500",
+    "lh": "17.6px",
+    "ls": "3.52px",
+    "ff": "Inter",
+    "sample": "The full audit · £1,500",
     "count": 2
    },
    {
@@ -10736,6 +11214,76 @@
     "count": 1
    },
    {
+    "tag": "h2",
+    "fs": "46.4px",
+    "fw": "500",
+    "lh": "53.36px",
+    "ls": "-0.928px",
+    "ff": "Playfair Display",
+    "sample": "One document. Every exposure o",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "18px",
+    "fw": "400",
+    "lh": "28.8px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Four disciplines read your sit",
+    "count": 1
+   },
+   {
+    "tag": "h3",
+    "fs": "32px",
+    "fw": "500",
+    "lh": "38.4px",
+    "ls": "-0.32px",
+    "ff": "Playfair Display",
+    "sample": "This is not a sample template.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "46.4px",
+    "fw": "500",
+    "lh": "74.24px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "£1,500. Fixed.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "16px",
+    "fw": "400",
+    "lh": "25.6px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Credited in full to your first",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24.75px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "You receive the complete findi",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "12px",
+    "fw": "500",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "Request your audit above ↑",
+    "count": 1
+   },
+   {
     "tag": "p",
     "fs": "18px",
     "fw": "400",
@@ -10792,7 +11340,37 @@
     "lh": "17.05px",
     "ls": "normal",
     "ff": "Inter",
-    "sample": "Tamazia Ltd · Registered offic",
+    "sample": "Tamazia Ltd · Registered in En",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "17px",
+    "fw": "400",
+    "lh": "27.2px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Cookies, with your consent.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "We use strictly necessary cook",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Cookie policy",
     "count": 1
    },
    {
@@ -10944,6 +11522,12 @@
     "w": 44,
     "h": 14,
     "tag": "a"
+   },
+   {
+    "label": "Cookie policy",
+    "w": 83,
+    "h": 16,
+    "tag": "a"
    }
   ],
   "contrast": [
@@ -11091,6 +11675,16 @@
     "ls": "2.6px",
     "ff": "Playfair Display",
     "sample": "The Regulatory Problem",
+    "count": 3
+   },
+   {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
     "count": 3
    },
    {
@@ -11262,6 +11856,36 @@
     "ff": "Inter",
     "sample": "© 2026 Tamazia Ltd. Registered",
     "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "17px",
+    "fw": "400",
+    "lh": "27.2px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Cookies, with your consent.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "We use strictly necessary cook",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Cookie policy",
+    "count": 1
    }
   ],
   "h1s": 1,
@@ -11277,128 +11901,128 @@
  "/@1440": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 2159,
-    "vw": 1440
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 2159,
-    "vw": 1440
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 2159,
-    "vw": 1440
-   },
-   {
     "sel": "div.laws-track",
-    "right": 6531,
+    "right": 6559,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 1552,
+    "right": 1579,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 1839,
+    "right": 1867,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 2033,
+    "right": 2060,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 2307,
+    "right": 2334,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 2569,
+    "right": 2596,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 2803,
+    "right": 2830,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 3129,
+    "right": 3157,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 3367,
+    "right": 3395,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 3550,
+    "right": 3577,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 3768,
+    "right": 3795,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 3969,
+    "right": 3996,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 4127,
+    "right": 4154,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 4263,
+    "right": 4290,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 4423,
+    "right": 4450,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 4693,
+    "right": 4720,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 4955,
+    "right": 4982,
     "vw": 1440
    },
    {
     "sel": "span.gold",
-    "right": 5111,
+    "right": 5138,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 5417,
+    "right": 5444,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 5566,
+    "right": 5594,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 5820,
+    "right": 5847,
     "vw": 1440
    },
    {
     "sel": "span",
-    "right": 6217,
+    "right": 6245,
+    "vw": 1440
+   },
+   {
+    "sel": "span.gold",
+    "right": 6559,
+    "vw": 1440
+   },
+   {
+    "sel": "div.parallax-bg",
+    "right": 1584,
+    "vw": 1440
+   },
+   {
+    "sel": "div.parallax-bg",
+    "right": 1584,
     "vw": 1440
    }
   ],
@@ -11758,22 +12382,6 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
@@ -11782,7 +12390,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "200+ Frameworks reviewed every campaign",
+    "text": "400+ Frameworks reviewed every campaign",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 8,
@@ -11798,19 +12406,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -11878,7 +12486,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -11902,7 +12510,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -11964,6 +12572,22 @@
     "fs": 14,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "FAQ",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Contact",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
    }
   ],
   "sections": [
@@ -11971,22 +12595,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 44,
-    "pb": 44,
-    "h": 839,
-    "kids": 8
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -12001,6 +12618,20 @@
     "pb": 64,
     "h": 1126,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -12022,6 +12653,13 @@
     "pb": 0,
     "h": 2462,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 510,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -12048,7 +12686,7 @@
     "id": "pricing",
     "pt": 64,
     "pb": 64,
-    "h": 2123,
+    "h": 2195,
     "kids": 107
    },
    {
@@ -12069,18 +12707,38 @@
     "id": "contact",
     "pt": 44,
     "pb": 44,
-    "h": 1052,
-    "kids": 7
+    "h": 2264,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
     "h": 768,
-    "kids": 59
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -12172,16 +12830,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "64px",
-    "fw": "500",
-    "lh": "64px",
-    "ls": "-1.28px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -12189,6 +12837,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "64px",
+    "fw": "500",
+    "lh": "64px",
+    "ls": "-1.28px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -12332,16 +12990,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -12422,6 +13070,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -12452,23 +13120,13 @@
     "count": 4
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "89.28px",
     "fw": "500",
     "lh": "89.28px",
     "ls": "-1.7856px",
     "ff": "Playfair Display",
-    "sample": "792%",
+    "sample": "882%",
     "count": 3
    },
    {
@@ -12522,16 +13180,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -12572,34 +13220,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -12632,6 +13260,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -12653,6 +13291,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -12670,22 +13318,12 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1492,
+   "heightPx": 1073,
    "viewportH": 900,
    "heroVsViewport": 100
   },
@@ -12694,7 +13332,7 @@
    "rowW": 1078,
    "leftGap": 269,
    "rightGap": 269,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  },
@@ -12868,6 +13506,18 @@
     "w": 21,
     "h": 15,
     "tag": "a"
+   },
+   {
+    "label": "Manage cookies",
+    "w": 85,
+    "h": 15,
+    "tag": "a"
+   },
+   {
+    "label": "Cookie policy",
+    "w": 83,
+    "h": 16,
+    "tag": "a"
    }
   ],
   "contrast": [
@@ -12877,6 +13527,14 @@
     "min": 4.5,
     "fs": 8,
     "color": "rgba(201, 167, 114, 0.35)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": ".",
+    "ratio": 2.12,
+    "min": 3,
+    "fs": 48,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -13064,7 +13722,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Tamazia Ltd · Registered office Registered in Engl",
+    "text": "Tamazia Ltd · Registered in England and Wales · Da",
     "ratio": 1.07,
     "min": 4.5,
     "fs": 11,
@@ -13144,6 +13802,14 @@
     "bg": "rgb(250,247,242)"
    },
    {
+    "text": "Manage cookies",
+    "ratio": 1.07,
+    "min": 4.5,
+    "fs": 11,
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
     "text": "Terms of Service",
     "ratio": 1.19,
     "min": 4.5,
@@ -13177,11 +13843,18 @@
     "kids": 14
    },
    {
+    "id": "ishow",
+    "pt": 86,
+    "pb": 86,
+    "h": 2176,
+    "kids": 26
+   },
+   {
     "id": "footer",
     "pt": 48,
     "pb": 28,
     "h": 768,
-    "kids": 59
+    "kids": 61
    }
   ],
   "typography": [
@@ -13203,7 +13876,7 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
-    "count": 9
+    "count": 10
    },
    {
     "tag": "a",
@@ -13236,6 +13909,36 @@
     "count": 4
    },
    {
+    "tag": "h3",
+    "fs": "22px",
+    "fw": "500",
+    "lh": "24.2px",
+    "ls": "-0.22px",
+    "ff": "Playfair Display",
+    "sample": "Technical",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Core Web Vitals benchmarked. R",
+    "count": 4
+   },
+   {
+    "tag": "li",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Scored against the register. T",
+    "count": 3
+   },
+   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -13243,6 +13946,16 @@
     "ls": "1.1px",
     "ff": "Inter",
     "sample": "Terms of Service",
+    "count": 3
+   },
+   {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
     "count": 3
    },
    {
@@ -13263,6 +13976,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "—",
+    "count": 2
+   },
+   {
+    "tag": "p",
+    "fs": "11px",
+    "fw": "500",
+    "lh": "17.6px",
+    "ls": "3.52px",
+    "ff": "Inter",
+    "sample": "The full audit · £1,500",
     "count": 2
    },
    {
@@ -13456,6 +14179,76 @@
     "count": 1
    },
    {
+    "tag": "h2",
+    "fs": "51.2px",
+    "fw": "500",
+    "lh": "58.88px",
+    "ls": "-1.024px",
+    "ff": "Playfair Display",
+    "sample": "One document. Every exposure o",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "18px",
+    "fw": "400",
+    "lh": "28.8px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Four disciplines read your sit",
+    "count": 1
+   },
+   {
+    "tag": "h3",
+    "fs": "32px",
+    "fw": "500",
+    "lh": "38.4px",
+    "ls": "-0.32px",
+    "ff": "Playfair Display",
+    "sample": "This is not a sample template.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "48px",
+    "fw": "500",
+    "lh": "76.8px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "£1,500. Fixed.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "16px",
+    "fw": "400",
+    "lh": "25.6px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Credited in full to your first",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "15px",
+    "fw": "400",
+    "lh": "24.75px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "You receive the complete findi",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "12px",
+    "fw": "500",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "Request your audit above ↑",
+    "count": 1
+   },
+   {
     "tag": "p",
     "fs": "18px",
     "fw": "400",
@@ -13512,7 +14305,37 @@
     "lh": "17.05px",
     "ls": "normal",
     "ff": "Inter",
-    "sample": "Tamazia Ltd · Registered offic",
+    "sample": "Tamazia Ltd · Registered in En",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "17px",
+    "fw": "400",
+    "lh": "27.2px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Cookies, with your consent.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "We use strictly necessary cook",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Cookie policy",
     "count": 1
    },
    {
@@ -13664,6 +14487,12 @@
     "w": 44,
     "h": 14,
     "tag": "a"
+   },
+   {
+    "label": "Cookie policy",
+    "w": 83,
+    "h": 16,
+    "tag": "a"
    }
   ],
   "contrast": [
@@ -13811,6 +14640,16 @@
     "ls": "2.6px",
     "ff": "Playfair Display",
     "sample": "The Regulatory Problem",
+    "count": 3
+   },
+   {
+    "tag": "button",
+    "fs": "11px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "1.76px",
+    "ff": "Inter",
+    "sample": "Accept all",
     "count": 3
    },
    {
@@ -13982,6 +14821,36 @@
     "ff": "Inter",
     "sample": "© 2026 Tamazia Ltd. Registered",
     "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "17px",
+    "fw": "400",
+    "lh": "27.2px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Cookies, with your consent.",
+    "count": 1
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "We use strictly necessary cook",
+    "count": 1
+   },
+   {
+    "tag": "a",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Cookie policy",
+    "count": 1
    }
   ],
   "h1s": 1,
@@ -13997,128 +14866,128 @@
  "/@1920": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 2879,
-    "vw": 1920
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 2879,
-    "vw": 1920
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 2879,
-    "vw": 1920
-   },
-   {
     "sel": "div.laws-track",
-    "right": 6518,
+    "right": 6541,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 2020,
+    "right": 2043,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 2294,
+    "right": 2317,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 2556,
+    "right": 2579,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 2790,
+    "right": 2813,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 3116,
+    "right": 3139,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 3354,
+    "right": 3377,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 3536,
+    "right": 3559,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 3754,
+    "right": 3777,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 3956,
+    "right": 3979,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 4113,
+    "right": 4137,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 4249,
+    "right": 4273,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 4409,
+    "right": 4432,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 4680,
+    "right": 4703,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 4942,
+    "right": 4965,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 5098,
+    "right": 5121,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 5403,
+    "right": 5427,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 5553,
+    "right": 5576,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 5807,
+    "right": 5830,
     "vw": 1920
    },
    {
     "sel": "span",
-    "right": 6204,
+    "right": 6227,
     "vw": 1920
    },
    {
     "sel": "span.gold",
-    "right": 6518,
+    "right": 6541,
     "vw": 1920
    },
    {
     "sel": "div.parallax-bg",
     "right": 2112,
+    "vw": 1920
+   },
+   {
+    "sel": "div.parallax-bg",
+    "right": 2112,
+    "vw": 1920
+   },
+   {
+    "sel": "div.parallax-bg",
+    "right": 2112,
+    "vw": 1920
+   },
+   {
+    "sel": "div.testimonials-track",
+    "right": 79187,
     "vw": 1920
    }
   ],
@@ -14478,22 +15347,6 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
@@ -14502,7 +15355,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "200+ Frameworks reviewed every campaign",
+    "text": "400+ Frameworks reviewed every campaign",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 8,
@@ -14518,19 +15371,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -14598,7 +15451,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -14622,7 +15475,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -14684,6 +15537,22 @@
     "fs": 14,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "FAQ",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Contact",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
    }
   ],
   "sections": [
@@ -14691,22 +15560,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 44,
-    "pb": 44,
-    "h": 839,
-    "kids": 8
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -14721,6 +15583,20 @@
     "pb": 64,
     "h": 1149,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -14744,6 +15620,13 @@
     "kids": 12
    },
    {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 510,
+    "kids": 205
+   },
+   {
     "id": "interstitial",
     "pt": 32,
     "pb": 32,
@@ -14768,7 +15651,7 @@
     "id": "pricing",
     "pt": 64,
     "pb": 64,
-    "h": 2128,
+    "h": 2200,
     "kids": 107
    },
    {
@@ -14789,18 +15672,38 @@
     "id": "contact",
     "pt": 44,
     "pb": 44,
-    "h": 1063,
-    "kids": 7
+    "h": 2274,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
     "h": 768,
-    "kids": 59
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -14892,16 +15795,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "64px",
-    "fw": "500",
-    "lh": "64px",
-    "ls": "-1.28px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -14909,6 +15802,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "64px",
+    "fw": "500",
+    "lh": "64px",
+    "ls": "-1.28px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -15052,16 +15955,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -15142,6 +16035,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -15172,23 +16085,13 @@
     "count": 4
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "96px",
     "fw": "500",
     "lh": "96px",
     "ls": "-1.92px",
     "ff": "Playfair Display",
-    "sample": "644%",
+    "sample": "882%",
     "count": 3
    },
    {
@@ -15242,16 +16145,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -15292,34 +16185,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -15352,6 +16225,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -15373,6 +16256,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -15390,139 +16283,114 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1492,
+   "heightPx": 1073,
    "viewportH": 1080,
-   "heroVsViewport": 100
+   "heroVsViewport": 99
   },
   "founderBox": {
    "pillW": 540,
    "rowW": 1078,
    "leftGap": 269,
    "rightGap": 269,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  },
  "/@2560": {
   "overflow": [
    {
-    "sel": "input.tamz-hp",
-    "right": 3839,
-    "vw": 2560
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 3839,
-    "vw": 2560
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 3839,
-    "vw": 2560
-   },
-   {
     "sel": "div.laws-track",
-    "right": 6505,
+    "right": 6526,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 2777,
+    "right": 2798,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 3103,
+    "right": 3124,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 3341,
+    "right": 3362,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 3523,
+    "right": 3545,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 3741,
+    "right": 3763,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 3942,
+    "right": 3964,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 4100,
+    "right": 4122,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 4236,
+    "right": 4258,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 4396,
+    "right": 4417,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 4667,
+    "right": 4688,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 4928,
+    "right": 4950,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 5085,
+    "right": 5106,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 5390,
+    "right": 5412,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 5540,
+    "right": 5561,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 5794,
+    "right": 5815,
     "vw": 2560
    },
    {
     "sel": "span",
-    "right": 6191,
+    "right": 6212,
     "vw": 2560
    },
    {
     "sel": "span.gold",
-    "right": 6505,
+    "right": 6526,
     "vw": 2560
    },
    {
@@ -15538,6 +16406,26 @@
    {
     "sel": "div.parallax-bg",
     "right": 2816,
+    "vw": 2560
+   },
+   {
+    "sel": "div.testimonials-track",
+    "right": 79236,
+    "vw": 2560
+   },
+   {
+    "sel": "article.testimonial-card",
+    "right": 2836,
+    "vw": 2560
+   },
+   {
+    "sel": "div.testimonial-stars",
+    "right": 2815,
+    "vw": 2560
+   },
+   {
+    "sel": "blockquote.testimonial-quote",
+    "right": 2815,
     "vw": 2560
    }
   ],
@@ -15897,22 +16785,6 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "03",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
@@ -15921,7 +16793,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "200+ Frameworks reviewed every campaign",
+    "text": "400+ Frameworks reviewed every campaign",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 8,
@@ -15937,19 +16809,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -16017,7 +16889,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -16041,7 +16913,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -16103,6 +16975,22 @@
     "fs": 14,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "FAQ",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Contact",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
    }
   ],
   "sections": [
@@ -16110,22 +16998,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 44,
-    "pb": 44,
-    "h": 839,
-    "kids": 8
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -16140,6 +17021,20 @@
     "pb": 64,
     "h": 1149,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -16161,6 +17056,13 @@
     "pb": 0,
     "h": 2715,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 510,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -16187,7 +17089,7 @@
     "id": "pricing",
     "pt": 64,
     "pb": 64,
-    "h": 2128,
+    "h": 2200,
     "kids": 107
    },
    {
@@ -16208,18 +17110,38 @@
     "id": "contact",
     "pt": 44,
     "pb": 44,
-    "h": 1063,
-    "kids": 7
+    "h": 2274,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
     "h": 768,
-    "kids": 59
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -16311,16 +17233,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "64px",
-    "fw": "500",
-    "lh": "64px",
-    "ls": "-1.28px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -16328,6 +17240,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "64px",
+    "fw": "500",
+    "lh": "64px",
+    "ls": "-1.28px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -16471,16 +17393,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -16561,6 +17473,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -16591,23 +17523,13 @@
     "count": 4
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "96px",
     "fw": "500",
     "lh": "96px",
     "ls": "-1.92px",
     "ff": "Playfair Display",
-    "sample": "487%",
+    "sample": "882%",
     "count": 3
    },
    {
@@ -16661,16 +17583,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -16711,34 +17623,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -16771,6 +17663,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -16792,6 +17694,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -16809,51 +17721,26 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1492,
+   "heightPx": 1073,
    "viewportH": 1440,
-   "heroVsViewport": 100
+   "heroVsViewport": 75
   },
   "founderBox": {
    "pillW": 540,
    "rowW": 1078,
    "leftGap": 269,
    "rightGap": 269,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  },
  "/@1280rm": {
   "overflow": [
-   {
-    "sel": "input.tamz-hp",
-    "right": 1919,
-    "vw": 1280
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1919,
-    "vw": 1280
-   },
-   {
-    "sel": "input.tamz-hp",
-    "right": 1919,
-    "vw": 1280
-   },
    {
     "sel": "div.laws-track",
     "right": 12601,
@@ -16962,6 +17849,21 @@
    {
     "sel": "span",
     "right": 5973,
+    "vw": 1280
+   },
+   {
+    "sel": "span.gold",
+    "right": 6287,
+    "vw": 1280
+   },
+   {
+    "sel": "span.gold",
+    "right": 6394,
+    "vw": 1280
+   },
+   {
+    "sel": "span.gold",
+    "right": 6529,
     "vw": 1280
    }
   ],
@@ -17190,20 +18092,20 @@
    },
    {
     "label": "LinkedIn and Instagram authority grown a",
-    "w": 286,
-    "h": 39,
+    "w": 278,
+    "h": 38,
     "tag": "h4"
    },
    {
     "label": "Your brand established as the source AI ",
-    "w": 286,
-    "h": 39,
+    "w": 278,
+    "h": 38,
     "tag": "h4"
    },
    {
     "label": "Ten compliance-reviewed content pieces m",
-    "w": 286,
-    "h": 39,
+    "w": 278,
+    "h": 38,
     "tag": "h4"
    }
   ],
@@ -17321,22 +18223,6 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "MMXVIII",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 9,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
-    "text": "01",
-    "ratio": 2.12,
-    "min": 4.5,
-    "fs": 7,
-    "color": "rgb(201, 167, 114)",
-    "bg": "rgb(250,247,242)"
-   },
-   {
     "text": "legal.",
     "ratio": 2.12,
     "min": 4.5,
@@ -17345,7 +18231,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "200+ Frameworks reviewed every campaign",
+    "text": "400+ Frameworks reviewed every campaign",
     "ratio": 2.12,
     "min": 4.5,
     "fs": 8,
@@ -17361,19 +18247,19 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "◆",
-    "ratio": 2.14,
+    "text": "MMXVIII",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 8,
-    "color": "rgba(201, 167, 114, 0.35)",
-    "bg": "rgb(250,248,244)"
+    "fs": 9,
+    "color": "rgb(201, 167, 114)",
+    "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Used only to deliver your findings. Never sold or ",
-    "ratio": 3.92,
+    "text": "01",
+    "ratio": 2.12,
     "min": 4.5,
-    "fs": 10,
-    "color": "rgb(138, 122, 90)",
+    "fs": 7,
+    "color": "rgb(201, 167, 114)",
     "bg": "rgb(250,247,242)"
    },
    {
@@ -17449,7 +18335,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "Engagements delivered across UK, UAE, USA, EU.",
+    "text": "Engagements delivered in UK, UAE, USA, EU & Worldw",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -17473,7 +18359,7 @@
     "bg": "rgb(250,247,242)"
    },
    {
-    "text": "C1, Barking Wharf Square, London, IG11 7ZQ",
+    "text": "Tamazia Ltd, 124 City Road, London, EC1V 2NX",
     "ratio": 1.19,
     "min": 4.5,
     "fs": 14,
@@ -17527,6 +18413,22 @@
     "fs": 14,
     "color": "rgb(232, 228, 220)",
     "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "Pricing",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
+   },
+   {
+    "text": "FAQ",
+    "ratio": 1.19,
+    "min": 4.5,
+    "fs": 14,
+    "color": "rgb(232, 228, 220)",
+    "bg": "rgb(250,247,242)"
    }
   ],
   "sections": [
@@ -17534,22 +18436,15 @@
     "id": "tz-hero-wrap",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "tz-mhero",
     "pt": 0,
     "pb": 0,
-    "h": 1492,
-    "kids": 23
-   },
-   {
-    "id": "quick-audit",
-    "pt": 44,
-    "pb": 44,
-    "h": 839,
-    "kids": 8
+    "h": 1073,
+    "kids": 24
    },
    {
     "id": "laws-strip",
@@ -17564,6 +18459,20 @@
     "pb": 64,
     "h": 1100,
     "kids": 7
+   },
+   {
+    "id": "tz-hero-wrap",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
+   },
+   {
+    "id": "tz-mhero",
+    "pt": 0,
+    "pb": 0,
+    "h": 532,
+    "kids": 2
    },
    {
     "id": "sectors",
@@ -17585,6 +18494,13 @@
     "pb": 0,
     "h": 2424,
     "kids": 12
+   },
+   {
+    "id": "testimonials-strip",
+    "pt": 56,
+    "pb": 64,
+    "h": 510,
+    "kids": 205
    },
    {
     "id": "interstitial",
@@ -17611,7 +18527,7 @@
     "id": "pricing",
     "pt": 64,
     "pb": 64,
-    "h": 2160,
+    "h": 2232,
     "kids": 107
    },
    {
@@ -17632,18 +18548,38 @@
     "id": "contact",
     "pt": 44,
     "pb": 44,
-    "h": 1042,
-    "kids": 7
+    "h": 2253,
+    "kids": 5
    },
    {
     "id": "footer",
     "pt": 48,
     "pb": 28,
-    "h": 768,
-    "kids": 59
+    "h": 814,
+    "kids": 61
    }
   ],
   "typography": [
+   {
+    "tag": "div",
+    "fs": "12px",
+    "fw": "400",
+    "lh": "19.2px",
+    "ls": "1.92px",
+    "ff": "Inter",
+    "sample": "★★★★★",
+    "count": 200
+   },
+   {
+    "tag": "blockquote",
+    "fs": "13.5px",
+    "fw": "400",
+    "lh": "20.925px",
+    "ls": "normal",
+    "ff": "Playfair Display",
+    "sample": "Excellent service for our Duba",
+    "count": 200
+   },
    {
     "tag": "li",
     "fs": "11px",
@@ -17735,16 +18671,6 @@
     "count": 11
    },
    {
-    "tag": "div",
-    "fs": "59.2px",
-    "fw": "500",
-    "lh": "59.2px",
-    "ls": "-1.184px",
-    "ff": "Playfair Display",
-    "sample": "840%",
-    "count": 9
-   },
-   {
     "tag": "a",
     "fs": "11px",
     "fw": "400",
@@ -17752,6 +18678,16 @@
     "ls": "normal",
     "ff": "Inter",
     "sample": "Data Protection Notice",
+    "count": 10
+   },
+   {
+    "tag": "div",
+    "fs": "59.2px",
+    "fw": "500",
+    "lh": "59.2px",
+    "ls": "-1.184px",
+    "ff": "Playfair Display",
+    "sample": "840%",
     "count": 9
    },
    {
@@ -17895,16 +18831,6 @@
     "count": 6
    },
    {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "300",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 5
-   },
-   {
     "tag": "div",
     "fs": "11px",
     "fw": "400",
@@ -17985,6 +18911,26 @@
     "count": 4
    },
    {
+    "tag": "p",
+    "fs": "14px",
+    "fw": "300",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-location businesses and",
+    "count": 4
+   },
+   {
+    "tag": "p",
+    "fs": "13px",
+    "fw": "400",
+    "lh": "20.15px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Single-clinic cosmetic, dermat",
+    "count": 4
+   },
+   {
     "tag": "div",
     "fs": "20px",
     "fw": "400",
@@ -18013,16 +18959,6 @@
     "ff": "Inter",
     "sample": "Every crawlable page reviewed ",
     "count": 4
-   },
-   {
-    "tag": "p",
-    "fs": "14px",
-    "fw": "400",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 3
    },
    {
     "tag": "div",
@@ -18085,16 +19021,6 @@
     "count": 3
    },
    {
-    "tag": "p",
-    "fs": "13px",
-    "fw": "400",
-    "lh": "20.15px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Single-clinic cosmetic, dermat",
-    "count": 3
-   },
-   {
     "tag": "div",
     "fs": "10px",
     "fw": "600",
@@ -18135,34 +19061,14 @@
     "count": 3
    },
    {
-    "tag": "div",
-    "fs": "7px",
+    "tag": "button",
+    "fs": "11px",
     "fw": "600",
     "lh": "normal",
-    "ls": "2.1px",
+    "ls": "1.76px",
     "ff": "Inter",
-    "sample": "NOW",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "11px",
-    "fw": "400",
-    "lh": "16.5px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "—",
-    "count": 2
-   },
-   {
-    "tag": "p",
-    "fs": "12px",
-    "fw": "400",
-    "lh": "19.2px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Findings belong to you whether",
-    "count": 2
+    "sample": "Accept all",
+    "count": 3
    },
    {
     "tag": "span",
@@ -18195,6 +19101,16 @@
     "count": 2
    },
    {
+    "tag": "div",
+    "fs": "7px",
+    "fw": "600",
+    "lh": "normal",
+    "ls": "2.1px",
+    "ff": "Inter",
+    "sample": "NOW",
+    "count": 2
+   },
+   {
     "tag": "button",
     "fs": "12px",
     "fw": "500",
@@ -18216,6 +19132,16 @@
    },
    {
     "tag": "p",
+    "fs": "14px",
+    "fw": "400",
+    "lh": "22.4px",
+    "ls": "normal",
+    "ff": "Inter",
+    "sample": "Still have a question not answ",
+    "count": 2
+   },
+   {
+    "tag": "p",
     "fs": "15px",
     "fw": "400",
     "lh": "24px",
@@ -18233,22 +19159,12 @@
     "ff": "Inter",
     "sample": "NAVIGATION",
     "count": 2
-   },
-   {
-    "tag": "a",
-    "fs": "14px",
-    "fw": "600",
-    "lh": "22.4px",
-    "ls": "normal",
-    "ff": "Inter",
-    "sample": "Skip to main content",
-    "count": 1
    }
   ],
-  "h1s": 0,
+  "h1s": 1,
   "smallBody": [],
   "hero": {
-   "heightPx": 1492,
+   "heightPx": 1073,
    "viewportH": 800,
    "heroVsViewport": 100
   },
@@ -18257,7 +19173,7 @@
    "rowW": 1078,
    "leftGap": 269,
    "rightGap": 269,
-   "pillH": 181
+   "pillH": 151
   },
   "images": []
  }

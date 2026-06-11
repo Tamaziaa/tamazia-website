@@ -19,8 +19,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
  * Playfair's kerning and ligatures. {{segments}} keep the gold-italic emphasis.
  */
 type Word = { w: string; emph: boolean; d: number };
-const CHAR_MS = 34;            // pacing per character (was 42ms via setInterval)
-const LINE_GAP_MS = 220;       // pause between lines (was 280ms)
+const CHAR_MS = 18;            // pacing per character (compressed in P6: the h1 is now the LCP element, so the type-on completes ~1.2s)
+const LINE_GAP_MS = 120;       // pause between lines
 function splitLine(text: string, startMs: number): { words: Word[]; endMs: number } {
   const words: Word[] = [];
   let t = startMs;
@@ -48,7 +48,7 @@ const twSource = [
   'Master {{regulators.}}',
   'One agency.',
 ];
-let cursorMs = 250; // small lead-in
+let cursorMs = 150; // small lead-in
 const twLines = twSource.map((src, i) => {
   const { words, endMs } = splitLine(src, cursorMs);
   cursorMs = endMs + LINE_GAP_MS;

@@ -30,11 +30,11 @@ export const onRequest = async (context) => {
       const cleaned = rest.replace(/\s'unsafe-inline'/g, '');
       return `script-src${cleaned} 'nonce-${nonce}' 'strict-dynamic'`;
     });
-    csp = csp.replace(/style-src([^;]+)/, (m, rest) => {
-      // Keep 'unsafe-inline' on style-src for now (reduced-motion media queries rely on inline styles)
-      // but also include nonce so inline <style> tags with our nonce match
-      return `style-src${rest} 'nonce-${nonce}'`;
-    });
+    // style-src is left untouched: it must keep 'unsafe-inline' working, and the
+    // CSP spec voids 'unsafe-inline' the moment a nonce/hash appears in the
+    // directive — style="" ATTRIBUTES can never carry a nonce, so appending one
+    // here made browsers drop every inline style attribute on the site and log
+    // a console error per element (Lighthouse best-practices hit).
     newHeaders.set('content-security-policy', csp);
   }
   // Update Vary

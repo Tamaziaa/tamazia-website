@@ -676,6 +676,33 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     calLink: 'tamazia/strategy-call',
   });
 
+  /* The 'ui' theming call must run after Cal('init') — Cal.ns does not exist
+     until the first Cal() invocation, so calling it at parse time (with init
+     lazy) throws and the brand theme never reaches the booking iframe. */
+  Cal.ns['contact-pane']('ui', {
+    theme: 'light',
+    cssVarsPerTheme: {
+      light: {
+        'cal-brand': '#5A1A2B',
+        'cal-text': '#2A0C14',
+        'cal-text-emphasis': '#2A0C14',
+        'cal-bg': '#FAF7F2',
+        'cal-bg-emphasis': '#F1EADC',
+        'cal-border': '#E5DDCB',
+      },
+      dark: {
+        'cal-brand': '#C9A772',
+        'cal-text': '#FAF7F2',
+        'cal-text-emphasis': '#FAF7F2',
+        'cal-bg': '#2A0C14',
+        'cal-bg-emphasis': '#3A1622',
+        'cal-border': '#5A1A2B',
+      },
+    },
+    hideEventTypeDetails: false,
+    layout: 'month_view',
+  });
+
 
   /* M-punch 6 · if the Cal embed fails (no iframe, or Cal's own error state),
      swap in a themed fallback so visitors always have a booking path. */
@@ -704,29 +731,4 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     }, { rootMargin: '600px 0px' });
     io.observe(sec);
   })();
-
-
-  Cal.ns['contact-pane']('ui', {
-    theme: 'light',
-    cssVarsPerTheme: {
-      light: {
-        'cal-brand': '#5A1A2B',
-        'cal-text': '#2A0C14',
-        'cal-text-emphasis': '#2A0C14',
-        'cal-bg': '#FAF7F2',
-        'cal-bg-emphasis': '#F1EADC',
-        'cal-border': '#E5DDCB',
-      },
-      dark: {
-        'cal-brand': '#C9A772',
-        'cal-text': '#FAF7F2',
-        'cal-text-emphasis': '#FAF7F2',
-        'cal-bg': '#2A0C14',
-        'cal-bg-emphasis': '#3A1622',
-        'cal-border': '#5A1A2B',
-      },
-    },
-    hideEventTypeDetails: false,
-    layout: 'month_view',
-  });
 </script>

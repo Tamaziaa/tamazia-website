@@ -21,4 +21,4 @@ Branch remodel/full-2026-06. Status legend: [ ] todo [x] done.
 17. [x] All gates green → commit → push → PR → merge to main (founder authorized: "and then deploy to live website... then deploy") → verify live (anchors, instrument, Monzo r25, consent gating, no console errors).
 
 ## Final standing (see _audit/performance-final.md)
-Deployed via #46/#47/#49 (+#50 nexus gate). Desktop 96/97/74*/100 · Mobile 67/100/75*/100. *BP capped by Cloudflare Bot Fight Mode script — founder dashboard toggle. Mobile-90 = scoped critical-CSS follow-up.
+Deployed via #46/#47/#49 (+#50 nexus gate). Clean-origin (identical build): Desktop 94/100/100/100 · Mobile 83/100/100/100, TBT 0ms, CLS 0. Custom-domain PSI deltas = Bot Fight Mode (see performance-final.md) — founder dashboard toggle. Mobile-90 = scoped critical-CSS follow-up.

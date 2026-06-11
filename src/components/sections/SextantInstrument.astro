@@ -969,6 +969,21 @@
     .tz-band-laws { gap: 8px 18px; }
     .tz-band-laws span { font-size: 12.5px; }
   }
+
+  /* ===== M5 compact pass (founder directive 2026-06-11: "make sextant a bit
+     compact and optimise proper spacing"). Spacing-only overrides — the dial,
+     band and script are untouched. ===== */
+  .tz-instrument-page .tz-rail { padding: 7px 22px; }
+  .tz-instrument-page .tz-rail-microcopy { padding: 8px 22px 7px; font-size: 13px; max-width: 560px; }
+  .tz-instrument-page .tz-panel { padding: 7px 14px 5px; }
+  .tz-instrument-page .tz-cp { max-height: 128px; }
+  .tz-instrument-page .tz-band { margin-top: 6px; padding: 8px 12px; gap: 10px; }
+  .tz-instrument-page .tz-fine { margin-top: 7px; }
+  .tz-instrument-page .tz-panel-foot { margin-top: 7px; padding-top: 6px; }
+  @media (min-width: 1024px) {
+    .tz-instrument-page .tz-rail-microcopy { font-size: 14px; }
+  }
+
 </style>
 
 <script>
@@ -995,12 +1010,16 @@
           "Google E-E-A-T · YMYL", "LegalService schema",
           "Wikidata Q-identifier", "Wikipedia Notability (Lawyer)"],
         fine: '<em>£25,000</em> · AML control failures · SRA · MLR 2017 · <em>2024</em>' },
+      // M5 founder directive 2026-06-11: clinics and medical practices are won on
+      // direct bookings -- Google Business Profile + local intent lead the band.
       { name: "Healthcare",   abbr: "HLT", laws: [
-          "MHRA HMR 2012", "CQC Standards · Reg 17",
-          "HIPAA (US)", "ASA CAP Section 12 (Health)",
-          "GMC Good Medical Practice", "NICE Guidelines · NG",
-          "Schema.org MedicalBusiness", "Google E-E-A-T · YMYL Medical",
-          "UK GDPR · Health Data", "NHS Digital DCB0129"],
+          "Google Business Profile · direct bookings",
+          "Local intent · “dentist near me”",
+          "Local intent · “clinic near me”",
+          "MHRA HMR 2012", "ASA CAP Section 12 (Health)",
+          "CQC Standards · Reg 17", "Google E-E-A-T · YMYL Medical",
+          "GMC Good Medical Practice", "HIPAA (US)",
+          "UK GDPR · Health Data"],
         fine: '<em>Prosecuted</em> · unlicensed POM weight-loss ads · MHRA · HMR 2012 · <em>2025</em>' },
       { name: "Hospitality",  abbr: "HSP", laws: [
           "ASA CAP Code Non-broadcast", "CMA DMCC Act 2024 · drip-pricing",
@@ -1022,7 +1041,7 @@
           "FDA §101 (US Labelling)", "Local Pack ranking factors",
           "Schema.org Restaurant · MenuItem", "Google Maps citation architecture",
           "Allergen disclosure (PPDS)", "PCI-DSS Level 1"],
-        fine: '<em>£500K cap</em> · junk food TV ban active · Ofcom · HFSS · <em>5 Jan 2026</em>' },
+        fine: '<em>£500K cap</em> · junk food TV ban in force · Ofcom · HFSS · <em>since Jan 2026</em>' },
       { name: "Every sector", abbr: "ALL", laws: [
           "UK GDPR · Article 32", "EU GDPR (Regulation 2016/679)",
           "EU AI Act (Regulation 2024/1689)", "ASA CAP Code (General)",

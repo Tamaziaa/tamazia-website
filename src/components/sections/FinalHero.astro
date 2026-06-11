@@ -4,6 +4,7 @@
 // Founder portrait: /public/aman-portrait.webp (already in repo)
 // No external font imports — site uses self-hosted WOFF2
 import { heroContent } from '../../content/hero';
+import RatingStrip from '../ui/RatingStrip.astro';
 const frameworks = (heroContent as any).regulationFrameworks || [];
 const goldFrameworks: string[] = (heroContent as any).goldHighlightedFrameworks || [];
 const ribbonDouble = [...frameworks, ...frameworks];
@@ -101,8 +102,11 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   </div>
 
   <div class="tz-body tz-body-compact" data-reveal="slide">
-    {/* F8 · single-line compliance line — dropcap dropped, sized as a balanced statement */}
-    <p>Compliance reviewed before publication, every engagement.</p>
+    {/* M4 (founder directive 2026-06-11): the category diagnosis leads — then the
+        lawyer line answers it. The old "Compliance reviewed before publication"
+        line was removed as redundant with the 400+ sub and the chips intro
+        (logged in _audit/copy-errors.md for end review). */}
+    <p>If you market online, you are regulated.</p>
   </div>
 
   <div class="tz-pull-left" data-reveal="lift">
@@ -117,6 +121,15 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     <a class="tz-chip" href="#sectors" title="Universal data-protection baseline · UK + EU + processor obligations" aria-label="GDPR · Universal data-protection baseline · UK + EU + processor obligations"><span>GDPR</span></a><a class="tz-chip" href="#sectors" title="Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear" aria-label="FCA · Financial promotion + COBS 4 + MAR · applies wherever property or financial product offers appear"><span>FCA</span></a><a class="tz-chip" href="#sector-legal" title="UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018" aria-label="SRA · UK solicitor advertising · Standards 8.7/8.9 + Transparency Rules 2018"><span>SRA</span></a><a class="tz-chip" href="#sector-healthcare" title="UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement" aria-label="MHRA · UK medicines advertising · Human Medicines Regulations 2012 + ASA CAP-M enforcement"><span>MHRA</span></a><a class="tz-chip" href="#sectors" title="UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)" aria-label="ASA · UK advertising claims · CAP Code + AI-powered Active Ad Monitoring (live 2025+)"><span>ASA</span></a><a class="tz-chip" href="#sector-healthcare" title="US protected health information · 45 CFR 164.508/164.502 marketing rules" aria-label="HIPAA · US protected health information · 45 CFR 164.508/164.502 marketing rules"><span>HIPAA</span></a><a class="tz-chip" href="#sectors" title="AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems" aria-label="EU AI ACT · AI system risk-tier rules · Article 6 high-risk applies to legal + healthcare practice systems"><span>EU AI ACT</span></a>
   </div>
   <p class="tz-chips-suffix" data-reveal="fade" style="--rd:160ms"><em>and international advertising laws.</em></p>
+
+  {/* M4 · primary CTA moved ABOVE the founder card (benchmarks §1: one CTA above
+      the fold, proof adjacent below). Was docked under the colophon. */}
+  <div class="tz-cta-wrap tz-cta-wrap--mid" data-reveal="lift">
+    <a href="/instrument/" class="tz-cta">
+      <span>Run my free audit</span>
+      <span class="tz-cta-arr" aria-hidden="true">→</span>
+    </a>
+  </div>
 
   <div class="tz-founder-cta-row">
   <aside class="tz-founder" data-reveal="lift">
@@ -169,21 +182,18 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
       </div>
     </div>
   </aside>
-  <div class="tz-ribbon-caption" aria-hidden="true"><span>400+ Frameworks reviewed every campaign</span></div>
+  {/* M4 · the right-side void beside the founder pill now carries the proof rail:
+      the greyscale rating strip (trust-spec placement 1) over the ribbon caption. */}
+  <div class="tz-hero-proof" data-reveal="fade" style="--rd:240ms">
+    <RatingStrip tone="light" align="start" />
+    <div class="tz-ribbon-caption" aria-hidden="true"><span>400+ Frameworks reviewed every campaign</span></div>
+  </div>
 
   </div><!-- /.tz-founder-cta-row -->
 
   <div class="tz-colophon">
     <span>LONDON</span><span class="tz-dot">·</span>
     <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide</span>
-  </div>
-
-  {/* G2 · Primary CTA docked under the engagements colophon */}
-  <div class="tz-cta-wrap tz-cta-wrap--colophon" data-reveal="lift">
-    <a href="/instrument/" class="tz-cta">
-      <span>Run my free audit</span>
-      <span class="tz-cta-arr" aria-hidden="true">→</span>
-    </a>
   </div>
 
 </section>
@@ -1015,10 +1025,59 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   /* ===== Typewriter cursor ===== */
   /* M3: .tz-tw-typing caret removed with the JS typewriter (replaced by .tz-caret). */
 
-  /* G4 GAP A · single .tz-founder-cta-row rule · founder pill is the only child after G2 */
+  /* G4 GAP A → M4 2026-06-11: the row is now founder pill + proof rail. On
+     desktop the rail occupies the void the founder flagged ("optimise the empty
+     space near the founder box"): rating strip over the 400+ caption, anchored
+     to the pill's baseline (whitespace rule 1: every void gets one anchor). */
   .tz-founder-cta-row {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding: 14px 22px 6px;
+  }
+  .tz-hero-proof {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 2px 0 0;
+  }
+  /* The caption was absolute-pinned to the laws ribbon; inside the proof rail
+     it flows statically. */
+  .tz-hero-proof .tz-ribbon-caption {
+    display: block;
+    position: static;
+    width: auto;
+    text-align: left;
+    padding: 0;
+  }
+  @media (min-width: 1024px) {
+    .tz-founder-cta-row {
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 28px;
+    }
+    .tz-founder-cta-row .tz-founder { flex: 0 1 560px; }
+    .tz-hero-proof {
+      flex: 1 1 auto;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(201, 167, 114, 0.35);
+    }
+  }
+  /* M4 · primary CTA above the founder card */
+  .tz-cta-wrap--mid {
+    padding: 10px 22px 4px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .tz-cta-wrap--mid .tz-cta {
+    width: 100%;
+    max-width: 360px;
+    padding: 14px 20px;
+    font-size: 11px;
+  }
+  @media (min-width: 1024px) {
+    .tz-cta-wrap--mid { padding: 14px 22px 6px; }
+    .tz-cta-wrap--mid .tz-cta { max-width: 320px; padding: 16px 22px; font-size: 12px; }
   }
   .tz-founder-cta-row .tz-founder {
     margin: 0;

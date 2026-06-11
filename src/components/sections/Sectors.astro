@@ -119,13 +119,14 @@ const iconPaths: Record<string, string> = {
       {sectors.map((sector) => (
         <article
           class={`sector-card sector-${sector.size}`}
+          data-draw-hover
           data-sector={sector.id}
         >
           <div class="card-inner">
             <span class="card-numeral">{sector.numeral}</span>
 
             <div class="card-3d" aria-hidden="true">
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 100 100" data-draw xmlns="http://www.w3.org/2000/svg">
                 <Fragment set:html={iconPaths[sector.icon]} />
               </svg>
             </div>

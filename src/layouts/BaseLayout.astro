@@ -320,6 +320,47 @@ if (_segs.length > 0) {
     </script>
 
 
+  <script is:inline>
+    /* M6 · icon draw-on enhancer: preps stroked shapes in [data-draw] svgs and
+       triggers the staggered draw on first viewport entry; hover replays. */
+    (function () {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var hosts = document.querySelectorAll('[data-draw]');
+      if (!hosts.length || !('IntersectionObserver' in window)) {
+        hosts.forEach && hosts.forEach(function (h) { h.classList.add('draw-in'); });
+        return;
+      }
+      hosts.forEach(function (host) {
+        var i = 0;
+        host.querySelectorAll('path,line,polyline,circle,rect,ellipse').forEach(function (s) {
+          var st = getComputedStyle(s);
+          if (st.stroke && st.stroke !== 'none' && st.fill === 'none') {
+            try { s.setAttribute('pathLength', '1'); } catch (e) {}
+            s.setAttribute('data-drawable', '');
+            s.style.setProperty('--i', String(i++));
+          } else {
+            s.setAttribute('data-fillable', '');
+            s.style.setProperty('--i', String(i));
+          }
+        });
+        var hoverHost = host.closest('[data-draw-hover]') || host;
+        hoverHost.addEventListener('mouseenter', function () {
+          if (!host.classList.contains('draw-in')) return;
+          host.classList.add('draw-replay');
+          host.classList.remove('draw-in');
+          void host.getBoundingClientRect();
+          requestAnimationFrame(function () { host.classList.add('draw-in'); });
+          setTimeout(function () { host.classList.remove('draw-replay'); }, 900);
+        });
+      });
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('draw-in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.35 });
+      hosts.forEach(function (h) { io.observe(h); });
+    })();
+  </script>
   <BodyAnalytics cfBeacon={cfBeacon} ga4Id={ga4Id} />
   {/* M7 · multi-jurisdiction cookie consent (gates the GA4 loader above) */}
   <CookieConsent />

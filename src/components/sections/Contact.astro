@@ -355,9 +355,9 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     margin-bottom: 24px;
   }
 
-  /* Founder directive r2 · the calendar shows in full — no internal scroll, no
-     height clamp. Cal's embed.js auto-sizes the iframe to its month view; we just
-     give it room to grow. */
+  /* Founder directive r2 · the calendar shows in full, with no internal scroll and
+     no height clamp. Cal's embed.js auto-sizes the iframe to its month view; we
+     just give it room to grow. */
   .calendly-embed { min-height: 560px; display: block; overflow: visible; border-radius: 8px; }
   .calendly-embed iframe { width: 100%; min-height: 560px; border: 0; display: block; }
 
@@ -678,7 +678,7 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     calLink: 'tamazia/strategy-call',
   });
 
-  /* The 'ui' theming call must run after Cal('init') — Cal.ns does not exist
+  /* The 'ui' theming call must run after Cal('init'); Cal.ns does not exist
      until the first Cal() invocation, so calling it at parse time (with init
      lazy) throws and the brand theme never reaches the booking iframe. */
   Cal.ns['contact-pane']('ui', {
@@ -709,7 +709,7 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
   /* Cal embed resilience (founder r2):
      1. When the real <iframe> is present, purge any stray Cal status/error text
         ("Something went wrong.") that Cal can leave in the container ABOVE the
-        calendar — the working calendar stays untouched. Polled because Cal can
+        calendar, above the working calendar which stays untouched. Polled because Cal can
         inject the text at varying moments during connection.
      2. Only when NO iframe ever appears do we swap in the themed fallback. */
   (function () {

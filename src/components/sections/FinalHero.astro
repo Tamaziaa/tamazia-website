@@ -81,6 +81,20 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     </g>
   </svg>
 </aside>
+<script is:inline>
+  /* Nexus paint-loop gate: start after window load (clear of the LCP window),
+     run only while the hero is in view. */
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      var nx = document.querySelector('.tz-nexus');
+      if (!nx) return;
+      if (!('IntersectionObserver' in window)) { nx.classList.add('nx-run'); return; }
+      new IntersectionObserver(function (es) {
+        es.forEach(function (en) { nx.classList.toggle('nx-run', en.isIntersecting); });
+      }).observe(nx);
+    }, 1200);
+  });
+</script>
 <aside class="tz-laws-ribbon" aria-hidden="true">
   {/* M-punch 10: the caption sits with the moving laws so the ribbon is explained */}
   <div class="tz-ribbon-caption"><span>400+ Frameworks reviewed every campaign</span></div>
@@ -929,6 +943,11 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
     opacity: 0.3;
+    /* Paint-loop gating (perf): stroke-dashoffset repaints continuously, so the
+       draw runs only after load and while the hero is on screen (.nx-run). */
+    animation: none;
+  }
+  .tz-nexus.nx-run .tz-nx-lines .nx {
     animation: tz-nx-draw 14s var(--ease-entrance, cubic-bezier(.16,1,.3,1)) infinite alternate;
   }
   .tz-nx-lines .nx:nth-child(2) { animation-delay: 1.8s; }

@@ -1,4 +1,5 @@
 ---
+import Motif from '../ui/Motif.astro';
 import { whyUsContent } from '../../content/whyUs';
 import { parseEmph } from '../../content/hero';
 
@@ -16,6 +17,7 @@ const proofStrip = (whyUsContent as any).proofStrip;
     <!-- Header block -->
     <div class="header-block">
       <div class="eyebrow">{eyebrow}</div>
+      <div class="motif-row" style="display:flex;justify-content:center;margin-bottom:10px"><Motif name="scale" size={42} /></div>
       <h2 id="why-us-heading" class="section-h2" set:html={parseEmph(h2)} />
       <div class="hairline" aria-hidden="true"></div>
 

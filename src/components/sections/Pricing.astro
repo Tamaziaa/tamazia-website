@@ -1,4 +1,5 @@
 ---
+import Motif from '../ui/Motif.astro';
 import FounderLink from '../atoms/FounderLink.astro';
 import FleuronDivider from '../atoms/FleuronDivider.astro';
 import { pricingContent } from '../../content/pricing';
@@ -16,6 +17,7 @@ const featureIcons: Record<string, string> = {
   <div class="container">
     <div class="header-block">
       <div class="eyebrow">{eyebrow}</div>
+      <div class="motif-row" style="display:flex;justify-content:center;margin-bottom:10px"><Motif name="column" size={42} /></div>
       <h2 id="pricing-heading" class="section-h2">{h2}</h2>
       <p class="intro">{intro}</p>
     </div>
@@ -1139,7 +1141,8 @@ const featureIcons: Record<string, string> = {
       features.forEach((rf) => {
         const headline = rf.querySelector('.feature-headline');
         if (!headline) return;
-        headline.setAttribute('role', 'button');
+        // a11y: role=button is not allowed on a heading element (axe aria-allowed-role);
+        // keyboard/expand behaviour is conveyed by tabindex + aria-expanded instead.
         headline.setAttribute('tabindex', '0');
         headline.setAttribute('aria-expanded', 'false');
         const toggle = () => {

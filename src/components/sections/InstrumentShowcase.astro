@@ -8,25 +8,30 @@
  * Specimen pattern per _audit/benchmarks.md §3 (Centurica / Accessible.org ⭐⭐).
  */
 import RatingStrip from '../ui/RatingStrip.astro';
+import Motif from '../ui/Motif.astro';
 
 const coverage = [
   {
     key: 'technical',
+    motif: 'gauge',
     name: 'Technical',
     body: 'Core Web Vitals benchmarked. Redirect chains, crawl errors, broken links, robots.txt conflicts, and schema gaps. Your Google Business Profile audited: for hospitality, healthcare, and restaurants it is often the single highest-leverage ranking asset on the entire digital presence.',
   },
   {
     key: 'compliance',
+    motif: 'shieldCheck',
     name: 'Compliance',
     body: 'Existing content scanned against the specific regulatory framework governing your sector. SRA rules for law firms. MHRA and ASA for healthcare. FCA financial promotion standards for financial services. RERA requirements for UAE real estate. If any published content creates regulatory exposure, you will know before a regulator does.',
   },
   {
     key: 'competitive',
+    motif: 'chartRise',
     name: 'Competitive',
     body: 'Keyword gap analysis showing exactly which searches your competitors rank for that you do not. Presented as a revenue opportunity: estimated search volume, conversion probability, and the content investment required to capture it.',
   },
   {
     key: 'ai-search',
+    motif: 'beacon',
     name: 'AI search',
     body: 'Where your brand currently appears in ChatGPT, Perplexity, and Google AI Overviews for your most commercially important queries. And where your competitors appear instead.',
   },
@@ -45,7 +50,7 @@ const coverage = [
     <div class="ishow-coverage" role="list">
       {coverage.map((c, i) => (
         <article class="cov-card" role="listitem">
-          <div class="cov-rule" aria-hidden="true"><span class="cov-numeral">{['I', 'II', 'III', 'IV'][i]}</span></div>
+          <div class="cov-rule" aria-hidden="true"><Motif name={c.motif} size={30} /><span class="cov-numeral">{['I', 'II', 'III', 'IV'][i]}</span></div>
           <h3 class="cov-name">{c.name}</h3>
           <p class="cov-body">{c.body}</p>
         </article>

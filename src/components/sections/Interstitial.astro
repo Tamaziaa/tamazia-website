@@ -1,12 +1,16 @@
 ---
+// M-punch 8 · optional line-drawn motif above the numeral (draws in on view)
+import Motif from '../ui/Motif.astro';
 interface Props {
   numeral: string;
   label: string;
+  motif?: string;
 }
-const { numeral, label } = Astro.props;
+const { numeral, label, motif } = Astro.props;
 ---
 <div class="interstitial" aria-hidden="true">
   <div class="container">
+    {motif && <div class="interstitial-motif"><Motif name={motif} size={40} /></div>}
     <div class="numeral">{numeral}</div>
     <div class="rule"></div>
     <div class="label">{label}</div>
@@ -68,6 +72,7 @@ const { numeral, label } = Astro.props;
     .interstitial { padding-block: 18px; }
     .container { gap: 10px; }
   }
+  .interstitial-motif { margin-bottom: 10px; }
 </style>
 
 <script>

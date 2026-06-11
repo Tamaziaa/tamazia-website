@@ -1,3 +1,14 @@
+
+/* M-punch 16 · metric-matched fallback: Georgia adjusted to Playfair Display's
+   metrics so the pre-swap paint occupies identical space (CLS ~0). */
+@font-face {
+  font-family: 'Playfair Fallback';
+  src: local('Georgia');
+  size-adjust: 112%;
+  ascent-override: 98%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
 /* Tamazia · self-hosted fonts (Round 13)
    Subset: latin + latin-ext only (Tamazia markets are UK / EU / US / GCC / SG / HK / CH / AU / CA / JP / KR — no Cyrillic / Vietnamese / Greek needed).
    Source: fonts.googleapis.com/css2 retrieved with browser UA on 2026-04-28.

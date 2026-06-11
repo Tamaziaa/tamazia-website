@@ -1,4 +1,5 @@
 ---
+import Motif from '../ui/Motif.astro';
 import { contactContent } from '../../content/contact';
 import TurnstileWidget from '../security/TurnstileWidget.astro';
 
@@ -13,6 +14,7 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
   <div class="container">
     <div class="header-block">
       <div class="eyebrow">{eyebrow}</div>
+      <div class="motif-row" style="display:flex;justify-content:center;margin-bottom:10px"><Motif name="seal" size={42} /></div>
       <h2 id="contact-heading" class="section-h2 anim-fade-up">{h2}</h2>
       <p class="subline">{subline}</p>
     </div>
@@ -81,7 +83,7 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
       <aside class="calendly-pane" aria-label="Schedule directly">
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
-        <div class="calendly-embed" id="contact-cal-inline" aria-label="Cal.com booking calendar">
+        <div class="calendly-embed" id="contact-cal-inline" role="region" aria-label="Cal.com booking calendar">
           <noscript>
             <a href="https://cal.com/tamazia/strategy-call" rel="noopener" target="_blank">Open the founder's calendar at cal.com/tamazia/strategy-call</a>
           </noscript>
@@ -202,8 +204,11 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     gap: 64px;
     max-width: 1200px;
     margin-inline: auto;
-    align-items: start;
+    /* M-punch 5: columns stretch equally so the calendar finishes with the
+       Submit briefing request button */
+    align-items: stretch;
   }
+  .calendly-pane { display: flex; flex-direction: column; }
 
   /* Form */
   .contact-form {
@@ -350,8 +355,9 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     margin-bottom: 24px;
   }
 
-  /* Founder directive 2026-06-10 · inline Cal.com calendar gets room to render */
-  .calendly-embed { min-height: 560px; display: block; }
+  /* M-punch 5 · the embed fills the pane and clamps to the form column height */
+  .calendly-embed { flex: 1 1 auto; min-height: 420px; max-height: 600px; display: block; overflow: hidden; border-radius: 8px; }
+  .calendly-embed iframe { height: 100% !important; max-height: 600px; }
 
   .calendly-fallback {
     display: flex;
@@ -652,13 +658,47 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     };
   })(window, 'https://app.cal.com/embed/embed.js', 'init');
 
-  Cal('init', 'contact-pane', { origin: 'https://app.cal.com' });
+  // M-punch 16 · lazy-init: Cal's iframe (JS + third-party cookies) loads only
+  // when the contact section approaches the viewport.
+  function tzInitCal() {
+    if (window.__tzCalInit) return; window.__tzCalInit = true;
+    Cal('init', 'contact-pane', { origin: 'https://app.cal.com' });
 
   Cal.ns['contact-pane']('inline', {
     elementOrSelector: '#contact-cal-inline',
     config: { layout: 'month_view' },
     calLink: 'tamazia/strategy-call',
   });
+
+
+  /* M-punch 6 · if the Cal embed fails (no iframe, or Cal's own error state),
+     swap in a themed fallback so visitors always have a booking path. */
+  setTimeout(function () {
+    var wrap = document.getElementById('contact-cal-inline');
+    if (!wrap) return;
+    var iframe = wrap.querySelector('iframe');
+    var failed = !iframe;
+    try {
+      if (iframe && wrap.textContent && /something went wrong/i.test(wrap.textContent)) failed = true;
+    } catch (e) {}
+    if (!failed) return;
+    wrap.innerHTML = '<div style="height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px;border:1px solid rgba(201,167,114,0.45);border-radius:8px;padding:28px 26px;background:rgba(201,167,114,0.05)">' +
+      '<p style="font-family:var(--ff-display);font-style:italic;font-size:18px;color:var(--ivory);margin:0">The calendar is taking a moment.</p>' +
+      '<p style="font-family:var(--ff-body);font-size:13px;color:var(--pearl);opacity:0.85;margin:0;line-height:1.6">Book directly on the founder\'s calendar, or use the booking page.</p>' +
+      '<a href="https://cal.com/tamazia/strategy-call" target="_blank" rel="noopener" style="font-family:var(--ff-body);font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--oxblood-ink);background:var(--ivory);border:1px solid var(--gold);border-radius:6px;padding:14px 18px;text-decoration:none;text-align:center">Open the founder\'s calendar</a>' +
+      '<a href="/book/" style="font-family:var(--ff-body);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-align:center">Or use the booking page</a>' +
+      '</div>';
+  }, 7000);
+  }
+  (function () {
+    var sec = document.getElementById('contact');
+    if (!sec || !('IntersectionObserver' in window)) { tzInitCal(); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { tzInitCal(); io.disconnect(); } });
+    }, { rootMargin: '600px 0px' });
+    io.observe(sec);
+  })();
+
 
   Cal.ns['contact-pane']('ui', {
     theme: 'light',

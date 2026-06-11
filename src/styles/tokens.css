@@ -65,7 +65,7 @@
   --oxblood-hairline: rgba(90, 26, 43, 0.18);
 
   /* TYPOGRAPHY FAMILIES */
-  --ff-display: 'Playfair Display', Georgia, serif;
+  --ff-display: 'Playfair Display', 'Playfair Fallback', Georgia, serif;
   --ff-body: 'Inter', system-ui, -apple-system, sans-serif;
   --ff-signature: 'Great Vibes', 'Pinyon Script', cursive;
 

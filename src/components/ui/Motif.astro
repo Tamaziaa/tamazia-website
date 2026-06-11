@@ -1,0 +1,47 @@
+---
+/**
+ * Motif · M-punch 8 — a library of 16 line-drawn gold motifs in the sector-icon
+ * language (fill none, stroke currentColor 1.5, viewBox 100). Every placement
+ * participates in the [data-draw] stroke draw-on system. Decorative only.
+ */
+interface Props { name: string; size?: number; class?: string; }
+const { name, size = 44, class: cls = '' } = Astro.props;
+
+const M: Record<string, string> = {
+  scale: `<path d="M50 16v60M30 76h40"/><path d="M50 24l-24 14m24-14l24 14"/><path d="M18 52a8 8 0 0 0 16 0l-8-14zM66 52a8 8 0 0 0 16 0l-8-14z"/><circle cx="50" cy="20" r="3"/>`,
+  compassRose: `<circle cx="50" cy="50" r="30"/><path d="M50 14v10M50 76v10M14 50h10M76 50h10"/><path d="M50 30l8 20-8 20-8-20z"/><circle cx="50" cy="50" r="3"/>`,
+  laurel: `<path d="M30 78c-8-14-8-34 4-46M70 78c8-14 8-34-4-46"/><path d="M30 70c-5-2-9-6-10-11M34 56c-5-1-9-4-11-9M40 44c-4-1-8-3-10-7M70 70c5-2 9-6 10-11M66 56c5-1 9-4 11-9M60 44c4-1 8-3 10-7"/><circle cx="50" cy="76" r="2.5"/>`,
+  quill: `<path d="M70 18c-18 4-32 18-38 36l-6 24 24-6c18-6 32-20 36-38"/><path d="M68 22L34 70"/><path d="M28 80l-4 4"/>`,
+  key: `<circle cx="34" cy="40" r="14"/><path d="M44 50l28 28M64 70l8-8M56 78l6-6"/><circle cx="34" cy="40" r="5"/>`,
+  seal: `<circle cx="50" cy="44" r="20"/><circle cx="50" cy="44" r="13"/><path d="M38 60l-8 24 12-8 8 8 4-22M62 60l8 24-12-8"/><path d="M44 42l5 5 9-10"/>`,
+  column: `<path d="M28 84h44M32 78h36M34 30h32v48H34z"/><path d="M40 30v48M50 30v48M60 30v48"/><path d="M28 24h44l-6 6H34z"/><path d="M46 16h8v8h-8z"/>`,
+  gauge: `<path d="M18 70a34 34 0 0 1 64 0"/><path d="M50 40v-8M30 48l-6-6M70 48l6-6"/><path d="M50 70L38 50"/><circle cx="50" cy="70" r="4"/>`,
+  shieldCheck: `<path d="M50 14l28 10v22c0 18-12 32-28 40-16-8-28-22-28-40V24z"/><path d="M38 50l9 9 16-18"/>`,
+  chartRise: `<path d="M20 80h60M20 80V20"/><path d="M28 66l14-14 10 8 18-22"/><path d="M62 38h8v8"/><circle cx="28" cy="66" r="2"/><circle cx="42" cy="52" r="2"/><circle cx="52" cy="60" r="2"/>`,
+  beacon: `<path d="M42 78h16M38 84h24"/><path d="M44 78l2-30h8l2 30"/><path d="M40 36h20l-4-14h-12z"/><path d="M24 28l10 6M76 28l-10 6M20 44h12M80 44H68"/>`,
+  sextant: `<path d="M30 78A38 38 0 0 1 78 30"/><path d="M36 70A28 28 0 0 1 70 36"/><path d="M30 78L74 26M30 78l20-8"/><circle cx="74" cy="26" r="3"/><circle cx="30" cy="78" r="3"/>`,
+  scrollDoc: `<path d="M32 22a6 6 0 0 0-12 0v4h12"/><path d="M32 22v52a6 6 0 0 0 6 6h36a6 6 0 0 1-6-6V22z"/><path d="M42 36h22M42 46h22M42 56h14"/>`,
+  hourglass: `<path d="M32 18h36M32 82h36"/><path d="M36 18c0 16 10 22 14 32 4-10 14-16 14-32M36 82c0-16 10-22 14-32 4 10 14 16 14 32"/><path d="M46 70h8"/>`,
+  globeLines: `<circle cx="50" cy="50" r="32"/><path d="M18 50h64M50 18c12 8 12 56 0 64-12-8-12-56 0-64z"/><path d="M26 32c14 8 34 8 48 0M26 68c14-8 34-8 48 0"/>`,
+  handshakeRule: `<path d="M16 40h18l16 14a6 6 0 0 1-8 8l-8-6"/><path d="M84 40H66L50 54"/><path d="M58 62l6 5a6 6 0 0 1-8 8l-6-5M44 70l-5-4"/><path d="M16 34v24M84 34v24"/>`,
+};
+const body = M[name] || M.scale;
+---
+<svg
+  class={`motif ${cls}`}
+  viewBox="0 0 100 100"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  data-draw
+  set:html={body}
+/>
+
+<style>
+  .motif { color: var(--gold, #C9A772); opacity: 0.85; flex-shrink: 0; }
+</style>

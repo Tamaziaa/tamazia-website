@@ -5,19 +5,22 @@
   <div class="container">
     <div class="audit-inner">
       <div class="eyebrow">TAMAZIA INSTRUMENT</div>
-      <h2 id="audit-heading" class="audit-h">Benchmark your compliance and SEO exposure.</h2>
+      <h1 id="audit-heading" class="audit-h">Benchmark your compliance and SEO exposure.</h1>
       <p class="audit-subline">
         Enter your domain or a primary commercial keyword. Compliance exposure, Core Web Vitals, and AI-search visibility reviewed against your sector's regulatory framework.
       </p>
-      <ul class="audit-usp" style="list-style:none;padding:0;margin:12px 0 0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;opacity:0.85">
-        <li>&#10003; Your online presence checked against 400+ legal &amp; regulatory frameworks</li>
-        <li>&#10003; AI-search visibility</li>
-        <li>&#10003; SEO standing</li>
-        <li>&#10003; A prioritised fix for every issue we identify</li>
+      {/* M-punch 9 · themed coverage checklist + price plate (was a bare flex
+          list whose browser markers leaked as stray bullets) */}
+      <ul class="audit-usp">
+        <li>Your online presence checked against 400+ legal &amp; regulatory frameworks</li>
+        <li>AI-search visibility</li>
+        <li>SEO standing</li>
+        <li>A prioritised fix for every issue we identify</li>
       </ul>
-      <p class="audit-price-note" style="font-size:12px;opacity:0.7;margin:6px 0 0;letter-spacing:0.02em">Full Tamazia audit &middot; £1,500</p>
-      {/* Founder directive: the pricing bio lives in the Tamazia instrument */}
-      <p class="audit-price-note" style="font-size:13px;opacity:0.85;margin:8px 0 0;letter-spacing:0.01em">The £1,500 audit covers compliance, SEO and GEO in one. Credited in full to your first month if we work together.</p>
+      <div class="audit-price-plate">
+        <p class="audit-price-line">Full Tamazia audit <span class="app-dot">·</span> <em>£1,500</em></p>
+        <p class="audit-price-bio">The £1,500 audit covers compliance, SEO and GEO in one. Credited in full to your first month if we work together.</p>
+      </div>
 
       <!-- AUDIT INSTRUMENT · Gate E v2 · premium stacked form -->
       <div class="instrument-wrap">
@@ -1029,6 +1032,59 @@
 
   @media (max-width: 480px) {
     .quick-audit { padding-block: 18px; padding-inline: 0; }
+  }
+
+  /* ===== M-punch 9 · instrument header retheme ===== */
+  .audit-usp {
+    list-style: none;
+    padding: 0;
+    margin: 18px auto 0;
+    max-width: 640px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px 26px;
+    text-align: left;
+  }
+  @media (min-width: 640px) { .audit-usp { grid-template-columns: 1fr 1fr; } }
+  .audit-usp li {
+    list-style: none;
+    position: relative;
+    padding-left: 20px;
+    font-family: var(--ff-body);
+    font-size: 13.5px;
+    line-height: 1.5;
+    opacity: 0.92;
+  }
+  .audit-usp li::marker { content: none; }
+  .audit-usp li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 10px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .audit-price-plate {
+    margin: 20px auto 0;
+    max-width: 640px;
+    padding: 12px 18px 13px;
+    border-top: 1px solid var(--gold-hairline, rgba(201,167,114,0.35));
+    border-bottom: 1px solid var(--gold-hairline, rgba(201,167,114,0.35));
+  }
+  .audit-price-line {
+    font-family: var(--ff-display);
+    font-size: 19px;
+    margin: 0 0 4px;
+  }
+  .audit-price-line em { font-style: italic; color: var(--gold-text, #7B5520); }
+  .audit-price-line .app-dot { color: var(--gold); }
+  .audit-price-bio {
+    font-family: var(--ff-body);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 0;
+    opacity: 0.85;
   }
 </style>
 

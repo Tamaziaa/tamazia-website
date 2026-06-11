@@ -270,7 +270,7 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
     font-family: var(--ff-display);
     font-style: italic;
     font-size: 16px;
-    color: var(--gold);
+    color: var(--gold-warm, #D4B787);
     margin-bottom: 12px;
     letter-spacing: 0.02em;
   }
@@ -280,7 +280,7 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--gold-warm, #D4B787);
     font-weight: 500;
     margin-bottom: 16px;
   }
@@ -488,6 +488,10 @@ const { eyebrow, h2, subline, cases, closingPullQuote } = caseStudiesContent;
     /* case-panel clamp(40px,5vw,64px) = 40px on mobile — tighten to 28px */
     .case-panel { padding-block: 20px; }
   }
+
+  /* pa11y AA final: the numerals/meta were gold-warm everywhere — correct per panel theme */
+  .bg-ivory .case-numeral, .bg-ivory .case-meta { color: var(--gold-text-strong, #5C3F18) !important; opacity: 1 !important; }
+  .bg-oxblood .case-numeral, .bg-oxblood .case-meta { color: var(--gold-warm, #D4B787) !important; opacity: 1 !important; }
 </style>
 
 <script>

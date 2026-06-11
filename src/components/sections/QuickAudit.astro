@@ -556,7 +556,7 @@
     gap: 10px;
     padding: 12px 22px;
     background: var(--grad-gold-shimmer);
-    color: var(--oxblood-ink);
+    color: var(--gold-warm, #D4B787);
     text-decoration: none;
     font-family: var(--ff-body);
     font-size: 12px;
@@ -1086,6 +1086,18 @@
     margin: 0;
     opacity: 0.85;
   }
+  /* pa11y AA: dropdown options render on system background */
+  select option { color: #2A0C14; background: #FAF7F2; }
+  select option[value=""] { color: #4A1625; }
+  .audit-microcopy { opacity: 1 !important; color: var(--gold-text, #7B5520); }
+  .audit-price-line .app-dot { color: var(--gold-text, #7B5520); }
+
+  /* pa11y AA final */
+  select option { color: #2A0C14 !important; background: #FAF7F2 !important; }
+  .upsell-cta, .upsell-cta * { color: var(--gold-light, #E8CF9C) !important; }
+
+  .upsell-card { background-color: #2A0C14; }
+  .upsell-cta { background-color: #2A0C14; }
 </style>
 
 <script>

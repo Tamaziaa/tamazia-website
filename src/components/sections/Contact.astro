@@ -556,6 +556,12 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     .field-float label { font-size: 11px; }
     .field-float select { min-height: 52px; padding-top: 20px; }
   }
+  /* pa11y AA: dropdown options render on system background */
+  select option { color: #2A0C14; background: #FAF7F2; }
+  select option[value=""] { color: #4A1625; }
+
+  /* pa11y AA final */
+  select option { color: #2A0C14 !important; background: #FAF7F2 !important; }
 </style>
 
 <script>

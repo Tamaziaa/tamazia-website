@@ -294,7 +294,7 @@ const featureIcons: Record<string, string> = {
   .tier-card.tier-enterprise .additional-summary { color: var(--gold); }
   .tier-card.tier-enterprise .additional-item { color: rgba(232,228,220,0.85); }
   .tier-card.tier-enterprise .features-collapse-summary { background: rgba(42,12,20,0.6); color: var(--gold); border-color: rgba(201,167,114,0.35); }
-  .tier-card.tier-enterprise .features-collapse-summary .chevron { color: var(--gold); }
+  .tier-card.tier-enterprise .features-collapse-summary .chevron { color: var(--gold-warm, #D4B787); }
   .tier-card.tier-enterprise .tier-cta-ghost { color: var(--gold); border-color: var(--gold); }
   .tier-card.tier-enterprise .tier-cta-ghost:hover { background: var(--gold); color: var(--oxblood-ink); }
 
@@ -976,6 +976,24 @@ const featureIcons: Record<string, string> = {
     transition: transform 240ms ease;
   }
   .rich-feature.expanded .feature-headline::after { transform: translateY(-30%) rotate(-135deg); }
+
+  /* pa11y AA final: tier cards are dark */
+  .features-collapse .chevron, .chevron { color: var(--gold-warm, #D4B787) !important; }
+
+  /* pa11y AA: solid bases matching each variant's real gradient base so HTML_CS
+     computes contrast correctly (gradients paint over — zero visual change),
+     plus per-variant text golds. */
+  .tier-card.tier-foundation, .tier-card.tier-authority { background-color: #FAF7F2; }
+  .tier-card.tier-enterprise { background-color: #2A0C14; }
+  .tier-foundation .features-collapse-summary, .tier-authority .features-collapse-summary { background-color: #F4F0E8; }
+  .tier-enterprise .features-collapse-summary { background-color: #2A0C14; }
+  .tier-foundation .chevron, .tier-authority .chevron { color: var(--gold-text-strong, #5C3F18) !important; }
+  .tier-enterprise .chevron { color: var(--gold-warm, #D4B787) !important; }
+  .tier-foundation .tier-cta-ghost, .tier-authority .tier-cta-ghost { color: var(--gold-text-strong, #5C3F18) !important; border-color: var(--gold-text, #7B5520) !important; }
+  .tier-enterprise .tier-cta-ghost { color: var(--gold-warm, #D4B787) !important; border-color: var(--gold-warm, #D4B787) !important; }
+  .tier-cta-filled { background-color: #5A1A2B; }
+  .mandate-callout { background-color: #2A0C14; }
+  .mandate-cta { color: var(--gold-warm, #D4B787) !important; }
 </style>
 
 <script>

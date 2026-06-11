@@ -206,7 +206,7 @@ const iconPaths: Record<string, string> = {
     font-size: 11px;
     letter-spacing: var(--ls-caps-eyebrow);
     text-transform: uppercase;
-    color: var(--eyebrow-light, #6B5058);
+    color: var(--gold-text-strong, #5C3F18);
     font-weight: 500;
     margin-bottom: 14px;
     position: relative;
@@ -331,7 +331,7 @@ const iconPaths: Record<string, string> = {
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--gold-text, #C9A772);
+    color: var(--gold-text-strong, #5C3F18);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-color: rgba(201,167,114,0.5);
@@ -880,6 +880,16 @@ const iconPaths: Record<string, string> = {
   .tier-cta:hover .cta-arrow {
     transform: translate(2px, -2px);
   }
+
+  /* pa11y AA final: sector cards are dark (oxblood-ink) — light gold carries text */
+  .framework-link, .framework-link .fl-arrow, .fl-arrow { color: var(--gold-warm, #D4B787) !important; }
+  .sector-card .eyebrow { color: var(--gold-warm, #D4B787) !important; }
+
+  /* pa11y: section sits on a dark band — header eyebrow carries light gold;
+     solid bases under card gradients */
+  .sectors { background-color: #3A0F1C; }
+  .sector-card { background-color: #2A0C14; }
+  .eyebrow { color: var(--gold-warm, #D4B787) !important; }
 </style>
 
 

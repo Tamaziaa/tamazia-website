@@ -97,8 +97,9 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     <!-- Small print -->
     <div class="small-print">
       <div class="copyright">{copyright.replace('2026', year.toString())}</div>
-        {/* Founder directive 2026-06-10: Article 27 line removed; legal lines render white */}
-        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact}</p>
+        {/* Founder directive 2026-06-10: Article 27 line removed; legal lines render white.
+            M1 2026-06-11: "Registered office Registered in England and Wales" duplication fixed. */}
+        <p class="legal-entity">{legalEntity?.name} · {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact}</p>
         <ul class="extra-legal-links" aria-label="Legal disclosures">
           <li><a href={legalEntity?.dataProtectionNoticeHref || '/legal/data-protection/'}>Data Protection Notice</a></li>
           <li><a href={legalEntity?.dpaHref || '/legal/dpa/'}>DPA</a></li>

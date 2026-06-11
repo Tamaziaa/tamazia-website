@@ -592,11 +592,11 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
             success.hidden = false;
           }
         } else {
-          setStatus('error', data.error || 'Something went wrong. Please email us at realfamemedia@gmail.com.');
+          setStatus('error', data.error || 'Something went wrong. Please email us at founder@tamazia.co.uk.');
           if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
         }
       } catch {
-        setStatus('error', 'Network error. Please email us at realfamemedia@gmail.com.');
+        setStatus('error', 'Network error. Please email us at founder@tamazia.co.uk.');
         if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
       }
     });

@@ -18,4 +18,7 @@ Branch remodel/full-2026-06. Status legend: [ ] todo [x] done.
 14. [x] CG Oncology case: hyperlink the phrase "digital content" → https://synthetic.com/cg-oncology-enters-bladder-cancer-therapy-space-with-ipo/ (new tab, noopener).
 15. [x] SEO pass: sitemap includes /instrument/ + all live routes w/ correct priorities; unique title+meta description per page (verify instrument/cases/legal); single h1 per page; canonicals; OG/Twitter; robots; structured data already added (FAQPage/OfferCatalog/Service); alt texts; internal links.
 16. [x] PageSpeed ≥90 target all categories mobile+desktop: BIG LEVER = dedupe twin tz-* stylesheets (FinalHero + SextantInstrument each carry ~1,000 lines → one shared import); trim LawsStrip duplication; testimonials cap (item 3); confirm font preloads; preconnect cal only where used. Re-run Lighthouse; record honest numbers in _audit/performance-final.md.
-17. [ ] All gates green → commit → push → PR → merge to main (founder authorized: "and then deploy to live website... then deploy") → verify live (anchors, instrument, Monzo r25, consent gating, no console errors).
+17. [x] All gates green → commit → push → PR → merge to main (founder authorized: "and then deploy to live website... then deploy") → verify live (anchors, instrument, Monzo r25, consent gating, no console errors).
+
+## Final standing (see _audit/performance-final.md)
+Deployed via #46/#47/#49 (+#50 nexus gate). Desktop 96/97/74*/100 · Mobile 67/100/75*/100. *BP capped by Cloudflare Bot Fight Mode script — founder dashboard toggle. Mobile-90 = scoped critical-CSS follow-up.

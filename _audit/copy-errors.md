@@ -34,3 +34,12 @@ Every word-level finding, severity, and the fix applied. Founder mandate: "find 
 
 ## Appendix — enforcement-claim sources (filled in M5)
 (Sextant fine-entry verification sources land here.)
+
+## Appendix — pricing intro: chosen + alternates (M2, for founder end review)
+**CHOSEN:** "You are not buying hours. You are retaining a practice. Each mandate is scoped to your footprint: how many locations you operate, how many jurisdictions you sell into, and how closely your regulator reads what you publish. The standard never changes. Nothing leaves the building until it has been reviewed against the frameworks that govern you."
+**microNote:** "Pricing is indicative. Every mandate is scoped to your footprint and jurisdictions before anything is signed."
+Rationale: diagnosis/empathy framing (benchmarks §3 Graphite ⭐), confidence positioning (NoGood ⭐ "practice, not vendor"), footprint-matching so every buyer self-sizes, zero audit layering per founder directive. Alternates drafted:
+- A: "Three mandates, one standard. Whether you run a single clinic or a listed group, the work is scoped to your footprint: your locations, your jurisdictions, your regulators. Compliance review is not an add-on at any tier. It is how every piece of work leaves the building."
+- B: "Choose the mandate that matches your footprint. Foundation for a single location building authority. Authority for groups scaling across regions. Enterprise for regulated brands operating across jurisdictions. Every tier carries the same standard: nothing is published until it has been reviewed against the frameworks that govern you."
+- C: "Most agencies price by deliverables. We price by responsibility: the size of your footprint, the number of jurisdictions you operate in, and how much regulatory weight your sector carries. Three mandates cover that range. The standard of review never changes."
+- D: "Retainers, not projects. Your mandate reflects three things: locations, jurisdictions, and the regulatory weight your sector carries. The review standard is identical at every tier."

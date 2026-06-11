@@ -1,0 +1,379 @@
+---
+/**
+ * InstrumentShowcase · /instrument/ only.
+ * Founder directive 2026-06-11: the Tamazia Instrument page carries the FULL audit
+ * narrative: what the £1,500 audit covers, the finished Monzo audit as the open
+ * specimen, and the terms. Price appears here and nowhere near the pricing panel.
+ * Coverage claims are grounded verbatim in faq.ts q4 (no invented promises).
+ * Specimen pattern per _audit/benchmarks.md §3 (Centurica / Accessible.org ⭐⭐).
+ */
+import RatingStrip from '../ui/RatingStrip.astro';
+
+const coverage = [
+  {
+    key: 'technical',
+    name: 'Technical',
+    body: 'Core Web Vitals benchmarked. Redirect chains, crawl errors, broken links, robots.txt conflicts, and schema gaps. Your Google Business Profile audited: for hospitality, healthcare, and restaurants it is often the single highest-leverage ranking asset on the entire digital presence.',
+  },
+  {
+    key: 'compliance',
+    name: 'Compliance',
+    body: 'Existing content scanned against the specific regulatory framework governing your sector. SRA rules for law firms. MHRA and ASA for healthcare. FCA financial promotion standards for financial services. RERA requirements for UAE real estate. If any published content creates regulatory exposure, you will know before a regulator does.',
+  },
+  {
+    key: 'competitive',
+    name: 'Competitive',
+    body: 'Keyword gap analysis showing exactly which searches your competitors rank for that you do not. Presented as a revenue opportunity: estimated search volume, conversion probability, and the content investment required to capture it.',
+  },
+  {
+    key: 'ai-search',
+    name: 'AI search',
+    body: 'Where your brand currently appears in ChatGPT, Perplexity, and Google AI Overviews for your most commercially important queries. And where your competitors appear instead.',
+  },
+];
+---
+<section class="ishow" aria-labelledby="ishow-coverage-heading">
+  <div class="ishow-container">
+
+    <!-- 1 · What the audit covers -->
+    <header class="ishow-head">
+      <p class="ishow-eyebrow">The full audit · £1,500</p>
+      <h2 id="ishow-coverage-heading" class="ishow-h2">One document. Every exposure on your digital presence.</h2>
+      <p class="ishow-lede">Four disciplines read your site the way a regulator, a competitor, and a search engine each read it. Every finding cites the rule or the number behind it, and every finding carries a prioritised fix.</p>
+    </header>
+
+    <div class="ishow-coverage" role="list">
+      {coverage.map((c, i) => (
+        <article class="cov-card" role="listitem">
+          <div class="cov-rule" aria-hidden="true"><span class="cov-numeral">{['I', 'II', 'III', 'IV'][i]}</span></div>
+          <h3 class="cov-name">{c.name}</h3>
+          <p class="cov-body">{c.body}</p>
+        </article>
+      ))}
+    </div>
+
+    <!-- 2 · The open specimen: the finished Monzo audit -->
+    <div class="ishow-specimen">
+      <figure class="spec-frame">
+        <a class="spec-link" href="/audit/monzo/yTn7BIzS" target="_blank" rel="noopener" aria-label="Open the finished Monzo audit in a new tab">
+          <img
+            src="/instrument-specimen-monzo.jpg"
+            alt="First page of the finished Tamazia audit for Monzo Bank: scored summary and findings register"
+            width="1180"
+            height="1480"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="spec-hover" aria-hidden="true">Open the finished audit</span>
+        </a>
+        <figcaption class="spec-caption">Specimen · Monzo Bank · live deliverable, exactly as the client receives it</figcaption>
+      </figure>
+
+      <div class="spec-notes">
+        <p class="ishow-eyebrow">Read one before you buy one</p>
+        <h3 class="spec-h3">This is not a sample template. It is a finished audit.</h3>
+        <ul class="spec-points">
+          <li><strong>Scored against the register.</strong> The presence is graded across the frameworks that govern the sector, not a generic checklist.</li>
+          <li><strong>Every finding cites its source.</strong> The regulation, the guideline, or the measurement behind each finding is named on the page.</li>
+          <li><strong>Fixes are ranked, not listed.</strong> Each issue carries a prioritised remediation, ordered by regulatory weight and revenue impact.</li>
+        </ul>
+        <a class="spec-cta" href="/audit/monzo/yTn7BIzS" target="_blank" rel="noopener">
+          <span>Read the Monzo audit</span>
+          <span class="spec-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3 · The terms -->
+    <div class="ishow-terms">
+      <div class="terms-price-row">
+        <p class="terms-price">£1,500<span class="terms-price-dot">.</span> <em>Fixed.</em></p>
+        <p class="terms-credit">Credited in full to your first month if we work together.</p>
+      </div>
+      <p class="terms-body">You receive the complete findings before any commercial conversation begins. No sales call until you have seen the data and decided you want one. The findings belong to you whether you proceed with Tamazia or not.</p>
+      <div class="terms-foot">
+        <a class="terms-run" href="#quick-audit">Request your audit above &uarr;</a>
+        <RatingStrip tone="light" align="start" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .ishow {
+    background: var(--ivory);
+    color: var(--oxblood-ink, #2A0C14);
+    padding-block: clamp(48px, 6vw, 88px);
+  }
+  .ishow-container {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: var(--container-padding, clamp(24px, 3vw, 48px));
+  }
+
+  /* Head */
+  .ishow-head { max-width: 760px; margin-bottom: clamp(32px, 4vw, 56px); }
+  .ishow-eyebrow {
+    display: inline-block;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: var(--ls-caps-eyebrow, 0.32em);
+    text-transform: uppercase;
+    color: var(--gold-text, #7B5520);
+    font-weight: 500;
+    margin-bottom: 14px;
+    position: relative;
+    padding-left: 40px;
+  }
+  .ishow-eyebrow::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .ishow-h2 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: var(--fs-h2);
+    letter-spacing: var(--ls-h2, -0.02em);
+    line-height: 1.15;
+    margin: 0 0 14px;
+  }
+  .ishow-lede {
+    font-family: var(--ff-body);
+    font-size: var(--fs-body-large, 17px);
+    line-height: 1.6;
+    color: var(--oxblood-ink);
+    opacity: 0.86;
+    margin: 0;
+  }
+
+  /* Coverage grid */
+  .ishow-coverage {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+  @media (min-width: 768px) {
+    .ishow-coverage { grid-template-columns: 1fr 1fr; gap: 22px; }
+  }
+  .cov-card {
+    border: 1px solid var(--gold-hairline, rgba(201, 167, 114, 0.35));
+    border-radius: 10px;
+    padding: 22px 24px 24px;
+    background: linear-gradient(180deg, rgba(201, 167, 114, 0.05), rgba(201, 167, 114, 0.015));
+  }
+  .cov-rule {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .cov-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+  .cov-numeral {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold-text, #7B5520);
+  }
+  .cov-name {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+  .cov-body {
+    font-family: var(--ff-body);
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.88;
+  }
+
+  /* Specimen */
+  .ishow-specimen {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 3vw, 48px);
+    align-items: center;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+  @media (min-width: 1024px) {
+    .ishow-specimen { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  }
+  .spec-frame { margin: 0; }
+  .spec-link {
+    display: block;
+    position: relative;
+    border: 1px solid var(--gold-hairline-strong, rgba(201, 167, 114, 0.6));
+    border-radius: 6px;
+    padding: 10px;
+    background: var(--ivory-warm, #F4F0E8);
+    box-shadow: 0 18px 50px rgba(42, 12, 20, 0.12);
+    transition: transform var(--duration-micro, 200ms) var(--ease-out), box-shadow var(--duration-micro, 200ms) var(--ease-out);
+  }
+  .spec-link:hover { transform: translateY(-3px); box-shadow: 0 24px 60px rgba(42, 12, 20, 0.16); }
+  .spec-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+  .spec-link img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+  }
+  .spec-hover {
+    position: absolute;
+    inset: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ff-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ivory);
+    background: rgba(42, 12, 20, 0.55);
+    opacity: 0;
+    border-radius: 3px;
+    transition: opacity var(--duration-micro, 200ms) ease;
+  }
+  .spec-link:hover .spec-hover, .spec-link:focus-visible .spec-hover { opacity: 1; }
+  .spec-caption {
+    margin-top: 10px;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-text, #7B5520);
+    opacity: 0.85;
+  }
+  .spec-h3 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(24px, 2vw + 0.5rem, 32px);
+    line-height: 1.2;
+    margin: 0 0 16px;
+  }
+  .spec-points {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .spec-points li {
+    font-family: var(--ff-body);
+    font-size: 15px;
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+    opacity: 0.9;
+  }
+  .spec-points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 8px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .spec-points strong { font-weight: 600; }
+  .spec-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ivory);
+    background: var(--oxblood);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    padding: 14px 22px;
+    min-height: 44px;
+    text-decoration: none;
+    transition: background var(--duration-micro, 200ms) ease, transform var(--duration-micro, 200ms) var(--ease-out);
+  }
+  .spec-cta:hover { background: var(--oxblood-warm, #6D2037); transform: translateY(-1px); }
+  .spec-arrow { transform: translateY(-0.5px); }
+
+  /* Terms */
+  .ishow-terms {
+    border-top: 1px solid var(--gold-hairline-strong, rgba(201, 167, 114, 0.6));
+    padding-top: clamp(28px, 3vw, 44px);
+    max-width: 860px;
+  }
+  .terms-price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+    margin-bottom: 12px;
+  }
+  .terms-price {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(34px, 3vw + 0.5rem, 48px);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .terms-price em { font-style: italic; color: var(--gold-text, #7B5520); }
+  .terms-price-dot { color: var(--gold); }
+  .terms-credit {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--oxblood-ink);
+    opacity: 0.8;
+    margin: 0;
+  }
+  .terms-body {
+    font-family: var(--ff-body);
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.88;
+    margin: 0 0 22px;
+    max-width: 640px;
+  }
+  .terms-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 32px;
+  }
+  .terms-run {
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-text-strong, #5C3F18);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding: 10px 2px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    transition: color var(--duration-micro, 200ms) ease;
+  }
+  .terms-run:hover { color: var(--oxblood); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spec-link, .spec-cta { transition: none; }
+    .spec-link:hover { transform: none; }
+  }
+</style>

@@ -1,28 +1,38 @@
 ---
-// Testimonials marquee · 100 verified review patterns, sector-interleaved
-// Role rendered above quote · subtle blue glow accent · 600s loop (2x faster)
+// Testimonials marquee · 100 verified review patterns.
+// M3 2026-06-11 (founder directive 6): cards carry stars + the review text only
+// (sector/role label removed); no "…" truncation — quotes are fitted at SENTENCE
+// boundaries (every card ends on a full stop, min one sentence, target <=340ch).
+// Off-palette blue glow/shadows replaced with house gold/oxblood ambients.
 import { testimonials } from '../../content/testimonials';
+import RatingStrip from '../ui/RatingStrip.astro';
 
-const cards = testimonials.map(t => ({
-  sector: t.sector,
-  role: t.role,
-  quote: t.quote.length > 200 ? t.quote.slice(0, 200).trimEnd() + '…' : t.quote,
-}));
+const FIT = 340;
+function fitQuote(q: string): string {
+  if (q.length <= FIT) return q;
+  const sentences = q.match(/[^.!?]+[.!?]+(?:\s|$)/g) || [q];
+  let out = '';
+  for (const s of sentences) {
+    if (out && (out + s).trim().length > FIT) break;
+    out += s;
+  }
+  return (out || sentences[0]).trim();
+}
 
-// Doubled for seamless loop
+const cards = testimonials.map(t => ({ quote: fitQuote(t.quote) }));
 const cardsDouble = [...cards, ...cards];
 ---
-<section class="testimonials-strip" aria-label="Client review patterns">
+<section class="testimonials-strip" aria-label="Client reviews">
   <div class="testimonials-inner">
     <p class="testimonials-eyebrow">Said about Tamazia</p>
     <h2 class="testimonials-h2">Words from the people we work with.</h2>
+    <div class="testimonials-rating"><RatingStrip tone="light" align="center" /></div>
   </div>
   <div class="testimonials-band">
     <div class="testimonials-track">
       {cardsDouble.map((t) => (
         <article class="testimonial-card">
           <div class="testimonial-stars" aria-label="Five-star rating">★★★★★</div>
-          <cite class="testimonial-role">{t.role}</cite>
           <blockquote class="testimonial-quote">{t.quote}</blockquote>
         </article>
       ))}
@@ -39,14 +49,14 @@ const cardsDouble = [...cards, ...cards];
     border-bottom: 1px solid var(--gold-hairline);
     overflow: hidden;
   }
-  /* Subtle blue glow accent · upper-right ambient luminance */
+  /* M3 · ambient luminance in house palette (was off-palette blue) */
   .testimonials-strip::before {
     content: '';
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 18% 30%, rgba(74,144,226,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 82% 70%, rgba(56,118,210,0.06) 0%, transparent 65%);
+      radial-gradient(ellipse 60% 50% at 18% 30%, rgba(201, 167, 114, 0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 82% 70%, rgba(90, 26, 43, 0.05) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
   }
@@ -77,6 +87,7 @@ const cardsDouble = [...cards, ...cards];
     line-height: 1.15;
     margin: 0;
   }
+  .testimonials-rating { margin-top: 14px; }
   .testimonials-band {
     overflow: hidden;
     mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
@@ -85,53 +96,43 @@ const cardsDouble = [...cards, ...cards];
   .testimonials-track {
     display: flex;
     flex-direction: row;
+    align-items: stretch;
     gap: 20px;
     width: max-content;
-    /* 600s · 2x faster than prior 1200s */
     animation: testimonials-scroll 600s linear infinite;
   }
   .testimonial-card {
-    flex: 0 0 360px;
+    flex: 0 0 380px;
     background: var(--pearl, #FAF7F2);
     border: 1px solid var(--gold-hairline, rgba(201,167,114,0.35));
     border-radius: 6px;
     padding: 18px 20px;
     display: flex;
     flex-direction: column;
-    min-height: 190px;
     box-shadow:
-      0 1px 2px rgba(90,26,43,0.04),
-      0 6px 18px -10px rgba(56,118,210,0.18);
+      0 1px 2px rgba(90, 26, 43, 0.04),
+      0 6px 18px -10px rgba(90, 26, 43, 0.14);
     transition: box-shadow 280ms ease, transform 280ms ease;
+    content-visibility: auto;
+    contain-intrinsic-size: 380px 220px;
   }
   .testimonial-card:hover {
     box-shadow:
-      0 2px 4px rgba(90,26,43,0.06),
-      0 12px 28px -10px rgba(56,118,210,0.32);
+      0 2px 4px rgba(90, 26, 43, 0.06),
+      0 12px 28px -10px rgba(90, 26, 43, 0.24);
     transform: translateY(-1px);
   }
   .testimonial-stars {
     font-size: 12px;
     color: var(--gold-text, #b58b3f);
     letter-spacing: 0.16em;
-    margin-bottom: 6px;
-  }
-  .testimonial-role {
-    font-family: var(--ff-body, 'Inter', system-ui, sans-serif);
-    font-style: normal;
-    font-size: 10.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--gold-text, #b58b3f);
-    font-weight: 600;
-    margin-bottom: 10px;
-    line-height: 1.4;
+    margin-bottom: 8px;
   }
   .testimonial-quote {
     font-family: var(--ff-display, Georgia, serif);
     font-style: italic;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13.5px;
+    line-height: 1.55;
     color: var(--ink, #2A0C14);
     margin: 0;
     flex: 1;
@@ -146,7 +147,7 @@ const cardsDouble = [...cards, ...cards];
   }
   @media (max-width: 720px) {
     .testimonials-strip { padding: 40px 0 48px; }
-    .testimonial-card { flex-basis: 280px; min-height: 170px; padding: 16px 18px; }
+    .testimonial-card { flex-basis: 300px; padding: 16px 18px; contain-intrinsic-size: 300px 240px; }
     .testimonial-quote { font-size: 13px; }
   }
 </style>

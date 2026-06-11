@@ -7,6 +7,53 @@ import { heroContent } from '../../content/hero';
 const frameworks = (heroContent as any).regulationFrameworks || [];
 const goldFrameworks: string[] = (heroContent as any).goldHighlightedFrameworks || [];
 const ribbonDouble = [...frameworks, ...frameworks];
+
+/**
+ * M3 typewriter substrate (audit findings A1/A2/A4): the headline is now a real
+ * <h1> with its FULL text server-rendered. Words appear with steps(1) snaps,
+ * each delayed by the time its characters would take to type, so the rhythm
+ * reads as typing while crawlers and the LCP element see complete text, no
+ * innerHTML runs at runtime, reduced-motion shows it instantly, and height
+ * never shifts (opacity-only). Word-level spans (not per-character) preserve
+ * Playfair's kerning and ligatures. {{segments}} keep the gold-italic emphasis.
+ */
+type Word = { w: string; emph: boolean; d: number };
+const CHAR_MS = 34;            // pacing per character (was 42ms via setInterval)
+const LINE_GAP_MS = 220;       // pause between lines (was 280ms)
+function splitLine(text: string, startMs: number): { words: Word[]; endMs: number } {
+  const words: Word[] = [];
+  let t = startMs;
+  const segs: { text: string; emph: boolean }[] = [];
+  let rest = text;
+  while (rest.length) {
+    const open = rest.indexOf('{{');
+    if (open === -1) { segs.push({ text: rest, emph: false }); break; }
+    if (open > 0) segs.push({ text: rest.slice(0, open), emph: false });
+    const close = rest.indexOf('}}', open);
+    segs.push({ text: rest.slice(open + 2, close), emph: true });
+    rest = rest.slice(close + 2);
+  }
+  for (const seg of segs) {
+    for (const w of seg.text.split(' ').filter(Boolean)) {
+      t += w.length * CHAR_MS;           // the word "finishes typing" at t
+      words.push({ w, emph: seg.emph, d: t });
+      t += CHAR_MS;                       // the space
+    }
+  }
+  return { words, endMs: t };
+}
+const twSource = [
+  'Outrank {{competitors.}}',
+  'Master {{regulators.}}',
+  'One agency.',
+];
+let cursorMs = 250; // small lead-in
+const twLines = twSource.map((src, i) => {
+  const { words, endMs } = splitLine(src, cursorMs);
+  cursorMs = endMs + LINE_GAP_MS;
+  return { words, em: i === 2 };
+});
+const twTotalMs = cursorMs - LINE_GAP_MS;
 ---
 
 <div class="tz-hero-wrap">
@@ -28,11 +75,24 @@ const ribbonDouble = [...frameworks, ...frameworks];
     <span class="tz-eyebrow-orn" aria-hidden="true"></span>
   </p>
 
-  <h2 class="tz-headline">
-    <span class="tz-line tz-tw-line" data-text="Outrank {{competitors.}}"></span>
-    <span class="tz-line tz-tw-line" data-text="Master {{regulators.}}"></span>
-    <span class="tz-line tz-line-em tz-tw-line" data-text="One agency."></span>
-  </h2>
+  {/* M3: real h1, full text in server HTML, word-level steps(1) stagger paced
+      by character count (the same typing rhythm, kerning preserved).
+      Audit findings A1/A2/A4. */}
+  <h1 class="tz-headline" style={`--tw-total:${twTotalMs}ms`}>
+    {twLines.map((line) => (
+      <span class={line.em ? 'tz-line tz-line-em' : 'tz-line'}>
+        {line.words.map((word) => (
+          <>
+            {word.emph
+              ? <em class="tz-word"><span class="tz-tw-w" style={`--d:${word.d}ms`}>{word.w}</span></em>
+              : <span class="tz-tw-w" style={`--d:${word.d}ms`}>{word.w}</span>}
+            {' '}
+          </>
+        ))}
+      </span>
+    ))}
+    <span class="tz-caret" aria-hidden="true"></span>
+  </h1>
 
   <div class="tz-subs">
     <div class="tz-sub" data-reveal="slide" style="--rd:480ms"><span class="tz-sub-rule"></span><em>Search dominance, every market.</em></div>
@@ -510,6 +570,35 @@ const ribbonDouble = [...frameworks, ...frameworks];
   .tz-headline .tz-word    { display: inline-block; }
   .tz-headline .tz-word + .tz-word { margin-left: 0.22em; }
 
+  /* M3 · word-level typing reveal: full text is in the HTML; each word snaps in
+     (steps(1) = typewriter pop, no fade) at the moment it would finish typing.
+     Opacity-only: no layout shift, kerning preserved within words. */
+  .tz-tw-w {
+    opacity: 0;
+    animation-name: tz-tw-in;
+    animation-duration: 2ms;       /* imperceptible: reads as a typewriter pop */
+    animation-timing-function: linear;
+    animation-delay: var(--d, 0ms);
+    animation-fill-mode: forwards;
+  }
+  @keyframes tz-tw-in { from { opacity: 0; } to { opacity: 1; } }
+  .tz-caret {
+    display: inline-block;
+    width: 0.45em;
+    height: 0.04em;
+    background: var(--tz-gold);
+    vertical-align: baseline;
+    margin-left: 0.12em;
+    opacity: 0;
+    animation: tz-caret-blink 0.7s step-end infinite;
+    animation-delay: var(--tw-total, 2400ms);
+  }
+  @keyframes tz-caret-blink { 0%, 100% { opacity: 0; } 50% { opacity: 0.9; } }
+  @media (prefers-reduced-motion: reduce) {
+    .tz-tw-w { animation: none; opacity: 1; }
+    .tz-caret { animation: none; opacity: 0; }
+  }
+
   /* ===== Sub-bullets ===== */
   .tz-subs { padding: 14px 22px 0; display: flex; flex-direction: column; gap: 6px; }
   .tz-sub  { display: flex; align-items: center; gap: 8px; font-family: var(--tz-display); font-style: italic; font-size: 13px; color: var(--tz-gold); }
@@ -924,17 +1013,7 @@ const ribbonDouble = [...frameworks, ...frameworks];
   }
 
   /* ===== Typewriter cursor ===== */
-  .tz-tw-typing::after {
-    content: '|';
-    animation: tz-cursor-blink 0.7s step-end infinite;
-    color: var(--tz-oxblood);
-    font-weight: 300;
-    opacity: 1;
-  }
-  @keyframes tz-cursor-blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
+  /* M3: .tz-tw-typing caret removed with the JS typewriter (replaced by .tz-caret). */
 
   /* G4 GAP A · single .tz-founder-cta-row rule · founder pill is the only child after G2 */
   .tz-founder-cta-row {
@@ -1230,66 +1309,8 @@ const ribbonDouble = [...frameworks, ...frameworks];
       img.addEventListener("error", () => img.classList.add("is-broken"));
       if (!img.getAttribute("src")) img.classList.add("is-broken");
     })();
-    // ---- 7. H1 typewriter ----
-    (() => {
-      function typeText(el, text, speed, onDone) {
-        el.classList.add('tz-tw-typing');
-        const segments = [];
-        let remaining = text;
-        while (remaining.length > 0) {
-          const start = remaining.indexOf('{{');
-          if (start === -1) { segments.push({ text: remaining, emph: false }); break; }
-          if (start > 0) segments.push({ text: remaining.substring(0, start), emph: false });
-          const end = remaining.indexOf('}}', start);
-          segments.push({ text: remaining.substring(start + 2, end), emph: true });
-          remaining = remaining.substring(end + 2);
-        }
-        let segIdx = 0, charIdx = 0;
-        const iv = setInterval(() => {
-          if (segIdx >= segments.length) {
-            clearInterval(iv);
-            el.classList.remove('tz-tw-typing');
-            if (onDone) onDone();
-            return;
-          }
-          const seg = segments[segIdx];
-          charIdx++;
-          let html = '';
-          for (let j = 0; j < segIdx; j++) {
-            html += segments[j].emph
-              ? '<em class=\"tz-word\">' + segments[j].text + '</em>'
-              : segments[j].text;
-          }
-          const partial = seg.text.substring(0, charIdx);
-          html += seg.emph ? '<em class=\"tz-word\">' + partial + '</em>' : partial;
-          el.innerHTML = html;
-          if (charIdx >= seg.text.length) { segIdx++; charIdx = 0; }
-        }, speed);
-      }
-
-      const twLines = Array.from(root.querySelectorAll('.tz-tw-line'));
-      if (!twLines.length) return;
-
-      let started = false;
-      function startTypewriter() {
-        if (started) return;
-        started = true;
-        function runLine(idx) {
-          if (idx >= twLines.length) return;
-          const el = twLines[idx];
-          const text = el.dataset.text || '';
-          typeText(el, text, 42, () => setTimeout(() => runLine(idx + 1), 280));
-        }
-        runLine(0);
-      }
-
-      const h2 = root.querySelector('.tz-headline');
-      if (!h2) return;
-      const twIo = new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) { twIo.disconnect(); setTimeout(startTypewriter, 250); }
-      }, { threshold: 0.25 });
-      twIo.observe(h2);
-    })();
+    // ---- 7. H1 typewriter: replaced in M3 by build-time word spans + CSS
+    //      steps(1) stagger (see the h1 markup). No runtime text writes remain.
 
   })();
 </script>

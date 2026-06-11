@@ -76,7 +76,9 @@
   --fs-pull-quote: clamp(18px, 1.4vw + 0.3rem, 22px);
   --fs-sub-headline: clamp(14px, 1vw + 0.3rem, 18px);
   --fs-display-numeral: clamp(64px, 6vw + 1rem, 120px);
-  --fs-body: clamp(15px, 0.5vw + 0.75rem, 17px);
+  /* M3 2026-06-11 · floor raised 15px -> 16px (mobile body >=16px, WCAG-friendly,
+     benchmarks §5: Playfair >=24px floor, Inter carries small sizes). */
+  --fs-body: clamp(16px, 0.5vw + 0.75rem, 17px);
   --fs-body-large: clamp(16px, 0.6vw + 0.8rem, 18px);
   --fs-body-small: 13px;
   --fs-micro: 11px;
@@ -107,10 +109,15 @@
      Remove letter-spacing from all transition lists (F.38). */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 0.2, 1);
+  /* M3 2026-06-11 · entrance voice for reveals + icon draw-ons (benchmarks §1/§4).
+     Do NOT replace --ease-out: it backs every existing micro-interaction. */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-micro: 200ms;
   --duration-short: 400ms;
   --duration-mid: 600ms;
-  --duration-long: 900ms;
+  /* M3 · page-level transitions cap at 800ms (was 900 — remodel motion spec). */
+  --duration-long: 800ms;
+  --duration-page: 800ms;
   --duration-extra-long: 1400ms;
   --duration-ambient: 60000ms;
 

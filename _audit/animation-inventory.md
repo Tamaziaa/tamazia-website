@@ -8,7 +8,7 @@
 |---|---|---|---|
 | A1 | **Homepage has NO `<h1>`** — the hero headline renders as `<h2 class="tz-headline">` | `grep -c "<h1" dist/index.html` → 0 | M4: promote to `<h1>` (one per page), demote/sr-adjust elsewhere |
 | A2 | **Typewriter types from EMPTY server HTML** — headline text exists only in `data-text` attributes; visible spans empty until JS runs; LCP element paints blank; crawlers see attribute text only | `grep -c "Outrank" dist/index.html` → 1 (the attribute) | M3/M4: server-render the full text inside the spans; JS progressively reveals over pre-rendered text (clip/opacity per char or honest fallback); reserve final height (no CLS); instant under reduced-motion + hidden tabs |
-| A3 | **FAQ accordion animates `max-height`** — forces layout per frame | FAQ.astro:220,294,315,449 | M3: grid-template-rows 0fr→1fr wrapper (keep details/summary semantics), ≤300ms, `contain: layout` |
+| A3 | ~~FAQ accordion animates `max-height`~~ **CORRECTED on source read:** the accordion had NO open/close animation (native details snap; only the chevron rotates, compositor-safe). M3 ADDED a progressive smooth open via `interpolate-size: allow-keywords` + `::details-content` block-size transition (280ms, modern engines only, instant elsewhere, RM-disabled) | FAQ.astro:458+ | done in M3 |
 | A4 | **Typewriter runs on `setInterval(42ms)` innerHTML writes** — main-thread churn ~6s, IO-gated start (never fires in hidden tabs → blank-hero artifact) | FinalHero.astro:1234-1292 | M3: same substrate fix as A2; keep the effect, change the mechanism |
 
 ## Inventory (trigger | properties | compositor? | duration/easing | reduced-motion)

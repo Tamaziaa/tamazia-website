@@ -80,7 +80,7 @@
 
   if (!valid(stored)) {
     /* M-punch 16: the banner was registering as the mobile LCP element. Defer
-       its entrance past first paint (idle + 1.6s floor) — compliance unchanged:
+       its entrance past first paint (idle + 1.6s floor); compliance unchanged:
        no non-essential cookie exists until consent regardless of banner timing. */
     var defer = function (fn) {
       var fired = false; var go = function () { if (!fired) { fired = true; fn(); } };

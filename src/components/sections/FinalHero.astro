@@ -727,7 +727,9 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     text-align: right;
   }
   .tz-laws-ribbon-track span.gold {
-    color: #C9A772;
+    /* antique-gold ink: 4.96:1 on the ivory column (WCAG AA for sighted
+       low-vision readers — aria-hidden does not exempt visible text) */
+    color: #8A6520;
     font-style: italic;
     font-weight: 600;
   }
@@ -744,7 +746,7 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     font-family: "Playfair Display", Georgia, serif;
     font-style: italic;
     font-size: 7.5px;
-    color: #C9A772;
+    color: #8A6520; /* AA 4.96:1 on ivory — caption is meaningful text */
     letter-spacing: 0.14em;
     text-transform: uppercase;
     line-height: 1.65;

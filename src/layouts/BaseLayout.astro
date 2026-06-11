@@ -2,6 +2,7 @@
 import HeadAnalytics from '../components/analytics/HeadAnalytics.astro';
 import Sentry from '../components/analytics/Sentry.astro';
 import BodyAnalytics from '../components/analytics/BodyAnalytics.astro';
+import CookieConsent from '../components/ui/CookieConsent.astro';
 
 // Tamazia analytics tokens · replace empty strings with actual values when provider properties are created.
 // Cloudflare Web Analytics token: replace '' with the token from CF dashboard.
@@ -320,6 +321,8 @@ if (_segs.length > 0) {
 
 
   <BodyAnalytics cfBeacon={cfBeacon} ga4Id={ga4Id} />
+  {/* M7 · multi-jurisdiction cookie consent (gates the GA4 loader above) */}
+  <CookieConsent />
 
     <!-- β-06 · Mobile sticky bottom CTA bar (appears after 30% scroll, hides on input focus) -->
     <script>

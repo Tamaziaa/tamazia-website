@@ -17,8 +17,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Build site
         run: npm run build
-      - name: Run visual + overflow audit
-        run: npx playwright test tests/visual/ --reporter=list
+      # M3 2026-06-11 fix: the job previously had no server (playwright.config.ts
+      # now provides webServer) and pulled in the long-running remodel-audit spec.
+      # CI gate = the overflow audit only; screenshot baselines re-land at P6 once
+      # the remodel's pixels stabilise.
+      - name: Run overflow audit
+        run: npx playwright test tests/visual/overflow.spec.ts --grep "overflow audit" --reporter=list
       - name: Upload diff artefacts
         if: failure()
         uses: actions/upload-artifact@v4

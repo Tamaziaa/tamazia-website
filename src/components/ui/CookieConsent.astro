@@ -1,0 +1,221 @@
+---
+/**
+ * CookieConsent · M7 (2026-06-11) — multi-jurisdiction consent banner.
+ * UK PECR/ICO: Reject all as easy as Accept all, no pre-ticked boxes, consent
+ * BEFORE non-essential cookies. EU ePrivacy/GDPR: granular categories, withdraw
+ * as easily as given (footer re-open). US CCPA/CPRA: Global Privacy Control
+ * honoured as opt-out. UAE PDPL/DIFC: notice + choice satisfied by the same bar.
+ * Storage key matches the GA4 gate in analytics/Analytics.astro:
+ *   localStorage 'tamazia-cookie-consent' = { decision, categories, ts, v }
+ * Honest categories only: this site sets analytics cookies (GA4) and strictly
+ * necessary ones (security/Turnstile, booking embed). No marketing cookies, so
+ * no marketing toggle is shown.
+ */
+---
+<div class="tz-consent" id="tz-consent" role="region" aria-label="Cookie consent" hidden>
+  <div class="tzc-inner">
+    <div class="tzc-copy">
+      <p class="tzc-head">Cookies, with your consent.</p>
+      <p class="tzc-body">
+        We use strictly necessary cookies to run this site, and optional analytics cookies to understand
+        how it is used. Nothing optional is set until you choose.
+        <a href="/cookie-policy/">Cookie policy</a><span class="tzc-gpc" id="tzc-gpc" hidden> · Global Privacy Control detected and honoured.</span>
+      </p>
+      <div class="tzc-prefs" id="tzc-prefs" hidden>
+        <label class="tzc-cat tzc-cat--locked">
+          <input type="checkbox" checked disabled />
+          <span><strong>Strictly necessary</strong> · security, forms, booking. Always on.</span>
+        </label>
+        <label class="tzc-cat">
+          <input type="checkbox" id="tzc-analytics" />
+          <span><strong>Analytics</strong> · Google Analytics 4, consent-gated. Helps us improve the site.</span>
+        </label>
+      </div>
+    </div>
+    <div class="tzc-actions">
+      <button type="button" class="tzc-btn tzc-btn--primary" id="tzc-accept">Accept all</button>
+      <button type="button" class="tzc-btn tzc-btn--primary" id="tzc-reject">Reject all</button>
+      <button type="button" class="tzc-btn tzc-btn--ghost" id="tzc-manage" aria-expanded="false" aria-controls="tzc-prefs">Manage preferences</button>
+      <button type="button" class="tzc-btn tzc-btn--ghost" id="tzc-save" hidden>Save preferences</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function () {
+  var KEY = 'tamazia-cookie-consent';
+  var MAX_AGE = 13 * 30 * 86400000; // ~13 months, matches the GA4 gate
+  var el = document.getElementById('tz-consent');
+  if (!el) return;
+  var prefs = document.getElementById('tzc-prefs');
+  var analyticsBox = document.getElementById('tzc-analytics');
+
+  function read() {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+  }
+  function valid(c) { return c && c.ts && (Date.now() - c.ts) < MAX_AGE && c.v === 1; }
+  function write(decision, analytics) {
+    var c = { v: 1, decision: decision, categories: { necessary: true, analytics: !!analytics }, ts: Date.now() };
+    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {}
+    document.cookie = 'tz-consent=' + decision + '; Max-Age=' + Math.floor(MAX_AGE / 1000) + '; Path=/; SameSite=Lax; Secure';
+    window.dispatchEvent(new CustomEvent('tz-consent-change', { detail: c }));
+    return c;
+  }
+  function show(openPrefs) {
+    el.hidden = false;
+    requestAnimationFrame(function () { el.classList.add('tzc-in'); });
+    if (openPrefs) togglePrefs(true);
+  }
+  function hide() {
+    el.classList.remove('tzc-in');
+    setTimeout(function () { el.hidden = true; }, 320);
+  }
+  function togglePrefs(open) {
+    prefs.hidden = !open;
+    document.getElementById('tzc-save').hidden = !open;
+    document.getElementById('tzc-manage').setAttribute('aria-expanded', String(open));
+  }
+
+  var gpc = !!(navigator.globalPrivacyControl);
+  var stored = read();
+
+  if (!valid(stored)) {
+    if (gpc) {
+      // CCPA/CPRA + ICO-friendly: honour the signal as an opt-out immediately,
+      // still show the bar so the choice is visible and changeable.
+      write('reject', false);
+      document.getElementById('tzc-gpc').hidden = false;
+    }
+    show(false);
+  }
+
+  document.getElementById('tzc-accept').addEventListener('click', function () {
+    write('accept', true); hide();
+  });
+  document.getElementById('tzc-reject').addEventListener('click', function () {
+    write('reject', false); hide();
+  });
+  document.getElementById('tzc-manage').addEventListener('click', function () {
+    togglePrefs(prefs.hidden);
+  });
+  document.getElementById('tzc-save').addEventListener('click', function () {
+    var a = analyticsBox.checked;
+    write(a ? 'accept' : 'reject', a); hide();
+  });
+
+  // Withdraw/change as easily as given: any [data-cookie-settings] element reopens.
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest && e.target.closest('[data-cookie-settings]');
+    if (!t) return;
+    e.preventDefault();
+    var c = read();
+    if (analyticsBox && c) analyticsBox.checked = !!(c.categories && c.categories.analytics);
+    show(true);
+  });
+})();
+</script>
+
+<style>
+  .tz-consent {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    background: var(--oxblood-ink, #2A0C14);
+    border-top: 1px solid var(--gold, #C9A772);
+    box-shadow: 0 -10px 30px rgba(26, 12, 16, 0.35);
+    transform: translateY(102%);
+    opacity: 0.6;
+    transition: transform 400ms var(--ease-entrance, cubic-bezier(0.16, 1, 0.3, 1)), opacity 300ms ease;
+  }
+  .tz-consent.tzc-in { transform: translateY(0); opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .tz-consent { transition: none; transform: none; opacity: 1; }
+  }
+  .tzc-inner {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding: 18px clamp(20px, 3vw, 40px) 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 32px;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .tzc-copy { flex: 1 1 480px; min-width: 0; }
+  .tzc-head {
+    font-family: var(--ff-display, Georgia, serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--gold, #C9A772);
+    margin: 0 0 6px;
+  }
+  .tzc-body {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--pearl, #E8E4DC);
+    margin: 0;
+    opacity: 0.92;
+  }
+  .tzc-body a { color: var(--gold, #C9A772); text-decoration: underline; text-underline-offset: 2px; }
+  .tzc-gpc { color: var(--gold, #C9A772); font-style: italic; }
+  .tzc-prefs {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid rgba(201, 167, 114, 0.3);
+    padding-top: 12px;
+  }
+  .tzc-cat {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 12.5px;
+    color: var(--pearl, #E8E4DC);
+    cursor: pointer;
+  }
+  .tzc-cat--locked { opacity: 0.75; cursor: default; }
+  .tzc-cat input { accent-color: var(--gold, #C9A772); width: 15px; height: 15px; flex-shrink: 0; transform: translateY(2px); }
+  .tzc-cat strong { color: var(--ivory, #FAF7F2); font-weight: 600; }
+  .tzc-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  /* ICO rule: Reject all carries EQUAL visual weight to Accept all. */
+  .tzc-btn {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 13px 18px;
+    min-height: 44px;
+    cursor: pointer;
+    transition: background var(--duration-micro, 200ms) ease, color var(--duration-micro, 200ms) ease;
+  }
+  .tzc-btn--primary {
+    background: var(--ivory, #FAF7F2);
+    color: var(--oxblood-ink, #2A0C14);
+    border: 1px solid var(--gold, #C9A772);
+  }
+  .tzc-btn--primary:hover { background: var(--gold, #C9A772); }
+  .tzc-btn--ghost {
+    background: transparent;
+    color: var(--pearl, #E8E4DC);
+    border: 1px solid rgba(232, 228, 220, 0.45);
+  }
+  .tzc-btn--ghost:hover { border-color: var(--gold, #C9A772); color: var(--gold, #C9A772); }
+  .tzc-btn:focus-visible { outline: 2px solid var(--gold, #C9A772); outline-offset: 2px; }
+  @media (max-width: 640px) {
+    .tzc-inner { padding-bottom: 14px; }
+    .tzc-actions { width: 100%; }
+    .tzc-btn { flex: 1 1 auto; text-align: center; }
+  }
+</style>

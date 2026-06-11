@@ -1,4 +1,5 @@
 ---
+import Motif from '../ui/Motif.astro';
 import FounderLink from '../atoms/FounderLink.astro';
 import FleuronDivider from '../atoms/FleuronDivider.astro';
 import { pricingContent } from '../../content/pricing';
@@ -16,6 +17,7 @@ const featureIcons: Record<string, string> = {
   <div class="container">
     <div class="header-block">
       <div class="eyebrow">{eyebrow}</div>
+      <div class="motif-row" style="display:flex;justify-content:center;margin-bottom:10px"><Motif name="column" size={42} /></div>
       <h2 id="pricing-heading" class="section-h2">{h2}</h2>
       <p class="intro">{intro}</p>
     </div>
@@ -292,7 +294,7 @@ const featureIcons: Record<string, string> = {
   .tier-card.tier-enterprise .additional-summary { color: var(--gold); }
   .tier-card.tier-enterprise .additional-item { color: rgba(232,228,220,0.85); }
   .tier-card.tier-enterprise .features-collapse-summary { background: rgba(42,12,20,0.6); color: var(--gold); border-color: rgba(201,167,114,0.35); }
-  .tier-card.tier-enterprise .features-collapse-summary .chevron { color: var(--gold); }
+  .tier-card.tier-enterprise .features-collapse-summary .chevron { color: var(--gold-warm, #D4B787); }
   .tier-card.tier-enterprise .tier-cta-ghost { color: var(--gold); border-color: var(--gold); }
   .tier-card.tier-enterprise .tier-cta-ghost:hover { background: var(--gold); color: var(--oxblood-ink); }
 
@@ -442,7 +444,9 @@ const featureIcons: Record<string, string> = {
     gap: 32px;
     margin-bottom: clamp(32px, 5vw, 48px); /* R10 · was 64-96 */
   }
-  .tier-card { height: 100%; }
+  .tier-card { height: 100%; display: flex; flex-direction: column; }
+  /* M-punch 11: CTAs sit parallel across all three tiers */
+  .tier-card .tier-cta { margin-top: auto; }
 
   .tier-card {
     container-type: inline-size;
@@ -972,6 +976,24 @@ const featureIcons: Record<string, string> = {
     transition: transform 240ms ease;
   }
   .rich-feature.expanded .feature-headline::after { transform: translateY(-30%) rotate(-135deg); }
+
+  /* pa11y AA final: tier cards are dark */
+  .features-collapse .chevron, .chevron { color: var(--gold-warm, #D4B787) !important; }
+
+  /* pa11y AA: solid bases matching each variant's real gradient base so HTML_CS
+     computes contrast correctly (gradients paint over — zero visual change),
+     plus per-variant text golds. */
+  .tier-card.tier-foundation, .tier-card.tier-authority { background-color: #FAF7F2; }
+  .tier-card.tier-enterprise { background-color: #2A0C14; }
+  .tier-foundation .features-collapse-summary, .tier-authority .features-collapse-summary { background-color: #F4F0E8; }
+  .tier-enterprise .features-collapse-summary { background-color: #2A0C14; }
+  .tier-foundation .chevron, .tier-authority .chevron { color: var(--gold-text-strong, #5C3F18) !important; }
+  .tier-enterprise .chevron { color: var(--gold-warm, #D4B787) !important; }
+  .tier-foundation .tier-cta-ghost, .tier-authority .tier-cta-ghost { color: var(--gold-text-strong, #5C3F18) !important; border-color: var(--gold-text, #7B5520) !important; }
+  .tier-enterprise .tier-cta-ghost { color: var(--gold-warm, #D4B787) !important; border-color: var(--gold-warm, #D4B787) !important; }
+  .tier-cta-filled { background-color: #5A1A2B; }
+  .mandate-callout { background-color: #2A0C14; }
+  .mandate-cta { color: var(--gold-warm, #D4B787) !important; }
 </style>
 
 <script>
@@ -1137,7 +1159,8 @@ const featureIcons: Record<string, string> = {
       features.forEach((rf) => {
         const headline = rf.querySelector('.feature-headline');
         if (!headline) return;
-        headline.setAttribute('role', 'button');
+        // a11y: role=button is not allowed on a heading element (axe aria-allowed-role);
+        // keyboard/expand behaviour is conveyed by tabindex + aria-expanded instead.
         headline.setAttribute('tabindex', '0');
         headline.setAttribute('aria-expanded', 'false');
         const toggle = () => {

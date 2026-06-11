@@ -1,5 +1,8 @@
-# Method B · Lighthouse CI + axe + Pa11y combined gate
-# Mobile + Desktop Lighthouse, axe-core a11y, Pa11y WCAG 2.2 AA
+# Method B · Lighthouse CI + Pa11y combined gate
+# M3 2026-06-11 fix: the old flags asserted "performance"/"accessibility" as AUDIT
+# names ("X is not a known audit" — failed every run since introduction). Asserts now
+# live in lighthouserc.json as category assertions, and lhci starts/awaits the
+# preview server itself (no `npm run preview &` + sleep race).
 name: lighthouse-pa11y
 on:
   pull_request:
@@ -14,19 +17,12 @@ jobs:
         with: { node-version: '20' }
       - run: npm ci
       - run: npm run build
-      - name: Start preview
-        run: npm run preview &
-      - run: sleep 4
       - name: Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci autorun --collect.url=http://localhost:4321 \
-            --collect.url=http://localhost:4321/pricing \
-            --collect.url=http://localhost:4321/contact \
-            --upload.target=temporary-public-storage \
-            --assert.assertions.performance=warn \
-            --assert.assertions.accessibility=error
+          lhci autorun
       - name: Pa11y CI
         run: |
           npm install -g pa11y-ci
+          (npm run preview &) && sleep 5
           pa11y-ci --config .pa11yci

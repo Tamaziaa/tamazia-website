@@ -1,4 +1,5 @@
 ---
+import Motif from '../ui/Motif.astro';
 import { howWeWorkContent } from '../../content/howWeWork';
 import { parseEmph } from '../../content/hero';
 
@@ -44,6 +45,7 @@ const roleIcons: Record<string, string> = {
     <div class="grid">
       <div class="left-col">
         <div class="eyebrow">{eyebrow}</div>
+        <div class="motif-row" style="display:flex;justify-content:center;margin-bottom:10px"><Motif name="gauge" size={42} /></div>
         <h2 id="howwework-heading" class="section-h2">{h2}</h2>
         {/* S31 (Impl Doc v1.0) · timeline overlay sits between H2 and opening paragraph */}
         {timelineOverlay && (<p class="hw-timeline-overlay"><em>{timelineOverlay}</em></p>)}
@@ -340,6 +342,9 @@ const roleIcons: Record<string, string> = {
   @media (min-width: 1024px) {
     .hw-timeline-overlay { font-size: 14px; margin: 8px 0 18px; }
   }
+
+  /* pa11y AA */
+  .how-we-work, .process { background-color: #FAF7F2; }
 </style>
 
 <script>

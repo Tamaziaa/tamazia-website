@@ -59,7 +59,6 @@ export const footerContent = {
   legalEntity: {
     name: 'Tamazia Ltd',
     registeredOffice: 'Registered in England and Wales',
-    cin: 'Registration in progress',
     contactEmail: 'founder@tamazia.co.uk',
     dataController: 'Tamazia Ltd',
     dpoContact: 'dpo@tamazia.co.uk',

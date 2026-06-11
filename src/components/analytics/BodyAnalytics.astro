@@ -1,12 +1,44 @@
 ---
+// BodyAnalytics · rendered by BaseLayout before </body>.
+// M7 2026-06-11: GA4 HARD-GATED behind cookie consent (Consent Mode v2).
+// Previously gtag.js loaded unconditionally (could set _ga cookies before any
+// choice). Now consent defaults to denied and the gtag.js script is only
+// injected once stored consent says accept — or live, the moment the banner
+// fires `tz-consent-change`. Cloudflare Web Analytics stays: it is cookieless
+// (documented in /cookie-policy/). Storage key shared with ui/CookieConsent.astro.
 const cfBeacon = (Astro.props as any).cfBeacon || '';
 const ga4Id = (Astro.props as any).ga4Id || '';
 const beaconAttr = cfBeacon ? JSON.stringify({ token: cfBeacon }) : '';
-const ga4Src = ga4Id ? 'https://www.googletagmanager.com/gtag/js?id=' + ga4Id : '';
 const ga4Body = ga4Id
-  ? 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + ga4Id + '",{send_page_view:false});document.addEventListener("DOMContentLoaded",function(){var c=null;try{c=JSON.parse(localStorage.getItem("tamazia-cookie-consent")||"null")}catch(e){};if(c&&c.decision==="accept"&&Date.now()-c.ts<13*30*86400000){gtag("consent","update",{ad_storage:"granted",ad_user_data:"granted",ad_personalization:"granted",analytics_storage:"granted"});gtag("event","page_view")}});'
+  ? `(function(){
+var ID=${JSON.stringify(ga4Id)};
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments)}
+window.gtag=window.gtag||gtag;
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
+var loaded=false;
+function consented(){
+  try{var c=JSON.parse(localStorage.getItem('tamazia-cookie-consent')||'null');
+    return !!(c&&c.v===1&&c.decision==='accept'&&c.categories&&c.categories.analytics&&(Date.now()-c.ts)<13*30*86400000);
+  }catch(e){return false}
+}
+function activate(){
+  if(loaded)return;loaded=true;
+  gtag('consent','update',{analytics_storage:'granted'});
+  var s=document.createElement('script');s.async=true;
+  s.src='https://www.googletagmanager.com/gtag/js?id='+ID;
+  document.head.appendChild(s);
+  gtag('js',new Date());
+  gtag('config',ID,{anonymize_ip:true});
+}
+if(consented())activate();
+window.addEventListener('tz-consent-change',function(e){
+  var c=(e&&e.detail)||{};
+  if(c.decision==='accept'&&c.categories&&c.categories.analytics){activate()}
+  else{gtag('consent','update',{analytics_storage:'denied'})}
+});
+})();`
   : '';
 ---
 {cfBeacon && <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={beaconAttr} />}
-{ga4Id && <script async src={ga4Src} />}
 {ga4Id && <script is:inline set:html={ga4Body} />}

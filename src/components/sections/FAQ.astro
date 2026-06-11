@@ -1,4 +1,5 @@
 ---
+import Motif from '../ui/Motif.astro';
 import { faqContent } from '../../content/faq';
 
 const { eyebrow, h2, intro, categories, timeline, questions, closingLine } = faqContent;
@@ -33,6 +34,7 @@ const faqJsonLd = {
   <div class="container">
     <div class="header-block">
       <div class="eyebrow">{eyebrow}</div>
+      <div class="motif-row" style="display:flex;justify-content:center;margin-bottom:10px"><Motif name="scrollDoc" size={42} /></div>
       <h2 id="faq-heading" class="section-h2">{h2}</h2>
       <p class="intro">{intro}</p>
     </div>
@@ -465,6 +467,19 @@ const faqJsonLd = {
     opacity: 0.9;
   }
 
+  /* M3 · progressive smooth open for native <details> (modern engines via
+     interpolate-size; everywhere else opens instantly as before). 280ms. */
+  .faq-item { interpolate-size: allow-keywords; }
+  .faq-item::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition: block-size 280ms var(--ease-out), content-visibility 280ms allow-discrete;
+  }
+  .faq-item[open]::details-content { block-size: auto; }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item::details-content { transition: none; }
+  }
+
   .faq-answer p { margin: 0 0 14px; }
   .faq-answer p:last-child { margin-bottom: 0; }
 
@@ -632,6 +647,25 @@ const faqJsonLd = {
     .faq-question::after { transition: none; }
   }
 
+
+  /* Overflow fix 2026-06-11: the hover popovers are wider than their nodes and
+     inflated every ancestor's scroll area (the only real horizontal-overflow
+     source on the page). display:none until hover/focus removes the geometry;
+     @starting-style keeps the fade in modern engines. */
+  .node-popover { display: none; }
+  .timeline-node:hover .node-popover,
+  .timeline-node:focus .node-popover,
+  .timeline-node:focus-within .node-popover {
+    display: block;
+    opacity: 1;
+    transition: opacity 240ms ease;
+    transition-behavior: allow-discrete;
+  }
+  @starting-style {
+    .timeline-node:hover .node-popover,
+    .timeline-node:focus .node-popover,
+    .timeline-node:focus-within .node-popover { opacity: 0; }
+  }
 </style>
 
 <script>

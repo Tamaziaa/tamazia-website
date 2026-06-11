@@ -4,13 +4,11 @@
 export const pricingContent = {
   eyebrow: '',  /* A5 · was 'TAMAZIA · Pricing'; Interstitial supplies numeral + theme */
   h2: 'Pricing',
-  // Legacy intro string (component reads single string). Full intro paragraphs available below.
-  intro: 'Three mandates. Each covers a defined compliance scope. Every engagement begins with a £1,500 SEO, compliance and AI-visibility audit: your online presence checked against 400+ legal and regulatory frameworks, your AI-search visibility, your SEO standing, and a prioritised fix for every issue we find.',
-  introParagraphs: [
-    'Every engagement begins with a £1,500 audit: 400+ frameworks reviewed, AI visibility, SEO standing, and a prioritised fix for each issue. Regulatory review is standard across all tiers.',
-    'Regulatory compliance review is included as standard across all tiers.',
-  ],
-  microNote: 'Pricing is indicative. All engagements are bespoke.',
+  // Founder directive 2026-06-11: the pricing section sells the mandates on their own
+  // terms. No audit mention, no audit layering (the audit narrative lives on /instrument/).
+  // Chosen from 5 drafted candidates (alternates logged in _audit/copy-errors.md appendix).
+  intro: 'You are not buying hours. You are retaining a practice. Each mandate is scoped to your footprint: how many locations you operate, how many jurisdictions you sell into, and how closely your regulator reads what you publish. The standard never changes. Nothing leaves the building until it has been reviewed against the frameworks that govern you.',
+  microNote: 'Pricing is indicative. Every mandate is scoped to your footprint and jurisdictions before anything is signed.',
 
   tiers: [
     {

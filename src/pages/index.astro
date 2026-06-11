@@ -14,27 +14,69 @@ import Pricing from '../components/sections/Pricing.astro';
 import FAQ from '../components/sections/FAQ.astro';
 import Contact from '../components/sections/Contact.astro';
 import SextantInstrument from '../components/sections/SextantInstrument.astro';
+import { faqContent } from '../content/faq';
+import { pricingContent } from '../content/pricing';
+
+// Remodel M2 · REAL-only structured data (no ratings markup — see _audit/trust-signals.md).
+const faqSchema = {
+  '@type': 'FAQPage',
+  '@id': 'https://tamazia.co.uk/#faq-schema',
+  mainEntity: (faqContent.questions as any[]).map((q) => ({
+    '@type': 'Question',
+    name: q.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: (q.answerParagraphs || []).join(' '),
+    },
+  })),
+};
+
+const offerSchema = {
+  '@type': 'OfferCatalog',
+  '@id': 'https://tamazia.co.uk/#mandates',
+  name: 'Tamazia mandates',
+  itemListElement: (pricingContent.tiers as any[]).map((t) => ({
+    '@type': 'Offer',
+    name: `${t.name} mandate`,
+    description: t.tagline,
+    url: 'https://tamazia.co.uk/#pricing',
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: t.priceGbp,
+      priceCurrency: 'GBP',
+      unitText: 'per month, from',
+    },
+    itemOffered: {
+      '@type': 'Service',
+      name: `${t.name}: compliance-led SEO mandate`,
+      serviceType: 'Search engine optimisation with regulatory compliance review',
+      provider: { '@id': 'https://tamazia.co.uk/#org' },
+    },
+  })),
+};
 ---
-<BaseLayout>
+<BaseLayout extraSchema={[faqSchema, offerSchema]}>
   <Header />
   <main id="main">
     <FinalHero />
     <LawsStrip />
     <WhyUs />
+    {/* M5 (founder decision 2026-06-11, reversing the 2026-06-10 page-closer
+        directive): The Sextant sits in the proof position — its six dial sectors
+        prime the six Sectors cards below, and the live enforcement watch lands
+        before Pricing. */}
+    <SextantInstrument />
     <Sectors />
-    <Interstitial numeral="III." label="Case Studies" />
+    <Interstitial numeral="III." label="Case Studies" motif="laurel" />
     <CaseStudies />
     <Testimonials />
-    <Interstitial numeral="IV." label="The Process" />
+    <Interstitial numeral="IV." label="The Process" motif="compassRose" />
     <HowWeWork />
-    <Interstitial numeral="V." label="Engagement" />
+    <Interstitial numeral="V." label="Engagement" motif="handshakeRule" />
     <Pricing />
-    <Interstitial numeral="VI." label="Questions & Findings" />
+    <Interstitial numeral="VI." label="Questions & Findings" motif="key" />
     <FAQ />
     <Contact />
-    {/* Founder directive 2026-06-10: The Sextant closes the page, after the FAQ
-        reach-out box and the Contact box. */}
-    <SextantInstrument />
   </main>
   <Footer />
 </BaseLayout>

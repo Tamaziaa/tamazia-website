@@ -97,8 +97,9 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     <!-- Small print -->
     <div class="small-print">
       <div class="copyright">{copyright.replace('2026', year.toString())}</div>
-        {/* Founder directive 2026-06-10: Article 27 line removed; legal lines render white */}
-        <p class="legal-entity">{legalEntity?.name} · Registered office {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact}</p>
+        {/* Founder directive 2026-06-10: Article 27 line removed; legal lines render white.
+            M1 2026-06-11: "Registered office Registered in England and Wales" duplication fixed. */}
+        <p class="legal-entity">{legalEntity?.name} · {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact}</p>
         <ul class="extra-legal-links" aria-label="Legal disclosures">
           <li><a href={legalEntity?.dataProtectionNoticeHref || '/legal/data-protection/'}>Data Protection Notice</a></li>
           <li><a href={legalEntity?.dpaHref || '/legal/dpa/'}>DPA</a></li>
@@ -109,6 +110,8 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
           <li><a href={securityHref}>Security</a></li>
           <li><a href="/status/">Status</a></li>
           <li><a href="/insights/feed.xml" rel="alternate" type="application/rss+xml">RSS</a></li>
+          {/* M7 · withdraw consent as easily as it was given (PECR/GDPR) */}
+          <li><a href="/cookie-policy/" data-cookie-settings>Manage cookies</a></li>
         </ul>
       <div class="legal-links">
         {legalLinks.map((link, i) => (
@@ -122,8 +125,8 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
   </div>
 
   <!-- Back to top button -->
-  <a href="#" class="back-to-top" aria-label="Back to top" id="back-to-top">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
+  <a href="#" class="back-to-top" aria-label="Back to top" id="back-to-top" data-draw-hover>
+    <svg viewBox="0 0 24 24" aria-hidden="true" data-draw>
       <path d="M 12 4 L 12 20 M 6 10 L 12 4 L 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </a>
@@ -284,13 +287,14 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     border-bottom: 1px solid rgba(201, 167, 114, 0.3);
   }
 
+  /* M-punch 7: navigation links side by side to save vertical space */
   .col-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
   }
 
   .col-nav a {

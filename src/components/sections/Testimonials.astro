@@ -19,7 +19,7 @@ function fitQuote(q: string): string {
   return (out || sentences[0]).trim();
 }
 
-const cards = testimonials.slice(0, 60).map(t => ({ quote: fitQuote(t.quote) }));  // M-punch: DOM weight
+const cards = testimonials.slice(0, 40).map(t => ({ quote: fitQuote(t.quote) }));  // M-punch: DOM weight
 const cardsDouble = [...cards, ...cards];
 ---
 <section class="testimonials-strip" aria-label="Client reviews">

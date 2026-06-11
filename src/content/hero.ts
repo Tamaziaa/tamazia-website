@@ -72,7 +72,7 @@ export const heroContent = {
   },
 
   cta: {
-    label: 'Run my free audit',
+    label: 'Run my audit',
     href: '#contact',
   },
 

@@ -1,45 +1,40 @@
 ---
-// /instrument/ — the Tamazia Instrument page. Reached from the homepage "Run my free
-// audit" button. Founder directive 2026-06-11: this page carries the FULL audit
-// narrative — the £1,500 price lives here and only here, the request widget works,
-// and the finished Monzo audit is showcased as the open specimen.
+// /instrument/ — the Tamazia Instrument page. Reached from the homepage "Run my
+// audit" button. Founder directive r2 (2026-06-11): a compact two-half page — the
+// ten strongest things the audit delivers (drawn from the live Monzo specimen),
+// then a lean capture form that emails the report and routes the lead to Neon +
+// Slack + Telegram. The live scoring widget and £1,500 sales framing were retired
+// from this page in favour of an instant request-by-email lead capture.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import QuickAudit from '../components/sections/QuickAudit.astro';
-import InstrumentShowcase from '../components/sections/InstrumentShowcase.astro';
+import InstrumentAudit from '../components/sections/InstrumentAudit.astro';
 
 const canonical = 'https://tamazia.co.uk/instrument/';
 
-// M2 · Service schema for the audit product (real terms only).
+// Service schema — describes the audit honestly without a hard price (the page
+// requests it by email; pricing is discussed in an engagement, not advertised here).
 const auditSchema = {
   '@type': 'Service',
   '@id': 'https://tamazia.co.uk/instrument/#audit',
   name: 'Tamazia SEO, compliance and AI-visibility audit',
   serviceType: 'Website compliance and search audit',
   description:
-    'A fixed-fee audit covering technical SEO, regulatory compliance of published content, competitive keyword gaps, and AI-search visibility. Findings are delivered before any commercial conversation and the fee is credited in full to the first month of an engagement.',
+    'A scored audit covering technical SEO, regulatory compliance of published content, competitive keyword gaps, Core Web Vitals and AI-search visibility, delivered as one prioritised document.',
   provider: { '@id': 'https://tamazia.co.uk/#org' },
   areaServed: ['United Kingdom', 'European Union', 'United Arab Emirates', 'United States'],
-  offers: {
-    '@type': 'Offer',
-    price: 1500,
-    priceCurrency: 'GBP',
-    url: canonical,
-  },
 };
 ---
 
 <BaseLayout
-  title="The Tamazia Instrument · The £1,500 audit"
-  description="The full Tamazia audit: technical SEO, regulatory compliance, competitive gaps and AI-search visibility in one scored document. Read the finished Monzo audit, then request yours. £1,500, credited in full to your first month."
+  title="The Tamazia Instrument · Request your audit"
+  description="See your site the way a regulator and an AI engine do: technical SEO, regulatory compliance, competitive gaps and AI-search visibility in one scored document. Read the finished Monzo audit, then request yours by email."
   canonical={canonical}
   extraSchema={auditSchema}
 >
   <Header />
   <main id="main">
-    <QuickAudit />
-    <InstrumentShowcase />
+    <InstrumentAudit />
   </main>
   <Footer />
 </BaseLayout>

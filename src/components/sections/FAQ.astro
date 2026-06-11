@@ -647,6 +647,25 @@ const faqJsonLd = {
     .faq-question::after { transition: none; }
   }
 
+
+  /* Overflow fix 2026-06-11: the hover popovers are wider than their nodes and
+     inflated every ancestor's scroll area (the only real horizontal-overflow
+     source on the page). display:none until hover/focus removes the geometry;
+     @starting-style keeps the fade in modern engines. */
+  .node-popover { display: none; }
+  .timeline-node:hover .node-popover,
+  .timeline-node:focus .node-popover,
+  .timeline-node:focus-within .node-popover {
+    display: block;
+    opacity: 1;
+    transition: opacity 240ms ease;
+    transition-behavior: allow-discrete;
+  }
+  @starting-style {
+    .timeline-node:hover .node-popover,
+    .timeline-node:focus .node-popover,
+    .timeline-node:focus-within .node-popover { opacity: 0; }
+  }
 </style>
 
 <script>

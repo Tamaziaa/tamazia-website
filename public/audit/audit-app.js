@@ -2,6 +2,18 @@
    TAMAZIA AUDIT, app: rail + panes + commerce + wiring
    ============================================================ */
 (function(){
+  /* ------------------------------------------------------------------
+     PRICING REFERENCE, keep in sync with src/content/pricing.ts
+     Display-only crib of the canonical GBP figures (British English).
+     The render literals below (FIX_SPRINT, PRICING_TIERS_RENDER, ADDONS,
+     Route 3) remain the live display source; this block is the human
+     cross-check against pricing.ts so the two never silently drift.
+     CTA targets are NOT changed by this block, do not wire Stripe here.
+       fixPacksGbp:        ten 7500 · twenty 12500 · thirty 17500
+       tiers (monthly):    Foundation 2500 · Authority 4500 · Enterprise 9500
+       entryAuditGbp:      1500
+       exposureReportGbp:  unlock 750 · monthlyCover 449
+     ------------------------------------------------------------------ */
   const $ = (s,r=document)=>r.querySelector(s);
   // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
   // plur(1,'is','are')↗'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
@@ -27,6 +39,7 @@
     <aside class="rail"><div class="rail-inner">
       <div class="rail-brand"><a href="https://tamazia.co.uk" target="_blank" rel="noopener" aria-label="Tamazia, visit tamazia.co.uk"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></a></div>
       <h1>${D.meta.company}</h1>
+      <div class="rail-report"><div class="rr-name">The Exposure Report</div><div class="rr-sub">Compliance, Search and AI Visibility</div></div>
       <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
       <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
@@ -41,7 +54,7 @@
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
       <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
       <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk report with the founder ↗</button>
-      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM, International Business Law</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
+      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
       <div class="rail-social">
         <a href="mailto:sales@tamazia.co.uk" aria-label="Email sales@tamazia.co.uk" title="sales@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
         <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
@@ -424,7 +437,7 @@
     const FIX_SPRINT=[
       {k:'10',label:'Top 10',scope:'top 10',price:7500,anchor:25000,weeks:8,n:Math.min(10,_issuesTotal||10)},
       {k:'20',label:'Top 20',scope:'top 20',price:12500,anchor:41000,weeks:16,n:Math.min(20,_issuesTotal||20)},
-      {k:'all',label:'All issues',scope:'all',price:19500,anchor:65000,weeks:24,n:(_issuesTotal&&_issuesTotal>20?_issuesTotal:30)},
+      {k:'all',label:'All issues',scope:'all',price:17500,anchor:65000,weeks:24,n:(_issuesTotal&&_issuesTotal>20?_issuesTotal:30)},
     ];
     const fixOutcomes=[
       `Your highest-severity findings closed first, in priority order, starting with ${topFix.toLowerCase()}`,
@@ -515,8 +528,19 @@
 
     ${trustedStrip()}
 
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>The same compliance standard, on the largest regulatory stage</h3></div>
+    <div class="cgon-proof card pad" style="background:var(--cream-2);border:0;margin-top:8px">
+      <div class="cgon-meta" style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">CG Oncology · Nasdaq: CGON · Healthcare IPO, USA</div>
+      <div class="cgon-stats" style="display:flex;gap:22px;flex-wrap:wrap;margin:10px 0 6px">
+        <div><b style="font-family:var(--serif,'Fraunces',serif);font-size:24px;color:var(--oxblood,#7A2A3B);display:block;line-height:1">+96%</b><span style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Share price at IPO</span></div>
+        <div><b style="font-family:var(--serif,'Fraunces',serif);font-size:24px;color:var(--oxblood,#7A2A3B);display:block;line-height:1">Zero</b><span style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Compliance incidents</span></div>
+      </div>
+      <p class="cgon-body" style="font-size:13px;line-height:1.6;margin:6px 0 0">CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously. Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. The digital content and marketing strategy was one of the factors contributing to shares closing 96% above the offer price at listing.</p>
+      <div class="cgon-verified" style="font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:9px">Verified per SEC filings · Public record</div>
+    </div>
+
     <div class="subhead founder-subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Walk report with the founder</h3></div>
-    <div class="founder-cred">Founder: Aman Pareek, LLM in International Business Law (King&rsquo;s College London)</div>
+    <div class="founder-cred">Founder: Aman Pareek. LLM in International Business Law, King&rsquo;s College London.</div>
     <p class="plan-sub">Two ways to start, both with the founder directly. No sales team, no discovery loop. Your route and strongest finding are carried into the call.</p>
     <div class="booking">
       <div class="bookcard"><div class="rt">Retainer enquiries</div><h3>Discuss a retainer</h3>

@@ -39,6 +39,9 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spa
 .rail-brand b{font-family:var(--serif);font-size:18px;color:#fff;font-weight:400}
 .rail-brand small{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;display:block}
 .rail h1{color:#fff;font-size:20px;line-height:1.12;margin-bottom:5px}
+.rail-report{margin-bottom:7px}
+.rail-report .rr-name{font-family:var(--serif,'Fraunces',serif);font-size:12.5px;letter-spacing:.01em;color:var(--gold-light);line-height:1.2}
+.rail-report .rr-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#E8B4AE;opacity:.78;line-height:1.4;margin-top:2px}
 .rail-meta{font-family:var(--mono);font-size:9.5px;color:var(--gold-light);opacity:.62;letter-spacing:.02em;line-height:1.5}
 .rail-gauge{display:grid;place-items:center;margin:12px 0 5px}
 .rail-band{text-align:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#E8B4AE;margin-bottom:14px}

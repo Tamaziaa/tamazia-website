@@ -21,6 +21,12 @@
 # Legacy alias · privacy-policy slug 301 to canonical.
 /privacy-policy/   /privacy-notice/  301
 
+# Sector hub breadcrumbs · blog BreadcrumbList + internal links point to /sectors/<sector>/.
+# Per-sector hub resolves to that sector's insights listing. Explicit rules only, so the
+# /sectors/ index page stays a real served page (no wildcard hijack).
+/sectors/legal/  /insights/legal/  301
+/sectors/healthcare/  /insights/healthcare/  301
+
 # Legal blog posts - Astro insights cards link here, static /blog/ pages serve content.
 /insights/legal/sra-transparency-rules-law-firm-seo-2026/  /blog/sra-transparency-rules-law-firm-seo-2026/  301
 /insights/legal/top-50-law-firms-in-london-2026/  /blog/top-50-law-firms-in-london-2026/  301

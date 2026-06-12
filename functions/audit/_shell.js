@@ -10,7 +10,9 @@ function injectJSON(obj) {
     .split(String.fromCharCode(0x2029)).join('\\u2029');
 }
 
-const TITLE = 'Tamazia ' + String.fromCharCode(0xB7) + ' Regulatory + SEO + AI-visibility Audit';
+const MIDDOT = String.fromCharCode(0xB7);
+const TITLE = 'The Exposure Report ' + MIDDOT + ' Tamazia';
+const SUBTITLE = 'Compliance, Search and AI Visibility';
 
 // Self-hosted fonts. The production CSP (see public/_headers) is `font-src 'self' data:`
 // and does NOT allowlist fonts.googleapis.com / fonts.gstatic.com — so the Google Fonts
@@ -41,6 +43,9 @@ const HEAD = '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
   + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
   + '<meta name="robots" content="noindex, nofollow">\n'
   + '<title>' + TITLE + '</title>\n'
+  + '<meta property="og:title" content="' + TITLE + '">\n'
+  + '<meta property="og:description" content="' + SUBTITLE + '">\n'
+  + '<meta property="og:type" content="website">\n'
   + '<style id="tz-fonts">' + FONT_CSS + '</style>';
 
 const NOTES_BTN = '<button id="notesToggle" style="position:fixed;bottom:16px;right:16px;z-index:80;font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#2A5DA8;background:rgba(248,244,238,.94);border:1px solid rgba(42,93,168,.3);border-radius:8px;padding:6px 11px;cursor:pointer;backdrop-filter:blur(6px)">Notes on</button>';
@@ -49,7 +54,7 @@ export function renderShell(D, opts) {
   opts = opts || {};
   const inline = !!opts.inline;
   const a = opts.assets || {};
-  const _av = 'r25';  // asset version — bump on every deploy so the 4h-cached audit JS/CSS busts immediately
+  const _av = 'r26';  // asset version — bump on every deploy so the 4h-cached audit JS/CSS busts immediately
   const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : ('<link rel="stylesheet" href="/audit/audit.css?v=' + _av + '">');
   const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : ('<script src="/audit/audit-charts.js?v=' + _av + '"></script>');
   const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : ('<script src="/audit/audit-app.js?v=' + _av + '"></script>');

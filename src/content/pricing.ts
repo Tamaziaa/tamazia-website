@@ -235,3 +235,53 @@ pricingContent.tiers.forEach((t: any) => {
   t.featuresDetailed = t.features;
   t.features = ['Audit', 'Team', 'Deliverables', 'Review'];
 });
+
+// ---------------------------------------------------------------------------
+// Dormant price config (A1d). Single source of truth for every price not yet
+// rendered. Mission C/D will read these later. All GBP integers, British
+// English. Adding only: nothing above is renamed, removed, or changed.
+// ---------------------------------------------------------------------------
+
+// Fix packs · one-time purchases · no retainer.
+export interface FixPackPricing {
+  ten: number;
+  twenty: number;
+  thirty: number;
+}
+export const fixPacksGbp: FixPackPricing = {
+  ten: 7500,
+  twenty: 12500,
+  thirty: 17500,
+};
+export const fixPacksLane = 'No retainer required. Buy the fixes, own the work.';
+
+// The Exposure Report · recurring · unlock is one-time, monthly cover is per
+// month with the first month included.
+export interface ExposureReportPricing {
+  unlock: number;
+  monthlyCover: number;
+}
+export const exposureReportGbp: ExposureReportPricing = {
+  unlock: 750,
+  monthlyCover: 449,
+};
+
+// Entry audit · reference price · one-time.
+export const entryAuditGbp = 1500;
+
+// Independent solutions · struck-then-offer where an anchor is given.
+export interface IndependentSolutionPricing {
+  anchor?: number;
+  offer?: number;
+  price?: number;
+}
+export const independentSolutionsGbp: Record<string, IndependentSolutionPricing> = {
+  websiteRemodelling: { anchor: 4800, offer: 2400 },
+  aiAuthority: { anchor: 3000, offer: 1800 },
+  icpOutreach: { anchor: 2800, offer: 1400 },
+  onlinePersonalBranding: { anchor: 2200, offer: 1100 },
+  instagramPresence: { anchor: 1800, offer: 900 },
+  ymylContent: { price: 1200 },
+  reputationCrisis: { anchor: 3000, offer: 1500 },
+  gbpDomination: { price: 850 },
+};

@@ -17,8 +17,8 @@ export const whyUsContent = {
   // The "4× / 400+ / 4" in the prior rebuild was a credibility-damaging error.
   stats: [
     {
-      value: '882%',
-      caption: 'PEAK CLIENT REVENUE GROWTH · GA4 VERIFIED',
+      value: '480%',
+      caption: 'PEAK CLIENT REVENUE GROWTH · TWO-YEAR ENGAGEMENT · VERIFIED',
       icon: 'sparkline',
     },
     {

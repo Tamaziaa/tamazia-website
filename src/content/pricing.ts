@@ -101,7 +101,7 @@ export const pricingContent = {
         },
         {
           headline: 'The strategy that removes dependency on platforms extracting revenue between you and your buyer',
-          body: 'Booking.com and Expedia charge 15 to 25% per reservation. Tamazia builds the direct search visibility that intercepts buyers before the platform does, the same approach behind 882% direct revenue growth for a hospitality client (under NDA). Every sector.',
+          body: 'Booking.com and Expedia charge 15 to 25% per reservation. Tamazia builds the direct search visibility that intercepts buyers before the platform does, the same approach behind 480% peak client revenue growth over a two-year engagement (verified). Every sector.',
         },
         {
           headline: 'Your brand inside AI-generated answers across the platforms where buyers now make decisions',

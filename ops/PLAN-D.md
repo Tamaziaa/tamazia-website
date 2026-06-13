@@ -1,0 +1,26 @@
+# MISSION D — PLAN (Phase B, confidence-gated)
+
+Confidence gate: **FULL** = edit now. **TODO** = leave a clearly-marked placeholder, do not invent.
+Source-of-truth constant for ALL prices: `src/content/pricing.ts` (see INVENTORY-D §6).
+
+| ID | Task | Confidence | Action |
+|----|------|-----------|--------|
+| **D1** | Mirror audit pricing into site pricing section from the SAME config constant: tiers + fix packs (7,500 / 12,500 / 17,500) + Independent Solutions (struck-then-offer, results-led). | **FULL** | Extend `Pricing.astro` to import `fixPacksGbp`, `fixPacksLane`, `independentSolutionsGbp`, `entryAuditGbp` from `pricing.ts` and render two new blocks (Fix Packs, Independent Solutions) after the tiers. All numbers read from constants — zero hardcoded prices. CTAs → `#contact` (Gate 1). Currency rendered server-side from the GBP constant with `£` (the existing JS currency switcher only rehydrates `[data-gbp]` tier prices; the new blocks render a static GBP figure sourced from the constant, which satisfies "same source constant"). |
+| **D2** | Reassurance card under the sectors strip, COPY 4 verbatim. | **TODO (copy) / FULL (structure)** | COPY 4 not found (INVENTORY-D §7). Build `src/components/sections/ReassuranceCard.astro`, render in `index.astro` right after `<Sectors />`. Body = a clearly-marked `TODO: COPY 4 (verbatim copy not located — founder to supply)` placeholder, visibly flagged in an HTML comment AND a muted on-card note so it cannot ship unnoticed. Card theme matches the brand (ivory/gold hairline). No invented marketing sentence. |
+| **D3** | Visible "Paid audit £1,500" reference line in the site's audit section. | **FULL** | The site has no standalone "audit section"; the audit narrative is represented by the entry-audit price. Render a single reference line in the Pricing section (the engagement section) reading the figure from `entryAuditGbp`: "Paid audit £1,500 one time." sourced from the constant. Placed with the fix-packs/engagement context so it reads as the entry point. |
+| **D4** | Wire LinkedIn + Instagram into header AND footer. Instagram = `https://instagram.com/TamaziaUK`. LinkedIn = founder-gated placeholder. | **FULL (Instagram + structure) / GATE (LinkedIn URL)** | New single-source config `src/config/social.ts` exporting `INSTAGRAM_URL='https://instagram.com/TamaziaUK'` and `LINKEDIN_URL='TODO-founder'` (+ a small `socialLinks` helper). Render an icon row in `Header.astro` (desktop nav + mobile drawer) and `Footer.astro` (brand column). Instagram link is live. LinkedIn renders only as a clearly-marked, non-navigating placeholder (data attribute + title) until the founder fills `LINKEDIN_URL`; if value is still `TODO-founder` the link is rendered disabled/aria-disabled so no broken/invented URL goes live. |
+| **D5** | "Every engagement begins with a conversation" contact form: name, website, email, sector; same theme as booking form; POST to Neon (reuse the booking form's Pages Function pattern under `functions/api/`); fire a PostHog event. Beside it: founder-call copy + cal.com booking calendar. | **FULL** | Heading already verbatim. (a) Add a `website` field to `contactContent.fields` (between email and company) with `type:'url'`-safe handling; render it via the existing field loop (extend the loop to map `url`→`<input type="url">`). (b) Backend already POSTs to `/api/contact` → `syncLeadToNeon` (Neon). (c) **Add server-side PostHog capture in `functions/api/contact.js`** (`contact_submitted` event, gated on `env.POSTHOG_KEY`, fire-and-forget, mirrors `functions/audit/[[path]].js`). (d) Cal embed + founder copy already present beside the form — keep verbatim. |
+| **D6** | `/legal/service-terms` and Cold Outreach Privacy Notice (GDPR Art. 13 + 14) as SKELETON pages titled "DRAFT FOR LEGAL REVIEW". | **FULL** | Create `src/pages/legal/service-terms.astro` and `src/pages/legal/cold-outreach-privacy-notice.astro` following the `legal/data-protection.astro` pattern (BaseLayout + Breadcrumbs + `.legal` main). Both carry a prominent "DRAFT FOR LEGAL REVIEW" banner in the `<h1>`/eyebrow and `noindex`. Cold-outreach notice skeleton uses the Article 13 + 14 anchors from `references/article-14-notice-template.md` + `data-protection.astro` (controller, source, lawful basis 6(1)(f), retention, rights, ICO, Cal.com sub-processor). Skeleton = headed sections with brief placeholder prose clearly marked as draft, not finished legal text. |
+
+## Gates (flagged, NOT faked)
+1. **Stripe** — pricing CTAs keep `href="#contact"`. No Stripe URLs. (Mission E / founder.)
+2. **LinkedIn company URL** — `LINKEDIN_URL='TODO-founder'`; link rendered disabled until filled. (Founder.)
+
+## Copy-rule pre-commit checklist (run in Phase E)
+- No em dash `—` and no " - " hyphen-pause in any new client copy.
+- No `we`/`our`/`We`/`Our` in new client-facing strings (third person / "Tamazia" / imperative only).
+- Any founder credential rendered = exactly `LLM in International Business Law, King's College London`.
+- Every price token traces to a `pricing.ts` constant import; grep new files for hardcoded `£` digits.
+
+## Order of execution
+1. `src/config/social.ts` (new constant) → 2. D4 Header + Footer → 3. D1+D3 Pricing.astro → 4. D2 ReassuranceCard + index.astro → 5. D5 contact field + contact.js PostHog → 6. D6 two legal pages → 7. build + verify.

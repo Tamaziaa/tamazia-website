@@ -1,0 +1,97 @@
+---
+// Mission D · D6 · Service Terms · SKELETON. Titled "DRAFT FOR LEGAL REVIEW".
+// This is a structural skeleton only. Every section is a placeholder heading with a short
+// draft note; it is NOT finished legal text and must not be relied upon until a qualified
+// reviewer signs it off. noindex while in draft.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/schema/Breadcrumbs.astro';
+const updated = '13 June 2026';
+const url = 'https://tamazia.co.uk/legal/service-terms/';
+---
+<BaseLayout
+  title="Service Terms (DRAFT FOR LEGAL REVIEW) · Tamazia"
+  description="Draft service terms for Tamazia engagements. Skeleton pending legal review."
+  canonical={url}
+  noindex={true}
+>
+  <Breadcrumbs items={[{name: "Home", url: "/"}, {name: "Legal", url: "/legal/data-protection/"}, {name: "Service Terms", url: "/legal/service-terms/"}]} />
+  <main id="main" class="legal">
+    <div class="draft-banner" role="note">DRAFT FOR LEGAL REVIEW · not yet in force</div>
+    <header>
+      <p class="eyebrow">Last revised {updated} · draft</p>
+      <h1>Service Terms</h1>
+      <p class="lede">These service terms govern engagements with Tamazia Ltd. This page is a skeleton pending legal review and does not yet constitute binding terms. The signed terms supplied with each engagement letter prevail.</p>
+    </header>
+
+    <section>
+      <h2>1. Parties and definitions</h2>
+      <p class="draft">Draft placeholder. Defines Tamazia Ltd (the provider) and the client, and the meaning of engagement, deliverable, retainer, fix pack, audit, and independent solution.</p>
+    </section>
+
+    <section>
+      <h2>2. Scope of services</h2>
+      <p class="draft">Draft placeholder. Describes the compliance-led SEO, GEO, and content services, and that each scope is set by the engagement letter following the paid audit.</p>
+    </section>
+
+    <section>
+      <h2>3. Fees, billing, and currency</h2>
+      <p class="draft">Draft placeholder. States that fees follow the published pricing as scoped per engagement, that engagements are invoiced in GBP, and the payment terms. Final figures are set in the engagement letter, not on this page.</p>
+    </section>
+
+    <section>
+      <h2>4. Term, renewal, and termination</h2>
+      <p class="draft">Draft placeholder. Covers the rolling term, notice periods, and termination for cause.</p>
+    </section>
+
+    <section>
+      <h2>5. Intellectual property and ownership of work</h2>
+      <p class="draft">Draft placeholder. States that work produced transfers to the client on payment in full, with no rights retained, consistent with the pricing micro-footers.</p>
+    </section>
+
+    <section>
+      <h2>6. Confidentiality</h2>
+      <p class="draft">Draft placeholder. Mutual confidentiality, with engagements conducted under NDA on request.</p>
+    </section>
+
+    <section>
+      <h2>7. Compliance, warranties, and limitations</h2>
+      <p class="draft">Draft placeholder. Describes the compliance-review standard applied before publication, the limits of that review, and that no specific ranking or commercial outcome is guaranteed.</p>
+    </section>
+
+    <section>
+      <h2>8. Liability</h2>
+      <p class="draft">Draft placeholder. Liability caps and exclusions, subject to legal review.</p>
+    </section>
+
+    <section>
+      <h2>9. Data protection</h2>
+      <p class="draft">Draft placeholder. Cross-refers to the <a href="/legal/data-protection/">data protection notice</a> and the <a href="/legal/dpa/">data processing agreement</a>.</p>
+    </section>
+
+    <section>
+      <h2>10. Governing law and jurisdiction</h2>
+      <p class="draft">Draft placeholder. Governing law and the courts with jurisdiction, subject to legal review.</p>
+    </section>
+
+    <section>
+      <h2>11. Contact</h2>
+      <p class="draft">Draft placeholder. Questions about these terms go to <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>. Written correspondence: Tamazia Ltd, 124 City Road, London, EC1V 2NX.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.65; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .legal h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 40px 0 12px; }
+  .legal .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .legal .lede { font-size: 17px; color: #2A0C14; }
+  .legal section { border-top: 1px solid #E5DDCB; padding-top: 24px; margin-top: 24px; }
+  .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+  .legal .draft { color: #5C4047; font-style: italic; }
+  .draft-banner {
+    background: #2A0C14; color: #FAF7F2; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; font-size: 12px; text-align: center; padding: 12px 16px;
+    border-radius: 4px; margin-bottom: 28px; border: 1px solid #C9A772;
+  }
+</style>

@@ -1,9 +1,16 @@
 ---
 import { footerContent } from '../../content/footer';
+import { socialLinks } from '../../config/social';
 
 const { wordmark, tagline, locations, credentials, navigationHeading, navigationItems, briefingsHeading, briefingsBody, briefingsCta, briefingsConsent, legalLinks, copyright, legalEntity, modernSlaveryHref, complaintsHref, acceptableUseHref, securityHref, address } = footerContent as any;
 const year = new Date().getFullYear();
 import TurnstileWidget from '../security/TurnstileWidget.astro';
+
+// D4 · social icon SVGs (currentColor). Single-sourced URLs from config/social.ts.
+const socialIconPaths: Record<string, string> = {
+  instagram: `<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>`,
+  linkedin: `<rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="7" y1="10" x2="7" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="7" cy="7" r="1.1" fill="currentColor"/><path d="M10.5 17 v-4 a2.5 2.5 0 0 1 5 0 v4 M10.5 13 v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+};
 ---
 <footer class="footer" role="contentinfo">
   <!-- Monogram watermark -->
@@ -49,6 +56,22 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
         <div class="partner-badges" aria-label="Agency certifications">
           <img src="/google-partner.png" alt="Google Partner" class="partner-badge" width="120" height="50" loading="lazy" />
           <img src="/meta-partner.png" alt="Meta Business Partner" class="partner-badge" width="120" height="50" loading="lazy" />
+        </div>
+
+        {/* D4 · social links (single-sourced from config/social.ts). Live links open
+            in a new tab; founder-gated placeholders render disabled until filled. */}
+        <div class="footer-social" aria-label="Tamazia on social media">
+          {socialLinks.map((s: any) => (
+            s.placeholder ? (
+              <span class="footer-social-link is-placeholder" aria-disabled="true" title={`${s.label} (link coming soon)`} aria-label={`${s.label} (link coming soon)`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" set:html={socialIconPaths[s.icon]} />
+              </span>
+            ) : (
+              <a class="footer-social-link" href={s.href} target="_blank" rel="noopener noreferrer me" aria-label={`${s.label} (opens in new tab)`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" set:html={socialIconPaths[s.icon]} />
+              </a>
+            )
+          ))}
         </div>
       </div>
 
@@ -580,6 +603,40 @@ import TurnstileWidget from '../security/TurnstileWidget.astro';
     transition: opacity 200ms ease, transform 200ms ease;
   }
   .partner-badge:hover { opacity: 1; transform: translateY(-1px); }
+
+  /* D4 · footer social row */
+  .footer-social {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  .footer-social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(201, 167, 114, 0.45);
+    border-radius: 50%;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 240ms ease, border-color 240ms ease, background 240ms ease, transform 240ms ease;
+  }
+  .footer-social-link:hover {
+    color: var(--oxblood-ink);
+    background: var(--gold);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .footer-social-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .footer-social-link svg { display: block; }
+  /* Founder-gated placeholder · dimmed, non-navigating */
+  .footer-social-link.is-placeholder {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 
   /* Founder directive 2026-06-10: legal entity line + disclosure links visible in white */
   .legal-entity { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; color: #FFFFFF; margin-top: 6px; line-height: 1.55; }

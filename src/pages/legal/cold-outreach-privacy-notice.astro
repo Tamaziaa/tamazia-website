@@ -1,0 +1,87 @@
+---
+// Mission D · D6 · Cold Outreach Privacy Notice (UK GDPR Articles 13 and 14) · SKELETON.
+// Titled "DRAFT FOR LEGAL REVIEW". Structural skeleton only, anchored on the Article 14
+// notice template (references/article-14-notice-template.md) and the existing data
+// protection notice. NOT finished legal text. noindex while in draft.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/schema/Breadcrumbs.astro';
+const updated = '13 June 2026';
+const url = 'https://tamazia.co.uk/legal/cold-outreach-privacy-notice/';
+---
+<BaseLayout
+  title="Cold Outreach Privacy Notice (DRAFT FOR LEGAL REVIEW) · Tamazia"
+  description="Draft Article 13 and 14 privacy notice for Tamazia outbound contact. Skeleton pending legal review."
+  canonical={url}
+  noindex={true}
+>
+  <Breadcrumbs items={[{name: "Home", url: "/"}, {name: "Legal", url: "/legal/data-protection/"}, {name: "Cold Outreach Privacy Notice", url: "/legal/cold-outreach-privacy-notice/"}]} />
+  <main id="main" class="legal">
+    <div class="draft-banner" role="note">DRAFT FOR LEGAL REVIEW · not yet in force</div>
+    <header>
+      <p class="eyebrow">Last revised {updated} · draft</p>
+      <h1>Cold Outreach Privacy Notice</h1>
+      <p class="lede">This notice is the draft statutory disclosure under UK GDPR Articles 13 and 14 for individuals contacted by Tamazia through research-led outbound communication. It is a skeleton pending legal review. Until reviewed, the live disclosure is the <a href="/legal/data-protection/">data protection notice</a> and the Article 14 line in the first email Tamazia sends.</p>
+    </header>
+
+    <section>
+      <h2>1. Controller identity and contact (Article 13(1)(a))</h2>
+      <p class="draft">Draft placeholder. Tamazia Ltd, registered in England and Wales, is the controller. Data protection enquiries: <a href="mailto:dpo@tamazia.co.uk">dpo@tamazia.co.uk</a>. Written correspondence: Tamazia Ltd, 124 City Road, London, EC1V 2NX.</p>
+    </section>
+
+    <section>
+      <h2>2. Categories of personal data (Article 14(1)(d))</h2>
+      <p class="draft">Draft placeholder. Business contact data only: name, business email address, role title, and current employer.</p>
+    </section>
+
+    <section>
+      <h2>3. Source of the data (Article 14(2)(f))</h2>
+      <p class="draft">Draft placeholder. The data is obtained from publicly available sources and verified business data providers (for example public company websites, public professional profiles, and enrichment providers). The specific source is recorded against each record.</p>
+    </section>
+
+    <section>
+      <h2>4. Purposes and lawful basis (Articles 13(1)(c) and 14(1)(c))</h2>
+      <p class="draft">Draft placeholder. Purpose: to assess whether Tamazia's compliance-led SEO and content services are relevant to senior commercial decision-makers in stated target sectors. Lawful basis: legitimate interests under Article 6(1)(f) UK GDPR. A legitimate interests assessment is held on file.</p>
+    </section>
+
+    <section>
+      <h2>5. Retention period (Articles 13(2)(a) and 14(2)(a))</h2>
+      <p class="draft">Draft placeholder. Held until erasure is requested, or until 24 months after the last meaningful interaction, whichever is earlier.</p>
+    </section>
+
+    <section>
+      <h2>6. Recipients and international transfers (Articles 13(1)(e) and 14(1)(e))</h2>
+      <p class="draft">Draft placeholder. Processors include email delivery, scheduling (Cal.com Inc., DPF-certified), and infrastructure providers, each bound by a data processing agreement and, where relevant, UK GDPR Standard Contractual Clauses. See the <a href="/legal/sub-processors/">sub-processors list</a>.</p>
+    </section>
+
+    <section>
+      <h2>7. Rights of the data subject (Articles 13(2)(b) and 14(2)(c))</h2>
+      <p class="draft">Draft placeholder. Access, rectification, erasure, restriction, objection, and portability. To object to outreach at any time, reply STOP to any message or write to <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>.</p>
+    </section>
+
+    <section>
+      <h2>8. Right to complain (Articles 13(2)(d) and 14(2)(e))</h2>
+      <p class="draft">Draft placeholder. A complaint may be lodged with the UK Information Commissioner's Office at ico.org.uk.</p>
+    </section>
+
+    <section>
+      <h2>9. When this notice is provided (Article 14(3))</h2>
+      <p class="draft">Draft placeholder. Provided at the latest at the time of the first communication, and within one month of obtaining the data, consistent with the Article 14 notice carried in the first outbound email.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.65; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .legal h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 40px 0 12px; }
+  .legal .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .legal .lede { font-size: 17px; color: #2A0C14; }
+  .legal section { border-top: 1px solid #E5DDCB; padding-top: 24px; margin-top: 24px; }
+  .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+  .legal .draft { color: #5C4047; font-style: italic; }
+  .draft-banner {
+    background: #2A0C14; color: #FAF7F2; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; font-size: 12px; text-align: center; padding: 12px 16px;
+    border-radius: 4px; margin-bottom: 28px; border: 1px solid #C9A772;
+  }
+</style>

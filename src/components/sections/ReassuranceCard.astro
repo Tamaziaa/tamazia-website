@@ -1,0 +1,94 @@
+---
+// Mission D · D2 · Reassurance card, sits directly under the sectors strip.
+//
+// COPY STATUS: "COPY 4" (the verbatim reassurance-card copy) was NOT located in the
+// control folder or the website repo at build time (see ops/INVENTORY-D.md §7). Per the
+// mission's hard rule, copy is NOT invented. The card structure, theme, and placement are
+// final; the body below is a CLEARLY-MARKED PLACEHOLDER for the founder to replace with the
+// verbatim COPY 4 in exactly one place (the `copy4` constant). The placeholder text never
+// reads as finished marketing copy and is visibly flagged on-card.
+//
+// To go live: paste the verbatim COPY 4 into `copy4.body` (and optional `copy4.lead`),
+// then set `copy4.placeholder = false`.
+
+import Motif from '../ui/Motif.astro';
+
+const copy4 = {
+  placeholder: true,
+  lead: 'TODO: COPY 4 lead line (founder to supply verbatim).',
+  // TODO(COPY 4): replace with the verbatim reassurance-card copy. Do not invent.
+  body: 'TODO: COPY 4 not located in the control folder. Founder to supply the verbatim reassurance copy. This placeholder is intentionally not finished copy and must be replaced before launch.',
+};
+---
+<section class="reassurance" aria-labelledby="reassurance-heading" data-copy="copy-4">
+  <div class="container">
+    <div class="reassurance-card">
+      <div class="motif-row" aria-hidden="true"><Motif name="seal" size={38} /></div>
+      {copy4.placeholder && (
+        <p class="copy4-flag" role="note">Placeholder · COPY 4 pending founder copy. Not for launch.</p>
+      )}
+      <h2 id="reassurance-heading" class="reassurance-lead">{copy4.lead}</h2>
+      <p class="reassurance-body">{copy4.body}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reassurance {
+    background: var(--ivory);
+    padding-block: clamp(28px, 4vw, 48px);
+  }
+  .container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-padding);
+  }
+  .reassurance-card {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+    padding: clamp(28px, 4vw, 44px);
+    border: 1px solid var(--gold-hairline, rgba(201, 167, 114, 0.35));
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory-warm, #FAF7F2) 100%);
+    background-color: #FAF7F2;
+  }
+  .motif-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+    color: var(--gold);
+  }
+  /* Visible build-time flag while COPY 4 is a placeholder */
+  .copy4-flag {
+    display: inline-block;
+    font-family: var(--ff-body);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #8A5A1A;
+    background: rgba(201, 167, 114, 0.14);
+    border: 1px dashed var(--gold, #C9A772);
+    border-radius: 4px;
+    padding: 5px 12px;
+    margin-bottom: 16px;
+  }
+  .reassurance-lead {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(20px, 2.2vw + 0.4rem, 30px);
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .reassurance-body {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin: 0 auto;
+    max-width: 600px;
+  }
+</style>

@@ -1,17 +1,16 @@
 // Mission D · single source of truth for Tamazia social profile links.
 // Rendered in Header.astro AND Footer.astro. Add new social profiles here only.
 //
-// Instagram: confirmed handle is TamaziaUK.
-// LinkedIn: the company-page URL is FOUNDER-GATED. It is intentionally left as the
-// sentinel 'TODO-founder' so it is a one-line fill. Do NOT invent a URL. While the
-// value is the sentinel, isPlaceholder() is true and the link renders disabled
-// (non-navigating) so no broken or guessed URL ever ships.
+// Both URLs are founder-confirmed and live (2026-06-13):
+//   Instagram: https://www.instagram.com/tamaziauk/
+//   LinkedIn:  https://www.linkedin.com/in/amanpareekk/ (founder profile)
+//
+// The isPlaceholder() guard is retained: any future profile left blank or set to the
+// sentinel renders disabled (non-navigating) so no broken or guessed URL ever ships.
 
-export const INSTAGRAM_URL = 'https://instagram.com/TamaziaUK';
+export const INSTAGRAM_URL = 'https://www.instagram.com/tamaziauk/';
 
-// FOUNDER-GATED. Replace 'TODO-founder' with the real LinkedIn company URL
-// (e.g. https://www.linkedin.com/company/<slug>/) to go live.
-export const LINKEDIN_URL = 'TODO-founder';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/amanpareekk/';
 
 export const SOCIAL_TODO_SENTINEL = 'TODO-founder';
 

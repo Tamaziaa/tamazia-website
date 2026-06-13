@@ -1,5 +1,12 @@
 ---
 import { heroContent } from '../../content/hero';
+import { socialLinks } from '../../config/social';
+
+// D4 · social icon SVGs (currentColor, inherit gold from nav). 18px.
+const socialIconPaths: Record<string, string> = {
+  instagram: `<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>`,
+  linkedin: `<rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="7" y1="10" x2="7" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="7" cy="7" r="1.1" fill="currentColor"/><path d="M10.5 17 v-4 a2.5 2.5 0 0 1 5 0 v4 M10.5 13 v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+};
 ---
 {/* α-04 · semantic <header class="site-header"> wraps the nav (WCAG 1.3.1) */}
 <header class="site-header">
@@ -15,6 +22,21 @@ import { heroContent } from '../../content/hero';
       <li><a href={item.href}>{item.label}</a></li>
     ))}
   </ul>
+  {/* D4 · social links. Live links open in a new tab; founder-gated placeholders
+      render disabled (non-navigating) until the URL constant is filled. */}
+  <div class="nav-social" aria-label="Tamazia on social media">
+    {socialLinks.map(s => (
+      s.placeholder ? (
+        <span class="social-link is-placeholder" aria-disabled="true" title={`${s.label} (link coming soon)`} aria-label={`${s.label} (link coming soon)`}>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" set:html={socialIconPaths[s.icon]} />
+        </span>
+      ) : (
+        <a class="social-link" href={s.href} target="_blank" rel="noopener noreferrer me" aria-label={`${s.label} (opens in new tab)`}>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" set:html={socialIconPaths[s.icon]} />
+        </a>
+      )
+    ))}
+  </div>
   <a class="nav-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
   {/* A-06 · burger with morph-to-X via .open class on click */}
   <button class="burger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
@@ -43,6 +65,20 @@ import { heroContent } from '../../content/hero';
     ))}
   </ul>
   <a class="drawer-cta" href={heroContent.navCtaUrl}>{heroContent.navCta}</a>
+  {/* D4 · social links in the mobile drawer */}
+  <div class="drawer-social" aria-label="Tamazia on social media">
+    {socialLinks.map(s => (
+      s.placeholder ? (
+        <span class="social-link is-placeholder" aria-disabled="true" title={`${s.label} (link coming soon)`} aria-label={`${s.label} (link coming soon)`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" set:html={socialIconPaths[s.icon]} />
+        </span>
+      ) : (
+        <a class="social-link" href={s.href} target="_blank" rel="noopener noreferrer me" aria-label={`${s.label} (opens in new tab)`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" set:html={socialIconPaths[s.icon]} />
+        </a>
+      )
+    ))}
+  </div>
 </nav>
 
 <div class="progress-bar" id="progress"></div>
@@ -170,6 +206,40 @@ import { heroContent } from '../../content/hero';
     background: var(--gold-warm);
     border-color: var(--gold-warm);
     box-shadow: 0 0 0 3px rgba(201, 167, 114, 0.18);
+  }
+
+  /* D4 · social icon row (desktop nav) */
+  .nav-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: clamp(10px, 1.4vw, 20px);
+  }
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--gold);
+    opacity: 0.92;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: color var(--duration-short) ease, opacity var(--duration-short) ease, transform var(--duration-short) ease;
+  }
+  .social-link:hover { color: var(--ivory); opacity: 1; transform: translateY(-1px); }
+  .social-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .social-link svg { display: block; }
+  /* Founder-gated placeholder · visibly dimmed, not clickable */
+  .social-link.is-placeholder {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  /* Narrow-desktop band: keep the social row but tighten it before the burger takes over */
+  @media (min-width: 901px) and (max-width: 1366px) {
+    .nav-social { gap: 10px; margin-left: 10px; }
+    .social-link { width: 28px; height: 28px; }
   }
 
   /* A-06 · Burger with morph-to-X animation */
@@ -388,7 +458,23 @@ import { heroContent } from '../../content/hero';
     .main-nav { padding: 0 32px; }
     .nav-items { display: none; }
     .nav-cta { display: none; }
+    .nav-social { display: none; }
     .burger { display: flex; }
+  }
+
+  /* D4 · social row inside the mobile drawer */
+  .drawer-social {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(201, 167, 114, 0.18);
+    width: 100%;
+  }
+  .drawer-social .social-link { width: 40px; height: 40px; }
+  @media (min-width: 901px) {
+    .drawer-social { display: none !important; }
   }
 
   @media (max-width: 640px) {

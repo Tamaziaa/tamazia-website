@@ -4,12 +4,12 @@
 // COPY STATUS: "COPY 4" (the verbatim reassurance-card copy) was NOT located in the
 // control folder or the website repo at build time (see ops/INVENTORY-D.md §7). Per the
 // mission's hard rule, copy is NOT invented. The card structure, theme, and placement are
-// final; the body below is a CLEARLY-MARKED PLACEHOLDER for the founder to replace with the
-// verbatim COPY 4 in exactly one place (the `copy4` constant). The placeholder text never
-// reads as finished marketing copy and is visibly flagged on-card.
+// final, held in the `copy4` constant. While `copy4.placeholder` is true the section renders
+// NOTHING on the public site (only an HTML comment marking the reserved slot), so the TODO
+// text below can never reach a live visitor.
 //
 // To go live: paste the verbatim COPY 4 into `copy4.body` (and optional `copy4.lead`),
-// then set `copy4.placeholder = false`.
+// then set `copy4.placeholder = false` — the card then renders in place under the sectors strip.
 
 import Motif from '../ui/Motif.astro';
 
@@ -20,18 +20,23 @@ const copy4 = {
   body: 'TODO: COPY 4 not located in the control folder. Founder to supply the verbatim reassurance copy. This placeholder is intentionally not finished copy and must be replaced before launch.',
 };
 ---
-<section class="reassurance" aria-labelledby="reassurance-heading" data-copy="copy-4">
-  <div class="container">
-    <div class="reassurance-card">
-      <div class="motif-row" aria-hidden="true"><Motif name="seal" size={38} /></div>
-      {copy4.placeholder && (
-        <p class="copy4-flag" role="note">Placeholder · COPY 4 pending founder copy. Not for launch.</p>
-      )}
-      <h2 id="reassurance-heading" class="reassurance-lead">{copy4.lead}</h2>
-      <p class="reassurance-body">{copy4.body}</p>
+{/* D2 fix (mission-d bug-test): while COPY 4 is an unverified placeholder, the section
+    renders NOTHING on the public site so the TODO text can never ship to a live visitor.
+    The component, theme, and placement stay intact: set copy4.placeholder=false (after
+    pasting the verbatim COPY 4) to switch it on. An HTML comment marks the reserved slot. */}
+{copy4.placeholder ? (
+  <Fragment set:html={"<!-- ReassuranceCard (COPY 4) reserved: hidden until founder copy is supplied; see component frontmatter -->"} />
+) : (
+  <section class="reassurance" aria-labelledby="reassurance-heading" data-copy="copy-4">
+    <div class="container">
+      <div class="reassurance-card">
+        <div class="motif-row" aria-hidden="true"><Motif name="seal" size={38} /></div>
+        <h2 id="reassurance-heading" class="reassurance-lead">{copy4.lead}</h2>
+        <p class="reassurance-body">{copy4.body}</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
 
 <style>
   .reassurance {
@@ -58,21 +63,6 @@ const copy4 = {
     justify-content: center;
     margin-bottom: 12px;
     color: var(--gold);
-  }
-  /* Visible build-time flag while COPY 4 is a placeholder */
-  .copy4-flag {
-    display: inline-block;
-    font-family: var(--ff-body);
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: #8A5A1A;
-    background: rgba(201, 167, 114, 0.14);
-    border: 1px dashed var(--gold, #C9A772);
-    border-radius: 4px;
-    padding: 5px 12px;
-    margin-bottom: 16px;
   }
   .reassurance-lead {
     font-family: var(--ff-display);

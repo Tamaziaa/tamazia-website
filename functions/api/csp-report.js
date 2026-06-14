@@ -22,19 +22,26 @@ export const onRequestPost = async ({ request, env }) => {
   } catch {
     return new Response('invalid_json', { status: 400 });
   }
-  // CF Logpush picks up console output
-  console.log('[csp-report]', JSON.stringify({
-    at: new Date().toISOString(),
-    ip_country: request.headers.get('cf-ipcountry') || '',
-    body_summary: summarize(body)
-  }));
-  if (env.FORM_SUBMISSIONS) {
-    const key = `csp:${Date.now()}:${crypto.randomUUID().slice(0,16)}`;
-    await env.FORM_SUBMISSIONS.put(key, JSON.stringify({
+  // Best-effort logging + persistence. A CSP-report receiver must NEVER 500 — it only acknowledges the
+  // report. The synthetic check expects 204; an unguarded KV put / summarize() throw was returning 500
+  // (the failing post-deploy synthetic check + the repeated failure emails). Fail-open: always 204 on a
+  // valid POST, even if logging or the KV write fails.
+  try {
+    console.log('[csp-report]', JSON.stringify({
       at: new Date().toISOString(),
       ip_country: request.headers.get('cf-ipcountry') || '',
-      summary: summarize(body)
-    }), { expirationTtl: 60 * 60 * 24 * 30 });
+      body_summary: summarize(body)
+    }));
+    if (env.FORM_SUBMISSIONS) {
+      const key = `csp:${Date.now()}:${crypto.randomUUID().slice(0, 16)}`;
+      await env.FORM_SUBMISSIONS.put(key, JSON.stringify({
+        at: new Date().toISOString(),
+        ip_country: request.headers.get('cf-ipcountry') || '',
+        summary: summarize(body)
+      }), { expirationTtl: 60 * 60 * 24 * 30 });
+    }
+  } catch (e) {
+    console.log('[csp-report] persist/log failed (ignored, still 204):', e && e.message);
   }
   return new Response(null, { status: 204 });
 };

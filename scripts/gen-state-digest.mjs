@@ -3,15 +3,15 @@
  * P4-7 · STATE digest generator.
  *
  * Regenerates two docs from live Neon, on a hard size budget:
- *   docs/STATE.md         — live Neon counts, last runs, open flags  (HARD CAP < 8 KB)
- *   docs/CONTEXT-PACK.md  — a compact machine/agent context pack
+ *   docs/STATE.md         live Neon counts, last runs, open flags  (HARD CAP < 8 KB)
+ *   docs/CONTEXT-PACK.md  a compact machine/agent context pack
  *
  * Read-only. Every query is wrapped: a missing table or column yields "n/a", never a crash,
  * so the digest survives schema drift. Connection string from NEON_URL (|| NEON_DATABASE_URL
  * || NEON_CONNECTION_STRING). With no key the script writes a clearly-marked "unconfigured"
  * digest and exits 0 (so the workflow is a safe no-op without the secret).
  *
- * Uses the Neon HTTP /sql endpoint (same pattern as functions/api/_neon.js) — no driver dep.
+ * Uses the Neon HTTP /sql endpoint (same pattern as functions/api/_neon.js), no driver dep.
  */
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';

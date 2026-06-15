@@ -20,9 +20,11 @@ export const footerContent = {
   // Optional partner badges (kept but not in main credentials line)
   partnerBadges: ['GOOGLE PARTNER', 'META BUSINESS PARTNER'],
 
+  // Canonical social URLs live in src/config/social.ts (single source of truth, rendered by
+  // Header.astro + Footer.astro). These mirror them so any consumer of footerContent stays correct.
   socialLinks: [
-    { label: 'Instagram', icon: 'instagram', href: 'https://instagram.com/tamazia' },
-    { label: 'LinkedIn', icon: 'linkedin', href: 'https://linkedin.com/company/tamazia' },
+    { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/tamaziauk/' },
+    { label: 'LinkedIn', icon: 'linkedin', href: 'https://www.linkedin.com/in/amanpareekk/' },
   ],
 
   navigationHeading: 'NAVIGATION',

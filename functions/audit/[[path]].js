@@ -54,7 +54,22 @@ export async function onRequest(context) {
 
   let html;
   try {
-    const D = payloadToD(payload, { company: row.company, now: Date.now(), generated_at: null, unlocked: row.unlocked === true || row.unlocked === 't' });
+    // FOUNDER-BLOCKED links + contact (env-gated). Passed through to window.D so the client renders each
+    // element ONLY when its value is present; when an env var is unset the field is '' and the element is omitted.
+    const links = {
+      booking: env.BOOKING_URL || '',
+      stripeUnlock: env.STRIPE_LINK_UNLOCK || '',
+      stripeCover: env.STRIPE_LINK_COVER || '',
+      stripeFix10: env.STRIPE_LINK_FIX10 || '',
+      stripeFix20: env.STRIPE_LINK_FIX20 || '',
+      stripeFix30: env.STRIPE_LINK_FIX30 || '',
+    };
+    const D = payloadToD(payload, {
+      company: row.company, now: Date.now(), generated_at: null,
+      unlocked: row.unlocked === true || row.unlocked === 't',
+      links, contactPhone: env.CONTACT_PHONE || '',
+      posthogKey: env.POSTHOG_KEY || '', posthogHost: env.POSTHOG_HOST || '',
+    });
     html = renderShell(D);
   } catch (e) {
     return htmlResponse(errorShell('Audit could not be rendered', 'Our team has been notified.'), 500);

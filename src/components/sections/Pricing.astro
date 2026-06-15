@@ -2,9 +2,70 @@
 import Motif from '../ui/Motif.astro';
 import FounderLink from '../atoms/FounderLink.astro';
 import FleuronDivider from '../atoms/FleuronDivider.astro';
-import { pricingContent } from '../../content/pricing';
+import {
+  pricingContent,
+  fixPacksGbp,
+  fixPacksLane,
+  entryAuditGbp,
+  independentSolutionsGbp,
+} from '../../content/pricing';
 
 const { eyebrow, h2, intro, tiers, mandateCallout, mandateCta, mandateSignature, microNote } = pricingContent;
+
+// D1/D3 · everything below renders FROM the single pricing config constant
+// (src/content/pricing.ts). No price is hardcoded here.
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+
+// D1 · Fix packs (one-time, no retainer). Results-led headlines, prices from fixPacksGbp.
+const fixPacks = [
+  {
+    key: 'ten',
+    name: 'Priority Ten',
+    price: fixPacksGbp.ten,
+    scope: 'The ten findings carrying the most exposure, fixed and signed off.',
+    lead: 'Close the highest-risk gaps first.',
+  },
+  {
+    key: 'twenty',
+    name: 'Priority Twenty',
+    price: fixPacksGbp.twenty,
+    scope: 'Twenty findings across compliance, search, and AI visibility, fixed and signed off.',
+    lead: 'Clear the backlog that holds rankings down.',
+  },
+  {
+    key: 'thirty',
+    name: 'Priority Thirty',
+    price: fixPacksGbp.thirty,
+    scope: 'Thirty findings remediated end to end, with each fix reviewed against the frameworks that govern you.',
+    lead: 'Reset the whole surface in one engagement.',
+  },
+];
+
+// D1 · Independent Solutions · struck-then-offer where an anchor exists, results-led.
+// Display names + outcome lines map 1:1 to the independentSolutionsGbp keys.
+const independentSolutionsMeta: Record<string, { name: string; outcome: string }> = {
+  websiteRemodelling: { name: 'Website Remodelling', outcome: 'A site that converts the traffic it earns, rebuilt to brief.' },
+  aiAuthority: { name: 'AI Authority', outcome: 'Cited inside ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews.' },
+  icpOutreach: { name: 'ICP Outreach', outcome: 'Compliant outbound to the decision-makers who match your client profile.' },
+  onlinePersonalBranding: { name: 'Online Personal Branding', outcome: 'The named-expert authority buyers check before they instruct.' },
+  instagramPresence: { name: 'Instagram Presence', outcome: 'Audience growth that builds the social proof enterprise buyers expect.' },
+  ymylContent: { name: 'YMYL Content', outcome: 'Health and legal grade content, reviewed before it publishes.' },
+  reputationCrisis: { name: 'Reputation and Crisis', outcome: 'Monitoring, suppression, and a response architecture ready before it is needed.' },
+  gbpDomination: { name: 'Google Business Profile Domination', outcome: 'Local map dominance, every listing reviewed against sector ad rules.' },
+};
+// Preserve the config key order.
+const independentSolutions = Object.keys(independentSolutionsGbp).map((key) => {
+  const cfg: any = (independentSolutionsGbp as any)[key];
+  const meta = independentSolutionsMeta[key] || { name: key, outcome: '' };
+  return {
+    key,
+    name: meta.name,
+    outcome: meta.outcome,
+    anchor: typeof cfg.anchor === 'number' ? cfg.anchor : null,
+    offer: typeof cfg.offer === 'number' ? cfg.offer : null,
+    price: typeof cfg.price === 'number' ? cfg.price : null,
+  };
+});
 
 const featureIcons: Record<string, string> = {
   Audit: `<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="18" y1="18" x2="22" y2="22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`,
@@ -130,6 +191,65 @@ const featureIcons: Record<string, string> = {
         </div>
       ))}
     </div>
+
+    {/* D3 · Paid audit reference line · figure sourced from entryAuditGbp (pricing.ts) */}
+    <p class="audit-reference-line">
+      Every engagement opens with the paid audit, <strong>{gbp(entryAuditGbp)}</strong> one time. Compliance, search, and AI visibility assessed against the frameworks that govern you, before any retainer is scoped.
+    </p>
+
+    {/* D1 · Fix packs · one-time, no retainer · prices from fixPacksGbp (pricing.ts) */}
+    <div class="independent-block" aria-labelledby="fix-packs-heading">
+      <div class="ib-head">
+        <h3 id="fix-packs-heading" class="ib-h3">Fix Packs</h3>
+        <p class="ib-sub">{fixPacksLane}</p>
+      </div>
+      <div class="fix-packs-grid">
+        {fixPacks.map((p) => (
+          <div class="fix-pack-card" data-pack={p.key}>
+            <div class="fp-name">{p.name}</div>
+            <div class="fp-price" data-gbp={p.price}>{gbp(p.price)}<span class="fp-once">one time</span></div>
+            <p class="fp-lead">{p.lead}</p>
+            <p class="fp-scope">{p.scope}</p>
+            <a href="#contact" class="fp-cta">Discuss this pack <span class="cta-arrow" aria-hidden="true">→</span></a>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* D1 · Independent Solutions · struck-then-offer · prices from independentSolutionsGbp (pricing.ts) */}
+    <div class="independent-block" aria-labelledby="independent-heading">
+      <div class="ib-head">
+        <h3 id="independent-heading" class="ib-h3">Independent Solutions</h3>
+        <p class="ib-sub">Single outcomes, bought on their own. No retainer required.</p>
+      </div>
+      <div class="independent-grid">
+        {independentSolutions.map((s) => (
+          <div class="independent-card" data-solution={s.key}>
+            <div class="is-name">{s.name}</div>
+            <p class="is-outcome">{s.outcome}</p>
+            <div class="is-price-row">
+              {s.anchor !== null && s.offer !== null ? (
+                <>
+                  <span class="is-anchor" aria-label={`Was ${gbp(s.anchor)}`}>{gbp(s.anchor)}</span>
+                  <span class="is-offer" data-gbp={s.offer}>{gbp(s.offer)}</span>
+                </>
+              ) : (
+                <span class="is-offer" data-gbp={s.price ?? 0}>{gbp(s.price ?? 0)}</span>
+              )}
+            </div>
+            <a href="#contact" class="is-cta">Add this <span class="cta-arrow" aria-hidden="true">→</span></a>
+          </div>
+        ))}
+      </div>
+      <p class="ib-foot"><em>Indicative pricing. Every solution is scoped to your footprint and jurisdictions before anything is signed.</em></p>
+    </div>
+
+    {/* P4-1 · OS-V4 C4 disclosure · VERBATIM. Mirrors the audit so the site and the audit
+        never diverge on the claims standard. Do not paraphrase. The trailing reference is
+        rendered as a link to the same /legal/service-terms page named in the canonical text. */}
+    <p class="results-disclosure">
+      Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: <a href="/legal/service-terms/">/legal/service-terms</a>.
+    </p>
 
     <FleuronDivider width={220} ariaLabel="Section divider" />
 
@@ -723,6 +843,200 @@ const featureIcons: Record<string, string> = {
     margin-top: 32px;
   }
 
+  /* === P4-1 · OS-V4 C4 results disclosure (verbatim) === */
+  .results-disclosure {
+    max-width: 820px;
+    margin: clamp(28px, 4vw, 44px) auto 0;
+    text-align: center;
+    font-family: var(--ff-body);
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--ink-muted);
+  }
+  .results-disclosure a {
+    color: var(--oxblood);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 2px;
+  }
+  .results-disclosure a:hover { text-decoration-color: var(--oxblood); }
+
+  /* === D3 · Paid audit reference line === */
+  .audit-reference-line {
+    max-width: 760px;
+    margin: clamp(28px, 4vw, 44px) auto 0;
+    text-align: center;
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+  .audit-reference-line strong {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--oxblood);
+    font-feature-settings: 'lnum', 'tnum';
+  }
+
+  /* === D1 · Fix packs + Independent Solutions shared block === */
+  .independent-block {
+    max-width: var(--container-max);
+    margin: clamp(36px, 5vw, 56px) auto 0;
+  }
+  .ib-head { text-align: center; margin-bottom: clamp(20px, 3vw, 32px); }
+  .ib-h3 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(24px, 2.4vw + 0.5rem, 34px);
+    color: var(--ink);
+    letter-spacing: var(--ls-h2, -0.01em);
+    margin-bottom: 8px;
+  }
+  .ib-sub {
+    font-family: var(--ff-body);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .ib-foot {
+    text-align: center;
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 22px;
+  }
+
+  /* Fix packs grid */
+  .fix-packs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .fix-pack-card {
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    border: 1px solid var(--gold-hairline, rgba(201, 167, 114, 0.35));
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory-warm, #FAF7F2) 100%);
+    background-color: #FAF7F2;
+  }
+  .fp-name {
+    font-family: var(--ff-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .fp-price {
+    font-family: var(--ff-display);
+    font-size: 38px;
+    font-weight: 500;
+    color: var(--oxblood);
+    line-height: 1;
+    margin-bottom: 14px;
+    font-feature-settings: 'lnum', 'tnum';
+  }
+  .fp-once {
+    display: inline-block;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-left: 8px;
+    letter-spacing: 0;
+  }
+  .fp-lead {
+    font-family: var(--ff-display);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--oxblood-ink);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .fp-scope {
+    font-family: var(--ff-body);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    margin-bottom: 22px;
+    flex: 1;
+  }
+  .fp-cta, .is-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--gold-text-strong, #5C3F18);
+    text-decoration: none;
+    transition: color 240ms ease, gap 240ms ease;
+  }
+  .fp-cta:hover, .is-cta:hover { color: var(--oxblood); gap: 10px; }
+  .fp-cta:focus-visible, .is-cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* Independent solutions grid · struck-then-offer */
+  .independent-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .independent-card {
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+    border: 1px solid var(--gold-hairline, rgba(201, 167, 114, 0.35));
+    border-radius: 10px;
+    background: var(--pearl, #F4F0E8);
+    background-color: #F4F0E8;
+  }
+  .is-name {
+    font-family: var(--ff-display);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .is-outcome {
+    font-family: var(--ff-body);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .is-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .is-anchor {
+    font-family: var(--ff-display);
+    font-size: 16px;
+    color: var(--ink-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    opacity: 0.7;
+    font-feature-settings: 'lnum', 'tnum';
+  }
+  .is-offer {
+    font-family: var(--ff-display);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--oxblood);
+    line-height: 1;
+    font-feature-settings: 'lnum', 'tnum';
+  }
+
   @media (max-width: 1024px) {
     .tiers-grid {
       grid-template-columns: 1fr;
@@ -734,6 +1048,8 @@ const featureIcons: Record<string, string> = {
     .tier-enterprise:hover, .tier-elevated:hover {
       transform: translateY(-8px);
     }
+    .fix-packs-grid { grid-template-columns: 1fr; }
+    .independent-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 640px) {
@@ -744,6 +1060,8 @@ const featureIcons: Record<string, string> = {
     .mandate-text { font-size: 12px; letter-spacing: 0.08em; }
     .mandate-actions { gap: 20px; flex-direction: column; }
     .mandate-signature { font-size: 36px; }
+    .independent-grid { grid-template-columns: 1fr; }
+    .audit-reference-line { font-size: 15px; }
   }
 
   /* G.6 · Currency switcher */

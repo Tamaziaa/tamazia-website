@@ -114,6 +114,16 @@ const ADDON_ALIASES = (() => {
   m['gbp domination'] = 'gbp_dom';
   m['regulatory change alerts'] = 'reputation';          // merged INTO reputation
   m['ymyl content'] = 'ymyl';
+  // E7 Independent-Solutions display names → nearest catalogue key so the intake/checkout fallback routes
+  // with a sensible intent label. (Stripe price ids for these are not set; the buttons degrade to the intake
+  // modal regardless — these aliases keep the modal's eyebrow/intent correct.)
+  m['ai authority'] = 'geo';                             // GEO + AI Entity merge
+  m['icp outreach'] = 'cold_email';                      // ICP/cold-email outbound
+  m['online personal branding'] = 'linkedin';            // personal-brand authority
+  m['reputation & crisis'] = 'reputation';
+  m['reputation and crisis'] = 'reputation';
+  m['website remodelling'] = 'website_remodelling';      // no Stripe price; intake-modal fallback
+  m['instagram presence'] = 'instagram_presence';        // no Stripe price; intake-modal fallback
   return m;
 })();
 

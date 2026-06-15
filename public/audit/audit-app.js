@@ -3,17 +3,50 @@
    ============================================================ */
 (function(){
   /* ------------------------------------------------------------------
-     PRICING REFERENCE, keep in sync with src/content/pricing.ts
-     Display-only crib of the canonical GBP figures (British English).
-     The render literals below (FIX_SPRINT, PRICING_TIERS_RENDER, ADDONS,
-     Route 3) remain the live display source; this block is the human
-     cross-check against pricing.ts so the two never silently drift.
-     CTA targets are NOT changed by this block, do not wire Stripe here.
-       fixPacksGbp:        ten 7500 · twenty 12500 · thirty 17500
-       tiers (monthly):    Foundation 2500 · Authority 4500 · Enterprise 9500
-       entryAuditGbp:      1500
-       exposureReportGbp:  unlock 750 · monthlyCover 449
+     PRICES — the ONE source of truth for every figure rendered on this
+     page. Values are copied EXACTLY from src/content/pricing.ts (the
+     repo's canonical price config). audit-app.js is a static asset and
+     cannot import the .ts module at runtime, so the numbers are mirrored
+     here verbatim; every render literal below READS from this block, so
+     the two can never silently drift. British English. GBP integers.
+     If pricing.ts changes, change ONLY this block.
      ------------------------------------------------------------------ */
+  const PRICES = {
+    entryAudit: 1500,                                   // entryAuditGbp
+    // pricingContent.tiers[]: priceGbp (from/month), priceGbpStandard (struck anchor), savesGbp6 (6-month saving)
+    tiers: {
+      foundation: { from:2500, standard:3300, saves6:4800 },
+      authority:  { from:4500, standard:6000, saves6:9000 },
+      enterprise: { from:9500, standard:12700, saves6:19200 },
+    },
+    fixPacks: { ten:7500, twenty:12500, thirty:17500 }, // fixPacksGbp
+    fixPacksLane: 'No retainer required. Buy the fixes, own the work.', // fixPacksLane
+    exposureReport: { unlock:750, monthlyCover:449 },   // exposureReportGbp
+    independent: {                                       // independentSolutionsGbp (anchor→offer, or single price)
+      websiteRemodelling:   { anchor:4800, offer:2400 },
+      aiAuthority:          { anchor:3000, offer:1800 },
+      icpOutreach:          { anchor:2800, offer:1400 },
+      onlinePersonalBranding:{ anchor:2200, offer:1100 },
+      instagramPresence:    { anchor:1800, offer:900 },
+      ymylContent:          { price:1200 },
+      reputationCrisis:     { anchor:3000, offer:1500 },
+      gbpDomination:        { price:850 },
+    },
+  };
+  // FOUNDER-BLOCKED links + contact. Threaded from env via the adapter into window.D.
+  // Each is rendered ONLY when it is a non-empty string; when unset the element is omitted
+  // entirely (no placeholder, no dead button). See PRECHECK §2.
+  const LINKS = (window.D && window.D.links) || {};
+  const BOOKING_URL   = typeof LINKS.booking === 'string' ? LINKS.booking.trim() : '';
+  const CONTACT_PHONE = (window.D && typeof window.D.contactPhone === 'string') ? window.D.contactPhone.trim() : '';
+  const STRIPE = {
+    unlock: strOr(LINKS.stripeUnlock), cover: strOr(LINKS.stripeCover),
+    fix10: strOr(LINKS.stripeFix10), fix20: strOr(LINKS.stripeFix20), fix30: strOr(LINKS.stripeFix30),
+  };
+  function strOr(v){ return (typeof v==='string' && v.trim()) ? v.trim() : ''; }
+  // Stripe Payment Link by fix-pack scope key (10 / 20 / 30 / all→30). '' when unset.
+  function stripeFixLink(k){ return k==='10'?STRIPE.fix10 : k==='20'?STRIPE.fix20 : (k==='30'||k==='all')?STRIPE.fix30 : ''; }
+
   const $ = (s,r=document)=>r.querySelector(s);
   // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
   // plur(1,'is','are')↗'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.
@@ -298,7 +331,7 @@
   // and the 6-month savings framing. Bullets are VERBATIM headlines from src/content/pricing.ts (the pane
   // is the display owner). feats = the 4 shown collapsed; more = the rest, behind "See everything ›".
   const PRICING_TIERS_RENDER=[
-    {key:'foundation',name:'Foundation',standard:3300,from:2500,saves6:4800,wk:'Single-location · local authority',
+    {key:'foundation',name:'Foundation',standard:PRICES.tiers.foundation.standard,from:PRICES.tiers.foundation.from,saves6:PRICES.tiers.foundation.saves6,wk:'Single-location · local authority',
       blurb:'Single-location businesses and small groups building local search authority and compliance defence.',
       feats:[
         'The searches your buyers run when ready to act, targeted with commercial precision',
@@ -312,7 +345,7 @@
         'Monthly reporting that attributes organic search to revenue, not positions',
         'Your primary operating jurisdiction covered, with change notifications',
       ]},
-    {key:'authority',name:'Authority',standard:6000,from:4500,saves6:9000,wk:'Multi-location · two jurisdictions',
+    {key:'authority',name:'Authority',standard:PRICES.tiers.authority.standard,from:PRICES.tiers.authority.from,saves6:PRICES.tiers.authority.saves6,wk:'Multi-location · two jurisdictions',
       blurb:'Multi-location and multi-property brands scaling organic growth across regions and jurisdictions.',
       feats:[
         'Everything in Foundation, included',
@@ -321,7 +354,7 @@
         'The strategy that removes dependency on platforms taking 15 to 25% per booking',
       ],
       more:[
-        'Your Instagram authority grown alongside your rankings',
+        'Online personal branding grown alongside your rankings',
         'Two jurisdictions reviewed on every piece of content simultaneously',
         'Four compliance-reviewed content pieces monthly',
         'Editorial placements in sector-relevant publications',
@@ -329,7 +362,7 @@
         'Regulatory monitoring across both jurisdictions, 72-hour notification',
         'Bi-weekly reporting with revenue attribution across all locations',
       ]},
-    {key:'enterprise',name:'Enterprise',standard:12700,from:9500,saves6:19200,wk:'Full-stack · multi-market mandate',
+    {key:'enterprise',name:'Enterprise',standard:PRICES.tiers.enterprise.standard,from:PRICES.tiers.enterprise.from,saves6:PRICES.tiers.enterprise.saves6,wk:'Full-stack · multi-market mandate',
       blurb:'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
       feats:[
         'Everything in Authority, included',
@@ -338,7 +371,7 @@
         'The compliance standard applied to a Nasdaq-listed company, every jurisdiction',
       ],
       more:[
-        'LinkedIn and Instagram authority grown alongside your rankings',
+        'Online personal branding grown alongside your rankings, across every platform your buyers check',
         'International SEO across up to five markets, full technical implementation',
         'Ten compliance-reviewed content pieces monthly',
         'Every location in your portfolio managed on Google Business Profile',
@@ -364,16 +397,44 @@
   const isFinancial=/financ|bank|wealth|invest|insur|account|fintech|capital|asset manage|advis/.test(_sectorStr);
   const gbpAdRule=isHealthcare?'MHRA and sector ad rules':'your sector’s advertising rules';
   const coldSendRule=isFinancial?'FCA and COBS-compliant sends':'jurisdiction-compliant, opt-out-respecting sends';
-  // Full add-on catalogue (value-only, leads with the outcome USP). Mirrors _commerce.js.
-  // Founder merges: AI Entity + Knowledge Panel folded INTO GEO; Reputation + Crisis merged WITH Regulatory Change
-  // Alerts; LinkedIn drops "per executive". Kept in sync with _commerce.js ADDON_CATALOGUE.
+  // Independent Solutions (E7): the seven standalone programmes + GBP Domination. Each leads with the RESULT,
+  // then carries a one-line scope and five concrete steps. Prices come from PRICES.independent (pricing.ts):
+  // anchor struck through, offer shown. AI Authority merges the former GEO + AI Entity/Knowledge-Panel work;
+  // its measurement is framed as REPORTING, never a guarantee. Instagram carries no follower guarantee. No 'we'/'our'.
+  const I=PRICES.independent;
   const ADDONS=[
-    {nm:'GEO / AI Search Presence', gbp:1800, was:950, unit:'mo', usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the machine-readable entity they read first. AI-referred visitors arrive with high intent. The only compliance-reviewed GEO for regulated firms.', spec:['Per-engine citation measurement across all 6 engines','Entity, schema, llms.txt and Wikidata build','Google Knowledge Panel and sameAs across every verified profile','Compliance review of what AI says about you','Monthly share of voice against named rivals'], hero:true},
-    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same compliance-first outbound engine, working for your pipeline.', spec:['Built on the 400+ rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
-    {nm:'LinkedIn Executive Authority', gbp:1100, was:750, unit:'mo', usp:'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.', spec:['Dual distribution, LinkedIn and Google','8 to 12 posts per month','Every post compliance-checked','Builds the named-expert E-E-A-T signal']},
-    {nm:'Reputation, Crisis + Regulatory Alerts', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression and 24-hour crisis response, plus every new ruling in your sector the day it lands. Protect the reputation your pipeline depends on, and move before enforcement does.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Every new sector ruling flagged with the exact page and rule affected','Sector and jurisdiction filtered, never generic noise']},
-    {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
-    {nm:'YMYL Content', gbp:800, was:550, unit:'piece', usp:'Per compliance-reviewed piece. Health and legal grade, held to Google\'s highest YMYL standard, not generic.', spec:['1,200 or more words, reviewed before publish','Passes your compliance function first time','Held to Google\'s YMYL standard','Cheaper than fixing content that fails review']},
+    {nm:'Website Remodelling', anchor:I.websiteRemodelling.anchor, offer:I.websiteRemodelling.offer, unit:'one-time', hero:true,
+      scope:'A full rebuild of the site that sells, on a compliant, fast, conversion-led foundation.',
+      usp:'The site buyers actually trust and act on. Rebuilt for speed, clarity and conversion, with every page reviewed against your sector’s law before it ships.',
+      spec:['Audit of the current site against speed, conversion and compliance','Information architecture and page plan mapped to buyer intent','Design and build on a Core-Web-Vitals-clean foundation','Every page legally reviewed before launch','Handover with the work owned outright once paid']},
+    {nm:'AI Authority', anchor:I.aiAuthority.anchor, offer:I.aiAuthority.offer, unit:'mo', hero:true,
+      scope:'GEO and entity authority merged: be the named answer across the AI engines, with the machine-readable identity they read first.',
+      usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the entity they read first. The only compliance-reviewed AI authority programme for regulated firms.',
+      spec:['Entity, schema, llms.txt and Wikidata build','Google Knowledge Panel and sameAs across every verified profile','Answer-surface content targeting real buyer prompts','Compliance review of what AI says about you','Per-engine position and share-of-voice reporting against named rivals (a report, not a guaranteed placement)']},
+    {nm:'ICP Outreach', anchor:I.icpOutreach.anchor, offer:I.icpOutreach.offer, unit:'mo',
+      scope:'Compliant outbound to your exact buyer, the same engine that found you.',
+      usp:'Your exact buyer reached at scale: 25,000 to 30,000 ICP-targeted, compliance-reviewed emails a month, every lead tracked and classified by intent.',
+      spec:['ICP defined and 25,000 to 30,000 targeted contacts sourced monthly','A compliant B2B template built per jurisdiction','Five to seven follow-ups per prospect, reply-stopped','Deliverability managed with inbox rotation',coldSendRule]},
+    {nm:'Online Personal Branding', anchor:I.onlinePersonalBranding.anchor, offer:I.onlinePersonalBranding.offer, unit:'mo',
+      scope:'The founder and partners made visible and credible across every platform buyers check.',
+      usp:'The named-expert authority enterprise buyers and referral partners evaluate before any conversation. Built across every platform they check, not one.',
+      spec:['Voice and positioning captured for each principal','Ghostwritten, SEO-optimised posts published on a schedule','Every post compliance-checked before it publishes','Profiles optimised across the platforms buyers check','Engagement and reach reported monthly']},
+    {nm:'Instagram Presence', anchor:I.instagramPresence.anchor, offer:I.instagramPresence.offer, unit:'mo',
+      scope:'A credible, compliant Instagram presence aligned to your brand.',
+      usp:'The social proof buyers check before they reach the website. Built through sector-aligned content and engagement, held to your sector’s ad rules.',
+      spec:['Content plan aligned to the brand and sector','Posts and stories produced on a schedule','Sector-aligned audience engagement','Every post checked against '+gbpAdRule,'Reach and engagement reported monthly (no follower guarantee)']},
+    {nm:'YMYL Content', price:I.ymylContent.price, unit:'piece',
+      scope:'Health and legal grade content, per compliance-reviewed piece.',
+      usp:'Content that passes your compliance function first time. Health and legal grade, held to Google’s highest Your-Money-or-Your-Life standard, never generic.',
+      spec:['1,200 or more words per piece','Reviewed against your sector’s law before it publishes','Held to Google’s YMYL standard','Structured for search and AI citation','Cheaper than the internal cost of content that fails review']},
+    {nm:'Reputation & Crisis', anchor:I.reputationCrisis.anchor, offer:I.reputationCrisis.offer, unit:'mo',
+      scope:'Real-time reputation cover with a crisis playbook on standby, and every new ruling the day it lands.',
+      usp:'Protect the reputation your pipeline depends on, and move before enforcement does. Real-time monitoring, pre-built suppression and 24-hour crisis response, plus every new ruling in your sector flagged the day it appears.',
+      spec:['Real-time review, mention and press monitoring','Suppression architecture, not just alerting','A crisis playbook on standby with the founder','Every new sector ruling flagged with the exact page and rule affected','Sector and jurisdiction filtered, never generic noise']},
+    {nm:'GBP Domination', price:I.gbpDomination.price, unit:'mo',
+      scope:'Local map dominance, up to three locations, every element compliance-checked.',
+      usp:'Own the local pack that drives 44 percent of search clicks. 30,000 or more compliance-checked map citations per location, every listing and review response reviewed.',
+      spec:['Up to three locations, each with its own category strategy','30,000 or more map citations per location','Posting schedule, Q&A and review response system','Every GBP element checked against '+gbpAdRule,'Local position reported monthly']},
   ];
   // ---- interactive trajectory: current (flat/declining) vs Tamazia-projected (rising) ----
   // Reads real numbers from D (score, projected.wk12/wk24, trajectory). Hovering a tier tab
@@ -422,6 +483,83 @@
     </div>`;
   }
 
+  /* ---------------- ROUTE 3 (E6): recurring Exposure Report cover ---------------- */
+  // Absorbs the former standalone "Compliance Monitoring" + "Regulatory Change Alerts" add-ons (they appear
+  // NOWHERE else now). Offer model: a one-time £750 unlock that INCLUDES the first month of monthly cover,
+  // then £449/month ongoing. Prices from PRICES.exposureReport. The eight specs carry an inline hover detail
+  // (data-tip) so the block stays compact. Unlock + Cover are FOUNDER-BLOCKED direct Payment Links (rendered
+  // only when STRIPE_LINK_UNLOCK / STRIPE_LINK_COVER are set); the data-subscribe="compliance" path is the
+  // always-valid fallback and its contract (data-trial, slug+hash capture in startAddon) is UNCHANGED so the
+  // Stripe webhook can still flip audit_pages.unlocked for this exact page. Cold minted pages (D.unlocked=true)
+  // skip the paywall: the locked fixes are already open, so the block leads with the founder oversight framing
+  // and offers ongoing cover, never an "unlock".
+  function route3(){
+    const unlock=PRICES.exposureReport.unlock, cover=PRICES.exposureReport.monthlyCover;
+    const specs=[
+      ['The full Exposure Report','Every locked fix in this report opened in full, plus the complete compliance, search and AI-visibility assessment.'],
+      ['Monthly re-scan','This exact audit re-run on your live data every month, so the record always reflects the site as it stands today.'],
+      ['Change log','A month-by-month history of what moved: findings closed, new gaps, score and exposure over time.'],
+      ['72-hour breach alert','A new breach on your live site flagged within 72 hours of appearing, before enforcement or a competitor moves.'],
+      ['Regulatory change alerts','Every new ruling in your sector flagged the day it lands, with the exact page and rule affected.'],
+      ['Board-ready quarterly certificate','An enhanced quarterly certificate your committee and insurer can file, benchmarked against your named competitors.'],
+      ['Search and AI position tracking','Your rankings and AI share of voice tracked over time against the rivals named alongside you.'],
+      ['Founder oversight','Aman Pareek reviews the monthly record personally. Your team’s work is tracked, not just the gaps.'],
+    ];
+    const specList=`<ul class="r3-list r3-specs">${specs.map(s=>`<li><span class="r3-spec-t">${escH(s[0])}</span><span class="r3-spec-q" data-tip="${escH(s[1])}" tabindex="0" role="note" aria-label="${escH(s[0])}: ${escH(s[1])}">?</span></li>`).join('')}</ul>`;
+
+    if(D.unlocked){
+      // Cold / already-unlocked page: no paywall. Lead with founder oversight + ongoing cover.
+      const coverBtn = STRIPE.cover
+        ? `<a class="btn solid block" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">Start monthly cover&nbsp;↗</a>`
+        : `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
+      return `
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Keep this report live</h3></div>
+    <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: founder-reviewed cover that re-runs this audit on your live data every month.</p>
+    <div class="route route3">
+      <div class="r3-rib">Founder oversight, every month</div>
+      <div class="r3-grid">
+        <div class="r3-main">
+          <div class="fx-eyebrow">This exact report, kept current</div>
+          <h3 class="r3-h">The standing record General Counsels, Heads of Compliance, Marketing Directors and CFOs quote in board packs.</h3>
+          ${specList}
+        </div>
+        <div class="r3-side">
+          <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>/month</small></div>
+          ${coverBtn}
+          <div class="r3-terms">Monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>
+        </div>
+      </div>
+    </div>`;
+    }
+
+    // Standard locked page: the paywall. Unlock includes the first month of cover, then £449/mo.
+    const unlockBtn = STRIPE.unlock
+      ? `<a class="btn solid block" href="${escH(STRIPE.unlock)}" target="_blank" rel="noopener">Unlock the full report&nbsp;↗</a>`
+      : `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
+    const coverBtn = STRIPE.cover
+      ? `<a class="btn block r3-cover-btn" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">See monthly cover&nbsp;↗</a>`
+      : '';
+    return `
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
+    <p class="plan-sub r3-gold">Unlock the full Exposure Report, ${priceSpan(unlock)}. Your first month of monthly cover is included. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>
+    <div class="route route3">
+      <div class="r3-rib">Where most board-rooms start</div>
+      <div class="r3-grid">
+        <div class="r3-main">
+          <div class="fx-eyebrow">This exact report, in your inbox every month</div>
+          <h3 class="r3-h">Unlock every locked fix now, then re-run this audit on your live data each month.</h3>
+          ${specList}
+        </div>
+        <div class="r3-side">
+          <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>one-time unlock</small></div>
+          ${unlockBtn}
+          ${coverBtn}
+          <div class="r3-terms">${priceSpan(unlock)} unlocks everything and includes your first month of cover. Then ${priceSpan(cover)}/mo. Cancel anytime.</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
   function planAndPricing(){
     const TIERS=planData();
     const recT=TIERS.find(t=>t.rec)||TIERS[2];
@@ -432,12 +570,12 @@
     const wk24=(D.projected&&D.projected.wk24)||(D.trajectory&&D.trajectory[2]&&D.trajectory[2].v)||score;
     const topFix=((D.fixes||[])[0]||{}).title||'your highest-severity finding';
 
-    // ---- Fix Sprint tiers (Route 1): top 10 / top 20 / all ----
+    // ---- Fix Sprint tiers (Route 1): top 10 / top 20 / top 30. Prices from PRICES.fixPacks. ----
     const _issuesTotal=(D.counts&&(D.counts.total||((D.counts.critical||0)+(D.counts.high||0)+(D.counts.medium||0)+(D.counts.low||0))))||+D.rulesChecked||0;
     const FIX_SPRINT=[
-      {k:'10',label:'Top 10',scope:'top 10',price:7500,anchor:25000,weeks:8,n:Math.min(10,_issuesTotal||10)},
-      {k:'20',label:'Top 20',scope:'top 20',price:12500,anchor:41000,weeks:16,n:Math.min(20,_issuesTotal||20)},
-      {k:'all',label:'All issues',scope:'all',price:17500,anchor:65000,weeks:24,n:(_issuesTotal&&_issuesTotal>20?_issuesTotal:30)},
+      {k:'10',label:'Top 10',scope:'top 10',price:PRICES.fixPacks.ten,anchor:25000,weeks:8,n:Math.min(10,_issuesTotal||10)},
+      {k:'20',label:'Top 20',scope:'top 20',price:PRICES.fixPacks.twenty,anchor:41000,weeks:16,n:Math.min(20,_issuesTotal||20)},
+      {k:'30',label:'Top 30',scope:'top 30',price:PRICES.fixPacks.thirty,anchor:65000,weeks:24,n:(_issuesTotal&&_issuesTotal>30?30:(_issuesTotal>20?_issuesTotal:30))},
     ];
     const fixOutcomes=[
       `Your highest-severity findings closed first, in priority order, starting with ${topFix.toLowerCase()}`,
@@ -457,9 +595,10 @@
     <div class="cur-bar" role="tablist" aria-label="Display currency"><span class="cur-lbl">Prices in</span>${['GBP','USD','EUR','AED'].map(c=>{const s=CURRS[c].sym.trim();const lab=(s&&s!==c)?s+' '+c:c;return `<button class="cur-btn${_curState.code===c?' active':''}" data-cur="${c}" type="button" role="tab" aria-selected="${_curState.code===c?'true':'false'}">${lab}</button>`;}).join('')}<span class="cur-note">quoted &amp; invoiced in GBP</span></div>
 
     <div class="subhead" style="margin-top:12px"><span class="nt">↳</span><h3>Route 1 · One-time Fix Sprint</h3></div>
+    <p class="plan-sub r1-lane">${escH(PRICES.fixPacksLane)}</p>
     <div class="route route1">
       <div class="fixbox r1-fixbox">
-        <div class="fx-rib">Anchor offer</div>
+        <div class="fx-rib">One-time · no retainer</div>
         <div class="r1-toggle r1-toggle-dark" role="tablist" aria-label="Choose Fix Sprint scope">${FIX_SPRINT.map((s,i)=>`<button class="r1-tab${i===0?' active':''}" data-fixtier="${s.k}" data-price="${s.price}" data-anchor="${s.anchor}" data-scope="${s.scope}" data-n="${s.n}" data-weeks="${s.weeks}" type="button" role="tab" aria-selected="${i===0?'true':'false'}"><span class="r1t-l">${s.label}</span><small class="cmoney" data-gbp="${s.price}">${fmtMoney(s.price)}</small></button>`).join('')}</div>
         <div class="fx-main">
           <div class="fx-body">
@@ -471,7 +610,8 @@
           <div class="fx-side">
             <div class="fx-price"><span class="fx-was r1-was cmoney" data-gbp="${FIX_SPRINT[0].anchor}">${fmtMoney(FIX_SPRINT[0].anchor)}</span><b class="r1-price cmoney" data-gbp="${FIX_SPRINT[0].price}">${fmtMoney(FIX_SPRINT[0].price)}</b></div>
             <div class="fx-anchor r1-cap">One-time · fixed scope · <span class="r1-weeks">${FIX_SPRINT[0].weeks}</span> weeks</div>
-            <a class="btn solid block fx-cta" data-book="one_time_fix" data-fixtier="10">Start the Fix Sprint&nbsp;↗</a>
+            ${(STRIPE.fix10||STRIPE.fix20||STRIPE.fix30)?`<a class="btn solid block r1-buy" href="${escH(STRIPE.fix10||'#')}" target="_blank" rel="noopener" data-fixtier="10"${STRIPE.fix10?'':' hidden'}>Buy the Fix Sprint&nbsp;↗</a>`:''}
+            <a class="btn block fx-cta" data-book="one_time_fix" data-fixtier="10">${STRIPE.fix10?'Or scope it with the founder ↗':'Start the Fix Sprint&nbsp;↗'}</a>
           </div>
         </div>
       </div>
@@ -488,43 +628,28 @@
         <div class="t3-more tl-more" hidden><ul>${t.more.map(f=>`<li>${escH(f)}</li>`).join('')}</ul></div>
         <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">See all inclusions</button><a class="btn block tl-cta" data-book="package" data-tier="${t.name}">Begin ${/^[aeiou]/i.test(t.name)?'an':'a'} ${t.name} enquiry ↗</a></div>
       </div>`).join('')}</div>
-    <p class="plan-sub tl-note">Every engagement opens with the ${priceSpan(1500)} audit you are reading. A six-month commitment unlocks the pilot rate shown; thereafter it is a 90-day rolling mandate, cancellable in writing. Quoted &amp; invoiced in GBP.</p>
+    <p class="plan-sub tl-note">Every engagement opens with the ${priceSpan(PRICES.entryAudit)} audit you are reading. A six-month commitment unlocks the pilot rate shown; thereafter it is a 90-day rolling mandate, cancellable in writing. Quoted &amp; invoiced in GBP.</p>
 
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
-    <div class="route route3">
-      <div class="r3-rib">Where most board-rooms start</div>
-      <div class="r3-grid">
-        <div class="r3-main">
-          <div class="fx-eyebrow">This exact report, in your inbox every month</div>
-          <h3 class="r3-h">Unlock every locked fix now, then re-run this audit on your live data each month.</h3>
-          <p class="r3-line">The standing record <b>General Counsels, Heads of Compliance, Marketing Directors and CFOs</b> quote in board packs and quarterly reports. Compliance, search and AI visibility, tracked over time.</p>
-          <ul class="r3-list">
-            <li>Every locked fix in this report, opened in full</li>
-            <li>Any change in the law in your sector, <b>notified within 72 hours</b></li>
-            <li>An enhanced <b>quarterly board-ready certificate</b></li>
-            <li>Benchmarked against your named competitors, with your team's work tracked</li>
-            <li>A new breach caught the day it appears, before enforcement does</li>
-          </ul>
-        </div>
-        <div class="r3-side">
-          <div class="r3-price"><span class="r3-was cmoney" data-gbp="1500">${fmtMoney(1500)}</span><b class="cmoney" data-gbp="750">${fmtMoney(750)}</b><small>/month</small></div>
-          <a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>
-          <div class="r3-terms">First month free, then ${priceSpan(750)}/mo. Cancel anytime.</div>
-        </div>
-      </div>
-    </div>
+    ${route3()}
 
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Specialist capabilities, each one a programme in its own right</h3></div>
-    <p class="plan-sub">Take any of these on its own, or layer it onto a route above. Billed monthly, cancel anytime. Each is the same compliance-first engine behind this report, pointed at a single lever. ${D.upsellProof}</p>
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Independent Solutions, each one a programme in its own right</h3></div>
+    <p class="plan-sub">Take any of these on its own, or layer it onto a route above. Each is the same compliance-first engine behind this report, pointed at a single lever. ${D.upsellProof}</p>
     <div class="addon-grid">
-      ${ADDONS.map(a=>`<div class="addon ${a.hero?'ag-hero':''} ${a.hot?'ag-hot':''}" tabindex="0">
-        <div class="ah"><div class="an">${a.nm}</div>
-          <div class="ap"><span class="apwas cmoney" data-gbp="${a.gbp*2}">${fmtMoney(a.gbp*2)}</span><b class="cmoney" data-gbp="${a.gbp}">${fmtMoney(a.gbp)}</b><small>/${a.unit}</small></div></div>
-        <div class="tag">${a.usp}</div>
-        <div class="more"><div class="aspec-h">What you get</div><ul>${a.spec.map(s=>`<li>${s}</li>`).join('')}</ul></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">Full spec</button><a class="btn gold" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}">Add ${a.nm.split(' ')[0]} ↗</a></div>
-      </div>`).join('')}
+      ${ADDONS.map(a=>{
+        const off=(a.offer!=null)?a.offer:a.price;          // the price actually charged
+        const priceHtml=(a.anchor!=null)
+          ? `<span class="apwas cmoney" data-gbp="${a.anchor}">${fmtMoney(a.anchor)}</span><b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`
+          : `<b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`;
+        return `<div class="addon ${a.hero?'ag-hero':''}" tabindex="0">
+        <div class="ah"><div class="an">${escH(a.nm)}</div>
+          <div class="ap">${priceHtml}</div></div>
+        <div class="ascope">${escH(a.scope)}</div>
+        <div class="tag">${escH(a.usp)}</div>
+        <div class="more"><div class="aspec-h">How it runs, step by step</div><ol class="aspec-steps">${a.spec.map(s=>`<li>${escH(s)}</li>`).join('')}</ol></div>
+        <div class="foot"><button class="moretoggle" data-more="addon">The five steps</button><a class="btn gold" data-addon="${escH(a.nm)}" data-price="${gbpFmt(off)}">Add ${escH(a.nm.split(' ')[0])} ↗</a></div>
+      </div>`;}).join('')}
     </div>
+    <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency’s control and are not guaranteed. Full terms: /legal/service-terms.</p>
 
     ${trustedStrip()}
 
@@ -552,6 +677,21 @@
         <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint call calendar"></div>
         <a class="btn solid block" data-book="one_time_fix">Book a Fix Sprint call ↗</a></div>
     </div>
+
+    <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>Prefer a written reply? Leave your details</h3></div>
+    <p class="plan-sub">Send the basics and the founder responds directly. No obligation, no sales sequence.</p>
+    <form class="audit-bookform" novalidate aria-label="Contact the founder">
+      <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <div class="abf-grid">
+        <label class="abf-field"><span>Your name</span><input name="name" autocomplete="name" value="${escH((D.meta&&D.meta.company)||'')}"></label>
+        <label class="abf-field"><span>Website</span><input name="audit-input" autocomplete="url" value="${escH((D.meta&&D.meta.domain)||'')}"></label>
+        <label class="abf-field"><span>Email *</span><input name="email" type="email" required autocomplete="email" placeholder="you@firm.com"></label>
+        <label class="abf-field"><span>Sector</span><input name="sector" value="${escH((D.meta&&D.meta.sector)||'')}"></label>
+      </div>
+      <div class="abf-err" role="alert" hidden></div>
+      <div class="abf-actions"><button type="submit" class="btn solid abf-submit">Send to the founder ↗</button></div>
+      <p class="abf-fine">Your details are recorded with Tamazia and acknowledged by email. No payment is taken here.</p>
+    </form>
 
     <div class="card pad" style="margin-top:10px;background:var(--cream-2);border:0">
       <div class="capt" style="font-size:11px;line-height:1.6;margin:0">This is an automated marketing diagnostic from publicly observable signals (or the most recent web-archive snapshot where the live site was unreachable). The monetary figures are <b>statutory maximum fines</b>: worst-case ceilings to indicate exposure, not predictions. Not legal advice. Framework catalogue ${D.meta.catalogue}. Produced by Tamazia Ltd, London. Marketing diagnostic only.</div>
@@ -585,6 +725,35 @@
         ${f.length?`<div class="vfix-head">Your three highest-priority breaches, fix these first</div>`:''}
         <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${escH(x.title)}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
       </div></div>`;
+  }
+
+  /* ---------------- FOUNDER SESSION (E2) — directly under the score header ---------------- */
+  // Copy is VERBATIM and locked. Credential EXACTLY "LLM in International Business Law, King's College London".
+  // "Claim the session" → BOOKING_URL when that env is set; otherwise it falls back to the live Cal intake
+  // (data-book="package") so the button is never dead. founder@tamazia.co.uk always renders. The phone line is
+  // FOUNDER-BLOCKED: rendered ONLY when CONTACT_PHONE is set, omitted entirely otherwise (no placeholder).
+  function founderSession(){
+    const claim = BOOKING_URL
+      ? `<a class="btn solid fsx-claim" href="${escH(BOOKING_URL)}" target="_blank" rel="noopener">Claim the session ↗</a>`
+      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH((D.pricing||[]).find(p=>p.rec)?'Enterprise':'Authority')}">Claim the session ↗</a>`;
+    const phone = CONTACT_PHONE
+      ? `<a class="fsx-contact" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}">${escH(CONTACT_PHONE)}</a>`
+      : '';
+    return `<section class="founder-session" aria-label="A direct line to the founder">
+      <div class="fsx-inner">
+        <div class="fsx-copy">
+          <div class="fsx-lead">A direct line to the founder.</div>
+          <div class="fsx-name">Aman Pareek. LLM in International Business Law, King&rsquo;s College London.</div>
+          <p class="fsx-body">Book a real conversation about your brand&rsquo;s growth and compliance.</p>
+        </div>
+        <div class="fsx-act">
+          ${claim}
+          <div class="fsx-contacts">
+            <a class="fsx-contact" href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>${phone}
+          </div>
+        </div>
+      </div>
+    </section>`;
   }
 
   /* ---------------- PSI box (mobile|desktop) — rendered on the FIRST view, under the scorecard ---------------- */
@@ -641,6 +810,7 @@
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
+    ${founderSession()}
     ${heroCharts()}
     ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${SUMM[k].nm}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
   </main>`;
@@ -660,7 +830,8 @@
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
   // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
-  document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
+  // E3: open the in-page pricing DRAWER (no navigation); fall back to opening the pane if the drawer is absent.
+  document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); if(Drawer&&Drawer.open){ Drawer.open(); } else { openPillar('plan'); }});
   // Direct click on a pillar heading opens it IN PLACE: close the others (accordion) and ANCHOR the clicked
   // heading at its current viewport position by compensating the sibling-collapse shift — no jump-to-top.
   // (founder: "any box clicked just cuts the screen from top — fix this".) NAV opens (openPillar) own their scroll.
@@ -736,7 +907,9 @@
   /* ---------------- FREEMIUM LOCK: any locked Tamazia-fix opens Route 3 (unlock the report) ---------------- */
   // The green-gradient lock veil sits over each Tamazia-fix element (never the beat-cards). Clicking any of
   // them opens the Plan pillar and pins Route 3, where a successful payment unlocks the whole link for everyone.
-  function goUnlock(){ openPillar('plan'); requestAnimationFrame(function(){ const r3=document.querySelector('#sec-plan .route3'); if(r3) scrollHeadingTop(r3); }); }
+  // E3: the lock veil opens the pricing DRAWER at Route 3 (no navigation). Falls back to the in-page pane.
+  // Drawer is declared later in this IIFE but is always initialised by the time a click fires this.
+  function goUnlock(){ if(Drawer && Drawer.open){ Drawer.open('.route3'); return; } openPillar('plan'); requestAnimationFrame(function(){ const r3=document.querySelector('#sec-plan .route3'); if(r3) scrollHeadingTop(r3); }); }
   app.addEventListener('click',function(e){ const v=e.target.closest('.tz-lock-veil'); if(!v) return; e.preventDefault(); goUnlock(); });
   app.addEventListener('keydown',function(e){ if(e.key!=='Enter'&&e.key!==' ')return; const v=e.target.closest('.tz-lock-veil'); if(!v)return; e.preventDefault(); goUnlock(); });
 
@@ -781,7 +954,12 @@
       setM('.r1-price',price); setM('.r1-was',anchor); setM('.r1-anchor',anchor);
       const hn=document.querySelector('.r1-headN'); if(hn) hn.textContent=r1.dataset.n;
       document.querySelectorAll('.r1-weeks').forEach(w=>{ w.textContent=r1.dataset.weeks; });
-      const cta=document.querySelector('.fx-cta[data-fixtier]'); if(cta) cta.dataset.fixtier=r1.dataset.fixtier; return; }
+      const cta=document.querySelector('.fx-cta[data-fixtier]'); if(cta) cta.dataset.fixtier=r1.dataset.fixtier;
+      // Stripe buy button (E5): swap its Payment Link to the active scope. Conditional — the link is '' when
+      // that STRIPE_LINK_FIX* env is unset, so we hide the button rather than render a dead href.
+      const buy=document.querySelector('.r1-buy');
+      if(buy){ const url=stripeFixLink(r1.dataset.fixtier); if(url){ buy.href=url; buy.dataset.fixtier=r1.dataset.fixtier; buy.hidden=false; } else { buy.hidden=true; } }
+      return; }
     // Currency toggle (Route prices) — re-format every .cmoney from its GBP base into the chosen currency.
     const cb=e.target.closest('.cur-btn');
     if(cb){ const code=cb.dataset.cur; if(CURRS[code]){ _curState=CURRS[code];
@@ -790,9 +968,16 @@
     // Route 2 — tier card "See all inclusions" reveal.
     const t3=e.target.closest('.t3-toggle');
     if(t3){ const card=t3.closest('.tier3'); const more=card.querySelector('.t3-more'); const open=more.hidden; more.hidden=!open; t3.textContent=open?'Show less':'See all inclusions'; card.classList.toggle('lx-open',open); return; }
-    // Route 3 — Compliance Monitoring: REAL Stripe recurring subscription (£750/mo, first month free).
+    // Route 3 — recurring Exposure Report cover. The 'compliance' value keeps its EXACT legacy contract
+    // (startAddon('Compliance Monitoring', …, {trial}) → /api/stripe/checkout → webhook flips audit_pages.unlocked).
+    // 'exposure_cover' (the cold-page ongoing-cover CTA) routes to the same checkout/intake fallback. Do NOT
+    // change the 'compliance' branch — the freemium unlock depends on it.
     const sub=e.target.closest('[data-subscribe]');
-    if(sub){ e.preventDefault(); Commerce.startAddon('Compliance Monitoring', '£750', sub, { trial:+sub.dataset.trial||0 }); return; }
+    if(sub){ e.preventDefault();
+      const kind=sub.dataset.subscribe;
+      if(kind==='exposure_cover'){ Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.monthlyCover), sub, { trial:0 }); }
+      else { Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.unlock), sub, { trial:+sub.dataset.trial||0 }); }
+      return; }
   });
 
   /* ---------------- PLAN: tier tabs + interactive trajectory morph ---------------- */
@@ -825,13 +1010,68 @@
   app.addEventListener('mouseover',e=>{ const tt=e.target.closest('[data-tier-tab]'); if(tt) morphTrajectory(+tt.dataset.tierTab); });
   app.addEventListener('mouseout',e=>{ const tt=e.target.closest('[data-tier-tab]'); if(tt){ const a=document.querySelector('[data-tier-tab].active'); morphTrajectory(a?+a.dataset.tierTab:0); } });
 
-  /* ---------------- FLOATING CTA, "Fix these now!" scrolls to the plan pane ---------------- */
+  /* ---------------- PRICING DRAWER (E3): in-page slide-over, no navigation ---------------- */
+  // A right-side slide-over that shows the FULL Plan & Pricing pane WITHOUT navigating or opening a new tab.
+  // It renders from the SAME source as the in-page pane: rather than re-rendering (which would duplicate the
+  // #sec-plan id, the .route3 node and double-mount the Cal iframes), it RELOCATES the live #sec-plan node into
+  // the drawer panel and back. The panel lives INSIDE #app so every app-delegated handler (tier tabs, currency,
+  // add-ons, data-book, data-subscribe, the .route3 unlock) keeps firing unchanged. Closing restores the exact
+  // scroll position. The freemium-lock veil and the finding fix-links open the drawer; #sec-plan/.route3 always
+  // resolve because the node is preserved, not cloned.
+  const Drawer=(function(){
+    const plan=document.getElementById('sec-plan');
+    if(!plan) return { open(){}, close(){}, isOpen(){return false;} };
+    // placeholder marks the plan pane's original home so we can put it back in the exact same spot.
+    const home=document.createComment('plan-home'); plan.parentNode.insertBefore(home, plan);
+    const ov=document.createElement('div'); ov.className='pdrawer-ov'; ov.setAttribute('aria-hidden','true');
+    const panel=document.createElement('aside'); panel.className='pdrawer'; panel.setAttribute('role','dialog');
+    panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-label','Plans and pricing'); panel.setAttribute('aria-hidden','true');
+    panel.innerHTML='<div class="pdrawer-bar"><span class="pdrawer-t">Plans &amp; pricing</span><button class="pdrawer-x" aria-label="Close plans">×</button></div><div class="pdrawer-body"></div>';
+    // both overlay + panel sit INSIDE #app so the app-level delegated click/keydown handlers still receive events.
+    app.appendChild(ov); app.appendChild(panel);
+    const body=panel.querySelector('.pdrawer-body');
+    let open=false, savedY=0, lastFocus=null;
+    function isOpen(){ return open; }
+    function doOpen(target){
+      if(open){ if(target) scrollTo(target); return; }
+      open=true; savedY=window.scrollY||window.pageYOffset||0; lastFocus=document.activeElement;
+      plan.open=true;                              // ensure the pane body (and Cal mounts) exist
+      body.appendChild(plan);                      // RELOCATE the live node (no clone, no re-render)
+      ov.classList.add('show'); panel.classList.add('show');
+      ov.setAttribute('aria-hidden','false'); panel.setAttribute('aria-hidden','false');
+      document.body.classList.add('pdrawer-lock');
+      mountPlanCalendars();                        // mount the two inline Cal widgets (guarded by dataset.mounted)
+      try{ panel.querySelector('.pdrawer-x').focus(); }catch(_e){}
+      if(target) requestAnimationFrame(()=>scrollTo(target));
+    }
+    function scrollTo(sel){ try{ const el=body.querySelector(sel); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }catch(_e){} }
+    function doClose(){
+      if(!open) return; open=false;
+      ov.classList.remove('show'); panel.classList.remove('show');
+      ov.setAttribute('aria-hidden','true'); panel.setAttribute('aria-hidden','true');
+      document.body.classList.remove('pdrawer-lock');
+      home.parentNode.insertBefore(plan, home);    // put the pane back in its exact original spot
+      try{ window.scrollTo(0, savedY); }catch(_e){} // restore exact scroll position
+      try{ if(lastFocus&&lastFocus.focus) lastFocus.focus(); }catch(_e){}
+    }
+    ov.addEventListener('click',doClose);
+    panel.querySelector('.pdrawer-x').addEventListener('click',doClose);
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&open) doClose(); });
+    // sticky "Plans" pill (bottom-left; distinct from the bottom-right FAB + Notes toggle).
+    const pill=document.createElement('button'); pill.className='plans-pill'; pill.type='button';
+    pill.innerHTML='<span class="pp-ic">✦</span>Plans'; pill.setAttribute('aria-label','Open plans and pricing');
+    pill.addEventListener('click',()=>doOpen()); document.body.appendChild(pill);
+    return { open:doOpen, close:doClose, isOpen };
+  })();
+
+  /* ---------------- FLOATING CTA, "Fix these now!" opens the pricing drawer ---------------- */
   (function floatingCta(){
     const b=document.createElement('button');
     b.className='fix-fab'; b.type='button';
     b.innerHTML='<span class="ff-dot"></span>Fix these now!';
-    // Phase 11: ALWAYS visible (no hide-on-open). Click opens the plan pane AND scrolls to the Fix Sprint box.
-    b.addEventListener('click',()=>{ openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .route1')||document.querySelector('#sec-plan .route'); if(fx) scrollHeadingTop(fx); }); });
+    // E3: open the in-page drawer at the Fix Sprint, no navigation. Falls back to the in-page pane if the drawer
+    // is unavailable, so the control is never dead.
+    b.addEventListener('click',()=>{ if(Drawer.isOpen&&Drawer.open){ Drawer.open('.route1'); } else { openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .route1')||document.querySelector('#sec-plan .route'); if(fx) scrollHeadingTop(fx); }); } });
     document.body.appendChild(b);
   })();
 
@@ -1087,6 +1327,58 @@
     const plan=document.getElementById('sec-plan'); if(!plan) return;
     if(plan.open) mountPlanCalendars();
     plan.addEventListener('toggle',()=>{ if(plan.open) mountPlanCalendars(); });
+  })();
+
+  /* ---------------- PostHog (E10): identify + event, no-op when unconfigured ---------------- */
+  // Uses the project key threaded onto window.D.posthog (from env). If the PostHog JS lib is already
+  // loaded (window.posthog) we use it; otherwise we POST to the capture API directly. When no key is
+  // present every call is a silent no-op, so the page never errors without analytics configured.
+  const PH=(function(){
+    const cfg=(D&&D.posthog)||{}; const key=(typeof cfg.key==='string'&&cfg.key)?cfg.key:'';
+    const host=((typeof cfg.host==='string'&&cfg.host)?cfg.host:'https://eu.i.posthog.com').replace(/\/$/,'');
+    function identify(distinctId, props){
+      if(!key||!distinctId) return;
+      try{ if(window.posthog&&typeof window.posthog.identify==='function'){ window.posthog.identify(distinctId, props||{}); return; } }catch(_e){}
+      try{ fetch(host+'/capture/',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
+        body:JSON.stringify({api_key:key,event:'$identify',distinct_id:distinctId,properties:Object.assign({'$set':props||{}},{lib:'tamazia-audit'})})}).catch(()=>{}); }catch(_e){}
+    }
+    function capture(event, distinctId, props){
+      if(!key) return;
+      try{ if(window.posthog&&typeof window.posthog.capture==='function'){ window.posthog.capture(event, props||{}); return; } }catch(_e){}
+      try{ fetch(host+'/capture/',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
+        body:JSON.stringify({api_key:key,event:event,distinct_id:distinctId||((D.meta&&D.meta.domain)||'anon'),properties:Object.assign({},props||{},{lib:'tamazia-audit'})})}).catch(()=>{}); }catch(_e){}
+    }
+    return { identify, capture };
+  })();
+
+  /* ---------------- Booking form (E10): name / website / email / sector → Neon, + PostHog ---------------- */
+  // POSTs to /api/audit-request (the proven handleSubmission pipeline: validates, KV-saves, writes Neon `leads`
+  // via syncLeadToNeon, fires Resend acknowledgement + Slack/Telegram founder alert). On success we fire a
+  // PostHog identify (keyed on the email) and an audit_contact_submitted event. Honeypot c_website_2 is server-checked.
+  (function bookForm(){
+    const form=document.querySelector('.audit-bookform'); if(!form) return;
+    const errEl=form.querySelector('.abf-err'); const btn=form.querySelector('.abf-submit');
+    form.addEventListener('submit',async function(ev){
+      ev.preventDefault();
+      const fd=new FormData(form); const body={}; fd.forEach((v,k)=>{ body[k]=v; });
+      const email=String(body.email||'').trim();
+      if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ if(errEl){errEl.textContent='Please enter a valid email address.';errEl.hidden=false;} return; }
+      // fire-fill signal as the buyer commits (before the network round-trip)
+      PH.capture('audit_contact_form_fill', email, { sector:body.sector||'', website:body['audit-input']||'', source:'audit_bookform' });
+      const label=btn.textContent; btn.disabled=true; btn.textContent='Sending…'; if(errEl) errEl.hidden=true;
+      try{
+        const r=await fetch('/api/audit-request',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(Object.assign({}, body, { company:body.name||'', tab:'audit', audit_slug:(D.meta&&D.meta.slug)||'', audit_domain:(D.meta&&D.meta.domain)||'' }))});
+        const res=await r.json().catch(()=>({}));
+        if(!r.ok || (res && res.ok===false && !res.silent)){ throw new Error((res&&res.error)||('http_'+r.status)); }
+        PH.identify(email, { email, name:body.name||'', sector:body.sector||'', website:body['audit-input']||'' });
+        PH.capture('audit_contact_submitted', email, { sector:body.sector||'', website:body['audit-input']||'', source:'audit_bookform' });
+        form.innerHTML='<div class="abf-done">Thank you. Your details are with Tamazia and the founder will reply to '+escH(email)+' directly. A confirmation is on its way to your inbox.</div>';
+      }catch(_e){
+        btn.disabled=false; btn.textContent=label;
+        if(errEl){ errEl.textContent='That could not be sent just now. Please try again, or email founder@tamazia.co.uk.'; errEl.hidden=false; }
+      }
+    });
   })();
 
   // notes toggle

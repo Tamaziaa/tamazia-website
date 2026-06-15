@@ -2,6 +2,7 @@
 import Motif from '../ui/Motif.astro';
 import { contactContent } from '../../content/contact';
 import TurnstileWidget from '../security/TurnstileWidget.astro';
+import FounderLink from '../atoms/FounderLink.astro';
 
 const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl, confidentiality, successMessage } = contactContent;
 ---
@@ -37,12 +38,12 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
         </p>
 
         {fields.map((field: any) => {
-          const inputType = field.type === 'email' ? 'email' : 'text';
+          const inputType = field.type === 'email' ? 'email' : field.type === 'url' ? 'url' : 'text';
           return (
             <div class="field field-float">
               <label for={field.id}>{field.label}{field.required && <span class="required">*</span>}</label>
-              {(field.type === 'text' || field.type === 'email') && (
-                <input type={inputType} id={field.id} name={field.id} required={field.required} autocomplete={field.autocomplete} placeholder=" " />
+              {(field.type === 'text' || field.type === 'email' || field.type === 'url') && (
+                <input type={inputType} id={field.id} name={field.id} required={field.required} autocomplete={field.autocomplete} inputmode={field.type === 'url' ? 'url' : undefined} placeholder=" " />
               )}
               {field.type === 'select' && (
                 <select id={field.id} name={field.id} required={field.required}>
@@ -81,6 +82,11 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
       <!-- Founder directive 2026-06-10: show the original Cal.com calendar inline
            (same embed as /book/, bound to cal.com/tamazia/strategy-call) -->
       <aside class="calendly-pane" aria-label="Schedule directly">
+        {/* D5 · founder call copy (credential exact) beside the calendar. The credential
+            string is the canonical one rendered by FounderLink, so it stays exact and
+            single-sourced. The strategy call is held by the founder in person. */}
+        <p class="founder-call-copy">The strategy call is held by the founder in person.</p>
+        <FounderLink variant="dark" className="contact-founder" />
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
         <div class="calendly-embed" id="contact-cal-inline" role="region" aria-label="Cal.com booking calendar">
@@ -336,6 +342,19 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     border: 1px solid rgba(201, 167, 114, 0.35);
     border-radius: 12px;
     padding: 32px;
+  }
+
+  /* D5 · founder call copy + canonical founder credential, top of the booking pane */
+  .founder-call-copy {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--pearl);
+    margin-bottom: 14px;
+  }
+  .calendly-pane :global(.founder-link.contact-founder) {
+    margin-bottom: 22px;
   }
 
   .calendly-heading {

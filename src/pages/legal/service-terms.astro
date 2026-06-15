@@ -1,0 +1,121 @@
+---
+// Mission D · D6 · Service Terms · DRAFT FOR LEGAL REVIEW.
+// Full draft document (not a skeleton). Every section carries working draft language, but the
+// document is NOT finished legal text and must not be relied upon until a qualified reviewer
+// signs it off. noindex while in draft.
+//
+// Constraints honoured:
+//  - Registered company name, company number, and registered office are NOT asserted here.
+//    They are clearly-marked [TODO: founder] placeholders pending incorporation confirmation.
+//  - The audit reference price is read from the pricing config constant (entryAuditGbp),
+//    never hardcoded as a string.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/schema/Breadcrumbs.astro';
+import { entryAuditGbp } from '../../content/pricing';
+const updated = '13 June 2026';
+const url = 'https://tamazia.co.uk/legal/service-terms/';
+const auditPrice = `£${entryAuditGbp.toLocaleString('en-GB')}`;
+---
+<BaseLayout
+  title="Service Terms (DRAFT FOR LEGAL REVIEW) · Tamazia"
+  description="Draft service terms for Tamazia engagements. Pending legal review."
+  canonical={url}
+  noindex={true}
+>
+  <Breadcrumbs items={[{name: "Home", url: "/"}, {name: "Legal", url: "/legal/data-protection/"}, {name: "Service Terms", url: "/legal/service-terms/"}]} />
+  <main id="main" class="legal">
+    <div class="draft-banner" role="note">DRAFT FOR LEGAL REVIEW · not yet in force</div>
+    <header>
+      <p class="eyebrow">Last revised {updated} · draft</p>
+      <h1>Service Terms</h1>
+      <p class="lede">These service terms govern engagements with Tamazia. The document is a draft pending legal review and does not yet constitute binding terms. The signed terms supplied with each engagement letter prevail over this page in the event of any conflict.</p>
+    </header>
+
+    <section>
+      <h2>1. Parties and definitions</h2>
+      <p>In these terms, "Tamazia" or "the provider" means [TODO: founder: registered company name], a company registered in England and Wales under company number [TODO: founder: company registration number], whose registered office is at [TODO: founder: registered office address]. "Client" means the person or organisation that accepts an engagement letter. "Engagement letter" means the written proposal or statement of work that, once signed, forms the contract between the parties and incorporates these terms by reference.</p>
+      <p>"Deliverable" means any report, content, asset, or recommendation produced for the client. "Audit" means the one-time compliance, SEO, and GEO assessment described in section 2. "Retainer" means a recurring monthly engagement. "Fix pack" means a defined, one-time package of corrective work. "Independent solution" means a standalone project priced as a single piece of work.</p>
+    </section>
+
+    <section>
+      <h2>2. Scope of services</h2>
+      <p>Tamazia provides compliance-led search engine optimisation, generative engine optimisation, and editorial content services for organisations operating in regulated sectors. The starting point of most engagements is a paid audit: a one-time compliance, SEO, and GEO assessment with a reference price of {auditPrice} (one-time). The audit reference price is set by the published pricing and is confirmed in the engagement letter for the specific engagement.</p>
+      <p>The precise scope of any ongoing work, whether delivered as a retainer, a fix pack, or an independent solution, is defined in the engagement letter that follows the audit. Nothing on this page or on the wider website is an offer capable of acceptance. A binding relationship is created only by a signed engagement letter.</p>
+    </section>
+
+    <section>
+      <h2>3. Fees, billing, and currency</h2>
+      <p>Fees follow the published pricing as scoped for each engagement and are confirmed in the engagement letter, which sets the final figures for that engagement. The audit reference price is {auditPrice} (one-time). Retainers are billed monthly in advance. Fix packs and independent solutions are billed as set out in the relevant engagement letter.</p>
+      <p>All engagements are invoiced in pounds sterling (GBP) unless the engagement letter states otherwise. Invoices are payable within the period stated in the engagement letter, and in the absence of a stated period, within fourteen days of the invoice date. Fees are exclusive of value added tax and any other applicable taxes, which are added where required by law. Tamazia reserves the right to suspend work on an engagement where an undisputed invoice remains unpaid after written notice.</p>
+    </section>
+
+    <section>
+      <h2>4. Engagement, term, and termination</h2>
+      <p>An engagement begins on the date stated in the signed engagement letter. One-time work, including the audit, fix packs, and independent solutions, concludes on delivery of the agreed deliverables. Retainers run on a rolling monthly basis unless a fixed minimum term is stated in the engagement letter.</p>
+      <p>Either party may end a rolling retainer by giving the notice period stated in the engagement letter, and in the absence of a stated period, thirty days' written notice. Either party may end an engagement immediately by written notice if the other party commits a material breach that is not remedied within fourteen days of written notice, or becomes insolvent. On termination, the client pays for all work performed and all costs committed up to the effective date of termination.</p>
+    </section>
+
+    <section>
+      <h2>5. Client responsibilities</h2>
+      <p>The client provides accurate information, timely access to the systems and accounts required for delivery, and timely review and approval of drafts. Where the client supplies content, claims, or data for publication, the client confirms that it has the right to use that material and that the material is accurate. Delays in client review or approval may extend delivery timelines without liability for Tamazia.</p>
+    </section>
+
+    <section>
+      <h2>6. Intellectual property and ownership of work</h2>
+      <p>On payment in full of the fees due for a deliverable, all intellectual property rights in that deliverable transfer to the client, with no rights retained by Tamazia and no recurring licence fee, consistent with the ownership position stated in the published pricing. Until payment in full is received, all rights in the deliverable remain with Tamazia.</p>
+      <p>Tamazia retains ownership of its pre-existing methods, templates, frameworks, and know-how, and of any general skills and experience developed during the engagement. The client grants Tamazia a limited licence to use the client's trade marks and materials only as needed to perform the engagement.</p>
+    </section>
+
+    <section>
+      <h2>7. Confidentiality</h2>
+      <p>Each party keeps the other party's confidential information confidential and uses it only for the purpose of the engagement. Engagements are conducted under a separate non-disclosure agreement on request. This obligation does not apply to information that is or becomes public through no breach of these terms, or that a party is required to disclose by law or by a regulator.</p>
+    </section>
+
+    <section>
+      <h2>8. Compliance, warranties, and limitations</h2>
+      <p>Content produced for publication passes through a compliance review before it is published, applied to the advertising, financial promotion, and sector rules relevant to the client's jurisdiction and sector. That review reduces risk; it does not eliminate it, and it is not legal advice. The client remains responsible for obtaining its own legal and regulatory advice where appropriate.</p>
+      <p>Tamazia performs the services with reasonable skill and care. Tamazia does not guarantee any specific search ranking, traffic level, placement in a generative engine result, or commercial outcome, because those outcomes depend on factors outside Tamazia's control, including third-party platform behaviour. Except as expressly stated, all warranties implied by law are excluded to the fullest extent permitted.</p>
+    </section>
+
+    <section>
+      <h2>9. Liability</h2>
+      <p>Nothing in these terms limits or excludes liability for death or personal injury caused by negligence, for fraud or fraudulent misrepresentation, or for any liability that cannot be limited or excluded by law.</p>
+      <p>Subject to the paragraph above, Tamazia is not liable for any indirect, incidental, consequential, or special loss, nor for any loss of profit, revenue, business, goodwill, or anticipated savings, whether arising in contract, tort, or otherwise. Subject to the same paragraph, Tamazia's total aggregate liability arising out of or in connection with an engagement is limited to the total fees paid by the client to Tamazia for that engagement in the twelve months preceding the event giving rise to the liability. The precise cap and any variation to it are confirmed in the engagement letter.</p>
+    </section>
+
+    <section>
+      <h2>10. Data protection</h2>
+      <p>Each party complies with applicable data protection law. Tamazia's processing of personal data is described in the <a href="/legal/data-protection/">data protection notice</a>, and processing carried out on behalf of the client is governed by the <a href="/legal/dpa/">data processing agreement</a>. Outbound research-led contact made by Tamazia is described in the <a href="/legal/cold-outreach-privacy-notice/">cold outreach privacy notice</a>.</p>
+    </section>
+
+    <section>
+      <h2>11. Governing law and jurisdiction</h2>
+      <p>These terms and any engagement governed by them, and any dispute or claim arising out of or in connection with them, including any non-contractual dispute or claim, are governed by and construed in accordance with the law of England and Wales. The courts of England and Wales have exclusive jurisdiction to settle any such dispute or claim, save that the dispute-resolution provisions of an individual engagement letter, where stated, prevail for that engagement.</p>
+    </section>
+
+    <section>
+      <h2>12. General</h2>
+      <p>If any provision of these terms is held to be invalid or unenforceable, the remaining provisions continue in force. A failure to enforce a provision is not a waiver of it. These terms, together with the signed engagement letter and the documents it incorporates, form the entire agreement between the parties for the engagement. No variation is effective unless made in writing and signed by both parties. A person who is not a party to an engagement has no rights to enforce these terms under the Contracts (Rights of Third Parties) Act 1999.</p>
+    </section>
+
+    <section>
+      <h2>13. Contact</h2>
+      <p>Questions about these terms should be sent to <a href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>. Written correspondence should be addressed to [TODO: founder: registered company name] at [TODO: founder: registered office address].</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal { max-width: 760px; margin: 0 auto; padding: 64px 24px 96px; font-family: 'Inter', system-ui, sans-serif; color: #2A0C14; line-height: 1.65; }
+  .legal h1 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 44px; margin: 8px 0 16px; line-height: 1.15; }
+  .legal h2 { font-family: var(--ff-display, 'Playfair Display', Georgia, serif); font-weight: 500; font-size: 22px; margin: 40px 0 12px; }
+  .legal .eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; color: #5C4047; }
+  .legal .lede { font-size: 17px; color: #2A0C14; }
+  .legal section { border-top: 1px solid #E5DDCB; padding-top: 24px; margin-top: 24px; }
+  .legal a { color: #2A0C14; text-decoration: underline; text-decoration-color: #C9A772; }
+  .draft-banner {
+    background: #2A0C14; color: #FAF7F2; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; font-size: 12px; text-align: center; padding: 12px 16px;
+    border-radius: 4px; margin-bottom: 28px; border: 1px solid #C9A772;
+  }
+</style>

@@ -8,7 +8,8 @@ export const heroContent = {
   dateline: [
     'MEMBER, CHARTERED INSTITUTE OF ARBITRATORS',
     // 'AMERICAN BAR ASSOCIATION' line removed Phase 10 pending verification
-    "LLM, KING'S COLLEGE LONDON",
+    // C2/Mission-D · credential standardised to canonical wording (caps to match this marquee row)
+    "LLM IN INTERNATIONAL BUSINESS LAW, KING'S COLLEGE LONDON",
   ],
 
   navItems: ['Why Us', 'Sectors', 'Cases', 'Process', 'Pricing', 'FAQ', 'Resources'],
@@ -65,7 +66,7 @@ export const heroContent = {
     title: 'Led by a founder. Run to a standard.',
     body: "An {{LLM in International Business Law}}, King’s College London, at the head of a practice delivering compliance-engineered content, AI search placement, and regulatory reading across every jurisdiction.",
     credentials: [
-      "KING'S COLLEGE LONDON · LLM INTERNATIONAL BUSINESS LAW",
+      "LLM IN INTERNATIONAL BUSINESS LAW, KING'S COLLEGE LONDON",
       'CHARTERED INSTITUTE OF ARBITRATORS',
     // 'AMERICAN BAR ASSOCIATION' line removed Phase 10 pending verification
     ],
@@ -132,7 +133,7 @@ export const heroContent = {
   signature: {
     vettedBy: 'Signed by',  /* A3 · was 'Vetted by' which read backwards */
     name: 'Aman Pareek',
-    caption: ['Founder', "LLM, King’s College London"],
+    caption: ['Founder', "LLM in International Business Law, King’s College London"],
   },
 };
 

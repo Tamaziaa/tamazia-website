@@ -8,8 +8,10 @@ export async function syncLeadToNeon(env, tab, body, request_id) {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
     const company = body.company || '';
     const sector = body.sector || body['audit-sector'] || '';
-    const domain = (body['audit-input'] || body.c_homepage_url || (email.split('@')[1] || ''))
-      .replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+    // Mission D · D5 · prefer the explicit website field, then audit input, then honeypot-adjacent
+    // fields, then the email domain. www. is stripped so the stored domain stays canonical.
+    const domain = (body.website || body['audit-input'] || body.c_homepage_url || (email.split('@')[1] || ''))
+      .replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '').trim();
     const name = body.name || '';
     const note = body.outcome || '';
     const channel = 'website_form_' + (tab || 'unknown');

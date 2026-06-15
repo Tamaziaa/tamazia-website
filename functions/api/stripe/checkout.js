@@ -46,7 +46,10 @@ export async function onRequestPost(context) {
     return json({ ok: false, fallback: true, addon: key, reason: 'stripe_not_configured' });
   }
   const priceId = addonPriceId(env, key);
-  if (!priceId) {
+  // Intake-only solutions (e.g. Website Remodelling, Instagram Presence) resolve to a key with no
+  // ADDON_CATALOGUE entry and no Stripe price. Route them to the founder intake the same way an
+  // unconfigured price does, so the later ADDON_CATALOGUE[key] reads can never hit `undefined`.
+  if (!priceId || !ADDON_CATALOGUE[key]) {
     return json({ ok: false, fallback: true, addon: key, reason: 'price_not_configured' });
   }
 

@@ -71,9 +71,9 @@
     return `
     <aside class="rail"><div class="rail-inner">
       <div class="rail-brand"><a href="https://tamazia.co.uk" target="_blank" rel="noopener" aria-label="Tamazia, visit tamazia.co.uk"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></a></div>
-      <h1>${D.meta.company}</h1>
+      <h1>${escH(D.meta.company)}</h1>
       <div class="rail-report"><div class="rr-name">The Exposure Report</div><div class="rr-sub">Compliance, Search and AI Visibility</div></div>
-      <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
+      <div class="rail-meta">${escH(D.meta.sector)}<br>${[D.meta.country,D.meta.city].filter(Boolean).map(escH).join(' · ')}<br>${escH(D.meta.domain)}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
       <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
@@ -142,15 +142,15 @@
       const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
       return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary>
-        <div class="fw-head"><span class="code">${fw.code}</span>
-          <div class="fwn-wrap"><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
+        <div class="fw-head"><span class="code">${escH(fw.code)}</span>
+          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span></div><div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
           <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
-          <div class="fwe">${fw.exp}</div></div>
+          <div class="fwe">${escH(fw.exp)}</div></div>
         <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
       </summary>
       <div class="fwbody">
-        <div class="lbl">Why this framework matters</div>${fw.why}
-        <div class="lbl">${fw.regulator} &middot; recent enforcement</div><div class="action">${fw.action}</div>
+        <div class="lbl">Why this framework matters</div>${escH(fw.why)}
+        <div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}</div>
         ${fw.citation_url?`<div class="lbl">The law</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(fw.name)}, ${escH(fw.regulator)} official source &#8599;</a></div>`:''}
         ${(fw.articleGroups||[]).length?(()=>{const _all=(fw.articleGroups||[]).reduce((s,g)=>s+((g.items||[]).length),0);const _half=Math.ceil(_all/2);let _k=0;return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
         <div class="artlist">${fw.articleGroups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
@@ -224,8 +224,8 @@
       : String(D.geo.aiOverview||'').replace(/^[^.;]*AI Overviews[;.]?\s*/i,'AI Overviews now sit above the classic results for your category; ');
   return `
     <div class="pane-head"><span class="eyebrow">When your buyers ask AI</span>
-      <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+D.meta.company+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+D.meta.company+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+D.meta.company+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
-      <p>${D.geo.rootCause?D.geo.rootCause.reason:'The answer engines decide who to name from structured signals you are missing.'} ${aiOverview}</p></div>
+      <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+escH(D.meta.company)+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+escH(D.meta.company)+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+escH(D.meta.company)+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
+      <p>${D.geo.rootCause?escH(D.geo.rootCause.reason):'The answer engines decide who to name from structured signals you are missing.'} ${escH(aiOverview)}</p></div>
     ${aiCallout}
     <div class="grid g-4-8" style="margin-top:10px">
       <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(radarAxes,210)}</div>
@@ -254,17 +254,17 @@
 
   P.competitors = ()=>`
     <div class="pane-head"><span class="eyebrow">The firms being chosen over you</span>
-      <h2>You versus the firms AI and Google name first for “${D.competitors.bestKeyword}”, and the exact move that overtakes each one.</h2>
+      <h2>You versus the firms AI and Google name first for “${escH(D.competitors.bestKeyword)}”, and the exact move that overtakes each one.</h2>
       <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
     <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them, the specific play, rival by rival</h3></div>
     <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map((c,i)=>`<div class="beatcard">
       <div class="bc-rank">${i+1}</div>
       <div class="bc-body">
-        <div class="bc-top"><span class="bc-rival">${escH(c.name)}</span><span class="bc-sig">${c.signal}</span></div>
-        <div class="bc-move"><span class="bc-k">Beat them by</span> <b>${c.beatBy.fix}</b></div>
-        <div class="bc-proof"><span class="bc-arrow">↳</span> ${c.beatBy.proof}</div>
-        <div class="bc-foot"><span class="bc-metric">▸ ${c.beatBy.metric}</span>${c.beatBy.lever?`<span class="bc-lever"><span class="bc-lk">Tamazia lever</span> ${c.beatBy.lever}</span>`:''}</div>
+        <div class="bc-top"><span class="bc-rival">${escH(c.name)}</span><span class="bc-sig">${escH(c.signal)}</span></div>
+        <div class="bc-move"><span class="bc-k">Beat them by</span> <b>${escH(c.beatBy.fix)}</b></div>
+        <div class="bc-proof"><span class="bc-arrow">↳</span> ${escH(c.beatBy.proof)}</div>
+        <div class="bc-foot"><span class="bc-metric">▸ ${escH(c.beatBy.metric)}</span>${c.beatBy.lever?`<span class="bc-lever"><span class="bc-lk">Tamazia lever</span> ${escH(c.beatBy.lever)}</span>`:''}</div>
       </div></div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
@@ -776,7 +776,7 @@
       ${psiBlock()}
       <div class="grid g2" style="margin-top:12px">
         <div class="card pad"><div class="card-h"><div class="t">${(D._meta&&D._meta.exposureN>0)?'How your '+D.exposure+' exposure is really calculated':'Exposure breakdown'}</div><div class="meta">not just a sum of ceilings</div></div>${CH.waterfall()||'<div class="capt" style="margin:0">No statutory exposure confirmed this scan, the gaps below are ranking and AI-visibility costs, not fines.</div>'}</div>
-        <div class="card pad"><div class="card-h"><div class="t">Why AI can’t see ${D.meta.company}</div><div class="meta">root-cause chain</div></div>${CH.causalChain()||'<div class="capt" style="margin:0">Your identity signals are largely present, the work is to defend and deepen them.</div>'}</div>
+        <div class="card pad"><div class="card-h"><div class="t">Why AI can’t see ${escH(D.meta.company)}</div><div class="meta">root-cause chain</div></div>${CH.causalChain()||'<div class="capt" style="margin:0">Your identity signals are largely present, the work is to defend and deepen them.</div>'}</div>
       </div>
     </section>`;
   }

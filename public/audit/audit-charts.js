@@ -126,7 +126,7 @@ window.CH = (function(){
     [.25,.5,.75,1].forEach(f=>{ grid+=`<polygon points="${axes.map((_,i)=>pt(i,R*f).map(x=>x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="#E4DACE" stroke-width="1"/>`; });
     axes.forEach((a,i)=>{ const [x,y]=pt(i,R); ax+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E4DACE" stroke-width="1"/>`;
       const [lx,ly]=pt(i,R+15); const anc=Math.abs(lx-cx)<6?'middle':(lx>cx?'start':'end');
-      lab+=`<text x="${lx}" y="${ly}" font-family="JetBrains Mono" font-size="8" fill="#6E625F" text-anchor="${anc}" dominant-baseline="middle">${a.ax} ${a.v}</text>`; });
+      lab+=`<text x="${lx}" y="${ly}" font-family="JetBrains Mono" font-size="8" fill="#6E625F" text-anchor="${anc}" dominant-baseline="middle">${esc(a.ax)} ${esc(a.v)}</text>`; });
     const vp=axes.map((a,i)=>pt(i,R*Math.max(a.v,2)/100).map(x=>x.toFixed(1)).join(',')).join(' ');
     return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="overflow:visible">
       <defs><radialGradient id="${id}"><stop offset="0" stop-color="#C9A87C" stop-opacity=".55"/><stop offset="1" stop-color="#B3261E" stop-opacity=".5"/></radialGradient></defs>
@@ -168,7 +168,7 @@ window.CH = (function(){
   /* dimension scorecard rows with mini-bar */
   function dimScorecard(){
     return `<div>${D.dims.map(d=>`<div class="dimrow">
-      <div style="min-width:0"><div class="nm">${d.nm}</div><div class="sub">${d.sub}</div>
+      <div style="min-width:0"><div class="nm">${esc(d.nm)}</div><div class="sub">${esc(d.sub)}</div>
       <div class="bar-track" style="height:5px;margin-top:6px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${d.v}%"></div></div></div>
       ${pill(d.st)}</div>`).join('')}</div>`;
   }
@@ -240,8 +240,8 @@ window.CH = (function(){
   function schemaChecklist(){
     return `<div class="checklist">${D.geo.schema.map(s=>`
       <div class="checkrow"><span class="xmark" style="color:var(--${s.present?'green':'red'})">${s.present?'✓':'✗'}</span>
-      <div><span class="mono" style="font-size:11px;color:var(--ink)">${s.t}</span>
-      <div class="capt">${s.why}</div></div></div>`).join('')}</div>`;
+      <div><span class="mono" style="font-size:11px;color:var(--ink)">${esc(s.t)}</span>
+      <div class="capt">${esc(s.why)}</div></div></div>`).join('')}</div>`;
   }
 
   /* source gap */
@@ -249,24 +249,24 @@ window.CH = (function(){
     return `<div class="checklist">${D.geo.sourceGap.map(s=>{
       const ok = s.you===true, part = s.you==='partial'||s.you==='unverified';
       return `<div class="checkrow"><span class="xmark" style="color:var(--${ok?'green':part?'amber':'red'})">${ok?'✓':part?'~':'✕'}</span>
-      <div><span class="mono" style="font-size:11px;color:var(--ink)">${s.src}</span><div class="capt">${s.note}</div></div></div>`;
+      <div><span class="mono" style="font-size:11px;color:var(--ink)">${esc(s.src)}</span><div class="capt">${esc(s.note)}</div></div></div>`;
     }).join('')}</div>`;
   }
 
   /* competitor comparison table */
   function competitorTable(){
     const c=D.competitors;
-    return `<table class="tz-table cmp"><thead><tr><th>Firm</th>${c.cols.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>
+    return `<table class="tz-table cmp"><thead><tr><th>Firm</th>${c.cols.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>
       ${c.rows.map(r=>`<tr class="${r.you?'you-row':''}">
-        <td><b>${r.name}</b>${r.you?' <span class="mono" style="font-size:8px;color:var(--red)">YOU</span>':''}</td>
-        ${(r.cells||[]).map(cell=>`<td><span class="cmpv ${cell.cls||(r.you?'bad':'good')}">${cell.v}</span>${cell.est?'<span class="est" data-tip="Estimated from authority signals, this rival publishes no Domain Rating">est</span>':''}</td>`).join('')}
+        <td><b>${esc(r.name)}</b>${r.you?' <span class="mono" style="font-size:8px;color:var(--red)">YOU</span>':''}</td>
+        ${(r.cells||[]).map(cell=>`<td><span class="cmpv ${cell.cls||(r.you?'bad':'good')}">${esc(cell.v)}</span>${cell.est?'<span class="est" data-tip="Estimated from authority signals, this rival publishes no Domain Rating">est</span>':''}</td>`).join('')}
       </tr>`).join('')}</tbody></table>`;
   }
 
   /* citation / keyword tables */
   function citationTable(){
     return `<table class="tz-table"><thead><tr><th>Buyer asks AI…</th><th>You</th><th>AI names instead</th></tr></thead><tbody>
-      ${D.geo.citations.map(c=>`<tr><td>${c.q}</td><td class="nr">Not cited</td><td><b style="color:var(--ox)">${c.who}</b>${c.pos?` <span class="rk">#${c.pos}</span>`:''}</td></tr>`).join('')}</tbody></table>`;
+      ${D.geo.citations.map(c=>`<tr><td>${esc(c.q)}</td><td class="nr">Not cited</td><td><b style="color:var(--ox)">${esc(c.who)}</b>${c.pos?` <span class="rk">#${esc(c.pos)}</span>`:''}</td></tr>`).join('')}</tbody></table>`;
   }
   function keywordTable(){
     // Every cell value is DATA-sourced (keyword/leader-domain text); escape it so a stray glyph or a raw
@@ -278,9 +278,10 @@ window.CH = (function(){
   /* big stat tile */
   function stat(v,l,o={}){ return `<div class="kpi ${o.red?'red':''} ${o.dark?'on-dark':''}" style="${o.align?'align-items:'+o.align:''}"><div class="v" style="${o.size?'font-size:'+o.size+'px':''}">${v}</div><div class="l">${l}</div></div>`; }
 
-  /* urgency callout */
+  /* urgency callout. text/sub are plain strings built with engine-derived values (company, sentiment);
+     escape both at this chokepoint so a hostile company/sentiment string can't inject markup. (XSS, C-C) */
   function urgent(text, sub){
-    return `<div class="urgent"><span class="upulse"></span><div><div class="ut">${text}</div>${sub?`<div class="us">${sub}</div>`:''}</div></div>`;
+    return `<div class="urgent"><span class="upulse"></span><div><div class="ut">${esc(text)}</div>${sub?`<div class="us">${esc(sub)}</div>`:''}</div></div>`;
   }
 
   /* bingo finding card — 7 layers, folded into a 2-column dense grid (Evidence | The case).
@@ -295,20 +296,20 @@ window.CH = (function(){
     return `<details class="finding"${idAttr} ${open?'open':''}>
       <summary><span class="sev ${f.n===3?'a':''}"></span>
         <span class="ftitle"><span class="tag">${esc(f.reg)}</span>${esc(f.title)}</span>
-        <span style="display:flex;align-items:center;gap:10px"><span class="fexp">${f.exp}</span><span class="chev">▸</span></span></summary>
+        <span style="display:flex;align-items:center;gap:10px"><span class="fexp">${esc(f.exp)}</span><span class="chev">▸</span></span></summary>
       <div class="fbody dense">
         <div class="fcol fcol-ev">
           <div class="lk">① Live error · your site</div>
-          <div class="shot-wrap">${f.shot?`<img src="${f.shot}" loading="lazy" referrerpolicy="no-referrer" alt="live screenshot of ${esc(D.meta.domain)}">`:`<span class="shot-ph">▣ screenshot pending for ${esc(D.meta.domain)}</span>`}<span class="shot-live">● LIVE · YOUR SITE</span></div>
+          <div class="shot-wrap">${f.shot?`<img src="${esc(f.shot)}" loading="lazy" referrerpolicy="no-referrer" alt="live screenshot of ${esc(D.meta.domain)}">`:`<span class="shot-ph">▣ screenshot pending for ${esc(D.meta.domain)}</span>`}<span class="shot-live">● LIVE · YOUR SITE</span></div>
           ${f.quote?`<div class="quote">${esc(f.quote)}</div>`:''}
           <div class="lk">② What it means</div><div class="lv">${esc(f.plain)}</div>
         </div>
         <div class="fcol fcol-case">
           <div class="meta-row"><span class="mk">③ ${esc(f.labelKind||'Law')}</span><b>${esc(f.law)}</b></div>
           ${f.prec?`<div class="meta-row"><span class="mk">④ Ruling</span><span>${esc(f.prec)}</span></div>`:''}
-          <div class="meta-row"><span class="mk">⑤ Exposure</span><span><span class="num exp">${f.exp}</span> <span class="cap">${expCaption}</span></span></div>
+          <div class="meta-row"><span class="mk">⑤ Exposure</span><span><span class="num exp">${esc(f.exp)}</span> <span class="cap">${expCaption}</span></span></div>
           <div class="fix-block"><div class="fix-h"><span class="lk">⑥ Tamazia fix</span><span class="fix-rib">✓ every mandate</span></div>${lockFix('<div class="lv">'+esc(f.fix)+'</div>', opts.locked)}</div>
-          <div class="plan-line">⑦ ${f.plan}</div>
+          <div class="plan-line">⑦ ${esc(f.plan)}</div>
         </div>
       </div></details>`;
   }
@@ -323,9 +324,9 @@ window.CH = (function(){
     return `<div class="dimgrid">${D.dims.map(d=>{
       const w=d.st==='na'?0:Math.max(4,d.v||0);
       const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
-      return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${d.nm} ↗"><div class="dch"><span class="dcn">${d.nm}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
+      return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${esc(d.nm)} ↗"><div class="dch"><span class="dcn">${esc(d.nm)}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
         <div class="bar-track" style="height:5px;margin:7px 0 8px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div>
-        <div class="dcs">${d.sub||''}</div></div>`;
+        <div class="dcs">${esc(d.sub||'')}</div></div>`;
     }).join('')}</div>`;
   }
 

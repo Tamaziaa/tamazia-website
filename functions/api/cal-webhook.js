@@ -218,6 +218,20 @@ export const onRequestPost = async ({ request, env }) => {
         '<b>Event:</b> ' + (record.cal_event_type || 'strategy-call'), '<b>Time:</b> ' + (record.cal_start_time || '?') ].join('\n');
       notifySlack(env, { level: 'p1', summary, detail });
       notifyTelegram(env, { level: 'p1', summary, detail: tg });
+      // C-J · PostHog booking_created capture (best-effort, no-op without POSTHOG_KEY). Distinct id keyed on
+      // the attendee email so it joins the audit-page funnel (audit_opened → contact/intent → booking_created).
+      if (env.POSTHOG_KEY) {
+        const phHost = (env.POSTHOG_HOST || 'https://eu.i.posthog.com').replace(/\/$/, '');
+        const ref = extractAuditRef(payload, body);
+        fetch(phHost + '/capture/', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            api_key: env.POSTHOG_KEY, event: 'booking_created',
+            distinct_id: (record.email || ref.domain || record.request_id),
+            properties: { event_type: record.cal_event_type || 'strategy-call', audit_domain: ref.domain || '', audit_slug: ref.slug || '', start_at: record.cal_start_time || '', lib: 'tamazia-cal-webhook' },
+          }),
+        }).catch(() => {});
+      }
     } else if (env.FORM_SUBMISSIONS) {
       // route non-booking lifecycle to the cockpit Health tab (no phone)
       await env.FORM_SUBMISSIONS.put('health-events:cal:' + record.request_id + ':' + Date.now(),

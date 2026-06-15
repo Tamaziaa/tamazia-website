@@ -48,6 +48,27 @@ export async function onRequest(context) {
     return htmlResponse(errorShell('Audit expired', 'Contact Tamazia for a fresh assessment.'), 410);
   }
 
+  // C-J / X28 — per-recipient HMAC verification.
+  // The audit ENGINE (off-limits) signs each minted link over `slug|hash|lead_id|exp` and appends ?sig=&exp=.
+  // Today the website does NOT verify it: the 8-char hash is the only barrier. We CANNOT verify without the
+  // shared secret, so this block is fully gated behind env.AUDIT_HMAC_SECRET — inert until the secret is bound.
+  // TODO(founder/engine): (1) provide AUDIT_HMAC_SECRET as a Pages secret; (2) CONFIRM the exact signed-payload
+  // format + param names against the engine signer before enabling (assumed `${slug}|${hash}|${lead_id}|${exp}`,
+  // hex HMAC-SHA256, params ?sig=&exp=). When confirmed this rejects forged/expired links with a clean 403/410.
+  if (env.AUDIT_HMAC_SECRET) {
+    const sig = url.searchParams.get('sig') || '';
+    const expQ = url.searchParams.get('exp') || '';
+    const expN = parseInt(expQ, 10);
+    if (Number.isFinite(expN) && expN > 0 && expN * 1000 < Date.now()) {
+      return htmlResponse(errorShell('Audit expired', 'This link has expired. Contact Tamazia for a fresh assessment.'), 410);
+    }
+    const signedPayload = `${slug}|${hash}|${row.lead_id != null ? row.lead_id : ''}|${expQ}`;
+    const ok = await verifyHmacHex(env.AUDIT_HMAC_SECRET, signedPayload, sig);
+    if (!ok) {
+      return htmlResponse(errorShell('Audit not found', 'This audit link is invalid or has been retired.'), 404);
+    }
+  }
+
   let payload = row.payload_json;
   if (typeof payload === 'string') { try { payload = JSON.parse(payload); } catch { payload = {}; } }
 
@@ -99,4 +120,26 @@ export async function onRequest(context) {
     }).catch(() => {}));
   }
   return htmlResponse(html, 200, isUnlocked ? 0 : 300);
+}
+
+// C-J / X28 — verify a hex HMAC-SHA256 over `data` with `secret` against the provided hex `sig`, timing-safe.
+// Returns false on any missing input or crypto unavailability (fail-closed, since this only runs when a secret
+// is bound and the caller treats false as "reject the link").
+async function verifyHmacHex(secret, data, sigHex) {
+  if (!secret || !sigHex) return false;
+  const cryptoObj = (globalThis.crypto && globalThis.crypto.subtle) ? globalThis.crypto : null;
+  if (!cryptoObj) return false;
+  try {
+    const enc = new TextEncoder();
+    const key = await cryptoObj.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const mac = await cryptoObj.subtle.sign('HMAC', key, enc.encode(data));
+    const bytes = new Uint8Array(mac);
+    let expected = '';
+    for (let i = 0; i < bytes.length; i++) expected += bytes[i].toString(16).padStart(2, '0');
+    const got = String(sigHex).trim().toLowerCase();
+    if (got.length !== expected.length) return false;
+    let diff = 0;
+    for (let i = 0; i < expected.length; i++) diff |= got.charCodeAt(i) ^ expected.charCodeAt(i);
+    return diff === 0;
+  } catch (_e) { return false; }
 }

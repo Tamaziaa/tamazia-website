@@ -521,9 +521,10 @@
 
     if(D.unlocked){
       // Cold / already-unlocked page: no paywall. Lead with founder oversight + ongoing cover.
-      const coverBtn = STRIPE.cover
-        ? `<a class="btn solid block" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">Start monthly cover&nbsp;↗</a>`
-        : `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
+      // C-H: always route via the metadata-bearing /api/stripe/checkout (data-subscribe) so this report's
+      // slug+hash reach the webhook. A static Payment Link cannot carry per-recipient metadata, so it is
+      // never used for the unlock/cover flow even when STRIPE_LINK_COVER is set.
+      const coverBtn = `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
       return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Keep this report live</h3></div>
     <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: founder-reviewed cover that re-runs this audit on your live data every month.</p>
@@ -545,12 +546,12 @@
     }
 
     // Standard locked page: the paywall. Unlock includes the first month of cover, then £449/mo.
-    const unlockBtn = STRIPE.unlock
-      ? `<a class="btn solid block" href="${escH(STRIPE.unlock)}" target="_blank" rel="noopener">Unlock the full report&nbsp;↗</a>`
-      : `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
-    const coverBtn = STRIPE.cover
-      ? `<a class="btn block r3-cover-btn" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">See monthly cover&nbsp;↗</a>`
-      : '';
+    // C-H: the unlock MUST flow through /api/stripe/checkout (data-subscribe) so this report's slug+hash are
+    // carried in the session metadata and the webhook can flip audit_pages.unlocked for THIS exact link. A
+    // static Payment Link carries no metadata and would take the payment without ever unlocking the report,
+    // so it is no longer used here even when STRIPE_LINK_UNLOCK is set. trial is server-pinned (see checkout.js).
+    const unlockBtn = `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
+    const coverBtn = '';
     return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
     <p class="plan-sub r3-gold">Unlock the full Exposure Report, ${priceSpan(unlock)}. Your first month of monthly cover is included. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>

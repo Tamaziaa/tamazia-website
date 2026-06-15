@@ -76,10 +76,14 @@ async function main() {
   }
 
   // ---- Live counts (each defensive) ----
+  // S4[D52] · reconciled to the real leads schema. Was: status='ready' (the funnel is
+  // stalled so this is ~0) and stage='qualified'/stage='client' (there is no `stage`
+  // column on leads — only `lifecycle_stage`). Now: status='new' for fresh leads, and
+  // lifecycle_stage='qualified'/'client' (the values used across the rest of the codebase).
   const leads = await count('leads');
-  const leadsReady = await count('leads', "status = 'ready'");
-  const leadsQualified = await count('leads', "stage = 'qualified'");
-  const leadsClient = await count('leads', "stage = 'client'");
+  const leadsNew = await count('leads', "status = 'new'");
+  const leadsQualified = await count('leads', "lifecycle_stage = 'qualified'");
+  const leadsClient = await count('leads', "lifecycle_stage = 'client'");
   const sends = await count('sends');
   const sendsSent = await count('sends', "status = 'sent'");
   const suppression = await count('suppression');
@@ -120,7 +124,7 @@ async function main() {
   s += `## Live counts\n\n`;
   s += `| Metric | Value |\n|---|---|\n`;
   s += `| leads (total) | ${fmt(leads)} |\n`;
-  s += `| leads · email-ready | ${fmt(leadsReady)} |\n`;
+  s += `| leads · new | ${fmt(leadsNew)} |\n`;
   s += `| leads · qualified | ${fmt(leadsQualified)} |\n`;
   s += `| leads · client | ${fmt(leadsClient)} |\n`;
   s += `| sends (total) | ${fmt(sends)} |\n`;
@@ -187,7 +191,7 @@ async function main() {
   p += `## What this is\n`;
   p += `Tamazia = compliance-led SEO/GEO agency. Two systems share one Neon DB: the AGENCY pipeline and the AUDIT ENGINE (off-limits).\n\n`;
   p += `## Live snapshot\n`;
-  p += `- leads ${fmt(leads)} (ready ${fmt(leadsReady)} · qualified ${fmt(leadsQualified)} · client ${fmt(leadsClient)})\n`;
+  p += `- leads ${fmt(leads)} (new ${fmt(leadsNew)} · qualified ${fmt(leadsQualified)} · client ${fmt(leadsClient)})\n`;
   p += `- sends ${fmt(sends)} (sent ${fmt(sendsSent)}) · suppression ${fmt(suppression)} · inbound ${fmt(inbound)}\n`;
   p += `- minting_queue ${fmt(mintQueue)} · audit_pages ${fmt(auditPages)} · cal_bookings ${fmt(calBookings)}\n\n`;
   p += `## Pipeline (one line)\n`;

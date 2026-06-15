@@ -118,7 +118,8 @@ export async function handleSubmission(request, env, tab) {
   Promise.allSettled(sideEffects).catch(() => {});
 
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';
-  return json({ ok: true, request_id, message: 'Brief received. Reply within one working day.' }, 200, baseHeaders);
+  // S3[D32] · briefings is a newsletter opt-in, not an enquiry → subscription-confirm copy.
+  return json({ ok: true, request_id, message: 'You are subscribed. Regulatory briefings only, unsubscribe anytime.' }, 200, baseHeaders);
 }
 
 async function fireAlert(env, tab, body, request_id) {
@@ -139,14 +140,17 @@ async function fireAlert(env, tab, body, request_id) {
   });
 }
 
+// S3[D32] · Briefings is a NEWSLETTER opt-in, not a sales enquiry. The ack must NOT
+// promise a one-working-day reply, and the lawful basis is CONSENT (UK GDPR Art 6(1)(a)),
+// not the legitimate-interest basis the contact form uses.
 async function fireAutoAck(env, body, request_id) {
   const greeting = body.name ? 'Hello ' + String(body.name).split(' ')[0] + ',' : 'Hello,';
   const html = `<div style="font-family:Georgia,serif;color:#2A0C14;max-width:560px;line-height:1.5">
     <p>${esc(greeting)}</p>
-    <p>Thank you for the enquiry. The brief is logged with us under reference <code>${request_id.slice(0,8)}</code> and a member of the Tamazia team will reply within one working day, UK time.</p>
-    <p>Recent work is collected at <a href="https://tamazia.co.uk/case-studies/">tamazia.co.uk/case-studies</a>. If your request is time-sensitive, write directly to founder@tamazia.co.uk and mark the subject line URGENT.</p>
+    <p>You are subscribed to the Tamazia regulatory briefings. Reference <code>${request_id.slice(0,8)}</code>. Each briefing covers regulatory developments affecting your sector. No marketing, no sales, findings only.</p>
+    <p>Unsubscribe at any time using the link in any briefing, or reply with the word UNSUBSCRIBE. To reach the founder directly, write to founder@tamazia.co.uk.</p>
     <p>Best regards,<br>Aman Pareek<br>Founder, Tamazia</p>
-    <p style="font-size:12px;color:#5C4047;margin-top:32px">This is an automated acknowledgement of your form submission. Processed under UK GDPR Article 6(1)(f) Legitimate Interest.</p>
+    <p style="font-size:12px;color:#5C4047;margin-top:32px">This confirms your subscription to the Tamazia regulatory briefings. Processed under UK GDPR Article 6(1)(a) Consent. You can withdraw consent at any time.</p>
   </div>`;
   return fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -155,7 +159,7 @@ async function fireAutoAck(env, body, request_id) {
       from: env.RESEND_FROM_ACK || 'Tamazia <founder@tamazia.in>',
       to: [body.email],
       reply_to: env.RESEND_REPLY_TO || 'founder@tamazia.co.uk',
-      subject: 'We received your enquiry · Tamazia',
+      subject: 'You are subscribed to Tamazia regulatory briefings',
       html,
       headers: {
         'List-Unsubscribe': `<mailto:founder@tamazia.co.uk?subject=unsubscribe>, <https://tamazia.co.uk/api/list-unsubscribe?id=${request_id}>`,

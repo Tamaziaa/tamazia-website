@@ -15,9 +15,15 @@ export async function syncLeadToNeon(env, tab, body, request_id) {
     const name = body.name || '';
     const note = body.outcome || '';
     const channel = 'website_form_' + (tab || 'unknown');
-    const sql = `INSERT INTO leads (company, domain, contact_email, sector, acquisition_channel, lead_type, lifecycle_stage, status, contact_first, personalisation_pointers, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,'inbound','inbound_lead','new',$6,$7,NOW(),NOW())`;
-    const params = [company || domain || email, domain, email, sector, channel, name,
-      JSON.stringify({ source: 'website', tab, request_id, note }).slice(0, 2000)];
+    // S3[D26/X17/D25] · distinguish newsletter sign-ups (footer "Regulatory Briefings")
+    // from sales enquiries so the COLD qualifier can exclude both from the cold path:
+    //   briefings  → lead_type='newsletter'  (opt-in subscriber, not a sales prospect)
+    //   everything else → lead_type='inbound' (inbound enquiry, already engaged, not cold)
+    // The cold qualifier filters out lead_type IN ('newsletter','inbound').
+    const lead_type = (tab === 'briefings') ? 'newsletter' : 'inbound';
+    const sql = `INSERT INTO leads (company, domain, contact_email, sector, acquisition_channel, lead_type, lifecycle_stage, status, contact_first, personalisation_pointers, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,'inbound_lead','new',$7,$8,NOW(),NOW())`;
+    const params = [company || domain || email, domain, email, sector, channel, lead_type, name,
+      JSON.stringify({ source: 'website', tab, lead_type, request_id, note }).slice(0, 2000)];
     await fetch(`https://${host}/sql`, {
       method: 'POST',
       headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' },

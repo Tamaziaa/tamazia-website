@@ -318,8 +318,9 @@ if (_segs.length > 0) {
 </style>
 </head>
   <body>
-<a href="#main" class="skip-to-main">Skip to main content</a>
-    <a href="#main" class="skip-link">Skip to main content</a>
+    {/* S8[D57] · single skip link (WCAG 2.4.1). The duplicate <a class="skip-link"> was
+        removed; .skip-to-main is the one whose styles live in this layout. */}
+    <a href="#main" class="skip-to-main">Skip to main content</a>
     <slot />
 
     <script is:inline data-cfasync="false">

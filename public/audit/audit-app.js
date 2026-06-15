@@ -313,6 +313,9 @@
   // which mirrors src/content/pricing.ts verbatim (the canonical price config). The adapter's D.pricing is
   // consumed ONLY for the per-firm recommendation flags (rec/popular); it carries no prices. The server-side
   // Stripe/Cal mapping is functions/audit/_commerce.js (checkout only, not a display source).
+  // gbpFmt: GBP-canonical formatter. ALL work is quoted + invoiced in GBP (see the pricing copy), so this is
+  // used ONLY for the internal data-price value carried in the add-on intake POST (never shown to the buyer as
+  // a localised price). Every VISIBLE price/figure goes through fmtMoney (currency-aware, D.cur + toggle). (C-E)
   const gbpFmt=n=>'£'+Number(n).toLocaleString('en-GB');
   // ---- Currency by region (founder: UK→£, EU→€, US→$, Middle East→AED, else £). All work is quoted +
   // invoiced in GBP; the local figure is an indicative conversion (rates approximate, rounded to clean values).
@@ -804,7 +807,7 @@
     seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' '+plur(D.seo.onpage.length,'issue'),'amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
     geo:{ico:'❖',nm:'AI &amp; GEO visibility',kpis:chip('SoV '+D.geo.shareOfVoice,'red')+chip(D.geo.aiKnows?'AI cites you':'AI can’t cite you','red')+chip('Entity '+D.geo.entityReadiness)},
     competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' '+plur(Math.max(0,(D.competitors.rows||[]).length-1),'rival')+' ahead')+drChip},
-    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+gbpFmt(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
+    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+fmtMoney(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}

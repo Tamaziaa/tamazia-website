@@ -95,9 +95,10 @@ window.CH = (function(){
     }).join('')}</div>`;
   }
 
-  /* exposure £ bars */
+  /* exposure bars — labels in the page display currency (D.cur), not a hardcoded £ (C-E) */
   function exposureBars(){
-    return bars(D.exposureBars.map(b=>({l:b.l, v:b.v})), {max:18, fmt:v=> v>=1?'£'+v+'M':'£'+(v*1000)+'k'});
+    const c=(D&&D.cur)||'£';
+    return bars(D.exposureBars.map(b=>({l:b.l, v:b.v})), {max:18, fmt:v=> v>=1?c+v+'M':c+(v*1000)+'k'});
   }
 
   /* 5x5 risk heatmap */
@@ -288,9 +289,10 @@ window.CH = (function(){
      opts.id stamps a stable DOM id (Phase 3 de-triplication: the FULL detail lives once). */
   function finding(f, open=false, opts={}){
     f = Object.assign({n:0,reg:'',title:'Finding',exp:'',quote:'',plain:'',law:'',prec:'',fix:'',plan:'',shot:''}, f||{});
-    // A money exposure (starts with £) carries the "statutory ceiling" caption; a ranking-impact finding
-    // must NOT (calling "ranking impact" a statutory ceiling is nonsensical). (exposure-label consistency)
-    const isMoney = /^£/.test(String(f.exp||''));
+    // A money exposure (a currency-prefixed figure) carries the "statutory ceiling" caption; a ranking-impact
+    // finding must NOT (calling "ranking impact" a statutory ceiling is nonsensical). Test against the page's
+    // own display currency symbol (D.cur), not a hardcoded '£', so a $/€/AED firm is detected too. (C-E)
+    const isMoney = isMoneyStr(f.exp);
     const expCaption = isMoney ? 'statutory ceiling · evidence-locked' : 'ranking, AI-visibility & trust cost, not a statutory fine';
     const idAttr = opts.id ? ` id="${opts.id}"` : '';
     return `<details class="finding"${idAttr} ${open?'open':''}>
@@ -316,6 +318,10 @@ window.CH = (function(){
 
   /* ---- money + deterministic regulator-badge colour ---- */
   function money(n){const c=(D&&D.cur)||'£';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+Math.round(n/1e3)+'k'; return c+n;}
+  // Is this exposure string a MONETARY figure (vs 'ranking'/'ranking impact')? Adapter formats every money
+  // exposure with the page currency symbol D.cur ('£' default, '$'/'€'/'AED ' otherwise). Test the page symbol
+  // first, then any known currency prefix, so the money/ranking caption is correct in every currency. (C-E)
+  function isMoneyStr(s){ s=String(s==null?'':s).trim(); const cur=((D&&D.cur)||'£').trim(); return (cur&&s.indexOf(cur)===0) || /^[£$€]/.test(s) || /^AED\b/i.test(s); }
   function badgeColor(code){const pal=['#5A1A2B','#2A5DA8','#2F7A4A','#B6791F','#7A2A3B','#8A1C16','#3a2d30','#2A0C14'];let h=0;for(const ch of String(code||'FW'))h=(h*31+ch.charCodeAt(0))>>>0;return pal[h%pal.length];}
 
   /* ---- rich 10-dimension scorecard card grid (Pass · Needs work · Fail) ---- */
@@ -388,7 +394,7 @@ window.CH = (function(){
   function frameworkBars(){
     return `<div class="fwbars">${D.frameworks.map(f=>{
       const tot=Math.max(1,f.findings), cp=f.c/tot*100, hp=f.h/tot*100, sp=Math.max(0,100-cp-hp);
-      const exp=(f.exp&&(String(f.exp)[0]==='£'))?f.exp:(f.exp==='ranking'?'ranking impact':f.exp);
+      const exp=isMoneyStr(f.exp)?f.exp:(f.exp==='ranking'?'ranking impact':f.exp);
       return `<button class="fwbar" type="button" data-fwjump="${esc(f.code)}"><div class="fwbar-h"><span class="reg-badge" style="background:${badgeColor(f.code)}">${esc(f.code)}</span>
         <div class="fwbar-nm"><b>${esc(f.name)}</b><span class="fwbar-r">${esc(f.regulator)} · ${f.findings} finding${f.findings===1?'':'s'} · ${esc(exp)}</span></div>
         <div class="cnt">${f.c?`<span class="c">${f.c} crit</span>`:''}${f.h?`<span class="h">${f.h} high</span>`:''}${f.s?`<span class="s">${f.s} std</span>`:''}</div></div>

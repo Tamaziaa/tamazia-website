@@ -13,6 +13,6 @@ Founder-blocked elements render ONLY when their env var is set (no placeholder w
 | E5 | Fix packs one-time lane (10=7500/20=12500/30=17500) from `PRICES`; lane copy; Stripe-conditional buy buttons | audit-app.js | DONE (buy buttons ⛔ conditional, omitted until STRIPE_LINK_FIX* set) |
 | E6 | Route-3 recurring: golden line + £750 unlock / first month cover included / then £449/mo; 8 specs w/ hover ?; absorbs Compliance-Monitoring + Reg-Change-Alerts; cold pages skip paywall; Stripe-conditional | audit-app.js, audit.css | DONE (Unlock/Cover buttons ⛔ conditional; data-subscribe contract preserved) |
 | E7 | Independent Solutions: 7 cards + GBP £850 from `PRICES`, struck-anchor→offer, 5 steps each, scope line, disclosure paragraph; add buttons via existing /api/stripe/checkout fallback | audit-app.js, _commerce.js (aliases) | DONE (disclosure NOT verbatim-sourced — see report) |
-| E8 | Verify oncology block (locked copy) | audit-app.js | pending |
-| E9 | Ensure 480% (not 882%) on the audit page; verify pricing.ts | audit-app.js, src/content/pricing.ts | pending |
+| E8 | Verify oncology block (locked copy) | audit-app.js | VERIFIED (present, 3rd-person, +96%/SEC Reg FD/hedge; matches locked caseStudies.ts per MISSION-C-PLAN). "Beat 1/Beat 2 Done-by-experts" variant NOT in repo — see report |
+| E9 | Ensure 480% (not 882%) on the audit page; verify pricing.ts | audit-app.js, src/content/pricing.ts | VERIFIED (no 882 in any audit asset; pricing.ts uses 480% two-year verified; no GA4-882 context to keep) |
 | E10 | Booking form on the audit (name, website, email, sector) + PostHog identify + form-fill event; verify cal-webhook (Resend + Neon cal_bookings + Slack/Telegram) | audit-app.js, functions/api/cal-webhook.js (verify) | pending |

@@ -6,6 +6,11 @@ import { neonQuery } from '../api/_neon.js';
 import { payloadToD } from './_adapter.js';
 import { renderShell, errorShell } from './_shell.js';
 
+// Founder-confirmed direct line. Threaded to window.D.contactPhone so the audit founder block
+// (and any element keyed on it) renders the number beside founder@tamazia.co.uk. env.CONTACT_PHONE
+// (wrangler.toml [vars]) overrides this; the default guarantees it renders even without a secret set.
+const CONTACT_PHONE_DEFAULT = '+44 7778243657';
+
 const htmlResponse = (body, status = 200, maxAge = 300) => new Response(body, {
   status,
   headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': status === 200 ? `public, max-age=${maxAge}` : 'no-store' },
@@ -67,7 +72,7 @@ export async function onRequest(context) {
     const D = payloadToD(payload, {
       company: row.company, now: Date.now(), generated_at: null,
       unlocked: row.unlocked === true || row.unlocked === 't',
-      links, contactPhone: env.CONTACT_PHONE || '',
+      links, contactPhone: env.CONTACT_PHONE || CONTACT_PHONE_DEFAULT,
       posthogKey: env.POSTHOG_KEY || '', posthogHost: env.POSTHOG_HOST || '',
     });
     html = renderShell(D);

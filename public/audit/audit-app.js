@@ -58,6 +58,16 @@
   // name) is neutralised to a comma. Regular hyphens (co-working, e-commerce) are left intact.
   const escH = s=>String(s==null?'':s).replace(/\s*[—–]\s*/g,', ').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+  // C-G: the SINGLE source for "which retainer tier do we recommend this firm". The adapter flags the
+  // recommended tier on D.pricing (rec:true). The rail CTA + the founder-session CTA both route to THIS tier
+  // (not a hardcoded Enterprise/Authority), so the call the buyer books matches the tier the report recommends.
+  // Falls back to Enterprise only if no rec flag is present (matches planData()'s default).
+  function recommendedTierName(){
+    const rec=(Array.isArray(D.pricing)?D.pricing:[]).find(p=>p&&p.rec);
+    const nm=rec&&rec.tier?String(rec.tier):'';
+    return /^(foundation|authority|enterprise)$/i.test(nm) ? (nm.charAt(0).toUpperCase()+nm.slice(1).toLowerCase()) : 'Enterprise';
+  }
+
   /* ---------------- LEFT RAIL ---------------- */
   function rail(){
     const nav=[
@@ -86,7 +96,7 @@
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
       <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
-      <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk report with the founder ↗</button>
+      <button class="rail-cta" data-book="package" data-tier="${escH(recommendedTierName())}">Walk report with the founder ↗</button>
       <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
       <div class="rail-social">
         <a href="mailto:sales@tamazia.co.uk" aria-label="Email sales@tamazia.co.uk" title="sales@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
@@ -724,7 +734,7 @@
   function founderSession(){
     const claim = BOOKING_URL
       ? `<a class="btn solid fsx-claim" href="${escH(BOOKING_URL)}" target="_blank" rel="noopener">Claim the session ↗</a>`
-      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH((D.pricing||[]).find(p=>p.rec)?'Enterprise':'Authority')}">Claim the session ↗</a>`;
+      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH(recommendedTierName())}">Claim the session ↗</a>`;
     const phone = CONTACT_PHONE
       ? `<a class="fsx-contact" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}">${escH(CONTACT_PHONE)}</a>`
       : '';

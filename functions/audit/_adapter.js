@@ -1465,6 +1465,18 @@ export function payloadToD(payload, ctx = {}) {
     // Stripe webhook on a successful Route 3 payment). When true the render shows every Tamazia-fix in full
     // for everyone who opens the link; when false each fix is locked behind the green-gradient veil. (founder)
     unlocked: !!ctx.unlocked,
+    // FOUNDER-BLOCKED links + contact, threaded from env by [[path]].js. The client renders each element ONLY
+    // when its value is a non-empty string (no placeholder when unset). Pure pass-through; never affects scoring.
+    links: {
+      booking: String((ctx.links && ctx.links.booking) || ''),
+      stripeUnlock: String((ctx.links && ctx.links.stripeUnlock) || ''),
+      stripeCover: String((ctx.links && ctx.links.stripeCover) || ''),
+      stripeFix10: String((ctx.links && ctx.links.stripeFix10) || ''),
+      stripeFix20: String((ctx.links && ctx.links.stripeFix20) || ''),
+      stripeFix30: String((ctx.links && ctx.links.stripeFix30) || ''),
+    },
+    contactPhone: String(ctx.contactPhone || ''),
+    posthog: { key: String(ctx.posthogKey || ''), host: String(ctx.posthogHost || '') },
     // Distinct jurisdictions actually present in the rendered regulatory layer — drives the Gate-1 selector
     // (shown only when a firm is genuinely multi-jurisdiction) and the per-framework jurisdiction badges.
     jurisdictions: Array.from(new Set((frameworks || []).map((f) => f.jur).filter((j) => j && j !== 'Global'))),

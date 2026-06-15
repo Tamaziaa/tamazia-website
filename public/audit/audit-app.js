@@ -3,17 +3,45 @@
    ============================================================ */
 (function(){
   /* ------------------------------------------------------------------
-     PRICING REFERENCE, keep in sync with src/content/pricing.ts
-     Display-only crib of the canonical GBP figures (British English).
-     The render literals below (FIX_SPRINT, PRICING_TIERS_RENDER, ADDONS,
-     Route 3) remain the live display source; this block is the human
-     cross-check against pricing.ts so the two never silently drift.
-     CTA targets are NOT changed by this block, do not wire Stripe here.
-       fixPacksGbp:        ten 7500 · twenty 12500 · thirty 17500
-       tiers (monthly):    Foundation 2500 · Authority 4500 · Enterprise 9500
-       entryAuditGbp:      1500
-       exposureReportGbp:  unlock 750 · monthlyCover 449
+     PRICES — the ONE source of truth for every figure rendered on this
+     page. Values are copied EXACTLY from src/content/pricing.ts (the
+     repo's canonical price config). audit-app.js is a static asset and
+     cannot import the .ts module at runtime, so the numbers are mirrored
+     here verbatim; every render literal below READS from this block, so
+     the two can never silently drift. British English. GBP integers.
+     If pricing.ts changes, change ONLY this block.
      ------------------------------------------------------------------ */
+  const PRICES = {
+    entryAudit: 1500,                                   // entryAuditGbp
+    tiers: { foundation:2500, authority:4500, enterprise:9500 },   // pricingContent.tiers[].priceGbp
+    fixPacks: { ten:7500, twenty:12500, thirty:17500 }, // fixPacksGbp
+    fixPacksLane: 'No retainer required. Buy the fixes, own the work.', // fixPacksLane
+    exposureReport: { unlock:750, monthlyCover:449 },   // exposureReportGbp
+    independent: {                                       // independentSolutionsGbp (anchor→offer, or single price)
+      websiteRemodelling:   { anchor:4800, offer:2400 },
+      aiAuthority:          { anchor:3000, offer:1800 },
+      icpOutreach:          { anchor:2800, offer:1400 },
+      onlinePersonalBranding:{ anchor:2200, offer:1100 },
+      instagramPresence:    { anchor:1800, offer:900 },
+      ymylContent:          { price:1200 },
+      reputationCrisis:     { anchor:3000, offer:1500 },
+      gbpDomination:        { price:850 },
+    },
+  };
+  // FOUNDER-BLOCKED links + contact. Threaded from env via the adapter into window.D.
+  // Each is rendered ONLY when it is a non-empty string; when unset the element is omitted
+  // entirely (no placeholder, no dead button). See PRECHECK §2.
+  const LINKS = (window.D && window.D.links) || {};
+  const BOOKING_URL   = typeof LINKS.booking === 'string' ? LINKS.booking.trim() : '';
+  const CONTACT_PHONE = (window.D && typeof window.D.contactPhone === 'string') ? window.D.contactPhone.trim() : '';
+  const STRIPE = {
+    unlock: strOr(LINKS.stripeUnlock), cover: strOr(LINKS.stripeCover),
+    fix10: strOr(LINKS.stripeFix10), fix20: strOr(LINKS.stripeFix20), fix30: strOr(LINKS.stripeFix30),
+  };
+  function strOr(v){ return (typeof v==='string' && v.trim()) ? v.trim() : ''; }
+  // Stripe Payment Link by fix-pack scope key (10 / 20 / 30 / all→30). '' when unset.
+  function stripeFixLink(k){ return k==='10'?STRIPE.fix10 : k==='20'?STRIPE.fix20 : (k==='30'||k==='all')?STRIPE.fix30 : ''; }
+
   const $ = (s,r=document)=>r.querySelector(s);
   // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
   // plur(1,'is','are')↗'is'. Used everywhere a live count precedes finding/critical/breach/run/dim/are.

@@ -6,7 +6,7 @@ Founder-blocked elements render ONLY when their env var is set (no placeholder w
 | ID | What | Files | Status |
 |----|------|-------|--------|
 | E0 | Phase-0 precheck (architecture, payload field names, env audit) | ops/PRECHECK-audit.md | logged |
-| E1 | Single `PRICES` constant block (mirror pricing.ts) + thread founder-blocked env (links/phone/posthog) through `[[path]].js`→adapter→`window.D` | audit-app.js, functions/audit/[[path]].js, functions/audit/_adapter.js, _shell.js (_av bump) | pending |
+| E1 | Single `PRICES` constant block (mirror pricing.ts) + thread founder-blocked env (links/phone/posthog) through `[[path]].js`→adapter→`window.D` | audit-app.js, functions/audit/[[path]].js, functions/audit/_adapter.js, _shell.js (_av r26→r27) | DONE |
 | E2 | Founder session block directly under the score header (verbatim copy + Claim button + founder@ email; phone conditional) | audit-app.js, audit.css | pending |
 | E3 | In-page pricing slide-over drawer (sticky "Plans" pill + each fix link; restores scroll; no nav) | audit-app.js, audit.css | pending |
 | E4 | Retainer tiers from `PRICES` (Foundation 2500 / Authority 4500 popular / Enterprise 9500), results-led, "online personal branding" bullet | audit-app.js | pending |

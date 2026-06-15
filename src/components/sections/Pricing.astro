@@ -260,6 +260,9 @@ const featureIcons: Record<string, string> = {
         <a href="#contact" class="mandate-cta">{mandateCta}</a>
         <a href="/book/" class="mandate-calendar" aria-label="Open the founder's calendar">Open the founder's calendar <span class="calendar-arrow" aria-hidden="true">↗</span></a>
       </div>
+      {/* S6[D15] · render mandateSignature from config (was destructured + styled but never
+          output, so the .mandate-signature CSS was dead). Decorative signature of the founder. */}
+      {mandateSignature && <p class="mandate-signature" aria-hidden="true">{mandateSignature}</p>}
       <div class="mandate-rule" aria-hidden="true"></div>
     </div>
 

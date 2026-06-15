@@ -4,6 +4,13 @@ import Sentry from '../components/analytics/Sentry.astro';
 import BodyAnalytics from '../components/analytics/BodyAnalytics.astro';
 import Analytics from '../components/analytics/Analytics.astro';
 import CookieConsent from '../components/ui/CookieConsent.astro';
+import { pricingContent } from '../content/pricing';
+
+// S6[D16] · the mobile sticky CTA price comes from the ONE pricing config (pricing.ts),
+// not a hardcoded literal. Use the lowest tier's monthly figure ("From £X/month").
+const _stickyTier = [...pricingContent.tiers].sort((a: any, b: any) => (a.priceGbp ?? 0) - (b.priceGbp ?? 0))[0];
+const stickyPriceGbp = (_stickyTier && _stickyTier.priceGbp) || 2500;
+const stickyPrice = '£' + Number(stickyPriceGbp).toLocaleString('en-GB');
 
 // Tamazia analytics tokens · replace empty strings with actual values when provider properties are created.
 // Cloudflare Web Analytics token: replace '' with the token from CF dashboard.
@@ -430,7 +437,7 @@ if (_segs.length > 0) {
       }
 </script>
     <div id="mobile-sticky-cta" class="mobile-sticky-cta" hidden>
-      <span class="msc-price">From <strong>£2,500</strong>/month · 90 day rolling</span>
+      <span class="msc-price">From <strong>{stickyPrice}</strong>/month · 90 day rolling</span>
       <a class="msc-cta" href="/book/">Book a strategy call</a>
     </div>
 

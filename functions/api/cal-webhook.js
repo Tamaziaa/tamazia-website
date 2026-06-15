@@ -157,7 +157,7 @@ export const onRequestPost = async ({ request, env }) => {
       headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: env.RESEND_FROM_ALERT || 'Tamazia Forms <forms@tamazia.in>',
-        to: [env.ALERT_TO || 'realfamemedia@gmail.com'],
+        to: [env.ALERT_TO || 'founder@tamazia.co.uk'],
         subject,
         html
       })

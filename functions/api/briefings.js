@@ -9,9 +9,12 @@ import { syncLeadToNeon } from '../_lib/neon-sync.js';
 import { notifySlack, notifyTelegram, buildJourneyContext, isHighIntent } from '../_lib/notify.js';
 
 export async function handleSubmission(request, env, tab) {
+  // S1[C81/C82] · CORS restricted to the site origin (+ Cloudflare Pages previews),
+  // off the previous '*'. Reflects the request Origin only when it is on the allowlist.
   const baseHeaders = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowOrigin(request),
+    'Vary': 'Origin',
     'Cache-Control': 'no-store'
   };
 
@@ -28,6 +31,16 @@ export async function handleSubmission(request, env, tab) {
   if (body.ts_form_open && formAge < 2000) {
     return json({ ok: true, silent: true }, 200, baseHeaders);
   }
+
+  // S1[D24/D37] · Cloudflare Turnstile server-side check. Fail-open when
+  // TURNSTILE_SECRET_KEY is unset (the lib returns {ok:true,skipped}); once the
+  // secret is bound, a missing or failed challenge is rejected. The briefings
+  // form renders a TurnstileWidget (Footer.astro) that injects cf-turnstile-response.
+  const turnstile = await verifyTurnstile(request, body, env);
+  if (!turnstile.ok) {
+    return json({ error: 'challenge_failed', reason: turnstile.reason }, 403, baseHeaders);
+  }
+
   if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
     return json({ error: 'invalid_email' }, 400, baseHeaders);
   }
@@ -156,15 +169,35 @@ function esc(s) {
   return String(s || '').replace(/[<>&"']/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// S1[C81/C82] · Same-origin (tamazia.co.uk + www) and Cloudflare Pages previews
+// (*.pages.dev) only. Returns the canonical site origin when the request carries
+// no/disallowed Origin, so a same-origin form POST still works and a cross-site
+// browser caller is denied by CORS.
+function allowOrigin(request) {
+  const SITE = 'https://tamazia.co.uk';
+  const origin = request.headers.get('Origin') || '';
+  if (!origin) return SITE;
+  try {
+    const u = new URL(origin);
+    if (u.protocol === 'https:' && (
+      u.hostname === 'tamazia.co.uk' ||
+      u.hostname === 'www.tamazia.co.uk' ||
+      u.hostname.endsWith('.pages.dev')
+    )) return origin;
+  } catch (_e) { /* malformed Origin → fall through to canonical */ }
+  return SITE;
+}
+
 function json(obj, status, headers) {
   return new Response(JSON.stringify(obj), { status, headers });
 }
 
 export const onRequestPost = ({ request, env }) => handleSubmission(request, env, 'briefings');
-export const onRequestOptions = () => new Response(null, {
+export const onRequestOptions = ({ request }) => new Response(null, {
   status: 204,
   headers: {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowOrigin(request),
+    'Vary': 'Origin',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   }

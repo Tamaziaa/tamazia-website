@@ -56,3 +56,13 @@ Landed from `mission-d` (#61, `db2b03c`) = the files marked **[#61]**. New/chang
 - `/api/contact` server-side PostHog event (needs `POSTHOG_KEY` bound in CF) and the Neon `leads` write.
 - STATE digest action populating live counts (needs `NEON_URL` repo secret; runs only on GitHub).
 - Astro production build / `astro check` (no Node locally).
+
+---
+
+# EDIT LOG — FIX STREAM WEB-B (Cluster 6) · branch `v4-fix-site` off `origin/main` @ `bb38ba7`
+JS parse-checked with `jsc -m` (JavaScriptCore; module-aware: SyntaxError = FAIL, ReferenceError/module-resolution = PASS). Astro = structural review. YAML = python3 `yaml.safe_load`. Price source-of-truth = `src/content/pricing.ts` (read FROM, not redefined). One commit per fix.
+
+### S1 [D24/D37/C81/C82] · Turnstile verify + CORS lockdown · `functions/api/contact.js`, `functions/api/briefings.js`
+- Both handlers now call `verifyTurnstile(request, body, env)` (was imported, never invoked) after the honeypot/age gates and reject with HTTP 403 on a failed/missing challenge. **Fail-open** preserved: the lib returns `{ok:true,skipped:'no_secret'}` when `TURNSTILE_SECRET_KEY` is unset, so behaviour is unchanged until the secret is bound.
+- `Access-Control-Allow-Origin` changed off `*` to a `new URL()`-validated allowlist (`allowOrigin(request)`): same-origin `https://tamazia.co.uk` + `www.` + Cloudflare Pages previews `*.pages.dev` only; falls back to the canonical origin for same-origin POSTs (no Origin header) so the real forms keep working while a cross-site browser caller is denied. Applied to both the POST response headers and the `onRequestOptions` preflight; added `Vary: Origin`.
+- jsc: PASS (both).

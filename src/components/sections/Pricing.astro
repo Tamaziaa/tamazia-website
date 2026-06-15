@@ -43,8 +43,10 @@ const fixPacks = [
 
 // D1 · Independent Solutions · struck-then-offer where an anchor exists, results-led.
 // Display names + outcome lines map 1:1 to the independentSolutionsGbp keys.
-const independentSolutionsMeta: Record<string, { name: string; outcome: string }> = {
-  websiteRemodelling: { name: 'Website Remodelling', outcome: 'A site that converts the traffic it earns, rebuilt to brief.' },
+// S10 · `href` deep-links a solution to its own standalone page when one exists
+// (currently only Website Remodelling). Others stay on the #contact enquiry CTA.
+const independentSolutionsMeta: Record<string, { name: string; outcome: string; href?: string }> = {
+  websiteRemodelling: { name: 'Website Remodelling', outcome: 'A site that converts the traffic it earns, rebuilt to brief.', href: '/services/website-remodelling/' },
   aiAuthority: { name: 'AI Authority', outcome: 'Cited inside ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews.' },
   icpOutreach: { name: 'ICP Outreach', outcome: 'Compliant outbound to the decision-makers who match your client profile.' },
   onlinePersonalBranding: { name: 'Online Personal Branding', outcome: 'The named-expert authority buyers check before they instruct.' },
@@ -61,6 +63,7 @@ const independentSolutions = Object.keys(independentSolutionsGbp).map((key) => {
     key,
     name: meta.name,
     outcome: meta.outcome,
+    href: meta.href || '#contact',
     anchor: typeof cfg.anchor === 'number' ? cfg.anchor : null,
     offer: typeof cfg.offer === 'number' ? cfg.offer : null,
     price: typeof cfg.price === 'number' ? cfg.price : null,
@@ -237,7 +240,7 @@ const featureIcons: Record<string, string> = {
                 <span class="is-offer" data-gbp={s.price ?? 0}>{gbp(s.price ?? 0)}</span>
               )}
             </div>
-            <a href="#contact" class="is-cta">Add this <span class="cta-arrow" aria-hidden="true">→</span></a>
+            <a href={s.href} class="is-cta">{s.href === '#contact' ? 'Add this' : 'See the engagement'} <span class="cta-arrow" aria-hidden="true">→</span></a>
           </div>
         ))}
       </div>

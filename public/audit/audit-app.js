@@ -13,7 +13,12 @@
      ------------------------------------------------------------------ */
   const PRICES = {
     entryAudit: 1500,                                   // entryAuditGbp
-    tiers: { foundation:2500, authority:4500, enterprise:9500 },   // pricingContent.tiers[].priceGbp
+    // pricingContent.tiers[]: priceGbp (from/month), priceGbpStandard (struck anchor), savesGbp6 (6-month saving)
+    tiers: {
+      foundation: { from:2500, standard:3300, saves6:4800 },
+      authority:  { from:4500, standard:6000, saves6:9000 },
+      enterprise: { from:9500, standard:12700, saves6:19200 },
+    },
     fixPacks: { ten:7500, twenty:12500, thirty:17500 }, // fixPacksGbp
     fixPacksLane: 'No retainer required. Buy the fixes, own the work.', // fixPacksLane
     exposureReport: { unlock:750, monthlyCover:449 },   // exposureReportGbp
@@ -326,7 +331,7 @@
   // and the 6-month savings framing. Bullets are VERBATIM headlines from src/content/pricing.ts (the pane
   // is the display owner). feats = the 4 shown collapsed; more = the rest, behind "See everything ›".
   const PRICING_TIERS_RENDER=[
-    {key:'foundation',name:'Foundation',standard:3300,from:2500,saves6:4800,wk:'Single-location · local authority',
+    {key:'foundation',name:'Foundation',standard:PRICES.tiers.foundation.standard,from:PRICES.tiers.foundation.from,saves6:PRICES.tiers.foundation.saves6,wk:'Single-location · local authority',
       blurb:'Single-location businesses and small groups building local search authority and compliance defence.',
       feats:[
         'The searches your buyers run when ready to act, targeted with commercial precision',
@@ -340,7 +345,7 @@
         'Monthly reporting that attributes organic search to revenue, not positions',
         'Your primary operating jurisdiction covered, with change notifications',
       ]},
-    {key:'authority',name:'Authority',standard:6000,from:4500,saves6:9000,wk:'Multi-location · two jurisdictions',
+    {key:'authority',name:'Authority',standard:PRICES.tiers.authority.standard,from:PRICES.tiers.authority.from,saves6:PRICES.tiers.authority.saves6,wk:'Multi-location · two jurisdictions',
       blurb:'Multi-location and multi-property brands scaling organic growth across regions and jurisdictions.',
       feats:[
         'Everything in Foundation, included',
@@ -349,7 +354,7 @@
         'The strategy that removes dependency on platforms taking 15 to 25% per booking',
       ],
       more:[
-        'Your Instagram authority grown alongside your rankings',
+        'Online personal branding grown alongside your rankings',
         'Two jurisdictions reviewed on every piece of content simultaneously',
         'Four compliance-reviewed content pieces monthly',
         'Editorial placements in sector-relevant publications',
@@ -357,7 +362,7 @@
         'Regulatory monitoring across both jurisdictions, 72-hour notification',
         'Bi-weekly reporting with revenue attribution across all locations',
       ]},
-    {key:'enterprise',name:'Enterprise',standard:12700,from:9500,saves6:19200,wk:'Full-stack · multi-market mandate',
+    {key:'enterprise',name:'Enterprise',standard:PRICES.tiers.enterprise.standard,from:PRICES.tiers.enterprise.from,saves6:PRICES.tiers.enterprise.saves6,wk:'Full-stack · multi-market mandate',
       blurb:'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
       feats:[
         'Everything in Authority, included',
@@ -366,7 +371,7 @@
         'The compliance standard applied to a Nasdaq-listed company, every jurisdiction',
       ],
       more:[
-        'LinkedIn and Instagram authority grown alongside your rankings',
+        'Online personal branding grown alongside your rankings, across every platform your buyers check',
         'International SEO across up to five markets, full technical implementation',
         'Ten compliance-reviewed content pieces monthly',
         'Every location in your portfolio managed on Google Business Profile',
@@ -516,7 +521,7 @@
         <div class="t3-more tl-more" hidden><ul>${t.more.map(f=>`<li>${escH(f)}</li>`).join('')}</ul></div>
         <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">See all inclusions</button><a class="btn block tl-cta" data-book="package" data-tier="${t.name}">Begin ${/^[aeiou]/i.test(t.name)?'an':'a'} ${t.name} enquiry ↗</a></div>
       </div>`).join('')}</div>
-    <p class="plan-sub tl-note">Every engagement opens with the ${priceSpan(1500)} audit you are reading. A six-month commitment unlocks the pilot rate shown; thereafter it is a 90-day rolling mandate, cancellable in writing. Quoted &amp; invoiced in GBP.</p>
+    <p class="plan-sub tl-note">Every engagement opens with the ${priceSpan(PRICES.entryAudit)} audit you are reading. A six-month commitment unlocks the pilot rate shown; thereafter it is a 90-day rolling mandate, cancellable in writing. Quoted &amp; invoiced in GBP.</p>
 
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
     <div class="route route3">

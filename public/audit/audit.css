@@ -1198,3 +1198,16 @@ html{scroll-behavior:smooth}
 
 /* tablet/mobile: the inverted Authority card flattens its lift so the stack stays even */
 @media(max-width:820px){ .tiers-lux .tier3.pop{box-shadow:0 0 0 1px var(--gold-light),0 12px 28px -18px rgba(42,12,20,.5)} }
+
+/* ---------------- FOUNDER SESSION (E2) — directly under the score header ---------------- */
+.founder-session{margin:0 2px 14px;border:1px solid var(--gold);background:linear-gradient(104deg,var(--gold-pale),var(--cream-2));border-radius:14px;overflow:hidden}
+.founder-session .fsx-inner{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:16px 20px;flex-wrap:wrap}
+.founder-session .fsx-lead{font-family:var(--serif);font-size:18px;color:var(--ox-deep);line-height:1.12;margin-bottom:4px}
+.founder-session .fsx-name{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ox-mid);line-height:1.45}
+.founder-session .fsx-body{font-family:var(--body);font-size:13px;color:var(--muted);line-height:1.45;margin:5px 0 0;max-width:560px}
+.founder-session .fsx-act{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:0 0 auto}
+.founder-session .fsx-claim{white-space:nowrap}
+.founder-session .fsx-contacts{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.founder-session .fsx-contact{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--ox);text-decoration:none;border-bottom:1px solid transparent;transition:.13s}
+.founder-session .fsx-contact:hover{border-bottom-color:var(--ox)}
+@media(max-width:720px){ .founder-session .fsx-inner{flex-direction:column;align-items:flex-start} .founder-session .fsx-act{align-items:flex-start;width:100%} .founder-session .fsx-contacts{justify-content:flex-start} .founder-session .fsx-claim{width:100%} }

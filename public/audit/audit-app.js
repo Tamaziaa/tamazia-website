@@ -615,6 +615,35 @@
       </div></div>`;
   }
 
+  /* ---------------- FOUNDER SESSION (E2) — directly under the score header ---------------- */
+  // Copy is VERBATIM and locked. Credential EXACTLY "LLM in International Business Law, King's College London".
+  // "Claim the session" → BOOKING_URL when that env is set; otherwise it falls back to the live Cal intake
+  // (data-book="package") so the button is never dead. founder@tamazia.co.uk always renders. The phone line is
+  // FOUNDER-BLOCKED: rendered ONLY when CONTACT_PHONE is set, omitted entirely otherwise (no placeholder).
+  function founderSession(){
+    const claim = BOOKING_URL
+      ? `<a class="btn solid fsx-claim" href="${escH(BOOKING_URL)}" target="_blank" rel="noopener">Claim the session ↗</a>`
+      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH((D.pricing||[]).find(p=>p.rec)?'Enterprise':'Authority')}">Claim the session ↗</a>`;
+    const phone = CONTACT_PHONE
+      ? `<a class="fsx-contact" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}">${escH(CONTACT_PHONE)}</a>`
+      : '';
+    return `<section class="founder-session" aria-label="A direct line to the founder">
+      <div class="fsx-inner">
+        <div class="fsx-copy">
+          <div class="fsx-lead">A direct line to the founder.</div>
+          <div class="fsx-name">Aman Pareek. LLM in International Business Law, King&rsquo;s College London.</div>
+          <p class="fsx-body">Book a real conversation about your brand&rsquo;s growth and compliance.</p>
+        </div>
+        <div class="fsx-act">
+          ${claim}
+          <div class="fsx-contacts">
+            <a class="fsx-contact" href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>${phone}
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
   /* ---------------- PSI box (mobile|desktop) — rendered on the FIRST view, under the scorecard ---------------- */
   function psiBlock(){
     if(D.seo && D.seo.psiStrats){
@@ -669,6 +698,7 @@
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
+    ${founderSession()}
     ${heroCharts()}
     ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${SUMM[k].nm}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
   </main>`;

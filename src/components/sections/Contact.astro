@@ -37,12 +37,12 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
         </p>
 
         {fields.map((field: any) => {
-          const inputType = field.type === 'email' ? 'email' : 'text';
+          const inputType = field.type === 'email' ? 'email' : field.type === 'url' ? 'url' : 'text';
           return (
             <div class="field field-float">
               <label for={field.id}>{field.label}{field.required && <span class="required">*</span>}</label>
-              {(field.type === 'text' || field.type === 'email') && (
-                <input type={inputType} id={field.id} name={field.id} required={field.required} autocomplete={field.autocomplete} placeholder=" " />
+              {(field.type === 'text' || field.type === 'email' || field.type === 'url') && (
+                <input type={inputType} id={field.id} name={field.id} required={field.required} autocomplete={field.autocomplete} inputmode={field.type === 'url' ? 'url' : undefined} placeholder=" " />
               )}
               {field.type === 'select' && (
                 <select id={field.id} name={field.id} required={field.required}>

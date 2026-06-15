@@ -24,6 +24,15 @@ export const contactContent = {
       placeholder: 'you@firm.com',
     },
     {
+      // Mission D · D5 · website field (feeds Neon domain capture via neon-sync.js).
+      id: 'website',
+      label: 'Website',
+      type: 'url',
+      required: true,
+      autocomplete: 'url',
+      placeholder: 'https://yourfirm.com',
+    },
+    {
       id: 'company',
       label: 'Company',
       type: 'text',

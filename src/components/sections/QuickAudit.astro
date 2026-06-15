@@ -1,5 +1,14 @@
 ---
 // Quick Audit Engine · Lead instrument positioned below hero
+import { pricingContent } from '../../content/pricing';
+
+// S9[X1] · the Authority upsell rates come from the ONE pricing config (pricing.ts),
+// not hardcoded literals. The card previously showed £3,600 / £4,500; the real Authority
+// tier is priceGbp 4500 (pilot/preferred) and priceGbpStandard 6000.
+const _authority = pricingContent.tiers.find((t) => t.name === 'Authority') || pricingContent.tiers[1] || {};
+const _gbp = (n) => '£' + Number(n || 0).toLocaleString('en-GB');
+const authorityPreferredRate = _gbp(_authority.priceGbp) + '/month';   // £4,500/month
+const authorityStandardRate = _gbp(_authority.priceGbpStandard) + '/month'; // £6,000/month
 ---
 <section class="quick-audit" id="quick-audit" aria-labelledby="audit-heading">
   <div class="container">
@@ -28,6 +37,10 @@
     <input type="text" name="bot-field" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
     <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
     <input type="url" name="c_homepage_url" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
+    {/* S1[C81/C82] · time-trap field. /api/audit already inspects ts_form_open + the
+        honeypots; this form was not sending them, so the server bot-trap was inert for the
+        QuickAudit path. Field is hydrated on load and forwarded in the POST payload below. */}
+    <input type="hidden" name="ts_form_open" id="audit-ts" value="" />
 
           <div class="audit-field audit-field--primary">
             <label for="audit-input" class="audit-label">
@@ -154,7 +167,7 @@
           </div>
 
           <!-- Authority Preferred Partner Rate upsell card -->
-          <div class="upsell-card" id="upsell-card" hidden>
+          <div class="upsell-card" id="upsell-card" data-preferred-rate={authorityPreferredRate} data-standard-rate={authorityStandardRate} hidden>
             <div class="upsell-eyebrow">
               <span class="upsell-framing" id="upsell-framing">Preferred Partner Rate</span>
               <span class="upsell-term" id="upsell-term">6-month strategic engagement</span>
@@ -163,11 +176,11 @@
             <div class="upsell-rate-block">
               <div class="rate-row">
                 <span class="rate-label">Authority tier</span>
-                <span class="rate-preferred" id="rate-preferred">£3,600/month</span>
+                <span class="rate-preferred" id="rate-preferred">{authorityPreferredRate}</span>
               </div>
               <div class="rate-row rate-row-strike">
                 <span class="rate-label">Standard rate</span>
-                <span class="rate-standard" id="rate-standard">£4,500/month</span>
+                <span class="rate-standard" id="rate-standard">{authorityStandardRate}</span>
               </div>
             </div>
             <p class="upsell-body" id="upsell-body">—</p>
@@ -1111,6 +1124,10 @@
   const sampleLink = document.getElementById('sample-link') as HTMLButtonElement;
   const ctaLink = document.getElementById('full-audit-cta') as HTMLAnchorElement;
 
+  // S1[C81/C82] · stamp the time-trap field on load so /api/audit can score form age.
+  const tsField = document.getElementById('audit-ts') as HTMLInputElement | null;
+  if (tsField && !tsField.value) tsField.value = String(Date.now());
+
   async function runAudit(value: string, isSample = false) {
     loading.hidden = false;
     loading.classList.add('active');
@@ -1176,6 +1193,13 @@
         const payload: any = { input: value };
         if (emailEl?.value) payload.email = emailEl.value.trim();
         if (sectorEl?.value) payload.sector = sectorEl.value;
+        // S1[C81/C82] · forward the time-trap + honeypot fields so /api/audit's existing
+        // bot-trap (ts_form_open age + bot-field/c_website_2/c_homepage_url) actually fires.
+        if (tsField?.value) payload.ts_form_open = tsField.value;
+        const hp = (n: string) => (form.querySelector(`[name="${n}"]`) as HTMLInputElement | null)?.value || '';
+        payload['bot-field'] = hp('bot-field');
+        payload.c_website_2 = hp('c_website_2');
+        payload.c_homepage_url = hp('c_homepage_url');
         const response = await fetch('/api/audit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1267,8 +1291,12 @@
         (document.getElementById('upsell-microfooter') as HTMLElement).textContent = data.upsell.microFooter || '';
         (document.getElementById('upsell-framing') as HTMLElement).textContent = data.upsell.framing || 'Preferred Partner Rate';
         (document.getElementById('upsell-term') as HTMLElement).textContent = data.upsell.term || '6-month strategic engagement';
-        (document.getElementById('rate-preferred') as HTMLElement).textContent = data.upsell.preferredRate || '£3,600/month';
-        (document.getElementById('rate-standard') as HTMLElement).textContent = data.upsell.standardRate || '£4,500/month';
+        // S9[X1] · fallback rates come from the config-derived data-* attributes on the
+        // upsell card (sourced from pricing.ts Authority tier), not hardcoded £3,600/£4,500.
+        const _fallbackPreferred = upsellCard.dataset.preferredRate || '';
+        const _fallbackStandard = upsellCard.dataset.standardRate || '';
+        (document.getElementById('rate-preferred') as HTMLElement).textContent = data.upsell.preferredRate || _fallbackPreferred;
+        (document.getElementById('rate-standard') as HTMLElement).textContent = data.upsell.standardRate || _fallbackStandard;
         (document.getElementById('upsell-cta-label') as HTMLElement).textContent = data.upsell.cta || 'Speak with the founder about Authority';
         upsellCard.hidden = false;
       }

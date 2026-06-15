@@ -339,7 +339,7 @@ window.CH = (function(){
     return `<div class="wf">${steps.map(s=>`<div class="wf-row"><div class="wf-l">${s.l}</div>
       <div class="bar-track"><div class="bar-fill ${s.cls==='gold'?'gold':s.cls==='amber'?'amber':''}" style="width:${Math.max(3,(s.v/max)*100)}%"></div></div>
       <div class="wf-v ${s.final?'final':''}">${money(s.v)}</div></div>`).join('')}
-      ${wf.savedPct>0?`<div class="wf-note">We collapse overlapping data-protection ceilings instead of stacking them, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:`<div class="wf-note">This is the statutory ceiling across your binding frameworks. There were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`}</div>`;
+      ${wf.savedPct>0?`<div class="wf-note">Overlapping data-protection ceilings are collapsed instead of stacked, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:`<div class="wf-note">This is the statutory ceiling across your binding frameworks. There were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`}</div>`;
   }
 
   /* ---- GEO "why AI can't see you" causal chain ---- */

@@ -133,10 +133,10 @@
     const regFixes=(D.fixes||[]).filter(f=>f.pillar==='Regulatory');
   return `
     <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
-      <h2>${D.regulatoryHeadline || ('We screened all '+D.rulesChecked+' active frameworks. '+(D.frameworksBinding||D.frameworksAssessed)+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')}</h2>
-      <p>We screen all ${D.rulesChecked} active frameworks every scan; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
+      <h2>${D.regulatoryHeadline || ('All '+D.rulesChecked+' active frameworks were screened. '+(D.frameworksBinding||D.frameworksAssessed)+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')}</h2>
+      <p>Every scan screens all ${D.rulesChecked} active frameworks; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The ${D.frameworksAssessed} frameworks carrying your exposure${D.counts.critical>0?(', with '+D.counts.critical+' breached on your live site right now'):''}, worst exposure first</h3></div>
-    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach we evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
+    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
     ${D.frameworks.map((fw,i)=>{
       const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
@@ -197,7 +197,7 @@
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>${D.seo.keywordsThin?'The queries that actually fit a firm of your scale':'Keyword demand a rival is capturing'}</h3></div>
     <div class="card pad">
-      ${D.seo.keywordsThin?`<div class="urgent" style="margin-bottom:13px;background:linear-gradient(100deg,var(--cream-2),#fff);border-left-color:var(--gold)"><span class="upulse" style="background:var(--gold);animation:none"></span><div><div class="ut">Local “near me” searches are not your battleground.</div><div class="us">For a firm of your size, buyers search specialist, commercial terms, not directory listings. We filtered out the low-intent and aggregator-led queries that would misrepresent you. Your real fight is brand authority and AI visibility, where the named rivals are pulling ahead.</div></div></div>`:''}
+      ${D.seo.keywordsThin?`<div class="urgent" style="margin-bottom:13px;background:linear-gradient(100deg,var(--cream-2),#fff);border-left-color:var(--gold)"><span class="upulse" style="background:var(--gold);animation:none"></span><div><div class="ut">Local “near me” searches are not your battleground.</div><div class="us">For a firm of your size, buyers search specialist, commercial terms, not directory listings. The low-intent and aggregator-led queries that would misrepresent you have been filtered out. Your real fight is brand authority and AI visibility, where the named rivals are pulling ahead.</div></div></div>`:''}
       ${noKeywords?'':`<div class="flexrow" style="justify-content:space-between;margin-bottom:12px">
         ${CH.stat(D.seo.keywordSummary.opportunity, D.seo.keywordSummary.oppLabel,{red:true,size:'30'})}
         ${CH.stat(D.seo.keywordSummary.onPageOne+' / '+D.seo.keywordSummary.totalTracked,'on page one today',{size:'30'})}
@@ -368,7 +368,7 @@
         'Everything in Authority, included',
         'Every market, territory & commercial keyword covered (50+ keywords)',
         'Your brand established as the source AI systems cite across all major engines',
-        'The compliance standard applied to a Nasdaq-listed company, every jurisdiction',
+        'IPO-grade compliance review applied to every asset, across every jurisdiction',
       ],
       more:[
         'Online personal branding grown alongside your rankings, across every platform your buyers check',
@@ -653,17 +653,6 @@
 
     ${trustedStrip()}
 
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>The same compliance standard, on the largest regulatory stage</h3></div>
-    <div class="cgon-proof card pad" style="background:var(--cream-2);border:0;margin-top:8px">
-      <div class="cgon-meta" style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">CG Oncology · Nasdaq: CGON · Healthcare IPO, USA</div>
-      <div class="cgon-stats" style="display:flex;gap:22px;flex-wrap:wrap;margin:10px 0 6px">
-        <div><b style="font-family:var(--serif,'Fraunces',serif);font-size:24px;color:var(--oxblood,#7A2A3B);display:block;line-height:1">+96%</b><span style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Share price at IPO</span></div>
-        <div><b style="font-family:var(--serif,'Fraunces',serif);font-size:24px;color:var(--oxblood,#7A2A3B);display:block;line-height:1">Zero</b><span style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Compliance incidents</span></div>
-      </div>
-      <p class="cgon-body" style="font-size:13px;line-height:1.6;margin:6px 0 0">CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously. Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. The digital content and marketing strategy was one of the factors contributing to shares closing 96% above the offer price at listing.</p>
-      <div class="cgon-verified" style="font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:9px">Verified per SEC filings · Public record</div>
-    </div>
-
     <div class="subhead founder-subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Walk report with the founder</h3></div>
     <div class="founder-cred">Founder: Aman Pareek. LLM in International Business Law, King&rsquo;s College London.</div>
     <p class="plan-sub">Two ways to start, both with the founder directly. No sales team, no discovery loop. Your route and strongest finding are carried into the call.</p>
@@ -715,7 +704,7 @@
     bullets.push(`<b>What this is.</b> A live audit of ${escH(company)} across regulation, search and AI visibility. Every finding below was measured on your own site, never estimated.`);
     if(crit>0) bullets.push(`<b>The headline.</b> ${crit} critical ${plur(crit,'breach','breaches')} ${plur(crit,'is','are')} live on your site right now${hasMoney?(', carrying up to '+D.exposure+' in maximum statutory penalties'):''}. Start with ${escH(String(top.title||'your highest-severity finding').toLowerCase())}.`);
     else bullets.push(`<b>The headline.</b> No critical statutory breach surfaced this scan. The gaps below are costing you rankings, buyers and AI visibility, not fines.`);
-    bullets.push(`<b>Where you stand.</b> ${D.frameworksAssessed} of ${D.rulesChecked} frameworks legally bind you${sov?(', AI names you in '+sov+' of the buyer queries we probed'):''}${rivals>0?(', and '+rivals+' '+plur(rivals,'rival')+' '+plur(rivals,'is','are')+' ranked ahead of you'):''}.`);
+    bullets.push(`<b>Where you stand.</b> ${D.frameworksAssessed} of ${D.rulesChecked} frameworks legally bind you${sov?(', AI names you in '+sov+' of the buyer queries probed'):''}${rivals>0?(', and '+rivals+' '+plur(rivals,'rival')+' '+plur(rivals,'is','are')+' ranked ahead of you'):''}.`);
     bullets.push(`<b>How to read it.</b> Open any of the six sections below. Each box opens in place, with the live evidence on the left and the exact Tamazia fix on the right.`);
     bullets.push(`<b>Keep it current.</b> Re-run this report every month so a new breach is caught the day it appears, before enforcement or a competitor moves first.`);
     return `<div class="verdict">
@@ -782,11 +771,11 @@
   /* ---------------- HERO, the charts, above the collapsed boxes ---------------- */
   function heroCharts(){
     return `<section class="hero-charts">
-      <div class="subhead" style="margin:2px 0 10px"><span class="nt">↳</span><h3>Every metric we judged you on, visualised.</h3></div>
+      <div class="subhead" style="margin:2px 0 10px"><span class="nt">↳</span><h3>Every metric behind your score, visualised.</h3></div>
       <div class="card pad">${CH.dimCardGrid()}</div>
       ${psiBlock()}
       <div class="grid g2" style="margin-top:12px">
-        <div class="card pad"><div class="card-h"><div class="t">${(D._meta&&D._meta.exposureN>0)?'How your '+D.exposure+' exposure is really calculated':'Exposure breakdown'}</div><div class="meta">we don’t just add up ceilings</div></div>${CH.waterfall()||'<div class="capt" style="margin:0">No statutory exposure confirmed this scan, the gaps below are ranking and AI-visibility costs, not fines.</div>'}</div>
+        <div class="card pad"><div class="card-h"><div class="t">${(D._meta&&D._meta.exposureN>0)?'How your '+D.exposure+' exposure is really calculated':'Exposure breakdown'}</div><div class="meta">not just a sum of ceilings</div></div>${CH.waterfall()||'<div class="capt" style="margin:0">No statutory exposure confirmed this scan, the gaps below are ranking and AI-visibility costs, not fines.</div>'}</div>
         <div class="card pad"><div class="card-h"><div class="t">Why AI can’t see ${D.meta.company}</div><div class="meta">root-cause chain</div></div>${CH.causalChain()||'<div class="capt" style="margin:0">Your identity signals are largely present, the work is to defend and deepen them.</div>'}</div>
       </div>
     </section>`;
@@ -1134,7 +1123,7 @@
       m.querySelector('.cmx-body').innerHTML=`
         <div class="cmx-head">
           <span class="cmx-eyebrow">${eyebrow}</span>
-          <h3>Tell us about the firm, then pick a time with the founder</h3>
+          <h3>Share a few details about the firm, then pick a time with the founder</h3>
           <p>${lede}</p>
         </div>
         <form class="cmx-form" novalidate>
@@ -1201,7 +1190,7 @@
         if(!r.ok || !res || res.ok!==true){ throw new Error((res&&res.error)||('http_'+r.status)); }
       }catch(err){
         btn.disabled=false; btn.textContent=label;
-        showErr(errEl,'We could not save that just now. Please try again, or email founder@tamazia.co.uk.');
+        showErr(errEl,'That could not be saved just now. Please try again, or email founder@tamazia.co.uk.');
         return;
       }
       mountCal(res.calSlug, res.prefill||{}, intentLabel(body.intent));
@@ -1304,7 +1293,7 @@
         throw new Error((res&&res.error)||('http_'+r.status));
       }catch(err){
         // Genuine transient failure: still route to the founder path, never a dead end.
-        addonFallback(addon, btn, label, 'We could not open checkout just now. Leave your details and we will sort it directly.');
+        addonFallback(addon, btn, label, 'Checkout could not open just now. Leave your details and the founder will sort it directly.');
       }
     }
 

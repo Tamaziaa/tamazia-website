@@ -40,7 +40,7 @@ export const heroContent = {
     "Compliance reviewed before publication, every engagement.",
 
   // Positioning line — restored verbatim.
-  positioningLine: "Your SEO agency doesn’t have a {{lawyer}}. Ours is run by {{one}}.",
+  positioningLine: "Your SEO agency doesn’t have a {{lawyer}}. Tamazia is run by {{one}}.",
 
   // Pull quote (closing line above client ribbon). Verbatim.
   pullQuote: 'Ranking is only valuable if it is {{legal}}.',
@@ -55,7 +55,7 @@ export const heroContent = {
 
   // Compliance paragraph · regulator names wrapped as styled chips (B-18)
   complianceParagraph:
-    'Every campaign executed through us passes through {{400+ laws}} before anything goes live: [[GDPR]], [[FCA]], [[SRA]], [[MHRA]], [[ASA]], [[HIPAA]], [[EU AI Act]], and international advertising law.',
+    'Every campaign Tamazia runs passes through {{400+ laws}} before anything goes live: [[GDPR]], [[FCA]], [[SRA]], [[MHRA]], [[ASA]], [[HIPAA]], [[EU AI Act]], and international advertising law.',
 
   // Legacy eyebrow for current Hero.astro (Gate B will replace with top-bar credentials).
   eyebrow: 'TAMAZIA · The Practice',

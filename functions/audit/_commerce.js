@@ -42,7 +42,7 @@ export const ADDON_CATALOGUE = {
   cold_email: {
     key: 'cold_email', name: 'Cold Email Outreach Engine', envKey: 'STRIPE_PRICE_COLD_EMAIL',
     gbp: 1400, was: 499, unit: 'mo', market: 'vs market £2,400 to £6,400/mo',
-    usp: 'We source 30,000 ICP-targeted leads, build a compliant B2B template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same engine that found you as a client.',
+    usp: 'Sources 30,000 ICP-targeted leads, builds a compliant B2B template per jurisdiction, runs 5 to 7 follow-ups and tracks every lead. The same engine that found you as a client.',
     spec: ['Built on the 400+ rule compliance database, so FCA and COBS sends stay compliant', 'Self-healing deliverability with inbox rotation', 'Personalised per prospect and classified by intent', '3 to 8 percent target reply rate, pure pipeline margin', 'Best for clinics building patient lists and firms doing active business development'],
   },
   compliance: {

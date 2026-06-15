@@ -4,7 +4,8 @@ import { contactContent } from '../../content/contact';
 import TurnstileWidget from '../security/TurnstileWidget.astro';
 import FounderLink from '../atoms/FounderLink.astro';
 
-const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl, confidentiality, successMessage } = contactContent;
+const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl, confidentiality, successMessage, founderEmail, founderPhone } = contactContent;
+const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
 ---
 <section class="contact" id="contact" aria-labelledby="contact-heading">
   <!-- Monogram watermark -->
@@ -87,6 +88,13 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
             single-sourced. The strategy call is held by the founder in person. */}
         <p class="founder-call-copy">The strategy call is held by the founder in person.</p>
         <FounderLink variant="dark" className="contact-founder" />
+        {/* Founder direct line · email + phone, single-sourced from contact.ts. format-detection is
+            telephone=no site-wide, so the tel: link is explicit and intentional here. */}
+        <p class="contact-direct">
+          <span class="contact-direct-label">A direct line to the founder.</span>
+          <a class="contact-direct-link" href={`mailto:${founderEmail}`}>{founderEmail}</a>
+          <a class="contact-direct-link" href={telHref}>{founderPhone}</a>
+        </p>
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
         <div class="calendly-embed" id="contact-cal-inline" role="region" aria-label="Cal.com booking calendar">
@@ -354,7 +362,38 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
     margin-bottom: 14px;
   }
   .calendly-pane :global(.founder-link.contact-founder) {
-    margin-bottom: 22px;
+    margin-bottom: 18px;
+  }
+
+  /* Founder direct line · email + phone beside the calendar */
+  .contact-direct {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 16px;
+    margin: 0 0 22px;
+  }
+  .contact-direct-label {
+    flex-basis: 100%;
+    font-family: var(--ff-body);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2px;
+  }
+  .contact-direct-link {
+    font-family: var(--ff-mono, var(--ff-body));
+    font-size: 14px;
+    color: var(--pearl);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201, 167, 114, 0.4);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .contact-direct-link:hover {
+    color: var(--gold);
+    border-color: var(--gold);
   }
 
   .calendly-heading {
@@ -625,11 +664,11 @@ const { eyebrow, h2, subline, fields, submitLabel, calendlyHeading, calendlyUrl,
             success.hidden = false;
           }
         } else {
-          setStatus('error', data.error || 'Something went wrong. Please email us at founder@tamazia.co.uk.');
+          setStatus('error', data.error || 'Something went wrong. Please email founder@tamazia.co.uk.');
           if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
         }
       } catch {
-        setStatus('error', 'Network error. Please email us at founder@tamazia.co.uk.');
+        setStatus('error', 'Network error. Please email founder@tamazia.co.uk.');
         if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
       }
     });

@@ -12,6 +12,7 @@ RESEND_REPLY_TO = "founder@tamazia.co.uk"
 ALERT_TO = "realfamemedia@gmail.com"
 CONTACT_FROM = "Tamazia Ltd · Forms <forms@tamazia.in>"
 CONTACT_TO = "founder@tamazia.co.uk"
+CONTACT_PHONE = "+44 7778243657"
 PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADf7dMzKneovEzOp"
 EMAIL_VALIDATION_MODE = "tag"
 

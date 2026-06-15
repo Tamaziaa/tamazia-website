@@ -190,7 +190,7 @@ function fwCode(fw) { const s = String(fw || '').replace(/^(UK|EU|US|AE|FR|DE|SA
 
 /* ---------------- Lighthouse audit intelligence (element-level evidence) ----------------
    Google's real Lighthouse/Chrome-UX audits (scan.psi.audits[]) carry the failing DOM node,
-   its CSS selector, the element count and the measured £/ms/KiB cost. We render that verbatim, 
+   its CSS selector, the element count and the measured £/ms/KiB cost. The render shows that verbatim,
    the "a developer looked at YOUR site, because Chrome did" proof. id -> human title + lane + fix. */
 const LH = {
   'render-blocking-insight': ['Render-blocking resources are delaying first paint', 'speed', 'Tamazia defers non-critical CSS/JS and inlines critical styles so the page paints immediately.'],
@@ -331,13 +331,13 @@ function absenceLine(ae) {
   if (!ae || typeof ae !== 'object') return '';
   const page = ae.target_url ? humanUrl(ae.target_url) : '';
   if (ae.state === 'related_present_requirement_absent' && ae.nearest_quote) {
-    return `On ${page || 'your site'} we read “${String(ae.nearest_quote).slice(0, 150)}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
+    return `On ${page || 'your site'} the scan read “${String(ae.nearest_quote).slice(0, 150)}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
   }
   if (ae.state === 'page_silent' && page) {
-    return `We inspected ${page} and it makes no mention of ${ae.requirement || 'this disclosure'}.`;
+    return `${page} was inspected and makes no mention of ${ae.requirement || 'this disclosure'}.`;
   }
   if (ae.pages_checked) {
-    return `Across the ${ae.pages_checked} page${ae.pages_checked === 1 ? '' : 's'} we crawled, ${ae.requirement || 'this disclosure'} appears nowhere.`;
+    return `Across the ${ae.pages_checked} page${ae.pages_checked === 1 ? '' : 's'} crawled, ${ae.requirement || 'this disclosure'} appears nowhere.`;
   }
   return '';
 }
@@ -943,10 +943,10 @@ export function payloadToD(payload, ctx = {}) {
   const compCriticals = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P0').length;
   const compHighs = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P1').length;
   const regulatoryHeadline = compCriticals > 0
-    ? `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
+    ? `All ${'400+'} active frameworks were screened. The ones that legally bind you are below, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
     : (compHighs > 0
-      ? `We screened all ${'400+'} active frameworks. The ones that legally bind you are below; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
-      : `We screened all ${'400+'} active frameworks. The ones that legally bind you are below, and none is confirmed breached on the live site this scan, so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+      ? `All ${'400+'} active frameworks were screened. The ones that legally bind you are below; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
+      : `All ${'400+'} active frameworks were screened. The ones that legally bind you are below, and none is confirmed breached on the live site this scan, so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
@@ -1062,8 +1062,8 @@ export function payloadToD(payload, ctx = {}) {
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
   if (!frameworks.length) { const _read = g(payload, 'scan.reachable', true) !== false; frameworks.push(_read
-    ? { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'We screened the full regulatory catalogue against your jurisdiction and could not evidence a statutory breach on the live site this scan, your material gaps sit in the technical, AI-visibility and authority signals below, not in fines.', why: 'No in-jurisdiction statutory breach was evidenced this scan; the priority is the ranking, AI-visibility and trust work in the other pillars.' }
-    : { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'Your live site blocked our deep read this scan (bot-challenge or JS-only render), so we show only what we could prove, honest suppression, not a clean bill of health. A re-scan completes it.', why: 'A re-scan with archive + rendered-DOM fallback completes the assessment.' }); }
+    ? { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'The full regulatory catalogue was screened against your jurisdiction with no statutory breach evidenced on the live site this scan, your material gaps sit in the technical, AI-visibility and authority signals below, not in fines.', why: 'No in-jurisdiction statutory breach was evidenced this scan; the priority is the ranking, AI-visibility and trust work in the other pillars.' }
+    : { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'Your live site blocked a deep read this scan (bot-challenge or JS-only render), so only what could be proven is shown, honest suppression, not a clean bill of health. A re-scan completes it.', why: 'A re-scan with archive + rendered-DOM fallback completes the assessment.' }); }
   // FLOOR: a readable site shows >=5 regulatory brackets (founder standing rule). We top up HONESTLY, never with a
   // fabricated breach/fine and never with a law outside the firm's jurisdiction: (1) the firm's own BINDING
   // frameworks that screened clean this scan, then (2) the baseline laws that apply to ANY commercial site in the
@@ -1081,7 +1081,7 @@ export function payloadToD(payload, ctx = {}) {
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
         findings: 0, c: 0, h: 0, s: 0, exp: 'controls to confirm', expN: 0, screened: true,
         action: g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
-        why: 'This framework legally binds you and we screened it against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.',
+        why: 'This framework legally binds you and was screened against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.',
       });
     };
     arr(payload.applicable_frameworks).map(fwCanon).filter((fw, i, a) => a.indexOf(fw) === i).forEach(_pushScreened);

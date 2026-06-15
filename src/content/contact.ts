@@ -76,6 +76,11 @@ export const contactContent = {
   calendlyHeading: 'Or schedule directly using the calendar below.',
   calendlyUrl: '/book/',
 
+  // Founder direct line · rendered beside the calendar in the contact pane (mirrors the audit
+  // founder block: email + phone). Founder-confirmed 2026-06-15.
+  founderEmail: 'founder@tamazia.co.uk',
+  founderPhone: '+44 7778243657',
+
   confidentiality: 'All briefings are conducted under NDA on request. The founder reviews every enquiry.',
 
   successMessage: {

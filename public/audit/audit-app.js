@@ -830,7 +830,8 @@
   }
   document.querySelectorAll('.railnav button').forEach(b=>b.addEventListener('click',e=>{e.preventDefault(); openPillar(b.dataset.pane);}));
   // Phase 10: a separate "Jump to pricing" control OUTSIDE .railnav (so the harness count stays 6).
-  document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); openPillar('plan');});
+  // E3: open the in-page pricing DRAWER (no navigation); fall back to opening the pane if the drawer is absent.
+  document.querySelector('.rail-jump')?.addEventListener('click',e=>{e.preventDefault(); if(Drawer&&Drawer.open){ Drawer.open(); } else { openPillar('plan'); }});
   // Direct click on a pillar heading opens it IN PLACE: close the others (accordion) and ANCHOR the clicked
   // heading at its current viewport position by compensating the sibling-collapse shift — no jump-to-top.
   // (founder: "any box clicked just cuts the screen from top — fix this".) NAV opens (openPillar) own their scroll.
@@ -906,7 +907,9 @@
   /* ---------------- FREEMIUM LOCK: any locked Tamazia-fix opens Route 3 (unlock the report) ---------------- */
   // The green-gradient lock veil sits over each Tamazia-fix element (never the beat-cards). Clicking any of
   // them opens the Plan pillar and pins Route 3, where a successful payment unlocks the whole link for everyone.
-  function goUnlock(){ openPillar('plan'); requestAnimationFrame(function(){ const r3=document.querySelector('#sec-plan .route3'); if(r3) scrollHeadingTop(r3); }); }
+  // E3: the lock veil opens the pricing DRAWER at Route 3 (no navigation). Falls back to the in-page pane.
+  // Drawer is declared later in this IIFE but is always initialised by the time a click fires this.
+  function goUnlock(){ if(Drawer && Drawer.open){ Drawer.open('.route3'); return; } openPillar('plan'); requestAnimationFrame(function(){ const r3=document.querySelector('#sec-plan .route3'); if(r3) scrollHeadingTop(r3); }); }
   app.addEventListener('click',function(e){ const v=e.target.closest('.tz-lock-veil'); if(!v) return; e.preventDefault(); goUnlock(); });
   app.addEventListener('keydown',function(e){ if(e.key!=='Enter'&&e.key!==' ')return; const v=e.target.closest('.tz-lock-veil'); if(!v)return; e.preventDefault(); goUnlock(); });
 
@@ -1007,13 +1010,68 @@
   app.addEventListener('mouseover',e=>{ const tt=e.target.closest('[data-tier-tab]'); if(tt) morphTrajectory(+tt.dataset.tierTab); });
   app.addEventListener('mouseout',e=>{ const tt=e.target.closest('[data-tier-tab]'); if(tt){ const a=document.querySelector('[data-tier-tab].active'); morphTrajectory(a?+a.dataset.tierTab:0); } });
 
-  /* ---------------- FLOATING CTA, "Fix these now!" scrolls to the plan pane ---------------- */
+  /* ---------------- PRICING DRAWER (E3): in-page slide-over, no navigation ---------------- */
+  // A right-side slide-over that shows the FULL Plan & Pricing pane WITHOUT navigating or opening a new tab.
+  // It renders from the SAME source as the in-page pane: rather than re-rendering (which would duplicate the
+  // #sec-plan id, the .route3 node and double-mount the Cal iframes), it RELOCATES the live #sec-plan node into
+  // the drawer panel and back. The panel lives INSIDE #app so every app-delegated handler (tier tabs, currency,
+  // add-ons, data-book, data-subscribe, the .route3 unlock) keeps firing unchanged. Closing restores the exact
+  // scroll position. The freemium-lock veil and the finding fix-links open the drawer; #sec-plan/.route3 always
+  // resolve because the node is preserved, not cloned.
+  const Drawer=(function(){
+    const plan=document.getElementById('sec-plan');
+    if(!plan) return { open(){}, close(){}, isOpen(){return false;} };
+    // placeholder marks the plan pane's original home so we can put it back in the exact same spot.
+    const home=document.createComment('plan-home'); plan.parentNode.insertBefore(home, plan);
+    const ov=document.createElement('div'); ov.className='pdrawer-ov'; ov.setAttribute('aria-hidden','true');
+    const panel=document.createElement('aside'); panel.className='pdrawer'; panel.setAttribute('role','dialog');
+    panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-label','Plans and pricing'); panel.setAttribute('aria-hidden','true');
+    panel.innerHTML='<div class="pdrawer-bar"><span class="pdrawer-t">Plans &amp; pricing</span><button class="pdrawer-x" aria-label="Close plans">×</button></div><div class="pdrawer-body"></div>';
+    // both overlay + panel sit INSIDE #app so the app-level delegated click/keydown handlers still receive events.
+    app.appendChild(ov); app.appendChild(panel);
+    const body=panel.querySelector('.pdrawer-body');
+    let open=false, savedY=0, lastFocus=null;
+    function isOpen(){ return open; }
+    function doOpen(target){
+      if(open){ if(target) scrollTo(target); return; }
+      open=true; savedY=window.scrollY||window.pageYOffset||0; lastFocus=document.activeElement;
+      plan.open=true;                              // ensure the pane body (and Cal mounts) exist
+      body.appendChild(plan);                      // RELOCATE the live node (no clone, no re-render)
+      ov.classList.add('show'); panel.classList.add('show');
+      ov.setAttribute('aria-hidden','false'); panel.setAttribute('aria-hidden','false');
+      document.body.classList.add('pdrawer-lock');
+      mountPlanCalendars();                        // mount the two inline Cal widgets (guarded by dataset.mounted)
+      try{ panel.querySelector('.pdrawer-x').focus(); }catch(_e){}
+      if(target) requestAnimationFrame(()=>scrollTo(target));
+    }
+    function scrollTo(sel){ try{ const el=body.querySelector(sel); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }catch(_e){} }
+    function doClose(){
+      if(!open) return; open=false;
+      ov.classList.remove('show'); panel.classList.remove('show');
+      ov.setAttribute('aria-hidden','true'); panel.setAttribute('aria-hidden','true');
+      document.body.classList.remove('pdrawer-lock');
+      home.parentNode.insertBefore(plan, home);    // put the pane back in its exact original spot
+      try{ window.scrollTo(0, savedY); }catch(_e){} // restore exact scroll position
+      try{ if(lastFocus&&lastFocus.focus) lastFocus.focus(); }catch(_e){}
+    }
+    ov.addEventListener('click',doClose);
+    panel.querySelector('.pdrawer-x').addEventListener('click',doClose);
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&open) doClose(); });
+    // sticky "Plans" pill (bottom-left; distinct from the bottom-right FAB + Notes toggle).
+    const pill=document.createElement('button'); pill.className='plans-pill'; pill.type='button';
+    pill.innerHTML='<span class="pp-ic">✦</span>Plans'; pill.setAttribute('aria-label','Open plans and pricing');
+    pill.addEventListener('click',()=>doOpen()); document.body.appendChild(pill);
+    return { open:doOpen, close:doClose, isOpen };
+  })();
+
+  /* ---------------- FLOATING CTA, "Fix these now!" opens the pricing drawer ---------------- */
   (function floatingCta(){
     const b=document.createElement('button');
     b.className='fix-fab'; b.type='button';
     b.innerHTML='<span class="ff-dot"></span>Fix these now!';
-    // Phase 11: ALWAYS visible (no hide-on-open). Click opens the plan pane AND scrolls to the Fix Sprint box.
-    b.addEventListener('click',()=>{ openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .route1')||document.querySelector('#sec-plan .route'); if(fx) scrollHeadingTop(fx); }); });
+    // E3: open the in-page drawer at the Fix Sprint, no navigation. Falls back to the in-page pane if the drawer
+    // is unavailable, so the control is never dead.
+    b.addEventListener('click',()=>{ if(Drawer.isOpen&&Drawer.open){ Drawer.open('.route1'); } else { openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .route1')||document.querySelector('#sec-plan .route'); if(fx) scrollHeadingTop(fx); }); } });
     document.body.appendChild(b);
   })();
 

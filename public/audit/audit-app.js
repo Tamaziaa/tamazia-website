@@ -309,11 +309,10 @@
   }
 
   /* ---------------- PLAN + PRICING + ADD-ONS + BOOKING ---------------- */
-  // Canonical pricing mirrors functions/audit/_commerce.js (PRICING_TIERS / ONE_TIME_FIX_GBP)
-  // and the full ADDON_CATALOGUE. The adapter's thin D.pricing/D.addons does not carry the
-  // list/pilot split, the was-prices or the outcome-led USPs, so the pane owns the display copy.
-  // List prices are verbatim from src/content/pricing.ts; pilot = 0.6 x list, a compliance-safe
-  // limited engagement (no countdown). Per-firm recommendation flows from D.pricing flags.
+  // C-A: this pane is the ONE display source. Every price/figure here READS from the PRICES block above,
+  // which mirrors src/content/pricing.ts verbatim (the canonical price config). The adapter's D.pricing is
+  // consumed ONLY for the per-firm recommendation flags (rec/popular); it carries no prices. The server-side
+  // Stripe/Cal mapping is functions/audit/_commerce.js (checkout only, not a display source).
   const gbpFmt=n=>'£'+Number(n).toLocaleString('en-GB');
   // ---- Currency by region (founder: UK→£, EU→€, US→$, Middle East→AED, else £). All work is quoted +
   // invoiced in GBP; the local figure is an indicative conversion (rates approximate, rounded to clean values).

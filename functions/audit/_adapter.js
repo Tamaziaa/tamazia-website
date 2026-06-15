@@ -1517,8 +1517,12 @@ export function payloadToD(payload, ctx = {}) {
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
     fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full 400+ rule scan with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
     glossary: buildGlossary(payload, allow),
-    // commerce scaffold (Slice 5 replaces with live config + Cal/Stripe wiring)
-    pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, addons: COMMERCE.addons, addonsMore: COMMERCE.addonsMore, upsellProof: COMMERCE.upsellProof,
+    // C-A: ONE commerce source. The render (audit-app.js) owns ALL displayed prices/copy from the single PRICES
+    // block (mirrored from src/content/pricing.ts); the server-side Stripe/Cal mapping lives in _commerce.js.
+    // The adapter therefore injects ONLY the per-firm tier recommendation flags the render consumes
+    // (D.pricing[].rec / .popular, keyed by .tier) + the two notes. The old injected `addons`/`addonsMore`
+    // catalogues were NEVER read by the render (it builds ADDONS from PRICES.independent) — removed as dead.
+    pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, upsellProof: COMMERCE.upsellProof,
     _meta: { droppedByJurisdiction: dropped, exposureN, generatedAt: ctx.generated_at || null },
   };
   // Optional scoring trace (benchmark harness only; NEVER passed on the production render route, so it
@@ -1639,26 +1643,22 @@ function fmtArchive(d) { const s = String(d || ''); return s.length === 8 ? `${s
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; } catch { return ''; } }
 
-/* ---------------- commerce scaffold (Tamazia live tiers/add-ons; Slice 5 = live config) ---------------- */
+/* ---------------- commerce: per-firm tier recommendation flags ONLY (C-A) ----------------
+   ONE commerce source of truth across the page:
+     - ALL displayed prices + tier/add-on copy: src/content/pricing.ts, mirrored into the render's PRICES block
+       (public/audit/audit-app.js). The render owns the display.
+     - Server-side add-on → Stripe price_id + tier → Cal slug mapping: functions/audit/_commerce.js.
+   The adapter therefore carries NOTHING but the per-firm recommendation flags the render reads
+   (D.pricing[].rec / .popular, matched by .tier) plus the two prose notes. Prices/feature lists are
+   deliberately NOT held here (they would be a fourth place to drift). The previously-injected
+   `addons`/`addonsMore` catalogues were dead (the render never read them) and are removed. */
 const COMMERCE = {
   pricingNotes: '90-day rolling · no long-term contract · work belongs to you once paid · founder reviews every onboarding personally.',
   upsellProof: 'Each add-on layers onto your core programme as it proves out. Start with the audit\'s top priority, then add the next lever once it is working.',
+  // tier = the key the render matches on (audit-app.js byName); rec/popular = the only fields consumed.
   pricing: [
-    { tier: 'Foundation', pr: '£2,500', wk: '4-week onboarding', blurb: 'Single-site independent firm getting compliant and found.', feats: ['Full prosecution-grade audit + re-scan', '1 compliance-reviewed content piece / month', 'Google Business Profile optimisation', 'Core technical + on-page fixes', 'Single jurisdiction'], more: ['10 tracked keywords', 'Monthly compliance monitoring', 'Quarterly re-audit', 'Email support · 48h'], rec: false },
-    { tier: 'Authority', pr: '£4,500', wk: '8-week programme', popular: true, blurb: 'Multi-partner / multi-location firm building category authority.', feats: ['Everything in Foundation', '30 keywords · 4 content pieces / month', 'Editorial placements + GEO programme', 'AI entity + schema build', 'Two jurisdictions'], more: ['LinkedIn executive authority for 2 partners', 'Competitor displacement tracking', 'Knowledge-panel build', 'Priority support · 24h', 'Pilot available at £3,600 on 6-month'], rec: false },
-    { tier: 'Enterprise', pr: '£9,500', wk: '12-week+ mandate', rec: true, blurb: 'Multi-jurisdiction, listed or pre-IPO. Total search + AI dominance.', feats: ['Everything in Authority', '50+ keywords · full AI-search dominance', '10 content pieces / month · 5 markets', 'Crisis reputation cover', 'Dedicated founder oversight'], more: ['Multi-jurisdiction compliance programme', 'Per-engine GEO measurement', 'Board-ready monthly reporting', 'Named partner authority programmes', '40% improvement guarantee (founder-held)'] },
-  ],
-  addons: [
-    { nm: 'GEO / AI Search Presence', rank: '#1', score: 91, pr: '£1,800', market: 'vs market £1,900–£6,300/mo', tag: 'Appear inside ChatGPT, Perplexity, Claude, Gemini & Google AI, the only compliance-reviewed GEO programme on the market.', us: ['AI-referred visitors arrive with high intent and convert above organic', 'Entity + schema + llms.txt + Wikidata build', 'Compliance review of what AI says about you (unique)'], more: ['Per-engine citation measurement across 6 engines', 'Monthly share-of-voice tracking vs named rivals', 'Answer-surface content targeting real buyer prompts', 'Delivered: entity wk1–4, content wk4–12, measured monthly', 'Best for: every regulated firm, AI is the first research step'] },
-    { nm: 'Cold Email Outreach Engine', rank: '#2', score: 88, pr: '£1,400', market: 'vs market £2,400–£6,400/mo', tag: '30,000 ICP-targeted, compliance-reviewed sends per month — the same compliance-first outbound engine, working for your pipeline.', us: ['3–8% target reply rate', 'FCA / COBS-compliant sends', 'Personalised per prospect, classified by intent'], more: ['Built on the 400+ rule compliance database', 'Self-healing deliverability + inbox rotation', 'Personalised per-prospect, classified by intent', 'Delivered: list wk1, warmup wk2, sending wk3+', 'Best for: clinics building lists, firms doing BD'] },
-    { nm: 'Compliance Monitoring', rank: '#3', score: 85, pr: '£399', market: 'correctly priced · 67% uptake', tag: 'Monthly re-scan of the full rule catalogue, so a new breach never sits on your live site unseen.', us: ['Catches new breaches as the law changes', 'Continuous, board-ready compliance proof', 'Alerts within 24h of a new gap appearing'], more: ['Alerts within 24h of a new gap appearing', 'Tracks enforcement-register changes per framework', 'Quarterly compliance certificate', 'Delivered: automated, human-reviewed monthly', 'Best for: any firm that wants the audit to stay live'] },
-    { nm: 'LinkedIn Executive Authority', rank: '#4', score: 80, pr: '£1,100', market: 'vs market £600–£5,800/mo', tag: 'Ghostwritten, compliance-reviewed thought leadership for partners. 4× the conversion of company content.', us: ['Dual distribution: LinkedIn + Google', 'Every post compliance-checked before publish', 'Builds the named-expert E-E-A-T signal Google rewards'], more: ['8–12 posts / month per executive', 'SEO-optimised so posts rank on Google too', 'Engagement + lead attribution reporting', 'Delivered: voice capture wk1, publishing wk2+', 'Best for: law/finance partners, clinic founders'] },
-    { nm: 'Reputation Monitoring + Crisis', rank: '#5', score: 76, pr: '£1,500', market: 'at market', tag: 'Enterprise ORM with compliance-aware suppression — protect the reputation your referrals and pipeline depend on, before a problem spreads.', us: ['Real-time review + mention monitoring', 'Crisis playbook on standby with the founder', 'Suppression architecture, not just alerting'], more: ['Covers Google, Trustpilot, social, press', 'Negative-result suppression within guidelines', 'Monthly sentiment trend reporting', 'Delivered: baseline wk1, monitoring continuous', 'Best for: any firm with £5M+ revenue to protect'] },
-    { nm: 'AI Entity + Knowledge Panel', rank: '#7', score: 64, pr: '£1,200', market: 'at market', tag: 'The knowledge-graph backbone AI engines read before they cite anyone. Bundles with GEO into "AI Authority".', us: ['Wikidata entry + Google Knowledge Panel build', 'sameAs across every verified profile', 'Makes you a recognised, citable entity'], more: ['Notability-backed Wikipedia presence where eligible', 'Structured entity with sourced references', "Feeds every AI engine's identity layer", 'Delivered: 6–10 weeks to panel approval', 'Best for: firms invisible in AI today (entity < 70)'] },
-  ],
-  addonsMore: [
-    { nm: 'GBP Domination', pr: '£650', tag: '30,000+ compliance-checked map citations per location.' },
-    { nm: 'Regulatory Change Alerts', pr: '£199', tag: 'Loss-leader: every new ruling in your sector, the day it lands.' },
-    { nm: 'YMYL Content', pr: '£800–1,200', tag: 'Per compliance-reviewed piece, health/legal grade, not generic.' },
+    { tier: 'Foundation', rec: false, popular: false },
+    { tier: 'Authority', rec: false, popular: true },
+    { tier: 'Enterprise', rec: true, popular: false },
   ],
 };

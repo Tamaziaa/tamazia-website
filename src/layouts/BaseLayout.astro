@@ -2,6 +2,7 @@
 import HeadAnalytics from '../components/analytics/HeadAnalytics.astro';
 import Sentry from '../components/analytics/Sentry.astro';
 import BodyAnalytics from '../components/analytics/BodyAnalytics.astro';
+import Analytics from '../components/analytics/Analytics.astro';
 import CookieConsent from '../components/ui/CookieConsent.astro';
 
 // Tamazia analytics tokens · replace empty strings with actual values when provider properties are created.
@@ -72,8 +73,8 @@ const jsonLd = {
         addressCountry: 'GB',
       },
       sameAs: [
-        'https://linkedin.com/company/tamazia',
-        'https://instagram.com/tamazia',
+        'https://www.linkedin.com/in/amanpareekk/',
+        'https://www.instagram.com/tamaziauk/',
       ],
       contactPoint: {
         '@type': 'ContactPoint',
@@ -87,7 +88,7 @@ const jsonLd = {
         name: 'Aman Pareek',
         jobTitle: 'Founder',
         sameAs: [
-          'https://linkedin.com/in/amanpareek',
+          'https://www.linkedin.com/in/amanpareekk/',
         ],
         alumniOf: {
           '@type': 'EducationalOrganization',
@@ -378,6 +379,8 @@ if (_segs.length > 0) {
     })();
   </script>
   <BodyAnalytics cfBeacon={cfBeacon} ga4Id={ga4Id} />
+  {/* P3-3 · PostHog + Microsoft Clarity, site-wide, consent-gated, env-driven (no-op if unset) */}
+  <Analytics />
   {/* M7 · multi-jurisdiction cookie consent (gates the GA4 loader above) */}
   <CookieConsent />
 

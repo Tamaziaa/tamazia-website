@@ -140,15 +140,20 @@ export async function onRequestPost(context) {
   }
 
   if (context.waitUntil) {
+    // C-H: a recurring subscription bills /mo; a one-time payment (mode=payment, e.g. YMYL piece or the
+    // one-time unlock) does NOT. Branch the suffix on Stripe's session mode (sub id present ⇒ recurring),
+    // so a one-time order is never mislabelled as monthly.
+    const isRecurring = s.mode === 'subscription' || !!order.subscription;
+    const perSuffix = isRecurring ? '/mo' : ' one-time';
     const amt = order.amount_total != null ? `${(order.amount_total / 100).toFixed(0)} ${(order.currency || 'gbp').toUpperCase()}` : '';
-    const summary = `Add-on purchased · ${order.addon_name || order.addon_key}${amt ? ' · ' + amt : ''}`;
+    const summary = `Add-on purchased · ${order.addon_name || order.addon_key}${amt ? ' · ' + amt + (isRecurring ? '/mo' : '') : ''}`;
     const detail = [
       `*Add-on:* ${order.addon_name || order.addon_key}`,
       order.company && `*Company:* ${order.company}`,
       order.audit_domain && `*Audit:* ${order.audit_domain}`,
       order.customer_email && `*Email:* ${order.customer_email}`,
-      amt && `*Amount:* ${amt}/mo`,
-      `*Subscription:* ${order.subscription || 'n/a'}`,
+      amt && `*Amount:* ${amt}${perSuffix}`,
+      `*Subscription:* ${order.subscription || 'n/a (one-time)'}`,
       !saved && `:warning: NOT persisted (${dbError}). Run the addon_orders migration.`,
     ].filter(Boolean).join('\n');
     context.waitUntil(Promise.allSettled([

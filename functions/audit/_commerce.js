@@ -22,14 +22,17 @@
 // Stable key per add-on (slug of the display name). The client sends data-addon="<display name>";
 // addonKey() normalises it to this stable key so a copy tweak never breaks checkout.
 //
-// This catalogue is the ONE source of truth the render pane mirrors (audit-app.js P.plan).
-// Each entry carries the market-sourced display data (was/list price, billing unit and the
-// outcome-led USP) so the pane leads with value, never a score or rank.
-//   gbp   current Tamazia price (the live, corrected price)
-//   was   prior / commodity price shown struck-through (0 when there was no change)
-//   unit  'mo' monthly · 'piece' per deliverable
-//   usp   the concrete, outcome-first one-liner the tablet leads with (R5: no em dashes / pause hyphens)
-//   spec  the full-detail bullets revealed on hover / tap
+// C-A — SCOPE OF THIS CATALOGUE: this is the SERVER-SIDE checkout map only (add-on → Stripe price_id via
+// envKey, + the metadata name/unit the checkout/webhook persist). It is NOT the page's display source: the
+// rendered add-on grid (audit-app.js ADDONS) and ALL displayed prices come from src/content/pricing.ts
+// (mirrored into the render's PRICES block). The `gbp`/`was`/`usp`/`spec` fields below are retained only as
+// human reference for whoever wires the Stripe prices; they are not rendered to buyers and do not need to
+// equal the pricing.ts figures (the live charge is the env price_id, never these numbers).
+//   gbp   reference price (NOT the displayed price — see note above)
+//   was   prior / commodity reference (0 when there was no change)
+//   unit  'mo' monthly · 'piece' per deliverable  (this DOES drive checkout: subscription vs payment mode)
+//   usp   outcome-first reference one-liner (R5: no em dashes / pause hyphens)
+//   spec  reference detail bullets
 export const ADDON_CATALOGUE = {
   geo: {
     // GEO now ABSORBS the former "AI Entity + Knowledge Panel" add-on (founder merge): the entity/Wikidata/

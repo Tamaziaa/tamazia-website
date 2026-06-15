@@ -65,6 +65,13 @@ export async function onRequestPost(context) {
   // Stripe Checkout Session. x-www-form-urlencoded per Stripe's API.
   // Recurring add-ons (unit 'mo') → subscription; one-time add-ons (unit 'piece', e.g. YMYL Content)
   // → payment. Subscription mode rejects a one-time price, so this MUST branch on the add-on unit.
+  //
+  // C-H — DISPLAY vs CHARGE: the amount actually charged is the Stripe price referenced by `priceId`
+  // (the env STRIPE_PRICE_* id), which is AUTHORITATIVE. The figures shown on the audit page come from
+  // src/content/pricing.ts (via the render PRICES block). There is no runtime cross-check that the two
+  // match (it would cost a Stripe price-fetch per checkout, and the env price is the source of record for
+  // billing). Whoever binds STRIPE_PRICE_* MUST set each Stripe price to the matching pricing.ts figure so
+  // display == charge. We do not hardcode or send a client amount; `body.price` is informational only.
   const oneTime = ADDON_CATALOGUE[key].unit === 'piece';
   const form = new URLSearchParams();
   form.set('mode', oneTime ? 'payment' : 'subscription');
@@ -89,9 +96,12 @@ export async function onRequestPost(context) {
   form.set(`${metaPrefix}[metadata][audit_domain]`, auditDomain);
   if (auditSlug) form.set(`${metaPrefix}[metadata][audit_slug]`, auditSlug);
   if (auditHash) form.set(`${metaPrefix}[metadata][audit_hash]`, auditHash);
-  // First-month-free trial (Route 3 Compliance Monitoring sends trial_days=30): subscription mode only.
-  // Card is captured at signup and the first charge is deferred by the trial — the founder's "first month free".
-  const trialDays = Math.max(0, Math.min(90, parseInt(body.trial_days, 10) || 0));
+  // First-month-free trial (subscription mode only). Card is captured at signup and the first charge is
+  // deferred by the trial — the founder's "first month free".
+  // C-H: server-PIN the trial for the Route-3 Compliance unlock (key 'compliance') at 30 days rather than
+  // trusting the client value — the offer is fixed, so the client cannot extend or shorten it. Other
+  // subscriptions honour the clamped client value (0..90).
+  const trialDays = key === 'compliance' ? 30 : Math.max(0, Math.min(90, parseInt(body.trial_days, 10) || 0));
   if (!oneTime && trialDays) form.set('subscription_data[trial_period_days]', String(trialDays));
   if (company) form.set('customer_email', ''); // left blank → Stripe collects it on the hosted page
 

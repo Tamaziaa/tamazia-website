@@ -9,7 +9,11 @@ export default defineConfig({
       // _redirects path-301s every /resources/* request to /insights/:splat,
       // so even though the pages build into dist/, search engines see only the
       // canonical /insights/ tree.
-      filter: (page) => !page.includes('/resources/') && !page.includes('/admin/') && !page.endsWith('/privacy/') && !page.endsWith('/privacy') && !page.endsWith('/erased/') && !page.endsWith('/unsubscribed/') && !page.endsWith('/dsar-confirm/'),
+      // S7[D45] · also exclude the two noindex DRAFT legal pages
+      // (/legal/service-terms/, /legal/cold-outreach-privacy-notice/) so the sitemap
+      // never advertises a noindex page. The other /legal/ pages (data-protection,
+      // dpa, sub-processors) are indexable and stay in. /terms/ is the canonical terms URL.
+      filter: (page) => !page.includes('/resources/') && !page.includes('/admin/') && !page.endsWith('/privacy/') && !page.endsWith('/privacy') && !page.endsWith('/erased/') && !page.endsWith('/unsubscribed/') && !page.endsWith('/dsar-confirm/') && !page.endsWith('/legal/service-terms/') && !page.endsWith('/legal/cold-outreach-privacy-notice/'),
       serialize(item) {
         // Phase 6 · per-route priority + changefreq
         const url = item.url;

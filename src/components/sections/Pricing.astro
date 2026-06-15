@@ -244,11 +244,13 @@ const featureIcons: Record<string, string> = {
       <p class="ib-foot"><em>Indicative pricing. Every solution is scoped to your footprint and jurisdictions before anything is signed.</em></p>
     </div>
 
-    {/* P4-1 · OS-V4 C4 disclosure · VERBATIM. Mirrors the audit so the site and the audit
-        never diverge on the claims standard. Do not paraphrase. The trailing reference is
-        rendered as a link to the same /legal/service-terms page named in the canonical text. */}
+    {/* P4-1 · OS-V4 C4 disclosure. Mirrors the audit so the site and the audit never
+        diverge on the claims standard. S7[D44/D46] · the "Full terms" reference now points
+        to the canonical, indexable /terms/ page instead of the noindex DRAFT
+        /legal/service-terms/ (which still carries [TODO] founder-identity placeholders and
+        must not be linked from production copy until the founder supplies that identity). */}
     <p class="results-disclosure">
-      Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: <a href="/legal/service-terms/">/legal/service-terms</a>.
+      Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: <a href="/terms/">/terms</a>.
     </p>
 
     <FleuronDivider width={220} ariaLabel="Section divider" />

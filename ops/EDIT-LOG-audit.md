@@ -12,7 +12,7 @@ Founder-blocked elements render ONLY when their env var is set (no placeholder w
 | E4 | Retainer tiers from `PRICES` (Foundation 2500 / Authority 4500 popular / Enterprise 9500), results-led, "online personal branding" bullet | audit-app.js | DONE |
 | E5 | Fix packs one-time lane (10=7500/20=12500/30=17500) from `PRICES`; lane copy; Stripe-conditional buy buttons | audit-app.js | DONE (buy buttons ⛔ conditional, omitted until STRIPE_LINK_FIX* set) |
 | E6 | Route-3 recurring: golden line + £750 unlock / first month cover included / then £449/mo; 8 specs w/ hover ?; absorbs Compliance-Monitoring + Reg-Change-Alerts; cold pages skip paywall; Stripe-conditional | audit-app.js, audit.css | DONE (Unlock/Cover buttons ⛔ conditional; data-subscribe contract preserved) |
-| E7 | Independent Solutions: 7 cards + GBP £850 from `PRICES`, struck-anchor→offer, 5 steps each, scope line, disclosure paragraph; Stripe-conditional add | audit-app.js | pending |
+| E7 | Independent Solutions: 7 cards + GBP £850 from `PRICES`, struck-anchor→offer, 5 steps each, scope line, disclosure paragraph; add buttons via existing /api/stripe/checkout fallback | audit-app.js, _commerce.js (aliases) | DONE (disclosure NOT verbatim-sourced — see report) |
 | E8 | Verify oncology block (locked copy) | audit-app.js | pending |
 | E9 | Ensure 480% (not 882%) on the audit page; verify pricing.ts | audit-app.js, src/content/pricing.ts | pending |
 | E10 | Booking form on the audit (name, website, email, sector) + PostHog identify + form-fill event; verify cal-webhook (Resend + Neon cal_bookings + Slack/Telegram) | audit-app.js, functions/api/cal-webhook.js (verify) | pending |

@@ -397,16 +397,44 @@
   const isFinancial=/financ|bank|wealth|invest|insur|account|fintech|capital|asset manage|advis/.test(_sectorStr);
   const gbpAdRule=isHealthcare?'MHRA and sector ad rules':'your sector’s advertising rules';
   const coldSendRule=isFinancial?'FCA and COBS-compliant sends':'jurisdiction-compliant, opt-out-respecting sends';
-  // Full add-on catalogue (value-only, leads with the outcome USP). Mirrors _commerce.js.
-  // Founder merges: AI Entity + Knowledge Panel folded INTO GEO; Reputation + Crisis merged WITH Regulatory Change
-  // Alerts; LinkedIn drops "per executive". Kept in sync with _commerce.js ADDON_CATALOGUE.
+  // Independent Solutions (E7): the seven standalone programmes + GBP Domination. Each leads with the RESULT,
+  // then carries a one-line scope and five concrete steps. Prices come from PRICES.independent (pricing.ts):
+  // anchor struck through, offer shown. AI Authority merges the former GEO + AI Entity/Knowledge-Panel work;
+  // its measurement is framed as REPORTING, never a guarantee. Instagram carries no follower guarantee. No 'we'/'our'.
+  const I=PRICES.independent;
   const ADDONS=[
-    {nm:'GEO / AI Search Presence', gbp:1800, was:950, unit:'mo', usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the machine-readable entity they read first. AI-referred visitors arrive with high intent. The only compliance-reviewed GEO for regulated firms.', spec:['Per-engine citation measurement across all 6 engines','Entity, schema, llms.txt and Wikidata build','Google Knowledge Panel and sameAs across every verified profile','Compliance review of what AI says about you','Monthly share of voice against named rivals'], hero:true},
-    {nm:'Cold Email Outreach Engine', gbp:1400, was:499, unit:'mo', usp:'We source 30,000 ICP-targeted leads, build a compliant template per jurisdiction, run 5 to 7 follow-ups and track every lead. The same compliance-first outbound engine, working for your pipeline.', spec:['Built on the 400+ rule compliance database','Self-healing deliverability with inbox rotation','3 to 8 percent target reply rate',coldSendRule], hero:true},
-    {nm:'LinkedIn Executive Authority', gbp:1100, was:750, unit:'mo', usp:'Ghostwritten, SEO-optimised, compliance-reviewed partner posts. 4 times the conversion of company content. Ranks on LinkedIn and Google.', spec:['Dual distribution, LinkedIn and Google','8 to 12 posts per month','Every post compliance-checked','Builds the named-expert E-E-A-T signal']},
-    {nm:'Reputation, Crisis + Regulatory Alerts', gbp:1500, was:0, unit:'mo', usp:'Real-time monitoring, pre-built suppression and 24-hour crisis response, plus every new ruling in your sector the day it lands. Protect the reputation your pipeline depends on, and move before enforcement does.', spec:['Real-time review, mention and press monitoring','Crisis playbook on standby with the founder','Suppression architecture, not just alerting','Every new sector ruling flagged with the exact page and rule affected','Sector and jurisdiction filtered, never generic noise']},
-    {nm:'GBP Domination', gbp:650, was:850, unit:'mo', usp:'30,000 or more compliance-checked map citations per location. Every listing, post and review response reviewed against '+gbpAdRule+'.', spec:['Up to 3 locations, each its own strategy','Every element checked against ad rules','Posting, Q&A and review response system','Local pack drives 44 percent of clicks']},
-    {nm:'YMYL Content', gbp:800, was:550, unit:'piece', usp:'Per compliance-reviewed piece. Health and legal grade, held to Google\'s highest YMYL standard, not generic.', spec:['1,200 or more words, reviewed before publish','Passes your compliance function first time','Held to Google\'s YMYL standard','Cheaper than fixing content that fails review']},
+    {nm:'Website Remodelling', anchor:I.websiteRemodelling.anchor, offer:I.websiteRemodelling.offer, unit:'one-time', hero:true,
+      scope:'A full rebuild of the site that sells, on a compliant, fast, conversion-led foundation.',
+      usp:'The site buyers actually trust and act on. Rebuilt for speed, clarity and conversion, with every page reviewed against your sector’s law before it ships.',
+      spec:['Audit of the current site against speed, conversion and compliance','Information architecture and page plan mapped to buyer intent','Design and build on a Core-Web-Vitals-clean foundation','Every page legally reviewed before launch','Handover with the work owned outright once paid']},
+    {nm:'AI Authority', anchor:I.aiAuthority.anchor, offer:I.aiAuthority.offer, unit:'mo', hero:true,
+      scope:'GEO and entity authority merged: be the named answer across the AI engines, with the machine-readable identity they read first.',
+      usp:'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the entity they read first. The only compliance-reviewed AI authority programme for regulated firms.',
+      spec:['Entity, schema, llms.txt and Wikidata build','Google Knowledge Panel and sameAs across every verified profile','Answer-surface content targeting real buyer prompts','Compliance review of what AI says about you','Per-engine position and share-of-voice reporting against named rivals (a report, not a guaranteed placement)']},
+    {nm:'ICP Outreach', anchor:I.icpOutreach.anchor, offer:I.icpOutreach.offer, unit:'mo',
+      scope:'Compliant outbound to your exact buyer, the same engine that found you.',
+      usp:'Your exact buyer reached at scale: 25,000 to 30,000 ICP-targeted, compliance-reviewed emails a month, every lead tracked and classified by intent.',
+      spec:['ICP defined and 25,000 to 30,000 targeted contacts sourced monthly','A compliant B2B template built per jurisdiction','Five to seven follow-ups per prospect, reply-stopped','Deliverability managed with inbox rotation',coldSendRule]},
+    {nm:'Online Personal Branding', anchor:I.onlinePersonalBranding.anchor, offer:I.onlinePersonalBranding.offer, unit:'mo',
+      scope:'The founder and partners made visible and credible across every platform buyers check.',
+      usp:'The named-expert authority enterprise buyers and referral partners evaluate before any conversation. Built across every platform they check, not one.',
+      spec:['Voice and positioning captured for each principal','Ghostwritten, SEO-optimised posts published on a schedule','Every post compliance-checked before it publishes','Profiles optimised across the platforms buyers check','Engagement and reach reported monthly']},
+    {nm:'Instagram Presence', anchor:I.instagramPresence.anchor, offer:I.instagramPresence.offer, unit:'mo',
+      scope:'A credible, compliant Instagram presence aligned to your brand.',
+      usp:'The social proof buyers check before they reach the website. Built through sector-aligned content and engagement, held to your sector’s ad rules.',
+      spec:['Content plan aligned to the brand and sector','Posts and stories produced on a schedule','Sector-aligned audience engagement','Every post checked against '+gbpAdRule,'Reach and engagement reported monthly (no follower guarantee)']},
+    {nm:'YMYL Content', price:I.ymylContent.price, unit:'piece',
+      scope:'Health and legal grade content, per compliance-reviewed piece.',
+      usp:'Content that passes your compliance function first time. Health and legal grade, held to Google’s highest Your-Money-or-Your-Life standard, never generic.',
+      spec:['1,200 or more words per piece','Reviewed against your sector’s law before it publishes','Held to Google’s YMYL standard','Structured for search and AI citation','Cheaper than the internal cost of content that fails review']},
+    {nm:'Reputation & Crisis', anchor:I.reputationCrisis.anchor, offer:I.reputationCrisis.offer, unit:'mo',
+      scope:'Real-time reputation cover with a crisis playbook on standby, and every new ruling the day it lands.',
+      usp:'Protect the reputation your pipeline depends on, and move before enforcement does. Real-time monitoring, pre-built suppression and 24-hour crisis response, plus every new ruling in your sector flagged the day it appears.',
+      spec:['Real-time review, mention and press monitoring','Suppression architecture, not just alerting','A crisis playbook on standby with the founder','Every new sector ruling flagged with the exact page and rule affected','Sector and jurisdiction filtered, never generic noise']},
+    {nm:'GBP Domination', price:I.gbpDomination.price, unit:'mo',
+      scope:'Local map dominance, up to three locations, every element compliance-checked.',
+      usp:'Own the local pack that drives 44 percent of search clicks. 30,000 or more compliance-checked map citations per location, every listing and review response reviewed.',
+      spec:['Up to three locations, each with its own category strategy','30,000 or more map citations per location','Posting schedule, Q&A and review response system','Every GBP element checked against '+gbpAdRule,'Local position reported monthly']},
   ];
   // ---- interactive trajectory: current (flat/declining) vs Tamazia-projected (rising) ----
   // Reads real numbers from D (score, projected.wk12/wk24, trajectory). Hovering a tier tab
@@ -604,17 +632,24 @@
 
     ${route3()}
 
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Specialist capabilities, each one a programme in its own right</h3></div>
-    <p class="plan-sub">Take any of these on its own, or layer it onto a route above. Billed monthly, cancel anytime. Each is the same compliance-first engine behind this report, pointed at a single lever. ${D.upsellProof}</p>
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Independent Solutions, each one a programme in its own right</h3></div>
+    <p class="plan-sub">Take any of these on its own, or layer it onto a route above. Each is the same compliance-first engine behind this report, pointed at a single lever. ${D.upsellProof}</p>
     <div class="addon-grid">
-      ${ADDONS.map(a=>`<div class="addon ${a.hero?'ag-hero':''} ${a.hot?'ag-hot':''}" tabindex="0">
-        <div class="ah"><div class="an">${a.nm}</div>
-          <div class="ap"><span class="apwas cmoney" data-gbp="${a.gbp*2}">${fmtMoney(a.gbp*2)}</span><b class="cmoney" data-gbp="${a.gbp}">${fmtMoney(a.gbp)}</b><small>/${a.unit}</small></div></div>
-        <div class="tag">${a.usp}</div>
-        <div class="more"><div class="aspec-h">What you get</div><ul>${a.spec.map(s=>`<li>${s}</li>`).join('')}</ul></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">Full spec</button><a class="btn gold" data-addon="${a.nm}" data-price="${gbpFmt(a.gbp)}">Add ${a.nm.split(' ')[0]} ↗</a></div>
-      </div>`).join('')}
+      ${ADDONS.map(a=>{
+        const off=(a.offer!=null)?a.offer:a.price;          // the price actually charged
+        const priceHtml=(a.anchor!=null)
+          ? `<span class="apwas cmoney" data-gbp="${a.anchor}">${fmtMoney(a.anchor)}</span><b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`
+          : `<b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`;
+        return `<div class="addon ${a.hero?'ag-hero':''}" tabindex="0">
+        <div class="ah"><div class="an">${escH(a.nm)}</div>
+          <div class="ap">${priceHtml}</div></div>
+        <div class="ascope">${escH(a.scope)}</div>
+        <div class="tag">${escH(a.usp)}</div>
+        <div class="more"><div class="aspec-h">How it runs, step by step</div><ol class="aspec-steps">${a.spec.map(s=>`<li>${escH(s)}</li>`).join('')}</ol></div>
+        <div class="foot"><button class="moretoggle" data-more="addon">The five steps</button><a class="btn gold" data-addon="${escH(a.nm)}" data-price="${gbpFmt(off)}">Add ${escH(a.nm.split(' ')[0])} ↗</a></div>
+      </div>`;}).join('')}
     </div>
+    <p class="plan-sub addon-disclosure">Every figure above is indicative and quoted in GBP. Each engagement is scoped to your footprint and jurisdictions before anything is signed. Where a price is shown struck through, that is the standard anchor and the figure beside it is the current offer. Measurement of search and AI visibility, including any position, share-of-voice or social figure, is reported, not guaranteed: rankings, citations and follower counts move on factors outside any agency’s sole control. Nothing here is legal advice. All work produced belongs to you once paid in full.</p>
 
     ${trustedStrip()}
 

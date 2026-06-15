@@ -1222,3 +1222,13 @@ html{scroll-behavior:smooth}
 .r3-spec-q:hover,.r3-spec-q:focus{background:var(--gold);color:var(--ox-deep);outline:none}
 .r3-cover-btn{margin-top:7px}
 @media(max-width:720px){ .r3-specs{grid-template-columns:1fr} }
+
+/* ---------------- INDEPENDENT SOLUTIONS (E7): scope line, struck anchor, numbered 5 steps ---------------- */
+.addon .apwas{font-family:var(--mono);font-size:12px;color:var(--muted-2);text-decoration:line-through;margin-right:6px;font-weight:400}
+.addon .ap b{font-family:var(--serif);font-size:18px;color:var(--ox)}
+.addon .ascope{font-family:var(--mono);font-size:9.5px;letter-spacing:.02em;color:var(--ox-mid);line-height:1.4;margin:5px 0 7px}
+.addon .aspec-h{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.addon ol.aspec-steps{list-style:none;counter-reset:astep;display:flex;flex-direction:column;gap:5px;margin-bottom:9px;padding:0}
+.addon ol.aspec-steps li{counter-increment:astep;font-family:var(--body);font-size:11.5px;color:#3a2d30;padding-left:22px;position:relative;line-height:1.4}
+.addon ol.aspec-steps li::before{content:counter(astep);position:absolute;left:0;top:0;width:15px;height:15px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--gold);color:var(--ox-mid);font-family:var(--mono);font-size:8.5px;line-height:14px;text-align:center}
+.addon-disclosure{font-size:11px !important;color:var(--muted) !important;line-height:1.55;margin-top:10px;border-top:1px solid var(--line);padding-top:9px}

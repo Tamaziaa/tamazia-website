@@ -975,8 +975,8 @@
     const sub=e.target.closest('[data-subscribe]');
     if(sub){ e.preventDefault();
       const kind=sub.dataset.subscribe;
-      if(kind==='exposure_cover'){ Commerce.startAddon('Compliance Monitoring', '£449', sub, { trial:0 }); }
-      else { Commerce.startAddon('Compliance Monitoring', '£750', sub, { trial:+sub.dataset.trial||0 }); }
+      if(kind==='exposure_cover'){ Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.monthlyCover), sub, { trial:0 }); }
+      else { Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.unlock), sub, { trial:+sub.dataset.trial||0 }); }
       return; }
   });
 

@@ -1356,8 +1356,10 @@
       PH.capture('audit_contact_form_fill', email, { sector:body.sector||'', website:body['audit-input']||'', source:'audit_bookform' });
       const label=btn.textContent; btn.disabled=true; btn.textContent='Sending…'; if(errEl) errEl.hidden=true;
       try{
+        // C-B contract (shared with WEB-B / neon-sync): both audit forms POST audit_slug + audit_domain +
+        // top_finding so the lead resolves back to this exact report. top_finding = the highest-severity fix title.
         const r=await fetch('/api/audit-request',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(Object.assign({}, body, { company:body.name||'', tab:'audit', audit_slug:(D.meta&&D.meta.slug)||'', audit_domain:(D.meta&&D.meta.domain)||'' }))});
+          body:JSON.stringify(Object.assign({}, body, { company:body.name||'', tab:'audit', audit_slug:(D.meta&&D.meta.slug)||'', audit_domain:(D.meta&&D.meta.domain)||'', top_finding:(((D.fixes||[])[0]||{}).title||'') }))});
         const res=await r.json().catch(()=>({}));
         if(!r.ok || (res && res.ok===false && !res.silent)){ throw new Error((res&&res.error)||('http_'+r.status)); }
         PH.identify(email, { email, name:body.name||'', sector:body.sector||'', website:body['audit-input']||'' });

@@ -26,3 +26,9 @@ Founder-blocked elements render ONLY when their env var is set (no placeholder w
 | C-BUG2 | Stripe checkout hardened: intake-only addon keys (website_remodelling, instagram_presence aliases) have no ADDON_CATALOGUE entry; the later ADDON_CATALOGUE[key].unit/.name reads could throw if a future STRIPE_PRICE_MAP resolved a price. Now falls back when key is not a real catalogue entry (mirrors the guard intent.js already uses). No behavior change today. | functions/api/stripe/checkout.js:48-52 | FIXED |
 | C-FLAG3 | Copy-rule: 5 "we" instances remain in the RENDERED DOM (regulatory headlines audit-app.js:136-139, hero-chart titles 785/789, an urgent note 200, a stand-where line 718, plus error toasts 1204/1307). All PRE-EXISTING live engine copy, NONE in the C1–C10 scope. Not mass-rewritten (locked live copy; risky). FLAGGED. | audit-app.js (various) | FLAGGED |
 | C-FLAG4 | /legal/service-terms page does NOT exist (only dpa/sub-processors/data-protection under src/pages/legal). The C7 disclosure names it verbatim per OS-V4, rendered as plain text (not a clickable dead link). Needs the page created OR the founder to confirm the path. | src/pages/legal/* | FLAGGED |
+
+## V4 FIX AGENT WEB-A — audit money+security+data cluster (BUG-LEDGER-V4 Cluster 5) — 2026-06-15
+Branch `v4-fix-audit` · base `bb38ba7` (origin/main, post-v4-polish). One commit per fix `fix(audit): <id> ...`. Render/commerce/audit-API only; AUDIT ENGINE off-limits (payload_json read-only). Prices from pricing.ts via the single PRICES block. SEND OFF. Stripe price IDs left env-driven (founder-blocked).
+
+| ID | What | Files | Status |
+|----|------|-------|--------|

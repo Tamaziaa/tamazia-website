@@ -13,7 +13,9 @@ const CONTACT_PHONE_DEFAULT = '+44 7778243657';
 
 const htmlResponse = (body, status = 200, maxAge = 300) => new Response(body, {
   status,
-  headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': status === 200 ? `public, max-age=${maxAge}` : 'no-store' },
+  // maxAge <= 0 forces no-store + revalidate (used for an unlocked render so a paying customer is never
+  // served a stale, locked, cached copy). Errors are always no-store. (C-D)
+  headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': (status === 200 && maxAge > 0) ? `public, max-age=${maxAge}` : 'no-store, must-revalidate' },
 });
 
 export async function onRequest(context) {
@@ -57,6 +59,10 @@ export async function onRequest(context) {
     payload = JSON.parse(await obj.text());
   }
 
+  // C-D: an unlocked report (paid via webhook, or optimistically opened with ?unlocked=1) must not be cached,
+  // or the customer can be handed a stale locked copy from the edge. Locked pages keep the 5-minute cache.
+  const isUnlocked = row.unlocked === true || row.unlocked === 't' || url.searchParams.get('unlocked') === '1';
+
   let html;
   try {
     // FOUNDER-BLOCKED links + contact (env-gated). Passed through to window.D so the client renders each
@@ -71,7 +77,12 @@ export async function onRequest(context) {
     };
     const D = payloadToD(payload, {
       company: row.company, now: Date.now(), generated_at: null,
-      unlocked: row.unlocked === true || row.unlocked === 't',
+      // C-B: thread the page's slug+hash so D.meta carries them; both audit forms then POST
+      // audit_slug + audit_domain (+ top_finding) and the lead resolves back to this exact report.
+      slug, hash,
+      // C-D: a paying customer who lands on ?unlocked=1 sees the report open immediately even before
+      // the webhook's audit_pages.unlocked write has propagated. isUnlocked ORs the column with the param.
+      unlocked: isUnlocked,
       links, contactPhone: env.CONTACT_PHONE || CONTACT_PHONE_DEFAULT,
       posthogKey: env.POSTHOG_KEY || '', posthogHost: env.POSTHOG_HOST || '',
     });
@@ -87,5 +98,5 @@ export async function onRequest(context) {
       body: JSON.stringify({ api_key: env.POSTHOG_KEY, event: 'audit_opened', distinct_id: row.domain || slug, properties: { slug, domain: row.domain, sector: row.sector, country: row.country, lib: 'tamazia-pages' } }),
     }).catch(() => {}));
   }
-  return htmlResponse(html, 200);
+  return htmlResponse(html, 200, isUnlocked ? 0 : 300);
 }

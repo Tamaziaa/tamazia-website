@@ -1454,6 +1454,10 @@ export function payloadToD(payload, ctx = {}) {
   const snapshot = payload.via_archive ? `web-archive ${fmtArchive(payload.archive_date)} (live site behind bot-challenge)` : 'live scan';
   const meta = {
     company, domain: payload.domain,
+    // C-B: the page slug+hash, threaded from [[path]].js. Both audit forms read meta.slug to POST audit_slug
+    // (with audit_domain + top_finding) so the captured lead resolves back to THIS exact report; the Stripe
+    // unlock path also falls back to meta.slug. Empty string when rendered outside the serve route (backtest).
+    slug: String(ctx.slug || ''), hash: String(ctx.hash || ''),
     sector: titleCase(payload.detected_sector || payload.sector), country: jurLabel(payload.country),
     city: cleanCity(km.city, payload), markets: arr(payload.detected_jurisdictions),
     date: fmtDate(now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,

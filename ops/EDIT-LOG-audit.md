@@ -10,7 +10,7 @@ Founder-blocked elements render ONLY when their env var is set (no placeholder w
 | E2 | Founder session block directly under the score header (verbatim copy + Claim button + founder@ email; phone conditional) | audit-app.js, audit.css | DONE |
 | E3 | In-page pricing slide-over drawer (sticky "Plans" pill + each fix link; restores scroll; no nav) | audit-app.js, audit.css | pending |
 | E4 | Retainer tiers from `PRICES` (Foundation 2500 / Authority 4500 popular / Enterprise 9500), results-led, "online personal branding" bullet | audit-app.js | DONE |
-| E5 | Fix packs one-time lane (10=7500/20=12500/30=17500) from `PRICES`; lane copy; Stripe-conditional buy buttons | audit-app.js | pending |
+| E5 | Fix packs one-time lane (10=7500/20=12500/30=17500) from `PRICES`; lane copy; Stripe-conditional buy buttons | audit-app.js | DONE (buy buttons ⛔ conditional, omitted until STRIPE_LINK_FIX* set) |
 | E6 | Route-3 recurring: golden line + £750 unlock / first month cover included / then £449/mo; specs w/ hover; absorb Compliance-Monitoring + Reg-Change-Alerts; cold pages skip paywall; Stripe-conditional | audit-app.js, audit.css | pending |
 | E7 | Independent Solutions: 7 cards + GBP £850 from `PRICES`, struck-anchor→offer, 5 steps each, scope line, disclosure paragraph; Stripe-conditional add | audit-app.js | pending |
 | E8 | Verify oncology block (locked copy) | audit-app.js | pending |

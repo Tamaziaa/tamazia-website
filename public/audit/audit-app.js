@@ -465,12 +465,12 @@
     const wk24=(D.projected&&D.projected.wk24)||(D.trajectory&&D.trajectory[2]&&D.trajectory[2].v)||score;
     const topFix=((D.fixes||[])[0]||{}).title||'your highest-severity finding';
 
-    // ---- Fix Sprint tiers (Route 1): top 10 / top 20 / all ----
+    // ---- Fix Sprint tiers (Route 1): top 10 / top 20 / top 30. Prices from PRICES.fixPacks. ----
     const _issuesTotal=(D.counts&&(D.counts.total||((D.counts.critical||0)+(D.counts.high||0)+(D.counts.medium||0)+(D.counts.low||0))))||+D.rulesChecked||0;
     const FIX_SPRINT=[
-      {k:'10',label:'Top 10',scope:'top 10',price:7500,anchor:25000,weeks:8,n:Math.min(10,_issuesTotal||10)},
-      {k:'20',label:'Top 20',scope:'top 20',price:12500,anchor:41000,weeks:16,n:Math.min(20,_issuesTotal||20)},
-      {k:'all',label:'All issues',scope:'all',price:17500,anchor:65000,weeks:24,n:(_issuesTotal&&_issuesTotal>20?_issuesTotal:30)},
+      {k:'10',label:'Top 10',scope:'top 10',price:PRICES.fixPacks.ten,anchor:25000,weeks:8,n:Math.min(10,_issuesTotal||10)},
+      {k:'20',label:'Top 20',scope:'top 20',price:PRICES.fixPacks.twenty,anchor:41000,weeks:16,n:Math.min(20,_issuesTotal||20)},
+      {k:'30',label:'Top 30',scope:'top 30',price:PRICES.fixPacks.thirty,anchor:65000,weeks:24,n:(_issuesTotal&&_issuesTotal>30?30:(_issuesTotal>20?_issuesTotal:30))},
     ];
     const fixOutcomes=[
       `Your highest-severity findings closed first, in priority order, starting with ${topFix.toLowerCase()}`,
@@ -490,9 +490,10 @@
     <div class="cur-bar" role="tablist" aria-label="Display currency"><span class="cur-lbl">Prices in</span>${['GBP','USD','EUR','AED'].map(c=>{const s=CURRS[c].sym.trim();const lab=(s&&s!==c)?s+' '+c:c;return `<button class="cur-btn${_curState.code===c?' active':''}" data-cur="${c}" type="button" role="tab" aria-selected="${_curState.code===c?'true':'false'}">${lab}</button>`;}).join('')}<span class="cur-note">quoted &amp; invoiced in GBP</span></div>
 
     <div class="subhead" style="margin-top:12px"><span class="nt">↳</span><h3>Route 1 · One-time Fix Sprint</h3></div>
+    <p class="plan-sub r1-lane">${escH(PRICES.fixPacksLane)}</p>
     <div class="route route1">
       <div class="fixbox r1-fixbox">
-        <div class="fx-rib">Anchor offer</div>
+        <div class="fx-rib">One-time · no retainer</div>
         <div class="r1-toggle r1-toggle-dark" role="tablist" aria-label="Choose Fix Sprint scope">${FIX_SPRINT.map((s,i)=>`<button class="r1-tab${i===0?' active':''}" data-fixtier="${s.k}" data-price="${s.price}" data-anchor="${s.anchor}" data-scope="${s.scope}" data-n="${s.n}" data-weeks="${s.weeks}" type="button" role="tab" aria-selected="${i===0?'true':'false'}"><span class="r1t-l">${s.label}</span><small class="cmoney" data-gbp="${s.price}">${fmtMoney(s.price)}</small></button>`).join('')}</div>
         <div class="fx-main">
           <div class="fx-body">
@@ -504,7 +505,8 @@
           <div class="fx-side">
             <div class="fx-price"><span class="fx-was r1-was cmoney" data-gbp="${FIX_SPRINT[0].anchor}">${fmtMoney(FIX_SPRINT[0].anchor)}</span><b class="r1-price cmoney" data-gbp="${FIX_SPRINT[0].price}">${fmtMoney(FIX_SPRINT[0].price)}</b></div>
             <div class="fx-anchor r1-cap">One-time · fixed scope · <span class="r1-weeks">${FIX_SPRINT[0].weeks}</span> weeks</div>
-            <a class="btn solid block fx-cta" data-book="one_time_fix" data-fixtier="10">Start the Fix Sprint&nbsp;↗</a>
+            ${(STRIPE.fix10||STRIPE.fix20||STRIPE.fix30)?`<a class="btn solid block r1-buy" href="${escH(STRIPE.fix10||'#')}" target="_blank" rel="noopener" data-fixtier="10"${STRIPE.fix10?'':' hidden'}>Buy the Fix Sprint&nbsp;↗</a>`:''}
+            <a class="btn block fx-cta" data-book="one_time_fix" data-fixtier="10">${STRIPE.fix10?'Or scope it with the founder ↗':'Start the Fix Sprint&nbsp;↗'}</a>
           </div>
         </div>
       </div>
@@ -844,7 +846,12 @@
       setM('.r1-price',price); setM('.r1-was',anchor); setM('.r1-anchor',anchor);
       const hn=document.querySelector('.r1-headN'); if(hn) hn.textContent=r1.dataset.n;
       document.querySelectorAll('.r1-weeks').forEach(w=>{ w.textContent=r1.dataset.weeks; });
-      const cta=document.querySelector('.fx-cta[data-fixtier]'); if(cta) cta.dataset.fixtier=r1.dataset.fixtier; return; }
+      const cta=document.querySelector('.fx-cta[data-fixtier]'); if(cta) cta.dataset.fixtier=r1.dataset.fixtier;
+      // Stripe buy button (E5): swap its Payment Link to the active scope. Conditional — the link is '' when
+      // that STRIPE_LINK_FIX* env is unset, so we hide the button rather than render a dead href.
+      const buy=document.querySelector('.r1-buy');
+      if(buy){ const url=stripeFixLink(r1.dataset.fixtier); if(url){ buy.href=url; buy.dataset.fixtier=r1.dataset.fixtier; buy.hidden=false; } else { buy.hidden=true; } }
+      return; }
     // Currency toggle (Route prices) — re-format every .cmoney from its GBP base into the chosen currency.
     const cb=e.target.closest('.cur-btn');
     if(cb){ const code=cb.dataset.cur; if(CURRS[code]){ _curState=CURRS[code];

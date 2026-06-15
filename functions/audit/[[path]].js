@@ -77,7 +77,7 @@ export async function onRequest(context) {
     });
     html = renderShell(D);
   } catch (e) {
-    return htmlResponse(errorShell('Audit could not be rendered', 'Our team has been notified.'), 500);
+    return htmlResponse(errorShell('Audit could not be rendered', 'The Tamazia team has been notified.'), 500);
   }
 
   // fire-and-forget open tracking (best-effort; never blocks the response)

@@ -664,11 +664,11 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
             success.hidden = false;
           }
         } else {
-          setStatus('error', data.error || 'Something went wrong. Please email us at founder@tamazia.co.uk.');
+          setStatus('error', data.error || 'Something went wrong. Please email founder@tamazia.co.uk.');
           if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
         }
       } catch {
-        setStatus('error', 'Network error. Please email us at founder@tamazia.co.uk.');
+        setStatus('error', 'Network error. Please email founder@tamazia.co.uk.');
         if (submit) { submit.disabled = false; submit.removeAttribute('aria-busy'); }
       }
     });

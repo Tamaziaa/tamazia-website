@@ -100,3 +100,70 @@ audit render — they live only in website content files.)
   regulatory FRAMEWORK label in the engine catalogue (audit engine, off-limits), not client copy. Kept.
 - Directive note "480% metric tile stays as a headline stat": the 480% figure never existed in the audit
   (it lives in website `whyUs.ts`/`pricing.ts`), so nothing to preserve here; website left untouched.
+
+---
+
+## FIX 4 · Remove every "we"/"our"/"us" from rendered audit + the named website copy
+
+Rule: never we/our/us in user-facing copy (code comments are fine). Rephrased to third-person /
+imperative, meaning preserved, NO em/en dashes introduced, credential strings untouched.
+
+### Scope decision (important for the coordinator)
+The directive enumerates the spots to fix and forbids touching the website `/case-studies` pages.
+A LITERAL site-wide "zero we/our/us" is NOT achievable or intended, because:
+1. `src/content/testimonials.ts` is ~60 genuine CLIENT quotes ("Our hotel…", "We'd tried two agencies…").
+   These are third-party voices, not Tamazia's; rewriting them would falsify testimonials. LEFT AS-IS.
+2. `src/content/caseStudies.ts` + `/case-studies` pages (Orchid/Meraas/etc.) contain "we/our" but are
+   EXPLICITLY out of scope per Fix 3. LEFT AS-IS.
+3. The legal pages (privacy, terms, complaints, modern-slavery, security, cookie-policy), FAQ, sectors
+   body copy, QuickAudit, services/[sector] etc. carry ~100+ first-person sentences. Rewriting all of
+   them is a far larger pass than four founder fixes and risks legal-copy accuracy.
+So this fix = (a) the AUDIT DOM made fully first-person-free (the whole render path, not just the listed
+lines), and (b) the directive's named WEBSITE spots. The broader site first-person surface is flagged
+below for a separate, scoped decision.
+
+### AUDIT render path (now ZERO prose we/our/us)
+- `public/audit/audit-app.js`: regulatory headline fallback (~136) + paragraph (~137); reg-sub "every
+  breach evidenced" (~139); keyword urgent note "…have been filtered out" (~200); verdict bullet "buyer
+  queries probed" (~718); hero subhead "Every metric behind your score" (~785); waterfall meta "not just
+  a sum of ceilings" (~789); commerce modal heading "Share a few details about the firm" (~1137); two
+  error toasts (~1204, ~1307).
+- `functions/audit/_adapter.js` (render adapter = presentation, NOT the scanning/scoring engine — it only
+  shapes display strings): `absenceLine` finding text x3 (~334/337/340); `regulatoryHeadline` x3 branches
+  (~946/948/949) → "All 400+ active frameworks were screened…"; SCAN fallback `action` x2 (~1065/1066);
+  framework `why` (~1084); one code comment de-"we"-ed (~193).
+- `functions/audit/_commerce.js`: Cold Email Outreach addon USP (~45) → "Sources 30,000 …".
+- `public/audit/audit-charts.js`: exposure-waterfall note (~342) → "Overlapping … ceilings are collapsed…".
+- `functions/audit/[[path]].js`: 500-error message (~80) → "The Tamazia team has been notified."
+
+### WEBSITE (directive's named spots)
+- `src/components/sections/Contact.astro`: two error toasts (~628/632) "email us" → "email
+  founder@tamazia.co.uk".
+- `src/components/sections/FinalHero.astro` (the LIVE homepage hero — `Hero.astro`/`hero.ts` is NOT
+  imported by index.astro): "Ours is run by one" → "Tamazia is run by one" (~199); "Every campaign
+  executed through us" → "Every campaign Tamazia runs" (~203); founder blockquote "We onboard" →
+  "Tamazia onboards" (~234).
+- `src/content/hero.ts` (canonical content source; fixed for consistency even though its component is
+  unused): `positioningLine` (~43) and `complianceParagraph` (~58) matched to the FinalHero rephrasings.
+
+### Verification
+- `jsc` parse of every edited JS file → only static-`import`/`export` arity errors or runtime `window`
+  ReferenceError after a full clean parse (PASS). Import/export-stripped re-checks of audit-app.js and
+  _adapter.js parsed clean (no SyntaxError), validating the edited lines.
+- FULL audit render-path sweep (audit-app.js, audit-charts.js, _adapter.js, _commerce.js, _shell.js,
+  [[path]].js) for prose `we/our/ours/we're/we've/we'll/we'd` and standalone first-person `us`, excluding
+  code comments and the `class="us"`/`class="ut"` CSS hooks → ZERO. The only `us`-substring hits left in
+  `_adapter.js` are TLD/jurisdiction codes (`us:`/`'US'`) and a dead `us:` data key (the render reads
+  `a.usp`, not `a.us`) — none is first-person prose.
+- Named website files (FinalHero, Contact, hero.ts) → ZERO prose we/our/us; remaining matches are
+  `/* … */` code comments and the `(US)` country code, both allowed.
+- Dash check: no em-dash/en-dash introduced in any rephrased string.
+
+### FLAGGED for a separate coordinator decision (NOT done here — out of the four-fix scope)
+Tamazia-voice "we/our" still present in: legal pages (`src/pages/privacy*.astro`, `terms.astro`,
+`complaints.astro`, `modern-slavery-statement.astro`, `security-*.astro`, `cookie-policy.astro`),
+`src/content/faq.ts`, `src/content/sectors.ts`, `src/content/insights.ts`, `src/content/booking.ts`,
+`src/components/sections/QuickAudit.astro`, `SextantInstrument.astro`, `InstrumentAudit.astro`,
+`InstrumentShowcase.astro`, `Testimonials.astro` heading, `src/pages/services/*`, `src/pages/book.astro`,
+`src/pages/status.astro`, `404.astro`, `sectors.astro`. CLIENT testimonials (`testimonials.ts`) and the
+`/case-studies` content are deliberately excluded from any future purge.

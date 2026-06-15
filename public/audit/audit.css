@@ -1211,3 +1211,14 @@ html{scroll-behavior:smooth}
 .founder-session .fsx-contact{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--ox);text-decoration:none;border-bottom:1px solid transparent;transition:.13s}
 .founder-session .fsx-contact:hover{border-bottom-color:var(--ox)}
 @media(max-width:720px){ .founder-session .fsx-inner{flex-direction:column;align-items:flex-start} .founder-session .fsx-act{align-items:flex-start;width:100%} .founder-session .fsx-contacts{justify-content:flex-start} .founder-session .fsx-claim{width:100%} }
+
+/* ---------------- ROUTE 3 (E6): golden offer line + compact hover-? specs ---------------- */
+.r3-gold{font-family:var(--body);font-size:13.5px;color:var(--ox-deep);line-height:1.5;margin:0 0 9px;padding-left:16px;border-left:3px solid var(--gold)}
+.r3-gold .cmoney{font-family:var(--serif);font-weight:600;color:var(--ox)}
+.r3-specs{grid-template-columns:1fr 1fr;gap:6px 18px}
+.r3-specs li{display:flex;align-items:center;gap:7px;padding-left:18px}
+.r3-specs li .r3-spec-t{flex:1}
+.r3-spec-q{flex:0 0 auto;width:15px;height:15px;border-radius:50%;border:1px solid var(--gold);color:var(--ox-mid);font-family:var(--mono);font-size:9px;line-height:13px;text-align:center;cursor:help;background:var(--gold-pale);transition:.13s}
+.r3-spec-q:hover,.r3-spec-q:focus{background:var(--gold);color:var(--ox-deep);outline:none}
+.r3-cover-btn{margin-top:7px}
+@media(max-width:720px){ .r3-specs{grid-template-columns:1fr} }

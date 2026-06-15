@@ -455,6 +455,83 @@
     </div>`;
   }
 
+  /* ---------------- ROUTE 3 (E6): recurring Exposure Report cover ---------------- */
+  // Absorbs the former standalone "Compliance Monitoring" + "Regulatory Change Alerts" add-ons (they appear
+  // NOWHERE else now). Offer model: a one-time £750 unlock that INCLUDES the first month of monthly cover,
+  // then £449/month ongoing. Prices from PRICES.exposureReport. The eight specs carry an inline hover detail
+  // (data-tip) so the block stays compact. Unlock + Cover are FOUNDER-BLOCKED direct Payment Links (rendered
+  // only when STRIPE_LINK_UNLOCK / STRIPE_LINK_COVER are set); the data-subscribe="compliance" path is the
+  // always-valid fallback and its contract (data-trial, slug+hash capture in startAddon) is UNCHANGED so the
+  // Stripe webhook can still flip audit_pages.unlocked for this exact page. Cold minted pages (D.unlocked=true)
+  // skip the paywall: the locked fixes are already open, so the block leads with the founder oversight framing
+  // and offers ongoing cover, never an "unlock".
+  function route3(){
+    const unlock=PRICES.exposureReport.unlock, cover=PRICES.exposureReport.monthlyCover;
+    const specs=[
+      ['The full Exposure Report','Every locked fix in this report opened in full, plus the complete compliance, search and AI-visibility assessment.'],
+      ['Monthly re-scan','This exact audit re-run on your live data every month, so the record always reflects the site as it stands today.'],
+      ['Change log','A month-by-month history of what moved: findings closed, new gaps, score and exposure over time.'],
+      ['72-hour breach alert','A new breach on your live site flagged within 72 hours of appearing, before enforcement or a competitor moves.'],
+      ['Regulatory change alerts','Every new ruling in your sector flagged the day it lands, with the exact page and rule affected.'],
+      ['Board-ready quarterly certificate','An enhanced quarterly certificate your committee and insurer can file, benchmarked against your named competitors.'],
+      ['Search and AI position tracking','Your rankings and AI share of voice tracked over time against the rivals named alongside you.'],
+      ['Founder oversight','Aman Pareek reviews the monthly record personally. Your team’s work is tracked, not just the gaps.'],
+    ];
+    const specList=`<ul class="r3-list r3-specs">${specs.map(s=>`<li><span class="r3-spec-t">${escH(s[0])}</span><span class="r3-spec-q" data-tip="${escH(s[1])}" tabindex="0" role="note" aria-label="${escH(s[0])}: ${escH(s[1])}">?</span></li>`).join('')}</ul>`;
+
+    if(D.unlocked){
+      // Cold / already-unlocked page: no paywall. Lead with founder oversight + ongoing cover.
+      const coverBtn = STRIPE.cover
+        ? `<a class="btn solid block" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">Start monthly cover&nbsp;↗</a>`
+        : `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
+      return `
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Keep this report live</h3></div>
+    <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: founder-reviewed cover that re-runs this audit on your live data every month.</p>
+    <div class="route route3">
+      <div class="r3-rib">Founder oversight, every month</div>
+      <div class="r3-grid">
+        <div class="r3-main">
+          <div class="fx-eyebrow">This exact report, kept current</div>
+          <h3 class="r3-h">The standing record General Counsels, Heads of Compliance, Marketing Directors and CFOs quote in board packs.</h3>
+          ${specList}
+        </div>
+        <div class="r3-side">
+          <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>/month</small></div>
+          ${coverBtn}
+          <div class="r3-terms">Monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>
+        </div>
+      </div>
+    </div>`;
+    }
+
+    // Standard locked page: the paywall. Unlock includes the first month of cover, then £449/mo.
+    const unlockBtn = STRIPE.unlock
+      ? `<a class="btn solid block" href="${escH(STRIPE.unlock)}" target="_blank" rel="noopener">Unlock the full report&nbsp;↗</a>`
+      : `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
+    const coverBtn = STRIPE.cover
+      ? `<a class="btn block r3-cover-btn" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">See monthly cover&nbsp;↗</a>`
+      : '';
+    return `
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
+    <p class="plan-sub r3-gold">Unlock the full Exposure Report, ${priceSpan(unlock)}. Your first month of monthly cover is included. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>
+    <div class="route route3">
+      <div class="r3-rib">Where most board-rooms start</div>
+      <div class="r3-grid">
+        <div class="r3-main">
+          <div class="fx-eyebrow">This exact report, in your inbox every month</div>
+          <h3 class="r3-h">Unlock every locked fix now, then re-run this audit on your live data each month.</h3>
+          ${specList}
+        </div>
+        <div class="r3-side">
+          <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>one-time unlock</small></div>
+          ${unlockBtn}
+          ${coverBtn}
+          <div class="r3-terms">${priceSpan(unlock)} unlocks everything and includes your first month of cover. Then ${priceSpan(cover)}/mo. Cancel anytime.</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
   function planAndPricing(){
     const TIERS=planData();
     const recT=TIERS.find(t=>t.rec)||TIERS[2];
@@ -525,29 +602,7 @@
       </div>`).join('')}</div>
     <p class="plan-sub tl-note">Every engagement opens with the ${priceSpan(PRICES.entryAudit)} audit you are reading. A six-month commitment unlocks the pilot rate shown; thereafter it is a 90-day rolling mandate, cancellable in writing. Quoted &amp; invoiced in GBP.</p>
 
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
-    <div class="route route3">
-      <div class="r3-rib">Where most board-rooms start</div>
-      <div class="r3-grid">
-        <div class="r3-main">
-          <div class="fx-eyebrow">This exact report, in your inbox every month</div>
-          <h3 class="r3-h">Unlock every locked fix now, then re-run this audit on your live data each month.</h3>
-          <p class="r3-line">The standing record <b>General Counsels, Heads of Compliance, Marketing Directors and CFOs</b> quote in board packs and quarterly reports. Compliance, search and AI visibility, tracked over time.</p>
-          <ul class="r3-list">
-            <li>Every locked fix in this report, opened in full</li>
-            <li>Any change in the law in your sector, <b>notified within 72 hours</b></li>
-            <li>An enhanced <b>quarterly board-ready certificate</b></li>
-            <li>Benchmarked against your named competitors, with your team's work tracked</li>
-            <li>A new breach caught the day it appears, before enforcement does</li>
-          </ul>
-        </div>
-        <div class="r3-side">
-          <div class="r3-price"><span class="r3-was cmoney" data-gbp="1500">${fmtMoney(1500)}</span><b class="cmoney" data-gbp="750">${fmtMoney(750)}</b><small>/month</small></div>
-          <a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>
-          <div class="r3-terms">First month free, then ${priceSpan(750)}/mo. Cancel anytime.</div>
-        </div>
-      </div>
-    </div>
+    ${route3()}
 
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Specialist capabilities, each one a programme in its own right</h3></div>
     <p class="plan-sub">Take any of these on its own, or layer it onto a route above. Billed monthly, cancel anytime. Each is the same compliance-first engine behind this report, pointed at a single lever. ${D.upsellProof}</p>
@@ -860,9 +915,16 @@
     // Route 2 — tier card "See all inclusions" reveal.
     const t3=e.target.closest('.t3-toggle');
     if(t3){ const card=t3.closest('.tier3'); const more=card.querySelector('.t3-more'); const open=more.hidden; more.hidden=!open; t3.textContent=open?'Show less':'See all inclusions'; card.classList.toggle('lx-open',open); return; }
-    // Route 3 — Compliance Monitoring: REAL Stripe recurring subscription (£750/mo, first month free).
+    // Route 3 — recurring Exposure Report cover. The 'compliance' value keeps its EXACT legacy contract
+    // (startAddon('Compliance Monitoring', …, {trial}) → /api/stripe/checkout → webhook flips audit_pages.unlocked).
+    // 'exposure_cover' (the cold-page ongoing-cover CTA) routes to the same checkout/intake fallback. Do NOT
+    // change the 'compliance' branch — the freemium unlock depends on it.
     const sub=e.target.closest('[data-subscribe]');
-    if(sub){ e.preventDefault(); Commerce.startAddon('Compliance Monitoring', '£750', sub, { trial:+sub.dataset.trial||0 }); return; }
+    if(sub){ e.preventDefault();
+      const kind=sub.dataset.subscribe;
+      if(kind==='exposure_cover'){ Commerce.startAddon('Compliance Monitoring', '£449', sub, { trial:0 }); }
+      else { Commerce.startAddon('Compliance Monitoring', '£750', sub, { trial:+sub.dataset.trial||0 }); }
+      return; }
   });
 
   /* ---------------- PLAN: tier tabs + interactive trajectory morph ---------------- */

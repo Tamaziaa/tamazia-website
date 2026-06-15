@@ -173,12 +173,25 @@ export const onRequestPost = async ({ request, env }) => {
         method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, params }),
       });
-      // best-effort lead match by attendee email (so the booking links to its lead)
+      // C-F · best-effort lead match. The attendee email often differs from the lead's stored contact email
+      // (a partner books with their own address), so matching on email alone misses the lead. Fall back to the
+      // audit DOMAIN and SLUG carried in the booking (the audit intake seeds them into the Cal notes/responses),
+      // so a booking that came from an audit page still links to its lead. Order: email → domain → slug.
+      const rowsOf = (j) => (j && (j.rows || j.results)) || [];
+      const firstId = (j) => { const r = rowsOf(j); return r[0] ? r[0].id : null; };
       let leadId = null;
       if (record.email) {
         const lr = await nq('SELECT id FROM leads WHERE lower(COALESCE(primary_email,contact_email,email,$2))=lower($1) LIMIT 1', [record.email, '']).then(r => r.ok ? r.json() : null).catch(() => null);
-        const rows = lr && (lr.rows || lr.results) || [];
-        if (rows[0]) leadId = rows[0].id;
+        leadId = firstId(lr);
+      }
+      const auditMatch = extractAuditRef(payload, body);
+      if (!leadId && auditMatch.domain) {
+        const lr = await nq('SELECT id FROM leads WHERE lower(domain)=lower($1) ORDER BY id LIMIT 1', [auditMatch.domain]).then(r => r.ok ? r.json() : null).catch(() => null);
+        leadId = firstId(lr);
+      }
+      if (!leadId && auditMatch.slug) {
+        const lr = await nq('SELECT lead_id AS id FROM audit_pages WHERE slug=$1 AND lead_id IS NOT NULL LIMIT 1', [auditMatch.slug]).then(r => r.ok ? r.json() : null).catch(() => null);
+        leadId = firstId(lr);
       }
       const calId = record.cal_uid || record.cal_booking_id || record.request_id;
       await nq(
@@ -233,6 +246,29 @@ export const onRequest = async () => new Response(JSON.stringify({ error: 'metho
   status: 405,
   headers: { 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS' }
 });
+
+// C-F · pull an audit DOMAIN and/or SLUG out of a Cal booking so a booking that originated from an audit
+// page can be matched to its lead even when the attendee email differs. We look in the booking's free-text
+// (notes/description/title), its structured Cal `responses`/`metadata`, and any audit_slug/audit_domain field
+// the intake may forward. Domain is normalised (host only, no scheme/path/www); slug to the slug charset.
+function extractAuditRef(payload, body) {
+  payload = payload || {}; body = body || {};
+  // 1) any explicit structured field first (most reliable)
+  const md = payload.metadata || {};
+  const resp = payload.responses || {};
+  const respVal = (k) => { const v = resp[k]; return (v && typeof v === 'object') ? (v.value != null ? v.value : '') : (v || ''); };
+  let domain = md.audit_domain || md.domain || respVal('audit_domain') || respVal('domain') || body.audit_domain || '';
+  let slug = md.audit_slug || md.slug || respVal('audit_slug') || body.audit_slug || '';
+  // 2) scan the free text the intake seeds into notes (e.g. "Domain: example.com")
+  const text = [payload.notes, payload.description, payload.additionalNotes, payload.title,
+    respVal('notes'), respVal('Goal/pain')].filter(Boolean).join(' \n ');
+  if (!domain && text) { const m = text.match(/(?:domain|website|site)\s*[:=]\s*([^\s,;|]+)/i); if (m) domain = m[1]; }
+  if (!slug && text) { const m = text.match(/\/audit\/([a-z0-9_-]+)\//i); if (m) slug = m[1]; }
+  // normalise
+  domain = String(domain || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/[/?#].*$/, '').slice(0, 200);
+  slug = String(slug || '').trim().replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 120);
+  return { domain, slug };
+}
 
 function smartTruncate(payload, maxBytes) {
   // Phase 11 · keep top-level keys whole; truncate the value of the largest key first

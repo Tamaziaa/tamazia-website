@@ -678,6 +678,21 @@
         <a class="btn solid block" data-book="one_time_fix">Book a Fix Sprint call ↗</a></div>
     </div>
 
+    <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>Prefer a written reply? Leave your details</h3></div>
+    <p class="plan-sub">Send the basics and the founder responds directly. No obligation, no sales sequence.</p>
+    <form class="audit-bookform" novalidate aria-label="Contact the founder">
+      <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <div class="abf-grid">
+        <label class="abf-field"><span>Your name</span><input name="name" autocomplete="name" value="${escH((D.meta&&D.meta.company)||'')}"></label>
+        <label class="abf-field"><span>Website</span><input name="audit-input" autocomplete="url" value="${escH((D.meta&&D.meta.domain)||'')}"></label>
+        <label class="abf-field"><span>Email *</span><input name="email" type="email" required autocomplete="email" placeholder="you@firm.com"></label>
+        <label class="abf-field"><span>Sector</span><input name="sector" value="${escH((D.meta&&D.meta.sector)||'')}"></label>
+      </div>
+      <div class="abf-err" role="alert" hidden></div>
+      <div class="abf-actions"><button type="submit" class="btn solid abf-submit">Send to the founder ↗</button></div>
+      <p class="abf-fine">Your details are recorded with Tamazia and acknowledged by email. No payment is taken here.</p>
+    </form>
+
     <div class="card pad" style="margin-top:10px;background:var(--cream-2);border:0">
       <div class="capt" style="font-size:11px;line-height:1.6;margin:0">This is an automated marketing diagnostic from publicly observable signals (or the most recent web-archive snapshot where the live site was unreachable). The monetary figures are <b>statutory maximum fines</b>: worst-case ceilings to indicate exposure, not predictions. Not legal advice. Framework catalogue ${D.meta.catalogue}. Produced by Tamazia Ltd, London. Marketing diagnostic only.</div>
     </div>
@@ -1254,6 +1269,58 @@
     const plan=document.getElementById('sec-plan'); if(!plan) return;
     if(plan.open) mountPlanCalendars();
     plan.addEventListener('toggle',()=>{ if(plan.open) mountPlanCalendars(); });
+  })();
+
+  /* ---------------- PostHog (E10): identify + event, no-op when unconfigured ---------------- */
+  // Uses the project key threaded onto window.D.posthog (from env). If the PostHog JS lib is already
+  // loaded (window.posthog) we use it; otherwise we POST to the capture API directly. When no key is
+  // present every call is a silent no-op, so the page never errors without analytics configured.
+  const PH=(function(){
+    const cfg=(D&&D.posthog)||{}; const key=(typeof cfg.key==='string'&&cfg.key)?cfg.key:'';
+    const host=((typeof cfg.host==='string'&&cfg.host)?cfg.host:'https://eu.i.posthog.com').replace(/\/$/,'');
+    function identify(distinctId, props){
+      if(!key||!distinctId) return;
+      try{ if(window.posthog&&typeof window.posthog.identify==='function'){ window.posthog.identify(distinctId, props||{}); return; } }catch(_e){}
+      try{ fetch(host+'/capture/',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
+        body:JSON.stringify({api_key:key,event:'$identify',distinct_id:distinctId,properties:Object.assign({'$set':props||{}},{lib:'tamazia-audit'})})}).catch(()=>{}); }catch(_e){}
+    }
+    function capture(event, distinctId, props){
+      if(!key) return;
+      try{ if(window.posthog&&typeof window.posthog.capture==='function'){ window.posthog.capture(event, props||{}); return; } }catch(_e){}
+      try{ fetch(host+'/capture/',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
+        body:JSON.stringify({api_key:key,event:event,distinct_id:distinctId||((D.meta&&D.meta.domain)||'anon'),properties:Object.assign({},props||{},{lib:'tamazia-audit'})})}).catch(()=>{}); }catch(_e){}
+    }
+    return { identify, capture };
+  })();
+
+  /* ---------------- Booking form (E10): name / website / email / sector → Neon, + PostHog ---------------- */
+  // POSTs to /api/audit-request (the proven handleSubmission pipeline: validates, KV-saves, writes Neon `leads`
+  // via syncLeadToNeon, fires Resend acknowledgement + Slack/Telegram founder alert). On success we fire a
+  // PostHog identify (keyed on the email) and an audit_contact_submitted event. Honeypot c_website_2 is server-checked.
+  (function bookForm(){
+    const form=document.querySelector('.audit-bookform'); if(!form) return;
+    const errEl=form.querySelector('.abf-err'); const btn=form.querySelector('.abf-submit');
+    form.addEventListener('submit',async function(ev){
+      ev.preventDefault();
+      const fd=new FormData(form); const body={}; fd.forEach((v,k)=>{ body[k]=v; });
+      const email=String(body.email||'').trim();
+      if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ if(errEl){errEl.textContent='Please enter a valid email address.';errEl.hidden=false;} return; }
+      // fire-fill signal as the buyer commits (before the network round-trip)
+      PH.capture('audit_contact_form_fill', email, { sector:body.sector||'', website:body['audit-input']||'', source:'audit_bookform' });
+      const label=btn.textContent; btn.disabled=true; btn.textContent='Sending…'; if(errEl) errEl.hidden=true;
+      try{
+        const r=await fetch('/api/audit-request',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(Object.assign({}, body, { company:body.name||'', tab:'audit', audit_slug:(D.meta&&D.meta.slug)||'', audit_domain:(D.meta&&D.meta.domain)||'' }))});
+        const res=await r.json().catch(()=>({}));
+        if(!r.ok || (res && res.ok===false && !res.silent)){ throw new Error((res&&res.error)||('http_'+r.status)); }
+        PH.identify(email, { email, name:body.name||'', sector:body.sector||'', website:body['audit-input']||'' });
+        PH.capture('audit_contact_submitted', email, { sector:body.sector||'', website:body['audit-input']||'', source:'audit_bookform' });
+        form.innerHTML='<div class="abf-done">Thank you. Your details are with Tamazia and the founder will reply to '+escH(email)+' directly. A confirmation is on its way to your inbox.</div>';
+      }catch(_e){
+        btn.disabled=false; btn.textContent=label;
+        if(errEl){ errEl.textContent='That could not be sent just now. Please try again, or email founder@tamazia.co.uk.'; errEl.hidden=false; }
+      }
+    });
   })();
 
   // notes toggle

@@ -1232,3 +1232,16 @@ html{scroll-behavior:smooth}
 .addon ol.aspec-steps li{counter-increment:astep;font-family:var(--body);font-size:11.5px;color:#3a2d30;padding-left:22px;position:relative;line-height:1.4}
 .addon ol.aspec-steps li::before{content:counter(astep);position:absolute;left:0;top:0;width:15px;height:15px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--gold);color:var(--ox-mid);font-family:var(--mono);font-size:8.5px;line-height:14px;text-align:center}
 .addon-disclosure{font-size:11px !important;color:var(--muted) !important;line-height:1.55;margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
+
+/* ---------------- BOOKING FORM (E10): name / website / email / sector ---------------- */
+.audit-bookform{border:1px solid var(--line);border-radius:var(--r,12px);padding:16px 18px;background:linear-gradient(160deg,var(--paper),var(--cream-2));margin-top:6px}
+.audit-bookform .abf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.audit-bookform .abf-field{display:flex;flex-direction:column;gap:4px}
+.audit-bookform .abf-field span{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.audit-bookform .abf-field input{font-family:var(--body);font-size:13px;color:var(--ink);background:var(--paper);border:1px solid var(--line-2);border-radius:8px;padding:9px 11px;transition:.13s}
+.audit-bookform .abf-field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-pale)}
+.audit-bookform .abf-err{font-family:var(--mono);font-size:10px;color:var(--red);margin-top:8px}
+.audit-bookform .abf-actions{margin-top:11px}
+.audit-bookform .abf-fine{font-family:var(--mono);font-size:9px;color:var(--muted-2);margin-top:8px;letter-spacing:.02em}
+.audit-bookform .abf-done{font-family:var(--body);font-size:13.5px;color:var(--ox-deep);line-height:1.5}
+@media(max-width:720px){ .audit-bookform .abf-grid{grid-template-columns:1fr} }

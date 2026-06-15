@@ -5,11 +5,13 @@
  * BEFORE non-essential cookies. EU ePrivacy/GDPR: granular categories, withdraw
  * as easily as given (footer re-open). US CCPA/CPRA: Global Privacy Control
  * honoured as opt-out. UAE PDPL/DIFC: notice + choice satisfied by the same bar.
- * Storage key matches the GA4 gate in analytics/Analytics.astro:
+ * Storage key matches the analytics gate shared by Analytics.astro (PostHog +
+ * Clarity), BodyAnalytics.astro (GA4), and Sentry.astro (Session Replay):
  *   localStorage 'tamazia-cookie-consent' = { decision, categories, ts, v }
- * Honest categories only: this site sets analytics cookies (GA4) and strictly
- * necessary ones (security/Turnstile, booking embed). No marketing cookies, so
- * no marketing toggle is shown.
+ * Honest categories only: the single Analytics category gates GA4, PostHog,
+ * Microsoft Clarity, and Sentry Session Replay; strictly-necessary storage
+ * (security/Turnstile, booking embed, Sentry error reporting) is always on. No
+ * advertising cookies, so no marketing toggle is shown.
  */
 ---
 <div class="tz-consent" id="tz-consent" role="region" aria-label="Cookie consent" hidden>
@@ -27,7 +29,7 @@
         </label>
         <label class="tzc-cat">
           <input type="checkbox" id="tzc-analytics" />
-          <span><strong>Analytics</strong> · Google Analytics 4, consent-gated. Helps us improve the site.</span>
+          <span><strong>Analytics</strong> · Google Analytics 4, PostHog, Microsoft Clarity, and Sentry Session Replay. Consent-gated. Helps improve the site and diagnose errors.</span>
         </label>
       </div>
     </div>

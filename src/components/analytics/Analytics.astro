@@ -1,0 +1,118 @@
+---
+/* P3-3 · PostHog (product analytics) + Microsoft Clarity (session analytics), site-wide.
+ *
+ * Both are env-driven and a graceful no-op when their key is unset (nothing is emitted to
+ * the page). Keys are read at build time from import.meta.env, accepting either the
+ * PUBLIC_-prefixed name (Astro exposes those to the client) or the bare name:
+ *   PostHog: PUBLIC_POSTHOG_KEY || POSTHOG_KEY     (+ optional PUBLIC_POSTHOG_HOST || POSTHOG_HOST)
+ *   Clarity: PUBLIC_CLARITY_ID  || CLARITY_ID
+ *
+ * Both set storage/cookies, so they are gated behind the SAME analytics consent the GA4
+ * loader uses (BodyAnalytics.astro): localStorage['tamazia-cookie-consent'] with
+ * { v:1, decision:'accept', categories:{ analytics:true }, ts } within 13 months, and the
+ * `tz-consent-change` event for live opt-in. Nothing loads before consent.
+ *
+ * PostHog: captures pageview (incl. SPA-less navigations via history hooks), autocapture of
+ * clicks/inputs (default), an explicit form-fill/submit capture, and identify(email) when a
+ * lead identifies themselves (contact/booking submit, or any [data-identify-email] field).
+ */
+const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY || import.meta.env.POSTHOG_KEY || '';
+const POSTHOG_HOST = import.meta.env.PUBLIC_POSTHOG_HOST || import.meta.env.POSTHOG_HOST || 'https://eu.i.posthog.com';
+const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID || import.meta.env.CLARITY_ID || '';
+const enabled = !!(POSTHOG_KEY || CLARITY_ID);
+---
+{enabled && (
+  <script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST, CLARITY_ID }}>
+    {`
+    (function () {
+      var CONSENT_KEY = 'tamazia-cookie-consent';
+      var MAX_AGE = 13 * 30 * 86400000; // 13 months, matches the GA4 gate
+      function analyticsConsented() {
+        try {
+          var c = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null');
+          return !!(c && c.v === 1 && c.decision === 'accept' && c.categories && c.categories.analytics && (Date.now() - c.ts) < MAX_AGE);
+        } catch (e) { return false; }
+      }
+
+      var started = false;
+
+      // ---- Microsoft Clarity loader (idempotent) ----
+      function startClarity() {
+        if (!CLARITY_ID || window.clarity) return;
+        (function (c, l, a, r, i, t, y) {
+          c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+          t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+          y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, 'clarity', 'script', CLARITY_ID);
+      }
+
+      // ---- PostHog loader (official snippet, idempotent) ----
+      function startPostHog() {
+        if (!POSTHOG_KEY || window.__tzPosthogLoaded) return;
+        window.__tzPosthogLoaded = true;
+        !function (t, e) { var o, n, p, r; e.__SV || (window.posthog = e, e._i = [], e.init = function (i, s, a) { function g(t, e) { var o = e.split('.'); 2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))); }; } (p = t.createElement('script')).type = 'text/javascript', p.crossOrigin = 'anonymous', p.async = !0, p.src = s.api_host.replace('.i.posthog.com', '-assets.i.posthog.com') + '/static/array.js', (r = t.getElementsByTagName('script')[0]).parentNode.insertBefore(p, r); var u = e; for (void 0 !== a ? u = e[a] = [] : a = 'posthog', u.people = u.people || [], u.toString = function (t) { var e = 'posthog'; return 'posthog' !== a && (e += '.' + a), t || (e += ' (stub)'), e; }, u.people.toString = function () { return u.toString(1) + '.people (stub)'; }, o = 'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId'.split(' '), n = 0; n < o.length; n++) g(u, o[n]); e._i.push([i, s, a]); }, e.__SV = 1); }(document, window.posthog || []);
+        window.posthog.init(POSTHOG_KEY, {
+          api_host: POSTHOG_HOST,
+          capture_pageview: true,
+          capture_pageleave: true,
+          autocapture: true,
+          persistence: 'localStorage+cookie'
+        });
+        wirePostHogEvents();
+      }
+
+      function wirePostHogEvents() {
+        if (!window.posthog) return;
+        // Explicit pageview (covers the first paint and any client navigations) ---------
+        try { window.posthog.capture('$pageview'); } catch (e) {}
+        // history-based navigations (defensive: this site is MPA, but covers any pushState)
+        ['pushState', 'replaceState'].forEach(function (m) {
+          var orig = history[m];
+          if (typeof orig !== 'function') return;
+          history[m] = function () { var r = orig.apply(this, arguments); try { window.posthog.capture('$pageview'); } catch (e) {} return r; };
+        });
+        window.addEventListener('popstate', function () { try { window.posthog.capture('$pageview'); } catch (e) {} });
+
+        // Form fill + submit + identify ------------------------------------------------
+        function emailFrom(form) {
+          var el = form.querySelector('[data-identify-email], input[type="email"], input[name="email"]');
+          return el && el.value ? String(el.value).trim().toLowerCase() : '';
+        }
+        // First meaningful interaction with any tracked form = a single form_started event
+        document.addEventListener('focusin', function (e) {
+          var form = e.target && e.target.closest && e.target.closest('form');
+          if (!form || form.dataset.phStarted) return;
+          form.dataset.phStarted = '1';
+          try { window.posthog.capture('form_started', { form_id: form.id || form.getAttribute('name') || 'form' }); } catch (e2) {}
+        }, true);
+        // Submit = identify (if email present) + form_submitted
+        document.addEventListener('submit', function (e) {
+          var form = e.target;
+          if (!form || form.tagName !== 'FORM') return;
+          var email = emailFrom(form);
+          try {
+            if (email) window.posthog.identify(email, { email: email });
+            window.posthog.capture('form_submitted', {
+              form_id: form.id || form.getAttribute('name') || 'form',
+              has_email: !!email
+            });
+          } catch (e3) {}
+        }, true);
+      }
+
+      function startAll() {
+        if (started) return;
+        started = true;
+        startClarity();
+        startPostHog();
+      }
+
+      if (analyticsConsented()) startAll();
+      window.addEventListener('tz-consent-change', function (ev) {
+        var c = (ev && ev.detail) || {};
+        if (c.decision === 'accept' && c.categories && c.categories.analytics) startAll();
+      });
+    })();
+    `}
+  </script>
+)}

@@ -368,7 +368,7 @@
         'Everything in Authority, included',
         'Every market, territory & commercial keyword covered (50+ keywords)',
         'Your brand established as the source AI systems cite across all major engines',
-        'The compliance standard applied to a Nasdaq-listed company, every jurisdiction',
+        'IPO-grade compliance review applied to every asset, across every jurisdiction',
       ],
       more:[
         'Online personal branding grown alongside your rankings, across every platform your buyers check',
@@ -652,17 +652,6 @@
     <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency’s control and are not guaranteed. Full terms: /legal/service-terms.</p>
 
     ${trustedStrip()}
-
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>The same compliance standard, on the largest regulatory stage</h3></div>
-    <div class="cgon-proof card pad" style="background:var(--cream-2);border:0;margin-top:8px">
-      <div class="cgon-meta" style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">CG Oncology · Nasdaq: CGON · Healthcare IPO, USA</div>
-      <div class="cgon-stats" style="display:flex;gap:22px;flex-wrap:wrap;margin:10px 0 6px">
-        <div><b style="font-family:var(--serif,'Fraunces',serif);font-size:24px;color:var(--oxblood,#7A2A3B);display:block;line-height:1">+96%</b><span style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Share price at IPO</span></div>
-        <div><b style="font-family:var(--serif,'Fraunces',serif);font-size:24px;color:var(--oxblood,#7A2A3B);display:block;line-height:1">Zero</b><span style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Compliance incidents</span></div>
-      </div>
-      <p class="cgon-body" style="font-size:13px;line-height:1.6;margin:6px 0 0">CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously. Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. The digital content and marketing strategy was one of the factors contributing to shares closing 96% above the offer price at listing.</p>
-      <div class="cgon-verified" style="font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:9px">Verified per SEC filings · Public record</div>
-    </div>
 
     <div class="subhead founder-subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Walk report with the founder</h3></div>
     <div class="founder-cred">Founder: Aman Pareek. LLM in International Business Law, King&rsquo;s College London.</div>

@@ -64,3 +64,39 @@ Proofs:
 - `grep -rniE "linkedin\.com/in/" ... | grep -vi amanpareekk` → NONE (no divergent personal handle).
 
 No code change required. Logged for the per-fix trace.
+
+---
+
+## FIX 3 · Remove ALL client case studies from the AUDIT page
+
+Founder: "dont mention anything about our three case studies on the audit." Scope is "on the audit"
+only — the website's own `/case-studies` pages + `src/content/caseStudies.ts` (Orchid, Meraas,
+hospitality group) are EXPLICITLY out of scope and were NOT touched.
+
+**What the audit actually contained:** exactly ONE named-client case study — the CG Oncology / Nasdaq
+CGON proof block in `public/audit/audit-app.js` (the `planAndPricing()` tail): a `<div class="subhead">`
+heading "The same compliance standard, on the largest regulatory stage" + a `.cgon-proof` card with the
+`+96% / Zero` stat tiles, the "CG Oncology · Nasdaq: CGON · Healthcare IPO, USA" meta, the SEC Reg FD
+body paragraph, and the "Verified per SEC filings" line. (Orchid/Meraas/882/480% never appeared in the
+audit render — they live only in website content files.)
+
+**Changes (`public/audit/audit-app.js`)**
+- Deleted the entire CG Oncology heading + `.cgon-proof` card (was lines ~656–665). `trustedStrip()`
+  (generic demo/placeholder marks, NOT real clients) is retained above it; the founder section + booking
+  + packages below are untouched. No `.cgon*` CSS existed (the block was inline-styled), so nothing was
+  orphaned.
+- Rephrased the Enterprise tier feature bullet that obliquely referenced the same client:
+  `'The compliance standard applied to a Nasdaq-listed company, every jurisdiction'`
+  → `'IPO-grade compliance review applied to every asset, across every jurisdiction'`. Keeps the package
+  capability (packages stay) while removing the named-engagement allusion.
+
+**Verification**
+- `jsc public/audit/audit-app.js` → full file parses clean (1376 lines), runtime `window` ReferenceError
+  only (PASS).
+- `grep -rniE "cg oncology|cgon|nasdaq|share price at ipo|compliance incidents|orchid|meraas|ipo window|882|480%"`
+  over the ENTIRE audit render path (audit-app.js, audit-charts.js, _adapter.js, _commerce.js, _shell.js)
+  → ZERO matches (exit 1). No case-study text remains in the audit DOM, including comment nodes.
+- The only SEC-Reg-FD string anywhere is `_adapter.js` `US_SEC_REG_FD: 'SEC Regulation FD'` — a
+  regulatory FRAMEWORK label in the engine catalogue (audit engine, off-limits), not client copy. Kept.
+- Directive note "480% metric tile stays as a headline stat": the 480% figure never existed in the audit
+  (it lives in website `whyUs.ts`/`pricing.ts`), so nothing to preserve here; website left untouched.

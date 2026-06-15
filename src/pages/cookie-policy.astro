@@ -10,7 +10,7 @@ const lastUpdated = '28 April 2026';
 ---
 <BaseLayout
   title="Cookie Policy · Tamazia"
-  description="How tamazia.co.uk uses cookies and local storage. Only essential first-party storage. No third-party trackers. No marketing pixels."
+  description="How tamazia.co.uk uses cookies and local storage. Essential first-party storage, plus consent-gated analytics (GA4, PostHog, Clarity) and Sentry error diagnostics. No advertising pixels."
   noindex={false}
 >
   <Header />
@@ -20,8 +20,9 @@ const lastUpdated = '28 April 2026';
       <h1>Cookie Policy</h1>
       <p class="lede">
         Last updated: {lastUpdated}. This page tells you how tamazia.co.uk uses cookies and similar
-        local-storage technologies. This site uses only essential first-party storage. No analytics, no
-        advertising trackers, and no third-party cookies are set.
+        local-storage technologies. Essential first-party storage runs the site. Analytics and error-diagnostic
+        tools (Google Analytics 4, PostHog, Microsoft Clarity, and Sentry Session Replay) are loaded only after
+        you give analytics consent. No advertising trackers are set.
       </p>
 
       <section>
@@ -62,6 +63,27 @@ const lastUpdated = '28 April 2026';
               <td>Third party (Google LLC)</td>
             </tr>
             <tr>
+              <td><code>ph_*</code>, <code>__ph_opt_in_out_*</code></td>
+              <td>Cookie + local storage</td>
+              <td>PostHog product analytics. Records page views and interaction events to understand how the site is used. Loaded only after analytics consent.</td>
+              <td>12 months</td>
+              <td>Third party (PostHog, EU region)</td>
+            </tr>
+            <tr>
+              <td><code>_clck</code>, <code>_clsk</code></td>
+              <td>Cookie + local storage</td>
+              <td>Microsoft Clarity session analytics and heatmaps. Records interactions to diagnose usability issues. Loaded only after analytics consent.</td>
+              <td>_clck: 12 months · _clsk: 1 day</td>
+              <td>Third party (Microsoft Corporation)</td>
+            </tr>
+            <tr>
+              <td><code>sentryReplaySession</code> and related Replay storage</td>
+              <td>Session storage</td>
+              <td>Sentry Session Replay. Records a masked reconstruction of the page session to diagnose front-end errors. Text is masked and media blocked. Recording starts only after analytics consent; error monitoring without replay runs as a strictly necessary reliability function.</td>
+              <td>Session</td>
+              <td>Third party (Functional Software, Inc., trading as Sentry)</td>
+            </tr>
+            <tr>
               <td><code>__cf_bm</code></td>
               <td>Cookie</td>
               <td>Cloudflare bot management. Strictly necessary for security and DDoS protection.</td>
@@ -78,10 +100,11 @@ const lastUpdated = '28 April 2026';
           </tbody>
         </table>
         <p>
-          The site uses Consent Mode v2: until you accept analytics, Google Analytics is loaded but
-          fires no measurement calls. After accept, GA4 records a single <code>page_view</code> event
-          and continues to record subsequent navigation. We do not run advertising cookies of any kind.
-          The 13-month sliding expiry on your consent decision is set per ICO guidance (PECR Reg 6).
+          The site uses Consent Mode v2 with a default-denied state. Until you accept analytics, Google
+          Analytics, PostHog, Microsoft Clarity, and Sentry Session Replay are not loaded or do not record,
+          and they set no storage. After you accept, these analytics and error-diagnostic tools load and
+          begin recording. No advertising cookies are set under any circumstances. The 13-month sliding
+          expiry on the consent decision is set per ICO guidance (PECR Reg 6).
         </p>
       </section>
 
@@ -89,10 +112,11 @@ const lastUpdated = '28 April 2026';
         <h2>3. What we do not use</h2>
         <ul>
           <li>No Meta Pixel, LinkedIn Insight, X Pixel, or any advertising tag.</li>
-          <li>No fingerprinting, session-replay, or behavioural-profiling tools.</li>
-          <li>No retargeting cookies of any kind.</li>
-          <li>Google Analytics 4 is loaded only after explicit consent under Consent Mode v2 with default-denied state and IP anonymisation. It is the only analytics platform we use.</li>
-          <li>Cloudflare Web Analytics is privacy-friendly server-side measurement (no client cookies); we still gate it behind explicit consent for belt-and-braces.</li>
+          <li>No retargeting or behavioural-advertising cookies of any kind.</li>
+          <li>No browser fingerprinting.</li>
+          <li>Google Analytics 4, PostHog, and Microsoft Clarity load only after explicit consent under Consent Mode v2 with a default-denied state. GA4 runs with IP anonymisation.</li>
+          <li>Sentry Session Replay records a masked reconstruction of the session (all text masked, media blocked) and only after analytics consent. Error monitoring without replay runs as a strictly necessary reliability function.</li>
+          <li>Cloudflare Web Analytics is privacy-friendly server-side measurement (no client cookies); it is still gated behind explicit consent for belt-and-braces.</li>
         </ul>
       </section>
 
@@ -100,13 +124,16 @@ const lastUpdated = '28 April 2026';
         <h2>4. Your choices</h2>
         <p>
           When you first visit tamazia.co.uk you will see a consent banner with two equally prominent
-          options: <strong>Reject non-essential</strong> and <strong>Accept all</strong>. Because the
-          site only uses essential storage today, both options currently produce the same behaviour. If
-          we add any non-essential storage in future, only the Accept option will allow it.
+          options: <strong>Reject all</strong> and <strong>Accept all</strong>, plus
+          <strong>Manage preferences</strong> to toggle the analytics category on its own. Choosing Reject
+          all, or leaving the choice unmade, means no analytics or session-replay storage is set: Google
+          Analytics, PostHog, Microsoft Clarity, and Sentry Session Replay stay off. Choosing Accept all
+          (or enabling the analytics toggle) loads them.
         </p>
         <p>
-          You can clear your decision at any time by clearing site storage in your browser. The banner
-          will reappear on your next visit and you can choose again.
+          You can change or withdraw consent at any time by reopening the banner from the cookie-settings
+          link in the footer, or by clearing site storage in your browser. Withdrawal is as easy as giving
+          consent.
         </p>
       </section>
 

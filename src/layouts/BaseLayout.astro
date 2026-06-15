@@ -4,6 +4,13 @@ import Sentry from '../components/analytics/Sentry.astro';
 import BodyAnalytics from '../components/analytics/BodyAnalytics.astro';
 import Analytics from '../components/analytics/Analytics.astro';
 import CookieConsent from '../components/ui/CookieConsent.astro';
+import { pricingContent } from '../content/pricing';
+
+// S6[D16] · the mobile sticky CTA price comes from the ONE pricing config (pricing.ts),
+// not a hardcoded literal. Use the lowest tier's monthly figure ("From £X/month").
+const _stickyTier = [...pricingContent.tiers].sort((a: any, b: any) => (a.priceGbp ?? 0) - (b.priceGbp ?? 0))[0];
+const stickyPriceGbp = (_stickyTier && _stickyTier.priceGbp) || 2500;
+const stickyPrice = '£' + Number(stickyPriceGbp).toLocaleString('en-GB');
 
 // Tamazia analytics tokens · replace empty strings with actual values when provider properties are created.
 // Cloudflare Web Analytics token: replace '' with the token from CF dashboard.
@@ -156,14 +163,24 @@ if (_segs.length > 0) {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage.startsWith("http") ? ogImage : `https://tamazia.co.uk${ogImage}`} />
+    {/* S5[D10] · explicit OG image dimensions + type + alt so scrapers render the card
+        without re-fetching, and the image carries an accessible description. The default
+        og-default.png is 1200x630; per-route ogImage overrides are also 1200x630. */}
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
     <meta property="og:site_name" content="Tamazia" />
 
+    {/* S5[D9] · twitter:site removed: no @tamazia_co X account is owned or referenced in
+        the social config (Instagram + LinkedIn only). twitter:card stays — the large-image
+        card renders from og:image without a site handle. */}
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@tamazia_co" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.startsWith("http") ? ogImage : `https://tamazia.co.uk${ogImage}`} />
+    <meta name="twitter:image:alt" content={title} />
 
     {/* Round-13 · fonts are now self-hosted from /public/fonts (latin + latin-ext WOFF2 subsets,
         loaded via @font-face declarations in src/styles/fonts.css). No cross-origin Google Fonts
@@ -301,8 +318,9 @@ if (_segs.length > 0) {
 </style>
 </head>
   <body>
-<a href="#main" class="skip-to-main">Skip to main content</a>
-    <a href="#main" class="skip-link">Skip to main content</a>
+    {/* S8[D57] · single skip link (WCAG 2.4.1). The duplicate <a class="skip-link"> was
+        removed; .skip-to-main is the one whose styles live in this layout. */}
+    <a href="#main" class="skip-to-main">Skip to main content</a>
     <slot />
 
     <script is:inline data-cfasync="false">
@@ -420,7 +438,7 @@ if (_segs.length > 0) {
       }
 </script>
     <div id="mobile-sticky-cta" class="mobile-sticky-cta" hidden>
-      <span class="msc-price">From <strong>£2,500</strong>/month · 90 day rolling</span>
+      <span class="msc-price">From <strong>{stickyPrice}</strong>/month · 90 day rolling</span>
       <a class="msc-cta" href="/book/">Book a strategy call</a>
     </div>
 

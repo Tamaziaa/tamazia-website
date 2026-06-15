@@ -250,7 +250,8 @@ async function notifyEmail(env, { summary, fields, saved, dbError }) {
   const brevoKey = env.BREVO_KEY;
   if (!resendKey && !brevoKey) return null; // no email channel bound: silent no-op
 
-  const to = (env.ALERT_TO || env.CONTACT_TO || 'realfamemedia@gmail.com');
+  // C-I: alert recipient. env wins; the hardcoded fallback is a Tamazia address, not a personal Gmail.
+  const to = (env.ALERT_TO || env.CONTACT_TO || 'founder@tamazia.co.uk');
   const fromName = 'Tamazia Audit';
   const fromEmail = 'forms@tamazia.in';
   const fromCombined = env.RESEND_FROM_ALERT || `${fromName} <${fromEmail}>`;

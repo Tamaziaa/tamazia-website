@@ -58,6 +58,16 @@
   // name) is neutralised to a comma. Regular hyphens (co-working, e-commerce) are left intact.
   const escH = s=>String(s==null?'':s).replace(/\s*[—–]\s*/g,', ').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+  // C-G: the SINGLE source for "which retainer tier do we recommend this firm". The adapter flags the
+  // recommended tier on D.pricing (rec:true). The rail CTA + the founder-session CTA both route to THIS tier
+  // (not a hardcoded Enterprise/Authority), so the call the buyer books matches the tier the report recommends.
+  // Falls back to Enterprise only if no rec flag is present (matches planData()'s default).
+  function recommendedTierName(){
+    const rec=(Array.isArray(D.pricing)?D.pricing:[]).find(p=>p&&p.rec);
+    const nm=rec&&rec.tier?String(rec.tier):'';
+    return /^(foundation|authority|enterprise)$/i.test(nm) ? (nm.charAt(0).toUpperCase()+nm.slice(1).toLowerCase()) : 'Enterprise';
+  }
+
   /* ---------------- LEFT RAIL ---------------- */
   function rail(){
     const nav=[
@@ -71,9 +81,9 @@
     return `
     <aside class="rail"><div class="rail-inner">
       <div class="rail-brand"><a href="https://tamazia.co.uk" target="_blank" rel="noopener" aria-label="Tamazia, visit tamazia.co.uk"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></a></div>
-      <h1>${D.meta.company}</h1>
+      <h1>${escH(D.meta.company)}</h1>
       <div class="rail-report"><div class="rr-name">The Exposure Report</div><div class="rr-sub">Compliance, Search and AI Visibility</div></div>
-      <div class="rail-meta">${D.meta.sector}<br>${[D.meta.country,D.meta.city].filter(Boolean).join(' · ')}<br>${D.meta.domain}</div>
+      <div class="rail-meta">${escH(D.meta.sector)}<br>${[D.meta.country,D.meta.city].filter(Boolean).map(escH).join(' · ')}<br>${escH(D.meta.domain)}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
       <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
@@ -86,7 +96,7 @@
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
       <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
-      <button class="rail-cta" data-book="package" data-tier="Enterprise">Walk report with the founder ↗</button>
+      <button class="rail-cta" data-book="package" data-tier="${escH(recommendedTierName())}">Walk report with the founder ↗</button>
       <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
       <div class="rail-social">
         <a href="mailto:sales@tamazia.co.uk" aria-label="Email sales@tamazia.co.uk" title="sales@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
@@ -142,15 +152,15 @@
       const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
       return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary>
-        <div class="fw-head"><span class="code">${fw.code}</span>
-          <div class="fwn-wrap"><div class="fwn">${fw.name} <span class="jbadge">${fw.jur||'Global'}</span></div><div class="fwr">${fw.regulator} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
+        <div class="fw-head"><span class="code">${escH(fw.code)}</span>
+          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span></div><div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
           <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
-          <div class="fwe">${fw.exp}</div></div>
+          <div class="fwe">${escH(fw.exp)}</div></div>
         <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
       </summary>
       <div class="fwbody">
-        <div class="lbl">Why this framework matters</div>${fw.why}
-        <div class="lbl">${fw.regulator} &middot; recent enforcement</div><div class="action">${fw.action}</div>
+        <div class="lbl">Why this framework matters</div>${escH(fw.why)}
+        <div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}</div>
         ${fw.citation_url?`<div class="lbl">The law</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(fw.name)}, ${escH(fw.regulator)} official source &#8599;</a></div>`:''}
         ${(fw.articleGroups||[]).length?(()=>{const _all=(fw.articleGroups||[]).reduce((s,g)=>s+((g.items||[]).length),0);const _half=Math.ceil(_all/2);let _k=0;return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
         <div class="artlist">${fw.articleGroups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
@@ -224,8 +234,8 @@
       : String(D.geo.aiOverview||'').replace(/^[^.;]*AI Overviews[;.]?\s*/i,'AI Overviews now sit above the classic results for your category; ');
   return `
     <div class="pane-head"><span class="eyebrow">When your buyers ask AI</span>
-      <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+D.meta.company+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+D.meta.company+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+D.meta.company+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
-      <p>${D.geo.rootCause?D.geo.rootCause.reason:'The answer engines decide who to name from structured signals you are missing.'} ${aiOverview}</p></div>
+      <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+escH(D.meta.company)+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+escH(D.meta.company)+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+escH(D.meta.company)+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
+      <p>${D.geo.rootCause?escH(D.geo.rootCause.reason):'The answer engines decide who to name from structured signals you are missing.'} ${escH(aiOverview)}</p></div>
     ${aiCallout}
     <div class="grid g-4-8" style="margin-top:10px">
       <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(radarAxes,210)}</div>
@@ -254,17 +264,17 @@
 
   P.competitors = ()=>`
     <div class="pane-head"><span class="eyebrow">The firms being chosen over you</span>
-      <h2>You versus the firms AI and Google name first for “${D.competitors.bestKeyword}”, and the exact move that overtakes each one.</h2>
+      <h2>You versus the firms AI and Google name first for “${escH(D.competitors.bestKeyword)}”, and the exact move that overtakes each one.</h2>
       <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
     <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
     <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them, the specific play, rival by rival</h3></div>
     <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map((c,i)=>`<div class="beatcard">
       <div class="bc-rank">${i+1}</div>
       <div class="bc-body">
-        <div class="bc-top"><span class="bc-rival">${escH(c.name)}</span><span class="bc-sig">${c.signal}</span></div>
-        <div class="bc-move"><span class="bc-k">Beat them by</span> <b>${c.beatBy.fix}</b></div>
-        <div class="bc-proof"><span class="bc-arrow">↳</span> ${c.beatBy.proof}</div>
-        <div class="bc-foot"><span class="bc-metric">▸ ${c.beatBy.metric}</span>${c.beatBy.lever?`<span class="bc-lever"><span class="bc-lk">Tamazia lever</span> ${c.beatBy.lever}</span>`:''}</div>
+        <div class="bc-top"><span class="bc-rival">${escH(c.name)}</span><span class="bc-sig">${escH(c.signal)}</span></div>
+        <div class="bc-move"><span class="bc-k">Beat them by</span> <b>${escH(c.beatBy.fix)}</b></div>
+        <div class="bc-proof"><span class="bc-arrow">↳</span> ${escH(c.beatBy.proof)}</div>
+        <div class="bc-foot"><span class="bc-metric">▸ ${escH(c.beatBy.metric)}</span>${c.beatBy.lever?`<span class="bc-lever"><span class="bc-lk">Tamazia lever</span> ${escH(c.beatBy.lever)}</span>`:''}</div>
       </div></div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
@@ -299,11 +309,13 @@
   }
 
   /* ---------------- PLAN + PRICING + ADD-ONS + BOOKING ---------------- */
-  // Canonical pricing mirrors functions/audit/_commerce.js (PRICING_TIERS / ONE_TIME_FIX_GBP)
-  // and the full ADDON_CATALOGUE. The adapter's thin D.pricing/D.addons does not carry the
-  // list/pilot split, the was-prices or the outcome-led USPs, so the pane owns the display copy.
-  // List prices are verbatim from src/content/pricing.ts; pilot = 0.6 x list, a compliance-safe
-  // limited engagement (no countdown). Per-firm recommendation flows from D.pricing flags.
+  // C-A: this pane is the ONE display source. Every price/figure here READS from the PRICES block above,
+  // which mirrors src/content/pricing.ts verbatim (the canonical price config). The adapter's D.pricing is
+  // consumed ONLY for the per-firm recommendation flags (rec/popular); it carries no prices. The server-side
+  // Stripe/Cal mapping is functions/audit/_commerce.js (checkout only, not a display source).
+  // gbpFmt: GBP-canonical formatter. ALL work is quoted + invoiced in GBP (see the pricing copy), so this is
+  // used ONLY for the internal data-price value carried in the add-on intake POST (never shown to the buyer as
+  // a localised price). Every VISIBLE price/figure goes through fmtMoney (currency-aware, D.cur + toggle). (C-E)
   const gbpFmt=n=>'£'+Number(n).toLocaleString('en-GB');
   // ---- Currency by region (founder: UK→£, EU→€, US→$, Middle East→AED, else £). All work is quoted +
   // invoiced in GBP; the local figure is an indicative conversion (rates approximate, rounded to clean values).
@@ -509,9 +521,10 @@
 
     if(D.unlocked){
       // Cold / already-unlocked page: no paywall. Lead with founder oversight + ongoing cover.
-      const coverBtn = STRIPE.cover
-        ? `<a class="btn solid block" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">Start monthly cover&nbsp;↗</a>`
-        : `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
+      // C-H: always route via the metadata-bearing /api/stripe/checkout (data-subscribe) so this report's
+      // slug+hash reach the webhook. A static Payment Link cannot carry per-recipient metadata, so it is
+      // never used for the unlock/cover flow even when STRIPE_LINK_COVER is set.
+      const coverBtn = `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
       return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Keep this report live</h3></div>
     <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: founder-reviewed cover that re-runs this audit on your live data every month.</p>
@@ -533,12 +546,12 @@
     }
 
     // Standard locked page: the paywall. Unlock includes the first month of cover, then £449/mo.
-    const unlockBtn = STRIPE.unlock
-      ? `<a class="btn solid block" href="${escH(STRIPE.unlock)}" target="_blank" rel="noopener">Unlock the full report&nbsp;↗</a>`
-      : `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
-    const coverBtn = STRIPE.cover
-      ? `<a class="btn block r3-cover-btn" href="${escH(STRIPE.cover)}" target="_blank" rel="noopener">See monthly cover&nbsp;↗</a>`
-      : '';
+    // C-H: the unlock MUST flow through /api/stripe/checkout (data-subscribe) so this report's slug+hash are
+    // carried in the session metadata and the webhook can flip audit_pages.unlocked for THIS exact link. A
+    // static Payment Link carries no metadata and would take the payment without ever unlocking the report,
+    // so it is no longer used here even when STRIPE_LINK_UNLOCK is set. trial is server-pinned (see checkout.js).
+    const unlockBtn = `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
+    const coverBtn = '';
     return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
     <p class="plan-sub r3-gold">Unlock the full Exposure Report, ${priceSpan(unlock)}. Your first month of monthly cover is included. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>
@@ -724,7 +737,7 @@
   function founderSession(){
     const claim = BOOKING_URL
       ? `<a class="btn solid fsx-claim" href="${escH(BOOKING_URL)}" target="_blank" rel="noopener">Claim the session ↗</a>`
-      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH((D.pricing||[]).find(p=>p.rec)?'Enterprise':'Authority')}">Claim the session ↗</a>`;
+      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH(recommendedTierName())}">Claim the session ↗</a>`;
     const phone = CONTACT_PHONE
       ? `<a class="fsx-contact" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}">${escH(CONTACT_PHONE)}</a>`
       : '';
@@ -776,7 +789,7 @@
       ${psiBlock()}
       <div class="grid g2" style="margin-top:12px">
         <div class="card pad"><div class="card-h"><div class="t">${(D._meta&&D._meta.exposureN>0)?'How your '+D.exposure+' exposure is really calculated':'Exposure breakdown'}</div><div class="meta">not just a sum of ceilings</div></div>${CH.waterfall()||'<div class="capt" style="margin:0">No statutory exposure confirmed this scan, the gaps below are ranking and AI-visibility costs, not fines.</div>'}</div>
-        <div class="card pad"><div class="card-h"><div class="t">Why AI can’t see ${D.meta.company}</div><div class="meta">root-cause chain</div></div>${CH.causalChain()||'<div class="capt" style="margin:0">Your identity signals are largely present, the work is to defend and deepen them.</div>'}</div>
+        <div class="card pad"><div class="card-h"><div class="t">Why AI can’t see ${escH(D.meta.company)}</div><div class="meta">root-cause chain</div></div>${CH.causalChain()||'<div class="capt" style="margin:0">Your identity signals are largely present, the work is to defend and deepen them.</div>'}</div>
       </div>
     </section>`;
   }
@@ -795,7 +808,7 @@
     seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' '+plur(D.seo.onpage.length,'issue'),'amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
     geo:{ico:'❖',nm:'AI &amp; GEO visibility',kpis:chip('SoV '+D.geo.shareOfVoice,'red')+chip(D.geo.aiKnows?'AI cites you':'AI can’t cite you','red')+chip('Entity '+D.geo.entityReadiness)},
     competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' '+plur(Math.max(0,(D.competitors.rows||[]).length-1),'rival')+' ahead')+drChip},
-    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+gbpFmt(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
+    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+fmtMoney(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
@@ -1356,8 +1369,10 @@
       PH.capture('audit_contact_form_fill', email, { sector:body.sector||'', website:body['audit-input']||'', source:'audit_bookform' });
       const label=btn.textContent; btn.disabled=true; btn.textContent='Sending…'; if(errEl) errEl.hidden=true;
       try{
+        // C-B contract (shared with WEB-B / neon-sync): both audit forms POST audit_slug + audit_domain +
+        // top_finding so the lead resolves back to this exact report. top_finding = the highest-severity fix title.
         const r=await fetch('/api/audit-request',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(Object.assign({}, body, { company:body.name||'', tab:'audit', audit_slug:(D.meta&&D.meta.slug)||'', audit_domain:(D.meta&&D.meta.domain)||'' }))});
+          body:JSON.stringify(Object.assign({}, body, { company:body.name||'', tab:'audit', audit_slug:(D.meta&&D.meta.slug)||'', audit_domain:(D.meta&&D.meta.domain)||'', top_finding:(((D.fixes||[])[0]||{}).title||'') }))});
         const res=await r.json().catch(()=>({}));
         if(!r.ok || (res && res.ok===false && !res.silent)){ throw new Error((res&&res.error)||('http_'+r.status)); }
         PH.identify(email, { email, name:body.name||'', sector:body.sector||'', website:body['audit-input']||'' });

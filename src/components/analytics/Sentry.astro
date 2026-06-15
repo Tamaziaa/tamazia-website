@@ -1,34 +1,77 @@
 ---
 /* Method C · Sentry browser SDK (free tier 5k events/mo)
-   Provide SENTRY_DSN env var to activate. When unset, this is a no-op. */
+   Provide SENTRY_DSN env var to activate. When unset, this is a no-op.
+
+   S2 [D1] · Session Replay is a behavioural-recording cookie/storage technology and
+   is now gated behind the SAME analytics consent the GA4 + PostHog + Clarity loaders
+   use (localStorage 'tamazia-cookie-consent' = { v:1, decision:'accept',
+   categories:{ analytics:true }, ts } within 13 months, plus the `tz-consent-change`
+   event for live opt-in). Without analytics consent: error reporting still runs (it is
+   a strictly-necessary reliability function and sets no replay storage), but BOTH replay
+   sample rates are 0 so no session is recorded. On consent grant the Replay integration
+   is added and recording starts; on withdrawal recording stops. */
 const dsn = import.meta.env.SENTRY_DSN || '';
 ---
 {dsn && (
   <script is:inline define:vars={{ dsn }}>
     {`
-      window.__SentryReady = false;
-      const script = document.createElement('script');
-      script.src = 'https://browser.sentry-cdn.com/8.0.0/bundle.tracing.min.js';
-      script.crossOrigin = 'anonymous';
-      script.async = true;
-      script.onload = () => {
-        if (window.Sentry) {
+      (function () {
+        var CONSENT_KEY = 'tamazia-cookie-consent';
+        var MAX_AGE = 13 * 30 * 86400000; // 13 months, matches the GA4/PostHog/Clarity gate
+        function analyticsConsented() {
+          try {
+            var c = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null');
+            return !!(c && c.v === 1 && c.decision === 'accept' && c.categories && c.categories.analytics && (Date.now() - c.ts) < MAX_AGE);
+          } catch (e) { return false; }
+        }
+
+        function startReplay() {
+          // Add the Replay integration once, only after analytics consent.
+          if (!window.Sentry || window.__tzSentryReplay) return;
+          try {
+            if (typeof window.Sentry.replayIntegration !== 'function' || typeof window.Sentry.addIntegration !== 'function') return;
+            window.__tzSentryReplay = true;
+            window.Sentry.addIntegration(window.Sentry.replayIntegration({
+              maskAllText: true,
+              blockAllMedia: true
+            }));
+          } catch (e) { /* replay unavailable in this SDK build — error reporting still active */ }
+        }
+
+        window.__SentryReady = false;
+        var script = document.createElement('script');
+        script.src = 'https://browser.sentry-cdn.com/8.0.0/bundle.tracing.replay.min.js';
+        script.crossOrigin = 'anonymous';
+        script.async = true;
+        script.onload = function () {
+          if (!window.Sentry) return;
           window.Sentry.init({
             dsn: dsn,
             tracesSampleRate: 0.1,
-            replaysSessionSampleRate: 0.05,
-            replaysOnErrorSampleRate: 1.0,
+            // Replay sample rates are 0 by default; the Replay integration is only
+            // added (below) once analytics consent is present, so nothing records
+            // until then regardless of these values.
+            replaysSessionSampleRate: 0,
+            replaysOnErrorSampleRate: 0,
+            integrations: [],
             environment: 'production',
-            beforeSend(event) {
+            beforeSend: function (event) {
               // Drop noise: ignore expected 404s
-              if (event.exception?.values?.[0]?.value?.includes('NotFoundError')) return null;
+              if (event.exception && event.exception.values && event.exception.values[0] && event.exception.values[0].value && event.exception.values[0].value.indexOf('NotFoundError') !== -1) return null;
               return event;
-            },
+            }
           });
           window.__SentryReady = true;
-        }
-      };
-      document.head.appendChild(script);
+          if (analyticsConsented()) startReplay();
+        };
+        document.head.appendChild(script);
+
+        // Live opt-in: when the consent banner grants analytics, begin recording.
+        window.addEventListener('tz-consent-change', function (ev) {
+          var c = (ev && ev.detail) || {};
+          if (c.decision === 'accept' && c.categories && c.categories.analytics) startReplay();
+        });
+      })();
     `}
   </script>
 )}

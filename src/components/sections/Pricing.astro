@@ -43,8 +43,10 @@ const fixPacks = [
 
 // D1 · Independent Solutions · struck-then-offer where an anchor exists, results-led.
 // Display names + outcome lines map 1:1 to the independentSolutionsGbp keys.
-const independentSolutionsMeta: Record<string, { name: string; outcome: string }> = {
-  websiteRemodelling: { name: 'Website Remodelling', outcome: 'A site that converts the traffic it earns, rebuilt to brief.' },
+// S10 · `href` deep-links a solution to its own standalone page when one exists
+// (currently only Website Remodelling). Others stay on the #contact enquiry CTA.
+const independentSolutionsMeta: Record<string, { name: string; outcome: string; href?: string }> = {
+  websiteRemodelling: { name: 'Website Remodelling', outcome: 'A site that converts the traffic it earns, rebuilt to brief.', href: '/services/website-remodelling/' },
   aiAuthority: { name: 'AI Authority', outcome: 'Cited inside ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews.' },
   icpOutreach: { name: 'ICP Outreach', outcome: 'Compliant outbound to the decision-makers who match your client profile.' },
   onlinePersonalBranding: { name: 'Online Personal Branding', outcome: 'The named-expert authority buyers check before they instruct.' },
@@ -61,6 +63,7 @@ const independentSolutions = Object.keys(independentSolutionsGbp).map((key) => {
     key,
     name: meta.name,
     outcome: meta.outcome,
+    href: meta.href || '#contact',
     anchor: typeof cfg.anchor === 'number' ? cfg.anchor : null,
     offer: typeof cfg.offer === 'number' ? cfg.offer : null,
     price: typeof cfg.price === 'number' ? cfg.price : null,
@@ -237,18 +240,20 @@ const featureIcons: Record<string, string> = {
                 <span class="is-offer" data-gbp={s.price ?? 0}>{gbp(s.price ?? 0)}</span>
               )}
             </div>
-            <a href="#contact" class="is-cta">Add this <span class="cta-arrow" aria-hidden="true">→</span></a>
+            <a href={s.href} class="is-cta">{s.href === '#contact' ? 'Add this' : 'See the engagement'} <span class="cta-arrow" aria-hidden="true">→</span></a>
           </div>
         ))}
       </div>
       <p class="ib-foot"><em>Indicative pricing. Every solution is scoped to your footprint and jurisdictions before anything is signed.</em></p>
     </div>
 
-    {/* P4-1 · OS-V4 C4 disclosure · VERBATIM. Mirrors the audit so the site and the audit
-        never diverge on the claims standard. Do not paraphrase. The trailing reference is
-        rendered as a link to the same /legal/service-terms page named in the canonical text. */}
+    {/* P4-1 · OS-V4 C4 disclosure. Mirrors the audit so the site and the audit never
+        diverge on the claims standard. S7[D44/D46] · the "Full terms" reference now points
+        to the canonical, indexable /terms/ page instead of the noindex DRAFT
+        /legal/service-terms/ (which still carries [TODO] founder-identity placeholders and
+        must not be linked from production copy until the founder supplies that identity). */}
     <p class="results-disclosure">
-      Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: <a href="/legal/service-terms/">/legal/service-terms</a>.
+      Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: <a href="/terms/">/terms</a>.
     </p>
 
     <FleuronDivider width={220} ariaLabel="Section divider" />
@@ -260,6 +265,9 @@ const featureIcons: Record<string, string> = {
         <a href="#contact" class="mandate-cta">{mandateCta}</a>
         <a href="/book/" class="mandate-calendar" aria-label="Open the founder's calendar">Open the founder's calendar <span class="calendar-arrow" aria-hidden="true">↗</span></a>
       </div>
+      {/* S6[D15] · render mandateSignature from config (was destructured + styled but never
+          output, so the .mandate-signature CSS was dead). Decorative signature of the founder. */}
+      {mandateSignature && <p class="mandate-signature" aria-hidden="true">{mandateSignature}</p>}
       <div class="mandate-rule" aria-hidden="true"></div>
     </div>
 

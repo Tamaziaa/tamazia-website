@@ -18,9 +18,11 @@ const REQUIRED = [
   'pricingNotes', 'upsellProof',
 ];
 // Must be a non-empty array (the render iterates these and would show nothing if empty):
+// C-A: `addons` removed — the adapter no longer injects D.addons (the render builds its add-on grid from
+// the PRICES block, mirrored from pricing.ts), so requiring it here would fail the contract on a valid page.
 const NONEMPTY = [
   'scoring.bands', 'frameworks', 'dims', 'fixes', 'trajectory', 'seo.keywords',
-  'geo.engines', 'competitors.rows', 'pricing', 'addons',
+  'geo.engines', 'competitors.rows', 'pricing',
 ];
 
 function validateD(D) {

@@ -1,0 +1,422 @@
+---
+// S10 [OS-V4 #38] · Website Remodelling · standalone Independent Solution page (was 404).
+// Price comes from the ONE pricing config (src/content/pricing.ts → independentSolutionsGbp
+// .websiteRemodelling: anchor 4800, offer 2400). Third-person copy only (no we/our/us),
+// no em dashes / hyphen-pauses. Built on BaseLayout + the real Header/Footer, styled with
+// the canonical design tokens (tokens.css). Linked from the Pricing Independent Solutions
+// card and the footer Services group.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import FleuronDivider from '../../components/atoms/FleuronDivider.astro';
+import { independentSolutionsGbp, entryAuditGbp } from '../../content/pricing';
+
+const canonicalUrl = 'https://tamazia.co.uk/services/website-remodelling/';
+const gbp = (n: number) => '£' + Number(n || 0).toLocaleString('en-GB');
+
+const remodel = independentSolutionsGbp.websiteRemodelling;
+const anchor = typeof remodel.anchor === 'number' ? remodel.anchor : null; // 4800
+const offer = typeof remodel.offer === 'number' ? remodel.offer : null;    // 2400
+
+const pageTitle = 'Website Remodelling · Tamazia';
+const pageDescription = 'A standalone website remodelling engagement for regulated brands. A site rebuilt to convert the traffic it earns, with every page reviewed against the standards that govern its sector before it goes live. One time, no retainer required.';
+
+// Service schema appended to the BaseLayout JSON-LD graph (provider resolves to #organization).
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': canonicalUrl + '#service',
+  name: 'Website Remodelling',
+  serviceType: 'Website design and conversion remodelling for regulated sectors',
+  description: pageDescription,
+  provider: { '@id': 'https://tamazia.co.uk/#organization' },
+  areaServed: ['United Kingdom', 'European Union', 'United Arab Emirates', 'United States'],
+  url: canonicalUrl,
+  ...(offer !== null ? {
+    offers: {
+      '@type': 'Offer',
+      price: String(offer),
+      priceCurrency: 'GBP',
+      url: canonicalUrl,
+    },
+  } : {}),
+};
+
+// What the engagement covers. Outcome-led, third-person, claims kept to deliverables.
+const inclusions = [
+  {
+    headline: 'A structure built around the searches that convert',
+    body: 'Page architecture and navigation rebuilt around the queries a buyer runs before booking, calling, or instructing, so the site earns ranking for commercial intent rather than vanity terms.',
+  },
+  {
+    headline: 'Every page reviewed against the sector framework before it ships',
+    body: 'Copy, claims, and disclosures checked against the standards that apply to the sector and jurisdiction. Nothing publishes before that review is complete.',
+  },
+  {
+    headline: 'Core Web Vitals engineered to the thresholds Google rewards',
+    body: 'LCP under 2.5s, INP under 200ms, CLS under 0.1. Layout, media, and loading rebuilt to meet those marks on mobile and desktop.',
+  },
+  {
+    headline: 'Conversion paths that turn visitors into enquiries',
+    body: 'Clear calls to action, trust signals, and enquiry forms placed where intent is highest, with accessible markup and a measurable path from landing to contact.',
+  },
+  {
+    headline: 'Structured data and accessibility built in',
+    body: 'Schema markup for the relevant entity and service types, plus WCAG-aligned semantics, so both search engines and assistive technology read the site correctly.',
+  },
+  {
+    headline: 'Handover the development team can act on',
+    body: 'The remodel ships as implementation, not a slide deck. Source, components, and a prioritised fix list are delivered ready for the in-house or agency team to run with.',
+  },
+];
+
+const audience = [
+  'Regulated brands whose current site ranks but does not convert.',
+  'Firms whose published pages predate their current compliance position.',
+  'Single-location and multi-location operators preparing for a wider search mandate.',
+  'Brands that own their traffic but lose it to a slow or unclear site.',
+];
+---
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  extraSchema={serviceSchema}
+>
+  <Header />
+
+  <main id="main" class="remodel-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/services/">Services</a></li>
+        <li aria-current="page">Website Remodelling</li>
+      </ol>
+    </nav>
+
+    <section class="remodel-hero" aria-labelledby="remodel-h1">
+      <p class="eyebrow">TAMAZIA · INDEPENDENT SOLUTION</p>
+      <h1 id="remodel-h1" class="remodel-h1">Website remodelling.</h1>
+      <p class="remodel-lede">
+        A site that converts the traffic it earns, rebuilt to brief. Every page is reviewed against the standards that govern the sector before it goes live, and the build ships ready for the development team to run with.
+      </p>
+
+      <div class="price-plate">
+        <div class="price-row">
+          {anchor !== null && offer !== null ? (
+            <>
+              <span class="price-anchor" aria-label={`Standard ${gbp(anchor)}`}>{gbp(anchor)}</span>
+              <span class="price-offer">{gbp(offer)}</span>
+            </>
+          ) : (
+            <span class="price-offer">{offer !== null ? gbp(offer) : 'On enquiry'}</span>
+          )}
+          <span class="price-unit">one time</span>
+        </div>
+        <p class="price-note">No retainer required. The work, and the site, belong to the client once paid in full.</p>
+        <a href="/#contact" class="remodel-cta">
+          Begin a remodelling enquiry
+          <span class="cta-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <FleuronDivider width={220} ariaLabel="Section divider" />
+
+    <section class="remodel-inclusions" aria-labelledby="inclusions-heading">
+      <div class="inner">
+        <h2 id="inclusions-heading" class="section-h2">What the engagement covers</h2>
+        <ul class="inclusion-list" role="list">
+          {inclusions.map((item) => (
+            <li class="inclusion">
+              <span class="inclusion-bullet" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M3 2 L7 5 L3 8 Z"/></svg>
+              </span>
+              <div>
+                <h3 class="inclusion-headline">{item.headline}</h3>
+                <p class="inclusion-body">{item.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="remodel-audience" aria-labelledby="audience-heading">
+      <div class="inner">
+        <h2 id="audience-heading" class="section-h2">Who it is for</h2>
+        <ul class="audience-list" role="list">
+          {audience.map((line) => <li class="audience-item">{line}</li>)}
+        </ul>
+        <p class="audience-note">
+          Website remodelling is one of the Independent Solutions, bought on its own with no retainer. It also sits inside a Foundation, Authority, or Enterprise mandate where a broader programme is in scope.
+        </p>
+      </div>
+    </section>
+
+    <section class="remodel-audit" aria-labelledby="remodel-audit-heading">
+      <div class="inner">
+        <h2 id="remodel-audit-heading" class="audit-h2">Every remodel opens with the audit.</h2>
+        <p class="audit-sub">
+          Before a page is rebuilt, the existing site is assessed against the frameworks that govern the sector, its Core Web Vitals, and its AI-search visibility. The audit, {gbp(entryAuditGbp)} one time, maps every gap the remodel will close and is credited in full to the engagement.
+        </p>
+        <div class="audit-actions">
+          <a href="/#contact" class="remodel-cta remodel-cta--solid">Begin an enquiry <span class="cta-arrow" aria-hidden="true">→</span></a>
+          <a href="/book/" class="remodel-cta remodel-cta--ghost">Open the founder's calendar <span class="cta-arrow" aria-hidden="true">↗</span></a>
+        </div>
+        <p class="audit-note">Responses within one business day. All communications confidential.</p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .remodel-page { background: var(--ivory); color: var(--ink); }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    background: var(--ivory);
+    border-bottom: 1px solid var(--hairline);
+    padding: 12px clamp(20px, 5vw, 72px);
+  }
+  .breadcrumb ol {
+    display: flex; list-style: none; gap: 8px; margin: 0; padding: 0;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); opacity: 0.6; align-items: center; flex-wrap: wrap;
+  }
+  .breadcrumb li + li::before { content: '/'; margin-right: 8px; opacity: 0.4; }
+  .breadcrumb a { color: inherit; text-decoration: none; }
+  .breadcrumb a:hover { color: var(--oxblood); opacity: 1; }
+  .breadcrumb li[aria-current="page"] { opacity: 1; color: var(--oxblood); }
+
+  .eyebrow {
+    font-family: var(--ff-body);
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-text-strong); font-weight: 600; margin: 0 0 18px;
+  }
+
+  /* Hero */
+  .remodel-hero {
+    max-width: 820px;
+    margin-inline: auto;
+    padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 40px) clamp(32px, 4vw, 48px);
+    text-align: center;
+  }
+  .remodel-h1 {
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: clamp(34px, 5vw, 56px);
+    font-weight: 500;
+    color: var(--oxblood);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+  }
+  .remodel-lede {
+    font-family: var(--ff-body);
+    font-size: clamp(16px, 1.4vw + 0.5rem, 19px);
+    line-height: 1.7;
+    color: var(--ink-muted);
+    max-width: 660px;
+    margin: 0 auto 36px;
+  }
+
+  /* Price plate (struck anchor -> offer) */
+  .price-plate {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 32px 32px;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    background: var(--pearl);
+  }
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .price-anchor {
+    font-family: var(--ff-display);
+    font-size: 22px;
+    color: var(--ink-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    opacity: 0.7;
+    font-feature-settings: 'lnum', 'tnum';
+  }
+  .price-offer {
+    font-family: var(--ff-display);
+    font-size: clamp(40px, 5vw, 52px);
+    font-weight: 500;
+    color: var(--oxblood);
+    line-height: 1;
+    font-feature-settings: 'lnum', 'tnum';
+  }
+  .price-unit {
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-muted);
+    letter-spacing: 0.02em;
+  }
+  .price-note {
+    font-family: var(--ff-body);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin: 0 0 22px;
+  }
+
+  /* CTAs */
+  .remodel-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--oxblood);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    font-family: var(--ff-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 280ms ease, color 280ms ease, border-color 280ms ease;
+  }
+  .remodel-cta:hover { background: var(--oxblood-ink); border-color: var(--gold); }
+  .remodel-cta .cta-arrow { font-size: 15px; transition: transform 240ms ease; }
+  .remodel-cta:hover .cta-arrow { transform: translateX(3px); }
+  .remodel-cta--ghost {
+    background: transparent;
+    color: var(--gold-text-strong);
+    border-color: var(--gold-text);
+  }
+  .remodel-cta--ghost:hover { background: rgba(201,167,114,0.1); color: var(--oxblood); }
+
+  /* Shared inner + section heading */
+  .inner { max-width: 820px; margin-inline: auto; padding-inline: clamp(20px, 5vw, 40px); }
+  .section-h2 {
+    font-family: var(--ff-display);
+    font-size: clamp(24px, 2.6vw, 34px);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin: 0 0 28px;
+    text-align: center;
+  }
+
+  /* Inclusions */
+  .remodel-inclusions { padding: clamp(40px, 5vw, 64px) 0; }
+  .inclusion-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .inclusion {
+    display: flex;
+    gap: 14px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .inclusion:last-child { border-bottom: 0; }
+  .inclusion-bullet { color: var(--gold-text); flex-shrink: 0; margin-top: 4px; }
+  .inclusion-headline {
+    font-family: var(--ff-display);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--oxblood-ink);
+    margin: 0 0 6px;
+  }
+  .inclusion-body {
+    font-family: var(--ff-body);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  /* Audience */
+  .remodel-audience {
+    background: var(--ivory-warm);
+    padding: clamp(40px, 5vw, 64px) 0;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .audience-list { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 10px; }
+  .audience-item {
+    font-family: var(--ff-body);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink);
+    padding-left: 22px;
+    position: relative;
+  }
+  .audience-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 10px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .audience-note {
+    font-family: var(--ff-body);
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin: 0;
+    text-align: center;
+  }
+
+  /* Audit close */
+  .remodel-audit {
+    background: var(--oxblood-ink);
+    padding: clamp(56px, 7vw, 88px) 0;
+  }
+  .remodel-audit .inner { text-align: center; }
+  .audit-h2 {
+    font-family: var(--ff-display);
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 500;
+    color: var(--ivory);
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+  }
+  .audit-sub {
+    font-family: var(--ff-body);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--pearl);
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+  .audit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .remodel-cta--solid { background: var(--oxblood); }
+  .remodel-audit .remodel-cta--ghost { color: var(--gold); border-color: var(--gold); }
+  .remodel-audit .remodel-cta--ghost:hover { background: rgba(201,167,114,0.12); color: var(--gold); }
+  .audit-note {
+    font-family: var(--ff-body);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--pearl);
+    opacity: 0.55;
+    margin: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .remodel-cta, .remodel-cta .cta-arrow { transition: none; }
+  }
+</style>

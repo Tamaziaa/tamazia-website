@@ -38,15 +38,29 @@ const FONT_CSS = [
   ff('JetBrains Mono', 'normal', 500, 'jetbrains-mono-500.woff2'),
 ].join('');
 
-const HEAD = '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
-  + '<meta charset="UTF-8">\n'
-  + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
-  + '<meta name="robots" content="noindex, nofollow">\n'
-  + '<title>' + TITLE + '</title>\n'
-  + '<meta property="og:title" content="' + TITLE + '">\n'
-  + '<meta property="og:description" content="' + SUBTITLE + '">\n'
-  + '<meta property="og:type" content="website">\n'
-  + '<style id="tz-fonts">' + FONT_CSS + '</style>';
+// HTML-escape for text injected into <title>/<meta content="…"> (a hostile company name must not break the
+// tag or inject markup into the head). (C-J / C-C)
+function escAttr(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Build the <head>. C-J: when a company is known, the <title> and OG title lead with it
+// ("<Company> · The Exposure Report · Tamazia") so a shared link / browser tab is identifiable. The page
+// stays noindex,nofollow regardless (these are per-recipient minted reports, never indexed). errorShell and
+// any company-less render fall back to the generic TITLE.
+function buildHead(company) {
+  const c = String(company || '').trim();
+  const title = c ? (c + ' ' + MIDDOT + ' ' + TITLE) : TITLE;
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
+    + '<meta charset="UTF-8">\n'
+    + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+    + '<meta name="robots" content="noindex, nofollow">\n'
+    + '<title>' + escAttr(title) + '</title>\n'
+    + '<meta property="og:title" content="' + escAttr(title) + '">\n'
+    + '<meta property="og:description" content="' + escAttr(SUBTITLE) + '">\n'
+    + '<meta property="og:type" content="website">\n'
+    + '<style id="tz-fonts">' + FONT_CSS + '</style>';
+}
+const HEAD = buildHead('');
 
 const NOTES_BTN = '<button id="notesToggle" style="position:fixed;bottom:16px;right:16px;z-index:80;font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#2A5DA8;background:rgba(248,244,238,.94);border:1px solid rgba(42,93,168,.3);border-radius:8px;padding:6px 11px;cursor:pointer;backdrop-filter:blur(6px)">Notes on</button>';
 
@@ -58,7 +72,8 @@ export function renderShell(D, opts) {
   const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : ('<link rel="stylesheet" href="/audit/audit.css?v=' + _av + '">');
   const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : ('<script src="/audit/audit-charts.js?v=' + _av + '"></script>');
   const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : ('<script src="/audit/audit-app.js?v=' + _av + '"></script>');
-  return HEAD + '\n' + styleBlock + '\n</head>\n<body>\n'
+  const head = buildHead(D && D.meta && D.meta.company);   // C-J: per-company <title>/OG (still noindex)
+  return head + '\n' + styleBlock + '\n</head>\n<body>\n'
     + '<div class="tz-shell" id="app"></div>\n'
     + NOTES_BTN + '\n'
     + '<script>window.D = ' + injectJSON(D) + ';</script>\n'

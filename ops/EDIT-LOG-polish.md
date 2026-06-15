@@ -42,3 +42,25 @@ so the phone was omitted. The site contact pane carried the founder email/creden
     beside `<a ... href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>`. tel link / number /
     email all assert `true`.
   - with `contactPhone=''` → no `tel:` link (confirms the prior omission was the root cause).
+
+---
+
+## FIX 2 · LinkedIn = `https://www.linkedin.com/in/amanpareekk/` — CONFIRMED, no change needed
+
+Audited every LinkedIn URL in `src/`. ALL eight occurrences are the exact founder profile, none is a
+company URL:
+- `src/config/social.ts:13` `LINKEDIN_URL` (single source) ✅
+- `src/content/footer.ts:27` ✅
+- `src/components/atoms/FounderLink.astro:22` (canonical founder treatment) ✅
+- `src/components/sections/FinalHero.astro:239` (live homepage hero founder pill) ✅
+- `src/layouts/BaseLayout.astro:76,91` (Organization + Person `sameAs` schema) ✅
+- `src/components/schema/ArticleSchema.astro:38` (`sameAs`) ✅
+
+Header.astro and Footer.astro both `import { socialLinks } from '../../config/social'` and render
+`s.href` — single-sourced from `social.ts`, so they inherit the correct URL.
+
+Proofs:
+- `grep -rniE "linkedin\.com/company" src functions public` → NONE (no company URL anywhere).
+- `grep -rniE "linkedin\.com/in/" ... | grep -vi amanpareekk` → NONE (no divergent personal handle).
+
+No code change required. Logged for the per-fix trace.

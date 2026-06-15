@@ -66,6 +66,10 @@ export async function handleSubmission(request, env, tab) {
 
   const sideEffects = [];
   sideEffects.push(syncLeadToNeon(env, tab, body, request_id));
+  // Mission D · D5 · PostHog capture (server-side, fail-open, gated on env.POSTHOG_KEY).
+  // Mirrors the only PostHog pattern in the repo (functions/audit/[[path]].js): no client
+  // SDK, no consent gate needed, £0. Fires `contact_submitted` on every accepted submission.
+  sideEffects.push(firePostHog(env, tab, body, request_id));
   if (env.RESEND_API_KEY) {
     sideEffects.push(fireAlert(env, tab, body, request_id));
     sideEffects.push(fireAutoAck(env, body, request_id));
@@ -98,6 +102,34 @@ export async function handleSubmission(request, env, tab) {
 
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';
   return json({ ok: true, request_id, message: 'Brief received. Reply within one working day.' }, 200, baseHeaders);
+}
+
+// Mission D · D5 · server-side PostHog capture. Fire-and-forget; no-op without a key so it
+// can never affect the form response. Pattern mirrors functions/audit/[[path]].js.
+async function firePostHog(env, tab, body, request_id) {
+  if (!env || !env.POSTHOG_KEY) return;
+  const email = (body.email || '').toLowerCase().trim();
+  const website = (body.website || body.c_homepage_url || '').toString().slice(0, 200);
+  const distinct_id = email || request_id;
+  try {
+    return await fetch((env.POSTHOG_HOST || 'https://eu.i.posthog.com') + '/capture/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: env.POSTHOG_KEY,
+        event: 'contact_submitted',
+        distinct_id,
+        properties: {
+          tab_source: tab,
+          sector: body.sector || '',
+          website,
+          has_company: !!body.company,
+          request_id,
+          lib: 'tamazia-pages',
+        },
+      }),
+    });
+  } catch (_e) { /* fail-open */ }
 }
 
 async function fireAlert(env, tab, body, request_id) {

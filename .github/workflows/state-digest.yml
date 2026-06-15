@@ -1,0 +1,60 @@
+# P4-7 · STATE digest
+# Regenerates docs/STATE.md (< 8 KB: live Neon counts, last runs, open flags) and
+# docs/CONTEXT-PACK.md from the NEON_URL secret, then commits any change back to main.
+# Runs post-merge (push to main), daily, and on demand. Read-only against Neon.
+
+name: STATE digest
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/STATE.md'
+      - 'docs/CONTEXT-PACK.md'
+  schedule:
+    - cron: '17 6 * * *' # daily 06:17 UTC (alongside the other morning jobs)
+  workflow_dispatch:
+
+# Avoid two runs racing to commit the docs.
+concurrency:
+  group: state-digest
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate STATE.md + CONTEXT-PACK.md from Neon
+        env:
+          NEON_URL: ${{ secrets.NEON_URL }}
+        run: node scripts/gen-state-digest.mjs
+
+      - name: Enforce STATE.md size budget (< 8 KB)
+        run: |
+          bytes=$(wc -c < docs/STATE.md)
+          echo "docs/STATE.md = ${bytes} bytes"
+          if [ "$bytes" -ge 8192 ]; then
+            echo "::error::docs/STATE.md is ${bytes} bytes (>= 8192). Budget exceeded."
+            exit 1
+          fi
+
+      - name: Commit regenerated docs (if changed)
+        run: |
+          git config user.name "tamazia-bot"
+          git config user.email "bot@tamazia.co.uk"
+          git add docs/STATE.md docs/CONTEXT-PACK.md
+          if git diff --cached --quiet; then
+            echo "No digest changes."
+          else
+            git commit -m "chore(state): regenerate STATE digest [skip ci]"
+            git push
+          fi

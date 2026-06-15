@@ -649,7 +649,7 @@
         <div class="foot"><button class="moretoggle" data-more="addon">The five steps</button><a class="btn gold" data-addon="${escH(a.nm)}" data-price="${gbpFmt(off)}">Add ${escH(a.nm.split(' ')[0])} ↗</a></div>
       </div>`;}).join('')}
     </div>
-    <p class="plan-sub addon-disclosure">Every figure above is indicative and quoted in GBP. Each engagement is scoped to your footprint and jurisdictions before anything is signed. Where a price is shown struck through, that is the standard anchor and the figure beside it is the current offer. Measurement of search and AI visibility, including any position, share-of-voice or social figure, is reported, not guaranteed: rankings, citations and follower counts move on factors outside any agency’s sole control. Nothing here is legal advice. All work produced belongs to you once paid in full.</p>
+    <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency’s control and are not guaranteed. Full terms: /legal/service-terms.</p>
 
     ${trustedStrip()}
 

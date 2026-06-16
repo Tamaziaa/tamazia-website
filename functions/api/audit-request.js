@@ -7,11 +7,32 @@ import { handleSubmission } from './contact.js';
 
 export const onRequestPost = ({ request, env }) => handleSubmission(request, env, 'audit');
 
-export const onRequestOptions = () => new Response(null, {
+// S1[D1/C81/C82] · CORS preflight restricted to the site origin (+ Cloudflare Pages previews),
+// off the previous '*'. Mirrors contact.js / briefings.js allowOrigin() so this endpoint matches
+// the rest of the form stack: a same-origin POST (no Origin header) still works and a cross-site
+// browser caller is denied by CORS. (The POST itself already runs through handleSubmission, which
+// sets the same restricted Access-Control-Allow-Origin on the response.)
+export const onRequestOptions = ({ request }) => new Response(null, {
   status: 204,
   headers: {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowOrigin(request),
+    'Vary': 'Origin',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   }
 });
+
+function allowOrigin(request) {
+  const SITE = 'https://tamazia.co.uk';
+  const origin = (request && request.headers && request.headers.get('Origin')) || '';
+  if (!origin) return SITE;
+  try {
+    const u = new URL(origin);
+    if (u.protocol === 'https:' && (
+      u.hostname === 'tamazia.co.uk' ||
+      u.hostname === 'www.tamazia.co.uk' ||
+      u.hostname.endsWith('.pages.dev')
+    )) return origin;
+  } catch (_e) { /* malformed Origin → fall through to canonical */ }
+  return SITE;
+}

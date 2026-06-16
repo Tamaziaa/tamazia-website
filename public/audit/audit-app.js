@@ -114,15 +114,15 @@
   function fixSummary(f){
     const i=(D.fixes||[]).indexOf(f);
     return `<button class="fix-summary" data-finding="fx-${i+1}">
-      <span class="fs-tag">${f.reg||f.pillar||''}</span><span class="fs-t">${f.title}</span>
-      <span class="fs-e">${f.exp}</span><span class="fs-go">full finding ↑</span></button>`;
+      <span class="fs-tag">${escH(f.reg||f.pillar||'')}</span><span class="fs-t">${escH(f.title)}</span>
+      <span class="fs-e">${escH(f.exp)}</span><span class="fs-go">full finding ↑</span></button>`;
   }
   const P = {};
 
   P.overview = ()=>`
     <div class="grid g2">
       <div class="card pad"><div class="card-h"><div class="t">Findings by severity</div><div class="meta">${D.confirmed} confirmed v. evidence</div></div>${CH.donut()}</div>
-      <div class="card pad"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${D.jurisdiction}</p></div>
+      <div class="card pad"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${escH(D.jurisdiction)}</p></div>
     </div>
     <div class="card pad" style="margin-top:9px">
       <div class="card-h"><div class="t" style="font-size:11px;color:var(--muted);letter-spacing:.02em">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksTotal} frameworks · ${D.confirmed} evidence checks</div></div>
@@ -197,8 +197,8 @@
         <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
           <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
           <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
-          <div class="fact"><span class="k">Trackers</span><span class="v">${D.seo.tech.trackers}</span></div>
-          <div class="fact"><span class="k">Ad pixels</span><span class="v">${D.seo.tech.adPixels}</span></div>
+          <div class="fact"><span class="k">Trackers</span><span class="v">${escH(D.seo.tech.trackers)}</span></div>
+          <div class="fact"><span class="k">Ad pixels</span><span class="v">${escH(D.seo.tech.adPixels)}</span></div>
           <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
           <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
         </div>
@@ -259,7 +259,7 @@
     <div class="subhead"><span class="nt">↳</span><h3>The fix, in full</h3></div>
     ${CH.finding(D.geo.fix,true,{locked:false})}
     <details class="gloss-mini"><summary>Plain-English glossary · ${Object.keys(D.glossary).length} terms</summary>
-      <div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${k}</b><span>${v}</span></div>`).join('')}</div></details>`;
+      <div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${escH(k)}</b><span>${escH(v)}</span></div>`).join('')}</div></details>`;
   };
 
   P.competitors = ()=>`

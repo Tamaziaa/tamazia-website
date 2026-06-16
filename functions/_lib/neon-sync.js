@@ -36,10 +36,23 @@ export async function syncLeadToNeon(env, tab, body, request_id) {
     const auditSlug = (body.audit_slug || '').toString().slice(0, 200);
     const auditDomain = (body.audit_domain || '').toString().slice(0, 200);
     const topFinding = (body.top_finding || '').toString().slice(0, 400);
-    const pointers = { source: 'website', tab, lead_type, request_id, note };
+    // DG5 · lead linkage. A submission that originated from a minted audit / outreach link can carry
+    // back the originating lead's reference (lead_ref) or numeric id (lead_id). Stored in
+    // personalisation_pointers alongside audit_slug so the engine + cockpit can join this web
+    // submission to the lead it came from. Additive only (no new lead columns), fail-open.
+    const leadRef = (body.lead_ref || body.leadRef || '').toString().slice(0, 200);
+    const leadId = (body.lead_id || body.leadId || '').toString().slice(0, 64);
+    // S3[D4] · explicit source_type tag so the COLD pipeline can exclude newsletter opt-ins.
+    // The real `lead_type` column already carries 'newsletter' for the briefings tab (and the cold
+    // qualifier filters on it); this mirrors that classification under the brief's source_type name,
+    // stored in personalisation_pointers so no column is added to the shared leads table (additive only).
+    const source_type = (tab === 'briefings') ? 'newsletter' : 'inbound';
+    const pointers = { source: 'website', tab, lead_type, source_type, request_id, note };
     if (auditSlug) pointers.audit_slug = auditSlug;
     if (auditDomain) pointers.audit_domain = auditDomain;
     if (topFinding) pointers.top_finding = topFinding;
+    if (leadRef) pointers.lead_ref = leadRef;
+    if (leadId) pointers.lead_id = leadId;
     const pointersJson = JSON.stringify(pointers).slice(0, 2000);
 
     // S4[C15/C18] · idempotent insert keyed on contact_email so a repeat submission does

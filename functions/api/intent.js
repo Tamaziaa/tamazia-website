@@ -31,6 +31,8 @@
 //     audit_domain  TEXT,                       -- domain of the audit the modal opened from
 //     audit_slug    TEXT,
 //     top_finding   TEXT,
+//     lead_ref      TEXT,                       -- DG6 · originating lead reference (joins to leads)
+//     lead_id       TEXT,                       -- DG6 · originating lead id when known
 //     ip_country    TEXT,
 //     referer       TEXT,
 //     user_agent    TEXT,
@@ -91,6 +93,8 @@ const AUDIT_INTENTS_DDL = [
      audit_domain  TEXT,
      audit_slug    TEXT,
      top_finding   TEXT,
+     lead_ref      TEXT,
+     lead_id       TEXT,
      ip_country    TEXT,
      referer       TEXT,
      user_agent    TEXT,
@@ -98,6 +102,11 @@ const AUDIT_INTENTS_DDL = [
    )`,
   `CREATE INDEX IF NOT EXISTS audit_intents_created_idx ON audit_intents (created_at DESC)`,
   `CREATE INDEX IF NOT EXISTS audit_intents_intent_idx ON audit_intents (intent)`,
+  // DG6 · additive lead-linkage columns for any audit_intents table created before these existed.
+  // ADD COLUMN IF NOT EXISTS is idempotent + additive (never rename/drop) so it is safe on the
+  // on-demand ensure path. Lets an audit intent join back to the lead it originated from.
+  `ALTER TABLE audit_intents ADD COLUMN IF NOT EXISTS lead_ref TEXT`,
+  `ALTER TABLE audit_intents ADD COLUMN IF NOT EXISTS lead_id TEXT`,
 ];
 
 // Create the table + indexes on demand. Best-effort: returns true only if the CREATE TABLE
@@ -152,6 +161,10 @@ export async function onRequestPost(context) {
     audit_domain: clip(body.audit_domain, 200),
     audit_slug: clip(body.audit_slug, 200),
     top_finding: clip(body.top_finding, 400),
+    // DG6 · lead linkage carried back from the originating minted audit / outreach link, so the
+    // intent row joins to the lead it came from. Additive; '' when the form carries neither.
+    lead_ref: clip(body.lead_ref || body.leadRef, 200),
+    lead_id: clip(body.lead_id || body.leadId, 64),
     ip_country: clip(request.headers.get('cf-ipcountry'), 8),
     referer: clip(request.headers.get('referer'), 300),
     user_agent: clip(request.headers.get('user-agent'), 300),
@@ -164,13 +177,13 @@ export async function onRequestPost(context) {
   if (neonConfigured(env)) {
     const sql = `INSERT INTO audit_intents
       (intent, firm_name, domain, sector, jurisdictions, locations, revenue_band, goal,
-       buyer_role, timeline, audit_domain, audit_slug, top_finding, ip_country, referer, user_agent)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+       buyer_role, timeline, audit_domain, audit_slug, top_finding, lead_ref, lead_id, ip_country, referer, user_agent)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
       RETURNING id`;
     const params = [
       row.intent, row.firm_name, row.domain, row.sector, row.jurisdictions, row.locations,
       row.revenue_band, row.goal, row.buyer_role, row.timeline, row.audit_domain, row.audit_slug,
-      row.top_finding, row.ip_country, row.referer, row.user_agent,
+      row.top_finding, row.lead_ref, row.lead_id, row.ip_country, row.referer, row.user_agent,
     ];
     let r = await neonQuery(env, sql, params);
     if (!r.ok) {

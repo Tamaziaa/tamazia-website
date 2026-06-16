@@ -38,7 +38,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Generate STATE.md + CONTEXT-PACK.md from Neon
         env:
@@ -54,8 +54,14 @@ jobs:
             exit 1
           fi
 
+      # NOTE: This step requires "Allow GitHub Actions to create and approve pull
+      # requests" to be enabled in Settings → Actions → General → Workflow permissions.
+      # Without it, create-pull-request returns 403 and this step is skipped (not
+      # a workflow failure). Enable the repo setting to make PRs auto-open.
       - name: Open/update digest PR (if changed)
-        uses: peter-evans/create-pull-request@v6
+        id: cpr
+        continue-on-error: true
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore(state): regenerate STATE digest [skip ci]"
           branch: bot/state-digest
@@ -68,3 +74,8 @@ jobs:
           add-paths: |
             docs/STATE.md
             docs/CONTEXT-PACK.md
+
+      - name: Warn if PR creation was skipped
+        if: steps.cpr.outcome == 'failure'
+        run: |
+          echo "::warning::STATE digest generated but PR creation failed (403 — GitHub Actions cannot create PRs on this repo). Enable 'Allow GitHub Actions to create and approve pull requests' in Settings → Actions → General to auto-open the PR. The digest was still generated successfully."

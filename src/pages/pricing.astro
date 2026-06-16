@@ -11,6 +11,8 @@ const canonical = 'https://tamazia.co.uk/pricing/';
   <Header />
   <main id="main">
     <Pricing />
+    {/* Anchor target for #contact CTAs in the Pricing component on this standalone page */}
+    <div id="contact" style="position:absolute;visibility:hidden;pointer-events:none;" aria-hidden="true"></div>
   </main>
   <Footer />
 </BaseLayout>

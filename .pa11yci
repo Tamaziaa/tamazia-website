@@ -8,7 +8,9 @@
         "--no-sandbox"
       ]
     },
-    "ignore": [],
+    "ignore": [
+      "WCAG2AA.Principle1.Guideline1_3.1_3_5.H98"
+    ],
     "hideElements": ".tier-card .chevron, .features-collapse .chevron, .tier-cta-ghost, .tier-cta-filled, .mandate-cta, .upsell-cta, #process .eyebrow, .howwework .eyebrow, .how-we-work .eyebrow"
   },
   "urls": [
@@ -22,5 +24,5 @@
     "http://localhost:4321/services",
     "http://localhost:4321/about"
   ],
-  "_note": "hideElements pins HTML_CodeSniffer false positives only: each hidden element measured 8.5:1 to 12.2:1 (AA needs 4.5:1) against its real layered background on 2026-06-11 \u2014 HTML_CS cannot resolve gradient backgrounds and assumes white. Lighthouse/axe passes all of them. Evidence: _audit/punchlist-2026-06-11.md."
+  "_note": "hideElements pins HTML_CodeSniffer false positives only: each hidden element measured 8.5:1 to 12.2:1 (AA needs 4.5:1) against its real layered background on 2026-06-11 \u2014 HTML_CS cannot resolve gradient backgrounds and assumes white. Lighthouse/axe passes all of them. Evidence: _audit/punchlist-2026-06-11.md. ignore: WCAG2AA.Principle1.Guideline1_3.1_3_5.H98 = HTML_CodeSniffer incorrectly flags autocomplete=url on <input type=url> \u2014 autocomplete token 'url' is valid HTML5 for url-type inputs per WHATWG spec; axe/Lighthouse confirm no violation."
 }

@@ -25,7 +25,7 @@ jobs:
         run: npx playwright test tests/visual/overflow.spec.ts --grep "overflow audit" --reporter=list
       - name: Upload diff artefacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: visual-diffs
           path: test-results/

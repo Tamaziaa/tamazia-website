@@ -75,3 +75,59 @@ export async function syncLeadToNeon(env, tab, body, request_id) {
     });
   } catch (_e) { /* fail-open */ }
 }
+
+// TRACKING FOUNDATION · raw, append-only log of EVERY website form submission into Neon
+// `form_submissions`. This is distinct from syncLeadToNeon() above: that one de-dupes into the
+// shared `leads` pipeline (one lead per email, sales/newsletter only); this one records the
+// complete tracking trail (every submission, every form type, with UTM + page) so attribution
+// and conversion analysis have a source of truth even when a submission never becomes a lead.
+// Fail-open + no-op until env.NEON_URL is bound, so it can never affect the form's KV save,
+// the lead sync, or the email/UX. PII stays server-side (never in a URL). The IP is stored as a
+// salted SHA-256 hash (env.IP_HASH_SALT), never the raw address.
+export async function syncFormSubmission(env, tab, body, request_id, request) {
+  if (!env || !env.NEON_URL) return;
+  try {
+    let host;
+    try { host = new URL(env.NEON_URL).host; }
+    catch (_p) { host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1'); }
+
+    const email = (body.email || body['audit-email'] || '').toString().toLowerCase().trim().slice(0, 320);
+    const name = (body.name || '').toString().slice(0, 200);
+    const company = (body.company || '').toString().slice(0, 300);
+    // message/brief/outcome are the same free-text fields the founder alerts read.
+    const message = (body.message || body.brief || body.outcome || '').toString().slice(0, 4000);
+    const audit_slug = (body.audit_slug || '').toString().slice(0, 200);
+    const page_url = (body.page_url || (request && request.headers && request.headers.get('referer')) || '').toString().slice(0, 500);
+
+    // UTM captured as a JSONB object so reporting can group by any param. Mirrors the keys
+    // notify.js/buildJourneyContext already reads off the body.
+    const utm = {};
+    for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']) {
+      const v = body[k] || body[k.toUpperCase()] || '';
+      if (v) utm[k] = String(v).slice(0, 200);
+    }
+    const utmJson = JSON.stringify(utm).slice(0, 1000);
+
+    // Salted SHA-256 of the client IP. No-op (empty) when no salt is bound, so we never store an
+    // unsalted/weakly-protected hash. SubtleCrypto is available on the Workers runtime.
+    let ip_hash = '';
+    try {
+      const ip = (request && request.headers && request.headers.get('cf-connecting-ip')) || '';
+      if (ip && env.IP_HASH_SALT && globalThis.crypto && globalThis.crypto.subtle) {
+        const data = new TextEncoder().encode(env.IP_HASH_SALT + ':' + ip);
+        const digest = await globalThis.crypto.subtle.digest('SHA-256', data);
+        ip_hash = Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+    } catch (_h) { /* hashing unavailable → store no ip_hash */ }
+
+    const sql = `INSERT INTO form_submissions
+      (form_type, name, email, company, message, page_url, audit_slug, utm, ip_hash, request_id, created_at)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,now())`;
+    const params = [tab || 'unknown', name, email, company, message, page_url, audit_slug, utmJson, ip_hash, request_id];
+    await fetch(`https://${host}/sql`, {
+      method: 'POST',
+      headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: sql, params })
+    });
+  } catch (_e) { /* fail-open */ }
+}

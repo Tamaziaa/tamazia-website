@@ -5,7 +5,7 @@
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 import { mintRequestId } from '../_lib/request-id.js';
 import { verifyTurnstile } from '../_lib/turnstile.js';
-import { syncLeadToNeon } from '../_lib/neon-sync.js';
+import { syncLeadToNeon, syncFormSubmission } from '../_lib/neon-sync.js';
 import { notifySlack, notifyTelegram, buildJourneyContext, isHighIntent } from '../_lib/notify.js';
 
 export async function handleSubmission(request, env, tab) {
@@ -78,6 +78,12 @@ export async function handleSubmission(request, env, tab) {
 
   const sideEffects = [];
   sideEffects.push(syncLeadToNeon(env, tab, body, request_id));
+  // TRACKING FOUNDATION · raw append-only submission log → Neon form_submissions (every form,
+  // every type, with UTM + page_url + salted ip_hash). Distinct from syncLeadToNeon (which
+  // de-dupes into the shared leads pipeline). Fail-open + no-op until NEON_URL is bound, so it
+  // can never affect the KV save, the lead sync, or the response. `request` is passed so it can
+  // read the referer (page_url fallback) and the client IP (for the salted hash).
+  sideEffects.push(syncFormSubmission(env, tab, body, request_id, request));
   // Mission D · D5 · PostHog capture (server-side, fail-open, gated on env.POSTHOG_KEY).
   // Mirrors the only PostHog pattern in the repo (functions/audit/[[path]].js): no client
   // SDK, no consent gate needed, £0. Fires `contact_submitted` on every accepted submission.

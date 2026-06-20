@@ -15,6 +15,8 @@ CONTACT_TO = "founder@tamazia.co.uk"
 CONTACT_PHONE = "+44 7778243657"
 PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADf7dMzKneovEzOp"
 EMAIL_VALIDATION_MODE = "tag"
+PUBLIC_POSTHOG_KEY = "phc_pomkfksdN8yRV4hUfNnqkgBLwHXpxxVsQFq4KpugkAr4"
+PUBLIC_POSTHOG_HOST = "https://eu.i.posthog.com"
 
 [[kv_namespaces]]
 binding = "FORM_SUBMISSIONS"

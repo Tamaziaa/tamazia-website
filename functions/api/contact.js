@@ -116,6 +116,8 @@ export async function handleSubmission(request, env, tab) {
   const fullPayload = Object.entries(body).filter(([k, v]) => v && !k.startsWith('c_') && !k.startsWith('ts_') && k !== 'bot-field' && k !== 'honeypot_value').map(([k, v]) => k + ': ' + String(v).slice(0, 400)).join('\n');
   sideEffects.push(notifySlack(env, { level: intent ? 'p1' : 'info', summary, detail: detailMd, threadDetail: 'Full payload\n' + fullPayload }));
   sideEffects.push(notifyTelegram(env, { level: intent ? 'p1' : 'info', summary, detail: tgDetail }));
+  // Wave 6 · Notion Enquiries DB row (fail-open, gated on NOTION_ENQUIRIES_DB_ID)
+  sideEffects.push(pushToNotionEnquiries(env, body, tab, request_id));
   Promise.allSettled(sideEffects).catch(() => {});
 
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';
@@ -192,6 +194,41 @@ async function fireAutoAck(env, body, request_id) {
       }
     })
   });
+}
+
+// Wave 6 · Notion Enquiries DB integration (fail-open — must never block the form response)
+// Requires env vars: NOTION_API_KEY + NOTION_ENQUIRIES_DB_ID (set as CF Pages secrets)
+async function pushToNotionEnquiries(env, body, tab, request_id) {
+  if (!env || !env.NOTION_API_KEY || !env.NOTION_ENQUIRIES_DB_ID) return null;
+  const name = String(body.name || '').slice(0, 2000) || '(no name)';
+  const email = String(body.email || '').slice(0, 200);
+  const message = String(body.message || body.brief || body.outcome || '').slice(0, 2000);
+  const sector = String(body.sector || '').slice(0, 100);
+  const company = String(body.company || '').slice(0, 500);
+  try {
+    await fetch('https://api.notion.com/v1/pages', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + env.NOTION_API_KEY,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        parent: { database_id: env.NOTION_ENQUIRIES_DB_ID },
+        properties: {
+          Name:       { title:     [{ text: { content: name } }] },
+          Email:      { email:     email || null },
+          Company:    { rich_text: [{ text: { content: company } }] },
+          Sector:     { rich_text: [{ text: { content: sector } }] },
+          Message:    { rich_text: [{ text: { content: message } }] },
+          Tab:        { select:    { name: tab || 'contact' } },
+          Source:     { select:    { name: 'Website Form' } },
+          RequestID:  { rich_text: [{ text: { content: request_id } }] },
+        },
+      }),
+    });
+  } catch (_e) { /* fail-open: Notion failure must never surface to the user */ }
+  return null;
 }
 
 function esc(s) {

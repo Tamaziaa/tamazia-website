@@ -548,6 +548,12 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
     .calendly-pane { padding: 24px 20px; }
     .calendly-fallback { flex-direction: column; align-items: flex-start; }
     .submit-btn { font-size: 12px; letter-spacing: 0.08em; padding: 0 20px; }
+    /* B-52 fix · .contact has overflow:hidden for the decorative monogram backdrop;
+       on mobile this clips the Cal iframe. Allow y-scroll on mobile so the calendar
+       is reachable without a second scroll container fighting the page scroll. */
+    .contact { overflow-x: hidden; overflow-y: visible; }
+    .calendly-embed { overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 500px; }
+    .calendly-embed iframe { min-height: 500px; }
   }
 
   /* B-51 fix · form status + inline success */

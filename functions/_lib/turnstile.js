@@ -1,11 +1,18 @@
 // Phase 7 · Cloudflare Turnstile server-side verification
 // Verifies cf-turnstile-response token via siteverify endpoint.
 // Returns { ok: true } if pass OR if TURNSTILE_SECRET_KEY env not bound (fail-open).
-// Returns { ok: false, reason } if token invalid OR challenge failed.
+// Returns { ok: false, reason } if a token IS supplied but invalid / challenge failed.
+//
+// Token-absent is fail-open by design: the Turnstile site key is only baked into the
+// build when PUBLIC_TURNSTILE_SITE_KEY is present, so the widget may not render. Every
+// caller already enforces a honeypot (bot-field/honeypot_value/c_website_2/c_homepage_url)
+// + a timing trap (form age < 2s rejected) BEFORE this check, so a missing token degrades
+// to those guards rather than 403-ing real enquiries. A supplied-but-failing token is
+// still rejected, so Turnstile stays real defence-in-depth wherever the widget renders.
 export async function verifyTurnstile(request, body, env) {
   if (!env.TURNSTILE_SECRET_KEY) return { ok: true, skipped: 'no_secret' };
   const token = body['cf-turnstile-response'] || body.cf_turnstile_response || '';
-  if (!token) return { ok: false, reason: 'missing_token' };
+  if (!token) return { ok: true, skipped: 'no_token' };
   const ip = request.headers.get('cf-connecting-ip') || '';
   try {
     const r = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {

@@ -225,7 +225,8 @@ export const pricingContent = {
   mandateCallout:
     'FOR PRE-IPO PREPARATION, LISTED COMPANIES, AND INTERNATIONAL ENTERPRISE GROUPS, ENGAGEMENT IS STRUCTURED TO MANDATE. SPEAK WITH THE FOUNDER BEFORE ANY SCOPE IS AGREED.',
   mandateCta: 'Request a private briefing',
-  mandateSignature: 'Aman Pareek',
+  // Founder directive r3: signature removed from the pre-IPO mandate box.
+  mandateSignature: '',
 };
 
 // Backward-compat shim: current Pricing.astro reads `tier.features` as a string array
@@ -275,13 +276,17 @@ export interface IndependentSolutionPricing {
   offer?: number;
   price?: number;
 }
+// Founder directive r3: every solution shows a struck "main" price at exactly 2x
+// the offer, so each reads as a clear discount. ICP doubled on both sides. GBP
+// Domination repriced to a £1,200 offer against a £2,400 strike. YMYL given a
+// £2,400 strike against its £1,200 piece price.
 export const independentSolutionsGbp: Record<string, IndependentSolutionPricing> = {
   websiteRemodelling: { anchor: 4800, offer: 2400 },
-  aiAuthority: { anchor: 3000, offer: 1800 },
-  icpOutreach: { anchor: 2800, offer: 1400 },
+  aiAuthority: { anchor: 3600, offer: 1800 },
+  icpOutreach: { anchor: 5600, offer: 2800 },
   onlinePersonalBranding: { anchor: 2200, offer: 1100 },
   instagramPresence: { anchor: 1800, offer: 900 },
-  ymylContent: { price: 1200 },
+  ymylContent: { anchor: 2400, offer: 1200 },
   reputationCrisis: { anchor: 3000, offer: 1500 },
-  gbpDomination: { price: 850 },
+  gbpDomination: { anchor: 2400, offer: 1200 },
 };

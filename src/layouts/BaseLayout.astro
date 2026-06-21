@@ -378,13 +378,31 @@ if (_segs.length > 0) {
         var main = document.querySelector('main');
         if (main) {
           var kids = [].slice.call(main.children);
+          /* threshold:0 (not a %) so sections TALLER than the viewport still
+             reveal: a 6,000px+ section can never reach a 12% intersection ratio
+             on a phone, which previously left #pricing stuck at opacity:0. The
+             rootMargin fires it once its top is a little into view. */
+          var srTagged = [];
           var srIo = new IntersectionObserver(function (es) {
             es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('sr-in'); srIo.unobserve(en.target); } });
-          }, { threshold: 0.12 });
+          }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
           kids.forEach(function (k) {
             if (k.classList.contains('tz-hero-wrap') || k.querySelector('[data-reveal]')) return;
             k.classList.add('sr-reveal');
             srIo.observe(k);
+            srTagged.push(k);
+          });
+          /* Failsafe: content must NEVER stay hidden if the observer misses.
+             A while after load, force-reveal anything still hidden. */
+          window.addEventListener('load', function () {
+            setTimeout(function () {
+              srTagged.forEach(function (k) {
+                if (!k.classList.contains('sr-in')) {
+                  var r = k.getBoundingClientRect();
+                  if (r.top < (window.innerHeight || 0) * 1.5) k.classList.add('sr-in');
+                }
+              });
+            }, 1800);
           });
         }
       } catch (e) {}

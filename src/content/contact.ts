@@ -25,12 +25,15 @@ export const contactContent = {
     },
     {
       // Mission D · D5 · website field (feeds Neon domain capture via neon-sync.js).
+      // Founder r4: type was 'url', which made the browser reject a bare domain
+      // ("yourfirm.com" without https://) and the form got stuck. Plain text accepts
+      // any form; neon-sync normalises the domain server-side.
       id: 'website',
       label: 'Website',
-      type: 'url',
+      type: 'text',
       required: true,
       autocomplete: 'url',
-      placeholder: 'https://yourfirm.com',
+      placeholder: 'yourfirm.com',
     },
     {
       id: 'company',

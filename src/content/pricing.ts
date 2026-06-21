@@ -268,7 +268,7 @@ export const exposureReportGbp: ExposureReportPricing = {
 };
 
 // Entry audit · reference price · one-time unlock.
-export const entryAuditGbp = 750;
+export const entryAuditGbp = 1500;  // Founder r4: audit is £1,500, redeemable into the first package.
 
 // Independent solutions · struck-then-offer where an anchor is given.
 export interface IndependentSolutionPricing {

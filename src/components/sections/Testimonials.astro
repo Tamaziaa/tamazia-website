@@ -19,7 +19,10 @@ function fitQuote(q: string): string {
   return (out || sentences[0]).trim();
 }
 
-const cards = testimonials.slice(0, 40).map(t => ({ quote: fitQuote(t.quote) }));  // M-punch: DOM weight
+// Founder directive r3: the marquee was 80 cards over a ~30,000px track, which laid
+// out slowly and could appear not to load. 16 unique (32 doubled) is plenty for a
+// seamless loop and a fraction of the layout/paint cost.
+const cards = testimonials.slice(0, 16).map(t => ({ quote: fitQuote(t.quote) }));
 const cardsDouble = [...cards, ...cards];
 ---
 <section class="testimonials-strip" aria-label="Client reviews">
@@ -99,7 +102,10 @@ const cardsDouble = [...cards, ...cards];
     align-items: flex-start;  /* M-punch: cards hug their content, no wasted bottoms */
     gap: 20px;
     width: max-content;
-    animation: testimonials-scroll 600s linear infinite;
+    animation: testimonials-scroll 240s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   .testimonial-card {
     flex: 0 0 380px;
@@ -142,7 +148,7 @@ const cardsDouble = [...cards, ...cards];
   }
   .testimonials-strip:hover .testimonials-track { animation-play-state: paused; }
   @media (prefers-reduced-motion: reduce) {
-    .testimonials-track { animation-duration: 1000s; }
+    .testimonials-track { animation-duration: 480s; }
   }
   @media (max-width: 720px) {
     .testimonials-strip { padding: 40px 0 48px; }

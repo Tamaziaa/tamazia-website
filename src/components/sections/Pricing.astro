@@ -18,24 +18,72 @@ const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 // Display names + outcome lines map 1:1 to the independentSolutionsGbp keys.
 // S10 · `href` deep-links a solution to its own standalone page when one exists
 // (currently only Website Remodelling). Others stay on the #contact enquiry CTA.
-const independentSolutionsMeta: Record<string, { name: string; outcome: string; href?: string }> = {
-  websiteRemodelling: { name: 'Website Remodelling', outcome: 'A site that converts the traffic it earns, rebuilt to brief.', href: '/services/website-remodelling/' },
-  aiAuthority: { name: 'AI Authority', outcome: 'Cited inside ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews.' },
-  icpOutreach: { name: 'ICP Outreach', outcome: 'Compliant outbound to the decision-makers who match your client profile.' },
-  onlinePersonalBranding: { name: 'Online Personal Branding', outcome: 'The named-expert authority buyers check before they instruct.' },
-  instagramPresence: { name: 'Instagram Presence', outcome: 'Audience growth that builds the social proof enterprise buyers expect.' },
-  ymylContent: { name: 'YMYL Content', outcome: 'Health and legal grade content, reviewed before it publishes.' },
-  reputationCrisis: { name: 'Reputation and Crisis', outcome: 'Monitoring, suppression, and a response architecture ready before it is needed.' },
-  gbpDomination: { name: 'Google Business Profile Domination', outcome: 'Local map dominance, every listing reviewed against sector ad rules.' },
+// Founder directive r3: each solution carries the audit's own description — the
+// scope line, the positioning (usp) and the deliverables (spec) — synced from the
+// audit report so the site and the audit never diverge. ICP says "25,000 emails
+// sent" with no prospect-reach claim; YMYL says "unlimited words"; "founder"
+// wording is kept minimal.
+const independentSolutionsMeta: Record<string, { name: string; outcome: string; usp: string; spec: string[]; href?: string }> = {
+  websiteRemodelling: {
+    name: 'Website Remodelling',
+    outcome: 'A full rebuild of the site that sells, on a compliant, fast, conversion-led foundation.',
+    usp: 'The site buyers actually trust and act on. Rebuilt for speed, clarity and conversion, with every page reviewed against your sector’s law before it ships.',
+    spec: ['Audit of the current site against speed, conversion and compliance', 'Information architecture mapped to buyer intent', 'Design and build on a Core-Web-Vitals-clean foundation', 'Every page legally reviewed before launch', 'Handover with the work owned outright once paid'],
+    href: '/services/website-remodelling/',
+  },
+  aiAuthority: {
+    name: 'AI Authority',
+    outcome: 'GEO and entity authority merged: be the named answer across the AI engines.',
+    usp: 'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the entity they read first. The only compliance-reviewed AI authority programme for regulated firms.',
+    spec: ['Entity, schema, llms.txt and Wikidata build', 'Google Knowledge Panel and sameAs across every verified profile', 'Answer-surface content targeting real buyer prompts', 'Compliance review of what AI says about you', 'Per-engine position and share-of-voice reporting against named rivals'],
+  },
+  icpOutreach: {
+    name: 'ICP Outreach',
+    outcome: 'Compliant outbound to your exact buyer, the same engine that found you.',
+    usp: '25,000 emails sent each month, every one compliance-reviewed, with every lead tracked and classified by intent.',
+    spec: ['25,000 emails sent each month', 'A compliant B2B template built per jurisdiction', 'Five to seven follow-ups, reply-stopped', 'Deliverability managed with inbox rotation', 'Jurisdiction-compliant, opt-out-respecting sends'],
+  },
+  onlinePersonalBranding: {
+    name: 'Online Personal Branding',
+    outcome: 'You and your senior team made visible and credible across every platform buyers check.',
+    usp: 'The named-expert authority enterprise buyers and referral partners evaluate before any conversation. Built across every platform they check, not one.',
+    spec: ['Voice and positioning captured for each principal', 'Ghostwritten, SEO-optimised posts on a schedule', 'Every post compliance-checked before it publishes', 'Profiles optimised across the platforms buyers check', 'Engagement and reach reported monthly'],
+  },
+  instagramPresence: {
+    name: 'Instagram Presence',
+    outcome: 'A credible, compliant Instagram presence aligned to your brand.',
+    usp: 'The social proof buyers check before they reach the website. Built through sector-aligned content and engagement, held to your sector’s ad rules.',
+    spec: ['Content plan aligned to the brand and sector', 'Posts and stories produced on a schedule', 'Sector-aligned audience engagement', 'Every post checked against your sector’s advertising rules', 'Reach and engagement reported monthly'],
+  },
+  ymylContent: {
+    name: 'YMYL Content',
+    outcome: 'Health and legal grade content, per compliance-reviewed piece.',
+    usp: 'Content that passes your compliance function first time. Held to Google’s highest Your-Money-or-Your-Life standard, never generic.',
+    spec: ['Unlimited words per piece', 'Reviewed against your sector’s law before it publishes', 'Held to Google’s YMYL standard', 'Structured for search and AI citation', 'Cheaper than the cost of content that fails review'],
+  },
+  reputationCrisis: {
+    name: 'Reputation and Crisis',
+    outcome: 'Real-time reputation cover with a crisis playbook on standby.',
+    usp: 'Protect the reputation your pipeline depends on, and move before enforcement does. Real-time monitoring, pre-built suppression and 24-hour crisis response.',
+    spec: ['Real-time review, mention and press monitoring', 'Suppression architecture, not just alerting', 'A crisis playbook on standby', 'Every new sector ruling flagged with the exact page and rule affected', 'Sector and jurisdiction filtered, never generic noise'],
+  },
+  gbpDomination: {
+    name: 'Google Business Profile Domination',
+    outcome: 'Local map dominance, up to three locations, every element compliance-checked.',
+    usp: 'Own the local pack that drives 44 percent of search clicks. 30,000 or more compliance-checked map citations per location.',
+    spec: ['Up to three locations, each with its own category strategy', '30,000 or more map citations per location', 'Posting schedule, Q&A and review response system', 'Every element checked against your sector’s advertising rules', 'Local position reported monthly'],
+  },
 };
 // Preserve the config key order.
 const independentSolutions = Object.keys(independentSolutionsGbp).map((key) => {
   const cfg: any = (independentSolutionsGbp as any)[key];
-  const meta = independentSolutionsMeta[key] || { name: key, outcome: '' };
+  const meta = independentSolutionsMeta[key] || { name: key, outcome: '', usp: '', spec: [] };
   return {
     key,
     name: meta.name,
     outcome: meta.outcome,
+    usp: meta.usp,
+    spec: meta.spec || [],
     href: meta.href || '#contact',
     anchor: typeof cfg.anchor === 'number' ? cfg.anchor : null,
     offer: typeof cfg.offer === 'number' ? cfg.offer : null,
@@ -177,29 +225,62 @@ const featureIcons: Record<string, string> = {
     <div class="independent-block" aria-labelledby="independent-heading">
       <div class="ib-head">
         <h3 id="independent-heading" class="ib-h3">Independent Solutions</h3>
-        <p class="ib-sub">Single outcomes, bought on their own. No retainer required.</p>
+        <p class="ib-sub">Single outcomes, bought on their own. No retainer required. Hover a card for the full engagement.</p>
       </div>
-      <div class="independent-grid">
-        {independentSolutions.map((s) => (
-          <div class="independent-card" data-solution={s.key}>
-            <div class="is-name">{s.name}</div>
-            <p class="is-outcome">{s.outcome}</p>
-            <div class="is-price-row">
-              {s.anchor !== null && s.offer !== null ? (
-                <>
-                  <span class="is-anchor" aria-label={`Was ${gbp(s.anchor)}`}>{gbp(s.anchor)}</span>
-                  <span class="is-offer" data-gbp={s.offer}>{gbp(s.offer)}</span>
-                </>
-              ) : (
-                <span class="is-offer" data-gbp={s.price ?? 0}>{gbp(s.price ?? 0)}</span>
-              )}
+      <div class="ib-rail-wrap">
+        <button type="button" class="ib-nav ib-prev" aria-label="Scroll to previous solutions">&lsaquo;</button>
+        <div class="independent-rail" id="independent-rail" role="list">
+          {independentSolutions.map((s) => (
+            <div class="independent-card" role="listitem" tabindex="0" data-solution={s.key}>
+              <div class="is-top">
+                <div class="is-name">{s.name}</div>
+                <div class="is-price-row">
+                  {s.anchor !== null && s.offer !== null ? (
+                    <>
+                      <span class="is-anchor" aria-label={`Was ${gbp(s.anchor)}`}>{gbp(s.anchor)}</span>
+                      <span class="is-offer" data-gbp={s.offer}>{gbp(s.offer)}</span>
+                    </>
+                  ) : (
+                    <span class="is-offer" data-gbp={s.price ?? 0}>{gbp(s.price ?? 0)}</span>
+                  )}
+                </div>
+                <p class="is-outcome">{s.outcome}</p>
+              </div>
+              <div class="is-detail">
+                {s.usp && <p class="is-usp">{s.usp}</p>}
+                {s.spec.length > 0 && (
+                  <ul class="is-spec">{s.spec.map((bullet) => <li>{bullet}</li>)}</ul>
+                )}
+                <a href={s.href} class="is-cta">{s.href === '#contact' ? 'Add this' : 'See the engagement'} <span class="cta-arrow" aria-hidden="true">→</span></a>
+              </div>
             </div>
-            <a href={s.href} class="is-cta">{s.href === '#contact' ? 'Add this' : 'See the engagement'} <span class="cta-arrow" aria-hidden="true">→</span></a>
-          </div>
-        ))}
+          ))}
+        </div>
+        <button type="button" class="ib-nav ib-next" aria-label="Scroll to more solutions">&rsaquo;</button>
       </div>
       <p class="ib-foot"><em>Indicative pricing. Every solution is scoped to your footprint and jurisdictions before anything is signed.</em></p>
     </div>
+    <script is:inline>
+      (function () {
+        var rail = document.getElementById('independent-rail');
+        if (!rail) return;
+        var wrap = rail.closest('.ib-rail-wrap');
+        function step() { var c = rail.querySelector('.independent-card'); return c ? c.getBoundingClientRect().width + 16 : 280; }
+        wrap && wrap.querySelectorAll('.ib-nav').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            rail.scrollBy({ left: (btn.classList.contains('ib-prev') ? -1 : 1) * step() * 1.5, behavior: 'smooth' });
+          });
+        });
+        function sync() {
+          if (!wrap) return;
+          var prev = wrap.querySelector('.ib-prev'), next = wrap.querySelector('.ib-next');
+          if (prev) prev.disabled = rail.scrollLeft < 8;
+          if (next) next.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8;
+        }
+        rail.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('load', sync); sync();
+      })();
+    </script>
 
     {/* P4-1 · OS-V4 C4 disclosure. Mirrors the audit so the site and the audit never
         diverge on the claims standard. S7[D44/D46] · the "Full terms" reference now points
@@ -888,27 +969,44 @@ const featureIcons: Record<string, string> = {
   .fp-cta:hover, .is-cta:hover { color: var(--oxblood); gap: 10px; }
   .fp-cta:focus-visible, .is-cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
-  /* Independent solutions grid · struck-then-offer */
-  .independent-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
+  /* Independent solutions · ONE horizontal rail (founder r3) */
+  .ib-rail-wrap { position: relative; max-width: var(--container-max); margin-inline: auto; }
+  .independent-rail {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    padding: 6px 2px 16px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
   }
+  .independent-rail::-webkit-scrollbar { height: 6px; }
+  .independent-rail::-webkit-scrollbar-thumb { background: rgba(201,167,114,0.4); border-radius: 6px; }
   .independent-card {
+    flex: 0 0 250px;
+    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
-    padding: 22px;
+    padding: 20px;
     border: 1px solid var(--gold-hairline, rgba(201, 167, 114, 0.35));
     border-radius: 10px;
-    background: var(--pearl, #F4F0E8);
     background-color: #F4F0E8;
+    cursor: pointer;
+    transition: flex-basis 340ms var(--ease-out), box-shadow 320ms ease, border-color 320ms ease;
+  }
+  .independent-card:hover, .independent-card:focus-within {
+    flex-basis: 360px;
+    border-color: var(--gold);
+    box-shadow: 0 16px 36px -18px rgba(90, 26, 43, 0.42);
+    outline: none;
   }
   .is-name {
     font-family: var(--ff-display);
     font-size: 17px;
     font-weight: 500;
     color: var(--ink);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     line-height: 1.25;
   }
   .is-outcome {
@@ -916,19 +1014,17 @@ const featureIcons: Record<string, string> = {
     font-size: 12.5px;
     line-height: 1.5;
     color: var(--ink-muted);
-    margin-bottom: 16px;
-    flex: 1;
+    margin: 10px 0 0;
   }
   .is-price-row {
     display: flex;
     align-items: baseline;
     gap: 10px;
-    margin-bottom: 16px;
     flex-wrap: wrap;
   }
   .is-anchor {
     font-family: var(--ff-display);
-    font-size: 16px;
+    font-size: 15px;
     color: var(--ink-muted);
     text-decoration: line-through;
     text-decoration-thickness: 1px;
@@ -937,12 +1033,41 @@ const featureIcons: Record<string, string> = {
   }
   .is-offer {
     font-family: var(--ff-display);
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 500;
     color: var(--oxblood);
     line-height: 1;
     font-feature-settings: 'lnum', 'tnum';
   }
+  .is-detail {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition: max-height 360ms var(--ease-out), opacity 280ms ease, margin-top 360ms var(--ease-out);
+  }
+  .independent-card:hover .is-detail, .independent-card:focus-within .is-detail {
+    max-height: 440px;
+    opacity: 1;
+    margin-top: 14px;
+  }
+  .is-usp { font-family: var(--ff-body); font-size: 12px; line-height: 1.55; color: var(--ink); margin: 0 0 10px; }
+  .is-spec { list-style: none; margin: 0 0 12px; padding: 0; }
+  .is-spec li { font-family: var(--ff-body); font-size: 11.5px; line-height: 1.45; color: var(--ink-muted); padding-left: 14px; position: relative; margin-bottom: 6px; }
+  .is-spec li::before { content: '+'; position: absolute; left: 0; color: var(--gold-text, #8A6520); font-weight: 700; }
+  .ib-nav {
+    position: absolute; top: 34%; z-index: 3;
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1px solid var(--gold); background: var(--ivory, #FAF7F2);
+    color: var(--oxblood); font-size: 20px; line-height: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 16px -8px rgba(90, 26, 43, 0.35);
+    transition: background 200ms ease, opacity 200ms ease;
+  }
+  .ib-nav:hover { background: var(--gold); }
+  .ib-nav:disabled { opacity: 0.25; cursor: default; }
+  .ib-prev { left: -8px; }
+  .ib-next { right: -8px; }
 
   @media (max-width: 1024px) {
     .tiers-grid {
@@ -955,7 +1080,6 @@ const featureIcons: Record<string, string> = {
     .tier-enterprise:hover, .tier-elevated:hover {
       transform: translateY(-8px);
     }
-    .independent-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 640px) {
@@ -966,8 +1090,12 @@ const featureIcons: Record<string, string> = {
     .mandate-text { font-size: 12px; letter-spacing: 0.08em; }
     .mandate-actions { gap: 20px; flex-direction: column; }
     .mandate-signature { font-size: 36px; }
-    .independent-grid { grid-template-columns: 1fr; }
     .audit-reference-line { font-size: 15px; }
+    .independent-card { flex-basis: 210px; }
+    .independent-card:hover, .independent-card:focus-within { flex-basis: 280px; }
+    .ib-nav { width: 32px; height: 32px; font-size: 17px; top: 30%; }
+    .ib-prev { left: -4px; }
+    .ib-next { right: -4px; }
     /* Mobile: centre the currency switcher + pilot toggle so they don't left-align into a corner */
     .currency-switcher { justify-content: center; }
     .pilot-toggle { display: flex; width: 100%; justify-content: center; flex-wrap: wrap; }

@@ -8,7 +8,7 @@ import { verifyTurnstile } from '../_lib/turnstile.js';
 import { syncLeadToNeon, syncFormSubmission } from '../_lib/neon-sync.js';
 import { notifySlack, notifyTelegram, buildJourneyContext, isHighIntent } from '../_lib/notify.js';
 
-export async function handleSubmission(request, env, tab) {
+export async function handleSubmission(request, env, tab, eventCtx) {
   // S1[C81/C82] · CORS restricted to the site origin (+ Cloudflare Pages previews),
   // off the previous '*'. Reflects the request Origin only when it is on the allowlist.
   const baseHeaders = {
@@ -118,7 +118,17 @@ export async function handleSubmission(request, env, tab) {
   sideEffects.push(notifyTelegram(env, { level: intent ? 'p1' : 'info', summary, detail: tgDetail }));
   // Wave 6 · Notion Enquiries DB row (fail-open, gated on NOTION_ENQUIRIES_DB_ID)
   sideEffects.push(pushToNotionEnquiries(env, body, tab, request_id));
-  Promise.allSettled(sideEffects).catch(() => {});
+  // CRITICAL: these side effects (Neon sync, Resend email, Slack + Telegram, Notion)
+  // are fire-and-forget I/O. Without context.waitUntil() the Workers runtime tears the
+  // isolate down the instant we return the Response, cancelling every in-flight fetch —
+  // which is exactly why no alert email / Telegram ever arrived. Keep the isolate alive.
+  const settle = Promise.allSettled(sideEffects).then((results) => {
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') console.error('[' + tab + ' sideEffect#' + i + ' rejected] ' + ((r.reason && r.reason.message) || r.reason));
+    });
+  });
+  if (eventCtx && typeof eventCtx.waitUntil === 'function') eventCtx.waitUntil(settle);
+  else await settle;
 
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';
   return json({ ok: true, request_id, message: 'Brief received. Reply within one working day.' }, 200, baseHeaders);
@@ -158,7 +168,7 @@ async function fireAlert(env, tab, body, request_id) {
     <table style="border-collapse:collapse;font-family:system-ui;font-size:14px">${
       Object.entries(body).map(([k,v]) => `<tr><td style="padding:6px 12px;background:#f5f5f5;font-weight:600">${esc(k)}</td><td style="padding:6px 12px">${esc(String(v).slice(0,500))}</td></tr>`).join('')
     }</table>`;
-  return fetch('https://api.resend.com/emails', {
+  const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -168,6 +178,8 @@ async function fireAlert(env, tab, body, request_id) {
       html
     })
   });
+  if (!r.ok) { let b = ''; try { b = await r.text(); } catch (_e) {} console.error('[resend:alert] HTTP ' + r.status + ' ' + b.slice(0, 300)); }
+  return r;
 }
 
 async function fireAutoAck(env, body, request_id) {
@@ -258,7 +270,7 @@ function json(obj, status, headers) {
   return new Response(JSON.stringify(obj), { status, headers });
 }
 
-export const onRequestPost = ({ request, env }) => handleSubmission(request, env, 'contact');
+export const onRequestPost = (context) => handleSubmission(context.request, context.env, 'contact', context);
 export const onRequestOptions = ({ request }) => new Response(null, {
   status: 204,
   headers: {

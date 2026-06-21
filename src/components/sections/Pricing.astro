@@ -970,7 +970,9 @@ const featureIcons: Record<string, string> = {
   .fp-cta:focus-visible, .is-cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
   /* Independent solutions · ONE horizontal rail (founder r3) */
-  .ib-rail-wrap { position: relative; max-width: var(--container-max); margin-inline: auto; }
+  /* padding-inline reserves a gutter for the nav buttons so they never overhang
+     the wrap (which would register as page overflow). */
+  .ib-rail-wrap { position: relative; max-width: var(--container-max); margin-inline: auto; padding-inline: 46px; }
   .independent-rail {
     display: flex;
     align-items: flex-start;
@@ -1066,8 +1068,8 @@ const featureIcons: Record<string, string> = {
   }
   .ib-nav:hover { background: var(--gold); }
   .ib-nav:disabled { opacity: 0.25; cursor: default; }
-  .ib-prev { left: -8px; }
-  .ib-next { right: -8px; }
+  .ib-prev { left: 3px; }
+  .ib-next { right: 3px; }
 
   @media (max-width: 1024px) {
     .tiers-grid {
@@ -1091,11 +1093,12 @@ const featureIcons: Record<string, string> = {
     .mandate-actions { gap: 20px; flex-direction: column; }
     .mandate-signature { font-size: 36px; }
     .audit-reference-line { font-size: 15px; }
+    .ib-rail-wrap { padding-inline: 34px; }
     .independent-card { flex-basis: 210px; }
     .independent-card:hover, .independent-card:focus-within { flex-basis: 280px; }
-    .ib-nav { width: 32px; height: 32px; font-size: 17px; top: 30%; }
-    .ib-prev { left: -4px; }
-    .ib-next { right: -4px; }
+    .ib-nav { width: 30px; height: 30px; font-size: 16px; top: 30%; }
+    .ib-prev { left: 0; }
+    .ib-next { right: 0; }
     /* Mobile: centre the currency switcher + pilot toggle so they don't left-align into a corner */
     .currency-switcher { justify-content: center; }
     .pilot-toggle { display: flex; width: 100%; justify-content: center; flex-wrap: wrap; }

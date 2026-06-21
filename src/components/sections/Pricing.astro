@@ -141,7 +141,12 @@ const featureIcons: Record<string, string> = {
             </div>
             <p class="saves-line" aria-live="polite"></p>
             <p class="tier-tagline">{t.tagline}</p>
-            <p class="tier-ideal-clients">{t.idealClients || t.description}</p>
+            {/* Founder r4: "Who it is for" is a click-to-expand accordion (was an
+                always-on paragraph), matching the attached info-display. */}
+            <details class="tier-who">
+              <summary class="tier-who-sum">Who it is for <span class="tier-who-x" aria-hidden="true">+</span></summary>
+              <p class="tier-who-p">{t.idealClients || t.description}</p>
+            </details>
           </div>
 
           {t.includesAllOfPrior && (
@@ -373,17 +378,30 @@ const featureIcons: Record<string, string> = {
     line-height: 1.5;
   }
 
-  /* Tier head + ideal clients */
+  /* Tier head + "Who it is for" accordion (founder r4) */
   .tier-head { margin-bottom: 22px; }
-  .tier-ideal-clients {
-    font-family: var(--ff-body);
-    font-size: 13px;
-    line-height: 1.55;
-    color: var(--ink-muted);
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--hairline);
+  .tier-who { margin-top: 14px; border-top: 1px solid var(--hairline); }
+  .tier-who-sum {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 0;
+    font-family: var(--ff-body); font-size: 10.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 600; color: var(--ink-muted);
+    transition: color 240ms ease;
   }
+  .tier-who-sum::-webkit-details-marker { display: none; }
+  .tier-who-sum:hover { color: var(--oxblood); }
+  .tier-who-x { color: var(--gold-text, #8A6520); font-size: 15px; transition: transform 280ms var(--ease-out, cubic-bezier(.22,1,.36,1)); }
+  .tier-who[open] .tier-who-x { transform: rotate(45deg); }
+  .tier-who-p {
+    font-family: var(--ff-body); font-size: 12.5px; line-height: 1.6;
+    color: var(--ink-muted); margin: 0 0 12px; padding-top: 2px;
+    animation: tier-who-in 320ms var(--ease-out, cubic-bezier(.22,1,.36,1));
+  }
+  @keyframes tier-who-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .tier-card.tier-enterprise .tier-who { border-top-color: rgba(201,167,114,0.35); }
+  .tier-card.tier-enterprise .tier-who-sum { color: var(--pearl); }
+  .tier-card.tier-enterprise .tier-who-p { color: var(--pearl); }
 
   /* Rich feature list (Round-1 fix B-01/B-16) */
   .features-heading {

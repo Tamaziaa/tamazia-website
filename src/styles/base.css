@@ -499,3 +499,8 @@ button[type="submit"], .submit-btn, .audit-submit, .briefings-btn {
   .btn-noWrap, .nav-cta.btn-noWrap { white-space: nowrap; }
 }
 
+
+/* r3 · Founder directive: sections start directly with the bold heading.
+   Empty eyebrow labels collapse so there is no preamble or gap above the h2.
+   The Process section keeps a non-empty eyebrow, so it is unaffected. */
+.eyebrow:empty { display: none !important; }

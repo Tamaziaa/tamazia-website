@@ -5,7 +5,7 @@
 export const sectorsContent = {
   // Backward-compatible aliases for current Sectors.astro component
   // S20 (Impl Doc v1.0) · header hierarchy reorder
-  eyebrow: 'Every sector. One standard.',
+  eyebrow: '',  /* r3 · section starts with the heading */
   h2: 'If your industry has a regulator, {{we have already studied their guidelines.}}',
   subline: 'The sectors change. The standard does not.',
   closingLine: "International Business Law expert from King's at the core.",

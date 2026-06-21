@@ -76,30 +76,30 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
       <div class="form-success" id="form-success" hidden role="alert">
         <div class="success-mark">✓</div>
         <h3 class="success-title">Your briefing request has been received.</h3>
-        <p class="success-body" id="success-body">The founder will be in touch within one business day.</p>
+        <p class="success-body" id="success-body">We will be in touch within one business day.</p>
         <button type="button" class="success-reset" id="success-reset">Submit another request</button>
       </div>
 
       <!-- Founder directive 2026-06-10: show the original Cal.com calendar inline
            (same embed as /book/, bound to cal.com/tamazia/strategy-call) -->
       <aside class="calendly-pane" aria-label="Schedule directly">
-        {/* D5 · founder call copy (credential exact) beside the calendar. The credential
-            string is the canonical one rendered by FounderLink, so it stays exact and
-            single-sourced. The strategy call is held by the founder in person. */}
-        <p class="founder-call-copy">The strategy call is held by the founder in person.</p>
+        {/* Founder directive r3: the strategy call credential stays (one reference,
+            via FounderLink), but the redundant "founder" repetition is removed and
+            the direct line is a Sales address. */}
+        <p class="founder-call-copy">The strategy call is held one to one, in person.</p>
         <FounderLink variant="dark" className="contact-founder" />
-        {/* Founder direct line · email + phone, single-sourced from contact.ts. format-detection is
-            telephone=no site-wide, so the tel: link is explicit and intentional here. */}
+        {/* Reach-out line · email + phone. format-detection is telephone=no site-wide,
+            so the tel: link is explicit and intentional here. */}
         <p class="contact-direct">
-          <span class="contact-direct-label">A direct line to the founder.</span>
-          <a class="contact-direct-link" href={`mailto:${founderEmail}`}>{founderEmail}</a>
+          <span class="contact-direct-label">Reach out</span>
+          <a class="contact-direct-link" href="mailto:Sales@Tamazia.co.uk">Sales@Tamazia.co.uk</a>
           <a class="contact-direct-link" href={telHref}>{founderPhone}</a>
         </p>
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
         <div class="calendly-embed" id="contact-cal-inline" role="region" aria-label="Cal.com booking calendar">
           <noscript>
-            <a href="https://cal.com/tamazia/strategy-call" rel="noopener" target="_blank">Open the founder's calendar at cal.com/tamazia/strategy-call</a>
+            <a href="https://cal.com/tamazia/strategy-call" rel="noopener" target="_blank">Open the calendar at cal.com/tamazia/strategy-call</a>
           </noscript>
         </div>
       </aside>

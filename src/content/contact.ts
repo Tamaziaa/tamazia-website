@@ -2,7 +2,7 @@
 // 12-option sector dropdown matching live site exactly.
 
 export const contactContent = {
-  eyebrow: 'TAMAZIA',
+  eyebrow: '',  /* r3 · section starts with the heading */
   h2: 'Every engagement begins with a conversation.',
   subline: 'Start yours below.',
 

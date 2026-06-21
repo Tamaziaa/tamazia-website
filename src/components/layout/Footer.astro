@@ -123,6 +123,8 @@ const socialIconPaths: Record<string, string> = {
         {/* Founder directive 2026-06-10: Article 27 line removed; legal lines render white.
             M1 2026-06-11: "Registered office Registered in England and Wales" duplication fixed. */}
         <p class="legal-entity">{legalEntity?.name} · {legalEntity?.registeredOffice} · Data Controller {legalEntity?.dataController} · DPO {legalEntity?.dpoContact}</p>
+        {/* Founder directive r3 · brand consolidation note beside the registered entity. */}
+        <p class="legal-entity legal-entity-note">Tamazia Hospitality is now part of Tamazia Ltd.</p>
         <ul class="extra-legal-links" aria-label="Legal disclosures">
           <li><a href={legalEntity?.dataProtectionNoticeHref || '/legal/data-protection/'}>Data Protection Notice</a></li>
           <li><a href={legalEntity?.dpaHref || '/legal/dpa/'}>DPA</a></li>

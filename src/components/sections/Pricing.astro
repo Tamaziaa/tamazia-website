@@ -4,8 +4,6 @@ import FounderLink from '../atoms/FounderLink.astro';
 import FleuronDivider from '../atoms/FleuronDivider.astro';
 import {
   pricingContent,
-  fixPacksGbp,
-  fixPacksLane,
   entryAuditGbp,
   independentSolutionsGbp,
 } from '../../content/pricing';
@@ -15,31 +13,6 @@ const { eyebrow, h2, intro, tiers, mandateCallout, mandateCta, mandateSignature,
 // D1/D3 · everything below renders FROM the single pricing config constant
 // (src/content/pricing.ts). No price is hardcoded here.
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
-
-// D1 · Fix packs (one-time, no retainer). Results-led headlines, prices from fixPacksGbp.
-const fixPacks = [
-  {
-    key: 'ten',
-    name: 'Priority Ten',
-    price: fixPacksGbp.ten,
-    scope: 'The ten findings carrying the most exposure, fixed and signed off.',
-    lead: 'Close the highest-risk gaps first.',
-  },
-  {
-    key: 'twenty',
-    name: 'Priority Twenty',
-    price: fixPacksGbp.twenty,
-    scope: 'Twenty findings across compliance, search, and AI visibility, fixed and signed off.',
-    lead: 'Clear the backlog that holds rankings down.',
-  },
-  {
-    key: 'thirty',
-    name: 'Priority Thirty',
-    price: fixPacksGbp.thirty,
-    scope: 'Thirty findings remediated end to end, with each fix reviewed against the frameworks that govern you.',
-    lead: 'Reset the whole surface in one engagement.',
-  },
-];
 
 // D1 · Independent Solutions · struck-then-offer where an anchor exists, results-led.
 // Display names + outcome lines map 1:1 to the independentSolutionsGbp keys.
@@ -195,29 +168,10 @@ const featureIcons: Record<string, string> = {
       ))}
     </div>
 
-    {/* D3 · Paid audit reference line · figure sourced from entryAuditGbp (pricing.ts) */}
+    {/* D3 · Audit hook · figure sourced from entryAuditGbp (pricing.ts) */}
     <p class="audit-reference-line">
-      Every engagement opens with the paid audit, <strong>{gbp(entryAuditGbp)}</strong> one time. Compliance, search, and AI visibility assessed against the frameworks that govern you, before any retainer is scoped.
+      Every engagement opens with a full audit. <strong>{gbp(entryAuditGbp)}</strong> to unlock — first month free, then included in your retainer. Compliance, search, and AI visibility assessed against the frameworks that govern you, before any scope is agreed.
     </p>
-
-    {/* D1 · Fix packs · one-time, no retainer · prices from fixPacksGbp (pricing.ts) */}
-    <div class="independent-block" aria-labelledby="fix-packs-heading">
-      <div class="ib-head">
-        <h3 id="fix-packs-heading" class="ib-h3">Fix Packs</h3>
-        <p class="ib-sub">{fixPacksLane}</p>
-      </div>
-      <div class="fix-packs-grid">
-        {fixPacks.map((p) => (
-          <div class="fix-pack-card" data-pack={p.key}>
-            <div class="fp-name">{p.name}</div>
-            <div class="fp-price" data-gbp={p.price}>{gbp(p.price)}<span class="fp-once">one time</span></div>
-            <p class="fp-lead">{p.lead}</p>
-            <p class="fp-scope">{p.scope}</p>
-            <a href="#contact" class="fp-cta">Discuss this pack <span class="cta-arrow" aria-hidden="true">→</span></a>
-          </div>
-        ))}
-      </div>
-    </div>
 
     {/* D1 · Independent Solutions · struck-then-offer · prices from independentSolutionsGbp (pricing.ts) */}
     <div class="independent-block" aria-labelledby="independent-heading">
@@ -917,61 +871,6 @@ const featureIcons: Record<string, string> = {
     margin-top: 22px;
   }
 
-  /* Fix packs grid */
-  .fix-packs-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .fix-pack-card {
-    display: flex;
-    flex-direction: column;
-    padding: 28px;
-    border: 1px solid var(--gold-hairline, rgba(201, 167, 114, 0.35));
-    border-radius: 12px;
-    background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory-warm, #FAF7F2) 100%);
-    background-color: #FAF7F2;
-  }
-  .fp-name {
-    font-family: var(--ff-display);
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 10px;
-  }
-  .fp-price {
-    font-family: var(--ff-display);
-    font-size: 38px;
-    font-weight: 500;
-    color: var(--oxblood);
-    line-height: 1;
-    margin-bottom: 14px;
-    font-feature-settings: 'lnum', 'tnum';
-  }
-  .fp-once {
-    display: inline-block;
-    font-size: 12px;
-    font-style: italic;
-    color: var(--ink-muted);
-    margin-left: 8px;
-    letter-spacing: 0;
-  }
-  .fp-lead {
-    font-family: var(--ff-display);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--oxblood-ink);
-    line-height: 1.4;
-    margin-bottom: 10px;
-  }
-  .fp-scope {
-    font-family: var(--ff-body);
-    font-size: 13px;
-    line-height: 1.55;
-    color: var(--ink-muted);
-    margin-bottom: 22px;
-    flex: 1;
-  }
   .fp-cta, .is-cta {
     display: inline-flex;
     align-items: center;
@@ -1056,7 +955,6 @@ const featureIcons: Record<string, string> = {
     .tier-enterprise:hover, .tier-elevated:hover {
       transform: translateY(-8px);
     }
-    .fix-packs-grid { grid-template-columns: 1fr; }
     .independent-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
@@ -1070,6 +968,10 @@ const featureIcons: Record<string, string> = {
     .mandate-signature { font-size: 36px; }
     .independent-grid { grid-template-columns: 1fr; }
     .audit-reference-line { font-size: 15px; }
+    /* Mobile: centre the currency switcher + pilot toggle so they don't left-align into a corner */
+    .currency-switcher { justify-content: center; }
+    .pilot-toggle { display: flex; width: 100%; justify-content: center; flex-wrap: wrap; }
+    .pilot-btn { flex: 1; min-width: 130px; }
   }
 
   /* G.6 · Currency switcher */

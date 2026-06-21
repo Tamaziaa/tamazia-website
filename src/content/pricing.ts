@@ -266,8 +266,8 @@ export const exposureReportGbp: ExposureReportPricing = {
   monthlyCover: 449,
 };
 
-// Entry audit · reference price · one-time.
-export const entryAuditGbp = 1500;
+// Entry audit · reference price · one-time unlock.
+export const entryAuditGbp = 750;
 
 // Independent solutions · struck-then-offer where an anchor is given.
 export interface IndependentSolutionPricing {

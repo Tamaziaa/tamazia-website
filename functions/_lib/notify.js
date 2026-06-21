@@ -14,7 +14,10 @@ const ICON_TG    = { p0: '\u{1F534}', p1: '\u{26A0}\u{FE0F}', p2: '\u{2139}\u{FE
 
 export async function notifySlack(env, opts) {
   const { level = 'info', summary = '', detail = '', threadDetail = '', emoji = null } = opts || {};
-  if (!env || !env.SLACK_BOT_TOKEN || !env.SLACK_CHANNEL) return null;
+  if (!env || !env.SLACK_BOT_TOKEN || !env.SLACK_CHANNEL) {
+    console.error('[notify:slack] skipped · bot_token=' + !!(env && env.SLACK_BOT_TOKEN) + ' channel=' + !!(env && env.SLACK_CHANNEL));
+    return null;
+  }
   const icon = emoji || ICON_SLACK[level] || ':bell:';
   try {
     const resp = await fetch(SLACK_API, {
@@ -31,8 +34,9 @@ export async function notifySlack(env, opts) {
         ] : undefined,
       })
     });
-    if (!resp.ok) return null;
+    if (!resp.ok) { console.error('[notify:slack] HTTP ' + resp.status); return null; }
     const j = await resp.json().catch(() => ({}));
+    if (!j.ok) console.error('[notify:slack] api error · ' + (j.error || 'unknown'));
     const ts = j && j.ts ? j.ts : null;
     if (ts && threadDetail) {
       await fetch(SLACK_API, {
@@ -53,7 +57,10 @@ export async function notifySlack(env, opts) {
 
 export async function notifyTelegram(env, opts) {
   const { level = 'info', summary = '', detail = '', emoji = null } = opts || {};
-  if (!env || !env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return null;
+  if (!env || !env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    console.error('[notify:telegram] skipped · bot_token=' + !!(env && env.TELEGRAM_BOT_TOKEN) + ' chat_id=' + !!(env && env.TELEGRAM_CHAT_ID));
+    return null;
+  }
   const icon = emoji || ICON_TG[level] || '\u{1F514}';
   let text = icon + ' <b>' + escHtml(summary) + '</b>';
   if (detail) text += '\n\n' + detail;
@@ -68,8 +75,9 @@ export async function notifyTelegram(env, opts) {
         disable_web_page_preview: true,
       })
     });
+    if (!resp.ok) { let b = ''; try { b = await resp.text(); } catch (_e) {} console.error('[notify:telegram] HTTP ' + resp.status + ' ' + b.slice(0, 250)); }
     return resp.ok;
-  } catch (e) { return false; }
+  } catch (e) { console.error('[notify:telegram] threw ' + (e && e.message)); return false; }
 }
 
 // Compact journey context for form alerts (compact summary + detail blob)

@@ -8,7 +8,7 @@ import { verifyTurnstile } from '../_lib/turnstile.js';
 import { syncLeadToNeon } from '../_lib/neon-sync.js';
 import { notifySlack, notifyTelegram, buildJourneyContext, isHighIntent } from '../_lib/notify.js';
 
-export async function handleSubmission(request, env, tab) {
+export async function handleSubmission(request, env, tab, eventCtx) {
   // S1[C81/C82] · CORS restricted to the site origin (+ Cloudflare Pages previews),
   // off the previous '*'. Reflects the request Origin only when it is on the allowlist.
   const baseHeaders = {
@@ -115,7 +115,12 @@ export async function handleSubmission(request, env, tab) {
   const fullPayload = Object.entries(body).filter(([k, v]) => v && !k.startsWith('c_') && !k.startsWith('ts_') && k !== 'bot-field' && k !== 'honeypot_value').map(([k, v]) => k + ': ' + String(v).slice(0, 400)).join('\n');
   sideEffects.push(notifySlack(env, { level: intent ? 'p1' : 'info', summary, detail: detailMd, threadDetail: 'Full payload\n' + fullPayload }));
   sideEffects.push(notifyTelegram(env, { level: intent ? 'p1' : 'info', summary, detail: tgDetail }));
-  Promise.allSettled(sideEffects).catch(() => {});
+  // Keep the isolate alive for fire-and-forget side effects (see contact.js note).
+  const settle = Promise.allSettled(sideEffects).then((results) => {
+    results.forEach((r, i) => { if (r.status === 'rejected') console.error('[briefings sideEffect#' + i + ' rejected] ' + ((r.reason && r.reason.message) || r.reason)); });
+  });
+  if (eventCtx && typeof eventCtx.waitUntil === 'function') eventCtx.waitUntil(settle);
+  else await settle;
 
   baseHeaders['Set-Cookie'] = 'tamazia_last_request_id=' + request_id + '; Path=/; Max-Age=2592000; SameSite=Strict; Secure; HttpOnly';
   // S3[D32] · briefings is a newsletter opt-in, not an enquiry → subscription-confirm copy.
@@ -196,7 +201,7 @@ function json(obj, status, headers) {
   return new Response(JSON.stringify(obj), { status, headers });
 }
 
-export const onRequestPost = ({ request, env }) => handleSubmission(request, env, 'briefings');
+export const onRequestPost = (context) => handleSubmission(context.request, context.env, 'briefings', context);
 export const onRequestOptions = ({ request }) => new Response(null, {
   status: 204,
   headers: {

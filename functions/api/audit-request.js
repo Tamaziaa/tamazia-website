@@ -5,7 +5,7 @@
 // handleSubmission pipeline (validation, honeypots, idempotency, Resend ack).
 import { handleSubmission } from './contact.js';
 
-export const onRequestPost = ({ request, env }) => handleSubmission(request, env, 'audit');
+export const onRequestPost = (context) => handleSubmission(context.request, context.env, 'audit', context);
 
 // S1[D1/C81/C82] · CORS preflight restricted to the site origin (+ Cloudflare Pages previews),
 // off the previous '*'. Mirrors contact.js / briefings.js allowOrigin() so this endpoint matches

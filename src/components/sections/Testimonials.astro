@@ -1,158 +1,135 @@
 ---
-// Testimonials marquee · 100 verified review patterns.
-// M3 2026-06-11 (founder directive 6): cards carry stars + the review text only
-// (sector/role label removed); no "…" truncation — quotes are fitted at SENTENCE
-// boundaries (every card ends on a full stop, min one sentence, target <=340ch).
-// Off-palette blue glow/shadows replaced with house gold/oxblood ambients.
-import { testimonials } from '../../content/testimonials';
+// Testimonials · Founder r4: replaced the horizontal marquee with the three-column
+// vertical auto-scroll "Said about Tamazia" design. 22 verbatim reviews distributed
+// round-robin across 3 columns, each duplicated for a seamless loop; columns scroll
+// at staggered speeds and pause on hover; top/bottom edges masked. Mapped to the
+// site's dark oxblood theme + self-hosted Playfair/Inter (no Google Fonts).
 import RatingStrip from '../ui/RatingStrip.astro';
 
-const FIT = 340;
-function fitQuote(q: string): string {
-  if (q.length <= FIT) return q;
-  const sentences = q.match(/[^.!?]+[.!?]+(?:\s|$)/g) || [q];
-  let out = '';
-  for (const s of sentences) {
-    if (out && (out + s).trim().length > FIT) break;
-    out += s;
-  }
-  return (out || sentences[0]).trim();
-}
+const REVIEWS: { t: string; s: string }[] = [
+  { t: "Excellent service for our Dubai-based legal practice. Tamazia understands the DIFC legal market specifically, not just generic Middle East SEO. Helped us reach international clients looking for legal services in the UAE. Very professional, results focused, responsive.", s: "Legal · UAE" },
+  { t: "After being burnt by a previous agency that produced content raising compliance concerns, Tamazia was a relief. Every piece of content was appropriate for a regulated healthcare provider, no questions, no concerns. Rankings improved and enquiries followed. Would absolutely recommend.", s: "Healthcare" },
+  { t: "Our divorce and family law practice went from basically invisible on Google to top three results for our main keywords. I was a bit sceptical at first but the results have been undeniable.", s: "Legal · Family law" },
+  { t: "Transformative is the right word. Our independent hotel now appears prominently on Google Maps and in local results. We're getting direct bookings from guests who previously would only have found us through an OTA. The commission savings alone have been significant, very significant.", s: "Hospitality" },
+  { t: "We'd honestly tried two other agencies before this and were pretty close to giving up on SEO altogether. Within about four months though our firm was showing up on the first page for our main practice area in London, clients are now actually finding us on Google.", s: "Legal · London" },
+  { t: "Professional and results-oriented. Our private GP practice now appears at the top of local search results and the Google Business Profile generates regular enquiries. The legal background meant we never had concerns about the content being produced on our behalf.", s: "Healthcare · GP" },
+  { t: "We wanted to get more clients from Google without running into any SRA advertising issues, Tamazia handled that perfectly. Rankings improved, enquiries increased. Hasn't been a single compliance concern. Simple as that really.", s: "Legal" },
+  { t: "Tamazia is the best agency we've worked with in eight years of running our hotel. Full stop. They understand hospitality, they understand the OTA challenge, and they deliver real results. Our direct booking trend is now consistently positive.", s: "Hospitality" },
+  { t: "Tamazia is the only SEO agency I've worked with that actually understands the legal sector's compliance requirements. The combination of genuine legal expertise and real technical SEO knowledge is unique, genuinely. Our organic traffic went up 180% in six months.", s: "Legal" },
+  { t: "We chose Tamazia specifically because of the legal background and compliance expertise. For a private hospital that was the single most important consideration. SEO work delivered results and we had complete confidence in everything produced on our behalf.", s: "Healthcare · Hospital" },
+  { t: "Our Google Business Profile is now properly optimised and we appear on Google Maps for immigration solicitor searches across Greater Manchester. Client enquiries have increased significantly. Professional and reliable service throughout.", s: "Legal · Manchester" },
+  { t: "After three agencies over four years, Tamazia is the first to genuinely deliver. They understood the luxury hospitality positioning we needed to maintain while growing organic visibility. Both achieved. Highly recommended.", s: "Hospitality · Luxury" },
+  { t: "This transformed our firm. We'd been losing personal injury clients to competitors who outranked us for years. We're now on page one for personal injury solicitor searches in our area and enquiry volume has more than doubled.", s: "Legal · PI" },
+  { t: "Excellent technical SEO work. Our website had loads of Core Web Vitals issues holding back our Google rankings. Tamazia identified and fixed every problem systematically. Rankings improved across the board within three months.", s: "Technical SEO" },
+  { t: "Tamazia delivered. Our cosmetic surgery practice is now appearing on page one for competitive London searches we'd never ranked for. The increase in consultation bookings has been significant and the ROI has been very strong.", s: "Healthcare · Cosmetic" },
+  { t: "Our accountancy firm is now visible on Google for the searches that bring us new business clients. Enquiries from the website have increased and the team was professional, responsive, knowledgeable throughout.", s: "Financial · Accountancy" },
+  { t: "Tamazia understands healthcare marketing in a way generic agencies simply don't. The GDPR and CQC compliance knowledge is built into every strategy, not an afterthought. We're getting more patients as a result.", s: "Healthcare" },
+  { t: "Finally found someone who gets it. Most SEO agencies have no idea what solicitors can and cannot advertise. They knew the SRA rules cold. Criminal defence keywords in London are incredibly competitive but we're ranking now.", s: "Legal · Criminal" },
+  { t: "Working with Tamazia has been a game changer. They understood the European market and helped us rank across UK and EU searches simultaneously. We're now getting enquiries from European clients we could never have reached before.", s: "International" },
+  { t: "Tamazia transformed my personal online presence. I now appear prominently when people search my name on Google and my LinkedIn profile visibility has improved significantly. For a business leader, having control of your online narrative is genuinely invaluable.", s: "Executive brand" },
+  { t: "Tamazia helped us rank for medical negligence solicitor searches in London. Very competitive keyword territory. Two previous agencies told us it was basically impossible to rank organically. Tamazia proved that wrong within six months.", s: "Legal · Med-neg" },
+  { t: "Tamazia managed our international SEO strategy and helped us attract guests from the UK and Europe to our UAE hotel portfolio. Excellent results, professional service throughout, responsive team.", s: "Hospitality · UAE" },
+];
 
-// Founder directive r3: the marquee was 80 cards over a ~30,000px track, which laid
-// out slowly and could appear not to load. 16 unique (32 doubled) is plenty for a
-// seamless loop and a fraction of the layout/paint cost.
-const cards = testimonials.slice(0, 16).map(t => ({ quote: fitQuote(t.quote) }));
-const cardsDouble = [...cards, ...cards];
+// distribute round-robin into 3 columns
+const cols: { t: string; s: string }[][] = [[], [], []];
+REVIEWS.forEach((r, i) => cols[i % 3].push(r));
 ---
-<section class="testimonials-strip" aria-label="Client reviews">
-  <div class="testimonials-inner">
-    <p class="testimonials-eyebrow">Said about Tamazia</p>
-    <h2 class="testimonials-h2">Words from the people we work with.</h2>
-    <div class="testimonials-rating"><RatingStrip tone="light" align="center" /></div>
+<section class="tz-reviews" id="reviews" aria-label="Client reviews">
+  <div class="tz-rev-wrap">
+    <p class="tz-rev-eyebrow">Said about Tamazia</p>
+    <h2 class="tz-rev-h2">Words from the people we work with.</h2>
+    <div class="tz-rev-trust"><RatingStrip tone="dark" align="start" /></div>
   </div>
-  <div class="testimonials-band">
-    <div class="testimonials-track">
-      {cardsDouble.map((t) => (
-        <article class="testimonial-card">
-          <div class="testimonial-stars" aria-label="Five-star rating">★★★★★</div>
-          <blockquote class="testimonial-quote">{t.quote}</blockquote>
-        </article>
-      ))}
-    </div>
+  <div class="tz-rev-cols">
+    {cols.map((col) => (
+      <div class="tz-rev-col">
+        <div class="tz-rev-track">
+          {[...col, ...col].map((r) => (
+            <figure class="tz-rev-card">
+              <div class="tz-rev-stars" aria-hidden="true">★★★★★</div>
+              <blockquote class="tz-rev-q">{r.t}</blockquote>
+              <figcaption class="tz-rev-cap">{r.s}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    ))}
   </div>
 </section>
 
 <style>
-  .testimonials-strip {
+  .tz-reviews {
     position: relative;
-    padding: 56px 0 64px;
-    background: linear-gradient(180deg, var(--ivory) 0%, var(--linen) 100%);
-    border-top: 1px solid var(--gold-hairline);
-    border-bottom: 1px solid var(--gold-hairline);
+    background: var(--obsidian, #190810);
+    padding-block: clamp(56px, 8vh, 104px);
     overflow: hidden;
+    border-top: 1px solid var(--gold-hairline, rgba(201,167,114,0.18));
+    border-bottom: 1px solid var(--gold-hairline, rgba(201,167,114,0.18));
   }
-  /* M3 · ambient luminance in house palette (was off-palette blue) */
-  .testimonials-strip::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 18% 30%, rgba(201, 167, 114, 0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 82% 70%, rgba(90, 26, 43, 0.05) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: 0;
+  .tz-rev-wrap {
+    max-width: var(--container-max, 1280px);
+    margin-inline: auto;
+    padding-inline: var(--container-padding, clamp(20px,4vw,48px));
+    margin-bottom: 32px;
   }
-  .testimonials-inner,
-  .testimonials-band { position: relative; z-index: 1; }
-  .testimonials-inner {
-    text-align: center;
-    max-width: 720px;
-    margin: 0 auto 28px;
-    padding: 0 20px;
+  .tz-rev-eyebrow {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold, #C9A772); font-weight: 600; margin: 0 0 12px;
+    display: flex; align-items: center; gap: 12px;
   }
-  .testimonials-eyebrow {
-    font-family: var(--ff-body);
-    font-size: 10px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--gold-text);
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .testimonials-h2 {
-    font-family: var(--ff-display);
-    font-weight: 500;
-    font-style: italic;
-    font-size: clamp(28px, 4vw, 36px);
-    color: var(--ink);
-    letter-spacing: -0.01em;
-    line-height: 1.15;
-    margin: 0;
-  }
-  .testimonials-rating { margin-top: 14px; }
-  .testimonials-band {
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
-  }
-  .testimonials-track {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;  /* M-punch: cards hug their content, no wasted bottoms */
-    gap: 20px;
-    width: max-content;
-    animation: testimonials-scroll 240s linear infinite;
-    will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
-  .testimonial-card {
-    flex: 0 0 380px;
-    background: var(--pearl, #FAF7F2);
-    border: 1px solid var(--gold-hairline, rgba(201,167,114,0.35));
-    border-radius: 6px;
-    padding: 18px 20px;
-    display: flex;
-    flex-direction: column;
-    box-shadow:
-      0 1px 2px rgba(90, 26, 43, 0.04),
-      0 6px 18px -10px rgba(90, 26, 43, 0.14);
-    transition: box-shadow 280ms ease, transform 280ms ease;
-    /* content-visibility removed: caused blank cards on first paint */
-  }
-  .testimonial-card:hover {
-    box-shadow:
-      0 2px 4px rgba(90, 26, 43, 0.06),
-      0 12px 28px -10px rgba(90, 26, 43, 0.24);
-    transform: translateY(-1px);
-  }
-  .testimonial-stars {
-    font-size: 12px;
-    color: var(--gold-text, #b58b3f);
-    letter-spacing: 0.16em;
-    margin-bottom: 8px;
-  }
-  .testimonial-quote {
+  .tz-rev-eyebrow::before { content: ''; width: 34px; height: 1px; background: var(--gold, #C9A772); opacity: 0.6; }
+  .tz-rev-h2 {
     font-family: var(--ff-display, Georgia, serif);
-    font-style: italic;
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: var(--ink, #2A0C14);
-    margin: 0;
-    flex: 1;
+    font-weight: 500; font-style: italic;
+    font-size: clamp(28px, 3.8vw, 48px); line-height: 1.05; letter-spacing: -0.01em;
+    color: var(--ivory, #f3efe9); margin: 0;
   }
-  @keyframes testimonials-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+  .tz-rev-trust { margin-top: 16px; }
+
+  .tz-rev-cols {
+    max-width: var(--container-max, 1280px);
+    margin-inline: auto;
+    padding-inline: var(--container-padding, clamp(20px,4vw,48px));
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    height: 560px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
   }
-  .testimonials-strip:hover .testimonials-track { animation-play-state: paused; }
-  @media (prefers-reduced-motion: reduce) {
-    .testimonials-track { animation-duration: 480s; }
+  .tz-rev-col { overflow: hidden; }
+  .tz-rev-track {
+    display: flex; flex-direction: column; gap: 16px;
+    animation: tzRevScroll 56s linear infinite;
+    will-change: transform;
   }
-  @media (max-width: 720px) {
-    .testimonials-strip { padding: 40px 0 48px; }
-    .testimonial-card { flex-basis: 300px; padding: 16px 18px; }
-    .testimonial-quote { font-size: 13px; }
+  .tz-rev-col:nth-child(2) .tz-rev-track { animation-duration: 65s; }
+  .tz-rev-col:nth-child(3) .tz-rev-track { animation-duration: 49s; }
+  .tz-rev-cols:hover .tz-rev-track { animation-play-state: paused; }
+  @keyframes tzRevScroll { to { transform: translateY(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .tz-rev-track { animation: none; } }
+
+  .tz-rev-card {
+    border: 1px solid var(--gold-hairline, rgba(201,168,106,0.16));
+    border-radius: 14px; padding: 22px;
+    background: rgba(255,255,255,0.025);
+    transition: border-color 0.35s var(--ease-out, cubic-bezier(.22,1,.36,1)), background 0.35s;
+  }
+  .tz-rev-card:hover { border-color: rgba(201,168,106,0.42); background: rgba(255,255,255,0.04); }
+  .tz-rev-stars { font-size: 14px; letter-spacing: 2px; color: var(--gold, #C9A772); }
+  .tz-rev-q {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 13.5px; color: var(--ivory, #f3efe9); line-height: 1.6; margin: 12px 0 0;
+  }
+  .tz-rev-cap {
+    font-family: var(--ff-body, Inter, sans-serif);
+    font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold, #C9A772); margin-top: 16px;
+  }
+
+  @media (max-width: 860px) { .tz-rev-cols { grid-template-columns: repeat(2,1fr); height: 500px; } }
+  @media (max-width: 540px) {
+    .tz-rev-cols { grid-template-columns: 1fr; height: 460px; }
+    .tz-rev-col:nth-child(2), .tz-rev-col:nth-child(3) { display: none; }
   }
 </style>

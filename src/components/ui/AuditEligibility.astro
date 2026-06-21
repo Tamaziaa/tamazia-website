@@ -3,11 +3,14 @@
 // is mentioned. Collapsed by default to a single line ("100 free audits a month —
 // check eligibility"); clicking reveals a compact domain + email capture that
 // routes to the same lead pipeline as the audit request (/api/audit-request → KV
-// + Neon + Slack + Telegram) and shows a submitted state.
+// + Neon + Slack + Telegram) and shows a submitted state. The endpoint requires a
+// Cloudflare Turnstile token, so an invisible widget rides along and the submit
+// handler executes it + waits for the token before posting.
+import TurnstileWidget from '../security/TurnstileWidget.astro';
 ---
 <details class="ae" data-ae>
   <summary class="ae-sum"><span class="ae-num">100</span> free audits a month. Check your eligibility.</summary>
-  <form class="ae-form" novalidate>
+  <form id="ae-audit-form" class="ae-form" novalidate>
     <input type="text" name="bot-field" tabindex="-1" autocomplete="off" class="tamz-hp" aria-hidden="true" />
     <input type="hidden" name="ts_form_open" value="" data-ae-ts />
     <input type="hidden" name="source" value="100-free-audits" />
@@ -17,6 +20,7 @@
       <button class="ae-btn" type="submit">Check</button>
     </div>
     <p class="ae-err" data-ae-err hidden></p>
+    <TurnstileWidget formId="ae-audit-form" mode="invisible" />
   </form>
   <p class="ae-done" data-ae-done hidden><span class="ae-tick" aria-hidden="true">✓</span> Submitted. If a slot is free this month we will email your audit shortly.</p>
 </details>
@@ -30,12 +34,35 @@
       var err = box.querySelector('[data-ae-err]');
       var done = box.querySelector('[data-ae-done]');
       var btn = form.querySelector('.ae-btn');
+      // The audit-request endpoint requires a Turnstile token. The invisible widget
+      // renders with appearance=execute, so trigger it on submit and wait for the
+      // token to be injected into the form before posting.
+      function ensureToken() {
+        return new Promise(function (resolve) {
+          var i = form.querySelector('input[name="cf-turnstile-response"]');
+          if (i && i.value) return resolve(i.value);
+          // No widget rendered (site key not baked in) → don't block; server is
+          // honeypot-primary and accepts a tokenless post. Only wait when a widget exists.
+          var w = document.querySelector('.cf-turnstile[data-tamazia-form="ae-audit-form"]');
+          if (!w || !window.turnstile) return resolve('');
+          try { window.turnstile.execute(w); } catch (e) {}
+          var n = 0;
+          var iv = setInterval(function () {
+            n++;
+            var f = form.querySelector('input[name="cf-turnstile-response"]');
+            if (f && f.value) { clearInterval(iv); resolve(f.value); }
+            else if (n >= 15) { clearInterval(iv); resolve(''); }
+          }, 200);
+        });
+      }
       form.addEventListener('submit', async function (e) {
         e.preventDefault();
         if (err) err.hidden = true;
         var data = {}; new FormData(form).forEach(function (v, k) { data[k] = v; });
         if (!data['audit-input'] || !data.email) { if (err) { err.textContent = 'Add your domain and email.'; err.hidden = false; } return; }
         btn.disabled = true; btn.textContent = '…';
+        var token = await ensureToken();
+        if (token) data['cf-turnstile-response'] = token;
         try {
           var res = await fetch('/api/audit-request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
           var j = {}; try { j = await res.json(); } catch (e2) {}
@@ -94,6 +121,7 @@
     font-family: var(--ff-body, Inter, sans-serif); font-size: 11.5px; line-height: 1.45;
     color: var(--ink, #2A0C14); display: flex; gap: 7px; align-items: flex-start; padding: 0 12px 11px; margin: 0;
   }
+  .ae-done[hidden] { display: none; }
   .ae-tick {
     flex: 0 0 auto; width: 17px; height: 17px; border-radius: 50%;
     background: rgba(201,167,114,0.18); color: var(--gold-text, #8A6520);

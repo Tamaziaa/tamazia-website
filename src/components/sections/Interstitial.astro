@@ -10,10 +10,10 @@ const { numeral, label, motif } = Astro.props;
 ---
 <div class="interstitial" aria-hidden="true">
   <div class="container">
+    {/* Founder r4: roman numeral + label removed so each section begins with its
+        own direct heading. The motif + rule remain as a quiet divider. */}
     {motif && <div class="interstitial-motif"><Motif name={motif} size={40} /></div>}
-    <div class="numeral">{numeral}</div>
     <div class="rule"></div>
-    <div class="label">{label}</div>
   </div>
 </div>
 

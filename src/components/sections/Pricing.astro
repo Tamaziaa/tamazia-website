@@ -2,6 +2,7 @@
 import Motif from '../ui/Motif.astro';
 import FounderLink from '../atoms/FounderLink.astro';
 import FleuronDivider from '../atoms/FleuronDivider.astro';
+import AuditEligibility from '../ui/AuditEligibility.astro';
 import {
   pricingContent,
   entryAuditGbp,
@@ -218,8 +219,9 @@ const featureIcons: Record<string, string> = {
 
     {/* D3 · Audit hook · figure sourced from entryAuditGbp (pricing.ts) */}
     <p class="audit-reference-line">
-      Every engagement opens with a full audit. <strong>{gbp(entryAuditGbp)}</strong> to unlock, first month free, then included in your retainer. Compliance, search, and AI visibility assessed against the frameworks that govern you, before any scope is agreed.
+      Every engagement opens with a full audit. <strong>{gbp(entryAuditGbp)}</strong>, redeemable in full into your first package. Compliance, search, and AI visibility assessed against the frameworks that govern you, before any scope is agreed.
     </p>
+    <AuditEligibility />
 
     {/* D1 · Independent Solutions · struck-then-offer · prices from independentSolutionsGbp (pricing.ts) */}
     <div class="independent-block" aria-labelledby="independent-heading">
@@ -1092,7 +1094,17 @@ const featureIcons: Record<string, string> = {
     .mandate-text { font-size: 12px; letter-spacing: 0.08em; }
     .mandate-actions { gap: 20px; flex-direction: column; }
     .mandate-signature { font-size: 36px; }
-    .audit-reference-line { font-size: 15px; }
+    /* Founder r4: the extra info after the tier columns is smaller than the tier
+       copy, especially on phones. */
+    .audit-reference-line { font-size: 12.5px; line-height: 1.5; }
+    .results-disclosure { font-size: 10.5px; line-height: 1.55; }
+    .ib-h3 { font-size: 20px; }
+    .ib-sub { font-size: 11px; }
+    .ib-foot { font-size: 10.5px; }
+    .is-name { font-size: 15px; }
+    .is-outcome { font-size: 11.5px; }
+    .micro-note { font-size: 10.5px; }
+    .mandate-text { font-size: 11px; }
     .ib-rail-wrap { padding-inline: 34px; }
     .independent-card { flex-basis: 210px; }
     .independent-card:hover, .independent-card:focus-within { flex-basis: 280px; }

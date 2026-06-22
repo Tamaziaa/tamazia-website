@@ -25,12 +25,17 @@ import { notifySlack, notifyTelegram } from '../_lib/notify.js';
 const MAX_BODY_BYTES = 64 * 1024;
 const REPLAY_WINDOW_MS = 5 * 60 * 1000;
 
-export const onRequestPost = async ({ request, env }) => {
+export const onRequestPost = async (context) => {
+  const { request, env } = context;
   const t0 = Date.now();
   const baseHeaders = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'Vary': 'Origin' };
   const log = (outcome, extra = {}) => {
     try { console.log(JSON.stringify({ component: 'cal-webhook', outcome, duration_ms: Date.now() - t0, ...extra })); } catch {}
   };
+  // Background side-effects (booking alert email, Slack, Telegram, PostHog). These MUST be
+  // registered with context.waitUntil() before returning, or Cloudflare cancels the in-flight
+  // fetches on response — which is exactly why booked calls were not notifying the founder.
+  const bg = [];
 
   const expected = env.CAL_WEBHOOK_SECRET || '';
   if (!expected) {
@@ -152,7 +157,7 @@ export const onRequestPost = async ({ request, env }) => {
       <p>${esc(record.cal_start_time)} &rarr; ${esc(record.cal_end_time)}</p>
       <p>Email: ${esc(record.email)}</p>
       <p>Cal UID: <code>${esc(request_id)}</code></p>`;
-    fetch('https://api.resend.com/emails', {
+    bg.push(fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -161,7 +166,7 @@ export const onRequestPost = async ({ request, env }) => {
         subject,
         html
       })
-    }).catch(() => {});
+    }).then(async (r) => { if (!r.ok) { let b = ''; try { b = await r.text(); } catch (_e) {} console.error('[cal:resend] HTTP ' + r.status + ' ' + b.slice(0, 200)); } }).catch((e) => console.error('[cal:resend] threw ' + (e && e.message))));
   }
 
   // CC-6 · ALSO persist to Neon cal_bookings so bookings join to leads and the cockpit
@@ -216,21 +221,21 @@ export const onRequestPost = async ({ request, env }) => {
       ].join('\n');
       const tg = [ '<b>Name:</b> ' + (record.name || '?'), '<b>Email:</b> ' + (record.email || '?'),
         '<b>Event:</b> ' + (record.cal_event_type || 'strategy-call'), '<b>Time:</b> ' + (record.cal_start_time || '?') ].join('\n');
-      notifySlack(env, { level: 'p1', summary, detail });
-      notifyTelegram(env, { level: 'p1', summary, detail: tg });
+      bg.push(notifySlack(env, { level: 'p1', summary, detail }));
+      bg.push(notifyTelegram(env, { level: 'p1', summary, detail: tg }));
       // C-J · PostHog booking_created capture (best-effort, no-op without POSTHOG_KEY). Distinct id keyed on
       // the attendee email so it joins the audit-page funnel (audit_opened → contact/intent → booking_created).
       if (env.POSTHOG_KEY) {
         const phHost = (env.POSTHOG_HOST || 'https://eu.i.posthog.com').replace(/\/$/, '');
         const ref = extractAuditRef(payload, body);
-        fetch(phHost + '/capture/', {
+        bg.push(fetch(phHost + '/capture/', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             api_key: env.POSTHOG_KEY, event: 'booking_created',
             distinct_id: (record.email || ref.domain || record.request_id),
             properties: { event_type: record.cal_event_type || 'strategy-call', audit_domain: ref.domain || '', audit_slug: ref.slug || '', start_at: record.cal_start_time || '', lib: 'tamazia-cal-webhook' },
           }),
-        }).catch(() => {});
+        }).catch(() => {}));
       }
     } else if (env.FORM_SUBMISSIONS) {
       // route non-booking lifecycle to the cockpit Health tab (no phone)
@@ -240,6 +245,8 @@ export const onRequestPost = async ({ request, env }) => {
     }
   } catch (_e) { /* fail-open */ }
   log('persisted', { trigger: triggerEvent, request_id: record.request_id });
+  // Keep the isolate alive until the founder alert (email + Slack + Telegram + PostHog) actually sends.
+  if (bg.length) { if (context.waitUntil) context.waitUntil(Promise.allSettled(bg)); else await Promise.allSettled(bg); }
   return new Response(JSON.stringify({ ok: true, request_id: record.request_id, event: triggerEvent }), {
     status: 200, headers: baseHeaders
   });

@@ -80,6 +80,37 @@ export async function notifyTelegram(env, opts) {
   } catch (e) { console.error('[notify:telegram] threw ' + (e && e.message)); return false; }
 }
 
+// Unified founder alert across ALL channels (Telegram + Slack + Resend email) in one call.
+// Returns a SINGLE promise — the caller MUST register it with ctx.waitUntil() so it survives
+// the response (a CF isolate is torn down on return, cancelling un-anchored fetches). Use this
+// at every "a user connected with us" point so coverage is consistent and no channel is forgotten.
+// Fail-open: a failure in any channel never throws to the caller.
+export function notifyFounder(env, opts) {
+  const { level = 'info', summary = '', detailMd = '', detailTg = '', subject = '', html = '' } = opts || {};
+  const tasks = [
+    notifySlack(env, { level, summary, detail: detailMd || (detailTg || '').replace(/<[^>]+>/g, '') }),
+    notifyTelegram(env, { level, summary, detail: detailTg || detailMd }),
+  ];
+  if (env && env.RESEND_API_KEY) {
+    const body = html || ('<div style="font-family:system-ui;font-size:14px;line-height:1.5;white-space:pre-wrap">'
+      + escHtml(summary) + '\n\n' + (detailTg || detailMd).replace(/<[^>]+>/g, '') + '</div>');
+    tasks.push(
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: env.RESEND_FROM_ALERT || 'Tamazia Forms <forms@tamazia.in>',
+          to: [env.ALERT_TO || 'founder@tamazia.co.uk'],
+          subject: subject || summary.slice(0, 140),
+          html: body,
+        }),
+      }).then(async (r) => { if (!r.ok) { let b = ''; try { b = await r.text(); } catch (_e) {} console.error('[notifyFounder:resend] HTTP ' + r.status + ' ' + b.slice(0, 200)); } })
+        .catch((e) => console.error('[notifyFounder:resend] threw ' + (e && e.message)))
+    );
+  }
+  return Promise.allSettled(tasks);
+}
+
 // Compact journey context for form alerts (compact summary + detail blob)
 export function buildJourneyContext(request, body) {
   const ref = (request.headers.get('referer') || '').slice(0, 200);

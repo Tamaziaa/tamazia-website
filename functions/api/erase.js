@@ -2,8 +2,10 @@
 // Two-step: POST { email } → email signed link · GET ?token=... → deletes all matching records
 import { mintToken, verifyToken } from '../_lib/dsar-token.js';
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { notifyFounder } from '../_lib/notify.js';
 
-export const onRequestPost = async ({ request, env }) => {
+export const onRequestPost = async (context) => {
+  const { request, env } = context;
   const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
   let body;
   try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'invalid_json' }), { status: 400, headers }); }
@@ -42,6 +44,14 @@ export const onRequestPost = async ({ request, env }) => {
       })
     });
   }
+  // Founder alert (non-blocking): a UK GDPR Art.17 erasure request was filed.
+  const fb = notifyFounder(env, {
+    level: 'p1',
+    summary: '[DSAR] Data ERASURE request · ' + email,
+    detailTg: '<b>Article:</b> UK GDPR Art.17 (erasure)\n<b>Subject:</b> ' + email + '\n<b>Note:</b> irreversible once the subject confirms',
+    subject: '[DSAR] Data erasure request · ' + email,
+  });
+  if (context.waitUntil) context.waitUntil(fb); else await fb;
   return new Response(JSON.stringify({ ok: true, message: 'Confirmation email sent. Click the link within seven days.' }), { status: 200, headers });
 };
 

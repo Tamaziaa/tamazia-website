@@ -7,8 +7,10 @@
 // Token signed with HMAC + ADMIN_SECRET, 7-day TTL.
 import { mintToken, verifyToken } from '../_lib/dsar-token.js';
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
+import { notifyFounder } from '../_lib/notify.js';
 
-export const onRequestPost = async ({ request, env }) => {
+export const onRequestPost = async (context) => {
+  const { request, env } = context;
   const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
   let body;
   try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'invalid_json' }), { status: 400, headers }); }
@@ -48,6 +50,15 @@ export const onRequestPost = async ({ request, env }) => {
       })
     });
   }
+
+  // Founder alert (non-blocking): a UK GDPR Art.15 access request starts a statutory response clock.
+  const fb = notifyFounder(env, {
+    level: 'p1',
+    summary: '[DSAR] Data ACCESS request · ' + email,
+    detailTg: '<b>Article:</b> UK GDPR Art.15 (access)\n<b>Subject:</b> ' + email + '\n<b>Action:</b> respond within the statutory deadline',
+    subject: '[DSAR] Data access request · ' + email,
+  });
+  if (context.waitUntil) context.waitUntil(fb); else await fb;
 
   return new Response(JSON.stringify({
     ok: true,

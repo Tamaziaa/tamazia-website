@@ -88,17 +88,18 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
             the direct line is a Sales address. */}
         <p class="founder-call-copy">The strategy call is held one to one, in person.</p>
         <FounderLink variant="dark" className="contact-founder" />
-        {/* Founder r31: the single Sales@ reach-out line is replaced by a team-contact list,
-            each desk reachable directly, same column font, email icon per team. */}
+        {/* Founder r5: desks reachable by a single email icon (mailto, address not printed);
+            one phone line with our number below. */}
         <div class="contact-teams" aria-label="Team contacts">
           <span class="contact-direct-label">Speak to the right desk</span>
           <ul class="ct-list">
-            <li class="ct-row"><span class="ct-team">Regulatory and Compliance</span><a class="ct-mail" href="mailto:legal@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>legal@tamazia.co.uk</a></li>
-            <li class="ct-row"><span class="ct-team">Search Engineering</span><a class="ct-mail" href="mailto:contact@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>contact@tamazia.co.uk</a></li>
-            <li class="ct-row"><span class="ct-team">AI and Generative Search</span><a class="ct-mail" href="mailto:contact@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>contact@tamazia.co.uk</a></li>
-            <li class="ct-row"><span class="ct-team">Content and Editorial Standards</span><a class="ct-mail" href="mailto:hello@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>hello@tamazia.co.uk</a></li>
-            <li class="ct-row"><span class="ct-team">Partnerships</span><a class="ct-mail" href="mailto:hello@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>hello@tamazia.co.uk</a></li>
+            <li class="ct-row"><span class="ct-team">Regulatory and Compliance</span><a class="ct-mail" href="mailto:legal@tamazia.co.uk" aria-label="Email the Regulatory and Compliance desk"><svg class="ct-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
+            <li class="ct-row"><span class="ct-team">Search Engineering</span><a class="ct-mail" href="mailto:contact@tamazia.co.uk" aria-label="Email the Search Engineering desk"><svg class="ct-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
+            <li class="ct-row"><span class="ct-team">AI and Generative Search</span><a class="ct-mail" href="mailto:contact@tamazia.co.uk" aria-label="Email the AI and Generative Search desk"><svg class="ct-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
+            <li class="ct-row"><span class="ct-team">Content and Editorial Standards</span><a class="ct-mail" href="mailto:hello@tamazia.co.uk" aria-label="Email the Content and Editorial Standards desk"><svg class="ct-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
+            <li class="ct-row"><span class="ct-team">Partnerships</span><a class="ct-mail" href="mailto:hello@tamazia.co.uk" aria-label="Email the Partnerships desk"><svg class="ct-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
           </ul>
+          <a class="ct-phone" href="tel:+447778243657" aria-label="Call Tamazia on +44 7778 243657"><svg class="ct-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>+44 7778 243657</span></a>
         </div>
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
@@ -400,20 +401,18 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
     color: var(--gold);
     border-color: var(--gold);
   }
-  /* Founder r31 · team-contact list (replaces the single Sales@ reach-out line) */
+  /* Founder r5 · team-contact list. Each desk is reached by a single email icon (the address
+     is not printed); one phone line with our number sits below. */
   .contact-teams { margin: 0 0 22px; }
-  .ct-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  .ct-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+  .ct-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+  .ct-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .ct-team { font-family: var(--ff-body); font-size: 13px; color: var(--pearl); letter-spacing: 0.01em; }
-  .ct-mail { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ff-mono, var(--ff-body)); font-size: 12.5px; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,167,114,0.3); padding-bottom: 1px; transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
-  .ct-mail:hover { color: var(--pearl); border-color: var(--gold); }
-  .ct-ic { flex: 0 0 auto; opacity: 0.85; }
-  /* Narrow screens: stack every desk uniformly (name on top, email below) so a short
-     desk name like "Partnerships" doesn't keep its email inline while longer names wrap. */
-  @media (max-width: 560px) {
-    .ct-row { flex-direction: column; align-items: flex-start; gap: 3px; }
-    .ct-mail { font-size: 13px; }
-  }
+  .ct-mail { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; flex: 0 0 auto; border: 1px solid rgba(201,167,114,0.3); border-radius: 8px; color: var(--gold); text-decoration: none; transition: color 0.2s, border-color 0.2s, background 0.2s; }
+  .ct-mail:hover { color: var(--obsidian, #16100E); background: var(--gold); border-color: var(--gold); }
+  .ct-ic { flex: 0 0 auto; opacity: 0.9; }
+  .ct-phone { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-family: var(--ff-mono, var(--ff-body)); font-size: 13px; letter-spacing: 0.02em; color: var(--gold); text-decoration: none; transition: color 0.2s; }
+  .ct-phone:hover { color: var(--pearl); }
+  .ct-phone .ct-ic { opacity: 0.95; }
 
   .calendly-heading {
     font-family: var(--ff-body);

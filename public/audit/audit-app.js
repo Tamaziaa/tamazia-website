@@ -95,14 +95,14 @@
         <div class="rail-kpi"><div class="v">${D.competitors.rows[0].dr}</div><div class="l">Domain rating</div></div>
       </div>
       <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
+      <div class="rail-social">
+        <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.linkedin.com/in/amanpareekk/" target="_blank" rel="noopener" aria-label="Aman Pareek on LinkedIn" title="Aman Pareek on LinkedIn"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9V9Z"/></svg></a>
+        <a href="mailto:contact@tamazia.co.uk" aria-label="Email contact@tamazia.co.uk" title="contact@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+      </div>
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
       <button class="rail-cta" data-book="package" data-tier="${escH(recommendedTierName())}">Walk report with the founder ↗</button>
-      <div class="rail-social">
-        <a href="mailto:sales@tamazia.co.uk" aria-label="Email sales@tamazia.co.uk" title="sales@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
-        <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-        <a href="https://www.linkedin.com/in/amanpareekk/" target="_blank" rel="noopener" aria-label="Aman Pareek on LinkedIn" title="Aman Pareek on LinkedIn"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9V9Z"/></svg></a>
-      </div>
     </div></aside>`;
   }
 
@@ -589,7 +589,7 @@
           <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>/month</small></div>
           ${coverBtn}
           <div class="r3-terms">Founder-reviewed monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>
-          <div class="r3-trust"><span class="r3-lock" aria-hidden="true">&#128274;</span> Secure · book a 30-minute call to activate</div>
+          <div class="r3-trust">A select few clients, each walked through their audit one to one. Never a chatbot. <a class="r3-sample" href="https://tamazia.co.uk/audit/monzo/yTn7BIzS" target="_blank" rel="noopener">See a sample ↗</a></div>
         </div>
       </div>
     </div>`;
@@ -614,12 +614,12 @@
           ${specList}
         </div>
         <div class="r3-side r3-pay">
-          <div class="r3-was"><s class="cmoney" data-gbp="${rv}">${fmtMoney(rv)}</s><span class="r3-was-lbl">real value</span></div>
+          <div class="r3-was"><s class="cmoney" data-gbp="${rv}">${fmtMoney(rv)}</s></div>
           <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>to unlock</small></div>
           <div class="r3-free">First month of monitoring free</div>
           ${unlockBtn}
           <div class="r3-terms">${priceSpan(unlock)} unlocks the full report and includes your first month. Then ${priceSpan(cover)}/month, founder-reviewed. Cancel anytime.</div>
-          <div class="r3-trust"><span class="r3-lock" aria-hidden="true">&#128274;</span> Secure · book a 30-minute call to activate</div>
+          <div class="r3-trust">A select few clients, each walked through their audit one to one. Never a chatbot. <a class="r3-sample" href="https://tamazia.co.uk/audit/monzo/yTn7BIzS" target="_blank" rel="noopener">See a sample ↗</a></div>
         </div>
       </div>
     </div>`;
@@ -699,20 +699,29 @@
 
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Independent Solutions, each one a programme in its own right</h3></div>
     <p class="plan-sub">Take any of these on its own, or layer it onto a route above. Each is the same compliance-first engine behind this report, pointed at a single lever. ${D.upsellProof}</p>
-    <div class="addon-grid">
+    <div class="addon-railwrap">
+      <button type="button" class="addon-nav addon-prev" aria-label="Previous solutions">&lsaquo;</button>
+      <div class="addon-grid" role="list">
       ${ADDONS.map(a=>{
         const off=(a.offer!=null)?a.offer:a.price;          // the price actually charged
         const priceHtml=(a.anchor!=null)
           ? `<span class="apwas cmoney" data-gbp="${a.anchor}">${fmtMoney(a.anchor)}</span><b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`
           : `<b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`;
-        return `<div class="addon ${a.hero?'ag-hero':''}" tabindex="0">
-        <div class="ah"><div class="an">${escH(a.nm)}</div>
-          <div class="ap">${priceHtml}</div></div>
-        <div class="ascope">${escH(a.scope)}</div>
-        <div class="tag">${escH(a.usp)}</div>
-        <div class="more"><div class="aspec-h">How it runs, step by step</div><ol class="aspec-steps">${a.spec.map(s=>`<li>${escH(s)}</li>`).join('')}</ol></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">The five steps</button><a class="btn gold" data-book="package" data-tier="${escH(a.nm)}">Add ${escH(a.nm.split(' ')[0])} ↗</a></div>
+        return `<div class="addon ${a.hero?'ag-hero':''}" role="listitem" tabindex="0">
+        <div class="is-top">
+          <div class="an">${escH(a.nm)}</div>
+          <div class="ap">${priceHtml}</div>
+          <div class="ascope">${escH(a.scope)}</div>
+        </div>
+        <div class="is-detail">
+          <div class="tag">${escH(a.usp)}</div>
+          <div class="aspec-h">How it runs, step by step</div>
+          <ol class="aspec-steps">${a.spec.map(s=>`<li>${escH(s)}</li>`).join('')}</ol>
+          <a class="btn gold addon-cta" data-book="package" data-tier="${escH(a.nm)}">Add ${escH(a.nm.split(' ')[0])} ↗</a>
+        </div>
       </div>`;}).join('')}
+      </div>
+      <button type="button" class="addon-nav addon-next" aria-label="More solutions">&rsaquo;</button>
     </div>
     <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency’s control and are not guaranteed. Full terms: /legal/service-terms.</p>
 
@@ -790,7 +799,7 @@
     // Founder r28: "Claim the session" ALWAYS opens the on-page calendar (data-book → intake+Cal), never an external link.
     const claim = `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH(recommendedTierName())}">Claim the session ↗</a>`;
     const phone = CONTACT_PHONE
-      ? `<a class="fsx-contact" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}">${escH(CONTACT_PHONE)}</a>`
+      ? `<a class="fsx-contact fsx-phone" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}"><svg class="fsx-ph-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${escH(CONTACT_PHONE)}</a>`
       : '';
     return `<section class="founder-session" aria-label="A direct line to the founder">
       <div class="fsx-inner">
@@ -994,6 +1003,8 @@
     if(mt){ const card=mt.closest('.price, .addon'); const open=card.classList.toggle('open');
       if(mt.dataset.more==='price') mt.textContent= open?'Hide details':'See everything included';
       else mt.textContent= open?'Hide spec':'Full spec'; return; }
+    const an=e.target.closest('.addon-nav');
+    if(an){ const rail=an.parentElement.querySelector('.addon-grid'); if(rail){ const dir=an.classList.contains('addon-prev')?-1:1; rail.scrollBy({left:dir*Math.min(280,Math.round(rail.clientWidth*0.8)),behavior:'smooth'}); } return; }
     const bk=e.target.closest('[data-book]');
     if(bk){ e.preventDefault(); Commerce.openIntake(bk.dataset.book, bk.dataset.tier||bk.dataset.fixtier||null); return; }
     const ad=e.target.closest('[data-addon]');

@@ -84,11 +84,11 @@ export const contactContent = {
   founderEmail: 'founder@tamazia.co.uk',
   founderPhone: '+44 7778243657',
 
-  confidentiality: 'All briefings are conducted under NDA on request. The founder reviews every enquiry.',
+  confidentiality: 'All briefings are conducted under NDA on request. Every enquiry is reviewed before a response.',
 
   successMessage: {
     heading: 'Your briefing request has been received.',
-    body: 'The founder will be in touch within one business day.',
+    body: 'The firm will be in touch within one business day.',
     note: 'If your enquiry is time-sensitive, book directly using the calendar.',
   },
 };

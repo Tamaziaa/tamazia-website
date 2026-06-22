@@ -40,7 +40,7 @@ export const heroContent = {
     "Compliance reviewed before publication, every engagement.",
 
   // Positioning line — restored verbatim.
-  positioningLine: "Your SEO agency doesn’t have a {{lawyer}}. Tamazia is run by {{one}}.",
+  positioningLine: "Your SEO agency doesn’t have a {{lawyer}}. Tamazia is run by {{lawyers}}.",
 
   // Pull quote (closing line above client ribbon). Verbatim.
   pullQuote: 'Ranking is only valuable if it is {{legal}}.',

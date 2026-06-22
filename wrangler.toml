@@ -17,6 +17,12 @@ PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADf7dMzKneovEzOp"
 EMAIL_VALIDATION_MODE = "tag"
 PUBLIC_POSTHOG_KEY = "phc_pomkfksdN8yRV4hUfNnqkgBLwHXpxxVsQFq4KpugkAr4"
 PUBLIC_POSTHOG_HOST = "https://eu.i.posthog.com"
+# Bare-named copies for the Pages Functions runtime. Astro reads PUBLIC_* at build time via
+# import.meta.env, but Functions do NOT auto-expose PUBLIC_-prefixed vars — server code reads
+# env.POSTHOG_KEY. Without these, audit_opened / contact_submitted / booking_created never fired.
+# This is a public, client-exposed analytics key, so plaintext here is fine.
+POSTHOG_KEY = "phc_pomkfksdN8yRV4hUfNnqkgBLwHXpxxVsQFq4KpugkAr4"
+POSTHOG_HOST = "https://eu.i.posthog.com"
 
 [[kv_namespaces]]
 binding = "FORM_SUBMISSIONS"

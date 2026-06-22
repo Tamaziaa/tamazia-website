@@ -1444,7 +1444,8 @@ async function saveAuditRun(env, request, body, result, type) {
   } catch (_e) { /* fail-open */ }
 }
 
-const _originalAuditPost = async ({ request, env }) => {
+const _originalAuditPost = async (ctx) => {
+  const { request, env } = ctx;
   const baseHeaders = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -1515,8 +1516,13 @@ const _originalAuditPost = async ({ request, env }) => {
       '<b>Sector:</b> ' + (body.sector || 'auto'),
       '<b>Country:</b> ' + ctx.country + ' · ' + ctx.device,
     ].join('\n');
-    notifySlack(env, { level: 'info', summary, detail });
-    notifyTelegram(env, { level: 'info', summary, detail: tg });
+    // Anchor the founder alert to the execution context so an early validation return
+    // below can't cancel the in-flight Slack/Telegram fetches before they send.
+    const n = Promise.allSettled([
+      notifySlack(env, { level: 'info', summary, detail }),
+      notifyTelegram(env, { level: 'info', summary, detail: tg }),
+    ]);
+    if (ctx && ctx.waitUntil) ctx.waitUntil(n); else await n;
   } catch (_e) { /* fail-open */ }
   const sectorChoice = (body.sector || '').toString().trim();
 

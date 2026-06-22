@@ -3,8 +3,10 @@
 import { mintToken, verifyToken } from '../_lib/dsar-token.js';
 import { validateEmail, shouldRejectEmail } from '../_lib/email-validator.js';
 import { csvFromObjects } from '../_lib/csv.js';
+import { notifyFounder } from '../_lib/notify.js';
 
-export const onRequestPost = async ({ request, env }) => {
+export const onRequestPost = async (context) => {
+  const { request, env } = context;
   const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
   let body;
   try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'invalid_json' }), { status: 400, headers }); }
@@ -36,6 +38,14 @@ export const onRequestPost = async ({ request, env }) => {
       })
     });
   }
+  // Founder alert (non-blocking): a UK GDPR Art.20 portability/export request was filed.
+  const fb = notifyFounder(env, {
+    level: 'p1',
+    summary: '[DSAR] Data PORTABILITY request · ' + email,
+    detailTg: '<b>Article:</b> UK GDPR Art.20 (portability)\n<b>Subject:</b> ' + email,
+    subject: '[DSAR] Data portability request · ' + email,
+  });
+  if (context.waitUntil) context.waitUntil(fb); else await fb;
   return new Response(JSON.stringify({ ok: true, message: 'Confirmation email sent. Click within seven days.' }), { status: 200, headers });
 };
 

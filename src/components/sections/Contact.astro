@@ -408,6 +408,12 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
   .ct-mail { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ff-mono, var(--ff-body)); font-size: 12.5px; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,167,114,0.3); padding-bottom: 1px; transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
   .ct-mail:hover { color: var(--pearl); border-color: var(--gold); }
   .ct-ic { flex: 0 0 auto; opacity: 0.85; }
+  /* Narrow screens: stack every desk uniformly (name on top, email below) so a short
+     desk name like "Partnerships" doesn't keep its email inline while longer names wrap. */
+  @media (max-width: 560px) {
+    .ct-row { flex-direction: column; align-items: flex-start; gap: 3px; }
+    .ct-mail { font-size: 13px; }
+  }
 
   .calendly-heading {
     font-family: var(--ff-body);

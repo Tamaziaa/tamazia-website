@@ -1317,3 +1317,14 @@ body.pdrawer-lock{overflow:hidden}
 /* r31 · booking cards: the inline calendar is the single booking surface; small note replaces the redundant button */
 .bookcard-note{font-family:var(--body);font-size:11px;line-height:1.5;color:var(--ink);opacity:.6;margin:9px 0 0}
 .tier3.pop .bookcard-note,.route3 .bookcard-note{color:var(--gold-pale);opacity:.8}
+/* r32 · Route 2 "Who it is for" disclosure — mirrors the website tier-who accordion (label + +/x rotate, fade-in). */
+.tiers-lux .tl-who-acc{margin:2px 0 10px;border-top:1px solid var(--line)}
+.tiers-lux .tl-who-sum{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ox);opacity:.78;transition:opacity .2s}
+.tiers-lux .tl-who-sum::-webkit-details-marker{display:none}
+.tiers-lux .tl-who-sum:hover{opacity:1}
+.tiers-lux .tl-who-x{font-family:var(--body);font-size:14px;line-height:1;color:var(--gold);transition:transform .28s cubic-bezier(.22,1,.36,1)}
+.tiers-lux .tl-who-acc[open] .tl-who-x{transform:rotate(45deg)}
+.tiers-lux .tl-who-acc .tl-blurb{margin:0 0 8px;padding-top:1px;animation:tlwhoin .3s cubic-bezier(.22,1,.36,1)}
+@keyframes tlwhoin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.tiers-lux .tier3.pop .tl-who-acc{border-top-color:rgba(201,167,114,.3)}
+.tiers-lux .tier3.pop .tl-who-sum{color:var(--gold-light);opacity:.92}

@@ -688,7 +688,7 @@
         ${t.popular?'<div class="tl-rib">Most popular</div>':(t.rec?'<div class="tl-rib tl-rib-rec">Recommended</div>':'')}
         <div class="tl-head"><div class="tl-nm">${t.name}</div><div class="tl-who">${escH(t.wk)}</div></div>
         <div class="tl-priceline"><span class="tl-from">From</span><b class="cmoney" data-gbp="${t.from}">${fmtMoney(t.from)}</b><span class="tl-per">/month</span></div>
-        <div class="tl-blurb">${escH(t.blurb)}</div>
+        <details class="tl-who-acc"><summary class="tl-who-sum">Who it is for <span class="tl-who-x" aria-hidden="true">+</span></summary><p class="tl-blurb tl-who-p">${escH(t.blurb)}</p></details>
         <ul class="tl-feats">${t.feats.map((f,i)=>{const tip=(TIER_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul>
         <div class="t3-more tl-more" hidden><ul>${t.more.map((f,i)=>{const tip=(MORE_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul></div>
         <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">See all inclusions</button><a class="btn block tl-cta" data-book="package" data-tier="${t.name}">Begin ${/^[aeiou]/i.test(t.name)?'an':'a'} ${t.name} enquiry ↗</a></div>

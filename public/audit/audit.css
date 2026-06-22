@@ -1328,3 +1328,55 @@ body.pdrawer-lock{overflow:hidden}
 @keyframes tlwhoin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 .tiers-lux .tier3.pop .tl-who-acc{border-top-color:rgba(201,167,114,.3)}
 .tiers-lux .tier3.pop .tl-who-sum{color:var(--gold-light);opacity:.92}
+
+/* ===================== r33 ===================== */
+/* A3 · payment card left-aligned to mirror the website's editorial pricing style;
+   the "real value" label is gone; the trust line is now the curated-clients note + sample link. */
+.r3-side.r3-pay{text-align:left;align-items:stretch}
+.r3-pay .r3-was{justify-content:flex-start;margin:0}
+.r3-pay .r3-price{justify-content:flex-start}
+.r3-pay .r3-price small{margin-top:2px}
+.r3-pay .r3-free{align-self:flex-start}
+.r3-pay .r3-terms{text-align:left}
+.r3-pay .r3-trust{display:block;text-align:left;line-height:1.55;font-size:10.5px;opacity:.72;border-top:1px solid var(--line);padding-top:9px}
+.r3-pay .r3-trust .r3-sample{color:var(--ox);font-weight:600;text-decoration:none;white-space:nowrap}
+.r3-pay .r3-trust .r3-sample:hover{text-decoration:underline}
+/* the audit phone line now leads with a phone icon */
+.fsx-phone{display:inline-flex;align-items:center;gap:6px}
+.fsx-phone .fsx-ph-ic{flex:0 0 auto;opacity:.9}
+
+/* A4 · Independent Solutions = horizontal hover-expand rail (mirrors the website .independent-rail).
+   Overrides the old .plan2 .addon-grid / .addon box rules (equal specificity, later in file wins). */
+.addon-railwrap{position:relative;padding-inline:44px}
+.plan2 .addon-grid{display:flex;align-items:flex-start;gap:14px;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 2px 14px;margin:0;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.plan2 .addon-grid::-webkit-scrollbar{height:6px}
+.plan2 .addon-grid::-webkit-scrollbar-thumb{background:rgba(201,167,114,.4);border-radius:6px}
+.plan2 .addon{flex:0 0 230px;scroll-snap-align:start;display:flex;flex-direction:column;padding:17px;border:1px solid var(--line);border-radius:11px;background:var(--paper);cursor:pointer;max-width:none;transition:flex-basis .34s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,border-color .3s ease}
+.plan2 .addon:hover,.plan2 .addon:focus-within{flex-basis:336px;border-color:var(--gold);box-shadow:var(--shadow-lg);outline:none}
+.plan2 .addon .is-top{display:block}
+.plan2 .addon .an{font-family:var(--serif);font-size:16px;color:var(--ox-deep);line-height:1.18;margin:0 0 9px;max-width:none}
+.plan2 .addon .ap{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.plan2 .addon .ap .apwas{font-family:var(--mono);font-size:13px;color:var(--muted-2);text-decoration:line-through;opacity:.7;margin:0}
+.plan2 .addon .ap b{font-family:var(--serif);font-size:25px;font-weight:500;color:var(--ox);line-height:1}
+.plan2 .addon .ap small{font-family:var(--mono);font-size:9px;color:var(--muted)}
+.plan2 .addon .ascope{font-family:var(--body);font-size:12px;line-height:1.5;color:var(--muted);margin-top:9px}
+.plan2 .addon .is-detail{max-height:0;opacity:0;overflow:hidden;margin-top:0;transition:max-height .36s cubic-bezier(.22,1,.36,1),opacity .28s ease,margin-top .36s ease}
+.plan2 .addon:hover .is-detail,.plan2 .addon:focus-within .is-detail{max-height:560px;opacity:1;margin-top:13px}
+.plan2 .addon .tag{font-family:var(--body);font-size:11.5px;line-height:1.55;color:#3a2d30;margin:0 0 10px}
+.plan2 .addon .aspec-h{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ox);margin-bottom:5px}
+.plan2 .addon .aspec-steps{list-style:none;margin:0 0 12px;padding:0}
+.plan2 .addon .aspec-steps li{font-family:var(--body);font-size:11px;line-height:1.45;color:var(--muted);padding-left:14px;position:relative;margin-bottom:6px}
+.plan2 .addon .aspec-steps li::before{content:'+';position:absolute;left:0;color:var(--gold);font-weight:700}
+.plan2 .addon .addon-cta{margin-top:auto;width:100%;text-align:center}
+.plan2 .addon.ag-hero{background:linear-gradient(160deg,#fff 0%,var(--gold-pale) 130%);border-color:var(--gold-light)}
+.plan2 .addon.ag-hero .an{color:var(--ox)}
+.addon-nav{position:absolute;top:38%;z-index:3;width:36px;height:36px;border-radius:50%;border:1px solid var(--gold);background:var(--paper);color:var(--ox);font-size:19px;line-height:0;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:background .2s ease}
+.addon-nav:hover{background:var(--gold);color:#fff}
+.addon-prev{left:2px}
+.addon-next{right:2px}
+@media(max-width:600px){
+  .addon-railwrap{padding-inline:30px}
+  .plan2 .addon{flex-basis:200px}
+  .plan2 .addon:hover,.plan2 .addon:focus-within{flex-basis:268px}
+  .addon-nav{width:30px;height:30px;font-size:16px}
+}

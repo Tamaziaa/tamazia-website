@@ -261,6 +261,9 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
   </aside>
   </div><!-- /.tz-founder-cta-row -->
 
+  {/* Founder r5: the curated-clients note (moved off the audit unlock card) sits under the founder box. */}
+  <p class="tz-founder-note">A select few clients, each walked through their audit one to one. Never a chatbot. <a href="/audit/monzo/yTn7BIzS" target="_blank" rel="noopener" class="tz-founder-note-link">See a sample &#8599;</a></p>
+
   <div class="tz-colophon">
     <span>LONDON</span><span class="tz-dot">·</span>
     <span class="tz-colophon-prose">Engagements delivered in UK, UAE, USA, EU &amp; Worldwide</span>
@@ -481,6 +484,24 @@ const twTotalMs = cursorMs - LINE_GAP_MS;
     color: var(--tz-oxblood);
     font-weight: 600;
   }
+  /* Founder r5 · curated-clients note under the founder box (moved off the audit unlock card) */
+  .tz-founder-note {
+    max-width: 360px;
+    margin: 13px auto 0;
+    font-family: var(--tz-body);
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: rgba(26, 20, 15, 0.62);
+    text-align: center;
+  }
+  .tz-founder-note-link {
+    color: var(--tz-oxblood);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .tz-founder-note-link:hover { text-decoration: underline; }
+
   /* G1 · Founder portrait sized for compact stacked card — 72px base, 84px desktop */
   .tz-founder-photo {
     width: 72px;

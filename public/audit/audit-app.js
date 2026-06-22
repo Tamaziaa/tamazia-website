@@ -588,9 +588,7 @@
         <div class="r3-side r3-pay">
           <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>/month</small></div>
           ${coverBtn}
-          <div class="r3-terms">Founder-reviewed monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>
-          <div class="r3-trust">A select few clients, each walked through their audit one to one. Never a chatbot. <a class="r3-sample" href="https://tamazia.co.uk/audit/monzo/yTn7BIzS" target="_blank" rel="noopener">See a sample ↗</a></div>
-        </div>
+          <div class="r3-terms">Founder-reviewed monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>        </div>
       </div>
     </div>`;
     }
@@ -618,9 +616,7 @@
           <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>to unlock</small></div>
           <div class="r3-free">First month of monitoring free</div>
           ${unlockBtn}
-          <div class="r3-terms">${priceSpan(unlock)} unlocks the full report and includes your first month. Then ${priceSpan(cover)}/month, founder-reviewed. Cancel anytime.</div>
-          <div class="r3-trust">A select few clients, each walked through their audit one to one. Never a chatbot. <a class="r3-sample" href="https://tamazia.co.uk/audit/monzo/yTn7BIzS" target="_blank" rel="noopener">See a sample ↗</a></div>
-        </div>
+          <div class="r3-terms">${priceSpan(unlock)} unlocks the full report and includes your first month. Then ${priceSpan(cover)}/month, founder-reviewed. Cancel anytime.</div>        </div>
       </div>
     </div>`;
   }

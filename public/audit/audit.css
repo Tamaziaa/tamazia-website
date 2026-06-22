@@ -1304,3 +1304,7 @@ body.pdrawer-lock{overflow:hidden}
 .plans-pill .pp-ic{color:var(--gold-light)}
 /* No-retainer rotated corner ribbon clashed with the toggle + duplicated the gold tab; the lane text carries it */
 .fx-rib{display:none}
+/* r29 · Route 2 per-bullet "?" subtext (mirrors the website pricing cards) */
+.tiers-lux .tl-feats li{display:flex;align-items:flex-start;gap:7px}
+.tiers-lux .tl-feats li .tl-feat-t{flex:1;min-width:0}
+.tiers-lux .tl-q{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px}

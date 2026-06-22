@@ -392,6 +392,28 @@
         'Transaction-level revenue attribution across every market',
       ]},
   ];
+  // Founder r29 · per-bullet "?" subtext for Route 2, synced from the website pricing cards
+  // (src/content/pricing.ts feature bodies), kept tooltip-length. Indexed to feats[] above.
+  const TIER_TIPS = {
+    foundation: [
+      "Keyword strategy built around transactional search across your sector, mapped against competitors' current positions before a word is written.",
+      "One compliance-reviewed content piece a month, checked against your sector's rules (SRA, MHRA, FCA, ABA, HIPAA, RERA) before Google or a regulator sees it.",
+      "Core Web Vitals, redirect chains, crawl errors, broken links and schema gaps identified and ranked by impact, delivered as developer instructions.",
+      "Full Google Business Profile optimisation for one location: categories, attributes, posting schedule, Q&A, photos and a review-response system.",
+    ],
+    authority: [
+      "Every Foundation deliverable carries forward into Authority, then builds on it.",
+      "30 keywords across your full commercial footprint, so every location and service line surfaces for its own searches on the same day.",
+      "GEO as standard: content restructured for AI citation across Claude, ChatGPT, Perplexity and Google AI Overviews.",
+      "Direct search visibility that intercepts buyers before Booking.com or Expedia take their 15 to 25% cut, the approach behind 480% peak client revenue growth (verified).",
+    ],
+    enterprise: [
+      "Every Authority deliverable carries forward into Enterprise, then scales across markets.",
+      "50 or more keywords across every geography your buyers search from: London, Dubai, New York and beyond.",
+      "Full AI-search dominance: structured data, entity and knowledge-panel work across Claude, ChatGPT, Perplexity, Google AI Overviews, Gemini and Copilot.",
+      "UK GDPR, FCA COBS, SRA, HIPAA, MHRA, ASA, ABA, RERA, DFSA, UAE PDPL and more, applied to every asset across every jurisdiction.",
+    ],
+  };
   function planData(){
     const Dp=Array.isArray(D.pricing)?D.pricing:[];
     const byName=n=>Dp.find(p=>String(p.tier||'').toLowerCase()===n)||{};
@@ -640,7 +662,7 @@
         <div class="tl-head"><div class="tl-nm">${t.name}</div><div class="tl-who">${escH(t.wk)}</div></div>
         <div class="tl-priceline"><span class="tl-from">From</span><b class="cmoney" data-gbp="${t.from}">${fmtMoney(t.from)}</b><span class="tl-per">/month</span></div>
         <div class="tl-blurb">${escH(t.blurb)}</div>
-        <ul class="tl-feats">${t.feats.map(f=>`<li>${escH(f)}</li>`).join('')}</ul>
+        <ul class="tl-feats">${t.feats.map((f,i)=>{const tip=(TIER_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul>
         <div class="t3-more tl-more" hidden><ul>${t.more.map(f=>`<li>${escH(f)}</li>`).join('')}</ul></div>
         <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">See all inclusions</button><a class="btn block tl-cta" data-book="package" data-tier="${t.name}">Begin ${/^[aeiou]/i.test(t.name)?'an':'a'} ${t.name} enquiry ↗</a></div>
       </div>`).join('')}</div>

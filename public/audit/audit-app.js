@@ -414,6 +414,33 @@
       "UK GDPR, FCA COBS, SRA, HIPAA, MHRA, ASA, ABA, RERA, DFSA, UAE PDPL and more, applied to every asset across every jurisdiction.",
     ],
   };
+  // Founder r31 · "?" subtext for the "See all inclusions" pointers (more[]), indexed to each tier's more[].
+  const MORE_TIPS = {
+    foundation: [
+      "Directory citations with consistent name, address and phone across legal directories, healthcare registries, hospitality aggregators and property portals.",
+      "Your current presence across the AI engines for your most commercial queries, documented at start and reviewed quarterly.",
+      "A GA4 report showing which searches converted to bookings, appointments or enquiries, attributed to organic search at channel level.",
+      "Your market's legal framework applied to every piece, with notification within one week of any change requiring an update.",
+    ],
+    authority: [
+      "Managed audience development for your principals across the platforms enterprise buyers check before any conversation.",
+      "UK and UAE, UK and USA, or UAE and USA: one agency holding both regulatory environments, not two who never speak.",
+      "Practice areas, property types, service lines and procedures covered in one monthly programme.",
+      "Two media outreach contacts a month to sector-relevant publications; placement earned on editorial merit, not guaranteed.",
+      "Each location profiled separately with its own category strategy, posting schedule and review management.",
+      "Every new ruling in your sectors flagged within 72 hours, with the exact page and rule affected.",
+      "Twice-monthly reporting tying organic search to revenue across every location.",
+    ],
+    enterprise: [
+      "A full personal-brand programme for your senior team across every platform buyers and partners evaluate.",
+      "Hreflang, geo-targeted content and market-specific keyword strategies across up to five territories.",
+      "Volume calibrated to your full operational scope, every piece reviewed across all covered jurisdictions.",
+      "No location cap: hotel groups across countries, firms across cities, each with its own local strategy.",
+      "Monitoring, suppression and response architecture in place before any incident, structural protection not reactive PR.",
+      "Law changes tracked across every country you operate in, with content updated within one week.",
+      "GA4 at transaction level, a monthly senior strategy call, and a board-ready executive review.",
+    ],
+  };
   function planData(){
     const Dp=Array.isArray(D.pricing)?D.pricing:[];
     const byName=n=>Dp.find(p=>String(p.tier||'').toLowerCase()===n)||{};
@@ -663,7 +690,7 @@
         <div class="tl-priceline"><span class="tl-from">From</span><b class="cmoney" data-gbp="${t.from}">${fmtMoney(t.from)}</b><span class="tl-per">/month</span></div>
         <div class="tl-blurb">${escH(t.blurb)}</div>
         <ul class="tl-feats">${t.feats.map((f,i)=>{const tip=(TIER_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul>
-        <div class="t3-more tl-more" hidden><ul>${t.more.map(f=>`<li>${escH(f)}</li>`).join('')}</ul></div>
+        <div class="t3-more tl-more" hidden><ul>${t.more.map((f,i)=>{const tip=(MORE_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul></div>
         <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">See all inclusions</button><a class="btn block tl-cta" data-book="package" data-tier="${t.name}">Begin ${/^[aeiou]/i.test(t.name)?'an':'a'} ${t.name} enquiry ↗</a></div>
       </div>`).join('')}</div>
     <p class="plan-sub tl-note">Every engagement opens with the ${priceSpan(PRICES.entryAudit)} audit you are reading. A six-month commitment unlocks the pilot rate shown; thereafter it is a 90-day rolling mandate, cancellable in writing. Quoted &amp; invoiced in GBP.</p>
@@ -698,11 +725,11 @@
       <div class="bookcard"><div class="rt">Retainer enquiries</div><h3>Discuss a retainer</h3>
         <p>A 30 minute confidential session on the Foundation, Authority or Enterprise mandate, and which one fits ${escH(D.meta.company)}.</p>
         <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="Retainer strategy call calendar"></div>
-        <a class="btn solid block" data-book="package" data-tier="${recTier}">Book a retainer call ↗</a></div>
+        <p class="bookcard-note">Pick a time above. Your route and strongest finding are carried into the call.</p></div>
       <div class="bookcard"><div class="rt">One-time sprint</div><h3>Start a Fix Sprint</h3>
         <p>A 30 minute confidential session to scope a one-time, fixed-scope Fix Sprint. The urgent items closed first, no retainer.</p>
         <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint call calendar"></div>
-        <a class="btn solid block" data-book="one_time_fix">Book a Fix Sprint call ↗</a></div>
+        <p class="bookcard-note">Pick a time above. We will confirm by email.</p></div>
     </div>
 
     <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>Prefer a written reply? Leave your details</h3></div>

@@ -129,7 +129,7 @@ export const pricingContent = {
         },
         {
           headline: 'Bi-weekly reporting with revenue attribution across all locations',
-          body: 'GA4 backed reporting. Delivered monthly with a founder strategy call. Quarterly board-ready executive review.',
+          body: 'GA4 backed reporting. Delivered monthly with a senior strategy call. Quarterly board-ready executive review.',
         },
       ],
       additionalCapabilitiesHeading: 'Additional capabilities commonly added at this tier',
@@ -142,7 +142,7 @@ export const pricingContent = {
         'OTA dependency reduction programme',
       ],
       microFooter: [
-        'The team that works on your account does not rotate. The founder reviews every deliverable before it leaves.',
+        'The team that works on your account does not rotate. Nothing leaves the firm without legal review.',
       ],
       cta: 'Begin an Authority enquiry',
       ctaHref: '#contact',
@@ -202,7 +202,7 @@ export const pricingContent = {
         },
         {
           headline: 'Transaction-level revenue attribution across every market',
-          body: 'GA4 at transaction level. Monthly founder strategy call. Monthly board-ready executive review.',
+          body: 'GA4 at transaction level. Monthly senior strategy call. Monthly board-ready executive review.',
         },
       ],
       additionalCapabilitiesHeading: 'Additional capabilities commonly added at this tier',
@@ -223,7 +223,7 @@ export const pricingContent = {
 
   // Mandate callout (after Enterprise tier)
   mandateCallout:
-    'FOR PRE-IPO PREPARATION, LISTED COMPANIES, AND INTERNATIONAL ENTERPRISE GROUPS, ENGAGEMENT IS STRUCTURED TO MANDATE. SPEAK WITH THE FOUNDER BEFORE ANY SCOPE IS AGREED.',
+    'FOR PRE-IPO PREPARATION, LISTED COMPANIES, AND INTERNATIONAL ENTERPRISE GROUPS, ENGAGEMENT IS STRUCTURED TO MANDATE. SPEAK WITH THE FOUNDER DIRECTLY BEFORE ANY SCOPE IS AGREED.',
   mandateCta: 'Request a private briefing',
   // Founder directive r3: signature removed from the pre-IPO mandate box.
   mandateSignature: '',

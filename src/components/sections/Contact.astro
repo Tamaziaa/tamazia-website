@@ -88,13 +88,18 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
             the direct line is a Sales address. */}
         <p class="founder-call-copy">The strategy call is held one to one, in person.</p>
         <FounderLink variant="dark" className="contact-founder" />
-        {/* Reach-out line · email + phone. format-detection is telephone=no site-wide,
-            so the tel: link is explicit and intentional here. */}
-        <p class="contact-direct">
-          <span class="contact-direct-label">Reach out</span>
-          <a class="contact-direct-link" href="mailto:Sales@Tamazia.co.uk">Sales@Tamazia.co.uk</a>
-          <a class="contact-direct-link" href={telHref}>{founderPhone}</a>
-        </p>
+        {/* Founder r31: the single Sales@ reach-out line is replaced by a team-contact list,
+            each desk reachable directly, same column font, email icon per team. */}
+        <div class="contact-teams" aria-label="Team contacts">
+          <span class="contact-direct-label">Speak to the right desk</span>
+          <ul class="ct-list">
+            <li class="ct-row"><span class="ct-team">Regulatory and Compliance</span><a class="ct-mail" href="mailto:legal@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>legal@tamazia.co.uk</a></li>
+            <li class="ct-row"><span class="ct-team">Search Engineering</span><a class="ct-mail" href="mailto:contact@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>contact@tamazia.co.uk</a></li>
+            <li class="ct-row"><span class="ct-team">AI and Generative Search</span><a class="ct-mail" href="mailto:contact@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>contact@tamazia.co.uk</a></li>
+            <li class="ct-row"><span class="ct-team">Content and Editorial Standards</span><a class="ct-mail" href="mailto:hello@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>hello@tamazia.co.uk</a></li>
+            <li class="ct-row"><span class="ct-team">Partnerships</span><a class="ct-mail" href="mailto:hello@tamazia.co.uk"><svg class="ct-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>hello@tamazia.co.uk</a></li>
+          </ul>
+        </div>
         <div class="calendly-heading">{calendlyHeading}</div>
         <div class="calendly-divider"></div>
         <div class="calendly-embed" id="contact-cal-inline" role="region" aria-label="Cal.com booking calendar">
@@ -395,6 +400,14 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
     color: var(--gold);
     border-color: var(--gold);
   }
+  /* Founder r31 · team-contact list (replaces the single Sales@ reach-out line) */
+  .contact-teams { margin: 0 0 22px; }
+  .ct-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ct-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+  .ct-team { font-family: var(--ff-body); font-size: 13px; color: var(--pearl); letter-spacing: 0.01em; }
+  .ct-mail { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ff-mono, var(--ff-body)); font-size: 12.5px; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,167,114,0.3); padding-bottom: 1px; transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
+  .ct-mail:hover { color: var(--pearl); border-color: var(--gold); }
+  .ct-ic { flex: 0 0 auto; opacity: 0.85; }
 
   .calendly-heading {
     font-family: var(--ff-body);
@@ -798,7 +811,7 @@ const telHref = 'tel:' + founderPhone.replace(/[^0-9+]/g, '');
       wrap.innerHTML = '<div style="height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px;border:1px solid rgba(201,167,114,0.45);border-radius:8px;padding:28px 26px;background:rgba(201,167,114,0.05)">' +
         '<p style="font-family:var(--ff-display);font-style:italic;font-size:18px;color:var(--ivory);margin:0">The calendar is taking a moment.</p>' +
         '<p style="font-family:var(--ff-body);font-size:13px;color:var(--pearl);opacity:0.85;margin:0;line-height:1.6">Book directly on the founder\'s calendar, or use the booking page.</p>' +
-        '<a href="https://cal.com/tamazia/strategy-call" target="_blank" rel="noopener" style="font-family:var(--ff-body);font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--oxblood-ink);background:var(--ivory);border:1px solid var(--gold);border-radius:6px;padding:14px 18px;text-decoration:none;text-align:center">Open the founder\'s calendar</a>' +
+        '<a href="https://cal.com/tamazia/strategy-call" target="_blank" rel="noopener" style="font-family:var(--ff-body);font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--oxblood-ink);background:var(--ivory);border:1px solid var(--gold);border-radius:6px;padding:14px 18px;text-decoration:none;text-align:center">Open the calendar</a>' +
         '<a href="/book/" style="font-family:var(--ff-body);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-align:center">Or use the booking page</a>' +
         '</div>';
     }, 8000);

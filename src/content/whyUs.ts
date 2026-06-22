@@ -11,7 +11,7 @@ export const whyUsContent = {
     'International business law, AI search engineering, and regulatory content engineering applied to every campaign.',
   ],
 
-  pullQuote: 'The {{lawyer}} reads it before the {{algorithm}} sees it.',
+  pullQuote: 'The {{legal team}} reads it before the {{algorithm}} sees it.',
 
   // Verbatim from live tamazia.co.uk. These are the canonical credibility numbers.
   // The "4× / 400+ / 4" in the prior rebuild was a credibility-damaging error.

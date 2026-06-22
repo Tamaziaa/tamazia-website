@@ -1308,3 +1308,12 @@ body.pdrawer-lock{overflow:hidden}
 .tiers-lux .tl-feats li{display:flex;align-items:flex-start;gap:7px}
 .tiers-lux .tl-feats li .tl-feat-t{flex:1;min-width:0}
 .tiers-lux .tl-q{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px}
+/* r31 · Most-popular / Recommended badge — centre it and clear the tier heading (was cutting over "Authority") */
+.tiers-lux .tl-rib{top:12px;left:50%;right:auto;transform:translateX(-50%);border-radius:40px;border-bottom-left-radius:40px;white-space:nowrap;box-shadow:0 4px 12px rgba(42,12,20,.28)}
+.tiers-lux .tier3.pop .tl-head,.tiers-lux .tier3.rec .tl-head{margin-top:26px}
+/* r31 · "See all inclusions" pointers get the same ? subtext as the headline bullets */
+.tiers-lux .tl-more ul li{display:flex;align-items:flex-start;gap:7px}
+.tiers-lux .tl-more ul li .tl-feat-t{flex:1;min-width:0}
+/* r31 · booking cards: the inline calendar is the single booking surface; small note replaces the redundant button */
+.bookcard-note{font-family:var(--body);font-size:11px;line-height:1.5;color:var(--ink);opacity:.6;margin:9px 0 0}
+.tier3.pop .bookcard-note,.route3 .bookcard-note{color:var(--gold-pale);opacity:.8}

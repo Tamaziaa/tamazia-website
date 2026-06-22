@@ -127,10 +127,10 @@ export const faqContent = {
       id: 'q5-llm-and-ai',
       question: 'What does the LLM in International Business Law actually contribute to the work, and is any content produced by AI?',
       answerParagraphs: [
-        "The LLM in International Business Law from King's College London means the person overseeing every content strategy has read the SRA advertising code, FCA financial promotion rules, MHRA health claim guidance, and cross-border advertising law governing content across multiple jurisdictions. That training is applied to every engagement.",
-        "On AI content: AI is used in research, keyword analysis, and competitive intelligence. Content published under your brand is reviewed by the founder, who holds the LLM in International Business Law from King's College London, before it reaches any search engine or AI system. In regulated sectors, AI-generated content without expert review is a liability we do not create for clients.",
+        "The LLM in International Business Law from King's College London sits behind every content strategy. The legal team has read the SRA advertising code, FCA financial promotion rules, MHRA health claim guidance, and the cross-border advertising law governing content across multiple jurisdictions. That training is applied to every engagement.",
+        "On AI content: AI is used in research, keyword analysis, and competitive intelligence. Content published under your brand is reviewed by the legal team before it reaches any search engine or AI system. In regulated sectors, AI-generated content without expert review is a liability we do not create for clients.",
       ],
-      chips: ['LLM · KCL', 'SRA Code', 'FCA COBS 4', 'MHRA', 'FSMA s.21'],
+      chips: ['Legal team · KCL', 'SRA Code', 'FCA COBS 4', 'MHRA', 'FSMA s.21'],
     },
     {
       id: 'q6-switch',

@@ -21,16 +21,17 @@
     },
     fixPacks: { ten:7500, twenty:12500, thirty:17500 }, // fixPacksGbp
     fixPacksLane: 'No retainer required. Buy the fixes, own the work.', // fixPacksLane
-    exposureReport: { unlock:750, monthlyCover:449 },   // exposureReportGbp
-    independent: {                                       // independentSolutionsGbp (anchor→offer, or single price)
+    // exposureReportGbp · £449 unlocks the full report (first month free), then £750/mo recurring; £1,500 real value (struck).
+    exposureReport: { unlock:449, monthlyCover:750, realValue:1500 },
+    independent: {                                       // independentSolutionsGbp (anchor→offer) · synced to pricing.ts
       websiteRemodelling:   { anchor:4800, offer:2400 },
-      aiAuthority:          { anchor:3000, offer:1800 },
-      icpOutreach:          { anchor:2800, offer:1400 },
+      aiAuthority:          { anchor:3600, offer:1800 },
+      icpOutreach:          { anchor:5600, offer:2800 },
       onlinePersonalBranding:{ anchor:2200, offer:1100 },
       instagramPresence:    { anchor:1800, offer:900 },
-      ymylContent:          { price:1200 },
+      ymylContent:          { anchor:2400, offer:1200 },
       reputationCrisis:     { anchor:3000, offer:1500 },
-      gbpDomination:        { price:850 },
+      gbpDomination:        { anchor:2400, offer:1200 },
     },
   };
   // FOUNDER-BLOCKED links + contact. Threaded from env via the adapter into window.D.
@@ -93,11 +94,10 @@
         <div class="rail-kpi"><div class="v red">${D.geo.shareOfVoice}</div><div class="l">AI share of voice</div></div>
         <div class="rail-kpi"><div class="v">${D.competitors.rows[0].dr}</div><div class="l">Domain rating</div></div>
       </div>
+      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
       <div class="rail-navtitle">Jump to</div>
       <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
-      <button class="rail-jump" data-pane="plan">Jump to pricing ↗</button>
       <button class="rail-cta" data-book="package" data-tier="${escH(recommendedTierName())}">Walk report with the founder ↗</button>
-      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
       <div class="rail-social">
         <a href="mailto:sales@tamazia.co.uk" aria-label="Email sales@tamazia.co.uk" title="sales@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
         <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
@@ -506,7 +506,7 @@
   // skip the paywall: the locked fixes are already open, so the block leads with the founder oversight framing
   // and offers ongoing cover, never an "unlock".
   function route3(){
-    const unlock=PRICES.exposureReport.unlock, cover=PRICES.exposureReport.monthlyCover;
+    const unlock=PRICES.exposureReport.unlock, cover=PRICES.exposureReport.monthlyCover, rv=PRICES.exposureReport.realValue;
     const specs=[
       ['The full Exposure Report','Every locked fix in this report opened in full, plus the complete compliance, search and AI-visibility assessment.'],
       ['Monthly re-scan','This exact audit re-run on your live data every month, so the record always reflects the site as it stands today.'],
@@ -524,7 +524,7 @@
       // C-H: always route via the metadata-bearing /api/stripe/checkout (data-subscribe) so this report's
       // slug+hash reach the webhook. A static Payment Link cannot carry per-recipient metadata, so it is
       // never used for the unlock/cover flow even when STRIPE_LINK_COVER is set.
-      const coverBtn = `<a class="btn solid block" data-subscribe="exposure_cover">Start monthly cover&nbsp;↗</a>`;
+      const coverBtn = `<a class="btn solid block" data-book="package" data-intent="exposure_cover">Start monthly cover&nbsp;↗</a>`;
       return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Keep this report live</h3></div>
     <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: founder-reviewed cover that re-runs this audit on your live data every month.</p>
@@ -536,10 +536,11 @@
           <h3 class="r3-h">The standing record General Counsels, Heads of Compliance, Marketing Directors and CFOs quote in board packs.</h3>
           ${specList}
         </div>
-        <div class="r3-side">
+        <div class="r3-side r3-pay">
           <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>/month</small></div>
           ${coverBtn}
-          <div class="r3-terms">Monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>
+          <div class="r3-terms">Founder-reviewed monthly cover, ${priceSpan(cover)}/mo. Cancel anytime.</div>
+          <div class="r3-trust"><span class="r3-lock" aria-hidden="true">&#128274;</span> Secure · book a 30-minute call to activate</div>
         </div>
       </div>
     </div>`;
@@ -550,11 +551,11 @@
     // carried in the session metadata and the webhook can flip audit_pages.unlocked for THIS exact link. A
     // static Payment Link carries no metadata and would take the payment without ever unlocking the report,
     // so it is no longer used here even when STRIPE_LINK_UNLOCK is set. trial is server-pinned (see checkout.js).
-    const unlockBtn = `<a class="btn solid block" data-subscribe="compliance" data-trial="30">Unlock the full report&nbsp;↗</a>`;
+    const unlockBtn = `<a class="btn solid block" data-book="package" data-intent="exposure_unlock">Unlock the full report&nbsp;↗</a>`;
     const coverBtn = '';
     return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
-    <p class="plan-sub r3-gold">Unlock the full Exposure Report, ${priceSpan(unlock)}. Your first month of monthly cover is included. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>
+    <p class="plan-sub r3-gold">Unlock the full Exposure Report for ${priceSpan(unlock)}, with your first month of monitoring included free. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>
     <div class="route route3">
       <div class="r3-rib">Where most board-rooms start</div>
       <div class="r3-grid">
@@ -563,11 +564,13 @@
           <h3 class="r3-h">Unlock every locked fix now, then re-run this audit on your live data each month.</h3>
           ${specList}
         </div>
-        <div class="r3-side">
-          <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>one-time unlock</small></div>
+        <div class="r3-side r3-pay">
+          <div class="r3-was"><s class="cmoney" data-gbp="${rv}">${fmtMoney(rv)}</s><span class="r3-was-lbl">real value</span></div>
+          <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>to unlock</small></div>
+          <div class="r3-free">First month of monitoring free</div>
           ${unlockBtn}
-          ${coverBtn}
-          <div class="r3-terms">${priceSpan(unlock)} unlocks everything and includes your first month of cover. Then ${priceSpan(cover)}/mo. Cancel anytime.</div>
+          <div class="r3-terms">${priceSpan(unlock)} unlocks the full report and includes your first month. Then ${priceSpan(cover)}/month, founder-reviewed. Cancel anytime.</div>
+          <div class="r3-trust"><span class="r3-lock" aria-hidden="true">&#128274;</span> Secure · book a 30-minute call to activate</div>
         </div>
       </div>
     </div>`;
@@ -659,7 +662,7 @@
         <div class="ascope">${escH(a.scope)}</div>
         <div class="tag">${escH(a.usp)}</div>
         <div class="more"><div class="aspec-h">How it runs, step by step</div><ol class="aspec-steps">${a.spec.map(s=>`<li>${escH(s)}</li>`).join('')}</ol></div>
-        <div class="foot"><button class="moretoggle" data-more="addon">The five steps</button><a class="btn gold" data-addon="${escH(a.nm)}" data-price="${gbpFmt(off)}">Add ${escH(a.nm.split(' ')[0])} ↗</a></div>
+        <div class="foot"><button class="moretoggle" data-more="addon">The five steps</button><a class="btn gold" data-book="package" data-tier="${escH(a.nm)}">Add ${escH(a.nm.split(' ')[0])} ↗</a></div>
       </div>`;}).join('')}
     </div>
     <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency’s control and are not guaranteed. Full terms: /legal/service-terms.</p>
@@ -735,9 +738,8 @@
   // (data-book="package") so the button is never dead. founder@tamazia.co.uk always renders. The phone line is
   // FOUNDER-BLOCKED: rendered ONLY when CONTACT_PHONE is set, omitted entirely otherwise (no placeholder).
   function founderSession(){
-    const claim = BOOKING_URL
-      ? `<a class="btn solid fsx-claim" href="${escH(BOOKING_URL)}" target="_blank" rel="noopener">Claim the session ↗</a>`
-      : `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH(recommendedTierName())}">Claim the session ↗</a>`;
+    // Founder r28: "Claim the session" ALWAYS opens the on-page calendar (data-book → intake+Cal), never an external link.
+    const claim = `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH(recommendedTierName())}">Claim the session ↗</a>`;
     const phone = CONTACT_PHONE
       ? `<a class="fsx-contact" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}">${escH(CONTACT_PHONE)}</a>`
       : '';

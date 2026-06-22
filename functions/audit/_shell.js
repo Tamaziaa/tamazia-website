@@ -68,7 +68,7 @@ export function renderShell(D, opts) {
   opts = opts || {};
   const inline = !!opts.inline;
   const a = opts.assets || {};
-  const _av = 'r33';  // asset version — bump on every deploy so the 4h-cached audit JS/CSS busts immediately
+  const _av = 'r34';  // asset version — bump on every deploy so the 4h-cached audit JS/CSS busts immediately
   const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : ('<link rel="stylesheet" href="/audit/audit.css?v=' + _av + '">');
   const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : ('<script src="/audit/audit-charts.js?v=' + _av + '"></script>');
   const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : ('<script src="/audit/audit-app.js?v=' + _av + '"></script>');

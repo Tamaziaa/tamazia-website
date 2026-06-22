@@ -1380,3 +1380,14 @@ body.pdrawer-lock{overflow:hidden}
   .plan2 .addon:hover,.plan2 .addon:focus-within{flex-basis:268px}
   .addon-nav{width:30px;height:30px;font-size:16px}
 }
+
+/* ===================== r34 ===================== */
+/* Sleeker payment card: the price rows hug their own content instead of stretching the full
+   box width (that left a ragged empty-right edge = the "weird space"). Button + terms stay
+   full-width. Tighter vertical rhythm. The curated-clients line moved to the website founder box. */
+.r3-side.r3-pay{align-items:flex-start;gap:7px;padding:20px 20px}
+.r3-pay .r3-was{align-self:flex-start;margin:0}
+.r3-pay .r3-price{align-self:flex-start;margin:-1px 0 1px}
+.r3-pay .r3-free{margin-top:2px}
+.r3-pay .btn.solid.block{width:100%;margin-top:3px}
+.r3-pay .r3-terms{width:100%;margin-top:4px}

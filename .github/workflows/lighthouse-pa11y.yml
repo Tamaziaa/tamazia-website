@@ -11,6 +11,7 @@ on:
 jobs:
   qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     continue-on-error: true  # informational gate; never red the run / email
     steps:
       - uses: actions/checkout@v6

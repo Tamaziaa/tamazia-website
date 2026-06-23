@@ -14,6 +14,8 @@ const TabAudits = () => {
         lede="Mint a £1,500 audit for any brand, then track every minted page here. Manual mints (from the box below) are tagged so you can tell them apart from the engine's auto-mints."
       />
 
+      <AuditSearch />
+
       <MintBox />
 
       {/* live mint queue (minting_queue) */}

@@ -56,7 +56,7 @@ export const onRequestPost = async ({ request, env }) => {
   let dispatched = false;
   if (env.GH_TOKEN) {
     try {
-      const r = await fetch('https://api.github.com/repos/Tamaziaa/tamazia-cowork-os/actions/workflows/engine-cycle.yml/dispatches', {
+      const r = await fetch('https://api.github.com/repos/Tamaziaa/tamazia-cowork-os/actions/workflows/mint-now.yml/dispatches', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + env.GH_TOKEN, 'User-Agent': 'tamazia-cockpit', 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ ref: 'main' }),
@@ -66,6 +66,6 @@ export const onRequestPost = async ({ request, env }) => {
   }
 
   return json({ ok: true, domain, company, sector, country, queued: true, dispatched,
-    message: dispatched ? 'Queued and the engine is minting it now. It will appear in History shortly.'
+    message: dispatched ? 'Minting now (fast lane) — the audit link appears in History within ~1 minute.'
                         : 'Queued. It mints on the next engine cycle (within ~30 min) and appears in History.' });
 };

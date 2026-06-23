@@ -276,13 +276,14 @@ function renderApp() {
 window.__rerender = renderApp;
 
 async function hydrate() {
-  const [now, leads, pipeline, health, audits, bookings, forms, inbox, outbox, pending, events, queue, suppression, engineStatus, sends, sequences, n8n] =
+  const [now, leads, pipeline, health, audits, bookings, forms, inbox, outbox, pending, events, queue, suppression, engineStatus, sends, sequences, n8n, channels, deliverability] =
     await Promise.all([
       API('now'), API('leads?limit=300'), API('pipeline'), API('health'),
       API('audits?limit=100'), API('bookings'), API('forms'), API('inbox'),
       API('outbox'), API('leads/pending'), API('events/recent'),
       API('queue'), API('suppression'), API('engine/status'),
       API('sends?limit=200'), API('sequences?limit=200'), API('n8n'),
+      API('channels'), API('deliverability'),
     ]);
 
   // funnel from pipeline + now
@@ -321,6 +322,9 @@ async function hydrate() {
   window.SEQUENCES = sequences || { rows: [], byTouch: {}, active: 0, dueNow: 0 };
   window.OUTBOX = (outbox && { drafts: outbox.drafts || [], count: outbox.count || 0 }) || { drafts: [], count: 0 };
   window.N8N = n8n || { reachable: false, workflows: [] };
+  window.CHANNELS = channels || { connected: false, linkedin: [], instagram: [], counts: {} };
+  window.DELIVERABILITY = deliverability || { connected: false, by_relay: [], by_status: [], volume_14d: [], sent_total: 0, bounce_total: 0, bounce_rate_pct: 0 };
+  window.DATA_AT = new Date().toLocaleTimeString();
 
   // CONNECTORS from health probes (so the Health tab connector grid is real)
   window.CONNECTORS = probes.map(p => ({ name: p.name || titleCase(p.k), category: p.c, status: p.s === 'ok' ? 'ok' : p.s === 'warn' ? 'warn' : 'bad', detail: p.d }));

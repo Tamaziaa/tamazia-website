@@ -6,16 +6,20 @@
 const NAV = [
   { id: 'now',       label: 'Now',       icon: 'home' },
   { id: 'leads',     label: 'Leads',     icon: 'users',    badge: () => (window.PENDING || []).length },
-  { id: 'outreach',  label: 'Outreach',  icon: 'outbox',   badge: () => ((window.OUTBOX || {}).count) || 0 },
   { id: 'inbox',     label: 'Inbox',     icon: 'inbox',    badge: () => (window.REPLIES || []).length },
+  { id: 'outreach',  label: 'Outreach',  icon: 'outbox',   badge: () => ((window.OUTBOX || {}).count) || 0 },
   { id: 'audits',    label: 'Audits',    icon: 'file' },
+  { id: 'channels',  label: 'Channels',  icon: 'outbox',   badge: () => { const c = window.CHANNELS || {}; return ((c.linkedin || []).length + (c.instagram || []).length) || 0; } },
+  { id: 'ops',       label: 'Ops',       icon: 'cog' },
+  { id: 'clients',   label: 'Clients',   icon: 'users' },
   { id: 'bookings',  label: 'Bookings',  icon: 'calendar' },
   { id: 'settings',  label: 'Settings',  icon: 'cog' },
 ];
 
 const TAB_COMPS = {
   now: 'TabNow', leads: 'TabLeads', outreach: 'TabOutreach', audits: 'TabAudits',
-  inbox: 'TabInbox', bookings: 'TabBookings', settings: 'TabSettings',
+  inbox: 'TabInbox', channels: 'TabChannels', ops: 'TabOps', clients: 'TabClients',
+  bookings: 'TabBookings', settings: 'TabSettings',
 };
 
 // ── Sidebar ──────────────────────────────────────────────────────────────────

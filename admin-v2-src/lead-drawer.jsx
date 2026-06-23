@@ -14,6 +14,7 @@ const LeadDrawer = ({ lead }) => {
     setBusy(kind); setMsg(null);
     let r;
     if (kind === 'approve') r = await window.POST('leads/approve', { id });
+    else if (kind === 'push') r = await window.POST('leads/push', { id });
     else if (kind === 'reject') r = await window.POST('leads/update', { id, action: 'stage', stage: 'rejected' });
     else if (kind === 'mint') r = await window.POST('audits/mint', { domain: lead.domain, company: lead.company, sector: lead.sector });
     else if (kind === 'suppress') r = await window.POST('suppression', { email: lead.contact_email, reason: 'manual' });
@@ -115,6 +116,7 @@ const LeadDrawer = ({ lead }) => {
         <div className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
           {!lead.fit && <button className="btn clay" disabled={!!busy} onClick={() => act('approve')}>{busy === 'approve' ? 'Approving…' : 'Approve → qualified'}</button>}
           <button className="btn" disabled={!!busy || !lead.domain} onClick={() => act('mint')}>{busy === 'mint' ? 'Queuing…' : 'Mint audit'}</button>
+          <button className="btn" disabled={!!busy} onClick={() => act('push')} title="Qualify + enqueue audit so it enters the send path">{busy === 'push' ? 'Pushing…' : 'Push to send'}</button>
           {lead.contact_email && <button className="btn ghost" disabled={!!busy} onClick={() => act('suppress')}>Suppress email</button>}
           <button className="btn ghost" disabled={!!busy} onClick={() => act('reject')} style={{ marginLeft: 'auto', color: 'var(--clay-2)' }}>{busy === 'reject' ? 'Rejecting…' : 'Reject'}</button>
         </div>

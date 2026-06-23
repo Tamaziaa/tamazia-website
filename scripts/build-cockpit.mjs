@@ -17,10 +17,11 @@ const SRC = join(ROOT, 'admin-v2-src');
 const OUT = join(ROOT, 'public', 'admin', 'cockpit-v2', 'app.js');
 
 // Fixed concat order: boot (globals + fetch) → lib (primitives) → mint-box → drawer → tabs → app.
-// Simplified cockpit: 6 core tabs only (now/leads/audits/inbox/bookings/settings).
+// Cockpit tabs: core loop + channels/ops/clients operator surfaces.
 const ORDER = [
   'boot.jsx', 'lib.jsx', 'mint-box.jsx', 'audit-search.jsx', 'lead-drawer.jsx',
-  'tab-now.jsx', 'tab-leads.jsx', 'tab-outreach.jsx', 'tab-audits.jsx', 'tab-inbox.jsx', 'tab-bookings.jsx', 'tab-settings.jsx',
+  'tab-now.jsx', 'tab-leads.jsx', 'tab-outreach.jsx', 'tab-audits.jsx', 'tab-inbox.jsx',
+  'tab-channels.jsx', 'tab-ops.jsx', 'tab-clients.jsx', 'tab-bookings.jsx', 'tab-settings.jsx',
   'app.jsx',
 ];
 

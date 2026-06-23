@@ -6,6 +6,13 @@
 #  · Folded duplicate sitemap pointer.
 #  · No em-dashes in this file (deploy gate enforces).
 
+# Admin consolidation (2026-06-23) · one cockpit only. The legacy + pre-v2 dashboards were
+# removed; any bookmarked old path lands on the single live cockpit.
+/admin/legacy       /admin/  301
+/admin/legacy/*     /admin/  301
+/admin/cockpit      /admin/  301
+/admin/cockpit/*    /admin/  301
+
 # Sitemap canonical alias · @astrojs/sitemap emits sitemap-index.xml + sitemap-0.xml.
 /sitemap.xml  /sitemap-index.xml  200
 

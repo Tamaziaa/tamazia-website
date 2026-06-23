@@ -89,11 +89,16 @@ export const onRequestPost = async ({ request, env }) => {
           [it.domain, it.company, sector, country]
         );
       } else {
-        // company-name only: domain NULL → engine resolver picks it up (domain IS NULL).
+        // company-name only: minting_queue.domain is NOT NULL, so use a sentinel domain
+        // ("resolve:<slug>") that the engine resolver (mint-worker.resolveNames) detects and
+        // rewrites to the real domain before minting. ON CONFLICT keeps re-mints idempotent.
+        const slug = it.company.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'unknown';
         await q(
           `INSERT INTO minting_queue (domain, company, sector, country, status, source, enqueued_at)
-           VALUES (NULL, $1, $2, $3, 'pending', 'manual', now())`,
-          [it.company, sector, country]
+           VALUES ($1, $2, $3, $4, 'pending', 'manual', now())
+           ON CONFLICT (domain) DO UPDATE SET status='pending', source='manual', company=EXCLUDED.company,
+             sector=EXCLUDED.sector, country=EXCLUDED.country, error=NULL, enqueued_at=now()`,
+          ['resolve:' + slug, it.company, sector, country]
         );
       }
       accepted.push({ input: it.input, domain: it.domain || null, company: it.company || null, needs_resolve: !it.domain });

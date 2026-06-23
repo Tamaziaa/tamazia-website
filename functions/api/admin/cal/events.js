@@ -3,9 +3,12 @@ export const onRequestGet = async ({ request, env }) => {
   if (!authed(request, env)) return unauth();
   if (!env.CAL_API_KEY) return json({ event_types: [], error: 'CAL_API_KEY unbound' });
   try {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 8000);
     const r = await fetch('https://api.cal.com/v2/event-types', {
-      headers: { 'Authorization': 'Bearer ' + env.CAL_API_KEY }
+      headers: { 'Authorization': 'Bearer ' + env.CAL_API_KEY }, signal: ctrl.signal,
     });
+    clearTimeout(to);
     const d = await r.json();
     const groups = d.data?.eventTypeGroups || [];
     const all = [];

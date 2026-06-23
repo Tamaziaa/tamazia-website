@@ -76,7 +76,12 @@ const TabAudits = () => {
                     <td className="t-11 t-muted">{a.minted_at || '—'}</td>
                     <td><span className="t-num t-13" style={{ color: (a.views || 0) > 0 ? 'var(--ok)' : 'var(--ink-3)' }}>{a.views || 0}</span></td>
                     <td className="t-11 t-muted">{a.last_view ? String(a.last_view).slice(0, 16).replace('T', ' ') : '—'}</td>
-                    <td>{a.url ? <a className="btn ghost xs" href={a.url.startsWith('http') ? a.url : a.url} target="_blank" rel="noopener">open ↗</a> : <span className="t-11 t-muted">—</span>}</td>
+                    <td>
+                      <div className="row" style={{ gap: 6 }}>
+                        {a.url ? <a className="btn ghost xs" href={a.url} target="_blank" rel="noopener">open ↗</a> : <span className="t-11 t-muted">—</span>}
+                        {(a.domain || a.input) && <button className="btn ghost xs" title="Re-queue this audit" onClick={() => window.POST && window.POST('audits/mint', { domain: a.domain || a.input })}>re-mint</button>}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

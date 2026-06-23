@@ -22,25 +22,35 @@ export const onRequestGet = async ({ request, env }) => {
   const flags = [];
   if (highIntentToday.length) flags.push({ level: 'p1', msg: highIntentToday.length + ' high-intent form(s) today' });
   if (todayBookings.length) flags.push({ level: 'p1', msg: todayBookings.length + ' new Cal booking(s) today' });
-  // Engine kill-switch truth (system_state.paused in Neon — what send-due actually checks)
-  let paused = null;
+  // Engine kill-switch truth (system_state.paused in Neon) + live sent/reply totals so the
+  // dashboard shows real numbers instead of hardcoded zeros.
+  let paused = null, sentTotal = 0, repliesTotal = 0, sentToday = 0, repliesToday = 0;
   if (env.NEON_URL) {
-    try {
-      const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
-      const r = await fetch('https://' + host + '/sql', { method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' }, body: JSON.stringify({ query: "SELECT value FROM system_state WHERE key='paused'", params: [] }) });
-      if (r.ok) { const d = await r.json(); const rows = d.rows || d.results || []; paused = String((rows[0] || {}).value || '').toLowerCase() === 'true'; }
-    } catch (_e) {}
+    const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
+    const q = async (query) => {
+      const r = await fetch('https://' + host + '/sql', { method: 'POST', headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' }, body: JSON.stringify({ query, params: [] }) });
+      if (!r.ok) throw new Error('Neon HTTP ' + r.status);
+      const d = await r.json(); return d.rows || d.results || [];
+    };
+    const safe = async (sql) => { try { return ((await q(sql))[0] || {}).n || 0; } catch (_e) { return 0; } };
+    try { const rows = await q("SELECT value FROM system_state WHERE key='paused'"); paused = String((rows[0] || {}).value || '').toLowerCase() === 'true'; } catch (_e) {}
+    [sentTotal, repliesTotal, sentToday, repliesToday] = await Promise.all([
+      safe("SELECT count(*)::int AS n FROM sends"),
+      safe("SELECT count(*)::int AS n FROM inbound_emails WHERE matched_lead_id IS NOT NULL"),
+      safe("SELECT count(*)::int AS n FROM sends WHERE sent_at::date = current_date"),
+      safe("SELECT count(*)::int AS n FROM inbound_emails WHERE received_at::date = current_date"),
+    ]);
   }
   return json({
     paused,
     greeting,
     truth: {
-      real: { prospects: contact.length + briefings.length, sent: 0, replies: 0, booked: bookings.length, won: 0 },
+      real: { prospects: contact.length + briefings.length, sent: sentTotal, replies: repliesTotal, booked: bookings.length, won: 0 },
       test: { prospects: 0, sent: 0, replies: 0, booked: 0, won: 0 },
     },
     cards,
     flags,
-    pipeline_today: { sourced: 0, sent: 0, replies: 0, bookings: todayBookings.length, forms: todayContact.length + todayBriefings.length },
+    pipeline_today: { sourced: 0, sent: sentToday, replies: repliesToday, bookings: todayBookings.length, forms: todayContact.length + todayBriefings.length },
     build_sha: env.CF_PAGES_COMMIT_SHA || 'dev',
     build_at: env.CF_PAGES_BRANCH ? new Date().toISOString() : '',
   });

@@ -6,16 +6,20 @@
 const NAV = [
   { id: 'now',       label: 'Now',       icon: 'home' },
   { id: 'leads',     label: 'Leads',     icon: 'users',    badge: () => (window.PENDING || []).length },
-  { id: 'outreach',  label: 'Outreach',  icon: 'outbox',   badge: () => ((window.OUTBOX || {}).count) || 0 },
   { id: 'inbox',     label: 'Inbox',     icon: 'inbox',    badge: () => (window.REPLIES || []).length },
+  { id: 'outreach',  label: 'Outreach',  icon: 'outbox',   badge: () => ((window.OUTBOX || {}).count) || 0 },
   { id: 'audits',    label: 'Audits',    icon: 'file' },
+  { id: 'channels',  label: 'Channels',  icon: 'outbox',   badge: () => { const c = window.CHANNELS || {}; return ((c.linkedin || []).length + (c.instagram || []).length) || 0; } },
+  { id: 'ops',       label: 'Ops',       icon: 'cog' },
+  { id: 'clients',   label: 'Clients',   icon: 'users' },
   { id: 'bookings',  label: 'Bookings',  icon: 'calendar' },
   { id: 'settings',  label: 'Settings',  icon: 'cog' },
 ];
 
 const TAB_COMPS = {
   now: 'TabNow', leads: 'TabLeads', outreach: 'TabOutreach', audits: 'TabAudits',
-  inbox: 'TabInbox', bookings: 'TabBookings', settings: 'TabSettings',
+  inbox: 'TabInbox', channels: 'TabChannels', ops: 'TabOps', clients: 'TabClients',
+  bookings: 'TabBookings', settings: 'TabSettings',
 };
 
 // ── Sidebar ──────────────────────────────────────────────────────────────────
@@ -154,7 +158,9 @@ const Header = ({ mode, setMode, onCmd, killOn, onKillToggle }) => {
 
 // ── Bottom dock — slim live feed ─────────────────────────────────────────────
 const BottomDock = ({ open, onToggle }) => {
+  const [filt, setFilt] = React.useState('all');
   const latest = EVENTS[0];
+  const shown = filt === 'mute' ? [] : EVENTS.filter(e => filt === 'all' || e.src === (filt === 'replies' ? 'reply' : filt === 'sends' ? 'send' : e.src));
   const srcColor = src => ({
     reply: 'var(--ok)', send: 'var(--ink-3)', scrape: 'var(--info)',
     audit: 'var(--clay)', intel: 'var(--clay)', form: 'var(--ok)',
@@ -193,17 +199,17 @@ const BottomDock = ({ open, onToggle }) => {
             <div className="spread" style={{ marginBottom: 12 }}>
               <h3 className="h3" style={{ margin: 0 }}>Activity</h3>
               <div className="row" style={{ gap: 6 }}>
-                <button className="btn ghost sm">All</button>
-                <button className="btn ghost sm">Replies</button>
-                <button className="btn ghost sm">Sends</button>
-                <button className="btn ghost sm">Mute</button>
+                {[['all', 'All'], ['replies', 'Replies'], ['sends', 'Sends'], ['mute', 'Mute']].map(([k, lbl]) => (
+                  <button key={k} className={`btn ${filt === k ? 'primary' : 'ghost'} sm`} onClick={() => setFilt(k)}>{lbl}</button>
+                ))}
               </div>
             </div>
             <div className="col" style={{ gap: 0 }}>
-              {EVENTS.map((e, i) => (
+              {shown.length === 0 && <div className="t-12 t-muted" style={{ padding: '8px 0' }}>{filt === 'mute' ? 'Muted.' : 'Nothing in this filter.'}</div>}
+              {shown.map((e, i) => (
                 <div key={i} className="row" style={{
                   gap: 10, padding: '8px 0',
-                  borderBottom: i < EVENTS.length - 1 ? '1px solid var(--line-2)' : 'none',
+                  borderBottom: i < shown.length - 1 ? '1px solid var(--line-2)' : 'none',
                 }}>
                   <span className="t-mono t-11" style={{ color: 'var(--ink-3)', width: 44 }}>{e.t}</span>
                   <span className="t-mono t-11" style={{ width: 60, color: srcColor(e.src), fontWeight: 600 }}>{e.src}</span>

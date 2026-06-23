@@ -21,12 +21,12 @@ export const onRequestPost = async ({ request, env }) => {
   };
   const rowsOf = (d) => d.rows || d.results || [];
   try {
-    const lead = rowsOf(await q('SELECT id, domain, company, sector, best_email, audit_url, status FROM leads WHERE id=$1', [id]))[0];
+    const lead = rowsOf(await q('SELECT id, domain, company, sector, COALESCE(contact_email, primary_email, email) AS contact_email, audit_url, status FROM leads WHERE id=$1', [id]))[0];
     if (!lead) return json({ ok: false, error: 'lead not found' });
 
     // Suppression guard — never push a do-not-contact email into the send path.
-    if (lead.best_email) {
-      const sup = rowsOf(await q('SELECT 1 FROM suppression WHERE lower(email)=lower($1) LIMIT 1', [lead.best_email]));
+    if (lead.contact_email) {
+      const sup = rowsOf(await q('SELECT 1 FROM suppression WHERE lower(email)=lower($1) LIMIT 1', [lead.contact_email]));
       if (sup.length) return json({ ok: false, error: 'suppressed', detail: 'This email is on the suppression list; not pushed.' }, 409);
     }
     if (['duplicate', 'dnc', 'bounced', 'suppressed'].includes(String(lead.status || ''))) {

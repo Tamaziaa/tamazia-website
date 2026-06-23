@@ -9,7 +9,7 @@ export const onRequestGet = async ({ request, env }) => {
       const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
       // Join the matched lead so the inbox shows the company name, not a bare email address.
       // matched_lead_id is the column the reply-matcher writes (LEFT JOIN: unmatched replies still show).
-      const sql = `SELECT ie.id, ie.from_email, ie.subject, ie.body, ie.classification, ie.received_at,
+      const sql = `SELECT ie.id, ie.from_email, ie.subject, ie.body_plain AS body, ie.classification, ie.received_at,
           l.company, l.domain
         FROM inbound_emails ie LEFT JOIN leads l ON l.id = ie.matched_lead_id
         ORDER BY ie.received_at DESC NULLS LAST LIMIT $1`;

@@ -34,7 +34,9 @@ export const onRequestPost = async ({ request, env }) => {
   if (!authed(request, env)) return unauth();
   if (!env.GH_TOKEN) return json({ ok: false, error: 'GH_TOKEN unbound' });
   let body = {}; try { body = await request.json(); } catch (_e) {}
-  const wf = WORKFLOWS[body.workflow] || WORKFLOWS.engine;
+  // Reject unknown workflow names instead of silently dispatching the full engine cycle.
+  const wf = WORKFLOWS[body.workflow];
+  if (!wf) return json({ ok: false, error: 'unknown_workflow', allowed: Object.keys(WORKFLOWS) }, 400);
   const payload = { ref: 'main' };
   if (wf.inputs) payload.inputs = body.inputs || (body.workflow === 'requalify' ? { requalify: '800', mint: '300' } : {});
   try {

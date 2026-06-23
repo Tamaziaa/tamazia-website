@@ -7,17 +7,19 @@ const TabClients = () => {
   const [onboarding, setOnboarding] = React.useState(null);
   const [toast, setToast] = React.useState('');
 
+  const aliveRef = React.useRef(true);
   const load = async () => {
     const [c, i, o] = await Promise.all([
       window.API ? window.API('clients') : null,
       window.API ? window.API('invoices') : null,
       window.API ? window.API('onboarding') : null,
     ]);
+    if (!aliveRef.current) return;
     setClients((c && c.clients) || []);
     setInvoices((i && i.invoices) || []);
     setOnboarding((o && (o.tasks || o.onboarding)) || []);
   };
-  React.useEffect(() => { let a = true; load().catch(() => {}); return () => { a = false; }; }, []);
+  React.useEffect(() => { aliveRef.current = true; load().catch(() => {}); return () => { aliveRef.current = false; }; }, []);
 
   const issueInvoice = async (clientId) => {
     setToast('');

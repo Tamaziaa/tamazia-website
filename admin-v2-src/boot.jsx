@@ -118,8 +118,8 @@ function mapLeads(d) {
       is_test: false, is_aggressive: l.acquisition_channel === 'aggressive',
       priority_source: l.priority_source || null,
       created_at: (l.created_at || '').slice(0, 10), query: '',
-      touch_history: ['—', '—', '—', '—', '—', '—'],
-      opens: 0, clicks: 0,
+      touch_history: Array.isArray(l.touch_history) ? l.touch_history.map(t => t || '—') : ['—', '—', '—', '—', '—', '—'],
+      opens: l.opens || l.email_opens || 0, clicks: l.clicks || l.email_clicks || 0,
     };
   });
 }

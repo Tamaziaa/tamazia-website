@@ -7,7 +7,12 @@ export const onRequestGet = async ({ request, env }) => {
   if (env.NEON_URL) {
     try {
       const host = env.NEON_URL.replace(/.*@([^/]+)\/.*/, '$1');
-      const sql = `SELECT id, from_email, subject, body, classification, received_at FROM inbound_emails ORDER BY received_at DESC NULLS LAST LIMIT $1`;
+      // Join the matched lead so the inbox shows the company name, not a bare email address.
+      // matched_lead_id is the column the reply-matcher writes (LEFT JOIN: unmatched replies still show).
+      const sql = `SELECT ie.id, ie.from_email, ie.subject, ie.body, ie.classification, ie.received_at,
+          l.company, l.domain
+        FROM inbound_emails ie LEFT JOIN leads l ON l.id = ie.matched_lead_id
+        ORDER BY ie.received_at DESC NULLS LAST LIMIT $1`;
       const r = await fetch(`https://${host}/sql`, {
         method: 'POST',
         headers: { 'Neon-Connection-String': env.NEON_URL, 'Content-Type': 'application/json' },

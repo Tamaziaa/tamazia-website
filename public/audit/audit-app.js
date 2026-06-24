@@ -51,15 +51,15 @@
   // STRIPE_UNLOCK is the Audit Unlock card. Keep in sync with STRIPE_LINKS in src/components/sections/Pricing.astro.
   const STRIPE_LINKS = {
     'Website Remodelling': 'https://buy.stripe.com/cNi00jcwI1i432w7Auf7i00',
-    'AI Authority': 'https://buy.stripe.com/aFa8wP1S47Gs0Uo082f7i01',
-    'ICP Outreach': 'https://buy.stripe.com/3cIbJ1eEQ9OA0Uo5smf7i02',
-    'Online Personal Branding': 'https://buy.stripe.com/fZubJ10O0aSE9qUaMGf7i03',
-    'Instagram Presence': 'https://buy.stripe.com/6oU3cvaoA0e0dHa4oif7i04',
+    'AI Authority': 'https://buy.stripe.com/fZu4gz9kw6Co0Uo3kef7i0f',
+    'ICP Outreach': 'https://buy.stripe.com/bJe14n8gs1i4gTm1c6f7i0g',
+    'Online Personal Branding': 'https://buy.stripe.com/28EdR97co7GseLedYSf7i0h',
+    'Instagram Presence': 'https://buy.stripe.com/aFa5kD9kw4ug1Ys082f7i0i',
     'YMYL Content': 'https://buy.stripe.com/6oU3cvbsEd0M32w3kef7i05',
-    'Reputation & Crisis': 'https://buy.stripe.com/00wbJ1eEQ5yk6eI8Eyf7i06',
-    'GBP Domination': 'https://buy.stripe.com/28E6oH2W89OAfPi3kef7i07',
+    'Reputation & Crisis': 'https://buy.stripe.com/aFa00jdAMe4Q8mQg70f7i0k',
+    'GBP Domination': 'https://buy.stripe.com/00wcN57co2m8eLef2Wf7i0l',
   };
-  const STRIPE_UNLOCK = 'https://buy.stripe.com/28E3cvfIU6Co8mQ9ICf7i0c';
+  const STRIPE_UNLOCK = 'https://buy.stripe.com/3cI3cv1S44ugbz2aMGf7i0d';
   // Append the minted report's identity so the webhook can flip THIS report to unlocked after payment.
   function unlockHref(){
     const ap = (location.pathname.match(/\/audit\/([^/]+)\/([^/]+)/) || []);

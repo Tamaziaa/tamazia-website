@@ -47,6 +47,27 @@
   function strOr(v){ return (typeof v==='string' && v.trim()) ? v.trim() : ''; }
   // Stripe Payment Link by fix-pack scope key (10 / 20 / 30 / all→30). '' when unset.
   function stripeFixLink(k){ return k==='10'?STRIPE.fix10 : k==='20'?STRIPE.fix20 : (k==='30'||k==='all')?STRIPE.fix30 : ''; }
+  // Hosted Stripe Payment Links (LIVE, GBP). Independent Solutions keyed by EXACT addon name (ADDONS[].nm);
+  // STRIPE_UNLOCK is the Audit Unlock card. Keep in sync with STRIPE_LINKS in src/components/sections/Pricing.astro.
+  const STRIPE_LINKS = {
+    'Website Remodelling': 'https://buy.stripe.com/cNi00jcwI1i432w7Auf7i00',
+    'AI Authority': 'https://buy.stripe.com/aFa8wP1S47Gs0Uo082f7i01',
+    'ICP Outreach': 'https://buy.stripe.com/3cIbJ1eEQ9OA0Uo5smf7i02',
+    'Online Personal Branding': 'https://buy.stripe.com/fZubJ10O0aSE9qUaMGf7i03',
+    'Instagram Presence': 'https://buy.stripe.com/6oU3cvaoA0e0dHa4oif7i04',
+    'YMYL Content': 'https://buy.stripe.com/6oU3cvbsEd0M32w3kef7i05',
+    'Reputation & Crisis': 'https://buy.stripe.com/00wbJ1eEQ5yk6eI8Eyf7i06',
+    'GBP Domination': 'https://buy.stripe.com/28E6oH2W89OAfPi3kef7i07',
+  };
+  const STRIPE_UNLOCK = 'https://buy.stripe.com/28E3cvfIU6Co8mQ9ICf7i0c';
+  // Append the minted report's identity so the webhook can flip THIS report to unlocked after payment.
+  function unlockHref(){
+    const ap = (location.pathname.match(/\/audit\/([^/]+)\/([^/]+)/) || []);
+    const slug = ap[1] || (window.D && window.D.meta && window.D.meta.slug) || '';
+    const hash = ap[2] || '';
+    const ref = (slug && hash) ? ('?client_reference_id=' + encodeURIComponent(slug + '__' + hash)) : '';
+    return STRIPE_UNLOCK + ref;
+  }
 
   const $ = (s,r=document)=>r.querySelector(s);
   // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
@@ -573,7 +594,7 @@
       // C-H: always route via the metadata-bearing /api/stripe/checkout (data-subscribe) so this report's
       // slug+hash reach the webhook. A static Payment Link cannot carry per-recipient metadata, so it is
       // never used for the unlock/cover flow even when STRIPE_LINK_COVER is set.
-      const coverBtn = `<a class="btn solid block" data-book="package" data-intent="exposure_cover">Start monthly cover&nbsp;↗</a>`;
+      const coverBtn = `<a class="btn solid block" href="${unlockHref()}" target="_blank" rel="noopener">Start monthly cover&nbsp;↗</a>`;
       return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Keep this report live</h3></div>
     <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: founder-reviewed cover that re-runs this audit on your live data every month.</p>
@@ -598,7 +619,7 @@
     // carried in the session metadata and the webhook can flip audit_pages.unlocked for THIS exact link. A
     // static Payment Link carries no metadata and would take the payment without ever unlocking the report,
     // so it is no longer used here even when STRIPE_LINK_UNLOCK is set. trial is server-pinned (see checkout.js).
-    const unlockBtn = `<a class="btn solid block" data-book="package" data-intent="exposure_unlock">Unlock the full report&nbsp;↗</a>`;
+    const unlockBtn = `<a class="btn solid block" href="${unlockHref()}" target="_blank" rel="noopener">Unlock the full report&nbsp;↗</a>`;
     const coverBtn = '';
     return `
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
@@ -713,7 +734,7 @@
           <div class="tag">${escH(a.usp)}</div>
           <div class="aspec-h">How it runs, step by step</div>
           <ol class="aspec-steps">${a.spec.map(s=>`<li>${escH(s)}</li>`).join('')}</ol>
-          <a class="btn gold addon-cta" data-book="package" data-tier="${escH(a.nm)}">Add ${escH(a.nm.split(' ')[0])} ↗</a>
+          <a class="btn gold addon-cta" href="${STRIPE_LINKS[a.nm]||'#'}" target="_blank" rel="noopener">Add ${escH(a.nm.split(' ')[0])} ↗</a>
         </div>
       </div>`;}).join('')}
       </div>

@@ -98,8 +98,14 @@ export async function onRequestPost(context) {
   const md = s.metadata || {};
   // Route 3 unlock: a successful payment that carries the audit slug+hash unlocks THAT report for everyone who
   // opens the link (founder's "unlock the whole link" model). Sanitised to the slug/hash charset.
-  const unlockSlug = clip(md.audit_slug, 120).replace(/[^a-zA-Z0-9_-]/g, '');
-  const unlockHash = clip(md.audit_hash, 64).replace(/[^a-zA-Z0-9_-]/g, '');
+  // Hosted Payment Links cannot set metadata via URL, but DO carry ?client_reference_id=<slug>__<hash>.
+  // Split on the FIRST "__" (slug is kebab-case, never contains "__"; the hash takes the remainder).
+  const cref = clip(s.client_reference_id, 200);
+  const crefIx = cref.indexOf('__');
+  const crefSlug = crefIx >= 0 ? cref.slice(0, crefIx) : '';
+  const crefHash = crefIx >= 0 ? cref.slice(crefIx + 2) : '';
+  const unlockSlug = (clip(md.audit_slug, 120) || clip(crefSlug, 120)).replace(/[^a-zA-Z0-9_-]/g, '');
+  const unlockHash = (clip(md.audit_hash, 64) || clip(crefHash, 64)).replace(/[^a-zA-Z0-9_-]/g, '');
   const order = {
     stripe_session: clip(s.id, 120),
     stripe_customer: clip(typeof s.customer === 'string' ? s.customer : (s.customer && s.customer.id), 120),
@@ -146,9 +152,12 @@ export async function onRequestPost(context) {
     const isRecurring = s.mode === 'subscription' || !!order.subscription;
     const perSuffix = isRecurring ? '/mo' : ' one-time';
     const amt = order.amount_total != null ? `${(order.amount_total / 100).toFixed(0)} ${(order.currency || 'gbp').toUpperCase()}` : '';
-    const summary = `Add-on purchased · ${order.addon_name || order.addon_key}${amt ? ' · ' + amt + (isRecurring ? '/mo' : '') : ''}`;
+    // Hosted Payment Links carry no metadata, so addon_name/key are blank; fall back to a sensible label
+    // (the unlock is identifiable via client_reference_id; the 8 solutions are identifiable by amount).
+    const label = order.addon_name || order.addon_key || (unlockSlug ? 'Audit unlock + monitoring' : 'Independent Solution');
+    const summary = `Sale · ${label}${amt ? ' · ' + amt + (isRecurring ? '/mo' : '') : ''}`;
     const detail = [
-      `*Add-on:* ${order.addon_name || order.addon_key}`,
+      `*Item:* ${label}`,
       order.company && `*Company:* ${order.company}`,
       order.audit_domain && `*Audit:* ${order.audit_domain}`,
       order.customer_email && `*Email:* ${order.customer_email}`,

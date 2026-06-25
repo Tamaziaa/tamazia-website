@@ -2,7 +2,7 @@
 // CRITICAL FIX: stats restored from invented "4× / 400+ / 4" to live-site values.
 
 export const whyUsContent = {
-  eyebrow: '',  /* r3 · section starts with the heading */
+  eyebrow: 'WHY US',
 
   h2: "Any agency can rank you.<br/>{{Not every agency has read your sector's laws.}}",
 

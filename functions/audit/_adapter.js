@@ -940,13 +940,20 @@ export function payloadToD(payload, ctx = {}) {
   // assert "…N breached on your live site right now / Regulatory compliance PASS" under a low grade — the real
   // exposure is the ranking + AI-visibility gaps, which do exist. Lead with those instead. Consumers that build
   // the regulatory headline should prefer this string (audit-app.js §regulatory). (zero-critical-honest)
-  const compCriticals = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P0').length;
+  const compCriticalPointers = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P0');
+  const compCriticals = compCriticalPointers.length;
+  // D-3: count distinct breached frameworks (not raw pointer count) for the headline — avoids "4 breached" when
+  // 4 pointers belong to 1 framework. "Breached" = at least one P0 confirmed finding in that framework.
+  const breachedFwCount = new Set(compCriticalPointers.map((p) => p.framework_short || p.framework).filter(Boolean)).size || compCriticals;
   const compHighs = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P1').length;
+  // D-1: replace hardcoded '400+' with honest language. The catalogue is screened; binding count is `frameworks.length`.
+  // D-3: use breachedFwCount (distinct frameworks) not compCriticals (raw pointer count) in the breach assertion.
+  const bindingN = frameworks.length;
   const regulatoryHeadline = compCriticals > 0
-    ? `All ${'400+'} active frameworks were screened. The ones that legally bind you are below, and ${compCriticals} ${compCriticals === 1 ? 'is' : 'are'} breached on your live site right now.`
+    ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you — ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on your live site right now.`
     : (compHighs > 0
-      ? `All ${'400+'} active frameworks were screened. The ones that legally bind you are below; no critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
-      : `All ${'400+'} active frameworks were screened. The ones that legally bind you are below, and none is confirmed breached on the live site this scan, so the real exposure here is not a fine. It is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+      ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you. No critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
+      : `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you, and none is confirmed breached on the live site this scan. The real exposure here is not a fine — it is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
@@ -1499,7 +1506,10 @@ export function payloadToD(payload, ctx = {}) {
     regulatoryHeadline, regulatoryCriticalsZero,
     // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
     // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
-    frameworksAssessed: frameworks.length, frameworksBinding: Math.max(arr(payload.applicable_frameworks).length, frameworks.length), rulesChecked: '400+', frameworksTotal: '400+',
+    // D-2: single source of truth for all displayed framework counts. frameworksBinding was previously
+    // Math.max(applicable, displayed) which diverged visually when the display filter excluded some rows.
+    // Now both are `frameworks.length` (the shown, binding set). rulesChecked remains informational.
+    frameworksAssessed: frameworks.length, frameworksBinding: frameworks.length, rulesChecked: arr(payload.applicable_frameworks).length || frameworks.length, frameworksTotal: frameworks.length,
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0 to 100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,

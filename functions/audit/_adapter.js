@@ -115,7 +115,9 @@ const FW_REGULATOR = {
 // same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the
 // Food Info Regs and the FSA "Natasha's Law" food card). Collapse the overlapping code into its canonical
 // sibling at the grouping step so findings merge into a single framework. (fw-overlap)
-const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA' };
+// UK_ICO_COOKIES is the ICO's supplementary guidance for PECR compliance — it is not a separate Act
+// (same regulator, same enforcement, same cookies regime). Both codes share the PECR card. (F-6)
+const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA', UK_ICO_COOKIES: 'UK_PECR' };
 const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
 // Phase 4: collapse same-Act article/section siblings into ONE framework box (UK_GDPR_A13 +
 // UK_GDPR_A14 -> "UK GDPR", each article kept as a provision inside). SAFE: collapse ONLY for an
@@ -124,7 +126,7 @@ const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
 // against prefix-substring false matches (UK_GDPR_ never matches a hypothetical UK_GDPRX).
 const ACT_MERGE_PREFIXES = ['UK_GDPR', 'EU_GDPR', 'AE_PDPL', 'DIFC_DPL', 'ADGM_DPR', 'SAUDI_PDPL', 'QATAR_PDPPL', 'US_CCPA', 'US_CPRA', 'DE_BDSG', 'FR_CNIL', 'UK_PECR'];
 function actKey(fw) {
-  const c = fwCanon(fw);
+  const c = fwCanon(fw);   // FW_CANON resolves aliases (DMCC→CMA, ICO_COOKIES→PECR) before prefix merge
   for (const pre of ACT_MERGE_PREFIXES) { if (c === pre || c.startsWith(pre + '_')) return pre; }
   return c;
 }

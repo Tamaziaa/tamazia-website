@@ -513,19 +513,30 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
   const pointerHealth = Math.max(0, 1 - (c * 0.10 + h * 0.04 + st * 0.015));
   // Compliance dimension is judged on compliance-bucket findings ONLY; zero findings means
   // "not fully assessed" (the engine suppresses what it can't prove), never "perfect". (G3/R-010)
+  // D-6: displayed regulatory registration numbers/badges (ICO, SRA, FCA FRN, CQC, CH) ARE verified signals —
+  // when present, the compliance dimension is NOT 'na' even with zero breach findings. This prevents a registered,
+  // compliant firm from being penalised solely because the engine found no statutory breach to evidence.
   const compP = pointers.filter((p) => p.bucket !== 'ai_visibility');
   const cc0 = compP.filter((p) => p.severity === 'P0').length;
   const ch0 = compP.filter((p) => p.severity === 'P1').length;
   const cs0 = compP.length - cc0 - ch0;
   const compHealth = Math.max(0, 1 - (cc0 * 0.10 + ch0 * 0.04 + cs0 * 0.015));
-  const compNA = compP.length === 0;
+  const posComp = g(payload, 'comp.positive_compliance', {}) || {};
+  // compNA: truly 'not assessed' only when no findings AND no positive registration signals
+  const compNA = compP.length === 0 && !posComp.any;
   const tvScore = (good) => good ? 88 : 30;
   const has = (k) => !!sig[k];
   const perf = isNum(psi.perf) ? Math.round(psi.perf * 100) : null;
   const dims = [
     // Verdict: criticals↗fail, highs↗warn, standard-only↗warn (NOT a confident green "PASS", which read as
     // "Regulatory compliance PASS" under an F grade); only a genuinely clean sheet (no findings at all) passes. (zero-critical-honest)
-    { nm: 'Regulatory compliance', key: 'compliance', _na: compNA, _cc: cc0, _ch: ch0, st: compNA ? 'na' : (cc0 > 0 ? 'fail' : ch0 > 0 ? 'warn' : cs0 > 0 ? 'warn' : 'pass'), v: compNA ? 0 : Math.round(compHealth * 100), sub: compNA ? 'not assessed, limited read of the live site' : `${cc0} critical · ${ch0} high · ${cs0} standard`, w: 2 },
+    // D-6: when positive_compliance signals are present and cc0=0, compliance is assessed (not na) at a
+    // moderate 'pass' — not a perfect score (we still found minor issues potentially) but no longer 'na'.
+    { nm: 'Regulatory compliance', key: 'compliance', _na: compNA, _cc: cc0, _ch: ch0,
+      st: compNA ? 'na' : (cc0 > 0 ? 'fail' : ch0 > 0 ? 'warn' : cs0 > 0 ? 'warn' : 'pass'),
+      v: compNA ? 0 : (cc0 === 0 && posComp.any ? Math.max(72, Math.round(compHealth * 100)) : Math.round(compHealth * 100)),
+      sub: compNA ? 'not assessed, limited read of the live site' : (cc0 === 0 && posComp.any ? `registered · ${ch0} high · ${cs0} standard` : `${cc0} critical · ${ch0} high · ${cs0} standard`),
+      w: 2 },
     // On-page / technical / content / security / a11y / tracking dims INFER from the signal bag; with no readable
     // scan that bag is empty and every value would read 0 (a fabricated F that also tanks the score). Pass null so
     // they become "not assessed" (excluded from scoring) instead of confirmed-failing. (scan-fabrication)

@@ -948,12 +948,16 @@ export function payloadToD(payload, ctx = {}) {
   const compHighs = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records') && p.severity === 'P1').length;
   // D-1: replace hardcoded '400+' with honest language. The catalogue is screened; binding count is `frameworks.length`.
   // D-3: use breachedFwCount (distinct frameworks) not compCriticals (raw pointer count) in the breach assertion.
+  // C-5: use the correct scan-type label — "your live site" only when scan was live; "the archived version"
+  //      when Wayback was used, so we never assert a live breach on evidence from a historical snapshot.
   const bindingN = frameworks.length;
+  const _viaArchive = !!payload.via_archive;
+  const _scanLabel = _viaArchive ? 'the archived version of your site' : 'your live site';
   const regulatoryHeadline = compCriticals > 0
-    ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you — ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on your live site right now.`
+    ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you — ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on ${_scanLabel}${_viaArchive ? ' (live site was behind a bot-challenge; re-scan confirms live state)' : ' right now'}.`
     : (compHighs > 0
-      ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you. No critical breach is confirmed on the live site, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
-      : `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you, and none is confirmed breached on the live site this scan. The real exposure here is not a fine — it is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+      ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you. No critical breach is confirmed on ${_scanLabel}, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
+      : `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you, and none is confirmed breached on ${_scanLabel} this scan. The real exposure here is not a fine — it is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---

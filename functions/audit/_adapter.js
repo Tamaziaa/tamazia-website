@@ -362,6 +362,9 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
     // "Signal" — never label a non-statutory finding "③ Law".
     labelKind: /GEO|AI/.test(pillar) ? 'Signal' : /SEO|Technical/.test(pillar) ? 'Standard' : 'Law',
+    // Precise controlling provision (instrument + section/article) when known, e.g. "Companies Act 2006 s.82",
+    // "UK GDPR Art. 13(2)(f)", "SRA Transparency Rules 2018 r.1.1-1.5" — legally-defensible specificity. (legal-QA citation)
+    statute: p.statutory_citation || null,
     // Penalty display: a fixed £ range when the law sets one; else the penalty_basis note (e.g. "up to 10% of
     // global annual turnover", "unlimited fine", "per-violation penalty", "non-monetary sanctions") so turnover-%
     // / unlimited / per-violation regimes are stated accurately instead of a misleading £0 or "ranking impact".

@@ -346,6 +346,7 @@ function absenceLine(ae) {
 function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
+  const enfLo = +p.enforce_typical_low_gbp || 0, enfHi = +p.enforce_typical_high_gbp || 0;  // realistic typical enforcement
   const noFine = NO_STATUTORY_FINE.has(p.framework_short) || p.bucket === 'ai_visibility' || p.bucket === 'seo';
   return {
     n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation) : pillar, pillar,
@@ -358,13 +359,18 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
     // "Signal" — never label a non-statutory finding "③ Law".
     labelKind: /GEO|AI/.test(pillar) ? 'Signal' : /SEO|Technical/.test(pillar) ? 'Standard' : 'Law',
-    // Penalty display: a fixed £ range when the law sets one; else the penalty_basis note (e.g. "up to 10% of
-    // global annual turnover", "unlimited fine", "per-violation penalty", "non-monetary sanctions") so turnover-%
-    // / unlimited / per-violation regimes are stated accurately instead of a misleading £0 or "ranking impact".
-    // Only genuine SEO/AI signals fall through to "ranking impact". (legal-QA penalty-basis fix)
-    exp: (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
-      : (p.penalty_note ? p.penalty_note
-        : (noFine ? 'ranking impact' : 'enforcement action')),
+    // Penalty display (legal-QA enforcement-practice model): LEAD with the realistic TYPICAL enforcement range a
+    // regulator actually issues, not the theoretical statutory maximum. Fall back to the fixed statutory range, then
+    // the penalty_basis note (turnover %, unlimited, per-violation, non-monetary), then ranking impact for SEO/AI.
+    exp: (enfLo || enfHi) ? (gbp(enfLo, sym) + ' to ' + gbp(enfHi, sym) + ' typical')
+      : (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
+        : (p.penalty_note ? p.penalty_note
+          : (noFine ? 'ranking impact' : 'enforcement action')),
+    // statutory MAXIMUM kept distinct from the typical outcome, flagged when realistically rarely imposed.
+    expMax: hiF ? gbp(hiF, sym) : (p.penalty_note || null),
+    maxRare: !!p.enforce_max_rare,
+    enfMethod: p.enforce_methodology || null,
+    enfContext: p.enforce_context || null,
     title: p.fact || g(p, 'bingo.problem', 'Finding'),
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),

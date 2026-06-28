@@ -358,7 +358,13 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
     // "Signal" — never label a non-statutory finding "③ Law".
     labelKind: /GEO|AI/.test(pillar) ? 'Signal' : /SEO|Technical/.test(pillar) ? 'Standard' : 'Law',
-    exp: (noFine || (!lowF && !hiF)) ? 'ranking impact' : gbp(lowF, sym) + ' to ' + gbp(hiF, sym),
+    // Penalty display: a fixed £ range when the law sets one; else the penalty_basis note (e.g. "up to 10% of
+    // global annual turnover", "unlimited fine", "per-violation penalty", "non-monetary sanctions") so turnover-%
+    // / unlimited / per-violation regimes are stated accurately instead of a misleading £0 or "ranking impact".
+    // Only genuine SEO/AI signals fall through to "ranking impact". (legal-QA penalty-basis fix)
+    exp: (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
+      : (p.penalty_note ? p.penalty_note
+        : (noFine ? 'ranking impact' : 'enforcement action')),
     title: p.fact || g(p, 'bingo.problem', 'Finding'),
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),

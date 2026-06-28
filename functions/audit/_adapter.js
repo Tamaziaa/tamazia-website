@@ -117,7 +117,10 @@ const FW_REGULATOR = {
 // sibling at the grouping step so findings merge into a single framework. (fw-overlap)
 // UK_ICO_COOKIES is the ICO's supplementary guidance for PECR compliance — it is not a separate Act
 // (same regulator, same enforcement, same cookies regime). Both codes share the PECR card. (F-6)
-const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA', UK_ICO_COOKIES: 'UK_PECR' };
+// US_CAN_SPAM / US_CANSPAM are duplicate encodings of the same statute US_FTC already covers (CAN-SPAM rules
+// SPAM01-05); US_CCPA is superseded by US_CPRA (same California privacy regime). Collapse so a US firm never
+// sees the same regime twice. (LegalTech dedup §5 — render-side, leaves the rule catalogue untouched.)
+const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA', UK_ICO_COOKIES: 'UK_PECR', US_CAN_SPAM: 'US_FTC', US_CANSPAM: 'US_FTC', US_CCPA: 'US_CPRA' };
 const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
 // Phase 4: collapse same-Act article/section siblings into ONE framework box (UK_GDPR_A13 +
 // UK_GDPR_A14 -> "UK GDPR", each article kept as a provision inside). SAFE: collapse ONLY for an

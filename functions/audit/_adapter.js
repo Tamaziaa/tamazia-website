@@ -1467,6 +1467,18 @@ export function payloadToD(payload, ctx = {}) {
     for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
   }
 
+  // Collapse near-duplicate framework rows (a few overlapping catalogue codes render almost identically — e.g. two
+  // "FCA Consumer Duty" rows, "UAE Health Ad Permit" vs "...Permit Regime"). Keep the more-breached row; one per
+  // name-stem (18-char normalised prefix is distinct enough that genuinely different frameworks are not merged).
+  {
+    const _stem = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 18);
+    const _best = new Map();
+    for (const f of frameworks) { const k = _stem(f.name); const e = _best.get(k); if (!e || (f.findings || 0) > (e.findings || 0)) _best.set(k, f); }
+    const _seen = new Set(); const _out = [];
+    for (const f of frameworks) { const k = _stem(f.name); if (_seen.has(k)) continue; _seen.add(k); _out.push(_best.get(k)); }
+    frameworks.length = 0; frameworks.push(..._out);
+  }
+
   // --- exposure bars (£M, chart max 18) ---
   // Collapse overlapping codes (DMCC↗CMA, Food Info↗FSA) to one bar (max), matching the merged framework rows
   // above, so a collapsed framework never appears as two near-identical bars. (fw-overlap)

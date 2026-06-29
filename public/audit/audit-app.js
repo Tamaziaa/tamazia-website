@@ -181,7 +181,9 @@
       </summary>
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${escH(fw.why)}
-        <div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}</div>
+        ${(fw.obligations||[]).length?`<div class="lbl">What ${escH(fw.regulator)} assesses</div><ul class="obl">${fw.obligations.map(o=>`<li>${escH(o)}</li>`).join('')}</ul>`:''}
+        <div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}${fw.enforcement_url?` <a href="${escH(fw.enforcement_url)}" target="_blank" rel="noopener nofollow" class="lawcite">source &#8599;</a>`:''}</div>
+        ${fw.guidance?`<div class="lbl">Recent regulatory change</div><div class="action">${escH(fw.guidance)}</div>`:''}
         ${fw.citation_url?`<div class="lbl">The law</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(fw.name)}, ${escH(fw.regulator)} official source &#8599;</a></div>`:''}
         ${(fw.articleGroups||[]).length?(()=>{const _all=(fw.articleGroups||[]).reduce((s,g)=>s+((g.items||[]).length),0);const _half=Math.ceil(_all/2);let _k=0;return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
         <div class="artlist">${fw.articleGroups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>

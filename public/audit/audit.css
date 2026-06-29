@@ -216,6 +216,11 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spa
 .fw .fwbody{padding:0 14px 13px 14px;font-family:var(--body);font-size:12.5px;color:#3a2d30;line-height:1.5}
 .fw .fwbody .lbl{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--ox);margin:11px 0 3px}
 .fw .fwbody .action{background:var(--cream-2);border-radius:8px;padding:9px 11px;font-size:12px}
+.fw .fwbody .action .lawcite{font-family:var(--mono);font-size:10px;white-space:nowrap}
+.fw .fwbody .obl{list-style:none;margin:3px 0 0;padding:0}
+.fw .fwbody .obl li{position:relative;padding:4px 0 4px 16px;font-size:12px;line-height:1.45;border-bottom:1px solid var(--line)}
+.fw .fwbody .obl li:last-child{border-bottom:0}
+.fw .fwbody .obl li:before{content:"";position:absolute;left:2px;top:10px;width:5px;height:5px;border-radius:1px;background:var(--gold,#b8923a)}
 
 /* tech facts */
 .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}

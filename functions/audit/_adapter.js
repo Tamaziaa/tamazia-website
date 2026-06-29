@@ -1363,6 +1363,13 @@ export function payloadToD(payload, ctx = {}) {
   };
   
   const news = g(payload, 'news_map', {}) || {};
+  // Curated regulatory-intelligence (Phase 4): per-framework obligations + regulator focus + verified recent
+  // enforcement + recent guidance, keyed by framework_short. Attached to every framework card so a screened (no-
+  // breach) framework still renders a substantive intelligence block, and a verified enforcement action (with a real
+  // penalty) replaces the generic "the regulator enforces this" prose. Look-up tolerant of synthesised codes.
+  const intel = g(payload, 'framework_intel', {}) || {};
+  const intelOf = (fw, fwShort) => intel[fw] || (fwShort && intel[fwShort]) || intel[String(fw).replace(/_A?\d+.*$/, '')] || null;
+  const obligationsOf = (it) => (it && it.obligations ? String(it.obligations).split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 7) : []);
   // Regulatory frameworks list = COMPLIANCE-bucket findings only (ai_visibility/seo belong in their
   // own panes; grouping them here produced bogus "GEO"/"SEO" frameworks). (C/S-020)
   // ALLOWLIST (not denylist): only genuinely-regulatory buckets become "frameworks". A denylist let
@@ -1413,12 +1420,16 @@ export function payloadToD(payload, ctx = {}) {
     const _reg = FW_REGULATOR[fw] || FW_REGULATOR[top.framework_short] || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || 'Sector regulator';
     // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
     const _cite = top.citation_url || top.citation || '';
+    const _intel = intelOf(fw, top.framework_short);
     return {
       code: fwCode(fw), name: fwName(fw), regulator: _reg,
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
-      action: g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || (_reg + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
+      // Verified curated enforcement (with a real penalty) leads; then live news_map; then ported/example; then prose.
+      action: (_intel && _intel.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || (_reg + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
+      enforcement_url: (_intel && _intel.enforcement_url) || '',
+      obligations: obligationsOf(_intel), reg_focus: (_intel && _intel.focus) || '', guidance: (_intel && _intel.guidance) || '',
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
       provisions, articleGroups,
     };
@@ -1452,12 +1463,34 @@ export function payloadToD(payload, ctx = {}) {
       if (frameworks.length >= REG_CAP) return;
       if (NO_STATUTORY_FINE.has(fw) || sectorInapplicable(fw, payload)) return;
       const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allow.has(j))) return;
-      const nm = fwName(fw); if (_shownFw.has(nm)) return; _shownFw.add(nm);
+      const nm = fwName(fw);
+      const _it = intelOf(fw, fw);
+      // Same display name already shown (alias codes like UK_CONSUMER_DUTY vs UK_FCA_CONSUMER_DUTY collapse to one
+      // card): if THIS code carries curated intel and the shown row lacks it, upgrade that row in place rather than
+      // dropping the intel. Otherwise skip the duplicate.
+      if (_shownFw.has(nm)) {
+        if (_it && (_it.obligations || _it.enforcement)) {
+          const _ex = frameworks.find((f) => f.name === nm);
+          if (_ex && !(_ex.obligations || []).length) {
+            _ex.obligations = obligationsOf(_it); _ex.reg_focus = (_it.focus) || ''; _ex.guidance = (_it.guidance) || '';
+            if (_it.enforcement) { _ex.action = _it.enforcement; _ex.enforcement_url = (_it.enforcement_url) || ''; }
+          }
+        }
+        return;
+      }
+      _shownFw.add(nm);
+      const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
         findings: 0, c: 0, h: 0, s: 0, exp: 'controls to confirm', expN: 0, screened: true,
-        action: g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
-        why: 'This framework legally binds you and was screened against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.',
+        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
+        enforcement_url: (_it && _it.enforcement_url) || '',
+        obligations: obligationsOf(_it), reg_focus: _focus, guidance: (_it && _it.guidance) || '',
+        // When we have a curated regulator-focus line, lead the "why" with it (substantive, framework-specific);
+        // otherwise the honest generic screened line.
+        why: _focus
+          ? (_focus + ' This framework binds you and was screened against your live site this scan; no breach was evidenced, so the obligations below are the controls to be able to demonstrate.')
+          : ('This framework legally binds you and was screened against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.'),
       });
     };
     // 1) the firm's SECTOR-SPECIFIC applicable frameworks first (never crowded out), 2) the rest of applicable,
@@ -1474,6 +1507,13 @@ export function payloadToD(payload, ctx = {}) {
     const _stem = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 18);
     const _best = new Map();
     for (const f of frameworks) { const k = _stem(f.name); const e = _best.get(k); if (!e || (f.findings || 0) > (e.findings || 0)) _best.set(k, f); }
+    // Graft curated intel onto the surviving row from any same-stem sibling it is about to absorb (alias codes like
+    // UK_CONSUMER_DUTY vs UK_FCA_CONSUMER_DUTY: keep the more-breached row but never lose its sibling's obligations).
+    for (const f of frameworks) {
+      const e = _best.get(_stem(f.name)); if (!e || e === f) continue;
+      if (!(e.obligations || []).length && (f.obligations || []).length) { e.obligations = f.obligations; e.reg_focus = f.reg_focus; e.guidance = f.guidance; }
+      if (!e.action || /actively enforces this regime/.test(e.action)) { if (f.action && !/actively enforces this regime/.test(f.action)) { e.action = f.action; e.enforcement_url = f.enforcement_url || e.enforcement_url; } }
+    }
     const _seen = new Set(); const _out = [];
     for (const f of frameworks) { const k = _stem(f.name); if (_seen.has(k)) continue; _seen.add(k); _out.push(_best.get(k)); }
     frameworks.length = 0; frameworks.push(..._out);

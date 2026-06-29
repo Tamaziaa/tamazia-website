@@ -652,6 +652,21 @@ function pillarOf(p) {
   return FW_JUR(fw) !== 'GLOBAL' ? 'Regulatory' : 'SEO + Technical';
 }
 // A3 — turn the engine's nearest-miss absence_evidence into a real per-breach line for the finding card, so an
+// Element-checklist breach line (Phase 3a): names the required elements the firm DOES show (with a verbatim example)
+// and the specific ones it does NOT — the granular "you show price and VAT but not timescales, key stages or who does
+// the work" finding a real lawyer raises. Returns '' when there is no element breakdown.
+function elementLine(p) {
+  const present = Array.isArray(p.present_elements) ? p.present_elements : [];
+  const missing = Array.isArray(p.missing_elements) ? p.missing_elements : [];
+  if (!missing.length) return '';
+  const page = humanUrl(p.evidence_url) || 'your site';
+  const q = (Array.isArray(p.elements) ? (p.elements.find((e) => e.present && e.quote) || {}).quote : '') || '';
+  if (present.length) {
+    return `On ${page} you show ${present.join('; ')}${q ? `, for example “${String(q).replace(/\s{2,}/g, ' ').slice(0, 90)}”` : ''}. The scan did not find: ${missing.join('; ')}.`;
+  }
+  return `The scan did not find the required elements on ${page}: ${missing.join('; ')}.`;
+}
+
 // absence breach shows WHAT we read on the page that should carry the disclosure vs the SPECIFIC missing element —
 // never the bare "we inspected your homepage". Falls back to '' when there is no structured absence evidence.
 function absenceLine(ae) {
@@ -1402,14 +1417,20 @@ export function payloadToD(payload, ctx = {}) {
     for (const p of _use) { const a = articleOf(p) || 'Core requirements'; (_byArt[a] = _byArt[a] || []).push(p); }
     const articleGroups = Object.entries(_byArt).map(([article, aps]) => {
       const inspected = [...new Set(aps.flatMap((p) => arr(p.checked_urls)).map(humanUrl).filter(Boolean))].slice(0, 3);
-      const items = aps.map((p) => ({
-        subject: subjectOf(p, 84) || 'Required disclosure',
-        quote: String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ').slice(0, 180),
-        // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
-        // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
-        absence: String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence),
-        fix: craftFix(p), sev: p.severity,
-      })).filter((it, i, a2) => a2.findIndex((x) => x.subject.toLowerCase() === it.subject.toLowerCase()) === i).slice(0, 12);
+      const items = aps.map((p) => {
+        // Element-checklist findings carry a present/missing breakdown — render that as the (analysis) line, which is
+        // more specific and evidence-grounded than the generic nearest-miss. Otherwise keep the verbatim quote, then
+        // the nearest-miss absence line.
+        const _elLine = elementLine(p);
+        return {
+          subject: subjectOf(p, 84) || 'Required disclosure',
+          quote: _elLine ? '' : String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ').slice(0, 180),
+          // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
+          // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
+          absence: _elLine || (String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence)),
+          fix: craftFix(p), sev: p.severity,
+        };
+      }).filter((it, i, a2) => a2.findIndex((x) => x.subject.toLowerCase() === it.subject.toLowerCase()) === i).slice(0, 12);
       return { article, inspected, items };
     }).filter((gp) => gp.items.length).sort((a, b) => b.items.length - a.items.length).slice(0, 6);
     // flat provisions retained for back-compat consumers + the merge-stable QA assertion

@@ -203,7 +203,12 @@ function provisionLabel(p, actK) {
 const NO_STATUTORY_FINE = new Set(['GOOGLE_EEAT', 'GOOGLE_EAT', 'SCHEMA', 'WIKIPEDIA', 'GEO', 'SEO']);
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
-const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH']);
+const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH',
+  // SEO / GEO / AI-visibility signals are PERFORMANCE metrics, not laws. They must never appear in the Regulatory
+  // section nor be dressed in legal language (regulator, enforcement, fine, "legally binds you"). They have their own
+  // SEO and AI-visibility pillars. (founder: "stop using legal words for seo geo metrics")
+  'GOOGLE_EEAT', 'GOOGLE_EAT', 'EEAT', 'GEO', 'SEO', 'SCHEMA', 'WIKIPEDIA', 'WIKIDATA', 'AI_VISIBILITY', 'AI_CITATION',
+  'CITATIONS', 'CORE_WEB_VITALS', 'PAGESPEED', 'AUTHORITY', 'BACKLINKS']);
 // Framework display names render UNescaped in the framework/finding cards, so a name carrying raw
 // markup, e.g. a Lighthouse/axe audit title like "`<frame>` or `<iframe>` elements do not have a
 // title", would inject a live, unclosed <iframe> and swallow every section rendered after it. The

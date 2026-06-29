@@ -134,6 +134,11 @@ const FW_REGULATOR = {
   US_TCPA: 'Federal Communications Commission', US_TDPSA: 'Texas Attorney General', US_FINRA_2210: 'FINRA', US_SEC_506C: 'Securities & Exchange Commission', US_SEC_REG_FD: 'Securities & Exchange Commission', US_NYDFS_500: 'NY Department of Financial Services', US_GLBA: 'Federal Trade Commission', US_HIPAA: 'HHS Office for Civil Rights', US_COPPA: 'Federal Trade Commission', US_FERPA: 'US Department of Education', US_MEDICAL_BOARD: 'State Medical Board', US_FTC_ENDORSE: 'Federal Trade Commission',
   UAE_CONSUMER: 'UAE Ministry of Economy', UAE_ECOMMERCE: 'UAE Ministry of Economy', UAE_RERA: 'RERA Dubai', FR_CNIL_2025: 'CNIL (France)',
   UK_HSE: 'Health & Safety Executive', US_STATE_PRIVACY: 'US state attorneys general', US_VCDPA: 'Virginia Attorney General', US_ADA: 'US Department of Justice', US_ATTORNEY_ADVERTISING: 'State bar associations', US_CAN_SPAM: 'Federal Trade Commission',
+  // Sector regulators that were rendering as the generic "Sector regulator" placeholder on screened cards (Phase 5.1).
+  UK_FCA_CONDUCT: 'Financial Conduct Authority', UK_FCA_CONSUMER_DUTY: 'Financial Conduct Authority', UK_CONSUMER_DUTY: 'Financial Conduct Authority', UK_FCA_HRI_PROMO: 'Financial Conduct Authority', UK_EMR_2011: 'Financial Conduct Authority', UK_ABI: 'Association of British Insurers', UK_MLR_2017: 'HMRC / FCA',
+  UK_CRA_2015: 'Trading Standards / CMA', UK_CCR_2013: 'Trading Standards / CMA', UK_NATASHAS_LAW: 'Food Standards Agency',
+  UAE_DHA: 'Dubai Health Authority / MOHAP', UAE_MOHAP: 'Ministry of Health & Prevention', UAE_DHCC: 'Dubai Healthcare City Authority', UAE_PDPL: 'UAE Data Office', UAE_HEALTH_DATA_LAW: 'UAE health authorities', UAE_ICT_HEALTH_LAW: 'UAE health authorities', UAE_CONSUMER_PROTECTION: 'UAE Ministry of Economy',
+  US_FAIR_HOUSING_ACT: 'HUD / DOJ', US_RESPA: 'Consumer Financial Protection Bureau', US_STATE_PROF_CONDUCT: 'State licensing boards', US_FTC_FAKE_REVIEWS: 'Federal Trade Commission', US_FTC_REVIEWS_RULE: 'Federal Trade Commission',
 };
 // Frameworks that overlap so heavily they must render as ONE row, never two near-identical cards under the
 // same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the

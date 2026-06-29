@@ -35,13 +35,37 @@ function domainStem(d) {
 // title-cased domain upstream), in which case we clean it. The cleaned, TLD-stripped domain stem is the
 // last resort and is ALWAYS clean ("Monzo", never "Monzo.Com"). Single-word stems get title-cased too.
 const looksLikeDomain = (s) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(String(s || '').trim());
+// Decode HTML entities so user-facing text never shows raw "&amp;"/"&#x27;"/"&#8211;". Safe because the client
+// inserts these as textContent (the entities currently render LITERALLY), so decoding to the character is correct
+// and not an XSS vector. Handles named + decimal + hex numeric references.
+const _ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', hellip: '…', copy: '©', reg: '®', trade: '™' };
+function decodeEnt(s) {
+  if (typeof s !== 'string' || s.indexOf('&') === -1) return s;
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, c) => {
+    if (c[0] === '#') { const code = c[1] === 'x' || c[1] === 'X' ? parseInt(c.slice(2), 16) : parseInt(c.slice(1), 10); return Number.isFinite(code) ? String.fromCodePoint(code) : m; }
+    const k = c.toLowerCase(); return Object.prototype.hasOwnProperty.call(_ENT, k) ? _ENT[k] : m;
+  });
+}
+// A scraped page <title> is NOT a company name. Reject candidates that read like a title/marketing line so the
+// render falls back to the clean domain stem (cert: "Conference & Event Venue in Leeds", "14 Independent Brands...",
+// "New Construction Homes for Sale in New York by Toll Brothers", "Pricing Plans", "Our Team").
+function looksLikeTitle(s) {
+  const t = String(s || '').trim();
+  if (!t) return true;
+  if (t.length > 42) return true;                              // real names are short; titles are long
+  if (/[|»·–—]| - | \| /.test(t)) return true;                 // title separators
+  if (/\b(reviews?|top \d+|best |guide|how to|pricing|plans?|welcome|home ?page|our team|about us|contact|menu|blog|news|brands?|things to do)\b/i.test(t)) return true;
+  if (/^\d/.test(t) || /\b(in|near|for sale in)\b .*\b(london|leeds|bristol|edinburgh|manchester|new york|dubai|miami)\b/i.test(t)) return true;
+  if ((t.match(/\s/g) || []).length >= 6) return true;         // >6 words = a sentence, not a name
+  return false;
+}
 function firmName(payload, passed) {
   const fp = g(payload, 'firm_profile', {}) || {};
   const fromProfile = fp.name || fp.legal_name || fp.display_name || fp.trading_name || fp.brand || payload.firm_name || payload.company;
-  if (fromProfile && String(fromProfile).trim()) return String(fromProfile).trim();
+  if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)) return decodeEnt(String(fromProfile).trim());
   const p = String(passed == null ? '' : passed).trim();
-  if (p && !looksLikeDomain(p) && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return p;
-  // passed is empty OR is a dirty domain-derived string -> rebuild from the clean stem
+  if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return decodeEnt(p);
+  // passed is empty OR is a dirty/title-like string -> rebuild from the clean domain stem
   const src = (p && looksLikeDomain(p)) ? p : payload.domain;
   return titleCase(domainStem(src)) || titleCase(domainStem(payload.domain)) || 'This firm';
 }
@@ -981,7 +1005,13 @@ export function payloadToD(payload, ctx = {}) {
   // D-3: use breachedFwCount (distinct frameworks) not compCriticals (raw pointer count) in the breach assertion.
   // C-5: use the correct scan-type label — "your live site" only when scan was live; "the archived version"
   //      when Wayback was used, so we never assert a live breach on evidence from a historical snapshot.
-  const bindingN = frameworks.length;
+  // FIX(render-crash): `frameworks` is a const declared ~70 lines BELOW (line ~1056), so referencing it here threw
+  // a TDZ ReferenceError ("Cannot access 'frameworks' before initialization") on EVERY payload — crashing payloadToD
+  // unconditionally (all fixtures + all live audits). This blocked every render-engine improvement since the bug
+  // landed from reaching production. bindingN is just the distinct binding-framework count, which equals
+  // frameworks.length (frameworks = Object.entries(byFw), no outer filter); compute it here from the same source
+  // (compliance/public_records pointers grouped by actKey) using only symbols already in scope (pointers, actKey).
+  const bindingN = new Set((pointers || []).filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records').map((p) => actKey(p.framework_short || p.citation || 'OTHER')).filter(Boolean)).size;
   const _viaArchive = !!payload.via_archive;
   const _scanLabel = _viaArchive ? 'the archived version of your site' : 'your live site';
   const regulatoryHeadline = compCriticals > 0
@@ -1582,6 +1612,13 @@ export function payloadToD(payload, ctx = {}) {
       reachable: g(payload, 'scan.reachable', true) !== false, sector: payload.sector, company,
     };
   }
+  // R2 class-fix: decode HTML entities across ALL user-facing strings in D so raw "&amp;"/"&#x27;"/"&#8211;" from
+  // crawled evidence quotes or double-encoded labels never reach the report. Safe (client renders via textContent).
+  (function decodeDeep(o) {
+    if (o == null) return;
+    if (Array.isArray(o)) { for (let i = 0; i < o.length; i++) { if (typeof o[i] === 'string') o[i] = decodeEnt(o[i]); else decodeDeep(o[i]); } return; }
+    if (typeof o === 'object') { for (const k of Object.keys(o)) { if (typeof o[k] === 'string') o[k] = decodeEnt(o[k]); else decodeDeep(o[k]); } }
+  })(D);
   return D;
 }
 

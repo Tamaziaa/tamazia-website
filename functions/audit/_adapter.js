@@ -139,6 +139,18 @@ const FW_REGULATOR = {
   UK_CRA_2015: 'Trading Standards / CMA', UK_CCR_2013: 'Trading Standards / CMA', UK_NATASHAS_LAW: 'Food Standards Agency',
   UAE_DHA: 'Dubai Health Authority / MOHAP', UAE_MOHAP: 'Ministry of Health & Prevention', UAE_DHCC: 'Dubai Healthcare City Authority', UAE_PDPL: 'UAE Data Office', UAE_HEALTH_DATA_LAW: 'UAE health authorities', UAE_ICT_HEALTH_LAW: 'UAE health authorities', UAE_CONSUMER_PROTECTION: 'UAE Ministry of Economy',
   US_FAIR_HOUSING_ACT: 'HUD / DOJ', US_RESPA: 'Consumer Financial Protection Bureau', US_STATE_PROF_CONDUCT: 'State licensing boards', US_FTC_FAKE_REVIEWS: 'Federal Trade Commission', US_FTC_REVIEWS_RULE: 'Federal Trade Commission',
+  // Regulator names for the frameworks surfaced by the 10-company multi-sector/jurisdiction validation (UK accounting/
+  // bar, UAE health/finance/real-estate, US health/dental, EU health). (multi-sector-validation-20260629)
+  UK_HMRC_AML: 'HMRC', UK_BSB: 'Bar Standards Board', UK_BOTOX_FILLERS_CHILDREN_2021: 'MHRA / local authorities', UK_CMP_2019: 'NTSELAT / approved redress scheme',
+  EU_EHDS: 'European Health Data Space authorities', EU_GDPR_ART9: 'EU data-protection authorities', EU_UCPD: 'EU consumer-protection authorities',
+  UAE_ART_LAW: 'UAE health authorities (MOHAP/DHA)', UAE_DOH: 'Abu Dhabi Department of Health', UAE_AML_2018: 'Central Bank of the UAE / Ministry of Economy', AE_AML_2018: 'Central Bank of the UAE / Ministry of Economy',
+  UAE_ENV_2024: 'UAE Ministry of Climate Change & Environment', UAE_MOHRE: 'UAE Ministry of Human Resources & Emiratisation',
+  AE_CBUAE_CONSUMER: 'Central Bank of the UAE', CBUAE_INSURANCE: 'Central Bank of the UAE', CBUAE_RPSCS: 'Central Bank of the UAE', AE_DFSA_COB: 'DFSA (DIFC)', AE_FSRA_COBS: 'ADGM FSRA', AE_SCA: 'UAE Securities & Commodities Authority',
+  US_CDC_ART_REPORTING: 'US CDC / FTC', US_FTC_HBNR: 'Federal Trade Commission', US_FTC_HEALTH_BREACH_RULE: 'Federal Trade Commission', US_NV_SB370: 'Nevada Attorney General', US_RYAN_HAIGHT: 'US DEA', US_CDCA: 'US CDC / FTC',
+  // Second validation pass (cap raise surfaced more frameworks): US health/medical, UK medical/real-estate, EU device.
+  US_FDA: 'US Food & Drug Administration', US_FDA_HCTP: 'US Food & Drug Administration', US_TELEHEALTH_LICENSURE: 'State medical boards (IMLC)', US_WA_MHMDA: 'Washington Attorney General', US_CMS_LTC: 'US Centers for Medicare & Medicaid Services',
+  UK_GMC: 'General Medical Council', UK_NMC: 'Nursing & Midwifery Council', UK_HFEA: 'Human Fertilisation & Embryology Authority', UK_MEDICAL_DEVICES: 'MHRA', UK_HMRC_GIFTAID: 'HMRC', EU_IVDR: 'EU notified bodies / MHRA',
+  UK_ESTATE_AGENTS_ACT: 'NTSELAT / Trading Standards', UK_NTSELAT_MATERIAL_INFO: 'NTSELAT / Trading Standards', UK_TENANT_FEES_2019: 'NTSELAT / Trading Standards', UAE_RERA: 'RERA Dubai',
 };
 // Frameworks that overlap so heavily they must render as ONE row, never two near-identical cards under the
 // same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the
@@ -1500,7 +1512,11 @@ export function payloadToD(payload, ctx = {}) {
   // frameworks when <5 already showed — so when 5 GENERIC frameworks (DPA/CMA/ASA/Equality/Companies) breached, the
   // sector regulator was crowded out entirely (root cause of "SRA missing for law firms"). Fix: always inject, raise
   // the cap, and push SECTOR-SPECIFIC applicable frameworks FIRST so they can never be displaced by generic rows.
-  const REG_CAP = 10;
+  // Cap scales with the number of jurisdictions the firm operates in, so a multi-jurisdiction firm gets enough slots to
+  // show EVERY country's laws (founder requirement) instead of the first country's filling all 10. Single-jurisdiction
+  // stays at 10. (multi-jur-cap)
+  const _jurCount = [...allow].filter((j) => j !== 'GLOBAL').length || 1;
+  const REG_CAP = Math.min(20, 10 + 4 * Math.max(0, _jurCount - 1));
   const BASELINE = {
     UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
     EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
@@ -1549,7 +1565,13 @@ export function payloadToD(payload, ctx = {}) {
     // 1) the firm's SECTOR-SPECIFIC applicable frameworks first (never crowded out), 2) the rest of applicable,
     // 3) jurisdiction baseline laws — each up to REG_CAP.
     const _applic = arr(payload.applicable_frameworks).map(fwCanon).filter((fw, i, a) => a.indexOf(fw) === i);
-    [..._applic.filter((fw) => !_baselineSet.has(fw)), ..._applic.filter((fw) => _baselineSet.has(fw))].forEach(_pushScreened);
+    // HOME-jurisdiction first: a US firm's US laws must inject before its secondary UK/EU laws, or the cap fills with
+    // the alphabetically-first jurisdiction (EU/UK) and the home country's own laws never render. Order: home-sector,
+    // home-baseline, then other jurisdictions (sector before baseline). (home-jur-first)
+    const _CC = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK', UK: 'UK', US: 'US' };
+    const _home = _CC[String(payload.country || '').toUpperCase()] || String(payload.country || '').toUpperCase() || 'UK';
+    const _rank = (fw) => (FW_JUR(fw) === _home ? 0 : 2) + (_baselineSet.has(fw) ? 1 : 0);
+    [..._applic].sort((a, b) => _rank(a) - _rank(b)).forEach(_pushScreened);
     for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
   }
 

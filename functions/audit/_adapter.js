@@ -149,7 +149,7 @@ const FW_REGULATOR = {
 // US_CAN_SPAM / US_CANSPAM are duplicate encodings of the same statute US_FTC already covers (CAN-SPAM rules
 // SPAM01-05); US_CCPA is superseded by US_CPRA (same California privacy regime). Collapse so a US firm never
 // sees the same regime twice. (LegalTech dedup §5 — render-side, leaves the rule catalogue untouched.)
-const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA', UK_ICO_COOKIES: 'UK_PECR', US_CAN_SPAM: 'US_FTC', US_CANSPAM: 'US_FTC', US_CCPA: 'US_CPRA' };
+const FW_CANON = { UK_DMCC_2024: 'UK_CMA', UK_FOOD_INFO_2014: 'UK_FSA', UK_NATASHAS_LAW: 'UK_FSA', UK_ICO_COOKIES: 'UK_PECR', US_CAN_SPAM: 'US_FTC', US_CANSPAM: 'US_FTC', US_CCPA: 'US_CPRA', UAE_ICT_HEALTH_LAW: 'UAE_HEALTH_DATA_LAW' };
 const fwCanon = (fw) => FW_CANON[String(fw || '').toUpperCase()] || fw;
 // Phase 4: collapse same-Act article/section siblings into ONE framework box (UK_GDPR_A13 +
 // UK_GDPR_A14 -> "UK GDPR", each article kept as a provision inside). SAFE: collapse ONLY for an
@@ -201,6 +201,9 @@ function provisionLabel(p, actK) {
   return 'Provision · ' + fwName(actK);
 }
 const NO_STATUTORY_FINE = new Set(['GOOGLE_EEAT', 'GOOGLE_EAT', 'SCHEMA', 'WIKIPEDIA', 'GEO', 'SEO']);
+// Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
+// a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
+const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH']);
 // Framework display names render UNescaped in the framework/finding cards, so a name carrying raw
 // markup, e.g. a Lighthouse/axe audit title like "`<frame>` or `<iframe>` elements do not have a
 // title", would inject a live, unclosed <iframe> and swallow every section rendered after it. The
@@ -1381,7 +1384,8 @@ export function payloadToD(payload, ctx = {}) {
   // accessibility/tls_dns/tech pointers through, whose framework_short is an axe-rule description (e.g.
   // "<frame> or <iframe> elements do not have a title"), which rendered as a bogus framework AND, unescaped,
   // its literal <iframe> corrupted the DOM and swallowed every pillar after Regulatory. (C/S-021)
-  const compForFw = pointers.filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records');
+  const compForFw = pointers.filter((p) => (p.bucket === 'compliance' || p.bucket === 'public_records')
+    && !NON_LEGAL_FW.has(String(p.framework_short || p.citation || '').toUpperCase()));
   const byFw = {};
   // Canonicalise overlapping codes (DMCC↗CMA, Food Info↗FSA) so their findings merge into one framework row.
   for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }

@@ -1312,11 +1312,11 @@ export function payloadToD(payload, ctx = {}) {
   const bindingN = new Set((pointers || []).filter((p) => p.bucket === 'compliance' || p.bucket === 'public_records').map((p) => actKey(p.framework_short || p.citation || 'OTHER')).filter(Boolean)).size;
   const _viaArchive = !!payload.via_archive;
   const _scanLabel = _viaArchive ? 'the archived version of your site' : 'your live site';
-  const regulatoryHeadline = compCriticals > 0
-    ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you — ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on ${_scanLabel}${_viaArchive ? ' (live site was behind a bot-challenge; re-scan confirms live state)' : ' right now'}.`
-    : (compHighs > 0
-      ? `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you. No critical breach is confirmed on ${_scanLabel}, but ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap remains' : 'gaps remain'}, and your ranking and AI-visibility gaps below are where you are losing buyers today.`
-      : `The full regulatory catalogue was screened. ${bindingN} framework${bindingN !== 1 ? 's' : ''} legally bind${bindingN === 1 ? 's' : ''} you, and none is confirmed breached on ${_scanLabel} this scan. The real exposure here is not a fine — it is the ranking, authority and AI-visibility gaps below, where named competitors are taking the buyers you should be winning.`);
+  // The headline's "legally bind you" count must reflect the frameworks actually shown (breached + the laws that bind
+  // you with no breach), not just the breached count — so it is computed BELOW, once `frameworks` is finalised. Per
+  // founder: this section never says "we scanned your site and found no breach"; a non-breached law is presented as a
+  // framework that binds you with obligations, not as a clean bill of health.
+  let regulatoryHeadline = '';
   const regulatoryCriticalsZero = compCriticals === 0;
 
   // --- frameworks (group pointers; jurisdiction-gated already) ---
@@ -1443,9 +1443,9 @@ export function payloadToD(payload, ctx = {}) {
       provisions, articleGroups,
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
-  if (!frameworks.length) { const _read = g(payload, 'scan.reachable', true) !== false; frameworks.push(_read
-    ? { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'The full regulatory catalogue was screened against your jurisdiction with no statutory breach evidenced on the live site this scan, your material gaps sit in the technical, AI-visibility and authority signals below, not in fines.', why: 'No in-jurisdiction statutory breach was evidenced this scan; the priority is the ranking, AI-visibility and trust work in the other pillars.' }
-    : { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'ranking', expN: 0, action: 'Your live site blocked a deep read this scan (bot-challenge or JS-only render), so only what could be proven is shown, honest suppression, not a clean bill of health. A re-scan completes it.', why: 'A re-scan with archive + rendered-DOM fallback completes the assessment.' }); }
+  // (The empty-state SCAN fallback used to sit here, but it asserted "no statutory breach evidenced" even when binding
+  // laws were about to be injected below — contradictory. It now runs AFTER the screened injection, so it only appears
+  // when genuinely nothing binds/was readable.)
   // FLOOR: a readable site shows >=5 regulatory brackets (founder standing rule). We top up HONESTLY, never with a
   // fabricated breach/fine and never with a law outside the firm's jurisdiction: (1) the firm's own BINDING
   // frameworks that screened clean this scan, then (2) the baseline laws that apply to ANY commercial site in the
@@ -1491,15 +1491,15 @@ export function payloadToD(payload, ctx = {}) {
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'controls to confirm', expN: 0, screened: true,
-        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime; the controls it requires are exactly what they act on when they find a gap.'),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true,
+        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime, and the obligations it sets are exactly what it acts on.'),
         enforcement_url: (_it && _it.enforcement_url) || '',
         obligations: obligationsOf(_it), reg_focus: _focus, guidance: (_it && _it.guidance) || '',
-        // When we have a curated regulator-focus line, lead the "why" with it (substantive, framework-specific);
-        // otherwise the honest generic screened line.
+        // Per founder: present a non-breached law as one that BINDS the firm, with its obligations — never as "we
+        // scanned your site and found no breach". Lead with the curated regulator-focus line when we have it.
         why: _focus
-          ? (_focus + ' This framework binds you and was screened against your live site this scan; no breach was evidenced, so the obligations below are the controls to be able to demonstrate.')
-          : ('This framework legally binds you and was screened against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.'),
+          ? (_focus + ' This framework legally binds you, and the obligations below are the controls you must be able to demonstrate.')
+          : ('This framework legally binds you in your jurisdiction. The obligations below are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.'),
       });
     };
     // 1) the firm's SECTOR-SPECIFIC applicable frameworks first (never crowded out), 2) the rest of applicable,
@@ -1526,6 +1526,30 @@ export function payloadToD(payload, ctx = {}) {
     const _seen = new Set(); const _out = [];
     for (const f of frameworks) { const k = _stem(f.name); if (_seen.has(k)) continue; _seen.add(k); _out.push(_best.get(k)); }
     frameworks.length = 0; frameworks.push(..._out);
+  }
+
+  // Empty-state fallback — ONLY when nothing binds/was readable after breached + screened injection (rare: an
+  // unreadable site). Reframed per founder: no "no statutory breach evidenced" language.
+  if (!frameworks.length) {
+    const _read = g(payload, 'scan.reachable', true) !== false;
+    frameworks.push(_read
+      ? { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, action: 'The full regulatory catalogue was screened against your jurisdiction. Your material gaps this scan sit in the technical, AI-visibility and authority signals in the pillars below.', why: 'Your priority is the ranking, AI-visibility and trust work in the other pillars.' }
+      : { code: 'SCAN', name: 'Full catalogue screened', regulator: 'All applicable regulators', findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, action: 'Your live site blocked a deep read this scan (bot-challenge or JS-only render), so only what could be proven is shown. A re-scan completes it.', why: 'A re-scan with archive and rendered-DOM fallback completes the assessment.' });
+  }
+
+  // Headline (computed now that `frameworks` is final). "legally bind you" = every framework shown that genuinely
+  // binds the firm (breached + the laws that bind with no breach), excluding the SCAN placeholder — never just the
+  // breached count. No em-dashes, and no "we scanned and found no breach" framing. (founder copy fixes 2026-06-29)
+  {
+    const _boundN = frameworks.filter((f) => f.code !== 'SCAN').length;
+    const _b = (n) => `${n} framework${n !== 1 ? 's' : ''} legally bind${n === 1 ? 's' : ''} you`;
+    regulatoryHeadline = _boundN === 0
+      ? 'The full regulatory catalogue was screened against your jurisdiction. Your material gaps this scan sit in the ranking, authority and AI-visibility signals in the pillars below.'
+      : (compCriticals > 0
+        ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, and ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on ${_scanLabel}${_viaArchive ? ' (re-scan confirms live state)' : ' right now'}.`
+        : (compHighs > 0
+          ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, with ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap' : 'gaps'} to close. Your ranking and AI-visibility gaps in the pillars below are where buyers are being lost today.`
+          : `${_b(_boundN).charAt(0).toUpperCase() + _b(_boundN).slice(1)} in your jurisdiction, and each below sets out the obligations you must be able to demonstrate. Your ranking, authority and AI-visibility gaps in the pillars below are where named competitors are taking the buyers you should be winning.`));
   }
 
   // --- exposure bars (£M, chart max 18) ---

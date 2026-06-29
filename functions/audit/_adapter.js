@@ -1431,11 +1431,25 @@ export function payloadToD(payload, ctx = {}) {
   // frameworks that screened clean this scan, then (2) the baseline laws that apply to ANY commercial site in the
   // firm's jurisdiction (data protection, e-privacy/cookies, accessibility, consumer/e-commerce, company
   // disclosure). Each renders as "screened, controls to confirm" with the real regulator. (>=5 per pillar)
-  if (siteScanned && frameworks.length < 5) {
+  // The regulatory section must ALWAYS show the firm's own sector regulator (SRA for a law firm, FCA for finance,
+  // DHA/GDC for a clinic), breached or screened. The old logic capped the section at 5 and only injected screened
+  // frameworks when <5 already showed — so when 5 GENERIC frameworks (DPA/CMA/ASA/Equality/Companies) breached, the
+  // sector regulator was crowded out entirely (root cause of "SRA missing for law firms"). Fix: always inject, raise
+  // the cap, and push SECTOR-SPECIFIC applicable frameworks FIRST so they can never be displaced by generic rows.
+  const REG_CAP = 10;
+  const BASELINE = {
+    UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
+    EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
+    US: ['US_CCPA', 'US_ADA', 'US_FTC'],
+    AE: ['AE_PDPL', 'DIFC_DPL', 'ADGM_DPR', 'UAE_CONSUMER', 'UAE_ECOMMERCE'],
+    SA: ['SAUDI_PDPL'], QA: ['QATAR_PDPPL'], FR: ['FR_CNIL'], DE: ['DE_BDSG'],
+  };
+  if (siteScanned) {
     const _shownFw = new Set(frameworks.map((f) => f.name));
     const _jurName = (fw) => ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || 'Global');
+    const _baselineSet = new Set(Object.values(BASELINE).flat().map(fwCanon));
     const _pushScreened = (fw) => {
-      if (frameworks.length >= 5) return;
+      if (frameworks.length >= REG_CAP) return;
       if (NO_STATUTORY_FINE.has(fw) || sectorInapplicable(fw, payload)) return;
       const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allow.has(j))) return;
       const nm = fwName(fw); if (_shownFw.has(nm)) return; _shownFw.add(nm);
@@ -1446,17 +1460,11 @@ export function payloadToD(payload, ctx = {}) {
         why: 'This framework legally binds you and was screened against your live site this scan. No breach was evidenced, so these are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.',
       });
     };
-    arr(payload.applicable_frameworks).map(fwCanon).filter((fw, i, a) => a.indexOf(fw) === i).forEach(_pushScreened);
-    if (frameworks.length < 5) {
-      const BASELINE = {
-        UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
-        EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
-        US: ['US_CCPA', 'US_ADA', 'US_FTC'],
-        AE: ['AE_PDPL', 'DIFC_DPL', 'ADGM_DPR', 'UAE_CONSUMER', 'UAE_ECOMMERCE'],
-        SA: ['SAUDI_PDPL'], QA: ['QATAR_PDPPL'], FR: ['FR_CNIL'], DE: ['DE_BDSG'],
-      };
-      for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
-    }
+    // 1) the firm's SECTOR-SPECIFIC applicable frameworks first (never crowded out), 2) the rest of applicable,
+    // 3) jurisdiction baseline laws — each up to REG_CAP.
+    const _applic = arr(payload.applicable_frameworks).map(fwCanon).filter((fw, i, a) => a.indexOf(fw) === i);
+    [..._applic.filter((fw) => !_baselineSet.has(fw)), ..._applic.filter((fw) => _baselineSet.has(fw))].forEach(_pushScreened);
+    for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
   }
 
   // --- exposure bars (£M, chart max 18) ---

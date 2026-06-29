@@ -755,12 +755,24 @@ function differentiateFixes(list) {
 const TLD_JUR = { uk: 'UK', ae: 'AE', sa: 'SA', us: 'US', fr: 'FR', de: 'DE', it: 'IT', es: 'ES', com: null };
 const FW_JUR = (code) => {
   const c = String(code || '').toUpperCase();
+  // Prefix checks FIRST (the catalogue's real codes: UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore
+  // law is badged to its OWN country and jurisdiction-gated correctly — never mis-mapped to "Global" (which would show
+  // it on every firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
   if (c.startsWith('UK_') || c.startsWith('GB_')) return 'UK';
   if (c.startsWith('EU_')) return 'EU';
-  if (c.startsWith('US_') || ['HIPAA', 'FTC', 'CCPA', 'CPRA', 'CAN_SPAM'].some((x) => c.includes(x))) return 'US';
-  if (c.startsWith('AE_') || c.includes('RERA') || c.includes('DIFC') || c.includes('ADGM') || c.includes('PDPL')) return 'AE';
-  if (c.startsWith('FR_') || c.includes('CNIL')) return 'FR';
-  if (c.startsWith('DE_') || c.includes('BDSG')) return 'DE';
+  if (c.startsWith('US_')) return 'US';
+  if (c.startsWith('UAE_') || c.startsWith('AE_') || c.startsWith('DIFC_') || c.startsWith('ADGM_')) return 'AE';
+  if (c.startsWith('SAUDI_') || c.startsWith('SA_') || c.startsWith('KSA_')) return 'SA';
+  if (c.startsWith('QATAR_') || c.startsWith('QA_')) return 'QA';
+  if (c.startsWith('SG_') || c.startsWith('SINGAPORE_')) return 'SG';
+  if (c.startsWith('FR_')) return 'FR';
+  if (c.startsWith('DE_')) return 'DE';
+  if (c.startsWith('IN_')) return 'IN';
+  // Fallbacks for codes that carry no jurisdiction prefix.
+  if (['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA'].some((x) => c.includes(x))) return 'US';
+  if (c.includes('RERA') || c.includes('DIFC') || c.includes('ADGM')) return 'AE';
+  if (c.includes('CNIL')) return 'FR';
+  if (c.includes('BDSG')) return 'DE';
   return 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
 };
 // Authoritative allow-list = country + TLD (the trustworthy spine), + EU only with corroborating
@@ -789,6 +801,12 @@ function authJurisdictions(payload) {
   // branch) without re-opening weak markets-only over-attaches: a firm with no real office (aspendental) has
   // an empty office list and stays at country+TLD. (F-profile · membrane trusts the cross-referenced engine)
   for (const o of arr(g(payload, 'firm_profile.office_countries', []))) { const c = String((o && o.code) || '').toUpperCase(); if (c) { set.add(c); if (EU_MEMBERS.includes(c)) set.add('EU'); } }
+  // Founder requirement: a firm that FUNCTIONS in multiple jurisdictions must see EVERY country's laws it operates in.
+  // detected_jurisdictions is the considered set connect() used to ATTACH the frameworks now in the payload, so
+  // unioning it aligns the render gate with the engine (a UK+UAE firm shows its UAE laws too, not just UK). Frameworks
+  // are still individually jurisdiction- and sector-gated by connect()/the resolver, so this never invents a wrong law.
+  const _JNAME = { 'UNITED KINGDOM': 'UK', 'GREAT BRITAIN': 'UK', 'ENGLAND': 'UK', 'SCOTLAND': 'UK', 'WALES': 'UK', 'UNITED STATES': 'US', 'USA': 'US', 'UNITED ARAB EMIRATES': 'AE', 'UAE': 'AE', 'DUBAI': 'AE', 'ABU DHABI': 'AE', 'SAUDI ARABIA': 'SA', 'KSA': 'SA', 'QATAR': 'QA', 'SINGAPORE': 'SG', 'EUROPEAN UNION': 'EU', 'FRANCE': 'FR', 'GERMANY': 'DE', 'ITALY': 'IT', 'SPAIN': 'ES', 'NETHERLANDS': 'NL', 'IRELAND': 'IE', 'INDIA': 'IN', 'CANADA': 'CA', 'AUSTRALIA': 'AU' };
+  for (const d of det) { const code = _JNAME[String(d || '').toUpperCase().trim()]; if (code) { set.add(code); if (EU_MEMBERS.includes(code)) set.add('EU'); } }
   return set;
 }
 
@@ -1459,7 +1477,7 @@ export function payloadToD(payload, ctx = {}) {
     return {
       code: fwCode(fw), name: fwName(fw), regulator: _reg,
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
-      jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
+      jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
       // Verified curated enforcement (with a real penalty) leads; then live news_map; then ported/example; then prose.
       action: (_intel && _intel.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || (_reg + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
@@ -1492,7 +1510,7 @@ export function payloadToD(payload, ctx = {}) {
   };
   if (siteScanned) {
     const _shownFw = new Set(frameworks.map((f) => f.name));
-    const _jurName = (fw) => ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || 'Global');
+    const _jurName = (fw) => ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || 'Global');
     const _baselineSet = new Set(Object.values(BASELINE).flat().map(fwCanon));
     const _pushScreened = (fw) => {
       if (frameworks.length >= REG_CAP) return;

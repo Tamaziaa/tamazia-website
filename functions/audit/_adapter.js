@@ -522,7 +522,7 @@ const FW_NAME_CAT = {
 };
 function fwName(fw) {
   const base = titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase());
-  let n = fixAcronyms(FW_NAME[fw] || FW_NAME_CAT[fw] || base || 'Framework');
+  let n = fixAcronyms(FW_NAME_CAT[fw] || FW_NAME[fw] || base || 'Framework');
   if (/^[A-Z]{2,}$/.test(n)) n = base || 'Framework';   // never a bare all-caps token (raw-code QA guard)
   return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework';
 }

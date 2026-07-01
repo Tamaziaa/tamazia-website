@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
       # FIX (2026-06-23): action inputs do NOT run shell, so `$(date +%F)` was passed LITERALLY -> a constant
       # tag "backup-$(date +%F)" that collides on every run after the first -> weekly failure. Compute the date

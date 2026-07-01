@@ -25,7 +25,7 @@ jobs:
           echo "date=$D" >> "$GITHUB_OUTPUT"
           git bundle create "tamazia-website-$D.bundle" --all
       - name: Upload to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: backup-${{ steps.meta.outputs.date }}-${{ github.run_number }}
           name: "Weekly backup ${{ steps.meta.outputs.date }}"

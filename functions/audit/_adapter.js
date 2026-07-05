@@ -213,6 +213,19 @@ function provisionLabel(p, actK) {
   return 'Provision · ' + fwName(actK);
 }
 const NO_STATUTORY_FINE = new Set(['GOOGLE_EEAT', 'GOOGLE_EAT', 'SCHEMA', 'WIKIPEDIA', 'GEO', 'SEO']);
+// FIX-R1 (founder red line): a VOLUNTARY-code framework (trade-body / self-reg / certification) must NEVER render a
+// statutory fine. The engine payload carries binding (framework_short -> statute/statutory_code/regulator_code/
+// professional_code/voluntary_code); _VOLUNTARY_BINDING is populated per-request from it, plus a hardcoded fallback of
+// the clearest voluntary regimes in case an older payload omits binding. noStatutoryFine(fw) is the single guard used
+// at every fine/exposure site so a voluntary code shows a non-monetary sanction, never a GBP figure.
+const VOLUNTARY_FALLBACK = new Set(['UK_ABI', 'UK_ABPI', 'UK_PMCPA', 'UK_CYBER_ESSENTIALS', 'UK_NCSC_CYBER_ESSENTIALS', 'ARLA_PROPERTYMARK', 'UK_ARLA']);
+let _VOLUNTARY_BINDING = new Set(VOLUNTARY_FALLBACK);
+function setVoluntaryBinding(binding) {
+  const v = new Set(VOLUNTARY_FALLBACK);
+  for (const [fw, b] of Object.entries(binding || {})) if (b === 'voluntary_code') v.add(fw);
+  _VOLUNTARY_BINDING = v;
+}
+function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_STATUTORY_FINE.has(fw) || _VOLUNTARY_BINDING.has(fw); }
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
 const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH',
@@ -704,7 +717,7 @@ function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
   const enfLo = +p.enforce_typical_low_gbp || 0, enfHi = +p.enforce_typical_high_gbp || 0;
-  const noFine = NO_STATUTORY_FINE.has(p.framework_short) || p.bucket === 'ai_visibility' || p.bucket === 'seo';
+  const noFine = noStatutoryFine(p.framework_short) || p.bucket === 'ai_visibility' || p.bucket === 'seo';   // FIX-R1: voluntary codes never show a fine
   return {
     n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation) : pillar, pillar,
     // GEO/SEO/technical are not statutes; render the human "③ The law" layer, never the raw code title-cased
@@ -723,11 +736,13 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // global annual turnover", "unlimited fine", "per-violation penalty", "non-monetary sanctions") so turnover-%
     // / unlimited / per-violation regimes are stated accurately instead of a misleading £0 or "ranking impact".
     // Only genuine SEO/AI signals fall through to "ranking impact". (legal-QA penalty-basis fix)
-    exp: (enfLo || enfHi) ? (gbp(enfLo, sym) + ' to ' + gbp(enfHi, sym) + ' typical')
-      : (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
-        : (p.penalty_note ? p.penalty_note
-          : (noFine ? 'ranking impact' : 'enforcement action')),
-    expMax: hiF ? gbp(hiF, sym) : (p.penalty_note || null),
+    // FIX-R1: when the framework carries NO statutory fine (SEO/AI signal OR voluntary code), NEVER emit a GBP
+    // figure even if the payload attached one — show the non-monetary sanction note or 'ranking impact'.
+    exp: noFine ? (p.penalty_note || 'non-statutory (code sanction / ranking impact)')
+      : (enfLo || enfHi) ? (gbp(enfLo, sym) + ' to ' + gbp(enfHi, sym) + ' typical')
+        : (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
+          : (p.penalty_note ? p.penalty_note : 'enforcement action'),
+    expMax: (!noFine && hiF) ? gbp(hiF, sym) : (p.penalty_note || null),   // FIX-R1
     maxRare: !!p.enforce_max_rare,
     enfMethod: p.enforce_methodology || null,
     enfContext: p.enforce_context || null,
@@ -864,7 +879,7 @@ function perFrameworkMaxFine(pointers) {
     if (p.fine_withheld) continue;
     const fw = p.framework_short || p.citation;
     const hi = +p.fine_high_gbp || 0;
-    if (!fw || !hi || NO_STATUTORY_FINE.has(fw)) continue;   // ranking guidelines carry no statutory fine (C-018)
+    if (!fw || !hi || noStatutoryFine(fw)) continue;   // ranking guidelines + voluntary codes carry no statutory fine (C-018 / FIX-R1)
     m[fw] = Math.max(m[fw] || 0, hi);
   }
   return m;
@@ -1255,8 +1270,9 @@ function sectorInapplicable(fw, payload) {
 
 /* ---------------- THE ADAPTER ---------------- */
 // Named exports for the benchmark scorer (single source of truth, F5 shared blocklist).
-export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS };
+export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer };
 export function payloadToD(payload, ctx = {}) {
+  setVoluntaryBinding(payload && payload.binding);   // FIX-R1: seed voluntary-code guard from the engine payload
   payload = payload || {};
   const now = ctx.now ? new Date(ctx.now) : new Date(g(payload, 'framework_last_reviewed', '2026-06-04'));
   const allow = authJurisdictions(payload);
@@ -1296,7 +1312,7 @@ export function payloadToD(payload, ctx = {}) {
   const _turnover = estimateTurnover(payload);
   for (const p of pointers) {
     const fw = String(p.framework_short || p.citation || '');
-    if (NO_STATUTORY_FINE.has(fw)) continue;                                  // ranking signals carry no statutory fine
+    if (noStatutoryFine(fw)) continue;                                  // ranking signals + voluntary codes carry no statutory fine (FIX-R1)
     const cap = Math.max(8000, Math.round(_turnover * fineRate(fw)));          // realistic ceiling at THIS firm's scale
     const hi = +p.fine_high_gbp || 0;
     if (hi > cap) { const lo = +p.fine_low_gbp || Math.round(hi * 0.4); p.fine_high_gbp = cap; p.fine_low_gbp = Math.max(3000, Math.round(lo * (cap / hi))); }
@@ -1441,7 +1457,7 @@ export function payloadToD(payload, ctx = {}) {
   for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
     // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
-    const maxFine = NO_STATUTORY_FINE.has(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => NO_STATUTORY_FINE.has(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
+    const maxFine = noStatutoryFine(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => noStatutoryFine(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
     const top = ps[0] || {};
     // Group this Act's EVIDENCED breaches by Article so "Art. 13" appears ONCE with its distinct
     // sub-breaches listed beneath (never repeated 8x), each carrying its live proof (the quote, or the
@@ -1530,7 +1546,7 @@ export function payloadToD(payload, ctx = {}) {
     const _baselineSet = new Set(Object.values(BASELINE).flat().map(fwCanon));
     const _pushScreened = (fw) => {
       if (frameworks.length >= REG_CAP) return;
-      if (NO_STATUTORY_FINE.has(fw) || sectorInapplicable(fw, payload)) return;
+      if (noStatutoryFine(fw) || sectorInapplicable(fw, payload)) return;
       const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allow.has(j))) return;
       const nm = fwName(fw);
       const _it = intelOf(fw, fw);

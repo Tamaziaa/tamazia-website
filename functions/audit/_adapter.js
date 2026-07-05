@@ -38,11 +38,14 @@ const looksLikeDomain = (s) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(String(s || '
 // Decode HTML entities so user-facing text never shows raw "&amp;"/"&#x27;"/"&#8211;". Safe because the client
 // inserts these as textContent (the entities currently render LITERALLY), so decoding to the character is correct
 // and not an XSS vector. Handles named + decimal + hex numeric references.
-const _ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', hellip: '…', copy: '©', reg: '®', trade: '™' };
+// FIX-R4 (XSS): NEVER decode into tag-forming chars. Firm-supplied text (crawled titles/quotes) may contain
+// &lt;script&gt; / &#60; / &#x3c; — decoding those to < > would let markup form if any field is innerHTML'd. We
+// decode only typographic entities; &lt;/&gt; and numeric 60/62 stay ENCODED, rendering as literal text everywhere.
+const _ENT = { amp: '&', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', hellip: '…', copy: '©', reg: '®', trade: '™' };
 function decodeEnt(s) {
   if (typeof s !== 'string' || s.indexOf('&') === -1) return s;
   return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, c) => {
-    if (c[0] === '#') { const code = c[1] === 'x' || c[1] === 'X' ? parseInt(c.slice(2), 16) : parseInt(c.slice(1), 10); return Number.isFinite(code) ? String.fromCodePoint(code) : m; }
+    if (c[0] === '#') { const code = c[1] === 'x' || c[1] === 'X' ? parseInt(c.slice(2), 16) : parseInt(c.slice(1), 10); if (code === 60 || code === 62 || !Number.isFinite(code)) return m; return String.fromCodePoint(code); }   // FIX-R4: never decode < or >
     const k = c.toLowerCase(); return Object.prototype.hasOwnProperty.call(_ENT, k) ? _ENT[k] : m;
   });
 }

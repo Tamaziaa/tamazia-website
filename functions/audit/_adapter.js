@@ -1274,6 +1274,10 @@ export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatuto
 export function payloadToD(payload, ctx = {}) {
   setVoluntaryBinding(payload && payload.binding);   // FIX-R1: seed voluntary-code guard from the engine payload
   payload = payload || {};
+  // FIX-R2/R3: consume the evidence-ledger contract. review_candidates = low-confidence attachments (below the
+  // conformal band) that must NOT render as hard breaches; they still appear in the 'applies to you' framework list.
+  const reviewSet = new Set(arr(payload.review_candidates).map((x) => String(x).toUpperCase()));
+  const bindingMap = payload.binding || {};
   const now = ctx.now ? new Date(ctx.now) : new Date(g(payload, 'framework_last_reviewed', '2026-06-04'));
   const allow = authJurisdictions(payload);
   const company = firmName(payload, ctx.company);
@@ -1295,12 +1299,19 @@ export function payloadToD(payload, ctx = {}) {
     const emailRule = /can_?spam/i.test(p.framework_short || '') || /\b(from header|postal address|unsubscribe|opt-?out within|subject line|commercial (message|email))\b/.test(fact);
     if (emailRule && !hasEmailCap) return false;
     if ((p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0 && !ev) return false;
+    // FIX-R3: a hard compliance breach that carries a monetary exposure MUST cite a law. A P0/P1 compliance finding
+    // with a fine but no statutory_citation AND no citation_url is unverifiable noise -> never render it as a breach.
+    if ((p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0 &&
+        p.bucket === 'compliance' && !String(p.statutory_citation || p.citation_url || '').trim()) return false;
     return true;
   };
   const pointers = rawPointers.filter((p) => {
     const j = FW_JUR(p.framework_short || p.citation);
     if (!(j === 'GLOBAL' || allow.has(j))) return false;
     if (sectorInapplicable(p.framework_short || p.citation, payload)) return false; // sector-mismatch frameworks (Ofsted/DfE/OSA on a university)
+    // FIX-R2/R3: a low-confidence (review-band) attachment is NOT a hard breach — it renders in 'applies to you', not
+    // as a breach card with a fine. This consumes the engine's conformal review_candidates contract.
+    if (reviewSet.has(String(p.framework_short || p.citation || '').toUpperCase())) return false;
     return evidenced(p);
   });
   const dropped = rawPointers.length - pointers.length; // jurisdiction + unevidenced + sector-applicability suppressions

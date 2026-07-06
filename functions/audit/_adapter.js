@@ -612,6 +612,11 @@ function lhInfo(id) {
   if (LH[key]) return LH[key];
   const base = key.replace(/-insight$/, '');
   if (LH[base]) return LH[base];
+  // Categorise unmapped Lighthouse audits by prefix/known-set so accessibility audits
+  // (aria-*, *-name, role/label/focus checks) are never mislabelled as Performance. (visual-QA fix)
+  const A11Y = new Set(['presentation-role-conflict','duplicate-id-aria','duplicate-id-active','select-name','form-field-multiple-labels','list','listitem','definition-list','dlitem','td-headers-attr','th-has-data-cells','valid-lang','accesskeys','bypass','object-alt','input-image-alt','video-caption','focusable-controls','interactive-element-affordance','logical-tab-order','managed-focus','use-landmarks','visual-order-follows-dom','focus-traps','table-fake-caption','identical-links-same-purpose']);
+  const isA11y = /^aria-/.test(base) || /(^|-)(name|label|role|focus|landmark|contrast|alt|lang|heading|tabindex)(-|$)/.test(base) || A11Y.has(base);
+  if (isA11y) return [titleCase(base.replace(/-/g, ' ')) || 'Accessibility issue', 'a11y', 'Tamazia resolves and verifies this accessibility issue on your live site.'];
   return [titleCase(base.replace(/-/g, ' ')) || 'Performance audit', 'speed', 'Tamazia resolves and verifies this on your live site.'];
 }
 // Parse Lighthouse displayValue ("Est savings of 1,840 ms", "56 KiB", "4.2 s") into a comparable impact weight (ms-equivalent).

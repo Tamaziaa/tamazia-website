@@ -797,7 +797,7 @@
     bullets.push(`<b>What this is.</b> A live audit of ${escH(company)} across regulation, search and AI visibility. Every finding below was measured on your own site, never estimated.`);
     if(crit>0) bullets.push(`<b>The headline.</b> ${crit} critical ${plur(crit,'breach','breaches')} ${plur(crit,'is','are')} live on your site right now${hasMoney?(', carrying up to '+D.exposure+' in maximum statutory penalties'):''}. Start with ${escH(String(top.title||'your highest-severity finding').toLowerCase())}.`);
     else bullets.push(`<b>The headline.</b> No critical statutory breach surfaced this scan. The gaps below are costing you rankings, buyers and AI visibility, not fines.`);
-    bullets.push(`<b>Where you stand.</b> ${D.frameworksAssessed} of ${D.rulesChecked} frameworks legally bind you${sov?(', AI names you in '+sov+' of the buyer queries probed'):''}${rivals>0?(', and '+rivals+' '+plur(rivals,'rival')+' '+plur(rivals,'is','are')+' ranked ahead of you'):''}.`);
+    bullets.push(`<b>Where you stand.</b> ${D.frameworksAssessed} framework${D.frameworksAssessed!==1?'s':''} legally bind${D.frameworksAssessed===1?'s':''} you${sov?(', AI names you in '+sov+' of the buyer queries probed'):''}${rivals>0?(', and '+rivals+' '+plur(rivals,'rival')+' '+plur(rivals,'is','are')+' ranked ahead of you'):''}.`);
     bullets.push(`<b>How to read it.</b> Open any of the six sections below. Each box opens in place, with the live evidence on the left and the exact Tamazia fix on the right.`);
     bullets.push(`<b>Keep it current.</b> Re-run this report every month so a new breach is caught the day it appears, before enforcement or a competitor moves first.`);
     return `<div class="verdict">

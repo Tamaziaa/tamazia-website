@@ -600,6 +600,7 @@ body.cmx-lock{overflow:hidden}
 .jur-chip:hover{border-color:var(--ox)}
 .jur-chip.active{background:var(--ox);color:#fff;border-color:var(--ox)}
 .jbadge{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:3px;background:rgba(201,168,124,.18);color:#7A5C20;vertical-align:middle;margin-left:6px}
+.bbadge{background:rgba(90,90,110,.12);color:#54556a}  /* #17a binding-status label: muted, distinct from the gold jurisdiction badge */
 /* ---- Gate 6: AI engine logos in the GEO grid ---- */
 .eng-id{display:flex;align-items:center;gap:7px;min-height:22px}
 .eng-logo{flex-shrink:0}

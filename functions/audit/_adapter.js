@@ -229,6 +229,12 @@ function setVoluntaryBinding(binding) {
   _VOLUNTARY_BINDING = v;
 }
 function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_STATUTORY_FINE.has(fw) || _VOLUNTARY_BINDING.has(fw); }
+// #17a: expose the engine's per-framework binding STATUS as a human label so a prospect can see whether an
+// obligation is a hard statute or voluntary guidance (drives trust + how urgently to act). Seeded per-request.
+let _BINDING_MAP = {};
+function setBindingMap(binding) { _BINDING_MAP = binding && typeof binding === 'object' ? binding : {}; }
+const _BINDING_LABEL = { statute: 'Statute', statutory_code: 'Statutory code', statutory_redress: 'Statutory redress', regulator_code: 'Regulator code', professional_code: 'Professional code', voluntary_code: 'Voluntary code' };
+function bindingLabel(fw) { const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw]; return (b && _BINDING_LABEL[b]) || (noStatutoryFine(fw) ? 'Voluntary code' : 'Statute'); }
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
 const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH',
@@ -1281,6 +1287,7 @@ function sectorInapplicable(fw, payload) {
 export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer };
 export function payloadToD(payload, ctx = {}) {
   setVoluntaryBinding(payload && payload.binding);   // FIX-R1: seed voluntary-code guard from the engine payload
+  setBindingMap(payload && payload.binding);            // #17a: seed the binding-status label map
   payload = payload || {};
   // FIX-R2/R3: consume the evidence-ledger contract. review_candidates = low-confidence attachments (below the
   // conformal band) that must NOT render as hard breaches; they still appear in the 'applies to you' framework list.
@@ -1522,7 +1529,7 @@ export function payloadToD(payload, ctx = {}) {
     const _cite = top.citation_url || top.citation || '';
     const _intel = intelOf(fw, top.framework_short);
     return {
-      code: fwCode(fw), name: fwName(fw), regulator: _reg,
+      code: fwCode(fw), name: fwName(fw), regulator: _reg, binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
@@ -1586,7 +1593,7 @@ export function payloadToD(payload, ctx = {}) {
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true,
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
         action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime, and the obligations it sets are exactly what it acts on.'),
         enforcement_url: (_it && _it.enforcement_url) || '',
         obligations: obligationsOf(_it), reg_focus: _focus, guidance: (_it && _it.guidance) || '',

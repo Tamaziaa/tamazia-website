@@ -2064,6 +2064,7 @@ export function payloadToD(payload, ctx = {}) {
     regulatoryHeadline, regulatoryCriticalsZero,
     // #48: pass compliance-unassessed through so the render never implies a clean bill when the scan could not read the site.
     compliance_unassessed: !!g(payload, 'compliance_unassessed', false),
+    render_mode: g(payload, 'render_mode', null),
     // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
     // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
     // D-2: single source of truth for all displayed framework counts. frameworksBinding was previously

@@ -174,7 +174,7 @@
       return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary>
         <div class="fw-head"><span class="code">${escH(fw.code)}</span>
-          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}</div><div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
+          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}</div>${fw.screened ? `<div class="fw-assessed"><span class="badge">${fw.assessed_label || 'APPLIES · ASSESSED'}</span>${(fw.inspected_pages && fw.inspected_pages.length) ? `<span class="inspected">Inspected: ${fw.inspected_pages.slice(0,4).join(' · ')}</span>` : ''}</div>` : ''}<div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
           <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
           <div class="fwe">${escH(fw.exp)}</div></div>
         <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
@@ -835,7 +835,7 @@
           </div>
         </div>
       </div>
-    </section>`;
+    ${BOOKING_URL ? `<div class="cta-blindsend"><a class="btn-book" href="${BOOKING_URL}">Walk through these findings with the founder. 20 minutes, the exact fixes, and what a regulator would ask first: book the review.</a><a class="btn-book alt" href="${BOOKING_URL}">Everything marked APPLIES · ASSESSED is verified at page level. Records, processes and filings are the full engagement: book the scoping call.</a></div>` : ''}</section>`;
   }
 
   /* ---------------- PSI box (mobile|desktop) — rendered on the FIRST view, under the scorecard ---------------- */

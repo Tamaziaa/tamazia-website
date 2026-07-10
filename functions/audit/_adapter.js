@@ -233,7 +233,7 @@ function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_ST
 // obligation is a hard statute or voluntary guidance (drives trust + how urgently to act). Seeded per-request.
 let _BINDING_MAP = {};
 function setBindingMap(binding) { _BINDING_MAP = binding && typeof binding === 'object' ? binding : {}; }
-const _BINDING_LABEL = { statute: 'Statute', statutory_code: 'Statutory code', statutory_redress: 'Statutory redress', regulator_code: 'Regulator code', professional_code: 'Professional code', voluntary_code: 'Voluntary code' };
+const _BINDING_LABEL = { statute: 'Statute', enforceable_code: 'Regulator code', industry_code: 'Industry code' };
 function bindingLabel(fw) { const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw]; return (b && _BINDING_LABEL[b]) || (noStatutoryFine(fw) ? 'Voluntary code' : 'Statute'); }
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
@@ -764,7 +764,7 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),
     // Prefer a verbatim on-site quote; else the engine's real nearest-miss absence line; else the bingo problem.
-    quote: p.evidence_quote || absenceLine(p.absence_evidence) || g(p, 'bingo.problem', ''),
+    quote: _q25(p.evidence_quote) || absenceLine(p.absence_evidence) || g(p, 'bingo.problem', ''),
     fix: craftFix(p),
     plan: 'Severity ' + (p.severity || 'P1') + ' · ' + (i === 0 ? 'Week 1' : 'Weeks 1 to 4') + ' · every mandate',
   };
@@ -1501,7 +1501,7 @@ export function payloadToD(payload, ctx = {}) {
         const _elLine = elementLine(p);
         return {
           subject: subjectOf(p, 84) || 'Required disclosure',
-          quote: _elLine ? '' : String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ').slice(0, 180),
+          quote: _elLine ? '' : _q25(String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ')).slice(0, 180),
           // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
           // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
           absence: _elLine || (String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence)),
@@ -1593,7 +1593,7 @@ export function payloadToD(payload, ctx = {}) {
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: ((payload.inspected_by_framework || {})[fw] || (payload.inspected_by_framework || {})[fwCanon(fw)] || payload.pages_crawled || []).slice(0, 6), binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
         action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime, and the obligations it sets are exactly what it acts on.'),
         enforcement_url: (_it && _it.enforcement_url) || '',
         obligations: obligationsOf(_it), reg_focus: _focus, guidance: (_it && _it.guidance) || '',
@@ -1654,10 +1654,10 @@ export function payloadToD(payload, ctx = {}) {
     regulatoryHeadline = _boundN === 0
       ? 'The full regulatory catalogue was screened against your jurisdiction. Your material gaps this scan sit in the ranking, authority and AI-visibility signals in the pillars below.'
       : (compCriticals > 0
-        ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, and ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on ${_scanLabel}${_viaArchive ? ' (re-scan confirms live state)' : ' right now'}.`
+        ? `The full regulatory catalogue was screened against your jurisdiction. ${breachedFwCount} ${breachedFwCount === 1 ? 'obligation is' : 'obligations are'} verified as breached on ${_scanLabel}${_viaArchive ? ' (re-scan confirms live state)' : ' right now'}. ${(_boundN - breachedFwCount) > 0 ? (_boundN - breachedFwCount) + ' further ' + ((_boundN - breachedFwCount) === 1 ? 'framework binds' : 'frameworks bind') + ' you and were assessed at page level.' : ''}`
         : (compHighs > 0
           ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, with ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap' : 'gaps'} to close. Your ranking and AI-visibility gaps in the pillars below are where buyers are being lost today.`
-          : `${_b(_boundN).charAt(0).toUpperCase() + _b(_boundN).slice(1)} in your jurisdiction, and each below sets out the obligations you must be able to demonstrate. Your ranking, authority and AI-visibility gaps in the pillars below are where named competitors are taking the buyers you should be winning.`));
+          : `Your live pages passed the checks a regulator's first sweep would run. What binds you, what was inspected, and what a full engagement verifies beyond the page is set out below.`));
   }
 
   // --- exposure bars (£M, chart max 18) ---
@@ -2036,6 +2036,8 @@ export function payloadToD(payload, ctx = {}) {
     // when its value is a non-empty string (no placeholder when unset). Pure pass-through; never affects scoring.
     links: {
       booking: String((ctx.links && ctx.links.booking) || ''),
+      cta_findings: { text: 'Walk through these findings with the founder. 20 minutes, the exact fixes, and what a regulator would ask first: book the review.', href: String((ctx.links && ctx.links.booking) || '') },
+      cta_assessed: { text: 'Everything marked APPLIES · ASSESSED is verified at page level. Records, processes and filings are the full engagement: book the scoping call.', href: String((ctx.links && ctx.links.booking) || '') },
       stripeUnlock: String((ctx.links && ctx.links.stripeUnlock) || ''),
       stripeCover: String((ctx.links && ctx.links.stripeCover) || ''),
       stripeFix10: String((ctx.links && ctx.links.stripeFix10) || ''),
@@ -2237,3 +2239,7 @@ const COMMERCE = {
     { tier: 'Enterprise', rec: true, popular: false },
   ],
 };
+
+// E-091 (blind-send): render-side twin of the engine evidence gate. A sub-25-char quote renders the
+// absence sentence instead of a fragment that cannot be defended in front of the firm's own lawyer.
+function _q25(q) { q = String(q || '').trim(); return q.length >= 25 ? q : ''; }

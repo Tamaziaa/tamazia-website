@@ -114,7 +114,9 @@ export async function onRequest(context) {
       links, contactPhone: env.CONTACT_PHONE || CONTACT_PHONE_DEFAULT,
       posthogKey: env.POSTHOG_KEY || '', posthogHost: env.POSTHOG_HOST || '',
     });
-    html = renderShell(D);
+    // E-246: hand a REAL, deploy-unique asset version to the shell. CF_PAGES_COMMIT_SHA changes on every
+    // deployment, so the ?v= query string changes with it and the 4h edge cache can never serve a stale bundle.
+    html = renderShell(D, { buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38' });
   } catch (e) {
     return htmlResponse(errorShell('Audit could not be rendered', 'The Tamazia team has been notified.'), 500);
   }

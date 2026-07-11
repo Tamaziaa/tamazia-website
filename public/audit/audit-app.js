@@ -162,7 +162,25 @@
     // #3: only render the "breaches in full" subhead + cards when the Regulatory-filtered
     // fixes list is non-empty, otherwise the heading/subhead sit above an empty body.
     const regFixes=(D.fixes||[]).filter(f=>f.pillar==='Regulatory');
+    // E-213 REGISTERED REALITY: the government-register cross-check rows. Every line links to the official
+    // source so the reader verifies Tamazia in one click. Renders whenever the payload carries registers,
+    // independent of crawl success; a link-out row invites verification rather than asserting a delta.
+    const regRows=(D.registers&&D.registers.rows)||[];
+    const registersBlock = regRows.length?`
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Registered reality: your public register record, checked</h3></div>
+    <p class="reg-sub">These lines come from the government registers your firm is already on, by API, not from your website. Verify each one on the official source.</p>
+    ${regRows.map(r=>{
+      const st=r.status==='confirmed'?('<span class="jbadge" style="background:var(--green,#0a7d4f);color:#fff">On the register</span>'):(r.status==='not_found'?'<span class="jbadge">No exact match found, confirm on the call</span>':(r.status==='unavailable'?'<span class="jbadge">Register unavailable this scan</span>':'<span class="jbadge">Verify on the register</span>'));
+      const rec=r.record?(escH(String(r.record.name||''))+(r.record.number?(' · '+escH(String(r.record.number))):'')+(r.record.detail?(' · '+escH(String(r.record.detail))):'')):'';
+      const site=(r.on_site===true)?'Displayed on your site.':(r.on_site===false?'Not found on your site on this scan.':'Site display not confirmed on this scan.');
+      return `<div class="fw" style="padding:12px 16px;margin:6px 0"><div class="fw-head"><div class="fwn-wrap"><div class="fwn">${escH(r.label)} ${st}</div>${rec?`<div class="fwr">${rec}</div>`:''}<div class="fwr">${escH(r.statute_line)} ${site}</div><div class="fwr"><a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="lawcite">Verify on the official register &#8599;</a></div></div></div></div>`;
+    }).join('')}`:'';
+    // E-218: point-in-time banner for anything the verifier has not passed. Honest scope, zero fear theatre,
+    // and the re-check is the conversion mechanic.
+    const pitBanner = (!D.verified)?`<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">Point-in-time scan${D.meta&&D.meta.date?(' of '+escH(D.meta.date)):''}${D.superseded?', since superseded by a newer assessment':''}. This view shows register facts, the binding-law map and only the findings that pass Tamazia&rsquo;s evidence gates from that scan. A fresh verified assessment re-checks every line against your live site${D.links&&D.links.booking?': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">book the re-check</a>':'.'}</div>`:'';
   return `
+    ${pitBanner}
+    ${registersBlock}
     <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
       <h2>${(D.compliance_unassessed ? (D.render_mode==='knowledge' && (D.frameworksBinding||0)>0 ? ('Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.') : 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.') : (D.regulatoryHeadline || ('All '+D.rulesChecked+' active frameworks were screened. '+(D.frameworksBinding||D.frameworksAssessed)+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')))}</h2>
       <p>Every scan screens all ${D.rulesChecked} active frameworks; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>

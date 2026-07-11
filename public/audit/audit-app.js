@@ -109,6 +109,7 @@
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
       <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
+      ${D.adjudication ? `<div class="rail-adj"><div class="adj-h">✓ ${D.adjudication.reviewed} findings re-examined against the statute</div><div class="adj-l">${escH(D.adjudication.line)}</div></div>` : ''}
       <div class="rail-kpis">
         <div class="rail-kpi"><div class="v red">${D.counts.critical}</div><div class="l">Critical findings</div></div>
         <div class="rail-kpi"><div class="v">${D.confirmed}</div><div class="l">Confirmed v. evidence</div></div>

@@ -176,5 +176,39 @@ t('E-251: a BREACHED framework always keeps its card, even with no curated intel
   assert.ok((D.frameworks || []).some((f) => /DMCC|CMA/i.test(String(f.name))), 'a breached framework must always render — the breach IS the content');
 });
 
-console.log(bad ? 'RENDER TRUTH: FAIL' : 'E243/E244/E247/E251 RENDER TRUTH: ALL GREEN (' + n + ' checks)');
+
+// ---------- E-253d: SHOW the adjudication, and NEVER claim a review that did not happen ----------
+t('E-253d: the adjudication line renders when a model really did review the findings', () => {
+  const D = payloadToD({
+    domain: 'x.co.uk', detected_sector: 'law-firms', country: 'UK', engine_version: 'v23.1',
+    adjudication: { ran: true, total: 31, breach: 27, dropped: 3, insufficient: 1 },
+    pointers: [P({ bucket: 'compliance', framework_short: 'UK_DMCC', severity: 'P0', statutory_citation: 'DMCC Act 2024 s.226',
+      fine_high_gbp: 5e6, enforce_typical_low_gbp: 1e5, enforce_typical_high_gbp: 5e6,
+      evidence_quote: 'Read what our clients say about us on our reviews page, updated monthly.' })],
+    binding: { UK_DMCC: 'statute' }, firm_profile: {}, pages_crawled: ['https://x.co.uk/'],
+    scan: { site_scan_reachable: true, signals: { title: 'X LLP', h1_count: 1, meta_description: 'x' } },
+    jurisdiction_families: { families: ['UK'], primary: 'UK' },
+  }, { verified: true });
+  assert.ok(D.adjudication, 'the adjudication summary must reach the renderer');
+  assert.equal(D.adjudication.reviewed, 31);
+  assert.equal(D.adjudication.dropped, 3);
+  assert.match(D.adjudication.line, /3 candidate findings were discarded as unproven/);
+});
+
+t('E-253d THE HONESTY GUARD: no adjudication line when no model reviewed anything', () => {
+  const base = {
+    domain: 'x.co.uk', detected_sector: 'law-firms', country: 'UK', engine_version: 'v23.1',
+    pointers: [], binding: { UK_PECR: 'statute' }, firm_profile: {}, pages_crawled: ['https://x.co.uk/'],
+    scan: { site_scan_reachable: true, signals: { title: 'X LLP', h1_count: 1, meta_description: 'x' } },
+    jurisdiction_families: { families: ['UK'], primary: 'UK' },
+  };
+  // LLM was unreachable: ran=false. We must NOT tell a law firm their findings were reviewed.
+  assert.equal(payloadToD(Object.assign({}, base, { adjudication: { ran: false, reason: 'gate_unavailable', total: 12 } }), { verified: true }).adjudication, null);
+  // legacy audit with no adjudication at all
+  assert.equal(payloadToD(base, { verified: true }).adjudication, null);
+  // ran, but there was nothing to review
+  assert.equal(payloadToD(Object.assign({}, base, { adjudication: { ran: true, total: 0 } }), { verified: true }).adjudication, null);
+});
+
+console.log(bad ? 'RENDER TRUTH: FAIL' : 'RENDER TRUTH (E243/244/247/251/253d): ALL GREEN (' + n + ' checks)');
 process.exit(bad ? 1 : 0);

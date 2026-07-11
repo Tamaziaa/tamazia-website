@@ -1397,3 +1397,34 @@ body.pdrawer-lock{overflow:hidden}
 .r3-pay .r3-free{margin-top:2px}
 .r3-pay .btn.solid.block{width:100%;margin-top:3px}
 .r3-pay .r3-terms{width:100%;margin-top:4px}
+
+/* ── E-233 · REGISTERED REALITY + framework badges ────────────────────────────────────────────────
+   The registers block previously reused .fw/.fw-head, which is a 4-column GRID (46px 1fr auto auto).
+   Passing a single child dropped the whole card into the 46px column and every sentence rendered one
+   word per line. These are its OWN classes, a plain flow card, never a grid. And .fw-assessed /
+   .inspected shipped in PR #153 with NO css at all, so the assessed badge and the inspected-page list
+   rendered as raw inline text with full URLs. Both fixed here. */
+.reglist{display:flex;flex-direction:column;gap:9px;margin:6px 0 20px}
+.regrow{border:1px solid var(--line);border-left:3px solid var(--line-2);border-radius:10px;background:var(--paper);padding:12px 15px}
+.regrow.ok{border-left-color:#0a7d4f}
+.regrow.miss{border-left-color:var(--red)}
+.regrow.na{border-left-color:var(--muted-2)}
+.regrow.link{border-left-color:var(--gold,#b8923a)}
+.regrow-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.reg-name{font-family:var(--serif);font-size:14px;color:var(--ink)}
+.reg-status{font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:20px;white-space:nowrap;background:var(--cream-2);color:var(--muted)}
+.reg-status.ok{background:rgba(10,125,79,.12);color:#0a7d4f}
+.reg-status.miss{background:var(--red-bg);color:var(--red-deep)}
+.reg-status.link{background:var(--cream-2);color:var(--ox)}
+.reg-rec{font-family:var(--mono);font-size:11px;color:var(--ink);margin-top:5px}
+.reg-line{font-family:var(--body);font-size:12.5px;line-height:1.5;color:#3a2d30;margin-top:6px}
+.reg-foot{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:7px}
+.reg-site{font-family:var(--mono);font-size:10px;color:var(--muted-2)}
+.reg-verify{font-family:var(--mono);font-size:10px;color:var(--ox);text-decoration:none;border-bottom:1px solid var(--line-2);white-space:nowrap}
+.reg-verify:hover{border-bottom-color:var(--ox)}
+
+/* framework summary: assessed badge + compact inspected-page chip (never raw URLs) */
+.fw .fw-assessed{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:4px}
+.fw .fw-assessed .abadge{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:rgba(10,125,79,.1);color:#0a7d4f;white-space:nowrap}
+.fw .fw-assessed .inspected{font-family:var(--mono);font-size:9px;color:var(--muted-2);cursor:help;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+@media(max-width:760px){.fw .fw-assessed .inspected{max-width:150px}}

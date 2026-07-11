@@ -96,5 +96,54 @@ t('E-244: a ranking-only audit still headlines honestly, never £0', () => {
   assert.ok(!/£0/.test(String(D.exposure)) || D.exposureHeadline === 'Ranking & AI');
 });
 
-console.log(bad ? 'E243/E244: FAIL' : 'E243/E244 EXPOSURE TRUTH: ALL GREEN (' + n + ' checks)');
+
+// ---------- E-247: a law that BINDS can never be crowded out by a display cap ----------
+// "are cookie policy, privacy policy, data privacy laws — these common breaches — assessed live on every website,
+//  all the normal laws need to be there"
+// They were not. The framework list was built ONLY from findings, and the screened-injection that back-fills the
+// clean-but-binding laws opened with `if (frameworks.length >= REG_CAP) return`. With 10 breached frameworks and
+// REG_CAP=10 that guard fired on its first line, so UK_PECR and UK_ICO_COOKIES — both in the engine's own binding
+// map — never rendered, and the page claimed "10 frameworks bind you" while its payload said 14.
+t('E-247: every law in the binding map renders, even when breaches already fill the cap', () => {
+  const bound = {};
+  // 10 breaching frameworks to fill the old REG_CAP of 10 ...
+  const ptrs = [];
+  for (let i = 0; i < 10; i++) {
+    const code = 'UK_FILLER_' + i;
+    bound[code] = 'statute';
+    ptrs.push(P({ bucket: 'compliance', framework_short: code, severity: 'P1', fact: 'gap ' + i,
+      statutory_citation: 'Act s.' + i, fine_high_gbp: 1e5, enforce_typical_low_gbp: 1e4, enforce_typical_high_gbp: 1e5,
+      evidence_quote: 'A verbatim sentence from the live site proving finding number ' + i + '.' }));
+  }
+  // ... plus the cookie / e-privacy laws, which BIND but breached clean this scan.
+  bound.UK_PECR = 'statute';
+  bound.UK_ICO_COOKIES = 'statute';
+  bound.UK_GDPR_A13 = 'statute';
+  const D = payloadToD({
+    domain: 'x.co.uk', detected_sector: 'law-firms', country: 'UK', engine_version: 'test',
+    pointers: ptrs, binding: bound, firm_profile: {}, pages_crawled: ['https://x.co.uk/'],
+    scan: { site_scan_reachable: true, signals: { title: 'X LLP', h1_count: 1, meta_description: 'x' } },
+    jurisdiction_families: { families: ['UK'], primary: 'UK' },
+  }, { verified: true });
+  const names = (D.frameworks || []).map((f) => String(f.name));
+  assert.ok(names.some((n) => /PECR|cookie|e-?privacy/i.test(n)), 'the cookie law MUST render even when the cap is full. Got: ' + names.join(' | '));
+  assert.ok(names.some((n) => /GDPR|data protection/i.test(n)), 'the data-protection law MUST render. Got: ' + names.join(' | '));
+});
+
+t('E-247: a clean binding law renders as SCREENED — never as a fabricated breach', () => {
+  const D = payloadToD({
+    domain: 'x.co.uk', detected_sector: 'law-firms', country: 'UK', engine_version: 'test',
+    pointers: [], binding: { UK_PECR: 'statute' }, firm_profile: {}, pages_crawled: ['https://x.co.uk/'],
+    scan: { site_scan_reachable: true, signals: { title: 'X LLP', h1_count: 1, meta_description: 'x' } },
+    jurisdiction_families: { families: ['UK'], primary: 'UK' },
+  }, { verified: true });
+  const pecr = (D.frameworks || []).find((f) => /PECR|cookie/i.test(String(f.name)));
+  assert.ok(pecr, 'PECR must render');
+  assert.equal(pecr.screened, true, 'a clean law is SCREENED');
+  assert.equal(pecr.findings, 0, 'a clean law must never invent a finding');
+  assert.equal(pecr.c, 0); assert.equal(pecr.h, 0);
+  assert.ok(!/£/.test(String(pecr.exp)), 'a clean law must never show a fine, got: ' + pecr.exp);
+});
+
+console.log(bad ? 'E243/E244/E247: FAIL' : 'E243/E244/E247 EXPOSURE + BINDING TRUTH: ALL GREEN (' + n + ' checks)');
 process.exit(bad ? 1 : 0);

@@ -1428,3 +1428,10 @@ body.pdrawer-lock{overflow:hidden}
 .fw .fw-assessed .abadge{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:rgba(10,125,79,.1);color:#0a7d4f;white-space:nowrap}
 .fw .fw-assessed .inspected{font-family:var(--mono);font-size:9px;color:var(--muted-2);cursor:help;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
 @media(max-width:760px){.fw .fw-assessed .inspected{max-width:150px}}
+
+/* E-253d — the adjudication trust line. Every finding on the page was ruled on against the text of the statute it
+   cites, and the unproven ones were removed before the client ever saw them. This is the difference between a scan
+   and an audit, and it is the strongest thing we can say to a managing partner. */
+.rail-adj{margin:14px 0 0;padding:11px 13px;border:1px solid rgba(10,125,79,.28);border-radius:10px;background:rgba(10,125,79,.06)}
+.rail-adj .adj-h{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#0a7d4f;margin-bottom:5px}
+.rail-adj .adj-l{font-size:11px;line-height:1.5;color:var(--muted)}

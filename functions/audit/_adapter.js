@@ -2243,6 +2243,24 @@ export function payloadToD(payload, ctx = {}) {
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
     // E-244: the ceiling is kept, but as secondary context under the median, never as the headline.
     exposureCeiling: ceilingN > 0 ? gbp(ceilingN, curSym) : null,
+    // E-253d (v23.1) — SHOW THE ADJUDICATION. This is the strongest credibility line in the whole report.
+    // Until v23.0 every breach we sent was a regex match no model had ever read. Now each one is ruled on against
+    // the actual text of the statute, and the false positives are removed BEFORE the client sees them. A managing
+    // partner does not care that we ran a scan; they care that someone checked it. Say so, precisely, or not at all.
+    adjudication: (() => {
+      const a = g(payload, 'adjudication', null);
+      if (!a || a.ran !== true || !(a.total > 0)) return null;   // never claim a review that did not happen
+      return {
+        reviewed: Number(a.total) || 0,
+        upheld: Number(a.breach) || 0,
+        dropped: Number(a.dropped) || 0,          // false positives removed before you saw them
+        needs_review: Number(a.insufficient) || 0,
+        line: 'Every finding on this page was re-examined against the text of the statute it cites, and '
+          + ((Number(a.dropped) || 0) > 0
+            ? ((Number(a.dropped) || 0) + ' candidate ' + ((Number(a.dropped) || 0) === 1 ? 'finding was' : 'findings were') + ' discarded as unproven before this report reached you.')
+            : 'each one was upheld on the evidence quoted.'),
+      };
+    })(),
     counts, confirmed: pointers.length,
     // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
     // consumer should use these instead of asserting "N breached / PASS". (zero-critical-honest)

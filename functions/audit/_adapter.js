@@ -1706,7 +1706,18 @@ export function payloadToD(payload, ctx = {}) {
   // show EVERY country's laws (founder requirement) instead of the first country's filling all 10. Single-jurisdiction
   // stays at 10. (multi-jur-cap)
   const _jurCount = [...allow].filter((j) => j !== 'GLOBAL').length || 1;
-  const REG_CAP = Math.min(20, 10 + 4 * Math.max(0, _jurCount - 1));
+  // E-247 — A LAW THAT BINDS THE FIRM CAN NEVER BE CROWDED OUT BY A DISPLAY CAP.
+  // The engine's `binding` map IS the audit's own assertion of which laws bind this firm. On russell-cooke it held
+  // 14 frameworks INCLUDING UK_PECR and UK_ICO_COOKIES. But the framework list was built ONLY from findings, and the
+  // screened-injection that back-fills the clean-but-binding laws opened with `if (frameworks.length >= REG_CAP)`.
+  // With 10 breached frameworks and REG_CAP = 10, that guard fired on its FIRST line and every clean binding law was
+  // dropped: the cookie law and the e-privacy law simply vanished, and the page then told the reader
+  // "10 frameworks bind you" when its own payload said 14. Under-reporting the law is as much a defect as
+  // over-reporting it, and it hid exactly the laws (cookies, privacy, data protection) that bind EVERY website.
+  // The cap now governs only DISCRETIONARY extras. Everything in `binding` is mandatory and renders unconditionally.
+  const _bound = new Set(Object.keys(g(payload, 'binding', {}) || {}).map((c) => fwCanon(c)));
+  const _isBound = (fw) => _bound.has(fwCanon(fw));
+  const REG_CAP = Math.max(_bound.size, Math.min(20, 10 + 4 * Math.max(0, _jurCount - 1)));
   const BASELINE = {
     UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
     EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
@@ -1719,7 +1730,8 @@ export function payloadToD(payload, ctx = {}) {
     const _jurName = (fw) => ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || 'Global');
     const _baselineSet = new Set(Object.values(BASELINE).flat().map(fwCanon));
     const _pushScreened = (fw) => {
-      if (frameworks.length >= REG_CAP) return;
+      // E-247: the cap governs DISCRETIONARY rows only. A law the engine says BINDS this firm always renders.
+      if (frameworks.length >= REG_CAP && !_isBound(fw)) return;
       if (noStatutoryFine(fw) || sectorInapplicable(fw, payload)) return;
       const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allow.has(j))) return;
       const nm = fwName(fw);
@@ -1767,6 +1779,11 @@ export function payloadToD(payload, ctx = {}) {
     const _rank = (fw) => (FW_JUR(fw) === _home ? 0 : 2) + (_baselineSet.has(fw) ? 1 : 0);
     [..._applic].sort((a, b) => _rank(a) - _rank(b)).forEach(_pushScreened);
     for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
+    // E-247: FINALLY, and unconditionally, EVERY law in the engine's own binding map. `applicable_frameworks` and the
+    // hardcoded BASELINE table are both incomplete views; `binding` is the engine's actual verdict on what governs
+    // this firm, and it is what the sidebar counts. Anything in it that has not yet rendered renders now, screened.
+    // Without this the audit under-reports the law and contradicts its own payload.
+    [..._bound].sort((a, b) => _rank(a) - _rank(b)).forEach(_pushScreened);
   }
 
   // Collapse near-duplicate framework rows (a few overlapping catalogue codes render almost identically — e.g. two

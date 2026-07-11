@@ -169,12 +169,21 @@
     const registersBlock = regRows.length?`
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Registered reality: your public register record, checked</h3></div>
     <p class="reg-sub">These lines come from the government registers your firm is already on, by API, not from your website. Verify each one on the official source.</p>
-    ${regRows.map(r=>{
-      const st=r.status==='confirmed'?('<span class="jbadge" style="background:var(--green,#0a7d4f);color:#fff">On the register</span>'):(r.status==='not_found'?'<span class="jbadge">No exact match found, confirm on the call</span>':(r.status==='unavailable'?'<span class="jbadge">Register unavailable this scan</span>':'<span class="jbadge">Verify on the register</span>'));
-      const rec=r.record?(escH(String(r.record.name||''))+(r.record.number?(' · '+escH(String(r.record.number))):'')+(r.record.detail?(' · '+escH(String(r.record.detail))):'')):'';
-      const site=(r.on_site===true)?'Displayed on your site.':(r.on_site===false?'Not found on your site on this scan.':'Site display not confirmed on this scan.');
-      return `<div class="fw" style="padding:12px 16px;margin:6px 0"><div class="fw-head"><div class="fwn-wrap"><div class="fwn">${escH(r.label)} ${st}</div>${rec?`<div class="fwr">${rec}</div>`:''}<div class="fwr">${escH(r.statute_line)} ${site}</div><div class="fwr"><a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="lawcite">Verify on the official register &#8599;</a></div></div></div></div>`;
-    }).join('')}`:'';
+    <div class="reglist">${regRows.map(r=>{
+      // E-233: OWN markup + OWN classes. The previous build reused .fw/.fw-head, which is a 4-column GRID
+      // (46px 1fr auto auto) expecting .code/.fwn-wrap/.cnt/.fwe — passing one child dropped the content into
+      // the 46px column and the text rendered one word per line. Never reuse the framework grid here.
+      const cls=r.status==='confirmed'?'ok':(r.status==='not_found'?'miss':(r.status==='unavailable'?'na':'link'));
+      const st=r.status==='confirmed'?'On the register':(r.status==='not_found'?'No exact match, confirm on the call':(r.status==='unavailable'?'Register unavailable this scan':'Verify on the register'));
+      const rec=r.record?(escH(String(r.record.name||''))+(r.record.number?(' &middot; '+escH(String(r.record.number))):'')+(r.record.detail?(' &middot; '+escH(String(r.record.detail))):'')):'';
+      const site=(r.on_site===true)?'Displayed on your site.':(r.on_site===false)?'Not found on your site on this scan.':'Site display not confirmed on this scan.';
+      return `<div class="regrow ${cls}">
+        <div class="regrow-top"><span class="reg-name">${escH(r.label)}</span><span class="reg-status ${cls}">${st}</span></div>
+        ${rec?`<div class="reg-rec">${rec}</div>`:''}
+        <div class="reg-line">${escH(r.statute_line)}</div>
+        <div class="reg-foot"><span class="reg-site">${site}</span><a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="reg-verify">Verify on the official register &#8599;</a></div>
+      </div>`;
+    }).join('')}</div>`:'';
     // E-218: point-in-time banner for anything the verifier has not passed. Honest scope, zero fear theatre,
     // and the re-check is the conversion mechanic.
     const pitBanner = (!D.verified)?`<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">Point-in-time scan${D.meta&&D.meta.date?(' of '+escH(D.meta.date)):''}${D.superseded?', since superseded by a newer assessment':''}. This view shows register facts, the binding-law map and only the findings that pass Tamazia&rsquo;s evidence gates from that scan. A fresh verified assessment re-checks every line against your live site${D.links&&D.links.booking?': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">book the re-check</a>':'.'}</div>`:'';
@@ -192,7 +201,7 @@
       return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
       <summary>
         <div class="fw-head"><span class="code">${escH(fw.code)}</span>
-          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}</div>${fw.screened ? `<div class="fw-assessed"><span class="badge">${fw.assessed_label || 'APPLIES · ASSESSED'}</span>${(fw.inspected_pages && fw.inspected_pages.length) ? `<span class="inspected">Inspected: ${fw.inspected_pages.slice(0,4).join(' · ')}</span>` : ''}</div>` : ''}<div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
+          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}</div>${fw.screened ? `<div class="fw-assessed"><span class="abadge">${escH(fw.assessed_label || 'APPLIES · ASSESSED')}</span>${(fw.inspected_pages && fw.inspected_pages.length) ? `<span class="inspected" title="${escH(fw.inspected_pages.slice(0,8).join('  '))}">${fw.inspected_pages.length} ${plur(fw.inspected_pages.length,'page','pages')} inspected</span>` : ''}</div>` : ''}<div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
           <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
           <div class="fwe">${escH(fw.exp)}</div></div>
         <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
@@ -200,7 +209,8 @@
       <div class="fwbody">
         <div class="lbl">Why this framework matters</div>${escH(fw.why)}
         ${(fw.obligations||[]).length?`<div class="lbl">What ${escH(fw.regulator)} assesses</div><ul class="obl">${fw.obligations.map(o=>`<li>${escH(o)}</li>`).join('')}</ul>`:''}
-        <div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}${fw.enforcement_url?` <a href="${escH(fw.enforcement_url)}" target="_blank" rel="noopener nofollow" class="lawcite">source &#8599;</a>`:''}</div>
+        ${fw.reg_focus?`<div class="lbl">What ${escH(fw.regulator)} is enforcing right now</div><div class="action">${escH(fw.reg_focus)}</div>`:''}
+        ${fw.action?`<div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}${fw.enforcement_url?` <a href="${escH(fw.enforcement_url)}" target="_blank" rel="noopener nofollow" class="lawcite">source &#8599;</a>`:''}</div>`:''}
         ${fw.guidance?`<div class="lbl">Recent regulatory change</div><div class="action">${escH(fw.guidance)}</div>`:''}
         ${fw.citation_url?`<div class="lbl">The law</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(fw.name)}, ${escH(fw.regulator)} official source &#8599;</a></div>`:''}
         ${(fw.articleGroups||[]).length?(()=>{const _all=(fw.articleGroups||[]).reduce((s,g)=>s+((g.items||[]).length),0);const _half=Math.ceil(_all/2);let _k=0;return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>

@@ -1675,7 +1675,11 @@ export function payloadToD(payload, ctx = {}) {
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
         findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: ((payload.inspected_by_framework || {})[fw] || (payload.inspected_by_framework || {})[fwCanon(fw)] || payload.pages_crawled || []).slice(0, 6), binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
-        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime, and the obligations it sets are exactly what it acts on.'),
+        // E-233: NO INVENTED ENFORCEMENT. The old fallback asserted "<regulator> actively enforces this regime"
+        // for any framework we had no intel on — an unsourced claim that read as filler and gave the section its
+        // "no value" feel. Enforcement now renders ONLY when a real, curated, cited action exists; otherwise the
+        // field is empty and the card leads with the regulator's obligations, which are always true.
+        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || '',
         enforcement_url: (_it && _it.enforcement_url) || '',
         obligations: obligationsOf(_it), reg_focus: _focus, guidance: (_it && _it.guidance) || '',
         // Per founder: present a non-breached law as one that BINDS the firm, with its obligations — never as "we

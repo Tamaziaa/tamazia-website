@@ -229,6 +229,21 @@ function setVoluntaryBinding(binding) {
   _VOLUNTARY_BINDING = v;
 }
 function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_STATUTORY_FINE.has(fw) || _VOLUNTARY_BINDING.has(fw); }
+// E-243 (v22.11) THE ONE CANONICAL NON-STATUTORY TEST. A finding is non-statutory when it is a ranking/visibility
+// signal rather than a legal obligation. Previously three different bucket lists existed in this file and drifted,
+// which is how a Largest-Contentful-Paint (bucket `performance`) came to be labelled an "enforcement action".
+// NOTE what is deliberately NOT here: `accessibility` (Equality Act 2010 is a statute) and `tracking`/`consent`
+// (PECR reg.6 + UK GDPR are statutes). Those DO carry real fines and must keep them.
+const NON_STATUTORY_BUCKET = /^(seo|technical_seo|technical|tech|tls_dns|performance|core_web_vitals|cwv|speed|ai_visibility|geo|ai|answer_engine|ux|content|eeat|authority|backlinks|schema|structured_data|knowledge_graph|brand|social)$/i;
+function isNonStatutory(p) {
+  if (!p) return false;
+  const fw = String(p.framework_short || '');
+  if (noStatutoryFine(fw)) return true;                       // voluntary code / ranking guideline
+  // A real statute code (UK_GDPR, DPA2018, PECR, EQA2010...) always wins over the bucket: a statutory breach found
+  // while measuring a technical page is still statutory.
+  if (/^[A-Z]{2,}_/.test(fw) && !noStatutoryFine(fw)) return false;
+  return NON_STATUTORY_BUCKET.test(String(p.bucket || ''));
+}
 // #17a: expose the engine's per-framework binding STATUS as a human label so a prospect can see whether an
 // obligation is a hard statute or voluntary guidance (drives trust + how urgently to act). Seeded per-request.
 let _BINDING_MAP = {};
@@ -738,7 +753,13 @@ function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
   const enfLo = +p.enforce_typical_low_gbp || 0, enfHi = +p.enforce_typical_high_gbp || 0;
-  const noFine = noStatutoryFine(p.framework_short) || p.bucket === 'ai_visibility' || p.bucket === 'seo';   // FIX-R1: voluntary codes never show a fine
+  // E-243 (v22.11) — "AN SEO METRIC CANNOT CARRY AN ENFORCEMENT ACTION."
+  // This guard used to test ONLY `ai_visibility` and `seo`, while the `law` line below tested a WIDER bucket list
+  // (performance, technical, tls_dns...). A Largest-Contentful-Paint finding has bucket `performance`: it escaped
+  // this guard, carried no fine and no penalty_note, and fell through to the literal string 'enforcement action'
+  // on line ~765. The live page therefore branded a Core Web Vital as a regulatory enforcement action. The two
+  // lists are now ONE canonical predicate (NON_STATUTORY_BUCKET), so they can never drift apart again.
+  const noFine = isNonStatutory(p);   // FIX-R1 + E-243
   return {
     n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation) : pillar, pillar,
     // GEO/SEO/technical are not statutes; render the human "③ The law" layer, never the raw code title-cased
@@ -759,10 +780,13 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // Only genuine SEO/AI signals fall through to "ranking impact". (legal-QA penalty-basis fix)
     // FIX-R1: when the framework carries NO statutory fine (SEO/AI signal OR voluntary code), NEVER emit a GBP
     // figure even if the payload attached one — show the non-monetary sanction note or 'ranking impact'.
-    exp: noFine ? (p.penalty_note || 'non-statutory (code sanction / ranking impact)')
+    // E-243: the final fallback used to be the literal string 'enforcement action', which is (a) meaningless as a
+    // penalty and (b) a REGULATORY claim stamped onto findings that carry no law at all. A finding with no fine and
+    // no penalty basis states exactly that, and nothing more. We never invent a sanction.
+    exp: noFine ? (p.penalty_note || 'non-statutory (ranking and AI-visibility impact)')
       : (enfLo || enfHi) ? (gbp(enfLo, sym) + ' to ' + gbp(enfHi, sym) + ' typical')
         : (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
-          : (p.penalty_note ? p.penalty_note : 'enforcement action'),
+          : (p.penalty_note ? p.penalty_note : 'no published penalty figure'),
     expMax: (!noFine && hiF) ? gbp(hiF, sym) : (p.penalty_note || null),   // FIX-R1
     maxRare: !!p.enforce_max_rare,
     enfMethod: p.enforce_methodology || null,
@@ -982,6 +1006,38 @@ function canonicalExposure(perFw) {
   let dp = 0, sum = 0;
   for (const [fw, v] of Object.entries(perFw)) { if (DP_FAMILY.has(fw)) dp = Math.max(dp, v); else sum += v; }
   return sum + dp;
+}
+// E-244 (v22.11) THE MEDIAN FINE, RESTORED.
+// The left rail headlined the SUM OF STATUTORY CEILINGS ("£5M · MAXIMUM STATUTORY PENALTY"). Two problems:
+//   1. CREDIBILITY. A statutory maximum is what the regulator COULD levy in the worst case in history. No law firm
+//      believes it will be fined £5M for a missing reviews policy, so the number reads as a scare tactic and the
+//      whole report loses authority — the opposite of what it is for. (P-008)
+//   2. TRACEABILITY. £5M appeared NOWHERE else on the page. The cards said "£100k to £5M typical"; the rail said
+//      "£5M maximum". Same audit, two different framings, and the headline figure was unfindable in the body.
+// The headline is now the MEDIAN of the TYPICAL ENFORCEMENT BAND — the midpoint of what this regulator actually
+// levies for this breach — which IS the band printed on every card, so the reader can add it up themselves.
+// The statutory ceiling is retained as the top step of the waterfall, where it belongs: as context, not a headline.
+function perFrameworkMedianFine(pointers) {
+  const m = {};
+  for (const p of pointers) {
+    if (p.fine_withheld) continue;
+    const fw = p.framework_short || p.citation;
+    if (!fw || noStatutoryFine(fw) || isNonStatutory(p)) continue;
+    const tLo = +p.enforce_typical_low_gbp || 0, tHi = +p.enforce_typical_high_gbp || 0;
+    const sLo = +p.fine_low_gbp || 0, sHi = +p.fine_high_gbp || 0;
+    // Prefer the observed enforcement band (what regulators DO). Fall back to the statutory band (what they MAY).
+    let mid = (tLo || tHi) ? Math.round(((tLo || tHi) + (tHi || tLo)) / 2)
+      : (sLo || sHi) ? Math.round(((sLo || sHi) + (sHi || sLo)) / 2) : 0;
+    // E-244b: the turnover rescale has already cut this firm's statutory ceiling down to 4% of ITS OWN turnover
+    // (a 12-partner firm cannot be fined the £17.5M global cap). The typical enforcement band, however, is the
+    // regulator's population-wide band and is NOT rescaled — so an un-capped median could sit ABOVE this firm's
+    // own ceiling and the audit would contradict itself again, in the other direction. The median is therefore
+    // capped at the rescaled ceiling: median <= ceiling is now an invariant of the page.
+    if (sHi > 0 && mid > sHi) mid = sHi;
+    if (!mid) continue;
+    m[fw] = Math.max(m[fw] || 0, mid);
+  }
+  return m;
 }
 // Scrub any £/GBP figure out of LLM prose and replace with the canonical figure (no LLM number leaks).
 // The unit space is grouped WITH the unit so a trailing word (e.g. "fine") keeps its space. (P2)
@@ -1447,16 +1503,20 @@ export function payloadToD(payload, ctx = {}) {
   const counts = { critical: 0, high: 0, standard: 0, total: pointers.length };
   for (const p of pointers) counts[SEV_BAND[p.severity] || 'standard']++;
   const perFw = perFrameworkMaxFine(pointers);
-  const exposureN = canonicalExposure(perFw);
-  // Exposure waterfall, show HOW the honest number is reached (we DON'T just sum ceilings). (§4.3)
+  const ceilingN = canonicalExposure(perFw);                        // statutory ceiling (context only, E-244)
+  const perFwMed = perFrameworkMedianFine(pointers);
+  const medianN = canonicalExposure(perFwMed);                      // E-244: the headline number
+  const exposureN = medianN || 0;                                   // headline = MEDIAN, never the ceiling
+  // Exposure waterfall, show HOW the honest number is reached (we DON'T just sum ceilings). (§4.3 + E-244)
   const rawSum = Object.values(perFw).reduce((a, b) => a + b, 0);
   const exposureWaterfall = {
-    raw: rawSum, collapsed: exposureN, frameworks: Object.keys(perFw).length,
+    raw: rawSum, collapsed: exposureN, ceiling: ceilingN, median: medianN,
+    frameworks: Object.keys(perFwMed).length,
     savedPct: rawSum > 0 ? Math.round((1 - exposureN / rawSum) * 100) : 0,
     steps: [
-      { l: 'Statutory ceilings, summed', v: rawSum, cls: 'amber' },
-      { l: 'Overlapping data-protection fines collapsed (max, not sum)', v: exposureN, cls: 'gold' },
-      { l: 'Your real exposure', v: exposureN, cls: 'red', final: true },
+      { l: 'Statutory ceilings, summed (what the law permits)', v: rawSum, cls: 'amber' },
+      { l: 'Overlapping data-protection fines collapsed (max, not sum)', v: ceilingN, cls: 'gold' },
+      { l: 'Median of the typical enforcement band, what regulators actually levy', v: exposureN, cls: 'red', final: true },
     ],
   };
 
@@ -2150,8 +2210,10 @@ export function payloadToD(payload, ctx = {}) {
     // the (ranking-only) frameworks shown. Present the exposure tile honestly instead. (£0-leak / consistency)
     exposureHeadline: exposureN > 0 ? gbp(exposureN, curSym) : 'Ranking & AI',
     exposureNote: exposureN > 0
-      ? 'Maximum statutory penalty across the breaches evidenced on your live site'
+      ? 'Median enforcement exposure across the breaches evidenced on your live site'
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
+    // E-244: the ceiling is kept, but as secondary context under the median, never as the headline.
+    exposureCeiling: ceilingN > 0 ? gbp(ceilingN, curSym) : null,
     counts, confirmed: pointers.length,
     // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
     // consumer should use these instead of asserting "N breached / PASS". (zero-critical-honest)

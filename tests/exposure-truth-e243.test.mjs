@@ -145,5 +145,36 @@ t('E-247: a clean binding law renders as SCREENED — never as a fabricated brea
   assert.ok(!/£/.test(String(pecr.exp)), 'a clean law must never show a fine, got: ' + pecr.exp);
 });
 
-console.log(bad ? 'E243/E244/E247: FAIL' : 'E243/E244/E247 EXPOSURE + BINDING TRUTH: ALL GREEN (' + n + ' checks)');
+
+// ---------- E-251: no hollow cards ----------
+// kingsleynapley shipped three cards (FRC, HMRC, ICAEW) with NO obligations and NO enforcement: empty boxes with a
+// regulator's name on them. That IS the "this section provides no value" complaint. A card must earn its place.
+t('E-251: a screened card with no obligations AND no enforcement is never rendered', () => {
+  const D = payloadToD({
+    domain: 'x.co.uk', detected_sector: 'law-firms', country: 'UK', engine_version: 'test',
+    pointers: [], binding: { UK_PECR: 'statute', UK_TOTALLY_UNKNOWN_REGULATOR: 'statute' },
+    firm_profile: {}, pages_crawled: ['https://x.co.uk/'],
+    scan: { site_scan_reachable: true, signals: { title: 'X LLP', h1_count: 1, meta_description: 'x' } },
+    jurisdiction_families: { families: ['UK'], primary: 'UK' },
+  }, { verified: true });
+  for (const f of (D.frameworks || [])) {
+    const hollow = f.screened && !(f.obligations || []).length && !String(f.action || '').trim();
+    assert.ok(!hollow, 'hollow card rendered: ' + f.code + ' (' + f.name + ') — no obligations, no enforcement');
+  }
+});
+
+t('E-251: a BREACHED framework always keeps its card, even with no curated intel', () => {
+  const D = payloadToD({
+    domain: 'x.co.uk', detected_sector: 'law-firms', country: 'UK', engine_version: 'test',
+    pointers: [P({ bucket: 'compliance', framework_short: 'UK_DMCC', severity: 'P0', statutory_citation: 'DMCC Act 2024 s.226',
+      fine_high_gbp: 5e6, enforce_typical_low_gbp: 1e5, enforce_typical_high_gbp: 5e6,
+      evidence_quote: 'Read what our clients say about us on our reviews page, updated monthly.' })],
+    binding: { UK_DMCC: 'statute' }, firm_profile: {}, pages_crawled: ['https://x.co.uk/'],
+    scan: { site_scan_reachable: true, signals: { title: 'X LLP', h1_count: 1, meta_description: 'x' } },
+    jurisdiction_families: { families: ['UK'], primary: 'UK' },
+  }, { verified: true });
+  assert.ok((D.frameworks || []).some((f) => /DMCC|CMA/i.test(String(f.name))), 'a breached framework must always render — the breach IS the content');
+});
+
+console.log(bad ? 'RENDER TRUTH: FAIL' : 'E243/E244/E247/E251 RENDER TRUTH: ALL GREEN (' + n + ' checks)');
 process.exit(bad ? 1 : 0);

@@ -823,7 +823,7 @@
     // and why to keep it current. (founder: replace the dense exec paragraph with crisp bullet points.)
     const bullets=[];
     bullets.push(`<b>What this is.</b> A live audit of ${escH(company)} across regulation, search and AI visibility. Every finding below was measured on your own site, never estimated.`);
-    if(crit>0) bullets.push(`<b>The headline.</b> ${crit} critical ${plur(crit,'breach','breaches')} ${plur(crit,'is','are')} live on your site right now${hasMoney?(', carrying up to '+D.exposure+' in maximum statutory penalties'):''}. Start with ${escH(String(top.title||'your highest-severity finding').toLowerCase())}.`);
+    if(crit>0) bullets.push(`<b>The headline.</b> ${crit} critical ${plur(crit,'breach','breaches')} ${plur(crit,'is','are')} live on your site right now${hasMoney?(', carrying a median enforcement exposure of '+D.exposure):''}. Start with ${escH(String(top.title||'your highest-severity finding').toLowerCase())}.`);
     else if (D.compliance_unassessed) bullets.push(D.render_mode==='knowledge' && (D.frameworksBinding||0)>0 ? `<b>The headline.</b> ${D.frameworksBinding} statutory frameworks bind your firm on registration facts alone, mapped below with regulator and obligation. No breach is claimed because your live pages resisted a deep read this scan; the map is the floor, the re-scan finds what sits on top of it.` : `<b>The headline.</b> Your live site blocked a deep compliance read this scan, so the regulatory checks below could not be completed and no clean bill of health is implied. The ranking, authority and AI-visibility findings were still measured on your site and stand. A re-scan with a rendered-DOM read completes the compliance assessment.`);
     else bullets.push(`<b>The headline.</b> No critical statutory breach surfaced this scan. The gaps below are costing you rankings, buyers and AI visibility, not fines.`);
     bullets.push(`<b>Where you stand.</b> ${D.frameworksAssessed} framework${D.frameworksAssessed!==1?'s':''} legally bind${D.frameworksAssessed===1?'s':''} you${sov?(', AI names you in '+sov+' of the buyer queries probed'):''}${rivals>0?(', and '+rivals+' '+plur(rivals,'rival')+' '+plur(rivals,'is','are')+' ranked ahead of you'):''}.`);
@@ -831,7 +831,7 @@
     bullets.push(`<b>Keep it current.</b> Re-run this report every month so a new breach is caught the day it appears, before enforcement or a competitor moves first.`);
     return `<div class="verdict">
       <div><span class="eyebrow">The verdict</span>
-        <h2>${D.score} / 100 · ${D.grade}${hasMoney?`, with up to <span class="vexp">${D.exposure}</span> in maximum statutory penalties across the breaches evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
+        <h2>${D.score} / 100 · ${D.grade}${hasMoney?`, with a median enforcement exposure of <span class="vexp">${D.exposure}</span> across the breaches evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
         <ul class="verdict-bullets">${bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
         ${f.length?`<div class="vfix-head">Your three highest-priority breaches, fix these first</div>`:''}
         <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${escH(x.title)}</span><span class="e">${x.exp}</span></button>`).join('')}</div>

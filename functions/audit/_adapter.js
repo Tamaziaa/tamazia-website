@@ -234,7 +234,14 @@ function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_ST
 let _BINDING_MAP = {};
 function setBindingMap(binding) { _BINDING_MAP = binding && typeof binding === 'object' ? binding : {}; }
 const _BINDING_LABEL = { statute: 'Statute', enforceable_code: 'Regulator code', industry_code: 'Industry code' };
-function bindingLabel(fw) { const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw]; return (b && _BINDING_LABEL[b]) || (noStatutoryFine(fw) ? 'Voluntary code' : 'Statute'); }
+// E-218 (S-100): when the payload carries NO binding map at all (legacy rows), a guessed 'Statute' label is a
+// false legal claim — a voluntary code must never read as a statute. Neutral 'Framework' until a real map exists.
+function bindingLabel(fw) {
+  const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw];
+  if (b && _BINDING_LABEL[b]) return _BINDING_LABEL[b];
+  if (noStatutoryFine(fw)) return 'Voluntary code';
+  return Object.keys(_BINDING_MAP).length ? 'Statute' : 'Framework';
+}
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
 const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH',
@@ -819,7 +826,75 @@ const FW_JUR = (code) => {
 // Authoritative allow-list = country + TLD (the trustworthy spine), + EU only with corroborating
 // evidence. We deliberately do NOT union the engine's other jurisdiction codes: markets.js can
 // over-attach US/foreign law on weak signals (the Al Tamimi leak). country+TLD is authoritative. (G2/S-001)
+// E-218: render-side sanitiser for verified!==true rows. Mirrors the engine's evidence gates (E-041/E-044,
+// V05 absence-proof, V09 fine discipline, P-011 template-accusation threshold) over the STORED payload, so the
+// public page can never assert more than the evidence carries. Pure; never throws (any error returns the input).
+function sanitiseUnverified(p) {
+  try {
+    p = p || {};
+    const out = Object.assign({}, p);
+    const dropped = { absence_no_proof: 0, short_evidence: 0, template_accusation: 0, malformed: 0, foreign_family: 0 };
+    // V02/P-003 render-side: on an UNVERIFIED row the payload's own jurisdiction claims (engine_jurisdictions,
+    // office_countries) cannot be trusted — they are exactly what the kitchen-sink era inflated. Only the
+    // REGISTERED country's family (+ EU when the country is a member state) and GLOBAL law render; a verified
+    // fresh mint restores a genuine international firm's full set.
+    const CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK' };
+    const EU_M = ['FR', 'DE', 'IT', 'ES', 'NL', 'IE', 'BE', 'PT', 'AT', 'SE', 'DK', 'FI', 'PL', 'LU', 'GR', 'CZ', 'HU', 'RO', 'BG', 'HR', 'SI', 'SK', 'LT', 'LV', 'EE', 'CY', 'MT'];
+    const cc0 = String(p.country || '').toUpperCase();
+    const cc = CMAP[cc0] || cc0;
+    const allowNarrow = new Set(['GLOBAL']);
+    if (cc) allowNarrow.add(cc);
+    if (EU_M.includes(cc)) allowNarrow.add('EU');
+    const KEEP = [];
+    for (const x of arr(p.pointers)) {
+      if (!x || typeof x !== 'object') { dropped.malformed++; continue; }
+      const fw = String(x.framework_short || x.framework || x.citation || '');
+      const fact = String(x.fact || x.description || '');
+      if (!fw && !fact) { dropped.malformed++; continue; }
+      if (fw) { const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allowNarrow.has(j))) { dropped.foreign_family++; continue; } }
+      const q = String(x.evidence_quote || x.evidence_snippet || '').trim();
+      const isAbsence = x.kind === 'absence' || x.status === 'miss';
+      // P-011: a P0 "site compromised / injected spam" accusation must quote the injected URLs verbatim, or it
+      // is boilerplate that must never blind-render against a named firm.
+      if (/SITE_INTEGRITY|SUSPECTED_COMPROMISE/i.test(fw + ' ' + String(x.code || '')) && !/https?:\/\//i.test(q)) { dropped.template_accusation++; continue; }
+      if (isAbsence) {
+        // V05/P-004: an absence claim is valid only with a proving page (the page that SHOULD have carried it).
+        const ae = x.absence_evidence;
+        const proof = (ae && (ae.target_url || ae.pages_checked)) || arr(x.checked_urls).length || x.proof_url || x.page;
+        if (!proof) { dropped.absence_no_proof++; continue; }
+      } else if (q && q.length < 25 && !arr(x.checked_urls).length) {
+        // E-041: a presence claim anchored only on a sub-25-char fragment is not evidence.
+        dropped.short_evidence++; continue;
+      }
+      // P-008: on an unverified row, statutory-maximum fine ceilings are withheld unless the engine supplied a
+      // calibrated typical-enforcement band. The finding itself still renders; the scare number does not.
+      const y = Object.assign({}, x);
+      if (!(+y.enforce_typical_low_gbp || +y.enforce_typical_high_gbp)) y.fine_withheld = true;
+      KEEP.push(y);
+    }
+    out.pointers = KEEP;
+    // The screened/'applies to you' layer makes applicability CLAIMS, so it takes the same family filter:
+    // a US firm's unverified page must not list UK statutes even as screened rows.
+    const _famOK = (code) => { const j = FW_JUR(String(code || '')); return j === 'GLOBAL' || allowNarrow.has(j); };
+    if (Array.isArray(p.applicable_frameworks)) out.applicable_frameworks = p.applicable_frameworks.filter((f) => _famOK((f && (f.framework_short || f.code)) || f));
+    if (Array.isArray(p.frameworks)) out.frameworks = p.frameworks.filter((f) => _famOK((f && (f.framework_short || f.code)) || f));
+    if (Array.isArray(p.rules)) out.rules = p.rules.filter((r) => _famOK((r && (r.framework_short || r.framework)) || ''));
+    if (p.binding && typeof p.binding === 'object') { const b = {}; for (const [k, v] of Object.entries(p.binding)) if (_famOK(k)) b[k] = v; out.binding = b; }
+    if (Array.isArray(p.needs_review)) out.needs_review = p.needs_review.filter((r) => _famOK((r && (r.framework_short || r.citation)) || ''));
+    // S-183: a legacy row with zero pages and zero surviving findings was never assessed — say so, never imply
+    // a clean live-site read.
+    if (!arr(p.pages_crawled).length && !KEEP.length && out.compliance_unassessed !== true) out.compliance_unassessed = true;
+    out._sanitised = Object.assign({ applied: true }, dropped);
+    // authJurisdictions honours this narrow set, so the screened-injection floor, the jurisdiction selector and
+    // the membrane all agree on scope for an unverified row (no UK baseline injected onto a US firm's page).
+    out._allow_narrow = [...allowNarrow];
+    return out;
+  } catch (_e) { return p; }
+}
 function authJurisdictions(payload) {
+  // E-218: a sanitised (unverified) payload carries its own narrow scope — registered family + GLOBAL — and every
+  // consumer (membrane, screened injection, selector) must honour it rather than re-deriving from payload claims.
+  if (payload && Array.isArray(payload._allow_narrow) && payload._allow_narrow.length) return new Set(payload._allow_narrow);
   const set = new Set(['GLOBAL']);
   const CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK', UK: 'UK' };
   const country = String(payload.country || '').toUpperCase();
@@ -1286,9 +1361,15 @@ function sectorInapplicable(fw, payload) {
 // Named exports for the benchmark scorer (single source of truth, F5 shared blocklist).
 export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer };
 export function payloadToD(payload, ctx = {}) {
+  payload = payload || {};
+  // E-218 TRUTH FILTER (audit-of-the-audits P-002/P-004/P-008/P-011/P-064, S-183): any row the verifier did not
+  // pass (verified !== true — 9,700+ legacy rows plus every quarantined mint) renders ONLY what survives the
+  // engine's own evidence standards, applied render-side to the stored payload. What survives renders exactly as
+  // before (real breaches stay line-by-line); what fails the standards is removed, and its fine with it. This is
+  // the render-side sanitiser the 11 Jul catalogue prescribed instead of a mass re-mint.
+  if (ctx.verified !== true) payload = sanitiseUnverified(payload);
   setVoluntaryBinding(payload && payload.binding);   // FIX-R1: seed voluntary-code guard from the engine payload
   setBindingMap(payload && payload.binding);            // #17a: seed the binding-status label map
-  payload = payload || {};
   // FIX-R2/R3: consume the evidence-ledger contract. review_candidates = low-confidence attachments (below the
   // conformal band) that must NOT render as hard breaches; they still appear in the 'applies to you' framework list.
   const reviewSet = new Set(arr(payload.review_candidates).map((x) => String(x).toUpperCase()));
@@ -2023,7 +2104,9 @@ export function payloadToD(payload, ctx = {}) {
     slug: String(ctx.slug || ''), hash: String(ctx.hash || ''),
     sector: titleCase(payload.detected_sector || payload.sector), country: jurLabel(payload.country),
     city: cleanCity(km.city, payload), markets: arr(payload.detected_jurisdictions),
-    date: fmtDate(now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
+    // E-218 (S-099): the page carries the SCAN date, not the render date — a months-old audit must never
+    // present itself as generated today.
+    date: fmtDate(ctx.generated_at ? new Date(ctx.generated_at) : now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
   };
 
   const D = {
@@ -2065,6 +2148,17 @@ export function payloadToD(payload, ctx = {}) {
     // #48: pass compliance-unassessed through so the render never implies a clean bill when the scan could not read the site.
     compliance_unassessed: !!g(payload, 'compliance_unassessed', false),
     render_mode: g(payload, 'render_mode', null),
+    // E-218: verifier verdict + row lifecycle drive the truth-filtered presentation. point_in_time renders the
+    // banner on unverified rows; superseded marks a row replaced by a newer mint (old links keep working).
+    verified: ctx.verified === true,
+    superseded: String(ctx.row_status || 'live') === 'superseded',
+    point_in_time: ctx.generated_at ? fmtDate(new Date(ctx.generated_at)) : '',
+    sanitised: g(payload, '_sanitised', null),
+    // E-213 REGISTERED REALITY: government-register rows minted by the engine (Companies House / CQC / FCA live
+    // API checks + ICO/SRA/DHA/RERA link-outs). Every row links to the official source; renders on any payload
+    // that carries it, independent of crawl success.
+    registers: g(payload, 'registers', null),
+    sub_sector: g(payload, 'sub_sector', null),
     // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
     // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
     // D-2: single source of truth for all displayed framework counts. frameworksBinding was previously

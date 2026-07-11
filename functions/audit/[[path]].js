@@ -35,7 +35,11 @@ export async function onRequest(context) {
   const slug = decodeURIComponent(m[1]);
   const hash = decodeURIComponent(m[2]);
 
+  // TRUTH FILTER (E-218, audit-of-the-audits P-002/P-003/P-004/P-008): the render now reads the verifier's
+  // verdict. verified=true renders in full; anything else renders only evidence-clean content (see _adapter.js
+  // sanitisePayload). generated_at powers the point-in-time banner; status powers the superseded banner.
   const q = `SELECT payload_json, domain, sector, country, lead_id, expires_at,
+    verified, status, generated_at,
     COALESCE(unlocked, false) AS unlocked,
     (SELECT company FROM leads WHERE id = audit_pages.lead_id) AS company
     FROM audit_pages WHERE slug = $1 AND hash = $2 LIMIT 1`;
@@ -97,7 +101,10 @@ export async function onRequest(context) {
       stripeFix30: env.STRIPE_LINK_FIX30 || '',
     };
     const D = payloadToD(payload, {
-      company: row.company, now: Date.now(), generated_at: null,
+      company: row.company, now: Date.now(), generated_at: row.generated_at || null,
+      // E-218: verifier verdict + row status drive the truth-filtered render for anything not verified=true.
+      verified: row.verified === true || row.verified === 't',
+      row_status: row.status || 'live',
       // C-B: thread the page's slug+hash so D.meta carries them; both audit forms then POST
       // audit_slug + audit_domain (+ top_finding) and the lead resolves back to this exact report.
       slug, hash,
@@ -112,6 +119,14 @@ export async function onRequest(context) {
     return htmlResponse(errorShell('Audit could not be rendered', 'The Tamazia team has been notified.'), 500);
   }
 
+  // E-219 (P-010 root cause): the open beacon wrote ONLY to PostHog while the cockpit reads audit_pages.open_count
+  // and last_opened_at from Neon, so the whole intent funnel recorded zero opens forever. Server-side write, same
+  // Neon the page was just loaded from; fire-and-forget, never blocks the response.
+  if (context.waitUntil) {
+    context.waitUntil(
+      neonQuery(env, `UPDATE audit_pages SET open_count = COALESCE(open_count, 0) + 1, last_opened_at = now() WHERE slug = $1 AND hash = $2`, [slug, hash]).catch(() => {})
+    );
+  }
   // fire-and-forget open tracking (best-effort; never blocks the response)
   if (env.POSTHOG_KEY && context.waitUntil) {
     context.waitUntil(fetch((env.POSTHOG_HOST || 'https://eu.i.posthog.com') + '/capture/', {

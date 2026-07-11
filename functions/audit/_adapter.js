@@ -967,7 +967,12 @@ function perFrameworkMaxFine(pointers) {
   for (const p of pointers) {
     if (p.fine_withheld) continue;
     const fw = p.framework_short || p.citation;
-    const hi = +p.fine_high_gbp || 0;
+    // E-234 (v22.8) NUMERIC CONSISTENCY: the headline exposure read ONLY fine_high_gbp, while the breach cards
+    // render the CALIBRATED TYPICAL band (enforce_typical_*). On a payload carrying typical bands but no statutory
+    // ceiling, the left panel therefore said "Ranking & AI · no statutory fine confirmed" while the card beside it
+    // said "£100k to £5M typical" — the same audit contradicting itself. The exposure now falls back to the typical
+    // band, which is also the honest number to headline (P-008: statutory maxima are scare tactics, not forecasts).
+    const hi = (+p.fine_high_gbp || 0) || (+p.enforce_typical_high_gbp || 0);
     if (!fw || !hi || noStatutoryFine(fw)) continue;   // ranking guidelines + voluntary codes carry no statutory fine (C-018 / FIX-R1)
     m[fw] = Math.max(m[fw] || 0, hi);
   }

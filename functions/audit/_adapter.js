@@ -1689,6 +1689,16 @@ export function payloadToD(payload, ctx = {}) {
       provisions, articleGroups,
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
+  // E-251 — NO HOLLOW CARDS. A screened framework whose card carries NEITHER obligations NOR a cited enforcement
+  // action is an empty box with a regulator's name on it. It is exactly the "this section provides no value"
+  // complaint: the reader opens it and finds nothing. kingsleynapley shipped three (FRC, HMRC, ICAEW) — which were
+  // also a sector leak, fixed at source in E-250, but the render must be defensive regardless: we do not know every
+  // framework we will ever attach, and any one of them can lack curated intel.
+  // A card must EARN its place: it renders only if it can say something true and useful. A BREACHED framework
+  // always earns it (the breach itself is the content). A SCREENED one must bring obligations or a real enforcement
+  // action. Silence is better than a hollow box.
+  const _hollow = (f) => f.screened && !(f.obligations || []).length && !String(f.action || '').trim();
+
   // (The empty-state SCAN fallback used to sit here, but it asserted "no statutory breach evidenced" even when binding
   // laws were about to be injected below — contradictory. It now runs AFTER the screened injection, so it only appears
   // when genuinely nothing binds/was readable.)
@@ -1804,6 +1814,8 @@ export function payloadToD(payload, ctx = {}) {
     for (const f of frameworks) { const k = _stem(f.name); if (_seen.has(k)) continue; _seen.add(k); _out.push(_best.get(k)); }
     frameworks.length = 0; frameworks.push(..._out);
   }
+  // E-251: drop hollow cards LAST, after every intel-grafting pass has had its chance to fill them.
+  { const _kept = frameworks.filter((f) => !_hollow(f)); frameworks.length = 0; frameworks.push(..._kept); }
 
   // Empty-state fallback — ONLY when nothing binds/was readable after breached + screened injection (rare: an
   // unreadable site). Reframed per founder: no "no statutory breach evidenced" language.

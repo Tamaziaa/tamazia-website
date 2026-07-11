@@ -1614,8 +1614,10 @@ export function payloadToD(payload, ctx = {}) {
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
-      // Verified curated enforcement (with a real penalty) leads; then live news_map; then ported/example; then prose.
-      action: (_intel && _intel.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || (_reg + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
+      // E-233: verified curated enforcement (real penalty, real source) leads; then live news_map; then a ported
+      // example. NO PROSE FALLBACK — an unsourced "the regulator actively enforces this" is an invented claim and
+      // is exactly what made the section read as filler. Empty is honest; the obligations still carry the card.
+      action: (_intel && _intel.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || '',
       enforcement_url: (_intel && _intel.enforcement_url) || '',
       obligations: obligationsOf(_intel), reg_focus: (_intel && _intel.focus) || '', guidance: (_intel && _intel.guidance) || '',
       why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),

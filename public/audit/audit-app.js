@@ -1041,7 +1041,13 @@
 
   /* ---------------- CUSTOM TOOLTIP ---------------- */
   const tip=document.createElement('div'); tip.className='tz-tip'; document.body.appendChild(tip);
-  app.addEventListener('mouseover',e=>{ const t=e.target.closest('[data-tip]'); if(!t)return; tip.innerHTML=t.getAttribute('data-tip'); tip.classList.add('show'); });
+  app.addEventListener('mouseover',e=>{ const t=e.target.closest('[data-tip]'); if(!t)return;
+    /* SEC-01 (CodeQL js/xss-through-dom, HIGH): this was `tip.innerHTML = t.getAttribute('data-tip')`.
+       data-tip is populated from the audit payload, and the audit payload is built from content CRAWLED OFF THE
+       AUDITED FIRM'S OWN WEBSITE (evidence quotes, framework names, glossary terms). A crafted page could therefore
+       inject markup that we would render as HTML on the report we hand to a client: stored XSS, delivered by us, on
+       our own compliance report. Tooltips are plain prose; textContent renders them identically and cannot execute. */
+    tip.textContent = t.getAttribute('data-tip') || ''; tip.classList.add('show'); });
   app.addEventListener('mousemove',e=>{ if(!tip.classList.contains('show'))return; const pad=14,w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+pad,y=e.clientY+pad; if(x+w>innerWidth-8)x=e.clientX-w-pad; if(y+h>innerHeight-8)y=e.clientY-h-pad; tip.style.left=x+'px'; tip.style.top=y+'px'; });
   app.addEventListener('mouseout',e=>{ if(e.target.closest('[data-tip]')) tip.classList.remove('show'); });
   // expand toggles (pricing + addons) + tier tabs + real commerce wiring (intake modal + Cal + Stripe)

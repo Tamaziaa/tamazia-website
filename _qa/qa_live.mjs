@@ -3,7 +3,9 @@
 // Usage: NEON_URL=... node _qa/qa_live.mjs domain1 domain2 ...   (or reads /tmp/qa_live_domains.txt)
 import { JSDOM } from 'jsdom';
 import { readFileSync } from 'fs';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
+// No shell: argv array means NEON_URL / argv domains can never be interpreted as shell syntax.
+const psql = (sql) => execFileSync('psql', [process.env.NEON_URL, '-tA', '-c', sql], { encoding: 'utf8', maxBuffer: 1 << 27 }).trim();
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -64,8 +66,8 @@ for (const domain of domains) {
   const inq = domain.replace(/'/g, "''");
   let pj, company;
   try {
-    pj = execSync(`psql "${DB}" -tA -c "SELECT payload_json::text FROM audit_pages WHERE domain='${inq}' AND generated_at>now()-interval '6 hours' ORDER BY generated_at DESC LIMIT 1"`, { encoding: 'utf8', maxBuffer: 1 << 27 }).trim();
-    company = execSync(`psql "${DB}" -tA -c "SELECT company FROM leads WHERE id=(SELECT lead_id FROM audit_pages WHERE domain='${inq}' AND generated_at>now()-interval '6 hours' ORDER BY generated_at DESC LIMIT 1)"`, { encoding: 'utf8' }).trim();
+    pj = psql(`SELECT payload_json::text FROM audit_pages WHERE domain='${inq}' AND generated_at>now()-interval '6 hours' ORDER BY generated_at DESC LIMIT 1`);
+    company = psql(`SELECT company FROM leads WHERE id=(SELECT lead_id FROM audit_pages WHERE domain='${inq}' AND generated_at>now()-interval '6 hours' ORDER BY generated_at DESC LIMIT 1)`);
   } catch (e) { console.log(`\n### ${domain}: DB error ${String(e.message).slice(0,80)}`); continue; }
   if (!pj) { console.log(`\n### ${domain}: no recent audit`); continue; }
   let issues = [];

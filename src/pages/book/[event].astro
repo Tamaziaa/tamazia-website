@@ -121,7 +121,10 @@ const elId = `my-cal-inline-${event.slug}`;
     })();
 
     // Listen for Cal.com booking-confirmed messages and fire conversion.
+    // Only trust Cal.com embed frames (js/missing-origin-check).
+    const CAL_ORIGIN_RE = /^https:\/\/([a-z0-9-]+\.)*cal\.com$/i;
     window.addEventListener('message', (ev) => {
+      if (!CAL_ORIGIN_RE.test(String(ev.origin || ''))) return;
       if (ev && ev.data && (ev.data.type === 'booking-successful' || ev.data.action === 'bookingSuccessful')) {
         if (typeof window.gtag === 'function') {
           window.gtag('event', 'generate_lead', { event_category: 'booking', event_label: eventSlug, value: 1 });

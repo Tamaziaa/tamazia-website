@@ -21,16 +21,15 @@ const MASTER_CSS = join(ROOT, 'tgcs-master.css');
 const DIST_DIR   = join(ROOT, 'dist');
 const INDEX_HTML = join(DIST_DIR, 'index.html');
 
-if (!existsSync(MASTER_CSS)) {
-  console.error('[patch-dist] ERROR: tgcs-master.css not found at', MASTER_CSS);
+// Read directly and handle a missing file via the failed read itself: an exists()-then-read()
+// pair is a TOCTOU race (js/file-system-race) and gives no extra safety.
+let rawCSS;
+try {
+  rawCSS = readFileSync(MASTER_CSS, 'utf8');
+} catch (e) {
+  console.error('[patch-dist] ERROR: tgcs-master.css not readable at', MASTER_CSS, '·', e && e.message);
   process.exit(1);
 }
-if (!existsSync(INDEX_HTML)) {
-  console.error('[patch-dist] ERROR: dist/index.html not found · run `npm run build` first.');
-  process.exit(1);
-}
-
-const rawCSS = readFileSync(MASTER_CSS, 'utf8');
 const minified = rawCSS
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .replace(/\s*\n\s*/g, '')
@@ -38,7 +37,13 @@ const minified = rawCSS
   .replace(/\s*([{}:;,>~+])\s*/g, '$1')
   .trim();
 
-let html = readFileSync(INDEX_HTML, 'utf8');
+let html;
+try {
+  html = readFileSync(INDEX_HTML, 'utf8');
+} catch (e) {
+  console.error('[patch-dist] ERROR: dist/index.html not readable · run `npm run build` first. ·', e && e.message);
+  process.exit(1);
+}
 const TGCS_RE = /(<style[^>]*id="_tgcs"[^>]*>)[^<]*(<\/style>)/;
 
 if (TGCS_RE.test(html)) {
@@ -69,12 +74,20 @@ function walkHtml(dir) {
 const allHtml = walkHtml(DIST_DIR);
 console.log(`[patch-dist] Scanning ${allHtml.length} HTML files in dist/`);
 
+// Strip comments/script/style to a FIXED POINT. A single pass leaves nested or
+// overlapping constructs re-forming after removal (js/incomplete-multi-character-sanitization),
+// and the end-tag patterns must tolerate `</script >` / `</style >` (js/bad-tag-filter).
 function stripSafeZones(s) {
-  return s
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/>\s*—\s*</g, '><');
+  let out = String(s);
+  for (;;) {
+    const next = out
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<script\b[\s\S]*?<\/script\s*>/gi, '')
+      .replace(/<style\b[\s\S]*?<\/style\s*>/gi, '');
+    if (next === out) break;
+    out = next;
+  }
+  return out.replace(/>\s*—\s*</g, '><');
 }
 
 function checkAcross(label, predicate) {
@@ -370,8 +383,15 @@ try {
 // 20: humans.txt build hash injection (post-deploy traceability)
 try {
   const humansPath = join(DIST_DIR, 'humans.txt');
-  if (existsSync(humansPath)) {
-    let h = readFileSync(humansPath, 'utf8');
+  // Read directly; a missing file surfaces as ENOENT. exists()-then-read is a TOCTOU race
+  // (js/file-system-race).
+  let h = null;
+  try {
+    h = readFileSync(humansPath, 'utf8');
+  } catch (_e) {
+    h = null;
+  }
+  if (h !== null) {
     const stamp = process.env.GITHUB_SHA || new Date().toISOString();
     if (!h.includes('Build:')) {
       h = h.replace(/Last update:.*/i, m => m + '\nBuild: ' + stamp.slice(0, 7));

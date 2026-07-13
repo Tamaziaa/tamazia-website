@@ -85,15 +85,26 @@ export async function notifyTelegram(env, opts) {
 // the response (a CF isolate is torn down on return, cancelling un-anchored fetches). Use this
 // at every "a user connected with us" point so coverage is consistent and no channel is forgotten.
 // Fail-open: a failure in any channel never throws to the caller.
+// Strip HTML tags until the result is stable. A single-pass /<[^>]+>/g leaves nested
+// constructs like "<<a>script>" collapsing back into "<script>", so loop to a fixed point.
+function stripTags(s) {
+  let out = String(s == null ? '' : s);
+  for (;;) {
+    const next = out.replace(/<[^<>]*>/g, '');
+    if (next === out) return next;
+    out = next;
+  }
+}
+
 export function notifyFounder(env, opts) {
   const { level = 'info', summary = '', detailMd = '', detailTg = '', subject = '', html = '' } = opts || {};
   const tasks = [
-    notifySlack(env, { level, summary, detail: detailMd || (detailTg || '').replace(/<[^>]+>/g, '') }),
+    notifySlack(env, { level, summary, detail: detailMd || stripTags(detailTg || '') }),
     notifyTelegram(env, { level, summary, detail: detailTg || detailMd }),
   ];
   if (env && env.RESEND_API_KEY) {
     const body = html || ('<div style="font-family:system-ui;font-size:14px;line-height:1.5;white-space:pre-wrap">'
-      + escHtml(summary) + '\n\n' + (detailTg || detailMd).replace(/<[^>]+>/g, '') + '</div>');
+      + escHtml(summary) + '\n\n' + escHtml(stripTags(detailTg || detailMd)) + '</div>');
     tasks.push(
       fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -136,5 +147,7 @@ function escHtml(s) {
   return String(s == null ? '' : s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
 }
 function escMd(s) {
-  return String(s == null ? '' : s).replace(/[*_`<>&]/g, c => ({ '*': '\\*', '_': '\\_', '`': '\\`', '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+  // Backslash MUST be in the same single pass (and escaped itself), otherwise an input
+  // backslash can neutralise the escape we add for the following metacharacter.
+  return String(s == null ? '' : s).replace(/[\\*_`<>&]/g, c => ({ '\\': '\\\\', '*': '\\*', '_': '\\_', '`': '\\`', '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
 }

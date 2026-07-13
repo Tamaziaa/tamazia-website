@@ -62,10 +62,28 @@ function looksLikeTitle(s) {
   if ((t.match(/\s/g) || []).length >= 6) return true;         // >6 words = a sentence, not a name
   return false;
 }
+// NAME-01 — A FIRM'S NAME SHARES A TOKEN WITH ITS OWN DOMAIN. A PAGE HEADING DOES NOT.
+// Caught on the live birketts audit: the report was addressed to "Bristol Office". The engine had no company name
+// on the queue row, derived one from the page, and grabbed an office heading. `looksLikeTitle` did not catch it —
+// it is short, has no separators, and is not a listed keyword. Chasing that with a longer blocklist is a losing
+// game, because the next one will be "Leeds Team" or "Client Portal".
+// The general rule: a real firm name almost always contains a token from its own domain stem
+// (Birketts -> birketts.co.uk, Mills & Reeve -> mills-reeve.com, The Office Group -> theofficegroup.com).
+// A heading lifted off the page usually shares nothing with it. If the candidate shares no token with the domain,
+// we do not trust it and fall back to the clean domain stem, which is always right and never embarrassing.
+// Sending a magic-circle firm a compliance report addressed to "Bristol Office" ends the conversation.
+function sharesTokenWithDomain(name, domain) {
+  const stem = String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!stem) return true;                                   // no domain to compare against: do not block
+  const toks = (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => t.length >= 4);
+  if (!toks.length) return false;
+  return toks.some((t) => stem.includes(t) || t.includes(stem));
+}
 function firmName(payload, passed) {
   const fp = g(payload, 'firm_profile', {}) || {};
   const fromProfile = fp.name || fp.legal_name || fp.display_name || fp.trading_name || fp.brand || payload.firm_name || payload.company;
-  if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)) return decodeEnt(String(fromProfile).trim());
+  if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)
+      && sharesTokenWithDomain(fromProfile, payload.domain)) return decodeEnt(String(fromProfile).trim());
   const p = String(passed == null ? '' : passed).trim();
   if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return decodeEnt(p);
   // passed is empty OR is a dirty/title-like string -> rebuild from the clean domain stem

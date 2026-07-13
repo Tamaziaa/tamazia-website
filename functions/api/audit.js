@@ -1937,7 +1937,10 @@ const _originalAuditPost = async (ctx) => {
         laymanDesc: competition === 'PEAK'
           ? 'Dominated by global brands and high-authority domains. Ranking requires significant authority build  ·  not just good content. The winning lever is credentialled expertise, not volume.'
           : competition === 'HIGH'
-            ? 'Competitive space. Established players hold top positions. Winnable with the right strategy  ·  ${profile.regulator} compliance signals, schema architecture, and expert authorship.'
+            // js/template-syntax-in-string-literal — REAL BUG: this was a SINGLE-QUOTED string, so `${profile.regulator}`
+          // was never interpolated. Every audit whose competition level is HIGH literally printed the characters
+          // "${profile.regulator} compliance signals" to the law firm. Every sibling branch here is a template literal.
+          ? `Competitive space. Established players hold top positions. Winnable with the right strategy  ·  ${profile.regulator} compliance signals, schema architecture, and expert authorship.`
             : competition === 'MODERATE'
               ? `Manageable competition. A well-structured, compliant content strategy can displace current holders. Tamazia's regulatory content framework is the differentiator at this level.`
               : 'Low competition. This is the window  ·  the right content with authority signals can own this position quickly and hold it.',

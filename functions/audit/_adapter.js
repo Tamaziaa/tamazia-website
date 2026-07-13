@@ -117,7 +117,7 @@ const FW_NAME = {
   UK_ACCA: 'ACCA Rulebook', UK_FRC: 'FRC Ethical Standard', UK_PRA: 'PRA Rulebook', UK_SMCR: 'Senior Managers & Certification Regime', UK_FOS_FSCS: 'FOS / FSCS Disclosure',
   UK_CE_PLUS: 'Cyber Essentials Plus', UK_NCSC_CYBER_ESSENTIALS: 'Cyber Essentials', UK_DSIT_NIS2: 'UK NIS Regulations', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'UK Corporate Governance Code',
   EU_CSRD: 'EU CSRD', EU_PSD2: 'EU PSD2', EU_DMA: 'EU Digital Markets Act', EU_DORA: 'EU DORA', EU_NIS2: 'EU NIS2 Directive', EU_AML6: 'EU 6th Anti-Money-Laundering Directive', EU_MIFID_II: 'EU MiFID II', EU_SFDR: 'EU SFDR', EU_GPSR: 'EU General Product Safety Regulation',
-  US_TCPA: 'US TCPA', US_TDPSA: 'Texas Data Privacy Act', US_FINRA_2210: 'FINRA Rule 2210', US_SEC_506C: 'SEC Rule 506(c)', US_SEC_REG_FD: 'SEC Regulation FD', US_NYDFS_500: 'NYDFS Part 500', US_GLBA: 'US GLBA', US_HIPAA: 'US HIPAA', US_COPPA: 'US COPPA', US_FERPA: 'US FERPA', US_MEDICAL_BOARD: 'State Medical Board Rules', US_FTC_ENDORSE: 'FTC Endorsement Guides',
+  US_TCPA: 'US TCPA', US_TDPSA: 'Texas Data Privacy Act', US_FINRA_2210: 'FINRA Rule 2210', US_SEC_506C: 'SEC Rule 506(c)', US_SEC_REG_FD: 'SEC Regulation FD', US_NYDFS_500: 'NYDFS Part 500', US_GLBA: 'US GLBA', US_HIPAA: 'US HIPAA', US_COPPA: 'US COPPA', US_FERPA: 'US FERPA', US_MEDICAL_BOARD: 'State Medical Board Rules',
   UAE_CONSUMER: 'UAE Consumer Protection Law', UAE_ECOMMERCE: 'UAE E-Commerce Law', UAE_RERA: 'RERA (Dubai)', FR_CNIL_2025: 'France · CNIL',
 };
 const FW_REGULATOR = {
@@ -136,7 +136,7 @@ const FW_REGULATOR = {
   EU_CSRD: 'EU member-state authorities', EU_PSD2: 'European Banking Authority', EU_DMA: 'European Commission', EU_DORA: 'European Supervisory Authorities', EU_NIS2: 'EU member-state authorities', EU_AML6: 'EU member-state authorities', EU_MIFID_II: 'ESMA', EU_SFDR: 'ESMA', EU_GPSR: 'European Commission',
   US_TCPA: 'Federal Communications Commission', US_TDPSA: 'Texas Attorney General', US_FINRA_2210: 'FINRA', US_SEC_506C: 'Securities & Exchange Commission', US_SEC_REG_FD: 'Securities & Exchange Commission', US_NYDFS_500: 'NY Department of Financial Services', US_GLBA: 'Federal Trade Commission', US_HIPAA: 'HHS Office for Civil Rights', US_COPPA: 'Federal Trade Commission', US_FERPA: 'US Department of Education', US_MEDICAL_BOARD: 'State Medical Board', US_FTC_ENDORSE: 'Federal Trade Commission',
   UAE_CONSUMER: 'UAE Ministry of Economy', UAE_ECOMMERCE: 'UAE Ministry of Economy', UAE_RERA: 'RERA Dubai', FR_CNIL_2025: 'CNIL (France)',
-  UK_HSE: 'Health & Safety Executive', US_STATE_PRIVACY: 'US state attorneys general', US_VCDPA: 'Virginia Attorney General', US_ADA: 'US Department of Justice', US_ATTORNEY_ADVERTISING: 'State bar associations', US_CAN_SPAM: 'Federal Trade Commission',
+  UK_HSE: 'Health & Safety Executive', US_STATE_PRIVACY: 'US state attorneys general', US_VCDPA: 'Virginia Attorney General', US_ADA: 'US Department of Justice', US_ATTORNEY_ADVERTISING: 'State bar associations',
   // Sector regulators that were rendering as the generic "Sector regulator" placeholder on screened cards (Phase 5.1).
   UK_FCA_CONDUCT: 'Financial Conduct Authority', UK_FCA_CONSUMER_DUTY: 'Financial Conduct Authority', UK_CONSUMER_DUTY: 'Financial Conduct Authority', UK_FCA_HRI_PROMO: 'Financial Conduct Authority', UK_EMR_2011: 'Financial Conduct Authority', UK_ABI: 'Association of British Insurers', UK_MLR_2017: 'HMRC / FCA',
   UK_CRA_2015: 'Trading Standards / CMA', UK_CCR_2013: 'Trading Standards / CMA', UK_NATASHAS_LAW: 'Food Standards Agency',
@@ -153,7 +153,7 @@ const FW_REGULATOR = {
   // Second validation pass (cap raise surfaced more frameworks): US health/medical, UK medical/real-estate, EU device.
   US_FDA: 'US Food & Drug Administration', US_FDA_HCTP: 'US Food & Drug Administration', US_TELEHEALTH_LICENSURE: 'State medical boards (IMLC)', US_WA_MHMDA: 'Washington Attorney General', US_CMS_LTC: 'US Centers for Medicare & Medicaid Services',
   UK_GMC: 'General Medical Council', UK_NMC: 'Nursing & Midwifery Council', UK_HFEA: 'Human Fertilisation & Embryology Authority', UK_MEDICAL_DEVICES: 'MHRA', UK_HMRC_GIFTAID: 'HMRC', EU_IVDR: 'EU notified bodies / MHRA',
-  UK_ESTATE_AGENTS_ACT: 'NTSELAT / Trading Standards', UK_NTSELAT_MATERIAL_INFO: 'NTSELAT / Trading Standards', UK_TENANT_FEES_2019: 'NTSELAT / Trading Standards', UAE_RERA: 'RERA Dubai',
+  UK_ESTATE_AGENTS_ACT: 'NTSELAT / Trading Standards', UK_NTSELAT_MATERIAL_INFO: 'NTSELAT / Trading Standards', UK_TENANT_FEES_2019: 'NTSELAT / Trading Standards',
 };
 // Frameworks that overlap so heavily they must render as ONE row, never two near-identical cards under the
 // same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the
@@ -814,7 +814,7 @@ function differentiateFixes(list) {
   for (const f of arr(list)) {
     if (!f || !f.fix) continue;
     if (!seen.has(fixKey(f.fix))) { seen.add(fixKey(f.fix)); continue; }
-    const subj = String(f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[, :.,\-\s]+$/, '');
+    const subj = String(f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[,\s:.\-]+$/, '');
     const body = String(f.fix).replace(/^Tamazia\s+implements\s+and\s+verifies\s+"[^"]*"\s+/i, 'Tamazia implements and verifies this ').trim();
     f.fix = subj ? subj + ', ' + body : body;
     if (seen.has(fixKey(f.fix))) f.fix = '(' + (f.n || seen.size + 1) + ') ' + f.fix;   // deterministic last-resort
@@ -1258,7 +1258,7 @@ const KW_NOISE_RX = /\b(work experience|training contract|vacation scheme|gradua
 // (e.g. a UAE hotel group minted with city "London") is detected as foreign and stripped. Keys are the
 // adapter's normalised country codes (UK/US/AE/SA/QA/FR/DE/etc.).
 const CITY_COUNTRY = {
-  london: 'UK', manchester: 'UK', birmingham: 'UK', edinburgh: 'UK', glasgow: 'UK', leeds: 'UK', bristol: 'UK', liverpool: 'UK', sheffield: 'UK', newcastle: 'UK', nottingham: 'UK', leicester: 'UK', coventry: 'UK', cardiff: 'UK', belfast: 'UK', aberdeen: 'UK', brighton: 'UK', oxford: 'UK', cambridge: 'UK', reading: 'UK', southampton: 'UK', norwich: 'UK', exeter: 'UK', derby: 'UK', plymouth: 'UK', wolverhampton: 'UK', leeds: 'UK',
+ london: 'UK', manchester: 'UK', birmingham: 'UK', edinburgh: 'UK', glasgow: 'UK', leeds: 'UK', bristol: 'UK', liverpool: 'UK', sheffield: 'UK', newcastle: 'UK', nottingham: 'UK', leicester: 'UK', coventry: 'UK', cardiff: 'UK', belfast: 'UK', aberdeen: 'UK', brighton: 'UK', oxford: 'UK', cambridge: 'UK', reading: 'UK', southampton: 'UK', norwich: 'UK', exeter: 'UK', derby: 'UK', plymouth: 'UK', wolverhampton: 'UK',
   'new york': 'US', nyc: 'US', miami: 'US', 'los angeles': 'US', 'san francisco': 'US', chicago: 'US', boston: 'US', seattle: 'US', austin: 'US', dallas: 'US', houston: 'US', washington: 'US', atlanta: 'US', denver: 'US', phoenix: 'US', philadelphia: 'US',
   dubai: 'AE', 'abu dhabi': 'AE', sharjah: 'AE', ajman: 'AE',
   riyadh: 'SA', jeddah: 'SA', dammam: 'SA', mecca: 'SA', medina: 'SA',

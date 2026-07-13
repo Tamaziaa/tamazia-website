@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with: { fetch-depth: 0 }
       # FIX (2026-06-23): action inputs do NOT run shell, so `$(date +%F)` was passed LITERALLY -> a constant
       # tag "backup-$(date +%F)" that collides on every run after the first -> weekly failure. Compute the date
@@ -25,7 +25,7 @@ jobs:
           echo "date=$D" >> "$GITHUB_OUTPUT"
           git bundle create "tamazia-website-$D.bundle" --all
       - name: Upload to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65  # v2
         with:
           tag_name: backup-${{ steps.meta.outputs.date }}-${{ github.run_number }}
           name: "Weekly backup ${{ steps.meta.outputs.date }}"

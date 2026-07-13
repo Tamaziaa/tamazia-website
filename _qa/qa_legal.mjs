@@ -2,7 +2,9 @@
 // jurisdictions, the laws shown (with country badge + regulator), whether EVERY detected jurisdiction is represented
 // (the founder's multi-jurisdiction requirement), and flags any law whose country is NOT one the firm operates in
 // (a "wrong law"). Usage: NEON_URL=... node _qa/qa_legal.mjs domain1 domain2 ...
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
+// No shell: argv array means NEON_URL / argv domains can never be interpreted as shell syntax.
+const psql = (sql) => execFileSync('psql', [process.env.NEON_URL, '-tA', '-c', sql], { encoding: 'utf8', maxBuffer: 1 << 27 }).trim();
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -12,7 +14,7 @@ const JN = { 'UNITED KINGDOM': 'UK', 'GREAT BRITAIN': 'UK', 'UNITED STATES': 'US
 
 let totalFlags = 0;
 for (const d of process.argv.slice(2)) {
-  let pj; try { pj = execSync(`psql "${DB}" -tA -c "SELECT payload_json::text FROM audit_pages WHERE domain='${d.replace(/'/g, "''")}' ORDER BY generated_at DESC LIMIT 1"`, { encoding: 'utf8', maxBuffer: 1 << 27 }).trim(); } catch (e) { console.log(`\n### ${d}: DB error`); continue; }
+  let pj; try { pj = psql(`SELECT payload_json::text FROM audit_pages WHERE domain='${d.replace(/'/g, "''")}' ORDER BY generated_at DESC LIMIT 1`); } catch (e) { console.log(`\n### ${d}: DB error`); continue; }
   if (!pj) { console.log(`\n### ${d}: no audit`); continue; }
   const p = JSON.parse(pj);
   const D = payloadToD(p, { company: null });

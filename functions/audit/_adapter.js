@@ -680,7 +680,7 @@ function compName(raw) { const s = String(raw || '').trim(); if (!s) return s; i
 // issue type so the selling layer never reads as a checklist echo. (F-craftfix)
 function craftFix(p) {
   const cur = String(p.tamazia_fix_short || p.recommendation || '').trim();
-  const generic = !cur || /implements and verifies|resolves and verifies|closes this gap as part of the engagement|on your live site\.?$/i.test(cur) || new RegExp('verifies ["‘’\'"]', 'i').test(cur);
+  const generic = !cur || /(?:implements and verifies|resolves and verifies|closes this gap as part of the engagement)|(?:on your live site\.?$)/i.test(cur) || new RegExp('verifies ["‘’\'"]', 'i').test(cur);
   if (cur && !generic) return cur;
   const fw = String(p.framework_short || p.citation || '').toUpperCase();
   const t = (String(p.fact || '') + ' ' + fw).toLowerCase();

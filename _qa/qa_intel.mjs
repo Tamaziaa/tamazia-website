@@ -2,14 +2,15 @@
 // engine (proves build.js emit), render via payloadToD, and report the regulatory-intelligence per framework card:
 // obligation count, whether a VERIFIED enforcement action (with source url) is shown, and the guidance line.
 // Usage: NEON_URL=... node _qa/qa_intel.mjs rashidlaw.co.uk coutts.com ...
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO = join(__dirname, '..');
 const { payloadToD } = await import(join(REPO, 'functions/audit/_adapter.js'));
 const DB = process.env.NEON_URL;
-const q = (sql) => execSync(`psql "${DB}" -tA -c "${sql.replace(/"/g, '\\"')}"`, { encoding: 'utf8', maxBuffer: 1 << 27 }).trim();
+// No shell: argv array means NEON_URL / argv domains can never be interpreted as shell syntax.
+const q = (sql) => execFileSync('psql', [DB, '-tA', '-c', sql], { encoding: 'utf8', maxBuffer: 1 << 27 }).trim();
 
 const domains = process.argv.slice(2);
 if (!domains.length) { console.error('Usage: node _qa/qa_intel.mjs <domain> ...'); process.exit(2); }

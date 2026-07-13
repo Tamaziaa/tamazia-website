@@ -6,7 +6,15 @@
   var p=new URLSearchParams(location.search), slug=p.get('c')||p.get('slug'), t=p.get('t');
   var app=document.getElementById('app');
   if(!slug||!t){ app.innerHTML='<p>Invalid portal link.</p>'; return; }
-  function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  /* js/incomplete-html-attribute-sanitization (SEC-02): esc(d.audit_url) was dropped straight into href="...".
+     HTML-escaping does not touch a scheme: `javascript:alert(1)` survives esc() intact and still executes on click.
+     The only correct control is a scheme ALLOWLIST. Strip the control/zero-width chars browsers ignore, then demand
+     an absolute http(s) URL or a site-relative path; anything else is not rendered as a link at all. */
+  function safeUrl(u){var t=String(u==null?'':u).replace(/[\u0000-\u0020\u00a0\u200b\ufeff]/g,'');
+    if(/^https?:\/\//i.test(t)) return t;
+    if(/^\/[^\/\\]/.test(t)) return t;   /* site-relative, but never protocol-relative //evil.com */
+    return '';}
   fetch('/api/portal?slug='+encodeURIComponent(slug)+'&t='+encodeURIComponent(t)).then(function(r){return r.json();}).then(function(d){
     if(!d.ok){ app.innerHTML='<p>'+esc(d.error||'Not available')+'</p>'; return; }
     var ob=(d.onboarding||[]).map(function(o){return '<tr><td>Day '+esc(o.day_offset)+'</td><td>'+esc(o.title)+'</td><td>'+esc((o.due_date||'').slice(0,10))+'</td><td><span class="tag '+(o.status==='done'?'g':'a')+'">'+esc(o.status)+'</span></td></tr>';}).join('');
@@ -14,7 +22,7 @@
     var done=(d.onboarding||[]).filter(function(o){return o.status==='done';}).length, tot=(d.onboarding||[]).length;
     app.innerHTML='<div class="brand">TAMAZIA</div><h1>'+esc(d.company)+' · Client Portal</h1><p class="sub">Lawyer-led compliance + SEO · '+esc(d.sector)+'</p>'
       +'<div class="kpis" style="margin-top:16px"><div class="kpi"><div class="l">Plan</div><div class="v">'+esc(d.account.tier||'-')+'</div></div><div class="kpi"><div class="l">Status</div><div class="v">'+esc(d.account.status||'-')+'</div></div><div class="kpi"><div class="l">Health</div><div class="v">'+esc(d.account.health!=null?d.account.health:'-')+'</div></div><div class="kpi"><div class="l">Onboarding</div><div class="v">'+done+'/'+tot+'</div></div></div>'
-      +(d.audit_url?'<div class="card"><strong>Your compliance + SEO audit</strong><p class="sub">400+ frameworks reviewed.</p><a class="btn" href="'+esc(d.audit_url)+'" target="_blank" rel="noopener">View your audit</a></div>':'')
+      +(safeUrl(d.audit_url)?'<div class="card"><strong>Your compliance + SEO audit</strong><p class="sub">400+ frameworks reviewed.</p><a class="btn" href="'+esc(safeUrl(d.audit_url))+'" target="_blank" rel="noopener">View your audit</a></div>':'')
       +'<div class="card"><strong>Onboarding (30-day plan)</strong><table><thead><tr><th>When</th><th>Milestone</th><th>Due</th><th>Status</th></tr></thead><tbody>'+(ob||'<tr><td colspan="4">Starting soon.</td></tr>')+'</tbody></table></div>'
       +'<div class="card"><strong>Invoices</strong><table><thead><tr><th>Number</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>'+(inv||'<tr><td colspan="4">None yet.</td></tr>')+'</tbody></table></div>'
       +'<p class="sub" style="margin-top:20px">Questions? Reply to your onboarding email or contact your account manager.</p>';

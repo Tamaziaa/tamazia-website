@@ -84,8 +84,12 @@ function firmName(payload, passed) {
   const fromProfile = fp.name || fp.legal_name || fp.display_name || fp.trading_name || fp.brand || payload.firm_name || payload.company;
   if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)
       && sharesTokenWithDomain(fromProfile, payload.domain)) return decodeEnt(String(fromProfile).trim());
+  // NAME-01b: the SAME guard must sit on THIS door too. The live render passes audit_pages.company in as `passed`,
+  // so guarding only the firm_profile branch above fixed nothing on the actual page — the birketts report still
+  // said "Bristol Office". A fix applied to one of two doors is not a fix; it just looks like one.
   const p = String(passed == null ? '' : passed).trim();
-  if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return decodeEnt(p);
+  if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && sharesTokenWithDomain(p, payload.domain)
+      && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return decodeEnt(p);
   // passed is empty OR is a dirty/title-like string -> rebuild from the clean domain stem
   const src = (p && looksLikeDomain(p)) ? p : payload.domain;
   return titleCase(domainStem(src)) || titleCase(domainStem(payload.domain)) || 'This firm';

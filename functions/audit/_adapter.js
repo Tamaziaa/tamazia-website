@@ -342,6 +342,17 @@ function isNonStatutory(p) {
 }
 // #17a: expose the engine's per-framework binding STATUS as a human label so a prospect can see whether an
 // obligation is a hard statute or voluntary guidance (drives trust + how urgently to act). Seeded per-request.
+// FRAMEWORK_META — THE CATALOGUE IS THE SOURCE OF TRUTH; THIS RENDERER STOPS GUESSING.
+// FW_NAME / FW_NAME_CAT / FW_REGULATOR / _BINDING_LABEL are hand-maintained maps that DRIFT from the catalogue, and
+// every drift is a false statement on a legal document: 151 frameworks had no regulator so we printed the literal
+// words "Sector regulator" (E08); no entry for `statutory_code` so the SRA rulebook rendered as "Statute" (E09);
+// twelve promoted laws had no name so they rendered as title-cased codes (E07). Each time, the catalogue was RIGHT.
+// The engine now ships `framework_meta` with the audit. We read it FIRST and fall back to the maps only for older
+// payloads. Adding a law to the catalogue now fixes the render everywhere, with no code change.
+let _FW_META = {};
+function setFrameworkMeta(m) { _FW_META = (m && typeof m === 'object') ? m : {}; }
+function metaOf(fw) { return _FW_META[String(fw || '').toUpperCase()] || _FW_META[fw] || null; }
+
 let _BINDING_MAP = {};
 function setBindingMap(binding) { _BINDING_MAP = binding && typeof binding === 'object' ? binding : {}; }
 // E09 — THE BINDING-LABEL TAXONOMY. The SRA Transparency Rules, the SRA Code of Conduct and the LeO Scheme Rules
@@ -370,7 +381,8 @@ const _BINDING_LABEL = {
 // E-218 (S-100): when the payload carries NO binding map at all (legacy rows), a guessed 'Statute' label is a
 // false legal claim — a voluntary code must never read as a statute. Neutral 'Framework' until a real map exists.
 function bindingLabel(fw) {
-  const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw];
+  const _m = metaOf(fw);
+  const b = (_m && _m.binding_type) || _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw];   // catalogue first
   if (b && _BINDING_LABEL[b]) return _BINDING_LABEL[b];
   if (noStatutoryFine(fw)) return 'Voluntary code';
   // E09: the old fallback was `_BINDING_MAP.length ? 'Statute' : 'Framework'` — i.e. if the map held ANY entry but
@@ -704,7 +716,8 @@ const FW_NAME_CAT = {
 };
 function fwName(fw) {
   const base = titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase());
-  let n = fixAcronyms(FW_NAME[fw] || FW_NAME_CAT[fw] || base || 'Framework');
+  const _m = metaOf(fw);
+  let n = fixAcronyms((_m && _m.name) || FW_NAME[fw] || FW_NAME_CAT[fw] || base || 'Framework');   // catalogue first
   if (/^[A-Z]{2,}$/.test(n)) n = base || 'Framework';   // never a bare all-caps token (raw-code QA guard)
   return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework';
 }
@@ -716,7 +729,7 @@ function regTag(fw) { const n = fwName(fw); return n.replace(/\s*·.*$/, '').rep
 // placeholder shipped to a law firm in the column headed "Regulator". A reader takes that as our answer. It is not
 // an answer, it is a gap wearing the costume of one. A regulator we cannot name must be OMITTED, never invented:
 // the renderer drops the regulator line rather than assert a body that does not exist.
-function fwRegulator(fw) { return FW_REGULATOR[fw] || null; }
+function fwRegulator(fw) { const _m = metaOf(fw); return (_m && _m.regulator) || FW_REGULATOR[fw] || null; }   // catalogue first; NEVER a placeholder
 function fwCode(fw) { const s = String(fw || '').replace(/^(UK|EU|US|AE|FR|DE|SAUDI|QATAR|DIFC|ADGM)_?/, ''); return (s.replace(/[^A-Za-z0-9]/g, '').slice(0, 4) || String(fw).slice(0, 4) || 'FW').toUpperCase(); }
 
 /* ---------------- Lighthouse audit intelligence (element-level evidence) ----------------
@@ -1658,6 +1671,7 @@ export function payloadToD(payload, ctx = {}) {
   if (ctx.verified !== true) payload = sanitiseUnverified(payload);
   setVoluntaryBinding(payload && payload.binding);   // FIX-R1: seed voluntary-code guard from the engine payload
   setBindingMap(payload && payload.binding);            // #17a: seed the binding-status label map
+  setFrameworkMeta(payload && payload.framework_meta);  // the catalogue's own name/regulator/binding_type: read, never guessed
   // FIX-R2/R3: consume the evidence-ledger contract. review_candidates = low-confidence attachments (below the
   // conformal band) that must NOT render as hard breaches; they still appear in the 'applies to you' framework list.
   const reviewSet = new Set(arr(payload.review_candidates).map((x) => String(x).toUpperCase()));
@@ -1922,7 +1936,10 @@ export function payloadToD(payload, ctx = {}) {
     const _regP = (top.regulator && !/_/.test(top.regulator) && !/^https?:/.test(top.regulator)) ? String(top.regulator).trim() : '';
     // The regulatory MERGE can key the box on a synthesised code (e.g. UK_GDPR) the map lacks while the
     // representative finding's own framework_short (UK_GDPR_A13) IS mapped — try both before the generic fallback.
-    const _reg = FW_REGULATOR[fw] || FW_REGULATOR[top.framework_short] || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || null;   // E08: null, never a fabricated authority
+    // THE SECOND DOOR, AGAIN. This card built its own regulator instead of calling fwRegulator(), so the catalogue's
+    // answer never reached it. Every single defect this session had a second door. Route BOTH through one function.
+    const _reg = fwRegulator(fw) || fwRegulator(top.framework_short)
+              || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || null;   // catalogue first; null, never fabricated
     // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
     const _cite = top.citation_url || top.citation || '';
     const _intel = intelOf(fw, top.framework_short);

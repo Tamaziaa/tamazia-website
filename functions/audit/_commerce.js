@@ -50,7 +50,8 @@ export const ADDON_CATALOGUE = {
   },
   compliance: {
     // Route 3 "Monthly Compliance + SEO + AI report". Display price £1,500→£750/mo with a first-month-free trial
-    // (the audit page sends trial_days=30). STRIPE_PRICE_COMPLIANCE must point at a £750/mo recurring Stripe price.
+    // (the audit page sends trial_days=30). STRIPE_PRICE_COMPLIANCE must point at a £1,500/mo recurring Stripe price
+    // (Regulatory Watch; the £495 unlock includes month one). See exposureReportGbp in src/content/pricing.ts.
     key: 'compliance', name: 'Compliance Monitoring', envKey: 'STRIPE_PRICE_COMPLIANCE',
     gbp: 750, was: 1500, unit: 'mo', market: 'board-room standard, highest uptake',
     usp: 'This exact audit, re-run every month with your latest live data. The report General Counsels, Heads of Compliance, Marketing Directors and CFOs quote in board packs.',

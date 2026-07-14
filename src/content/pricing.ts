@@ -248,50 +248,131 @@ pricingContent.tiers.forEach((t: any) => {
 // English. Adding only: nothing above is renamed, removed, or changed.
 // ---------------------------------------------------------------------------
 
-// Fix packs · one-time purchases · no retainer.
-export interface FixPackPricing {
-  ten: number;
-  twenty: number;
-  thirty: number;
-}
-export const fixPacksGbp: FixPackPricing = {
-  ten: 7500,
-  twenty: 12500,
-  thirty: 17500,
-};
-export const fixPacksLane = 'No retainer required. Buy the fixes, own the work.';
+// ---------------------------------------------------------------------------
+// COMMERCIAL CONFIG · CANONICAL. This block is the ONE source of truth for every
+// commercial figure and every payment/booking destination in the product.
+// public/audit/audit-app.js mirrors it (PRICES + STRIPE_LINKS + CAL); the two MUST
+// change in the same commit, and tests/commercial-rebuild.test.mjs fails the build
+// if they drift. Retainer/mandate prices above (2,500 / 4,500 / 9,500) are NOT
+// touched by anything below. British English. GBP integers.
+// ---------------------------------------------------------------------------
 
-// The Exposure Report · recurring · unlock is one-time, monthly cover is per
-// month with the first month included.
+// Fix Sprints (Route 1) · one-time · severity-based, not count-based.
+// FIRST-ENGAGEMENT PRICING: `standard` is the published fee. `offer` is the rate this
+// report unlocks, because it is a first engagement with the client. offer = standard / 2,
+// exactly, so the struck price is arithmetic rather than decoration.
+export interface FixSprintTier {
+  standard: number;
+  offer: number;
+  days: number;
+}
+export const fixSprintsGbp: Record<'sprint1' | 'sprint2' | 'sprint3', FixSprintTier> = {
+  sprint1: { standard: 9800, offer: 4900, days: 14 },
+  sprint2: { standard: 17800, offer: 8900, days: 30 },
+  sprint3: { standard: 25000, offer: 12500, days: 42 },
+};
+// Half of the Sprint fee is redeemable against the first retainer/mandate. Stated as arithmetic.
+export const fixSprintCreditPct = 50;
+export const fixSprintCreditDays = 60;
+export const fixPacksLane = 'One fixed price. One fixed timeline. No retainer. The work is owned outright.';
+
+// SCCO Guideline Hourly Rates (Senior Courts Costs Office), England and Wales, in force
+// 1 January 2026. Source: HMCTS, gov.uk. Verified 14 July 2026.
+// This replaces the invented "a consultancy quotes £25,000+" anchors (E36). We fine other
+// firms for unsubstantiated claims under CAP 3.7; every anchor we print is now sourced
+// arithmetic, and the source is printed inline beside it.
+export const sccoGuidelineRates = {
+  band: 'London 1',
+  inForce: '1 January 2026',
+  source: 'SCCO Guideline Hourly Rates, London 1, in force 1 January 2026',
+  sourceUrl: 'https://www.gov.uk/guidance/solicitors-guideline-hourly-rates',
+  gradeA: 579,   // Solicitors and legal executives with over 8 years' experience
+  gradeC: 305,   // Other solicitors, legal executives and fee earners of equivalent experience
+};
+
+// Route 3 · the merged product: £495 unlocks the full report AND includes the first month
+// of Regulatory Watch; from month two it is £1,500 a month. The £495 is credited in full
+// against any Sprint or mandate within 90 days. realValue = the report's published
+// standalone price (entryAuditGbp), which is why the struck anchor is honest.
 export interface ExposureReportPricing {
   unlock: number;
   monthlyCover: number;
+  realValue: number;
+  creditDays: number;
 }
 export const exposureReportGbp: ExposureReportPricing = {
-  unlock: 750,
-  monthlyCover: 449,
+  unlock: 495,
+  monthlyCover: 1500,
+  realValue: 1500,
+  creditDays: 90,
 };
 
-// Entry audit · reference price · one-time unlock.
+// Entry audit · reference price · the report's published standalone price.
 export const entryAuditGbp = 1500;  // Founder r4: audit is £1,500, redeemable into the first package.
 
-// Independent solutions · struck-then-offer where an anchor is given.
+// Independent solutions · first-engagement pricing, same doctrine as the Sprints:
+// `anchor` is the standard fee, `offer` is what this report unlocks, and anchor = 2 x offer.
+// ICP Outreach (E50) and Reputation & Crisis (E51, folded into Regulatory Watch) are DELETED.
 export interface IndependentSolutionPricing {
   anchor?: number;
   offer?: number;
   price?: number;
+  typical?: number;
 }
-// Founder directive r3: every solution shows a struck "main" price at exactly 2x
-// the offer, so each reads as a clear discount. ICP doubled on both sides. GBP
-// Domination repriced to a £1,200 offer against a £2,400 strike. YMYL given a
-// £2,400 strike against its £1,200 piece price.
 export const independentSolutionsGbp: Record<string, IndependentSolutionPricing> = {
-  websiteRemodelling: { anchor: 4800, offer: 2400 },
-  aiAuthority: { anchor: 3600, offer: 1800 },
-  icpOutreach: { anchor: 5600, offer: 2800 },
-  onlinePersonalBranding: { anchor: 2200, offer: 1100 },
-  instagramPresence: { anchor: 1800, offer: 900 },
-  ymylContent: { anchor: 2400, offer: 1200 },
-  reputationCrisis: { anchor: 3000, offer: 1500 },
-  gbpDomination: { anchor: 2400, offer: 1200 },
+  websiteRemodelling:     { anchor: 17000, offer: 8500, typical: 12000 },
+  aiAuthority:            { anchor: 3800,  offer: 1900 },
+  onlinePersonalBranding: { anchor: 5000,  offer: 2500 },
+  instagramPresence:      { anchor: 3000,  offer: 1500 },
+  ymylContent:            { anchor: 2900,  offer: 1450 },
+  gbpDomination:          { anchor: 3000,  offer: 1500 },
 };
+
+// ---------------------------------------------------------------------------
+// STRIPE · THE ONLY PLACE THE FOUNDER PASTES A PAYMENT LINK.
+// No Stripe secret key is held in this repo, so the Payment Links cannot be minted
+// from code. Create each product in the Stripe dashboard at the `offer` price above,
+// copy its Payment Link URL, and paste it here. Nothing else needs editing on the
+// website: audit-app.js and Pricing.astro both read from this map.
+//
+// An EMPTY string is safe and expected. It never hides a button (that was defect E39,
+// which left Route 1 unpurchasable on every live report). An empty URL makes the button
+// fall back to the intake modal / booking link, so a payment path ALWAYS exists.
+//
+// The six core links, per the change map:
+//   sprint1  · Fix Sprint I  · Enforcement Clearance          · £4,900 one-time
+//   sprint2  · Fix Sprint II · Full Remediation               · £8,900 one-time
+//   sprint3  · Fix Sprint III· Remediation + Verified Re-score· £12,500 one-time
+//   unlock   · Exposure Report unlock (includes Watch month 1)· £495 one-time
+//   watch    · Regulatory Watch                               · £1,500/month subscription
+//   remodellingDeposit · Website Remodelling reserve slot     · £1,500 deposit, credited in full
+// The six Independent Solution links follow. The previous links were minted at the OLD
+// prices and would now charge the wrong amount, so they are cleared, not carried over.
+// ---------------------------------------------------------------------------
+export const stripeLinks: Record<string, string> = {
+  sprint1: '',
+  sprint2: '',
+  sprint3: '',
+  unlock: '',
+  watch: '',
+  remodellingDeposit: '',
+  websiteRemodelling: '',
+  aiAuthority: '',
+  onlinePersonalBranding: '',
+  instagramPresence: '',
+  ymylContent: '',
+  gbpDomination: '',
+};
+
+// ---------------------------------------------------------------------------
+// BOOKING · every commercial CTA resolves to a real destination (E16 / E54).
+// Context params are carried into the call so the booked slot knows which report and
+// which intent produced it: ?report={slug}&intent={findings|scoping|sprint|package}
+// ---------------------------------------------------------------------------
+export const CAL_BOOKING_BASE = 'https://cal.com/tamazia/strategy-call';
+export function bookingUrl(report = '', intent = 'findings'): string {
+  const q = new URLSearchParams();
+  if (report) q.set('report', report);
+  q.set('intent', intent);
+  return `${CAL_BOOKING_BASE}?${q.toString()}`;
+}

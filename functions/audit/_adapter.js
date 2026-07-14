@@ -168,6 +168,22 @@ const FW_NAME = {
   UAE_CONSUMER: 'UAE Consumer Protection Law', UAE_ECOMMERCE: 'UAE E-Commerce Law', UAE_RERA: 'RERA (Dubai)', FR_CNIL_2025: 'France · CNIL',
 };
 const FW_REGULATOR = {
+  // E08 — the real enforcing authority. Previously these rendered the literal placeholder "Sector regulator".
+  'UK_ECOMMERCE_2002': 'Trading Standards / CMA',
+  'UK_LEGAL_SERVICES_2007': 'Legal Services Board / SRA',
+  'UK_CLC': 'Council for Licensed Conveyancers',
+  'UK_CRIMINAL_FINANCES_2017': 'HMRC and the Serious Fraud Office',
+  'UK_ECCTA_2023': 'Serious Fraud Office / Crown Prosecution Service',
+  'UK_LEGAL_OMBUDSMAN': 'Legal Ombudsman',
+  'EU_ECD_ART5': 'The competent national authority of the member state',
+  'EU_SERVICES_DIRECTIVE': 'The competent national authority of the member state',
+  'DE_IMPRESSUM': 'Competitor Abmahnung and the competent Landesmedienanstalt',
+  'FR_LCEN': 'DGCCRF',
+  'BAHRAIN_PDPL': 'Bahrain Personal Data Protection Authority',
+  'EGYPT_PDPL': 'Egyptian Data Protection Centre',
+  'ISRAEL_PPL': 'Israeli Privacy Protection Authority',
+  'JORDAN_PDPL': 'Jordan Ministry of Digital Economy and Entrepreneurship',
+  'OMAN_PDPL': 'Oman Ministry of Transport, Communications and IT',
   UK_GDPR_A13: "Information Commissioner's Office", UK_DPA_2018: "Information Commissioner's Office", UK_PECR: "Information Commissioner's Office", UK_ICO_COOKIES: "Information Commissioner's Office",
   EU_GDPR: 'EU data-protection authorities', EU_EPRIVACY: 'EU data-protection authorities', EU_EAA_2025: 'EU accessibility regulators', EU_WHISTLEBLOWER: 'EU member-state authorities', EU_AI_ACT: 'EU AI Office',
   UK_CQC: 'Care Quality Commission', UK_GDC: 'General Dental Council', UK_MHRA: 'MHRA', UK_SRA: 'Solicitors Regulation Authority', UK_FCA: 'Financial Conduct Authority',
@@ -295,14 +311,39 @@ function isNonStatutory(p) {
 // obligation is a hard statute or voluntary guidance (drives trust + how urgently to act). Seeded per-request.
 let _BINDING_MAP = {};
 function setBindingMap(binding) { _BINDING_MAP = binding && typeof binding === 'object' ? binding : {}; }
-const _BINDING_LABEL = { statute: 'Statute', enforceable_code: 'Regulator code', industry_code: 'Industry code' };
+// E09 — THE BINDING-LABEL TAXONOMY. The SRA Transparency Rules, the SRA Code of Conduct and the LeO Scheme Rules
+// were all labelled "Statute". They are REGULATORY RULES made under the Legal Services Act 2007. That is exactly
+// the distinction a solicitor is trained to notice, and getting it wrong in a column headed "Binding" tells a
+// partner we do not know the difference between an Act and a rulebook.
+// E09 — THE TAXONOMY MUST MATCH WHAT THE CATALOGUE ACTUALLY STORES.
+// The catalogue was RIGHT all along: framework_versions types the SRA Transparency Rules, the SRA Code and the LeO
+// Scheme Rules as `statutory_code` (rules made UNDER the Legal Services Act 2007), not `statute`. The bug was here:
+// this map had no entry for `statutory_code`, so every one of them fell through to the fallback and rendered as
+// "Statute". We were calling a regulator's rulebook an Act of Parliament, which is the single easiest error for a
+// solicitor to catch. Every binding_status the database can emit now has a label.
+const _BINDING_LABEL = {
+  statute: 'Statute',
+  statutory_instrument: 'Statutory instrument',
+  statutory_code: 'Regulatory rules',          // made under statute: SRA, BSB, GDC, Legal Ombudsman
+  regulator_code: 'Regulator code',
+  professional_code: 'Professional code',
+  statutory_redress: 'Statutory redress scheme',
+  regulatory_rules: 'Regulatory rules',
+  enforceable_code: 'Regulator code',
+  industry_code: 'Industry code',
+  voluntary_code: 'Voluntary code',
+  guidance: 'Guidance',
+};
 // E-218 (S-100): when the payload carries NO binding map at all (legacy rows), a guessed 'Statute' label is a
 // false legal claim — a voluntary code must never read as a statute. Neutral 'Framework' until a real map exists.
 function bindingLabel(fw) {
   const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw];
   if (b && _BINDING_LABEL[b]) return _BINDING_LABEL[b];
   if (noStatutoryFine(fw)) return 'Voluntary code';
-  return Object.keys(_BINDING_MAP).length ? 'Statute' : 'Framework';
+  // E09: the old fallback was `_BINDING_MAP.length ? 'Statute' : 'Framework'` — i.e. if the map held ANY entry but
+  // not THIS one, we guessed "Statute". A guess is not a classification. Calling a regulator's rulebook an Act of
+  // Parliament is a false legal claim, and it is the single easiest error for a solicitor to catch. Neutral always.
+  return 'Framework';
 }
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
@@ -325,6 +366,23 @@ function fixAcronyms(s) { return String(s || '').replace(_ACR_RX, (m) => m.toUpp
 // 285 frameworks). The hardcoded FW_NAME only knew the old ~40, so every newer framework rendered as a
 // title-cased code ("UAE Dha"). fwName now prefers the real catalogue name. Regenerate when the catalogue grows.
 const FW_NAME_CAT = {
+  // E07 — THE EXACT LEGAL TITLE. These 14 frameworks were promoted into the catalogue (E-254, "the lost law") but
+  // nobody ever gave them a display name, so they rendered as title-cased codes: "Uk Ecommerce 2002",
+  // "Eu Ecd Art5". In a lawyer-led report every citation must be the instrument's real name.
+  'UK_ECOMMERCE_2002': 'Electronic Commerce (EC Directive) Regulations 2002',
+  'UK_LEGAL_SERVICES_2007': 'Legal Services Act 2007',
+  'UK_CLC': 'CLC Handbook (Council for Licensed Conveyancers)',
+  'EU_ECD_ART5': 'e-Commerce Directive 2000/31/EC, Article 5',
+  'EU_SERVICES_DIRECTIVE': 'Services Directive 2006/123/EC',
+  // Verified: the Impressum duty moved from TMG s.5 to DDG s.5 on 14 May 2024. Citing the repealed TMG is itself
+  // an Abmahnung risk in Germany, so the name carries the CURRENT basis.
+  'DE_IMPRESSUM': 'Digitale-Dienste-Gesetz (DDG) s.5 - Impressumspflicht',
+  'FR_LCEN': 'Loi pour la confiance dans l\'economie numerique (LCEN), Loi 2004-575',
+  'BAHRAIN_PDPL': 'Bahrain Personal Data Protection Law (Law No. 30 of 2018)',
+  'EGYPT_PDPL': 'Egypt Personal Data Protection Law (Law No. 151 of 2020)',
+  'ISRAEL_PPL': 'Israel Protection of Privacy Law, 5741-1981',
+  'JORDAN_PDPL': 'Jordan Personal Data Protection Law (Law No. 24 of 2023)',
+  'OMAN_PDPL': 'Oman Personal Data Protection Law (Royal Decree 6/2022)',
   'ADGM_DPR': 'ADGM Data Protection Regulations 2021',
   'AE_AML_2018': 'UAE Federal Decree-Law No. 20 of 2018 on AML/CFT',
   'AE_CBUAE_CONSUMER': 'CBUAE Consumer Protection Regulation & Standards',
@@ -620,7 +678,12 @@ function fwName(fw) {
 // Clean, short tag for the finding badge, NEVER a raw underscore code ("US_STATE_PRIVACY"); derived from the
 // friendly name with the "· Art.13" suffix and trailing year stripped. (no-raw-framework-code) (G-regtag)
 function regTag(fw) { const n = fwName(fw); return n.replace(/\s*·.*$/, '').replace(/\s+\d{4}[A-Z0-9]*\b.*$/, '').trim() || 'Framework'; }
-function fwRegulator(fw) { return FW_REGULATOR[fw] || 'Sector regulator'; }
+// E08 — WE WERE PRINTING THE WORDS "Sector regulator" AS IF THEY WERE THE ENFORCING AUTHORITY.
+// 151 of the 294 active frameworks are absent from FW_REGULATOR, so on more than half the catalogue this
+// placeholder shipped to a law firm in the column headed "Regulator". A reader takes that as our answer. It is not
+// an answer, it is a gap wearing the costume of one. A regulator we cannot name must be OMITTED, never invented:
+// the renderer drops the regulator line rather than assert a body that does not exist.
+function fwRegulator(fw) { return FW_REGULATOR[fw] || null; }
 function fwCode(fw) { const s = String(fw || '').replace(/^(UK|EU|US|AE|FR|DE|SAUDI|QATAR|DIFC|ADGM)_?/, ''); return (s.replace(/[^A-Za-z0-9]/g, '').slice(0, 4) || String(fw).slice(0, 4) || 'FW').toUpperCase(); }
 
 /* ---------------- Lighthouse audit intelligence (element-level evidence) ----------------
@@ -1769,7 +1832,7 @@ export function payloadToD(payload, ctx = {}) {
     const _regP = (top.regulator && !/_/.test(top.regulator) && !/^https?:/.test(top.regulator)) ? String(top.regulator).trim() : '';
     // The regulatory MERGE can key the box on a synthesised code (e.g. UK_GDPR) the map lacks while the
     // representative finding's own framework_short (UK_GDPR_A13) IS mapped — try both before the generic fallback.
-    const _reg = FW_REGULATOR[fw] || FW_REGULATOR[top.framework_short] || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || 'Sector regulator';
+    const _reg = FW_REGULATOR[fw] || FW_REGULATOR[top.framework_short] || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || null;   // E08: null, never a fabricated authority
     // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
     const _cite = top.citation_url || top.citation || '';
     const _intel = intelOf(fw, top.framework_short);
@@ -1874,7 +1937,9 @@ export function payloadToD(payload, ctx = {}) {
         // scanned your site and found no breach". Lead with the curated regulator-focus line when we have it.
         why: _focus
           ? (_focus + ' This framework legally binds you, and the obligations below are the controls you must be able to demonstrate.')
-          : ('This framework legally binds you in your jurisdiction. The obligations below are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.'),
+          : ('This framework legally binds you in your jurisdiction. The obligations below are the controls '
+              + (fwRegulator(fw) ? fwRegulator(fw) + ' expects' : 'its regulator expects')
+              + ' you to be able to demonstrate, and the gap most firms in your sector carry here.'),   // E08: reads correctly when the authority is unknown
       });
     };
     // 1) the firm's SECTOR-SPECIFIC applicable frameworks first (never crowded out), 2) the rest of applicable,

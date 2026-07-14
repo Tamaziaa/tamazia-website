@@ -719,7 +719,7 @@
     const n=issuesTotal();
     const outcomes=[
       `Your highest-severity findings closed first, in priority order, starting with ${topFix}`,
-      `A prosecution-grade re-scan of all ${D.frameworksAssessed} binding ${plur(D.frameworksAssessed,'framework')}, proving every fix landed`,
+      `A prosecution-grade re-scan of all ${D.frameworksBinding} binding ${plur(D.frameworksBinding,'framework','frameworks')}, proving every fix landed`,
       'An evidence pack your compliance committee and your insurer can file',
       `Half of your Sprint fee returned as credit against any mandate begun within ${PRICES.fixSprintCreditDays} days`,
       'A fixed scope and a fixed price. One engagement, not a retainer',

@@ -75,21 +75,54 @@ function looksLikeTitle(s) {
 function sharesTokenWithDomain(name, domain) {
   const stem = String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   if (!stem) return true;                                   // no domain to compare against: do not block
-  const toks = (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => t.length >= 4);
-  if (!toks.length) return false;
-  return toks.some((t) => stem.includes(t) || t.includes(stem));
+  // NAME-01c: the 4-character floor rejected genuinely SHORT firm names. "BDO LLP" on bdo.co.uk has no token of
+  // 4+ letters once 'llp' is set aside, so the guard rejected the firm's own name and fell back to the domain
+  // stem: "Bdo". A guard that rejects a real name is as wrong as one that admits a fake one. Legal suffixes are
+  // never evidence of identity, so they are stripped; the remaining tokens are compared at 3+ characters, and the
+  // whole normalised name is also compared against the stem so a one-word firm (BDO, DWF, DAC) always matches.
+  const SUFFIX = /^(llp|ltd|limited|plc|lp|llc|inc|pc|the|and|group|solicitors|law|legal)$/;
+  const words = (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => !SUFFIX.test(t));
+  if (!words.length) return false;
+  const whole = words.join('');
+  if (stem.includes(whole) || whole.includes(stem)) return true;   // one-word firms: BDO -> bdo.co.uk
+  return words.filter((t) => t.length >= 3).some((t) => stem.includes(t) || t.includes(stem));
 }
+// Companies House returns names in UPPER CASE ("BIRKETTS LLP"). Shipping that to a managing partner reads as a
+// database dump, not a report. Title-case it, but preserve the forms that are genuinely capitalised: the legal
+// suffixes (LLP, LTD, PLC), and initialisms the firm actually uses (BDO, DWF, DAC). Never lower-case those.
+const _SHORT_WORDS = new Set(['law', 'and', 'the', 'for', 'new', 'old', 'son', 'sons', 'co', 'of', 'at', 'in', 'on', 'to', 'legal', 'firm', 'lex', 'bar']);
+const _KEEP_CAPS = new Set(['LLP', 'LTD', 'PLC', 'LP', 'LLC', 'INC', 'PC', 'UK', 'GB', 'AG', 'SA', 'NV', 'BV', 'GMBH', 'SARL', 'PTE', 'FZE', 'DMCC', 'DIFC', 'ADGM']);
+function humaniseName(n, domain) {
+  const raw = String(n || '').trim();
+  if (!raw) return raw;
+  // Only intervene when the name is SHOUTING; a properly-cased name is left exactly as the firm writes it.
+  const letters = raw.replace(/[^A-Za-z]/g, '');
+  if (!letters || letters !== letters.toUpperCase()) return raw;
+  // AN INITIALISM IS NOT MERELY A SHORT TOKEN. Length cannot tell "DWF" from "LAW", or "BDO" from "WARD" - both
+  // guesses were wrong ("DWF LAW LLP" -> "DWF LAW LLP", "WARD HADAWAY" -> "WARD Hadaway"). The reliable test is
+  // identity: a firm that trades as an acronym OWNS THAT ACRONYM AS ITS DOMAIN. BDO is bdo.co.uk; DWF is dwf.law.
+  // "Ward" is not wardhadaway.com. So a token is capitalised only if it IS the domain stem, and never otherwise.
+  const stem = String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  return raw.split(/(\s+|-|&)/).map((tok) => {
+    if (/^\s+$/.test(tok) || tok === '-' || tok === '&') return tok;
+    const bare = tok.replace(/[^A-Za-z]/g, '');
+    if (_KEEP_CAPS.has(bare.toUpperCase())) return tok.toUpperCase();           // LLP, LTD, PLC
+    if (bare.length > 1 && bare.length <= 5 && bare.toLowerCase() === stem) return tok.toUpperCase();  // BDO, DWF
+    return tok.charAt(0).toUpperCase() + tok.slice(1).toLowerCase();
+  }).join('');
+}
+
 function firmName(payload, passed) {
   const fp = g(payload, 'firm_profile', {}) || {};
   const fromProfile = fp.name || fp.legal_name || fp.display_name || fp.trading_name || fp.brand || payload.firm_name || payload.company;
   if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)
-      && sharesTokenWithDomain(fromProfile, payload.domain)) return decodeEnt(String(fromProfile).trim());
+      && sharesTokenWithDomain(fromProfile, payload.domain)) return humaniseName(decodeEnt(String(fromProfile).trim()), payload.domain);
   // NAME-01b: the SAME guard must sit on THIS door too. The live render passes audit_pages.company in as `passed`,
   // so guarding only the firm_profile branch above fixed nothing on the actual page — the birketts report still
   // said "Bristol Office". A fix applied to one of two doors is not a fix; it just looks like one.
   const p = String(passed == null ? '' : passed).trim();
   if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && sharesTokenWithDomain(p, payload.domain)
-      && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return decodeEnt(p);
+      && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return humaniseName(decodeEnt(p), payload.domain);
   // passed is empty OR is a dirty/title-like string -> rebuild from the clean domain stem
   const src = (p && looksLikeDomain(p)) ? p : payload.domain;
   return titleCase(domainStem(src)) || titleCase(domainStem(payload.domain)) || 'This firm';

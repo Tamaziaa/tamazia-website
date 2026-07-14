@@ -54,3 +54,4 @@ t('NAME-01b: a real name passed through the live door survives', () => {
 
 console.log(bad ? 'NAME-01: FAIL' : 'NAME-01: ALL GREEN (' + n + ' checks)');
 process.exit(bad ? 1 : 0);
+

@@ -431,6 +431,17 @@ const featureIcons: Record<string, string> = {
   .tier-card.tier-enterprise .tier-who-p { color: var(--pearl); }
   .tier-card.tier-enterprise .tier-who-x { color: var(--gold, #C9A772); }
 
+  /* W-A11Y · WCAG 2.1 AA (1.4.3 Contrast Minimum).
+     .pilot-microcopy is coloured var(--ink-muted) = #4A1625 - a DARK ink, correct on the two light tier cards.
+     The enterprise card's background is #2A0C14, also dark. So on that one card the commitment line rendered
+     dark-on-dark at a measured contrast of 1.23:1 against a required 4.5:1 - effectively invisible.
+     This is the exact failure class our own audits cite law firms for under the Equality Act 2010 and the
+     European Accessibility Act, so it cannot ship from our pricing page. The component already solves this for
+     its other text on this card (.tier-who-p, .tier-who-sum); the microcopy was simply missed.
+     A 72% pearl keeps the text visually secondary, as intended, and measures 7.80:1. */
+  .tier-card.tier-enterprise .pilot-microcopy,
+  .tier-card.tier-enterprise .pilot-microcopy em { color: rgba(232, 228, 220, 0.72); }
+
   /* Rich feature list (Round-1 fix B-01/B-16) */
   .features-heading {
     font-family: var(--ff-body);

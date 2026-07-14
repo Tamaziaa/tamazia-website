@@ -349,19 +349,32 @@ export const independentSolutionsGbp: Record<string, IndependentSolutionPricing>
 // The six Independent Solution links follow. The previous links were minted at the OLD
 // prices and would now charge the wrong amount, so they are cleared, not carried over.
 // ---------------------------------------------------------------------------
+// LIVE Stripe Payment Links, created 14 July 2026 on acct_1TgF8DHafZjksJ5V (Tamazia), livemode.
+// Every commercial CTA on both surfaces resolves here. An EMPTY value never hides a button (that was defect E39):
+// the renderer falls back to the intake modal / booking link, so a payment path always exists.
+//
+// Each one-time price carries its STANDARD price in Stripe metadata (standard_price_gbp) and the discount is
+// recorded as discount_reason=first_engagement, so the strikethrough on the page is backed by a real figure in the
+// payment processor rather than being decoration.
+// ARCHIVED, deliberately: ICP Outreach (E50/W18) and Reputation & Crisis (E51/W19, folded into Regulatory Watch).
 export const stripeLinks: Record<string, string> = {
-  sprint1: '',
-  sprint2: '',
-  sprint3: '',
-  unlock: '',
-  watch: '',
-  remodellingDeposit: '',
-  websiteRemodelling: '',
-  aiAuthority: '',
-  onlinePersonalBranding: '',
-  instagramPresence: '',
-  ymylContent: '',
-  gbpDomination: '',
+  // Fix Sprints. Standard 9,800 / 17,800 / 25,000 -> first-engagement 4,900 / 8,900 / 12,500.
+  // 50% of the fee is redeemable against the first mandate within 60 days.
+  sprint1: 'https://buy.stripe.com/8x2eVd7coaSEdHa4oif7i0m',
+  sprint2: 'https://buy.stripe.com/cNieVd8gsf8U7iM7Auf7i0n',
+  sprint3: 'https://buy.stripe.com/fZu14n68k4uggTm7Auf7i0o',
+  // Unlock GBP 495 (standalone GBP 1,500) and it INCLUDES month one of Regulatory Watch.
+  // Credited in full against any Sprint or mandate within 90 days, so the buyer's downside is zero.
+  unlock: 'https://buy.stripe.com/aFa9AT54gf8UauYcUOf7i0p',
+  watch: 'https://buy.stripe.com/fZueVdbsE3qc0UobQKf7i0q',
+  // Independent Solutions.
+  remodellingDeposit: 'https://buy.stripe.com/00w00j7co8Kw5aEg70f7i0r',
+  websiteRemodelling: 'https://buy.stripe.com/00w00j7co8Kw5aEg70f7i0r',   // scoped: the deposit is credited to the build
+  aiAuthority: 'https://buy.stripe.com/9B614n40ce4Q46AbQKf7i0s',
+  onlinePersonalBranding: 'https://buy.stripe.com/bJe28rfIU4ug6eI5smf7i0t',
+  instagramPresence: 'https://buy.stripe.com/eVqdR9eEQ7Gs8mQf2Wf7i0u',
+  ymylContent: 'https://buy.stripe.com/8x2dR9dAM3qc9qU8Eyf7i0v',
+  gbpDomination: 'https://buy.stripe.com/28EbJ17co1i432wcUOf7i0w',
 };
 
 // ---------------------------------------------------------------------------

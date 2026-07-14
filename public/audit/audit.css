@@ -318,7 +318,8 @@ body.no-notes .engnote{display:none}
 .verdict .eyebrow{display:block;margin-bottom:5px}
 .verdict h2{font-size:21px;color:var(--ox-deep);margin:0 0 5px;line-height:1.1}
 .verdict .vexp{color:var(--red)}
-.verdict>div>p{font-family:var(--body);font-size:12.5px;color:var(--muted);max-width:760px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* NO TRUNCATION: the verdict paragraph was -webkit-line-clamp:3 — it cut the client's own verdict mid-sentence. It wraps in full. */
+.verdict>div>p{font-family:var(--body);font-size:12.5px;color:var(--muted);max-width:760px;line-height:1.45;overflow-wrap:anywhere}
 .vfixes{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
 .vfix{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line-2);border-radius:9px;padding:6px 11px;cursor:pointer;text-align:left;transition:.13s;flex:1;min-width:210px;max-width:340px;overflow:hidden}
 .vfix:hover{border-color:var(--ox);box-shadow:var(--shadow)}
@@ -362,7 +363,8 @@ body.no-notes .engnote{display:none}
 .dimcard .dch{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
 .dimcard .dcn{font-family:var(--serif);font-size:12.5px;color:var(--ox-deep);line-height:1.12}
 .dimcard .pill{padding:2px 7px;font-size:9px}
-.dimcard .dcs{font-family:var(--body);font-size:10.5px;color:var(--muted);line-height:1.32}
+.dimcard .dcs{font-family:var(--body);font-size:10.5px;color:var(--muted);line-height:1.32;overflow-wrap:anywhere}
+.dimcard .dc-floor{margin-top:5px;color:var(--red);font-size:10px}   /* E-28: why this dimension scored 0 */
 @media(max-width:980px){.dimgrid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.dimgrid{grid-template-columns:1fr 1fr}}
 
@@ -651,7 +653,9 @@ body.cmx-lock{overflow:hidden}
 /* ⑤ Exposure on ONE line: value + caption never wrap (founder). */
 .meta-row .num.exp{font-family:var(--serif);font-size:16px;color:var(--red);white-space:nowrap}
 .meta-row .cap{font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:6px;white-space:nowrap}
-.meta-row>span:not(.mk){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* NO TRUNCATION: this clipped the ④ Ruling (the enforcement citation) and ⑤ Exposure rows to one line with an
+   ellipsis — the citation-heavy sentences the founder saw ending mid-word. They now wrap and are read in full. */
+.meta-row>span:not(.mk){white-space:normal;overflow:visible;overflow-wrap:anywhere;min-width:0}
 .fix-block{background:var(--green-bg);border-radius:8px;padding:8px 11px;margin-top:9px;box-shadow:inset 0 0 0 1px rgba(47,122,74,.18)}
 .fix-block .fix-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fix-block .fix-h .lk{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin:0}
@@ -1426,7 +1430,7 @@ body.pdrawer-lock{overflow:hidden}
 /* framework summary: assessed badge + compact inspected-page chip (never raw URLs) */
 .fw .fw-assessed{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:4px}
 .fw .fw-assessed .abadge{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:rgba(10,125,79,.1);color:#0a7d4f;white-space:nowrap}
-.fw .fw-assessed .inspected{font-family:var(--mono);font-size:9px;color:var(--muted-2);cursor:help;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.fw .fw-assessed .inspected{font-family:var(--mono);font-size:9px;color:var(--muted-2);cursor:help;white-space:normal;overflow-wrap:anywhere}
 @media(max-width:760px){.fw .fw-assessed .inspected{max-width:150px}}
 
 /* E-253d — the adjudication trust line. Every finding on the page was ruled on against the text of the statute it

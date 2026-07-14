@@ -9,7 +9,10 @@ const REQUIRED = [
   'meta.company', 'meta.domain', 'meta.sector', 'meta.country', 'meta.date',
   'score', 'grade', 'scoreBand', 'exposure', 'exposureFull', 'exposureNote', 'exposureWaterfall',
   'counts.critical', 'counts.high', 'counts.standard', 'counts.total', 'confirmed',
-  'frameworksAssessed', 'rulesChecked', 'frameworksTotal',
+  // THE THREE NUMBERS. `catalogueSize` / `frameworksTotal` (the FULL register) is DELIBERATELY NULLABLE: the engine
+  // does not yet emit a catalogue count, and the render must never invent one — it prints `screenedLabel` instead.
+  // The two numbers we can always prove (what binds this firm, what was checked) stay required.
+  'frameworksAssessed', 'frameworksBinding', 'screenedLabel', 'rulesChecked',
   'scoring.formula', 'scoring.why', 'scoring.inputs', 'exec', 'jurisdiction',
   'heat', 'heatRows', 'heatCols', 'projected.wk12', 'projected.wk24', 'glossary',
   'seo.psi', 'seo.cwv', 'seo.onpage', 'seo.security', 'seo.a11y', 'seo.tech', 'seo.keywordSummary', 'seo.psiAudits',

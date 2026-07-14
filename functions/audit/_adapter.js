@@ -849,9 +849,22 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // Prefer a verbatim on-site quote; else the engine's real nearest-miss absence line; else the bingo problem.
     quote: _q25(p.evidence_quote) || absenceLine(p.absence_evidence) || g(p, 'bingo.problem', ''),
     fix: craftFix(p),
-    plan: 'Severity ' + (p.severity || 'P1') + ' · ' + (i === 0 ? 'Week 1' : 'Weeks 1 to 4') + ' · every mandate',
+    // E12/E40: "Severity P0" is internal engineering vocabulary; the buyer asked, correctly, what a P0 was.
+    // The severity word is now the client-facing one, defined inline in the report (Critical / High / Standard),
+    // and the closing window is stated in the language of the products that close it.
+    sevWord: SEV_WORD[p.severity] || 'Standard',
+    plan: (SEV_WORD[p.severity] || 'Standard') + ' · closed in ' + (i === 0 ? 'week 1' : 'weeks 1 to 4') + ' of any Sprint or mandate',
   };
 }
+// E12 · Global severity language. P0/P1/P2/P3 are internal engine tokens and never reach a client.
+// The three definitions are printed inline on first use and carried on the severity dots as hover tips.
+const SEV_WORD = { P0: 'Critical', P1: 'High', P2: 'Standard', P3: 'Standard' };
+const SEV_DEFS = [
+  ['Critical', 'A live breach of binding law on your site today, the item a regulator\'s first letter cites.'],
+  ['High', 'Regulator-visible on inspection, one step from a breach citation.'],
+  ['Standard', 'A best-practice gap costing rankings and AI visibility, not enforcement.'],
+];
+
 // The engine emits a templated remediation, `Tamazia implements and verifies "{finding}" on your site
 // so it satisfies the {framework}.`, for a large class of findings. When the top-3 BINGO cards all draw
 // from that template their `fix` text is identical for the first ~32 chars, so three cards open with the
@@ -2313,9 +2326,9 @@ export function payloadToD(payload, ctx = {}) {
     // FOUNDER-BLOCKED links + contact, threaded from env by [[path]].js. The client renders each element ONLY
     // when its value is a non-empty string (no placeholder when unset). Pure pass-through; never affects scoring.
     links: {
-      booking: String((ctx.links && ctx.links.booking) || ''),
-      cta_findings: { text: 'Walk through these findings with the founder. 20 minutes, the exact fixes, and what a regulator would ask first: book the review.', href: String((ctx.links && ctx.links.booking) || '') },
-      cta_assessed: { text: 'Everything marked APPLIES · ASSESSED is verified at page level. Records, processes and filings are the full engagement: book the scoping call.', href: String((ctx.links && ctx.links.booking) || '') },
+      booking: bookingHref(ctx, ''),
+      cta_findings: { text: 'Walk through these findings in 20 minutes. The exact fixes, and what a regulator would ask first: book the review.', href: bookingHref(ctx, 'findings') },
+      cta_assessed: { text: 'Everything marked APPLIES · ASSESSED is verified at page level. Records, processes and filings are the full engagement: book the scoping call.', href: bookingHref(ctx, 'scoping') },
       stripeUnlock: String((ctx.links && ctx.links.stripeUnlock) || ''),
       stripeCover: String((ctx.links && ctx.links.stripeCover) || ''),
       stripeFix10: String((ctx.links && ctx.links.stripeFix10) || ''),
@@ -2412,6 +2425,8 @@ export function payloadToD(payload, ctx = {}) {
     // (D.pricing[].rec / .popular, keyed by .tier) + the two notes. The old injected `addons`/`addonsMore`
     // catalogues were NEVER read by the render (it builds ADDONS from PRICES.independent) — removed as dead.
     pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, upsellProof: COMMERCE.upsellProof,
+    // E12 · the three severity words, defined inline on first use and carried as the dot hover tips.
+    severityDefs: SEV_DEFS.map(([word, def]) => ({ word, def })),
     _meta: { droppedByJurisdiction: dropped, exposureN, generatedAt: ctx.generated_at || null },
   };
   // Optional scoring trace (benchmark harness only; NEVER passed on the production render route, so it
@@ -2560,6 +2575,21 @@ function execFallback(exp, nfw, crit, sym) {
   const lead = `Right now you are carrying ${gbp(exp, sym)} of avoidable statutory exposure across ${nfw} binding framework${nfw === 1 ? '' : 's'}.`;
   return crit > 0 ? `${lead} Close the ${crit} critical finding${crit === 1 ? '' : 's'} first, they are the ones a regulator can act on today.` : `${lead} The high-severity gaps below are the priority.`;
 }
+// E16 / E54 · THE defect that cost the most: every commercial link on both live reports was an empty
+// string, and the renderer removes dead buttons, so the buyer at peak intent had nothing to press.
+// The booking href now ALWAYS resolves. The env var wins when set; otherwise the public calendar is used,
+// with the report slug and the intent carried as query params so the booked call arrives with context.
+const CAL_BOOKING_BASE = 'https://cal.com/tamazia/strategy-call';
+function bookingHref(ctx, intent) {
+  const base = String((ctx && ctx.links && ctx.links.booking) || '').trim() || CAL_BOOKING_BASE;
+  const slug = String((ctx && ctx.slug) || '').trim();
+  const q = [];
+  if (slug) q.push('report=' + encodeURIComponent(slug));
+  if (intent) q.push('intent=' + encodeURIComponent(intent));
+  if (!q.length) return base;
+  return base + (base.indexOf('?') > -1 ? '&' : '?') + q.join('&');
+}
+
 function jurLabel(c) { c = String(c || '').toUpperCase(); return { UK: 'United Kingdom', USA: 'United States', US: 'United States', UAE: 'United Arab Emirates', AE: 'United Arab Emirates', KSA: 'Saudi Arabia' }[c] || c || 'n/a'; }
 function fmtArchive(d) { const s = String(d || ''); return s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` : s; }
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -2575,7 +2605,7 @@ function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.g
    deliberately NOT held here (they would be a fourth place to drift). The previously-injected
    `addons`/`addonsMore` catalogues were dead (the render never read them) and are removed. */
 const COMMERCE = {
-  pricingNotes: '90-day rolling · no long-term contract · work belongs to you once paid · founder reviews every onboarding personally.',
+  pricingNotes: '90-day rolling · no long-term contract · the work is owned outright once paid · every onboarding is legally reviewed before work begins.',
   upsellProof: 'Each add-on layers onto your core programme as it proves out. Start with the audit\'s top priority, then add the next lever once it is working.',
   // tier = the key the render matches on (audit-app.js byName); rec/popular = the only fields consumed.
   pricing: [

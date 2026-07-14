@@ -7,6 +7,8 @@ import {
   pricingContent,
   entryAuditGbp,
   independentSolutionsGbp,
+  stripeLinks,
+  bookingUrl,
 } from '../../content/pricing';
 
 const { eyebrow, h2, intro, tiers, mandateCallout, mandateCta, mandateSignature, microNote } = pricingContent;
@@ -19,28 +21,16 @@ const citationSchedule = (pricingContent as any).citationSchedule as string;
 // (src/content/pricing.ts). No price is hardcoded here.
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 
-// D1 · Independent Solutions · struck-then-offer where an anchor exists, results-led.
+// D1 · Independent Solutions · first-engagement pricing (standard struck, offer charged).
 // Display names + outcome lines map 1:1 to the independentSolutionsGbp keys.
 // S10 · `href` deep-links a solution to its own standalone page when one exists
 // (currently only Website Remodelling). Others stay on the #contact enquiry CTA.
-// Founder directive r3: each solution carries the audit's own description — the
-// scope line, the positioning (usp) and the deliverables (spec) — synced from the
-// audit report so the site and the audit never diverge. ICP says "25,000 emails
-// sent" with no prospect-reach claim; YMYL says "unlimited words"; "founder"
-// wording is kept minimal.
-// Stripe hosted Payment Links (LIVE, GBP), one per Independent Solution, keyed to independentSolutionsGbp.
-// CTA goes straight to Stripe-hosted checkout in a new tab. Keep this map identical to STRIPE_LINKS in
-// public/audit/audit-app.js so the website and audit never diverge.
-const STRIPE_LINKS: Record<string, string> = {
-  websiteRemodelling: 'https://buy.stripe.com/cNi00jcwI1i432w7Auf7i00',
-  aiAuthority: 'https://buy.stripe.com/fZu4gz9kw6Co0Uo3kef7i0f',
-  icpOutreach: 'https://buy.stripe.com/bJe14n8gs1i4gTm1c6f7i0g',
-  onlinePersonalBranding: 'https://buy.stripe.com/28EdR97co7GseLedYSf7i0h',
-  instagramPresence: 'https://buy.stripe.com/aFa5kD9kw4ug1Ys082f7i0i',
-  ymylContent: 'https://buy.stripe.com/6oU3cvbsEd0M32w3kef7i05',
-  reputationCrisis: 'https://buy.stripe.com/aFa00jdAMe4Q8mQg70f7i0k',
-  gbpDomination: 'https://buy.stripe.com/00wcN57co2m8eLef2Wf7i0l',
-};
+// Copy below is the single source shared with the audit ADDONS array (audit-app.js), so the
+// two surfaces can never drift again (E52 / E53).
+// STRIPE: every Payment Link is read from `stripeLinks` in src/content/pricing.ts, the ONE place
+// the founder pastes a URL. An empty URL NEVER hides a button (defect E39): it falls back to the
+// booking link, so a payment path always exists.
+const STRIPE_LINKS: Record<string, string> = stripeLinks;
 
 const independentSolutionsMeta: Record<string, { name: string; outcome: string; usp: string; spec: string[]; href?: string }> = {
   websiteRemodelling: {
@@ -52,15 +42,9 @@ const independentSolutionsMeta: Record<string, { name: string; outcome: string; 
   },
   aiAuthority: {
     name: 'AI Authority',
-    outcome: 'GEO and entity authority merged: be the named answer across the AI engines.',
+    outcome: 'Be the named answer across the AI engines, with the machine-readable identity they read first.',
     usp: 'Appear inside ChatGPT, Perplexity, Claude, Gemini, Copilot and Google AI Overviews, and own the entity they read first. The only compliance-reviewed AI authority programme for regulated firms.',
     spec: ['Entity, schema, llms.txt and Wikidata build', 'Google Knowledge Panel and sameAs across every verified profile', 'Answer-surface content targeting real buyer prompts', 'Compliance review of what AI says about you', 'Per-engine position and share-of-voice reporting against named rivals'],
-  },
-  icpOutreach: {
-    name: 'ICP Outreach',
-    outcome: 'Compliant outbound to your exact buyer, the same engine that found you.',
-    usp: '25,000 emails sent each month, every one compliance-reviewed, with every lead tracked and classified by intent.',
-    spec: ['25,000 emails sent each month', 'A compliant B2B template built per jurisdiction', 'Five to seven follow-ups, reply-stopped', 'Deliverability managed with inbox rotation', 'Jurisdiction-compliant, opt-out-respecting sends'],
   },
   onlinePersonalBranding: {
     name: 'Online Personal Branding',
@@ -76,15 +60,9 @@ const independentSolutionsMeta: Record<string, { name: string; outcome: string; 
   },
   ymylContent: {
     name: 'YMYL Content',
-    outcome: 'Health and legal grade content, per compliance-reviewed piece.',
+    outcome: 'Health, legal and money grade content, per compliance-reviewed piece.',
     usp: 'Content that passes your compliance function first time. Held to Google’s highest Your-Money-or-Your-Life standard, never generic.',
-    spec: ['Unlimited words per piece', 'Reviewed against your sector’s law before it publishes', 'Held to Google’s YMYL standard', 'Structured for search and AI citation', 'Cheaper than the cost of content that fails review'],
-  },
-  reputationCrisis: {
-    name: 'Reputation and Crisis',
-    outcome: 'Real-time reputation cover with a crisis playbook on standby.',
-    usp: 'Protect the reputation your pipeline depends on, and move before enforcement does. Real-time monitoring, pre-built suppression and 24-hour crisis response.',
-    spec: ['Real-time review, mention and press monitoring', 'Suppression architecture, not just alerting', 'A crisis playbook on standby', 'Every new sector ruling flagged with the exact page and rule affected', 'Sector and jurisdiction filtered, never generic noise'],
+    spec: ['1,500 or more words per piece, scoped to the query, never padded', 'Up to 100 keywords mapped per piece', 'Structured for search and AI citation', 'Vetted against your sector’s legal register before publication', 'Published on your website plus two blog properties'],
   },
   gbpDomination: {
     name: 'Google Business Profile Domination',
@@ -104,7 +82,9 @@ const independentSolutions = Object.keys(independentSolutionsGbp).map((key) => {
     usp: meta.usp,
     spec: meta.spec || [],
     href: meta.href || '#contact',
-    stripeUrl: STRIPE_LINKS[key] || meta.href || '#contact',
+    // E39/E16: an empty Stripe URL must NEVER produce a dead or hidden CTA. Fall back to the
+    // solution's own page, then to the booking calendar. A path always exists.
+    stripeUrl: STRIPE_LINKS[key] || meta.href || bookingUrl('', 'scoping'),
     anchor: typeof cfg.anchor === 'number' ? cfg.anchor : null,
     offer: typeof cfg.offer === 'number' ? cfg.offer : null,
     price: typeof cfg.price === 'number' ? cfg.price : null,

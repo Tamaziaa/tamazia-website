@@ -380,6 +380,13 @@ const _BINDING_LABEL = {
 };
 // E-218 (S-100): when the payload carries NO binding map at all (legacy rows), a guessed 'Statute' label is a
 // false legal claim — a voluntary code must never read as a statute. Neutral 'Framework' until a real map exists.
+// CODERABBIT caught this: `binding_label` read the catalogue but the RAW `binding` field still read _BINDING_MAP
+// alone, so the two disagreed on the same framework. One accessor, one answer.
+function bindingType(fw) {
+  const _m = metaOf(fw);
+  return (_m && _m.binding_type) || _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw] || null;
+}
+
 function bindingLabel(fw) {
   const _m = metaOf(fw);
   const b = (_m && _m.binding_type) || _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw];   // catalogue first
@@ -1938,13 +1945,19 @@ export function payloadToD(payload, ctx = {}) {
     // representative finding's own framework_short (UK_GDPR_A13) IS mapped — try both before the generic fallback.
     // THE SECOND DOOR, AGAIN. This card built its own regulator instead of calling fwRegulator(), so the catalogue's
     // answer never reached it. Every single defect this session had a second door. Route BOTH through one function.
-    const _reg = fwRegulator(fw) || fwRegulator(top.framework_short)
-              || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || null;   // catalogue first; null, never fabricated
+    // A THIRD DOOR. I wrote this comment saying "route BOTH through one function", and CodeRabbit pointed out there
+    // were THREE: the truncated-code fallback still read FW_REGULATOR directly, so a framework whose regulator the
+    // CATALOGUE knows could still be answered from a stale map. Every route now goes through fwRegulator(), which
+    // reads the catalogue first. This is the third time in one session that a fix was applied to one door of many.
+    const _reg = fwRegulator(fw)
+              || fwRegulator(top.framework_short)
+              || fwRegulator(String(fw).replace(/_A?\d+.*$/, ''))
+              || _regP || null;   // catalogue first, every route; null, never fabricated
     // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
     const _cite = top.citation_url || top.citation || '';
     const _intel = intelOf(fw, top.framework_short);
     return {
-      code: fwCode(fw), name: fwName(fw), regulator: _reg, binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
+      code: fwCode(fw), name: fwName(fw), regulator: _reg, binding: bindingType(fw), binding_label: bindingLabel(fw),
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
       findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
@@ -2032,7 +2045,7 @@ export function payloadToD(payload, ctx = {}) {
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: ((payload.inspected_by_framework || {})[fw] || (payload.inspected_by_framework || {})[fwCanon(fw)] || payload.pages_crawled || []).slice(0, 6), binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: ((payload.inspected_by_framework || {})[fw] || (payload.inspected_by_framework || {})[fwCanon(fw)] || payload.pages_crawled || []).slice(0, 6), binding: bindingType(fw), binding_label: bindingLabel(fw),
         // E-233: NO INVENTED ENFORCEMENT. The old fallback asserted "<regulator> actively enforces this regime"
         // for any framework we had no intel on — an unsourced claim that read as filler and gave the section its
         // "no value" feel. Enforcement now renders ONLY when a real, curated, cited action exists; otherwise the

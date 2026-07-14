@@ -4,6 +4,7 @@
 // source of truth, and a second source of truth is a bug with a delay on it.
 import assert from 'node:assert/strict';
 import { payloadToD } from '../functions/audit/_adapter.js';
+import { readFileSync } from 'node:fs';
 
 const P = (extra) => payloadToD({
   domain: 'x.co.uk', company: 'X LLP', firm_profile: { name: 'X LLP' },
@@ -49,6 +50,36 @@ t('an older payload with NO framework_meta still renders (fail-open, zero regres
                 binding: { UK_GDPR: 'statute' } });
   assert.match(String(fw1(d).name), /GDPR/);
   assert.strictEqual(fw1(d).binding_label, 'Statute');
+});
+
+// ---------- CODERABBIT FOUND THESE. It reviewed the PR whose entire purpose was to kill the two-doors problem,
+// and pointed out there were THREE doors, plus a field I had left reading the stale map. ----------
+t('CODERABBIT: the TRUNCATED-CODE fallback also routes through the catalogue (the third door)', () => {
+  // UK_GDPR_A13 truncates to UK_GDPR. The catalogue knows UK_GDPR's regulator; the stale map must not answer first.
+  const d = P({
+    framework_meta: { UK_GDPR: { name: 'UK GDPR', regulator: 'The Catalogue ICO', binding_type: 'statute' } },
+    pointers: [{ severity: 'P1', bucket: 'compliance', framework_short: 'UK_GDPR_A13', fact: 'gap' }],
+    binding: { UK_GDPR_A13: 'statute' },
+  });
+  const s = JSON.stringify(d);
+  assert.ok(s.includes('The Catalogue ICO'),
+    'the truncated-code fallback read FW_REGULATOR directly and bypassed the catalogue');
+});
+t('CODERABBIT: the RAW binding field reads the catalogue too, not just binding_label', () => {
+  const d = P({
+    framework_meta: { UK_MADEUP_2026: { name: 'X', regulator: 'Y', binding_type: 'statutory_instrument' } },
+    pointers: [{ severity: 'P1', bucket: 'compliance', framework_short: 'UK_MADEUP_2026', fact: 'gap' }],
+    binding: { UK_MADEUP_2026: 'statute' },   // the stale map says statute; the catalogue says statutory_instrument
+  });
+  const f = fw1(d);
+  assert.strictEqual(f.binding, 'statutory_instrument',
+    'binding_label read the catalogue but the raw `binding` field still read _BINDING_MAP, so the two disagreed');
+  assert.strictEqual(f.binding_label, 'Statutory instrument');
+});
+t('NO route to a regulator bypasses the catalogue (source-level guard against a fourth door)', () => {
+  const src = readFileSync(new URL('../functions/audit/_adapter.js', import.meta.url), 'utf8');
+  assert.ok(!/FW_REGULATOR\[String\(fw\)/.test(src), 'a direct FW_REGULATOR lookup is back: that is another door');
+  assert.ok(!/binding: \(_BINDING_MAP/.test(src), 'the raw binding field is reading the legacy map again');
 });
 
 console.log(bad ? 'FRAMEWORK_META: FAIL' : 'FRAMEWORK_META SSOT: ALL GREEN (' + n + ' checks)');

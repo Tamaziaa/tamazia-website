@@ -7,12 +7,14 @@ export const sectorsContent = {
   // S20 (Impl Doc v1.0) · header hierarchy reorder
   eyebrow: '',  /* r3 · section starts with the heading */
   h2: 'If your industry has a regulator, {{we have already studied their guidelines.}}',
-  subline: 'The sectors change. The standard does not.',
+  // W08 · this line is now the Sector VI pull quote. Removed here so the page does
+  // not print it twice.
+  subline: '',
   closingLine: "International Business Law expert from King's at the core.",
 
   // New structured fields (used after component upgrade in Gate B)
   preambleH2: 'If your industry has a regulator, {{we have already studied their guidelines.}}',
-  preambleBody: 'The sectors change. The standard does not.',
+  preambleBody: '',
   preambleSignature: "International Business Law expert from King's at the core.",
 
   // All 6 cards equal size (size: 'standard'). No dominant cell.
@@ -26,7 +28,7 @@ export const sectorsContent = {
       regulatoryShorthand: 'SRA. BSB. CCBE. DIFC. ADGM. ABA. The rulebook of legal advertising, applied.',
       body: 'Built for boutique and mid-market law firms, chambers, and legal practitioners across the UK, EU, Middle East, and US. Practice area pages reviewed against SRA Standards 2019 Rules 8.7 and 8.9 and Transparency Rules 2018 for UK firms. CCBE Code and EU AI Act applied for European practitioners. DIFC, ADGM, and UAE Federal Arbitration Law 2018 applied for Middle East practice. ABA Model Rules 7.1 to 7.3 and state bar advertising rules for US firms. Partner biographies, legal directory listings, and crisis reputation management, every word reviewed before publication.',
       // Per-card pull-quote · the 6th unique element
-      pullQuote: '2 million legal professionals. None can afford a compliance breach.',
+      pullQuote: "Every legal professional is one advertising breach from a regulator's letter. None can afford it.",
       cta: 'Legal audit enquiry',
       tooltip: [
         'SRA Code of Conduct Rules 8.7 & 8.9',
@@ -67,7 +69,7 @@ export const sectorsContent = {
       size: 'standard',
       headline: 'Hotels and Hospitality',
       regulatoryShorthand: 'OTA commission eliminated. Direct bookings rebuilt.',
-      body: 'Booking.com and Expedia take 15 to 25% of every reservation. We rebuild the direct channel so the guest finds the property before the platform does. Built for boutique hotels, hotel groups, resorts, and heritage properties across the UK, EU, Middle East, and US. Compliance reviewed against ASA CAP Code hospitality rules, Package Travel Regulations 2018, and UK GDPR consent on booking flows. DTCM and Trakheesi for UAE properties. EU Consumer Rights Directive for cross-border bookings. £50,000 to £80,000 saved annually on a 100-room property at 70% occupancy.',
+      body: 'Booking.com and Expedia take 15 to 25% of every reservation. We rebuild the direct channel so the guest finds the property before the platform does. Built for boutique hotels, hotel groups, resorts, and heritage properties across the UK, EU, Middle East, and US. Compliance reviewed against ASA CAP Code hospitality rules, Package Travel Regulations 2018, and UK GDPR consent on booking flows. DTCM and Trakheesi for UAE properties. EU Consumer Rights Directive for cross-border bookings. For a 100-room property at 70% occupancy, a ten-point shift from OTA to direct is worth £50,000 to £80,000 a year.',
       pullQuote: '£50,000 to £80,000 saved annually on a 100-room property at 70% occupancy.',
       cta: 'Hospitality audit enquiry',
       tooltip: [
@@ -108,7 +110,7 @@ export const sectorsContent = {
       size: 'standard',
       headline: 'Restaurants, Bars and Food & Beverage',
       regulatoryShorthand: 'Google Maps citations at scale. Direct-order channels rebuilt.',
-      body: 'Restaurant groups, fine-dining venues, bar groups, and hospitality clubs lose 25 to 35% of every order to Deliveroo and Uber Eats. We rebuild the direct ordering channel. 30,000 to 40,000 map citations per property. Menu schema for rich search results. OpenTable and Resy integration. Listings across 25+ food directories. Compliance reviewed against ASA food advertising rules, Food Information Regulations 2014, HFSS junk food advertising restrictions (live 5 January 2026), and allergen disclosure standards.',
+      body: 'Restaurant groups, fine-dining venues, bar groups, and hospitality clubs lose 25 to 35% of every order to Deliveroo and Uber Eats. We rebuild the direct ordering channel. 30,000 to 40,000 map citations per property. Menu schema for rich search results. OpenTable and Resy integration. Listings across 25+ food directories. Compliance reviewed against ASA food advertising rules, Food Information Regulations 2014, HFSS advertising restrictions, in force since January 2026, and allergen disclosure standards.',
       pullQuote: 'Reduce Deliveroo and Uber Eats dependency the same way we reduce OTA dependency for hotels.',
       cta: 'F&B audit enquiry',
       tooltip: [
@@ -129,7 +131,7 @@ export const sectorsContent = {
       headline: 'Every Sector. One Standard.',
       regulatoryShorthand: 'If your industry has a regulator, the rulebook applies.',
       body: 'We have built for private schools and universities under ASA education advertising rules. E-commerce and luxury retail under CPRs 2008 and GDPR Art. 17 right to erasure. Automotive groups under FCA consumer credit rules where finance is offered. Gyms, spas, and wellness studios under ASA Health Code. Executives, founders, and public figures on Wikipedia, knowledge panel, AI search visibility, and crisis reputation suppression. If your sector is not listed, the engagement is scoped after the audit. The door is open.',
-      pullQuote: 'If your industry has a regulator, we have already studied their guidelines.',
+      pullQuote: 'The sectors change. The standard does not.',
       cta: 'Brand audit enquiry',
       tooltip: [
         'ASA CAP Code (UK)',

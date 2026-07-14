@@ -10,6 +10,12 @@ export const pricingContent = {
   intro: 'You are not buying hours. You are retaining a practice. Each mandate is scoped to your footprint: how many locations you operate, how many jurisdictions you sell into, and how closely your regulator reads what you publish. The standard never changes. Nothing leaves the building until it has been reviewed against the frameworks that govern you.',
   microNote: 'Pricing is indicative. Every mandate is scoped to your footprint and jurisdictions before anything is signed.',
 
+  // W14 · one commitment statement, printed under every tier.
+  commitmentLine: 'Mandates run on 90-day rolling terms; electing a six-month term unlocks the pilot rate shown. No long-term lock-in.',
+
+  // W35 · one citation schedule, printed once and referenced from each tier.
+  citationSchedule: 'Map citations by scope: 5,000 (single location) · 10,000 to 20,000 (multi-location) · 30,000+ (per property, enterprise and GBP Domination).',
+
   tiers: [
     {
       numeral: 'I.',
@@ -55,24 +61,23 @@ export const pricingContent = {
         },
         {
           headline: 'Your primary operating jurisdiction covered',
-          body: 'The exact legal framework of your market applied to every piece of content. Notified within one week of any regulatory change requiring your published content to be updated.',
+          body: 'The exact legal framework of your market applied to every piece of content. Regulatory notification within one week (Regulatory Watch, 72-hour tier, available as an add-on at £1,500 a month).',
         },
       ],
       additionalCapabilitiesHeading: 'Additional capabilities commonly added at this tier',
       additionalCapabilities: [
         'Schema markup for booking systems and product catalogues',
         "Review acquisition programme within your sector's guidelines",
-        '5,000 Google Maps citations for local map dominance',
+        'Google Maps citation programme (see the citation schedule below)',
         'Competitor keyword gap analysis',
         'Social signals campaign',
         'On-page optimisation extended across additional pages',
       ],
       microFooter: [
         'All work produced belongs to you once paid in full. No rights retained.',
-        'No long term contracts. 90 day rolling.',
       ],
-      cta: 'Begin a Foundation enquiry',
-      ctaHref: '#contact',
+      cta: 'Book the scoping call',
+      ctaHref: 'https://cal.com/tamazia/strategy-call?tier=foundation',
       tier: 'standard',
       mostPopular: false,
     },
@@ -105,7 +110,7 @@ export const pricingContent = {
         },
         {
           headline: 'Your brand inside AI-generated answers across the platforms where buyers now make decisions',
-          body: 'GEO (Generative Engine Optimisation) included as standard. Content restructured for AI citation eligibility across Claude, ChatGPT, Perplexity, and Google AI Overviews. Tamazia-tracked accounts saw AI-referred sessions grow significantly year-on-year as generative answer surfaces expand.',
+          body: 'GEO (Generative Engine Optimisation) included as standard. Content restructured for AI citation eligibility across Claude, ChatGPT, Perplexity, and Google AI Overviews. AI-referred visitors convert at up to nine times organic search (15.9% against 1.76%, Seer Interactive, 2025), and the average AI search visitor is worth 4.4 times an organic one (Semrush, 2025). GEO is included as standard so those visitors arrive at your pages, compliance-reviewed.',
         },
         {
           headline: 'Two jurisdictions reviewed on every piece of content simultaneously',
@@ -125,7 +130,7 @@ export const pricingContent = {
         },
         {
           headline: 'Regulatory monitoring across both jurisdictions: 72-hour notification',
-          body: 'Content in the affected market updated within one week.',
+          body: 'Regulatory Watch included: 72-hour alerts with the exact page, rule, impact and change required. Content in the affected market updated within one week.',
         },
         {
           headline: 'Bi-weekly reporting with revenue attribution across all locations',
@@ -137,15 +142,15 @@ export const pricingContent = {
         'International traffic programme: UK, UAE, USA, and EU audiences',
         'Review removal and reputation recovery',
         'Legal directory listings: Chambers, Legal 500, Avvo',
-        'Restaurant map citation programme: 10,000 to 20,000 citations',
+        'Multi-location map citation programme (see the citation schedule below)',
         'LinkedIn SEO for partners and executives',
         'OTA dependency reduction programme',
       ],
       microFooter: [
         'The team that works on your account does not rotate. Nothing leaves the firm without legal review.',
       ],
-      cta: 'Begin an Authority enquiry',
-      ctaHref: '#contact',
+      cta: 'Book the scoping call',
+      ctaHref: 'https://cal.com/tamazia/strategy-call?tier=authority',
       tier: 'elevated',
       mostPopular: true,
     },
@@ -198,7 +203,7 @@ export const pricingContent = {
         },
         {
           headline: 'Dedicated regulatory monitoring with 24-hour notification',
-          body: 'Law changes tracked across UK, UAE, USA and every country you operate in simultaneously. Content updated within one week.',
+          body: 'Regulatory Watch included at the 24-hour tier. Law changes tracked across UK, UAE, USA and every country you operate in simultaneously. Content updated within one week.',
         },
         {
           headline: 'Transaction-level revenue attribution across every market',
@@ -209,13 +214,13 @@ export const pricingContent = {
       additionalCapabilities: [
         'Pre-IPO digital presence protocol: SEC Regulation FD and FCA compliance',
         '50 to 100 location pages built and compliance-reviewed',
-        '30,000 to 40,000 Google Maps citations per property',
+        'Per-property map citation programme (see the citation schedule below)',
         'Multilingual SEO in Arabic, French, German, Spanish',
         'Executive personal brand management: Wikipedia, knowledge panel, AI search, LinkedIn',
       ],
       microFooter: [],
-      cta: 'Begin an Enterprise enquiry',
-      ctaHref: '#contact',
+      cta: 'Book the scoping call',
+      ctaHref: 'https://cal.com/tamazia/strategy-call?tier=enterprise',
       tier: 'enterprise',
       mostPopular: false,
     },

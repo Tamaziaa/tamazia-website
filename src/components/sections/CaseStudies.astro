@@ -12,7 +12,7 @@ type Case = { rn: string; name: string; tag: string; body: string; quote: string
 const CASES: Case[] = [
   {
     rn: 'Case I.',
-    name: 'Orchid Hotels',
+    name: 'Orchid Hotels (Kamat Hotels (India) Ltd, NSE listed)',
     tag: 'HOSPITALITY · HOTEL GROUP · ASIA PACIFIC',
     body: "A nationally recognised hotel group was paying Booking.com and Expedia 15 to 25% of every reservation. The guests were theirs. The revenue was not. We built direct search visibility across every property simultaneously. Organic search became the primary booking channel within a single six-month campaign.",
     quote: "If you are paying OTA commission, you are funding your competitor's marketing.",
@@ -59,7 +59,7 @@ const shield = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
       <p class="cs2-eyebrow">Case Studies</p>
       <h2 id="cases-heading" class="cs2-h2">Three clients. Three regulators.<br />Every number below is verified.</h2>
       <p class="cs2-sub">No projections. GA4, SEC filings and internal booking systems cross-referenced.
-        <span class="cs2-hint"><span class="cs2-hint-ic" aria-hidden="true">&rsaquo;</span> Hover the metrics to lift them</span>
+        <span class="cs2-hint"><span class="cs2-hint-ic" aria-hidden="true">&rsaquo;</span> Tap or hover the metrics to lift them</span>
       </p>
     </div>
 
@@ -78,7 +78,7 @@ const shield = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
             <div class="cs2-metric">
               {m.word
                 ? <div class="cs2-mn cs2-word">{m.word}</div>
-                : <div class="cs2-mn"><span class="cs2-count" data-count={m.n} data-suffix={m.suffix || ''}>0</span></div>}
+                : <div class="cs2-mn"><span class="cs2-count" data-count={m.n} data-suffix={m.suffix || ''}>{m.n}{m.suffix || ''}</span></div>}
               <div class="cs2-ml">{m.label}<span set:html={m.sub} /></div>
             </div>
           ))}
@@ -102,6 +102,9 @@ const shield = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
         if (!e.isIntersecting) return;
         var el = e.target, target = parseFloat(el.dataset.count), suffix = el.dataset.suffix || '';
         if (rm) { el.textContent = target + suffix; co.unobserve(el); return; }
+        // W01: the DOM ships the real figure. The count-up is a visual flourish only:
+        // it starts from 0 here, at animation time, and always lands back on the truth.
+        el.textContent = '0' + suffix;
         var dur = 1400, start = null;
         function tick(now) {
           if (start === null) start = now;
@@ -114,6 +117,14 @@ const shield = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
       });
     }, { threshold: 0.6 });
     document.querySelectorAll('.cs2 [data-count]').forEach(function (el) { co.observe(el); });
+    // W39: tap toggles the same lift the pointer gets, so the instruction is true on mobile.
+    document.querySelectorAll('.cs2-metric').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var was = el.classList.contains('is-lifted');
+        document.querySelectorAll('.cs2-metric.is-lifted').forEach(function (o) { o.classList.remove('is-lifted'); });
+        if (!was) el.classList.add('is-lifted');
+      });
+    });
   })();
 </script>
 
@@ -159,7 +170,8 @@ const shield = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
     display: flex; align-items: center; gap: 16px; cursor: default;
     transition: transform 0.4s var(--ease-out, cubic-bezier(.22,1,.36,1)), border-color 0.35s, box-shadow 0.4s, background 0.35s;
   }
-  .cs2-metric:hover {
+  .cs2-metric:hover,
+  .cs2-metric.is-lifted {
     border-color: var(--gold, #C9A772);
     background: linear-gradient(150deg, rgba(201,167,114,0.12), rgba(90,26,43,0.06));
     box-shadow: 0 12px 34px -16px rgba(90,26,43,0.34);

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 165 40" role="img" aria-label="Demo placeholder logo">
+  <title>Demo placeholder logo</title>
+  <g fill="currentColor">
+    <path d="M20 9 L29 14 V24 L20 31 L11 24 V14 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+    <text x="42" y="26" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="500" letter-spacing="3">VANTAGE</text>
+  </g>
+</svg>

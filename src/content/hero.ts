@@ -107,11 +107,12 @@ export const heroContent = {
   // Founder directive 2026-06-10 · simplified register label
   ribbonLabel: 'Live 400+ regulatory register applied to client work',
 
-  // Client ribbon — verbatim live site. Kamat stays here (live site confirms).
-  // Case-study panel is Orchid (not Kamat) — handled separately in caseStudies.ts.
+  // W03 · one canonical form for this client on every surface: the case-study panel,
+  // the trusted-by ribbon and the ticker all now name Orchid Hotels with the listed
+  // parent in brackets, so a diligent buyer never meets two names for one client.
   clientRibbonPrefix: 'Trusted by',
   clientRibbonClients: [
-    'KAMAT HOTELS (NSE)',
+    'ORCHID HOTELS (KAMAT HOTELS (INDIA) LTD, NSE LISTED)',
     'CG ONCOLOGY (Nasdaq: CGON)',
     'MERAAS (DUBAI HOLDING)',
   ],
@@ -121,7 +122,7 @@ export const heroContent = {
   // Legacy ticker — kept as below-fold strip for scrolling marquee.
   // Dates removed per filler-removal rule.
   tickerItems: [
-    'KAMAT HOTELS GROUP · NSE-LISTED HOSPITALITY · DIRECT-BOOKING SHIFT',
+    'ORCHID HOTELS · KAMAT HOTELS (INDIA) LTD · NSE-LISTED HOSPITALITY · DIRECT-BOOKING SHIFT',
     'CG ONCOLOGY · Nasdaq: CGON · +96% AT IPO · VERIFIED PER SEC FILINGS',
     'MERAAS · DUBAI HOLDING SUBSIDIARY · SHEIKH MOHAMMED DIRECTIVE',
     '400+ LAWS REVIEWED PER CAMPAIGN',

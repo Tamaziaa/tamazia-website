@@ -1106,11 +1106,39 @@ function perFrameworkMedianFine(pointers) {
 }
 // Scrub any £/GBP figure out of LLM prose and replace with the canonical figure (no LLM number leaks).
 // The unit space is grouped WITH the unit so a trailing word (e.g. "fine") keeps its space. (P2)
+// E04 / E27 — THE CONSISTENCY-FIXER WAS THE FABRICATOR.
+// scrubMoney used to replace EVERY money figure in the executive summary with the canonical AGGREGATE exposure, so
+// that the numbers "agreed". But when the model correctly wrote "an SRA penalty of up to £25,000", the scrubber
+// rewrote it to £2.6M — producing the exact sentence a managing partner reads first:
+//     "failure to comply with SRA regulations could result in a statutory penalty of up to £2.6M"
+// The SRA's internal limit is £25,000. The £2.6M is the MEDIAN AGGREGATE across every framework in the report. That
+// is not a rounding error, it is a fabricated legal claim, and it was manufactured by our own tidy-up pass.
+// Same defect produced E04 ("the potential £2.8M penalty for non-compliance with data protection regulations").
+//
+// THE RULE: an aggregate belongs to the REPORT, never to a single regulator or statute.
+//  - A figure in a clause that names NO specific body is the aggregate: normalise it to the canonical figure.
+//  - A figure in a clause that DOES name a body (SRA, ICO, the CMA, GDPR, PECR...) is a SPECIFIC statutory claim we
+//    cannot verify from here. We do not rewrite it to the aggregate and we do not assert it: the figure is removed
+//    and the qualitative statement survives. Saying less is always available; saying something false is not.
+const _NAMED_BODY = /\b(SRA|ICO|CMA|FCA|CQC|ASA|Ofcom|SDT|Legal Ombudsman|Trading Standards|DGCCRF|GDPR|PECR|DPA\s?2018|Equality Act|Companies Act|Transparency Rules|Code of Conduct)\b/i;
+const _MONEY_RX = /(?:GBP|USD|AED|SAR|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi;
+
 function scrubMoney(text, canonical, sym) {
   if (!text) return '';
-  return String(text)
-    .replace(/(?:GBP|USD|AED|SAR|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi, gbp(canonical, sym))
-    .replace(/\s{2,}/g, ' ').trim();
+  // Work clause by clause so the decision is made where the attribution actually sits.
+  const parts = String(text).split(/(?<=[.;])\s+/);
+  const out = parts.map((clause) => {
+    if (!_MONEY_RX.test(clause)) { _MONEY_RX.lastIndex = 0; return clause; }
+    _MONEY_RX.lastIndex = 0;
+    if (_NAMED_BODY.test(clause)) {
+      // A number attributed to a NAMED body. We cannot stand behind it, so we do not print it.
+      return clause.replace(_MONEY_RX, '').replace(/\s+of up to\s+(?=[.,;]|$)/i, '')
+                   .replace(/\s+up to\s+(?=[.,;]|$)/i, '').replace(/\s{2,}/g, ' ')
+                   .replace(/\s+([.,;])/g, '$1').trim();
+    }
+    return clause.replace(_MONEY_RX, gbp(canonical, sym));
+  });
+  return out.join(' ').replace(/\s{2,}/g, ' ').trim();
 }
 
 /* ---------------- static commerce + scoring scaffold (Slice 5 wires live config) ---------------- */
@@ -1166,7 +1194,28 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
     { nm: 'Core Web Vitals', key: 'cwv', v: perf == null ? null : perf, sub: perf == null ? 'not assessed' : `perf ${perf} · CLS ${(+psi.cls || 0).toFixed(2)}`, w: 1 },
     { nm: 'Security headers', key: 'security', v: siteScanned ? Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100) : null, sub: siteScanned ? (`${sig.hsts ? '' : 'no HSTS · '}${sig.csp ? '' : 'no CSP · '}${sig.xfo ? '' : 'no X-Frame'}`.replace(/ · $/, '') || 'ok') : 'not assessed', w: 1 },
     { nm: 'Accessibility (WCAG)', key: 'a11y', v: siteScanned ? Math.round((sig.lang ? 30 : 0) + (sig.viewport ? 30 : 0) + 40 * pointerHealth) : null, sub: siteScanned ? `${sig.lang ? '' : 'no lang · '}contrast/labels` : 'not assessed', w: 1 },
-    { nm: 'AI / GEO visibility', key: 'ai_visibility', st: (aiR.score || 0) < 40 ? 'fail' : 'warn', v: aiR.score || 0, sub: `share of voice ${sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows'))} · entity ${aiR.score || 0}`, w: 1 },
+    // E11 — THE SCORE CONTRADICTED THE EVIDENCE PRINTED BESIDE IT.
+    // The dimension rendered 80/100 while its own sub-line said "share of voice 0". That is because the score WAS
+    // entity readiness alone: being machine-readable was counted, being cited was not. But the dimension is called
+    // AI VISIBILITY, and a firm no engine ever names is not visible, however clean its schema. A reader who sees 80
+    // beside a zero stops trusting every other number on the page.
+    // The dimension is now the weighted pair it always claimed to be: entity readiness and share of voice, evenly.
+    // A firm with zero share of voice cannot exceed 40 here, and the card says why.
+    (() => {
+      const _sov = +sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows')) || 0;
+      const _ent = +(aiR.score || 0);
+      let _v = Math.round((_ent * 0.5) + (_sov * 0.5));
+      const _capped = _sov === 0;          // no engine names you: the ceiling applies whether or not it bites
+      if (_capped && _v > 40) _v = 40;
+      return {
+        nm: 'AI / GEO visibility', key: 'ai_visibility',
+        st: _v < 40 ? 'fail' : _v < 70 ? 'warn' : 'pass',
+        v: _v,
+        sub: `share of voice ${_sov} · entity ${_ent}`
+           + (_capped ? ' · capped at 40: you are machine-readable but no engine names you' : ''),
+        w: 1,
+      };
+    })(),
     { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', 'n/a')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
     (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent'), w: 1 }; })(),
   ];
@@ -1581,8 +1630,16 @@ export function payloadToD(payload, ctx = {}) {
   const km = g(payload, 'keyword_map', {}) || {};
 
   // --- counts + exposure (numeric-lock) ---
-  const counts = { critical: 0, high: 0, standard: 0, total: pointers.length };
+  // E05 / E29 — TWO CONTRADICTORY TALLIES SHIPPED ON ONE PAGE. The rail said "1 critical / 15 high / 34 standard"
+  // while the Regulatory dimension said "1 critical / 11 high / 28 standard", with no stated relationship. A reader
+  // cannot tell which is true, so they trust neither. They were never in conflict: one counts EVERY dimension, the
+  // other counts REGULATORY findings only. The numbers were fine; the missing word was the scope. Both tallies now
+  // carry it explicitly, and the renderer prints the scope beside each.
+  const counts = { critical: 0, high: 0, standard: 0, total: pointers.length, scope: 'across all ten dimensions' };
   for (const p of pointers) counts[SEV_BAND[p.severity] || 'standard']++;
+  const _regPtrs = pointers.filter((p) => !isNonStatutory(p));
+  const countsRegulatory = { critical: 0, high: 0, standard: 0, total: _regPtrs.length, scope: 'regulatory findings only' };
+  for (const p of _regPtrs) countsRegulatory[SEV_BAND[p.severity] || 'standard']++;
   const perFw = perFrameworkMaxFine(pointers);
   const perFwMed = perFrameworkMedianFine(pointers);
   // CURRENCY BY REGIME. Every fine is grouped by the currency of the statute that sets it (currencyForFramework):
@@ -2311,8 +2368,16 @@ export function payloadToD(payload, ctx = {}) {
   // THE THREE NUMBERS (E31-E35). catalogueSize is READ, never invented: the engine currently emits no catalogue
   // count at all (no catalogue_size / rules_total key on any payload), so it stays null and the rail prints the
   // honest fallback label. The moment the generator emits it, the true number appears everywhere automatically.
-  const catalogueSize = (+payload.catalogue_size || +payload.catalogueSize || +g(payload, 'scan.catalogue_size', 0) || +g(payload, 'rules_total', 0)) || null;
-  const screenedLabel = catalogueSize ? (catalogueSize + ' frameworks screened') : 'Full catalogue screened';
+  // THE 400+ CLAIM. The register holds 671 ACTIVE RULES across 294 FRAMEWORKS. Those are different units and the
+  // report must never confuse them: "400+ frameworks" would be a FALSE CLAIM on a document that fines other firms
+  // for false claims (CAP 3.7 binds us too). We screen RULES; FRAMEWORKS bind. The engine now emits both, measured
+  // from the live register (catalogue_rules / catalogue_frameworks), and neither is ever invented here.
+  const catalogueRules = (+payload.catalogue_rules || +g(payload, 'scan.catalogue_rules', 0)) || null;
+  const catalogueFrameworks = (+payload.catalogue_frameworks || +g(payload, 'scan.catalogue_frameworks', 0)) || null;
+  const catalogueSize = catalogueRules;   // "size" has always meant the screened register; that register is RULES
+  const screenedLabel = catalogueRules
+    ? (catalogueRules.toLocaleString('en-GB') + ' compliance rules screened')
+    : 'Full catalogue screened';
   // rulesChecked = the page-level RULE checks executed on the laws that attach to this firm's jurisdictions.
   const ruleChecks = arr(payload.rules).filter((r) => { const j = FW_JUR(r && (r.framework_short || r.framework || r.citation)); return j === 'GLOBAL' || allow.has(j); }).length
     || arr(payload.applicable_frameworks).length || frameworks.length;
@@ -2371,7 +2436,8 @@ export function payloadToD(payload, ctx = {}) {
             : 'each one was upheld on the evidence quoted.'),
       };
     })(),
-    counts, confirmed: pointers.length,
+    counts, countsRegulatory,   // E05/E29: two tallies, each carrying its own explicit scope
+    confirmed: pointers.length,
     // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
     // consumer should use these instead of asserting "N breached / PASS". (zero-critical-honest)
     regulatoryHeadline, regulatoryCriticalsZero,

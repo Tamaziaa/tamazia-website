@@ -101,10 +101,35 @@ const nameOf = (t) => (typeof t === 'string' ? t : (t && (t.name || t.type || t.
 // the symbol changes — the magnitude formatting (M/k) is identical, and we deliberately do not convert FX. (currency)
 function gbp(n, sym) {
   sym = sym || '£';
+  // A symbol glues to its number ('£2.6M'); an ISO-style code needs a space ('AED 2.6M', 'SAR 900k').
+  const sep = sym.length > 1 ? ' ' : '';
   n = Math.round(+n || 0);
-  if (n >= 1e6) { const m = n / 1e6; return sym + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
-  if (n >= 1e3) return sym + Math.round(n / 1e3) + 'k';
-  return sym + n;
+  if (n >= 1e6) { const m = n / 1e6; return sym + sep + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
+  if (n >= 1e3) return sym + sep + Math.round(n / 1e3) + 'k';
+  return sym + sep + n;
+}
+// CURRENCY BY BINDING REGIME (never by the firm's home country, and never by FX). The currency of a fine is fixed
+// by the STATUTE THAT SETS IT: an EU GDPR maximum is denominated in euros whoever you are; a DIFC Data Protection
+// Law fine is denominated in US DOLLARS (USD 25,000 / 50,000 / 100,000 — not dirhams), as is ADGM's; UAE FEDERAL
+// PDPL is in dirhams; Saudi in riyals; Qatar in Qatari riyals; every UK regime (ICO/SRA/CMA/PECR/Equality Act)
+// sets its maxima in pounds. We therefore quote each finding in its own regime's statutory currency and NEVER
+// apply an exchange rate — an invented FX rate on a legal document is a fabrication. Unknown / global codes
+// (GOOGLE_EEAT, schema…) carry no statutory currency: they return null and inherit the firm's primary currency.
+function currencyForFramework(code) {
+  const c = String(code || '').toUpperCase();
+  if (!c) return null;
+  // Free zones FIRST: DIFC and ADGM sit inside the UAE but denominate their penalties in USD.
+  if (c.includes('DIFC') || c.includes('ADGM')) return '$';
+  if (c.startsWith('UK_') || c.startsWith('GB_')) return '£';
+  if (c.startsWith('EU_')) return '€';
+  if (c.startsWith('FR_') || c.includes('CNIL')) return '€';   // CNIL fines are set in euros
+  if (c.startsWith('DE_') || c.includes('BDSG')) return '€';
+  if (c.startsWith('US_')) return '$';
+  if (['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA', 'FTC'].some((x) => c.includes(x))) return '$';
+  if (c.startsWith('SAUDI_') || c.startsWith('KSA_') || c.startsWith('SA_')) return 'SAR';
+  if (c.startsWith('QATAR_') || c.startsWith('QA_')) return 'QAR';
+  if (c.startsWith('UAE_') || c.startsWith('AE_')) return 'AED';   // UAE FEDERAL PDPL — dirhams
+  return null;
 }
 // Detect the firm's display currency symbol from its scanned markets, CONSERVATIVELY: only switch to '$' when
 // the firm is clearly US (USD is its sole/primary currency and it isn't a GBP firm). Default '£' when unknown,
@@ -210,10 +235,10 @@ function articleOf(p) {
   return '';
 }
 // The short distinctive subject of a single breach ("Who the data controller is"). Never a raw code.
-function subjectOf(p, maxLen) {
-  let s = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
-  if (/^[A-Z0-9_]{2,}$/.test(s)) s = '';
-  const L = maxLen || 72; if (s.length > L) s = s.slice(0, L - 2).replace(/[\s,;:.\-]+\S*$/, '') + '…';
+function subjectOf(p) {
+  // NO TRUNCATION (founder): the subject of a breach is never cut. It renders in full and wraps.
+  const s = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
+  if (/^[A-Z0-9_]{2,}$/.test(s)) return '';
   return s;
 }
 // Humanise a checked URL into the page we inspected ("your privacy policy") — the live proof.
@@ -750,7 +775,9 @@ function elementLine(p) {
   const page = humanUrl(p.evidence_url) || 'your site';
   const q = (Array.isArray(p.elements) ? (p.elements.find((e) => e.present && e.quote) || {}).quote : '') || '';
   if (present.length) {
-    return `On ${page} you show ${present.join('; ')}${q ? `, for example “${String(q).replace(/\s{2,}/g, ' ').slice(0, 90)}”` : ''}. The scan did not find: ${missing.join('; ')}.`;
+    // NO TRUNCATION: the quote is the firm's own words, quoted back to it. Cutting it mid-word ("…cooperation, se")
+    // destroys the evidence. It renders in full and the CSS wraps it.
+    return `On ${page} you show ${present.join('; ')}${q ? `, for example “${String(q).replace(/\s{2,}/g, ' ').trim()}”` : ''}. The scan did not find: ${missing.join('; ')}.`;
   }
   return `The scan did not find the required elements on ${page}: ${missing.join('; ')}.`;
 }
@@ -761,7 +788,7 @@ function absenceLine(ae) {
   if (!ae || typeof ae !== 'object') return '';
   const page = ae.target_url ? humanUrl(ae.target_url) : '';
   if (ae.state === 'related_present_requirement_absent' && ae.nearest_quote) {
-    return `On ${page || 'your site'} the scan read “${String(ae.nearest_quote).slice(0, 150)}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
+    return `On ${page || 'your site'} the scan read “${String(ae.nearest_quote).replace(/\s{2,}/g, ' ').trim()}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
   }
   if (ae.state === 'page_silent' && page) {
     return `${page} was inspected and makes no mention of ${ae.requirement || 'this disclosure'}.`;
@@ -773,6 +800,9 @@ function absenceLine(ae) {
 }
 function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
+  // The fine is printed in the currency of the regime that SETS it, not the firm's home currency. `sym` (the
+  // page's primary currency) is only the fallback for codes with no statutory currency of their own. No FX.
+  sym = currencyForFramework(p.framework_short || p.citation) || sym || '£';
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
   const enfLo = +p.enforce_typical_low_gbp || 0, enfHi = +p.enforce_typical_high_gbp || 0;
   // E-243 (v22.11) — "AN SEO METRIC CANNOT CARRY AN ENFORCEMENT ACTION."
@@ -1127,9 +1157,26 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
     { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', 'n/a')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
     (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent'), w: 1 }; })(),
   ];
+  // E-28: a dimension that reads a bare "0" is unexplained and reads as a bug. Say WHY it is zero, in the card
+  // itself. When Critical findings sit in the dimension, that is the reason: each Critical floors it until closed.
+  const DIM_BUCKETS = {
+    compliance: ['compliance', 'public_records'], seo: ['seo'], technical_seo: ['technical_seo', 'technical', 'tls_dns'],
+    content: ['eeat', 'content'], cwv: ['performance', 'core_web_vitals'], security: ['tls_dns', 'security'],
+    a11y: ['accessibility'], ai_visibility: ['ai_visibility', 'geo'], authority: ['authority', 'backlinks'], tracking: ['tracking', 'cookies'],
+  };
+  const critsIn = (key) => {
+    const bs = DIM_BUCKETS[key] || [];
+    return pointers.filter((p) => p.severity === 'P0' && bs.includes(String(p.bucket || ''))).length;
+  };
   return dims.map((d) => {
     if (d.v == null) { d.st = 'na'; d.v = 0; d._na = true; }
     else if (!d.st) d.st = d.v >= 75 ? 'pass' : d.v >= 45 ? 'warn' : 'fail';
+    if (d.v === 0 && !d._na) {
+      const n = critsIn(d.key);
+      d.note = n > 0
+        ? `Scored 0 because ${n} Critical ${n === 1 ? 'finding sits' : 'findings sit'} in this dimension; each Critical caps the dimension at zero until closed.`
+        : 'Scored 0 because none of the checks in this dimension passed on your live site.';
+    }
     return d;
   });
 }
@@ -1442,7 +1489,7 @@ function sectorInapplicable(fw, payload) {
 
 /* ---------------- THE ADAPTER ---------------- */
 // Named exports for the benchmark scorer (single source of truth, F5 shared blocklist).
-export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer };
+export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer, currencyForFramework, gbp };
 export function payloadToD(payload, ctx = {}) {
   payload = payload || {};
   // E-218 TRUTH FILTER (audit-of-the-audits P-002/P-004/P-008/P-011/P-064, S-183): any row the verifier did not
@@ -1461,7 +1508,6 @@ export function payloadToD(payload, ctx = {}) {
   const allow = authJurisdictions(payload);
   const company = firmName(payload, ctx.company);
   const market = String(payload.country || '').toUpperCase();
-  const curSym = moneySymbol(payload);   // '£' unless the firm is clearly USD/US, then '$' (no FX conversion)
   // A safe absolute URL for screenshots even when payload.domain is missing, never "https://undefined".
   const siteUrl = cleanDomain(payload.domain) ? ('https://' + cleanDomain(payload.domain)) : '';
 
@@ -1525,15 +1571,33 @@ export function payloadToD(payload, ctx = {}) {
   const counts = { critical: 0, high: 0, standard: 0, total: pointers.length };
   for (const p of pointers) counts[SEV_BAND[p.severity] || 'standard']++;
   const perFw = perFrameworkMaxFine(pointers);
-  const ceilingN = canonicalExposure(perFw);                        // statutory ceiling (context only, E-244)
   const perFwMed = perFrameworkMedianFine(pointers);
-  const medianN = canonicalExposure(perFwMed);                      // E-244: the headline number
-  const exposureN = medianN || 0;                                   // headline = MEDIAN, never the ceiling
+  // CURRENCY BY REGIME. Every fine is grouped by the currency of the statute that sets it (currencyForFramework):
+  // a GDPR fine is euros, a DIFC fine is US dollars, an ICO fine is pounds. Currencies are NEVER summed together
+  // and NEVER converted — an exchange rate invented on a legal document is a fabrication. The headline is printed
+  // in the firm's PRIMARY binding currency (the regime carrying the largest exposure) and any other binding
+  // currency is stated ALONGSIDE it in its own units ("£2.6M + €900k").
+  const _fallbackSym = moneySymbol(payload);   // only for codes with no statutory currency of their own
+  const byCur = (m) => { const o = {}; for (const [fw, v] of Object.entries(m)) { const c = currencyForFramework(fw) || _fallbackSym; (o[c] = o[c] || {})[fw] = v; } return o; };
+  const _medGroups = byCur(perFwMed), _maxGroups = byCur(perFw);
+  const medTotals = {}; for (const [c, m] of Object.entries(_medGroups)) medTotals[c] = canonicalExposure(m);
+  const ceilTotals = {}; for (const [c, m] of Object.entries(_maxGroups)) ceilTotals[c] = canonicalExposure(m);
+  const _ranked = Object.entries(medTotals).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  const curSym = (_ranked[0] && _ranked[0][0]) || _fallbackSym;     // PRIMARY binding currency (no FX, ever)
+  const ceilingN = ceilTotals[curSym] || 0;                         // statutory ceiling, primary currency (context only, E-244)
+  const exposureN = medTotals[curSym] || 0;                         // headline = MEDIAN, never the ceiling
+  const otherCurs = _ranked.slice(1);                               // other binding regimes, each in its own currency
+  const exposureByCurrency = _ranked.map(([c, v]) => ({ cur: c, amount: v, display: gbp(v, c) }));
+  const exposureAggregate = _ranked.length ? _ranked.map(([c, v]) => gbp(v, c)).join(' + ') : gbp(0, curSym);
+  const exposureBasis = otherCurs.length
+    ? `Stated per binding regime in its own statutory currency (${_ranked.map(([c]) => c).join(', ')}). Regulators set these maxima in their own currency, so the figures are shown side by side and no exchange rate is applied.`
+    : `Stated in ${curSym}, the statutory currency of the regimes that bind you. No exchange rate is applied.`;
   // Exposure waterfall, show HOW the honest number is reached (we DON'T just sum ceilings). (§4.3 + E-244)
-  const rawSum = Object.values(perFw).reduce((a, b) => a + b, 0);
+  // It is built on the PRIMARY-currency group only, so every step adds up to the headline figure beside it.
+  const rawSum = Object.values(_maxGroups[curSym] || {}).reduce((a, b) => a + b, 0);
   const exposureWaterfall = {
-    raw: rawSum, collapsed: exposureN, ceiling: ceilingN, median: medianN,
-    frameworks: Object.keys(perFwMed).length,
+    raw: rawSum, collapsed: exposureN, ceiling: ceilingN, median: exposureN, cur: curSym,
+    frameworks: Object.keys(_medGroups[curSym] || {}).length,
     savedPct: rawSum > 0 ? Math.round((1 - exposureN / rawSum) * 100) : 0,
     steps: [
       { l: 'Statutory ceilings, summed (what the law permits)', v: rawSum, cls: 'amber' },
@@ -1585,8 +1649,8 @@ export function payloadToD(payload, ctx = {}) {
   const PORTED_NEWS = {
     'UK_GDPR_A13': 'ICO issued GBP 19.6M across 7 cases in 2025 (Capita GBP 14M, Advanced Computer Software GBP 3.07M, 23andMe GBP 2.31M, LastPass GBP 1.23M); two-thirds were UK GDPR breaches.',
     'UK_DPA_2018': 'ICO 2025 enforcement hit GBP 19.6M from 7 cases (vs GBP 2.7M in 2024); the DUAA came into force 5 Feb 2026 with new compulsion powers.',
-    'UK_PECR': 'The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to GBP 17.5M (from GBP 500k); the ICO is reviewing the UK top 1,000 websites cookie banners.',
-    'UK_ICO_COOKIES': 'DUAA (in force 5 Feb 2026) lifts PECR fines to GBP 17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.',
+    'UK_PECR': 'The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to £17.5M (from £500k); the ICO is reviewing the UK top 1,000 websites cookie banners.',
+    'UK_ICO_COOKIES': 'DUAA (in force 5 Feb 2026) lifts PECR fines to £17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.',
     'UK_FCA_CONC25': 'FCA charged 9 finfluencers in 2024. Consumer Duty enforcement is FCA top 2025 priority.',
     'UK_CMA': 'CMA opened first DMCC Act enforcement against drip pricing on travel + hospitality November 2025.',
     'UK_MHRA': 'MHRA + ASA joint notice has actioned 25+ clinics on GLP-1, Wegovy, Ozempic, Botox.',
@@ -1669,7 +1733,7 @@ export function payloadToD(payload, ctx = {}) {
         const _elLine = elementLine(p);
         return {
           subject: subjectOf(p, 84) || 'Required disclosure',
-          quote: _elLine ? '' : _q25(String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ')).slice(0, 180),
+          quote: _elLine ? '' : _q25(String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ')),   // NO TRUNCATION: the firm's own words in full
           // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
           // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
           absence: _elLine || (String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence)),
@@ -1981,7 +2045,7 @@ export function payloadToD(payload, ctx = {}) {
   // Element-level PSI evidence, the real failing Lighthouse audits on YOUR live DOM (selector + cost). (R-018/N2)
   seo.psiAudits = arr(g(payload, 'scan.psi.audits', []))
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   // Desktop + mobile PSI (engine now returns both strategies). When present, the render shows a
   // Mobile|Desktop toggle with the 4 Lighthouse dials + Core Web Vitals + element-level audits-with-fixes
@@ -2081,7 +2145,7 @@ export function payloadToD(payload, ctx = {}) {
     const recommendsRival = rival ? `recommends ${rival} instead` : 'recommends a competitor it can read instead';
     const overRival = rival ? cleanDomain(rival) : 'the firms it can read today';
     let branch, reason;
-    if (blocked.length) { branch = 'crawler-block'; reason = `You block the ${blocked.length} named AI crawlers (${blocked.slice(0, 3).map(nameOf).filter(Boolean).join(', ')}…) that feed ChatGPT, Claude, Perplexity and Google AI. They literally cannot read you, so even with schema present, your share of voice is 0 while AI ${namesRival} every run.`; }
+    if (blocked.length) { branch = 'crawler-block'; reason = `You block the ${blocked.length} named AI crawlers (${blocked.map(nameOf).filter(Boolean).join(', ')}) that feed ChatGPT, Claude, Perplexity and Google AI. They literally cannot read you, so even with schema present, your share of voice is 0 while AI ${namesRival} every run.`; }
     else if (!aiR.has_org_schema && !aiR.has_same_as && !aiR.in_wikidata) { branch = 'entity-absence'; reason = `You have 0 of the 3 identity anchors, no Organization schema, no sameAs, no Wikidata. To an AI you are an unknown string, not a citable firm; asked who you are it returns “no reliable information” and ${recommendsRival}.`; }
     else if (aiR.has_org_schema && !aiR.in_wikidata) { branch = 'no-wikidata'; reason = `You have schema, but no Wikidata entity, the knowledge base AI checks to decide who is real. Without it AI still can’t vouch for you and ${namesRival}. Schema makes you machine-readable; the entity makes you trusted.`; }
     else { branch = 'near-ready'; reason = `Your identity signals are largely present, the work is to defend and deepen them so you become the default named answer over ${overRival}.`; }
@@ -2231,6 +2295,15 @@ export function payloadToD(payload, ctx = {}) {
     date: fmtDate(ctx.generated_at ? new Date(ctx.generated_at) : now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
   };
 
+  // THE THREE NUMBERS (E31-E35). catalogueSize is READ, never invented: the engine currently emits no catalogue
+  // count at all (no catalogue_size / rules_total key on any payload), so it stays null and the rail prints the
+  // honest fallback label. The moment the generator emits it, the true number appears everywhere automatically.
+  const catalogueSize = (+payload.catalogue_size || +payload.catalogueSize || +g(payload, 'scan.catalogue_size', 0) || +g(payload, 'rules_total', 0)) || null;
+  const screenedLabel = catalogueSize ? (catalogueSize + ' frameworks screened') : 'Full catalogue screened';
+  // rulesChecked = the page-level RULE checks executed on the laws that attach to this firm's jurisdictions.
+  const ruleChecks = arr(payload.rules).filter((r) => { const j = FW_JUR(r && (r.framework_short || r.framework || r.citation)); return j === 'GLOBAL' || allow.has(j); }).length
+    || arr(payload.applicable_frameworks).length || frameworks.length;
+
   const D = {
     meta, score, grade, scoreBand: bandOf(score),
     // Freemium unlock flag (set by [[path]].js from the audit_pages.unlocked column, flipped true by the
@@ -2255,13 +2328,15 @@ export function payloadToD(payload, ctx = {}) {
     // (shown only when a firm is genuinely multi-jurisdiction) and the per-framework jurisdiction badges.
     jurisdictions: Array.from(new Set((frameworks || []).map((f) => f.jur).filter((j) => j && j !== 'Global'))),
     projected: { wk12, wk24, wk12grade: gradeOf(wk12), wk24grade: gradeOf(wk24) },
-    cur: curSym, // display currency symbol ('£' default, '$' for clearly-US firms) — charts read this so bars match the headline
-    exposure: gbp(exposureN, curSym), exposureFull: +(exposureN / 1e6).toFixed(1), exposureWaterfall,
+    cur: curSym, // PRIMARY binding currency, set by the REGIME that fines you (not your home country). Charts read this.
+    exposureByCurrency, exposureBasis,   // every other binding regime, each in its own statutory currency. No FX.
+    exposure: exposureAggregate, exposureFull: +(exposureN / 1e6).toFixed(1), exposureWaterfall,
     // When no fineable framework is confirmed, "£0 / across 0 binding frameworks" reads as broken next to
     // the (ranking-only) frameworks shown. Present the exposure tile honestly instead. (£0-leak / consistency)
-    exposureHeadline: exposureN > 0 ? gbp(exposureN, curSym) : 'Ranking & AI',
+    exposureHeadline: exposureN > 0 ? exposureAggregate : 'Ranking & AI',
+    // E-14: count-aware. One verified breach is "the breach", not "the breaches".
     exposureNote: exposureN > 0
-      ? 'Median enforcement exposure across the breaches evidenced on your live site'
+      ? `Median enforcement exposure across the ${counts.total} ${counts.total === 1 ? 'breach' : 'breaches'} evidenced on your live site. ${exposureBasis}`
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
     // E-244: the ceiling is kept, but as secondary context under the median, never as the headline.
     exposureCeiling: ceilingN > 0 ? gbp(ceilingN, curSym) : null,
@@ -2301,28 +2376,35 @@ export function payloadToD(payload, ctx = {}) {
     // that carries it, independent of crawl success.
     registers: g(payload, 'registers', null),
     sub_sector: g(payload, 'sub_sector', null),
-    // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
-    // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
-    // D-2: single source of truth for all displayed framework counts. frameworksBinding was previously
-    // Math.max(applicable, displayed) which diverged visually when the display filter excluded some rows.
-    // Now both are `frameworks.length` (the shown, binding set). rulesChecked remains informational.
-    frameworksAssessed: frameworks.length, frameworksBinding: frameworks.length, rulesChecked: arr(payload.applicable_frameworks).length || frameworks.length, frameworksTotal: frameworks.length,
+    // THE THREE-NUMBER DOCTRINE (E31-E35). Three DISTINCT numbers, printed once each, never conflated:
+    //   catalogueSize     the FULL register the engine screens against. It is NOT guessed: it is read from the
+    //                     payload if (and only if) the engine emits it. When it does not, `catalogueSize` is null
+    //                     and the render prints the safe screened-label ("Full catalogue screened") instead of a
+    //                     number we cannot prove.
+    //   frameworksBinding what attaches to THIS firm (frameworks.length — the rows actually shown).
+    //   rulesChecked      the page-level rule checks executed against the binding set (payload.rules, gated to
+    //                     the firm's jurisdictions). This is a RULE count and must never be printed with the word
+    //                     "frameworks" — that is what made the body say "all 18 frameworks" beside "400+".
+    // Setting frameworksTotal = frameworks.length (the old line) rendered "15 FRAMEWORKS SCREENED · 15 BIND YOU",
+    // erasing the screening story entirely.
+    catalogueSize, screenedLabel, frameworksAssessed: frameworks.length, frameworksBinding: frameworks.length,
+    rulesChecked: ruleChecks, frameworksTotal: catalogueSize,
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0 to 100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,
       why: counts.critical > 0
         ? `Your ${score} is held down by the failing dimensions a regulator and an AI engine can both see on your live site today. Fix the ${counts.critical} critical ${counts.critical === 1 ? 'finding' : 'findings'} and the heaviest-weighted dimension lifts first, which is why ${wk12} by week 12 is realistic once those gaps close.`
         : `Your ${score} is held down by the ranking, authority and AI-visibility dimensions an AI engine and a buyer can both see today, not by a confirmed fine. Close the highest-weighted gaps below and the score lifts fast, which is why ${wk12} by week 12 is realistic once those gaps close.`,
-      inputs: `${arr(payload.applicable_frameworks).length} frameworks bind · ${pointers.length} findings confirmed against live evidence · ${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
+      inputs: `${screenedLabel} · ${frameworks.length} ${frameworks.length === 1 ? 'framework binds' : 'frameworks bind'} you · ${ruleChecks} rule ${ruleChecks === 1 ? 'check' : 'checks'} executed · ${pointers.length} ${pointers.length === 1 ? 'finding' : 'findings'} confirmed against live evidence · ${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
     },
     exec: exec || execFallback(exposureN, Object.keys(perFw).length, counts.critical, curSym),
     jurisdiction,
     frameworks, exposureBars, heat,
-    heatRows: ['£10M+', '£1M+', '£100k+', '£10k+', '<£10k'], heatCols: ['Rare', 'Low', 'Possible', 'High', 'Near-certain'],
-    dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub })),
+    heatRows: [gbp(1e7, curSym) + '+', gbp(1e6, curSym) + '+', gbp(1e5, curSym) + '+', gbp(1e4, curSym) + '+', '<' + gbp(1e4, curSym)], heatCols: ['Rare', 'Low', 'Possible', 'High', 'Near-certain'],
+    dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub, note: d.note || '' })),   // E-28 floor note
     seo, geo, competitors,
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
-    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full 400+ rule scan with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
+    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full rule catalogue with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
     glossary: buildGlossary(payload, allow),
     // C-A: ONE commerce source. The render (audit-app.js) owns ALL displayed prices/copy from the single PRICES
     // block (mirrored from src/content/pricing.ts); the server-side Stripe/Cal mapping lives in _commerce.js.
@@ -2387,7 +2469,7 @@ function buildPsiStrat(strat) {
   const sc = strat.scores, dial = (v) => isNum(v) ? Math.round(v * 100) : null;
   const audits = arr(strat.audits)
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
 }
@@ -2399,6 +2481,30 @@ const GLOSSARY_TERM_JUR = {
   ccpa: ['US'], cpra: ['US'], 'us state privacy': ['US'], hipaa: ['US'], ferpa: ['US'], coppa: ['US'], glba: ['US'], 'ada title iii': ['US'],
   pdpl: ['AE', 'SA'], 'uae pdpl': ['AE'], rera: ['AE'], difc: ['AE'], adgm: ['AE'],
 };
+// E-10 / E-55. Two defects live in the glossary the ENGINE ships on the payload, so they are fixed render-side:
+//   E-10  the only place on the page that printed "GBP 17.5M" instead of "£17.5M".
+//   E-55  two entries for one law — "gdpr" ("The data-protection law for the UK and EU…") AND "uk gdpr"
+//         ("The UK version of the EU data-protection law…"). One law, one entry, keyed to the firm's own regime,
+//         with the bare term kept as an alias so the reader who scans for "GDPR" still finds it.
+function normaliseGlossary(out, allowSet) {
+  const fixed = {};
+  const money = (v) => String(v || '')
+    .replace(/\bGBP\s?(?=[\d£])/g, '£').replace(/\bUSD\s?(?=[\d$])/g, '$').replace(/\bEUR\s?(?=[\d€])/g, '€');
+  for (const [k, v] of Object.entries(out)) fixed[k] = money(v);
+  const keys = Object.keys(fixed);
+  const kOf = (want) => keys.find((k) => String(k).toLowerCase().trim() === want);
+  const gk = kOf('gdpr'), uk = kOf('uk gdpr'), eu = kOf('eu gdpr');
+  if (gk && (uk || eu)) {                       // a jurisdictional entry exists: the bare duplicate is dropped
+    const keep = uk || eu; const def = fixed[keep]; const label = uk ? 'UK GDPR' : 'EU GDPR';
+    delete fixed[gk]; delete fixed[keep];
+    fixed[label] = def + ' Also referred to on this page simply as “GDPR”.';
+  } else if (gk && !uk && !eu) {                 // only the bare term: name it for the regime that binds this firm
+    const label = allowSet.has('UK') ? 'UK GDPR' : allowSet.has('EU') ? 'EU GDPR' : 'GDPR';
+    const def = fixed[gk]; delete fixed[gk];
+    fixed[label] = def + (label === 'GDPR' ? '' : ' Also referred to on this page simply as “GDPR”.');
+  }
+  return fixed;
+}
 function buildGlossary(payload, allow) {
   const allowSet = allow || authJurisdictions(payload);
   // A term is allowed if it isn't region-scoped, OR the firm's jurisdictions include one of its regions.
@@ -2414,7 +2520,7 @@ function buildGlossary(payload, allow) {
       if (!termAllowed(k)) continue;                                     // foreign-law term for this firm
       out[k] = typeof v === 'string' ? v : (v && v.def) || '';
     }
-    if (Object.keys(out).length) return out;
+    if (Object.keys(out).length) return normaliseGlossary(out, allowSet);
   }
   return {
     geo: 'Generative Engine Optimisation, whether AI answer engines name and cite you when a buyer asks for a provider like you.',
@@ -2443,7 +2549,9 @@ function jurStatement(company, allow) {
   const where = parts.length === 0 ? 'its registered jurisdiction'
     : parts.length === 1 ? parts[0]
       : parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
-  return `${company} is assessed under the law of ${where}, the jurisdiction(s) its own website shows it serves. Frameworks from every other region are screened but do not attach here, so only the law that genuinely binds this firm is shown.`;
+  // E-03: count-aware. "jurisdiction(s)" is a form field, not client-facing legal prose.
+  const jw = parts.length > 1 ? 'the jurisdictions' : 'the jurisdiction';
+  return `${company} is assessed under the law of ${where}, ${jw} its own website shows it serves. Frameworks from every other region are screened but do not attach here, so only the law that genuinely binds this firm is shown.`;
 }
 function execFallback(exp, nfw, crit, sym) {
   // £0 statutory exposure: never claim a fine. The value at stake is ranking, qualified buyers and AI-assistant

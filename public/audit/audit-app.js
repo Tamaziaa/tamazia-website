@@ -107,7 +107,7 @@
       <div class="rail-report"><div class="rr-name">The Exposure Report</div><div class="rr-sub">Compliance, Search and AI Visibility</div></div>
       <div class="rail-meta">${escH(D.meta.sector)}<br>${[D.meta.country,D.meta.city].filter(Boolean).map(escH).join(' · ')}<br>${escH(D.meta.domain)}</div>
       <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
-      <div class="rail-band">${D.frameworksTotal} frameworks screened · ${D.frameworksAssessed} bind you</div>
+      <div class="rail-band">${D.screenedLabel} · ${D.frameworksBinding} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       ${D.adjudication ? `<div class="rail-adj"><div class="adj-h">✓ ${D.adjudication.reviewed} findings re-examined against the statute</div><div class="adj-l">${escH(D.adjudication.line)}</div></div>` : ''}
       <div class="rail-kpis">
@@ -116,7 +116,7 @@
         <div class="rail-kpi"><div class="v red">${D.geo.shareOfVoice}</div><div class="l">AI share of voice</div></div>
         <div class="rail-kpi"><div class="v">${D.competitors.rows[0].dr}</div><div class="l">Domain rating</div></div>
       </div>
-      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rules</div></div>
+      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rule ${plur(D.rulesChecked,'check','checks')}</div></div>
       <div class="rail-social">
         <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
         <a href="https://www.linkedin.com/in/amanpareekk/" target="_blank" rel="noopener" aria-label="Aman Pareek on LinkedIn" title="Aman Pareek on LinkedIn"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9V9Z"/></svg></a>
@@ -147,7 +147,7 @@
       <div class="card pad"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${escH(D.jurisdiction)}</p></div>
     </div>
     <div class="card pad" style="margin-top:9px">
-      <div class="card-h"><div class="t" style="font-size:11px;color:var(--muted);letter-spacing:.02em">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksTotal} frameworks · ${D.confirmed} evidence checks</div></div>
+      <div class="card-h"><div class="t" style="font-size:11px;color:var(--muted);letter-spacing:.02em">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksBinding} binding ${plur(D.frameworksBinding,'framework','frameworks')} · ${D.confirmed} evidence checks</div></div>
       <div class="grid g-7-5" style="gap:20px">
         <div><p style="font-size:13.5px;color:#3a2d30;line-height:1.55">${D.scoring.formula}</p>
           <p style="font-size:13px;color:var(--muted);margin-top:9px;line-height:1.5">${D.scoring.why}</p>
@@ -192,8 +192,8 @@
     ${pitBanner}
     ${registersBlock}
     <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
-      <h2>${(D.compliance_unassessed ? (D.render_mode==='knowledge' && (D.frameworksBinding||0)>0 ? ('Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.') : 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.') : (D.regulatoryHeadline || ('All '+D.rulesChecked+' active frameworks were screened. '+(D.frameworksBinding||D.frameworksAssessed)+' of them legally bind you, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')))}</h2>
-      <p>Every scan screens all ${D.rulesChecked} active frameworks; each is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach, and where the gap is genuinely present, appear here. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
+      <h2>${(D.compliance_unassessed ? (D.render_mode==='knowledge' && (D.frameworksBinding||0)>0 ? ('Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.') : 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.') : (D.regulatoryHeadline || ((D.catalogueSize ? ('All '+D.catalogueSize+' frameworks in the register were screened. ') : 'The full regulatory catalogue was screened. ')+(D.frameworksBinding||D.frameworksAssessed)+' '+plur(D.frameworksBinding||D.frameworksAssessed,'framework legally binds','frameworks legally bind')+' you, '+D.rulesChecked+' rule '+plur(D.rulesChecked,'check was','checks were')+' executed against them, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')))}</h2>
+      <p>Every scan screens the full framework register${D.catalogueSize?(' ('+D.catalogueSize+' frameworks)'):''}; each one is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach to you appear here. ${D.frameworksBinding} ${plur(D.frameworksBinding,'framework binds','frameworks bind')} you, and ${D.rulesChecked} page-level rule ${plur(D.rulesChecked,'check was','checks were')} executed against them. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
     <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The ${D.frameworksAssessed} frameworks carrying your exposure${D.counts.critical>0?(', with '+D.counts.critical+' breached on your live site right now'):''}, worst exposure first</h3></div>
     <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
     ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
@@ -656,7 +656,7 @@
     <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report</h3></div>
     <p class="plan-sub r3-gold">Unlock the full Exposure Report for ${priceSpan(unlock)}, with your first month of monitoring included free. After that, ${priceSpan(cover)} per month, and a new breach is caught the day it appears.</p>
     <div class="route route3">
-      <div class="r3-rib">Where most board-rooms start</div>
+      <div class="r3-rib">Where most boardrooms start</div>
       <div class="r3-grid">
         <div class="r3-main">
           <div class="fx-eyebrow">This exact report, in your inbox every month</div>
@@ -692,7 +692,7 @@
     ];
     const fixOutcomes=[
       `Your highest-severity findings closed first, in priority order, starting with ${topFix.toLowerCase()}`,
-      `A prosecution grade re-scan of all ${D.rulesChecked} frameworks, proving every fix landed`,
+      `A prosecution-grade re-scan of all ${D.frameworksBinding} binding ${plur(D.frameworksBinding,'framework','frameworks')}, proving every fix landed`,
       'An evidence pack your compliance committee and your insurer can file',
       'A fixed scope and a fixed price. One engagement, not a retainer',
     ];
@@ -832,7 +832,7 @@
     bullets.push(`<b>Keep it current.</b> Re-run this report every month so a new breach is caught the day it appears, before enforcement or a competitor moves first.`);
     return `<div class="verdict">
       <div><span class="eyebrow">The verdict</span>
-        <h2>${D.score} / 100 · ${D.grade}${hasMoney?`, with a median enforcement exposure of <span class="vexp">${D.exposure}</span> across the breaches evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
+        <h2>${D.score} / 100 · ${D.grade}${hasMoney?`, with a median enforcement exposure of <span class="vexp">${D.exposure}</span> across the ${D.counts.total} ${plur(D.counts.total,'breach','breaches')} evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
         <ul class="verdict-bullets">${bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
         ${f.length?`<div class="vfix-head">Your three highest-priority breaches, fix these first</div>`:''}
         <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${escH(x.title)}</span><span class="e">${x.exp}</span></button>`).join('')}</div>

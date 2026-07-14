@@ -35,7 +35,7 @@ export const caseStudiesContent = {
     {
       id: 'orchid-hotels',
       numeral: 'Case I.',
-      client: 'Orchid Hotels',
+      client: 'Orchid Hotels (Kamat Hotels (India) Ltd, NSE listed)',
       meta: 'HOSPITALITY · HOTEL GROUP · ASIA PACIFIC',
 
       metrics: orchidMetrics,

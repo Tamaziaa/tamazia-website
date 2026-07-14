@@ -60,10 +60,19 @@ export const footerContent = {
   // Plus voluntary identity disclosure for investor and client trust signals
   legalEntity: {
     name: 'Tamazia Ltd',
+    // Verified against the Companies House public register (company 17295579,
+    // TAMAZIA LTD, incorporated 23 June 2026, England and Wales, active).
+    placeOfRegistration: 'Registered in England and Wales',
+    companyNumber: '17295579',
+    registeredOfficeAddress: '124 City Road, London, EC1V 2NX',
     registeredOffice: 'Registered in England and Wales',
     contactEmail: 'founder@tamazia.co.uk',
     dataController: 'Tamazia Ltd',
     dpoContact: 'dpo@tamazia.co.uk',
+    // FOUNDER: insert the ICO registration reference (ZA…) once the notification
+    // is confirmed. Left as a marked placeholder deliberately: a wrong number is
+    // worse than a missing one.
+    icoRegistrationNumber: '[FOUNDER: insert ICO registration number]',
     icoRegistration: 'Article 27 UK Representative · appointment in progress',
     dataProtectionNoticeHref: '/legal/data-protection/',
     dpaHref: '/legal/dpa/',

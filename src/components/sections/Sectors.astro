@@ -108,7 +108,7 @@ const iconPaths: Record<string, string> = {
     <div class="header-block">
       <div class="eyebrow">{eyebrow}</div>
       <h2 id="sectors-heading" class="section-h2" set:html={parseEmph(h2)} />
-      <p class="subline">{subline}</p>
+      {subline && <p class="subline">{subline}</p>}
     </div>
 
     {/* Round-12 fix · drop role="list"/"listitem" pair on bento-grid + sector article.

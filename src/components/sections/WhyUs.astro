@@ -49,8 +49,13 @@ const proofStrip = (whyUsContent as any).proofStrip;
       <div class="hairline-thin" aria-hidden="true"></div>
       <div class="credentials-heading">{credentialStripHeading}</div>
       <div class="credentials">
-        {credentials.map((c) => (
+        {/* W10 · a text-layer separator, so the two credentials never run together
+            when the page is read as text by a crawler or an AI engine. */}
+        {credentials.map((c, i) => (
+          <>
+          {i > 0 && <span class="credential-sep"> · </span>}
           <span class="credential-item">{c}</span>
+          </>
         ))}
       </div>
     </div>
@@ -385,6 +390,11 @@ const proofStrip = (whyUsContent as any).proofStrip;
     transition: color 300ms ease, border-color 300ms ease;
   }
 
+  .credential-sep {
+    font-family: var(--ff-body);
+    color: var(--gold-text);
+    align-self: center;
+  }
   .credential-item:hover {
     color: var(--oxblood);
     border-color: var(--gold);

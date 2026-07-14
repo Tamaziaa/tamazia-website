@@ -1,18 +1,18 @@
 ---
 // InstrumentAudit · /instrument/ (founder directive r2, 2026-06-11).
 // Two halves: (1) a compact intro showing the ten strongest things the audit
-// delivers — drawn faithfully from the live Monzo specimen — with a link to read
-// the real one; (2) a lean capture form. On submit the request is stored, synced
+// delivers, evidenced by figures from a real report; (2) a lean capture form.
+// W40 (2026-07-14): the named public specimen (a live exposure report on a bank,
+// published without consent) is removed from every surface. Figures are kept,
+// the client is not named, and the CTA now opens the audit request form. On submit the request is stored, synced
 // to the Neon leads pipeline and pushed to Slack + Telegram (/api/audit-request),
 // and the visitor is told the report is on its way. No live score is run here.
 import RatingStrip from '../ui/RatingStrip.astro';
 
-const MONZO = 'https://tamazia.co.uk/audit/monzo/yTn7BIzS';
-
-// Ten capability cards. `proof` quotes the real figure from the Monzo audit so
-// the claim is evidenced, not asserted.
+// Ten capability cards. `proof` quotes the real figure from a live report so the
+// claim is evidenced, not asserted. No client is named.
 const features = [
-  { n: '01', t: 'One grade out of 100', d: 'Your whole digital standing on a single weighted score, with regulatory compliance weighted twice as heavily as page speed.', proof: 'Monzo scored 39/100' },
+  { n: '01', t: 'One grade out of 100', d: 'Your whole digital standing on a single weighted score, with regulatory compliance weighted twice as heavily as page speed.', proof: 'one report scored 39/100' },
   { n: '02', t: 'Statutory exposure, in pounds', d: 'Live legal liability quantified in money, with overlapping fines collapsed to your real maximum exposure.', proof: '£23M flagged' },
   { n: '03', t: '400+ frameworks screened', d: 'Every active UK, EU, US and Gulf framework checked against your published content; the ones you are breaching named.', proof: '33 bind, 4 breached live' },
   { n: '04', t: 'Findings, severity-tiered', d: 'Each confirmed issue graded critical, high or standard, and tied to live evidence on your own pages.', proof: '49 confirmed' },
@@ -50,10 +50,10 @@ const sectors = ['Law Firm', 'Healthcare and Clinics', 'Financial Services', 'Re
       ))}
     </ul>
 
-    <a class="ia-specimen" href={MONZO} target="_blank" rel="noopener">
+    <a class="ia-specimen" href="#ia-form">
       <span class="ia-specimen-l">
-        <span class="ia-specimen-ey">Read a real one</span>
-        <span class="ia-specimen-t">The full Monzo audit, scored and public</span>
+        <span class="ia-specimen-ey">See it on your own site</span>
+        <span class="ia-specimen-t">The same report, scored against the frameworks that govern you</span>
       </span>
       <span class="ia-specimen-arr" aria-hidden="true">→</span>
     </a>

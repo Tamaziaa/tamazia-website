@@ -10,6 +10,10 @@ import {
 } from '../../content/pricing';
 
 const { eyebrow, h2, intro, tiers, mandateCallout, mandateCta, mandateSignature, microNote } = pricingContent;
+// W14 · one commitment line. W35 · one citation schedule. Both come from pricing.ts
+// and are printed once, so no two surfaces can state different terms.
+const commitmentLine = (pricingContent as any).commitmentLine as string;
+const citationSchedule = (pricingContent as any).citationSchedule as string;
 
 // D1/D3 · everything below renders FROM the single pricing config constant
 // (src/content/pricing.ts). No price is hardcoded here.
@@ -224,9 +228,18 @@ const featureIcons: Record<string, string> = {
             </details>
           )}
 
-          <a href="#contact" class={`tier-cta ${t.tier === 'enterprise' ? 'tier-cta-filled' : 'tier-cta-ghost'}`}>{t.cta} <span class="cta-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10 L10 4 M5 4 H10 V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a
+            href={t.ctaHref || 'https://cal.com/tamazia/strategy-call'}
+            class={`tier-cta ${t.tier === 'enterprise' ? 'tier-cta-filled' : 'tier-cta-ghost'}`}
+            target="_blank"
+            rel="noopener"
+          >{t.cta} <span class="cta-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10 L10 4 M5 4 H10 V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
 
-          <p class="pilot-microcopy"><em>Six-month commitment unlocks the pilot rate.</em></p>
+          {/* W33 · the form stays, as the secondary written-brief path only. */}
+          <p class="tier-cta-alt"><a href="#contact">or send a written brief</a></p>
+
+          {/* W14 · one commitment statement, identical under every tier. */}
+          <p class="pilot-microcopy"><em>{commitmentLine}</em></p>
 
           {Array.isArray(t.microFooter) && t.microFooter.length > 0 && (
             <div class="tier-micro-footer">
@@ -237,9 +250,16 @@ const featureIcons: Record<string, string> = {
       ))}
     </div>
 
-    {/* D3 · Audit hook · figure sourced from entryAuditGbp (pricing.ts) */}
+    {/* W35 · the single citation schedule, printed once, referenced by every tier. */}
+    <p class="citation-schedule">{citationSchedule}</p>
+
+    {/* W15 · one audit doctrine, printed here and mirrored on the audit surface.
+        Three different audit prices existed across surfaces (£1,500 here, the unlock
+        on live reports, and free-by-eligibility). The doctrine below is the single one.
+        Prices remain canonical in src/content/pricing.ts: the commercial rebuild sets
+        unlock = 495 and watch = 1500 in the same release. */}
     <p class="audit-reference-line">
-      Every engagement opens with a full audit. <strong>{gbp(entryAuditGbp)}</strong>, redeemable in full into your first package. Compliance, search, and AI visibility assessed against the frameworks that govern you, before any scope is agreed.
+      Every engagement opens with the Exposure Report. <strong>100 eligibility-checked reports are issued free each month.</strong> The full report unlocks for <strong>£495</strong>, which includes your first month of Regulatory Watch and is credited in full against any Sprint or mandate within 90 days.
     </p>
     <AuditEligibility />
 
@@ -247,7 +267,7 @@ const featureIcons: Record<string, string> = {
     <div class="independent-block" aria-labelledby="independent-heading">
       <div class="ib-head">
         <h3 id="independent-heading" class="ib-h3">Independent Solutions</h3>
-        <p class="ib-sub">Single outcomes, bought on their own. No retainer required. Hover a card for the full engagement.</p>
+        <p class="ib-sub">Single outcomes, bought on their own. No retainer required. Tap or hover a card for the full engagement.</p>
       </div>
       <div class="ib-rail-wrap">
         <button type="button" class="ib-nav ib-prev" aria-label="Scroll to previous solutions">&lsaquo;</button>
@@ -286,6 +306,18 @@ const featureIcons: Record<string, string> = {
       (function () {
         var rail = document.getElementById('independent-rail');
         if (!rail) return;
+        // W17 · tap expands the card, the same disclosure the pointer gets on hover.
+        rail.querySelectorAll('.independent-card').forEach(function (card) {
+          card.addEventListener('click', function (ev) {
+            if (ev.target.closest('a')) return;
+            var was = card.classList.contains('is-open');
+            rail.querySelectorAll('.independent-card.is-open').forEach(function (o) { o.classList.remove('is-open'); });
+            if (!was) card.classList.add('is-open');
+          });
+          card.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); card.click(); }
+          });
+        });
         var wrap = rail.closest('.ib-rail-wrap');
         function step() { var c = rail.querySelector('.independent-card'); return c ? c.getBoundingClientRect().width + 16 : 280; }
         wrap && wrap.querySelectorAll('.ib-nav').forEach(function (btn) {
@@ -1033,7 +1065,7 @@ const featureIcons: Record<string, string> = {
     cursor: pointer;
     transition: flex-basis 340ms var(--ease-out), box-shadow 320ms ease, border-color 320ms ease;
   }
-  .independent-card:hover, .independent-card:focus-within {
+  .independent-card:hover, .independent-card:focus-within, .independent-card.is-open {
     flex-basis: 360px;
     border-color: var(--gold);
     box-shadow: 0 16px 36px -18px rgba(90, 26, 43, 0.42);
@@ -1077,6 +1109,26 @@ const featureIcons: Record<string, string> = {
     line-height: 1;
     font-feature-settings: 'lnum', 'tnum';
   }
+  .tier-cta-alt {
+    font-family: var(--ff-body);
+    font-size: 11.5px;
+    text-align: center;
+    margin: 10px 0 0;
+  }
+  .tier-cta-alt a { color: inherit; opacity: 0.8; text-decoration: underline; text-underline-offset: 3px; }
+  .tier-cta-alt a:hover { opacity: 1; }
+
+  /* W35 · the single citation schedule. */
+  .citation-schedule {
+    font-family: var(--ff-body);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    text-align: center;
+    margin: 28px auto 0;
+    max-width: 70ch;
+  }
+
   .is-detail {
     max-height: 0;
     opacity: 0;
@@ -1084,7 +1136,7 @@ const featureIcons: Record<string, string> = {
     margin-top: 0;
     transition: max-height 360ms var(--ease-out), opacity 280ms ease, margin-top 360ms var(--ease-out);
   }
-  .independent-card:hover .is-detail, .independent-card:focus-within .is-detail {
+  .independent-card:hover .is-detail, .independent-card:focus-within .is-detail, .independent-card.is-open .is-detail {
     max-height: 440px;
     opacity: 1;
     margin-top: 14px;
@@ -1141,7 +1193,7 @@ const featureIcons: Record<string, string> = {
     .mandate-text { font-size: 11px; }
     .ib-rail-wrap { padding-inline: 34px; }
     .independent-card { flex-basis: 210px; }
-    .independent-card:hover, .independent-card:focus-within { flex-basis: 280px; }
+    .independent-card:hover, .independent-card:focus-within, .independent-card.is-open { flex-basis: 280px; }
     .ib-nav { width: 30px; height: 30px; font-size: 16px; top: 30%; }
     .ib-prev { left: 0; }
     .ib-next { right: 0; }
@@ -1286,9 +1338,9 @@ const featureIcons: Record<string, string> = {
   .tier-card[data-tier="enterprise"] .saves-line {
     color: var(--gold) !important;
   }
-  /* Bottom microcopy: "Pilot engagement rate available for new mandates" */
+  /* W14 · the single commitment line, always visible under every tier. */
   .pilot-microcopy {
-    display: none;
+    display: block;
     font-family: var(--ff-body);
     font-style: italic;
     font-size: 11px;

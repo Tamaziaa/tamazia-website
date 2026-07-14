@@ -6,15 +6,17 @@ import { heroContent } from '../../content/hero';
 const frameworks = (heroContent as any).regulationFrameworks || [];
 const goldHighlighted = (heroContent as any).goldHighlightedFrameworks || [];
 
-// Doubled for seamless loop
+// Doubled for seamless loop. W09: the second pass is a visual clone only — it is
+// marked aria-hidden so assistive tech and crawlers read the register once.
 const ribbonDouble = [...frameworks, ...frameworks];
+const originalCount = frameworks.length;
 ---
 <section class="laws-strip" aria-label="Regulatory frameworks reviewed every campaign">
   <div class="laws-label">Live 400+ regulatory register applied to client work</div>
   <div class="laws-band">
     <div class="laws-track">
-      {ribbonDouble.map((reg: string) => (
-        <span class={goldHighlighted.includes(reg) ? 'gold' : ''}>{reg}</span>
+      {ribbonDouble.map((reg: string, i: number) => (
+        <span class={goldHighlighted.includes(reg) ? 'gold' : ''} aria-hidden={i >= originalCount ? 'true' : undefined}>{reg}</span>
       ))}
     </div>
   </div>

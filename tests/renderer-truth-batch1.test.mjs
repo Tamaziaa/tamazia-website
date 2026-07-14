@@ -118,12 +118,17 @@ t('FIX-2: SCREENED and BIND are different numbers — the rail never says "N scr
     'the screened figure must never just be the binding figure again');
 });
 
-t('FIX-2: when the engine DOES emit a catalogue count, it is used verbatim', () => {
+// SUPERSEDED BY THE 400+ DECISION. This test used to assert `screenedLabel === '403 frameworks screened'`, i.e. it
+// ENCODED THE DEFECT: the register holds 294 frameworks, so any "400+ frameworks" claim is false, on a document that
+// fines other firms for false claims. We screen RULES (671 of them); FRAMEWORKS bind. The payload key is now
+// catalogue_rules, and the label says rules.
+t('FIX-2: when the engine emits the register count, it is used verbatim and reads as RULES', () => {
   const p = base('UK', ['UK'], [breach('UK_PECR')]);
-  p.catalogue_size = 403;
+  p.catalogue_rules = 671;
   const D = payloadToD(p, { verified: true });
-  assert.equal(D.catalogueSize, 403);
-  assert.equal(D.screenedLabel, '403 frameworks screened');
+  assert.equal(D.catalogueSize, 671);
+  assert.equal(D.screenedLabel, '671 compliance rules screened');
+  assert.ok(!/frameworks screened/i.test(D.screenedLabel), 'frameworks do not get screened; rules do');
   assert.ok(D.catalogueSize > D.frameworksBinding, 'screened must exceed binding');
 });
 

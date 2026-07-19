@@ -1,0 +1,1061 @@
+{
+  "seo": {
+    "psi": {
+      "state": "not_probed"
+    },
+    "cwv": {
+      "state": "not_probed"
+    },
+    "onpage": {
+      "state": "not_probed"
+    },
+    "security": {
+      "state": "not_probed"
+    },
+    "a11y": {
+      "state": "not_probed"
+    },
+    "tech": {
+      "state": "not_probed"
+    },
+    "keywordSummary": {
+      "state": "not_probed"
+    },
+    "psiAudits": {
+      "state": "not_probed"
+    },
+    "keywords": [
+      {
+        "term": null,
+        "state": "not_probed"
+      }
+    ],
+    "note": "SEO signals were not probed in this audit run; no on-page, performance or keyword measurements were taken."
+  },
+  "geo": {
+    "entityReadiness": {
+      "state": "not_probed"
+    },
+    "shareOfVoice": {
+      "state": "not_probed"
+    },
+    "radar": {
+      "state": "not_probed"
+    },
+    "schema": {
+      "state": "not_probed"
+    },
+    "citations": {
+      "state": "not_probed"
+    },
+    "sourceGap": {
+      "state": "not_probed"
+    },
+    "fix": {
+      "state": "not_probed"
+    },
+    "engines": [
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      },
+      {
+        "engine": null,
+        "state": "not_probed"
+      }
+    ],
+    "rootCause": {
+      "state": "not_probed",
+      "chain": [
+        {
+          "label": null,
+          "state": "not_probed"
+        },
+        {
+          "label": null,
+          "state": "not_probed"
+        },
+        {
+          "label": null,
+          "state": "not_probed"
+        },
+        {
+          "label": null,
+          "state": "not_probed"
+        }
+      ]
+    },
+    "note": "AI and GEO visibility were not probed in this audit run; no engine, entity or citation signals were measured."
+  },
+  "competitors": {
+    "bestKeyword": {
+      "state": "not_probed"
+    },
+    "youDr": {
+      "state": "not_probed"
+    },
+    "cols": {
+      "state": "not_probed"
+    },
+    "drBars": {
+      "state": "not_probed"
+    },
+    "rows": [
+      {
+        "name": null,
+        "state": "not_probed"
+      }
+    ],
+    "note": "The competitive set was not probed in this audit run; no competitor was identified and no ranking was measured."
+  },
+  "dims": [
+    {
+      "key": "dim-1",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-2",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-3",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-4",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-5",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-6",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-7",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-8",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-9",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    },
+    {
+      "key": "dim-10",
+      "label": null,
+      "score": null,
+      "state": "not_probed"
+    }
+  ],
+  "trajectory": [
+    {
+      "state": "not_probed",
+      "note": "A trajectory was not projected in this audit run."
+    }
+  ],
+  "pricing": [
+    {
+      "tier": null,
+      "state": "not_probed"
+    }
+  ],
+  "pricingNotes": {
+    "state": "not_probed",
+    "note": "Pricing analysis was not probed in this audit run."
+  },
+  "upsellProof": {
+    "state": "not_probed",
+    "note": "Pricing analysis was not probed in this audit run."
+  },
+  "score": {
+    "state": "not_probed"
+  },
+  "grade": {
+    "state": "not_probed"
+  },
+  "scoreBand": {
+    "state": "not_probed"
+  },
+  "scoring": {
+    "formula": {
+      "state": "not_probed"
+    },
+    "why": {
+      "state": "not_probed"
+    },
+    "inputs": {
+      "state": "not_probed"
+    },
+    "bands": [
+      {
+        "state": "not_probed"
+      }
+    ],
+    "note": "A headline score was not computed in this audit run; no score is asserted."
+  },
+  "exec": {
+    "state": "not_probed",
+    "note": "An executive summary was not composed in this audit run."
+  },
+  "glossary": {
+    "state": "not_probed"
+  },
+  "heat": {
+    "state": "not_probed"
+  },
+  "heatRows": {
+    "state": "not_probed"
+  },
+  "heatCols": {
+    "state": "not_probed"
+  },
+  "projected": {
+    "wk12": {
+      "state": "not_probed"
+    },
+    "wk24": {
+      "state": "not_probed"
+    }
+  },
+  "fixes": [
+    {
+      "state": "not_probed",
+      "note": "A remediation plan was not composed in this audit run."
+    }
+  ],
+  "meta": {
+    "company": "Lomond",
+    "domain": "lomond.co.uk",
+    "sector": "real-estate",
+    "country": "UK",
+    "date": "2026-07-19T08:50:36.386Z"
+  },
+  "jurisdiction": {
+    "bound": [
+      "UK"
+    ],
+    "primary": "UK",
+    "abstained": false
+  },
+  "findings": [
+    {
+      "record_id": "UK_EQUALITY_ACCESSIBILITY",
+      "state": "violation",
+      "kind": "behavioural",
+      "artifact": {
+        "rule_id": "html-has-lang",
+        "selector": "html",
+        "snippet": "<html><head></head><body></body></html>",
+        "wcag_sc": "3.1.1",
+        "state": "violation",
+        "type": "dom_node"
+      },
+      "framework": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+      "statutory_citation": "Equality Act 2010, s.20-21 (duty to make reasonable adjustments), s.29 (services and public functions: not to discriminate against a person requiring the service)",
+      "page_url": null,
+      "voice_tier": "observation",
+      "description": "Make reasonable adjustments so disabled users are not put at a substantial disadvantage; WCAG 2.2 AA is the recognised evidence benchmark",
+      "penalty": {
+        "typical_low": 1000,
+        "typical_high": 10000,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "No statutory cap; liability is uncapped compensation for injury to feelings and losses in a county court claim per claimant, plus EHRC action",
+        "max_is_rare": false
+      },
+      "regulator": "Equality and Human Rights Commission (EHRC)"
+    },
+    {
+      "record_id": "UK_PECR_COOKIES_MARKETING",
+      "state": "needs_review",
+      "kind": "absence-breach",
+      "artifact": {
+        "type": "coverage_proof",
+        "page_class": "any",
+        "surface": "visible_text",
+        "pages_checked": [
+          "https://www.lomond.co.uk/",
+          "https://www.lomond.co.uk/career-paths/legal-and-compliance/",
+          "https://www.lomond.co.uk/careers/compliance-coordinator-in-kent-889431/",
+          "https://www.lomond.co.uk/careers/tenancy-compliance-coordinator-in-west-yorkshire-907032/",
+          "https://www.lomond.co.uk/who-we-are/meet-the-team/",
+          "https://www.lomond.co.uk/contact/",
+          "https://www.lomond.co.uk/contact/acquisitions-form/",
+          "https://www.lomond.co.uk/contact/public-relations-form/",
+          "https://www.lomond.co.uk/contact/talent-and-recruitment-form/",
+          "https://www.lomond.co.uk/meet-the-team/abdool-beelut/",
+          "https://www.lomond.co.uk/meet-the-team/aimish-patel/",
+          "https://www.lomond.co.uk/meet-the-team/carl-gelibter/",
+          "https://www.lomond.co.uk/meet-the-team/clare-wakeford/",
+          "https://www.lomond.co.uk/meet-the-team/dan-shrimpton/",
+          "https://www.lomond.co.uk/meet-the-team/david-alexander/",
+          "https://www.lomond.co.uk/meet-the-team/doug-conely/",
+          "https://www.lomond.co.uk/meet-the-team/ed-phillips/",
+          "https://www.lomond.co.uk/meet-the-team/eric-ohalleran/",
+          "https://www.lomond.co.uk/meet-the-team/fiona-walkley/",
+          "https://www.lomond.co.uk/meet-the-team/graeme-wadhams/",
+          "https://www.lomond.co.uk/meet-the-team/hannah-farmer/",
+          "https://www.lomond.co.uk/meet-the-team/ian-sutherland/",
+          "https://www.lomond.co.uk/meet-the-team/ibrar-raja/",
+          "https://www.lomond.co.uk/meet-the-team/james-cosser-hindle/",
+          "https://www.lomond.co.uk/meet-the-team/james-leverton/",
+          "https://www.lomond.co.uk/meet-the-team/james-morgan/",
+          "https://www.lomond.co.uk/meet-the-team/john-ennis/",
+          "https://www.lomond.co.uk/meet-the-team/josie-leader/",
+          "https://www.lomond.co.uk/meet-the-team/luke-claxton/",
+          "https://www.lomond.co.uk/meet-the-team/luke-wallis/",
+          "https://www.lomond.co.uk/meet-the-team/neil-mcgimpsey/",
+          "https://www.lomond.co.uk/meet-the-team/paul-clarke/",
+          "https://www.lomond.co.uk/meet-the-team/paul-prasad/",
+          "https://www.lomond.co.uk/meet-the-team/richard-haines/",
+          "https://www.lomond.co.uk/meet-the-team/rob-mott/",
+          "https://www.lomond.co.uk/meet-the-team/sam-soper/",
+          "https://www.lomond.co.uk/meet-the-team/sam-thackeray/",
+          "https://www.lomond.co.uk/meet-the-team/sophie-danes/",
+          "https://www.lomond.co.uk/meet-the-team/tarryn-cummins/",
+          "https://www.lomond.co.uk/careers/licensing-team-coordinator-in-west-yorkshire-907750/",
+          "https://www.lomond.co.uk/careers/property-management-team-manager-in-greater-manchester-663532/",
+          "https://www.lomond.co.uk/careers/regional-team-leader-in-west-midlands-890681/",
+          "https://www.lomond.co.uk/insights/dj-alexander-strengthens-presence-across-scotland-with-stonehouse-offices-rebrand/",
+          "https://www.lomond.co.uk/insights/celebrating-excellence-at-the-lomond-awards-2026/",
+          "https://www.lomond.co.uk/who-we-are/insights/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-spring-2026/",
+          "https://www.lomond.co.uk/insights/lomond-further-expands-into-central-scotland-with-acquisition-of-leading-scottish-letting-and-estate-agency-clyde-property/",
+          "https://www.lomond.co.uk/insights/lomond-achieves-two-prestigious-workplace-awards/",
+          "https://www.lomond.co.uk/insights/lomond-expands-into-liverpool-with-acquisition-of-homesure/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-winter-2025-26/",
+          "https://www.lomond.co.uk/insights/",
+          "https://www.lomond.co.uk/insights/acquisitions-at-the-double-for-manchester-agency-as-lomond-group-scales-up-acquisition-trail/",
+          "https://www.lomond.co.uk/insights/breaking-news-the-renters-rights-act-has-passed-what-does-this-mean-for-you/",
+          "https://www.lomond.co.uk/insights/celebrating-3-years-at-lomond-hq/",
+          "https://www.lomond.co.uk/insights/homes-of-the-future-trends-and-strategies-for-success/",
+          "https://www.lomond.co.uk/insights/latest-dj-alexander-acquisition-makes-them-major-player-with-more-to-come/",
+          "https://www.lomond.co.uk/insights/linley-and-simpson-breaks-new-ground-with-acquisition-of-york-student-letting-specialists/",
+          "https://www.lomond.co.uk/insights/linley-and-simpson-consolidates-sheffield-presence-with-new-acquisition/",
+          "https://www.lomond.co.uk/insights/linley-and-simpson-consolidates-yorkshire-presence-with-another-brace-of-acquisitions/",
+          "https://www.lomond.co.uk/insights/lomond-acquires-dj-alexander-to-become-largest-lettings-and-estate-agent-in-scotland/",
+          "https://www.lomond.co.uk/insights/lomond-adds-pace-and-scale-to-uk-wide-expansion-strategy-with-another-brace-of-acquisitions/",
+          "https://www.lomond.co.uk/insights/lomond-and-linley-and-simpson-merger-brings-together-some-of-the-uk-s-strongest-high-street-lettings-and-estate-agency-brands/",
+          "https://www.lomond.co.uk/insights/lomond-announces-acquisition-of-ten-businesses-in-first-quarter-following-merger-with-linley-and-simpson/",
+          "https://www.lomond.co.uk/insights/lomond-announces-the-appointment-of-kate-swann-as-chair/",
+          "https://www.lomond.co.uk/insights/lomond-brand-john-shepherd-acquires-solihull-based-agent-smart-homes/",
+          "https://www.lomond.co.uk/insights/lomond-breaks-new-ground-with-multi-regional-acquisition-of-major-online-lettings-agency/",
+          "https://www.lomond.co.uk/insights/lomond-completes-sixth-london-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-consolidates-london-presence-with-strategic-waterside-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-continues-acquisitive-streak-in-london/",
+          "https://www.lomond.co.uk/insights/lomond-continues-momentum-in-kent-with-latest-lettings-portfolio-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-continues-momentum-in-scotland-with-latest-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-continues-to-target-east-midlands-with-growth-strategy-acquiring-58th-estate-agency-business/",
+          "https://www.lomond.co.uk/insights/lomond-expands-footprint-with-acquisition-of-major-brand-across-hampshire-and-surrey/",
+          "https://www.lomond.co.uk/insights/lomond-expands-further-with-latest-kent-based-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-expands-its-presence-in-headingley-leeds/",
+          "https://www.lomond.co.uk/insights/lomond-expands-south-coast-operations-with-brighton-based-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-expands-student-lettings-presence-in-yorkshire/",
+          "https://www.lomond.co.uk/insights/lomond-franklin-covey-partnership-property-development-leadership/",
+          "https://www.lomond.co.uk/insights/lomond-further-builds-london-and-international-presence/",
+          "https://www.lomond.co.uk/insights/lomond-grows-its-portfolio-with-major-acquisition-of-prospect-estate-and-lettings-agency/",
+          "https://www.lomond.co.uk/insights/lomond-has-been-announced-as-a-sunday-times-best-places-to-work-for-the-second-year-in-a-row/",
+          "https://www.lomond.co.uk/insights/lomond-hits-two-key-milestones-with-latest-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-is-pleased-to-announce-our-latest-acquisition-in-scotland-margaret-duffus-leasing/",
+          "https://www.lomond.co.uk/insights/lomond-launches-major-new-territory-with-beals-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-maintains-momentum-within-the-east-midlands-with-latest-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-marks-triple-milestone-by-revealing-next-phase-of-expansion/",
+          "https://www.lomond.co.uk/insights/lomond-named-a-great-place-to-work-for-the-third-year-in-a-row/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insight-q1-2024/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insight-q4-2023/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-lomond-investment-management-q2-2023/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q1-2025/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q2-2023/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q2-2025/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q3-2023/",
+          "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q3-2025/",
+          "https://www.lomond.co.uk/insights/lomond-recognised-as-one-of-the-uk-s-best-workplaces-in-construction-engineering-and-property/",
+          "https://www.lomond.co.uk/insights/lomond-scales-up-expansion-drive-as-its-thornley-groves-brand-unveils-another-brace-of-acquisitions/",
+          "https://www.lomond.co.uk/insights/lomond-secures-55th-acquisition-further-bolstering-midlands-presence/",
+          "https://www.lomond.co.uk/insights/lomond-secures-new-investment-from-icg/",
+          "https://www.lomond.co.uk/insights/lomond-secures-second-kent-estate-agency-with-latest-acquisition/",
+          "https://www.lomond.co.uk/insights/lomond-strengthens-london-footprint-with-acquisition-of-draker-ltd/"
+        ],
+        "searched_patterns": [
+          {
+            "kind": "token-set",
+            "tokens": [
+              "electronic",
+              "marketing"
+            ],
+            "mode": "all"
+          },
+          {
+            "kind": "token-set",
+            "tokens": [
+              "newsletter",
+              "unbundled"
+            ],
+            "mode": "all"
+          },
+          {
+            "kind": "token-set",
+            "tokens": [
+              "identifiable",
+              "unsubscribe"
+            ],
+            "mode": "all"
+          }
+        ],
+        "tier1_fetched": true,
+        "truncated": false
+      },
+      "framework": "Privacy and Electronic Communications Regulations 2003 (cookie consent and electronic marketing)",
+      "statutory_citation": "Privacy and Electronic Communications (EC Directive) Regulations 2003 (SI 2003/2426), reg 6 (storing/accessing information on terminal equipment - cookies); reg 22 (unsolicited electronic mail marketing)",
+      "page_url": null,
+      "voice_tier": "observation",
+      "description": "Only send electronic marketing with consent or a valid soft opt-in, and give a working unsubscribe",
+      "penalty": {
+        "typical_low": 100000,
+        "typical_high": 17500000,
+        "statutory_max": 17500000,
+        "currency": "GBP",
+        "basis": "Historic PECR cap was GBP 500,000; the Data (Use and Access) Act 2025 raises PECR maxima toward UK GDPR levels (up to GBP 17.5m or 4% turnover). Typical band from ICO PECR penalties.",
+        "max_is_rare": true
+      },
+      "regulator": "Information Commissioner's Office (ICO)",
+      "enforcement": [
+        {
+          "case": "ICO v Grocery Delivery E-Services UK Ltd (HelloFresh)",
+          "date": "2024-01",
+          "amount": "GBP 140,000",
+          "url": "https://ico.org.uk/action-weve-taken/enforcement/2024/01/grocery-delivery-e-services-uk-ltd-ta-hellofresh/",
+          "summary": "Fined for 79m spam emails and 1m spam texts; consent was neither specific nor informed under PECR reg 22."
+        },
+        {
+          "case": "ICO cookie compliance review of top 1,000 UK websites",
+          "date": "2025-01",
+          "amount": "Warning and enforcement notices",
+          "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/01/cookie-review/",
+          "summary": "ICO reviewing the top 1,000 UK sites for cookie compliance and issuing notices where reject-all is missing or cookies fire before consent."
+        }
+      ]
+    }
+  ],
+  "applicability": {
+    "assessed": [
+      {
+        "record_id": "UK_CAP_CODE",
+        "framework": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_CCR_2013",
+        "framework": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (B2C distance selling)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_CPUT_MISLEADING",
+        "framework": "Consumer Protection from Unfair Trading (misleading actions and omissions baseline)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_CRA_2015",
+        "framework": "Consumer Rights Act 2015 (fair and transparent terms; goods, services and digital content standards)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_DMCC_UNFAIR_PRACTICES",
+        "framework": "Digital Markets, Competition and Consumers Act 2024 (fake reviews, drip pricing and false urgency)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_DUAA_2025",
+        "framework": "Data (Use and Access) Act 2025 (changes to UK GDPR, DPA 2018 and PECR)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_EQUALITY_ACCESSIBILITY",
+        "framework": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+        "state": "violation"
+      },
+      {
+        "record_id": "UK_GDPR_PRIVACY_NOTICE",
+        "framework": "UK GDPR and Data Protection Act 2018 (privacy notice, transparency and marketing lawful basis)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_ICO_FEE_REGISTRATION",
+        "framework": "ICO data protection fee and register of fee payers (Data Protection (Charges and Information) Regulations 2018)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_MODERN_SLAVERY_S54",
+        "framework": "Modern Slavery Act 2015 s.54 (transparency in supply chains statement)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_OSA_2023",
+        "framework": "Online Safety Act 2023 (user-to-user and search services duties)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_PECR_COOKIES_MARKETING",
+        "framework": "Privacy and Electronic Communications Regulations 2003 (cookie consent and electronic marketing)",
+        "state": "needs_review"
+      },
+      {
+        "record_id": "UK_PRICE_VAT_DISPLAY",
+        "framework": "Price and VAT display to consumers (Price Marking Order 2004 and VAT-inclusive pricing)",
+        "state": "not_evaluated"
+      },
+      {
+        "record_id": "UK_TRADING_DISCLOSURES",
+        "framework": "Company and online trading disclosures (Companies Act 2006 s.82 and Electronic Commerce Regulations 2002 reg 6)",
+        "state": "not_evaluated"
+      }
+    ],
+    "assessedCompliant": [],
+    "excludedCount": 78
+  },
+  "notLegalAdvice": "This automated audit is not legal advice; findings are evidence-backed observations for your review and verification with your own advisers.",
+  "frameworks": [
+    {
+      "code": "UK_CAP_CODE",
+      "name": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code)",
+      "regulator": "Advertising Standards Authority (ASA) / Committee of Advertising Practice (CAP)",
+      "jurisdiction": "UK",
+      "citation": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code, 12th edition) - self-regulatory, backed by the CPRs/DMCC via CMA/Trading Standards referral, CAP Code rules 1-3 (misleadingness, substantiation), rule 2 (recognition of marketing communications)",
+      "penalty": {
+        "typical_low": null,
+        "typical_high": null,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "ASA sanctions are non-monetary (ruling published, ad removal, ad alerts, paid-search removal, referral to Trading Standards/CMA where the CPRs/DMCC then apply monetary penalties)",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_CCR_2013",
+      "name": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (B2C distance selling)",
+      "regulator": "Trading Standards / Competition and Markets Authority (CMA)",
+      "jurisdiction": "UK",
+      "citation": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (SI 2013/3134), Sch 2 (pre-contract information for distance contracts); reg 27-38 (14-day cancellation right and model cancellation form); reg 40 (additional payments require active consent)",
+      "penalty": {
+        "typical_low": 500,
+        "typical_high": 5000,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "Breach can make the contract unenforceable, extend the cancellation period by up to 12 months, and support Trading Standards action; some breaches are criminal offences with a fine",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_CPUT_MISLEADING",
+      "name": "Consumer Protection from Unfair Trading (misleading actions and omissions baseline)",
+      "regulator": "Trading Standards / Competition and Markets Authority (CMA)",
+      "jurisdiction": "UK",
+      "citation": "Consumer Protection from Unfair Trading Regulations 2008 (SI 2008/1277), now read with the DMCC Act 2024 Part 4, regs 5-6 (misleading actions and omissions), reg 7 (aggressive practices), Sch 1 (banned practices); superseded for practices after 6 April 2025 by DMCC Part 4 Ch 1",
+      "penalty": {
+        "typical_low": null,
+        "typical_high": null,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "Unlimited fine on conviction and up to 2 years imprisonment for the most serious offences; post-April-2025 conduct enforced under DMCC with direct CMA penalties",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_CRA_2015",
+      "name": "Consumer Rights Act 2015 (fair and transparent terms; goods, services and digital content standards)",
+      "regulator": "Competition and Markets Authority (CMA) / Trading Standards",
+      "jurisdiction": "UK",
+      "citation": "Consumer Rights Act 2015, Part 1 (goods, digital content, services: satisfactory quality, as described, reasonable care); Part 2 (unfair terms; transparency and the grey list at Sch 2)",
+      "penalty": {
+        "typical_low": 50000,
+        "typical_high": 300000,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "Unfair terms are unenforceable against the consumer; CMA/Trading Standards can seek undertakings or court orders and consumers can claim; no fixed statutory fine under Part 2",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_DMCC_UNFAIR_PRACTICES",
+      "name": "Digital Markets, Competition and Consumers Act 2024 (fake reviews, drip pricing and false urgency)",
+      "regulator": "Competition and Markets Authority (CMA)",
+      "jurisdiction": "UK",
+      "citation": "Digital Markets, Competition and Consumers Act 2024, Part 4 Ch 1 (unfair commercial practices) and Sch 20 (banned practices, including fake/concealed-incentive reviews and hidden mandatory fees); commenced by SI 2025/272 on 6 April 2025",
+      "penalty": {
+        "typical_low": null,
+        "typical_high": null,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "CMA can impose direct penalties up to 10% of global annual turnover for businesses (up to GBP 300,000 for individuals) without going to court",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_DUAA_2025",
+      "name": "Data (Use and Access) Act 2025 (changes to UK GDPR, DPA 2018 and PECR)",
+      "regulator": "Information Commissioner's Office (ICO)",
+      "jurisdiction": "UK",
+      "citation": "Data (Use and Access) Act 2025, Provisions amending UK GDPR, DPA 2018 and PECR (including PECR penalty uplift and low-risk cookie exemptions); phased commencement by regulations",
+      "penalty": {
+        "typical_low": null,
+        "typical_high": null,
+        "statutory_max": 17500000,
+        "currency": "GBP",
+        "basis": "DUAA raises the PECR maximum toward UK GDPR levels (up to GBP 17.5m or 4% of worldwide turnover); figure applies once the relevant provision is commenced",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_EQUALITY_ACCESSIBILITY",
+      "name": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+      "regulator": "Equality and Human Rights Commission (EHRC)",
+      "jurisdiction": "UK",
+      "citation": "Equality Act 2010, s.20-21 (duty to make reasonable adjustments), s.29 (services and public functions: not to discriminate against a person requiring the service)",
+      "penalty": {
+        "typical_low": 1000,
+        "typical_high": 10000,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "No statutory cap; liability is uncapped compensation for injury to feelings and losses in a county court claim per claimant, plus EHRC action",
+        "max_is_rare": false
+      },
+      "binding": true,
+      "state": "violation",
+      "findings": [
+        {
+          "record_id": "UK_EQUALITY_ACCESSIBILITY",
+          "state": "violation",
+          "kind": "behavioural",
+          "artifact": {
+            "rule_id": "html-has-lang",
+            "selector": "html",
+            "snippet": "<html><head></head><body></body></html>",
+            "wcag_sc": "3.1.1",
+            "state": "violation",
+            "type": "dom_node"
+          },
+          "framework": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+          "statutory_citation": "Equality Act 2010, s.20-21 (duty to make reasonable adjustments), s.29 (services and public functions: not to discriminate against a person requiring the service)",
+          "page_url": null,
+          "voice_tier": "observation",
+          "description": "Make reasonable adjustments so disabled users are not put at a substantial disadvantage; WCAG 2.2 AA is the recognised evidence benchmark",
+          "penalty": {
+            "typical_low": 1000,
+            "typical_high": 10000,
+            "statutory_max": null,
+            "currency": "GBP",
+            "basis": "No statutory cap; liability is uncapped compensation for injury to feelings and losses in a county court claim per claimant, plus EHRC action",
+            "max_is_rare": false
+          },
+          "regulator": "Equality and Human Rights Commission (EHRC)"
+        }
+      ]
+    },
+    {
+      "code": "UK_GDPR_PRIVACY_NOTICE",
+      "name": "UK GDPR and Data Protection Act 2018 (privacy notice, transparency and marketing lawful basis)",
+      "regulator": "Information Commissioner's Office (ICO)",
+      "jurisdiction": "UK",
+      "citation": "UK GDPR (assimilated Regulation (EU) 2016/679); Data Protection Act 2018, UK GDPR Arts 5, 6, 13, 14, 21 (transparency, lawful basis, right to object to direct marketing); DPA 2018 Part 2",
+      "penalty": {
+        "typical_low": 1230000,
+        "typical_high": 14000000,
+        "statutory_max": 17500000,
+        "currency": "GBP",
+        "basis": "Higher maximum of GBP 17.5m or 4% of total worldwide annual turnover (UK GDPR Art 83(5)); typical band from 2025 ICO monetary penalties",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_ICO_FEE_REGISTRATION",
+      "name": "ICO data protection fee and register of fee payers (Data Protection (Charges and Information) Regulations 2018)",
+      "regulator": "Information Commissioner's Office (ICO)",
+      "jurisdiction": "UK",
+      "citation": "Data Protection Act 2018 s.137; Data Protection (Charges and Information) Regulations 2018 (SI 2018/480), DPA 2018 s.137-138 (duty to pay charges); SI 2018/480 (fee tiers, register)",
+      "penalty": {
+        "typical_low": 400,
+        "typical_high": 4350,
+        "statutory_max": 4350,
+        "currency": "GBP",
+        "basis": "Non-payment attracts a penalty of up to 150% of the highest fee tier (up to about GBP 4,350) under the DPA 2018 fee regime",
+        "max_is_rare": false
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_MODERN_SLAVERY_S54",
+      "name": "Modern Slavery Act 2015 s.54 (transparency in supply chains statement)",
+      "regulator": "Home Office (modern slavery statement registry)",
+      "jurisdiction": "UK",
+      "citation": "Modern Slavery Act 2015, s.54 (transparency in supply chains); threshold set by the Modern Slavery Act 2015 (Transparency in Supply Chains) Regulations 2015 (SI 2015/1833)",
+      "penalty": {
+        "typical_low": null,
+        "typical_high": null,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "No financial penalty; the Secretary of State may seek an injunction to compel publication, and non-publication is a reputational and procurement risk",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_OSA_2023",
+      "name": "Online Safety Act 2023 (user-to-user and search services duties)",
+      "regulator": "Ofcom",
+      "jurisdiction": "UK",
+      "citation": "Online Safety Act 2023, Part 3 (duties of care for user-to-user and search services); Part 7 (Ofcom enforcement)",
+      "penalty": {
+        "typical_low": null,
+        "typical_high": 18000000,
+        "statutory_max": 18000000,
+        "currency": "GBP",
+        "basis": "Ofcom can fine the greater of GBP 18m or 10% of qualifying worldwide revenue, and seek business disruption measures",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_PECR_COOKIES_MARKETING",
+      "name": "Privacy and Electronic Communications Regulations 2003 (cookie consent and electronic marketing)",
+      "regulator": "Information Commissioner's Office (ICO)",
+      "jurisdiction": "UK",
+      "citation": "Privacy and Electronic Communications (EC Directive) Regulations 2003 (SI 2003/2426), reg 6 (storing/accessing information on terminal equipment - cookies); reg 22 (unsolicited electronic mail marketing)",
+      "penalty": {
+        "typical_low": 100000,
+        "typical_high": 17500000,
+        "statutory_max": 17500000,
+        "currency": "GBP",
+        "basis": "Historic PECR cap was GBP 500,000; the Data (Use and Access) Act 2025 raises PECR maxima toward UK GDPR levels (up to GBP 17.5m or 4% turnover). Typical band from ICO PECR penalties.",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "needs_review",
+      "findings": [
+        {
+          "record_id": "UK_PECR_COOKIES_MARKETING",
+          "state": "needs_review",
+          "kind": "absence-breach",
+          "artifact": {
+            "type": "coverage_proof",
+            "page_class": "any",
+            "surface": "visible_text",
+            "pages_checked": [
+              "https://www.lomond.co.uk/",
+              "https://www.lomond.co.uk/career-paths/legal-and-compliance/",
+              "https://www.lomond.co.uk/careers/compliance-coordinator-in-kent-889431/",
+              "https://www.lomond.co.uk/careers/tenancy-compliance-coordinator-in-west-yorkshire-907032/",
+              "https://www.lomond.co.uk/who-we-are/meet-the-team/",
+              "https://www.lomond.co.uk/contact/",
+              "https://www.lomond.co.uk/contact/acquisitions-form/",
+              "https://www.lomond.co.uk/contact/public-relations-form/",
+              "https://www.lomond.co.uk/contact/talent-and-recruitment-form/",
+              "https://www.lomond.co.uk/meet-the-team/abdool-beelut/",
+              "https://www.lomond.co.uk/meet-the-team/aimish-patel/",
+              "https://www.lomond.co.uk/meet-the-team/carl-gelibter/",
+              "https://www.lomond.co.uk/meet-the-team/clare-wakeford/",
+              "https://www.lomond.co.uk/meet-the-team/dan-shrimpton/",
+              "https://www.lomond.co.uk/meet-the-team/david-alexander/",
+              "https://www.lomond.co.uk/meet-the-team/doug-conely/",
+              "https://www.lomond.co.uk/meet-the-team/ed-phillips/",
+              "https://www.lomond.co.uk/meet-the-team/eric-ohalleran/",
+              "https://www.lomond.co.uk/meet-the-team/fiona-walkley/",
+              "https://www.lomond.co.uk/meet-the-team/graeme-wadhams/",
+              "https://www.lomond.co.uk/meet-the-team/hannah-farmer/",
+              "https://www.lomond.co.uk/meet-the-team/ian-sutherland/",
+              "https://www.lomond.co.uk/meet-the-team/ibrar-raja/",
+              "https://www.lomond.co.uk/meet-the-team/james-cosser-hindle/",
+              "https://www.lomond.co.uk/meet-the-team/james-leverton/",
+              "https://www.lomond.co.uk/meet-the-team/james-morgan/",
+              "https://www.lomond.co.uk/meet-the-team/john-ennis/",
+              "https://www.lomond.co.uk/meet-the-team/josie-leader/",
+              "https://www.lomond.co.uk/meet-the-team/luke-claxton/",
+              "https://www.lomond.co.uk/meet-the-team/luke-wallis/",
+              "https://www.lomond.co.uk/meet-the-team/neil-mcgimpsey/",
+              "https://www.lomond.co.uk/meet-the-team/paul-clarke/",
+              "https://www.lomond.co.uk/meet-the-team/paul-prasad/",
+              "https://www.lomond.co.uk/meet-the-team/richard-haines/",
+              "https://www.lomond.co.uk/meet-the-team/rob-mott/",
+              "https://www.lomond.co.uk/meet-the-team/sam-soper/",
+              "https://www.lomond.co.uk/meet-the-team/sam-thackeray/",
+              "https://www.lomond.co.uk/meet-the-team/sophie-danes/",
+              "https://www.lomond.co.uk/meet-the-team/tarryn-cummins/",
+              "https://www.lomond.co.uk/careers/licensing-team-coordinator-in-west-yorkshire-907750/",
+              "https://www.lomond.co.uk/careers/property-management-team-manager-in-greater-manchester-663532/",
+              "https://www.lomond.co.uk/careers/regional-team-leader-in-west-midlands-890681/",
+              "https://www.lomond.co.uk/insights/dj-alexander-strengthens-presence-across-scotland-with-stonehouse-offices-rebrand/",
+              "https://www.lomond.co.uk/insights/celebrating-excellence-at-the-lomond-awards-2026/",
+              "https://www.lomond.co.uk/who-we-are/insights/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-spring-2026/",
+              "https://www.lomond.co.uk/insights/lomond-further-expands-into-central-scotland-with-acquisition-of-leading-scottish-letting-and-estate-agency-clyde-property/",
+              "https://www.lomond.co.uk/insights/lomond-achieves-two-prestigious-workplace-awards/",
+              "https://www.lomond.co.uk/insights/lomond-expands-into-liverpool-with-acquisition-of-homesure/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-winter-2025-26/",
+              "https://www.lomond.co.uk/insights/",
+              "https://www.lomond.co.uk/insights/acquisitions-at-the-double-for-manchester-agency-as-lomond-group-scales-up-acquisition-trail/",
+              "https://www.lomond.co.uk/insights/breaking-news-the-renters-rights-act-has-passed-what-does-this-mean-for-you/",
+              "https://www.lomond.co.uk/insights/celebrating-3-years-at-lomond-hq/",
+              "https://www.lomond.co.uk/insights/homes-of-the-future-trends-and-strategies-for-success/",
+              "https://www.lomond.co.uk/insights/latest-dj-alexander-acquisition-makes-them-major-player-with-more-to-come/",
+              "https://www.lomond.co.uk/insights/linley-and-simpson-breaks-new-ground-with-acquisition-of-york-student-letting-specialists/",
+              "https://www.lomond.co.uk/insights/linley-and-simpson-consolidates-sheffield-presence-with-new-acquisition/",
+              "https://www.lomond.co.uk/insights/linley-and-simpson-consolidates-yorkshire-presence-with-another-brace-of-acquisitions/",
+              "https://www.lomond.co.uk/insights/lomond-acquires-dj-alexander-to-become-largest-lettings-and-estate-agent-in-scotland/",
+              "https://www.lomond.co.uk/insights/lomond-adds-pace-and-scale-to-uk-wide-expansion-strategy-with-another-brace-of-acquisitions/",
+              "https://www.lomond.co.uk/insights/lomond-and-linley-and-simpson-merger-brings-together-some-of-the-uk-s-strongest-high-street-lettings-and-estate-agency-brands/",
+              "https://www.lomond.co.uk/insights/lomond-announces-acquisition-of-ten-businesses-in-first-quarter-following-merger-with-linley-and-simpson/",
+              "https://www.lomond.co.uk/insights/lomond-announces-the-appointment-of-kate-swann-as-chair/",
+              "https://www.lomond.co.uk/insights/lomond-brand-john-shepherd-acquires-solihull-based-agent-smart-homes/",
+              "https://www.lomond.co.uk/insights/lomond-breaks-new-ground-with-multi-regional-acquisition-of-major-online-lettings-agency/",
+              "https://www.lomond.co.uk/insights/lomond-completes-sixth-london-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-consolidates-london-presence-with-strategic-waterside-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-continues-acquisitive-streak-in-london/",
+              "https://www.lomond.co.uk/insights/lomond-continues-momentum-in-kent-with-latest-lettings-portfolio-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-continues-momentum-in-scotland-with-latest-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-continues-to-target-east-midlands-with-growth-strategy-acquiring-58th-estate-agency-business/",
+              "https://www.lomond.co.uk/insights/lomond-expands-footprint-with-acquisition-of-major-brand-across-hampshire-and-surrey/",
+              "https://www.lomond.co.uk/insights/lomond-expands-further-with-latest-kent-based-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-expands-its-presence-in-headingley-leeds/",
+              "https://www.lomond.co.uk/insights/lomond-expands-south-coast-operations-with-brighton-based-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-expands-student-lettings-presence-in-yorkshire/",
+              "https://www.lomond.co.uk/insights/lomond-franklin-covey-partnership-property-development-leadership/",
+              "https://www.lomond.co.uk/insights/lomond-further-builds-london-and-international-presence/",
+              "https://www.lomond.co.uk/insights/lomond-grows-its-portfolio-with-major-acquisition-of-prospect-estate-and-lettings-agency/",
+              "https://www.lomond.co.uk/insights/lomond-has-been-announced-as-a-sunday-times-best-places-to-work-for-the-second-year-in-a-row/",
+              "https://www.lomond.co.uk/insights/lomond-hits-two-key-milestones-with-latest-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-is-pleased-to-announce-our-latest-acquisition-in-scotland-margaret-duffus-leasing/",
+              "https://www.lomond.co.uk/insights/lomond-launches-major-new-territory-with-beals-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-maintains-momentum-within-the-east-midlands-with-latest-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-marks-triple-milestone-by-revealing-next-phase-of-expansion/",
+              "https://www.lomond.co.uk/insights/lomond-named-a-great-place-to-work-for-the-third-year-in-a-row/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insight-q1-2024/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insight-q4-2023/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-lomond-investment-management-q2-2023/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q1-2025/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q2-2023/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q2-2025/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q3-2023/",
+              "https://www.lomond.co.uk/insights/lomond-quarterly-insights-q3-2025/",
+              "https://www.lomond.co.uk/insights/lomond-recognised-as-one-of-the-uk-s-best-workplaces-in-construction-engineering-and-property/",
+              "https://www.lomond.co.uk/insights/lomond-scales-up-expansion-drive-as-its-thornley-groves-brand-unveils-another-brace-of-acquisitions/",
+              "https://www.lomond.co.uk/insights/lomond-secures-55th-acquisition-further-bolstering-midlands-presence/",
+              "https://www.lomond.co.uk/insights/lomond-secures-new-investment-from-icg/",
+              "https://www.lomond.co.uk/insights/lomond-secures-second-kent-estate-agency-with-latest-acquisition/",
+              "https://www.lomond.co.uk/insights/lomond-strengthens-london-footprint-with-acquisition-of-draker-ltd/"
+            ],
+            "searched_patterns": [
+              {
+                "kind": "token-set",
+                "tokens": [
+                  "electronic",
+                  "marketing"
+                ],
+                "mode": "all"
+              },
+              {
+                "kind": "token-set",
+                "tokens": [
+                  "newsletter",
+                  "unbundled"
+                ],
+                "mode": "all"
+              },
+              {
+                "kind": "token-set",
+                "tokens": [
+                  "identifiable",
+                  "unsubscribe"
+                ],
+                "mode": "all"
+              }
+            ],
+            "tier1_fetched": true,
+            "truncated": false
+          },
+          "framework": "Privacy and Electronic Communications Regulations 2003 (cookie consent and electronic marketing)",
+          "statutory_citation": "Privacy and Electronic Communications (EC Directive) Regulations 2003 (SI 2003/2426), reg 6 (storing/accessing information on terminal equipment - cookies); reg 22 (unsolicited electronic mail marketing)",
+          "page_url": null,
+          "voice_tier": "observation",
+          "description": "Only send electronic marketing with consent or a valid soft opt-in, and give a working unsubscribe",
+          "penalty": {
+            "typical_low": 100000,
+            "typical_high": 17500000,
+            "statutory_max": 17500000,
+            "currency": "GBP",
+            "basis": "Historic PECR cap was GBP 500,000; the Data (Use and Access) Act 2025 raises PECR maxima toward UK GDPR levels (up to GBP 17.5m or 4% turnover). Typical band from ICO PECR penalties.",
+            "max_is_rare": true
+          },
+          "regulator": "Information Commissioner's Office (ICO)",
+          "enforcement": [
+            {
+              "case": "ICO v Grocery Delivery E-Services UK Ltd (HelloFresh)",
+              "date": "2024-01",
+              "amount": "GBP 140,000",
+              "url": "https://ico.org.uk/action-weve-taken/enforcement/2024/01/grocery-delivery-e-services-uk-ltd-ta-hellofresh/",
+              "summary": "Fined for 79m spam emails and 1m spam texts; consent was neither specific nor informed under PECR reg 22."
+            },
+            {
+              "case": "ICO cookie compliance review of top 1,000 UK websites",
+              "date": "2025-01",
+              "amount": "Warning and enforcement notices",
+              "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/01/cookie-review/",
+              "summary": "ICO reviewing the top 1,000 UK sites for cookie compliance and issuing notices where reject-all is missing or cookies fire before consent."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "UK_PRICE_VAT_DISPLAY",
+      "name": "Price and VAT display to consumers (Price Marking Order 2004 and VAT-inclusive pricing)",
+      "regulator": "Trading Standards / Competition and Markets Authority (CMA)",
+      "jurisdiction": "UK",
+      "citation": "Price Marking Order 2004 (SI 2004/102); Value Added Tax Act 1994; read with CCRs 2013 and DMCC Act 2024 on total price, Price Marking Order 2004 arts 4-7 (selling price and unit price, inclusive of VAT, to consumers)",
+      "penalty": {
+        "typical_low": 500,
+        "typical_high": 5000,
+        "statutory_max": null,
+        "currency": "GBP",
+        "basis": "Trading Standards can prosecute breaches of the Price Marking Order, typically a fine; DMCC drip-pricing penalties (up to 10% turnover) apply where mandatory fees are hidden",
+        "max_is_rare": true
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    },
+    {
+      "code": "UK_TRADING_DISCLOSURES",
+      "name": "Company and online trading disclosures (Companies Act 2006 s.82 and Electronic Commerce Regulations 2002 reg 6)",
+      "regulator": "Companies House / local authority Trading Standards",
+      "jurisdiction": "UK",
+      "citation": "Companies Act 2006 s.82; Company, Limited Liability Partnership and Business (Names and Trading Disclosures) Regulations 2015 (SI 2015/17); Electronic Commerce (EC Directive) Regulations 2002 (SI 2002/2013), CA 2006 s.82-84 and SI 2015/17 regs 24-25 (trading disclosures); SI 2002/2013 reg 6 (information to be provided by an online service provider)",
+      "penalty": {
+        "typical_low": 500,
+        "typical_high": 1000,
+        "statutory_max": 1000,
+        "currency": "GBP",
+        "basis": "CA 2006 s.84: a fine on the company and every officer in default at level 3 on the standard scale (up to GBP 1,000); reg 6 breach is actionable and can support enforcement orders",
+        "max_is_rare": false
+      },
+      "binding": true,
+      "state": "screened",
+      "findings": []
+    }
+  ],
+  "counts": {
+    "critical": 1,
+    "high": 0,
+    "standard": 1,
+    "total": 2
+  },
+  "confirmed": 1,
+  "screenedLabel": "Screened the catalogue on a limited read of your site",
+  "frameworksAssessed": 42,
+  "frameworksBinding": 14,
+  "rulesChecked": 19,
+  "exposure": {
+    "value": 5500,
+    "currency": "GBP",
+    "label": "median enforcement exposure"
+  },
+  "exposureFull": {
+    "value": 8805500,
+    "currency": "GBP",
+    "label": "median exposure including items under review"
+  },
+  "exposureNote": "Exposure is the midpoint of each statute family's typical enforcement band, de-duplicated to one figure per family; the statutory ceiling shown is the single highest maximum across breached families, never a sum of maxima. Figures follow each statute's own currency and are not converted.",
+  "exposureWaterfall": {
+    "steps": [
+      {
+        "family": "equality act 2010",
+        "typical_low": 1000,
+        "typical_high": 10000,
+        "familyCeiling": null,
+        "currency": "GBP",
+        "state": "violation"
+      },
+      {
+        "family": "privacy and electronic communications (ec directive) regulations 2003 (si 2003/2426)",
+        "typical_low": 100000,
+        "typical_high": 17500000,
+        "familyCeiling": 17500000,
+        "currency": "GBP",
+        "state": "needs_review"
+      }
+    ],
+    "ceiling": null
+  }
+}

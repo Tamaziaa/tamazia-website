@@ -1,0 +1,210 @@
+// _qa/qa_lux.mjs · render gate for the LUX (contract-v1.1) path.
+//
+// Mirrors _qa/qa_render.mjs's jsdom harness, but exercises the NEW versioned path:
+// renderLuxShell(golden) + audit-lux.js executed against jsdom. It asserts the honesty
+// contract on the real golden (a v1.1 payload the engine minted live):
+//   (a) the B1 band prints P.exposure.value with P.exposure.label, and NEVER a ceiling /
+//       statutory-max / with-review figure as the headline (C-094/C-096)
+//   (b) the P.notLegalAdvice sentence is present verbatim (C-200)
+//   (c) each waterfall step renders with its state class, and needs_review steps carry the
+//       hatched class and sit outside the confident subtotal (Rule 10 / C-111)
+//   (d) the counts line matches the payload counts
+//   (e) ZERO fabrication: every monetary amount and every framework/regulator/family name in
+//       the DOM traces to a field in the payload JSON (Rule 2)
+//   (f) a legacy fixture (no findings[]) routes legacy, i.e. isV11() is false for it, and true
+//       for the golden
+//
+// The golden lives at _qa/fixtures/v11/ deliberately: qa_render.mjs and backtest.mjs scan only
+// _qa/fixtures/ and _qa/fixtures/_matrix/ and would force a v1.1 payload through the LEGACY
+// renderer (which cannot render its not_probed SEO/GEO scaffold) and go red. The v11/ subdir keeps
+// both legacy harnesses green while this harness reads the golden directly (see the PR summary).
+import { JSDOM } from 'jsdom';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url)); // .../tamazia-website/_qa
+const REPO = join(__dirname, '..');
+const { renderLuxShell, isV11 } = await import(join(REPO, 'functions/audit/_lux.js'));
+
+const assets = {
+  css: readFileSync(join(REPO, 'public/audit/audit-lux.css'), 'utf8'),
+  app: readFileSync(join(REPO, 'public/audit/audit-lux.js'), 'utf8'),
+};
+
+const GOLDEN_PATH = join(__dirname, 'fixtures', 'v11', 'lomond-realestate-uk-v11.json');
+const LEGACY_PATH = join(__dirname, 'fixtures', 'greystar-realestate-uk.json');
+const goldenText = readFileSync(GOLDEN_PATH, 'utf8');
+const payload = JSON.parse(goldenText);
+const legacyPayload = JSON.parse(readFileSync(LEGACY_PATH, 'utf8'));
+
+function renderDom(p) {
+  const html = renderLuxShell(p, { inline: true, assets });
+  return new JSDOM(html, {
+    runScripts: 'dangerously', pretendToBeVisual: true,
+    beforeParse(w) {
+      w.IntersectionObserver = class { constructor() {} observe() {} unobserve() {} disconnect() {} };
+      w.scrollTo = () => {};
+      w.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+    },
+  });
+}
+
+// maximal digit-runs (commas stripped) present in a string
+function digitRuns(s) {
+  const out = new Set();
+  const re = /\d[\d,]*/g; let m;
+  while ((m = re.exec(String(s))) !== null) out.add(m[0].replace(/,/g, ''));
+  return out;
+}
+const norm = (s) => String(s == null ? '' : s).trim();
+
+const issues = [];
+const fail = (label, detail) => issues.push(label + (detail ? ' · ' + detail : ''));
+
+const dom = renderDom(payload);
+const doc = dom.window.document;
+const app = doc.getElementById('app');
+
+if (!app || !app.innerHTML.trim()) {
+  fail('#app NOT BUILT (audit-lux.js threw or produced nothing)');
+} else {
+  const appText = app.textContent || '';
+  const q = (s) => app.querySelector(s);
+  const qa = (s) => Array.from(app.querySelectorAll(s));
+
+  // ---- (a) B1 verdict band: exposure headline is exposure.value + label, never a ceiling ----
+  (function () {
+    const v = q('.lux-band .lux-expo .v');
+    const l = q('.lux-band .lux-expo .l');
+    if (!v) return fail('(a) no exposure headline .lux-band .lux-expo .v');
+    const headlineDigits = [...digitRuns(v.textContent)];
+    const wantVal = String(payload.exposure && payload.exposure.value);
+    if (!headlineDigits.includes(wantVal)) fail('(a) headline does not show exposure.value', `got ${JSON.stringify(v.textContent)}, want ${wantVal}`);
+    if (!l || !norm(l.textContent).includes(norm(payload.exposure && payload.exposure.label))) fail('(a) exposure.label not shown beside headline', norm(l && l.textContent));
+    // the headline must not be any forbidden figure (ceiling / statutory max / with-review total)
+    const forbidden = new Set();
+    const wf = payload.exposureWaterfall || {};
+    if (wf.ceiling && wf.ceiling.value != null) forbidden.add(String(wf.ceiling.value));
+    (wf.steps || []).forEach((s) => { if (s.familyCeiling != null) forbidden.add(String(s.familyCeiling)); });
+    (payload.findings || []).forEach((f) => { if (f.penalty && f.penalty.statutory_max != null) forbidden.add(String(f.penalty.statutory_max)); });
+    if (payload.exposureFull && payload.exposureFull.value != null) forbidden.add(String(payload.exposureFull.value));
+    for (const d of headlineDigits) if (forbidden.has(d)) fail('(a) headline shows a FORBIDDEN figure (ceiling/max/full)', d);
+  })();
+
+  // ---- (b) not-legal-advice sentence present verbatim ----
+  (function () {
+    const nla = norm(payload.notLegalAdvice);
+    if (!nla) return fail('(b) payload has no notLegalAdvice string');
+    if (!appText.includes(nla)) fail('(b) notLegalAdvice not present verbatim');
+    const el = q('.lux-nla');
+    if (!el || !norm(el.textContent).includes(nla)) fail('(b) notLegalAdvice not in the pinned .lux-nla element');
+  })();
+
+  // ---- (c) waterfall steps carry state class; needs_review carry hatched + are separated ----
+  (function () {
+    const steps = (payload.exposureWaterfall && payload.exposureWaterfall.steps) || [];
+    if (!steps.length) return; // empty-state path is exercised separately below
+    const wantViol = steps.filter((s) => s.state === 'violation').length;
+    const wantRev = steps.filter((s) => s.state === 'needs_review').length;
+    const gotViol = qa('.lux-wf-step--violation').length;
+    const gotRev = qa('.lux-wf-step--needs_review').length;
+    if (gotViol !== wantViol) fail('(c) violation step count', `dom ${gotViol} vs payload ${wantViol}`);
+    if (gotRev !== wantRev) fail('(c) needs_review step count', `dom ${gotRev} vs payload ${wantRev}`);
+    // every needs_review step's bar is hatched; no violation step is hatched
+    const revHatch = qa('.lux-wf-step--needs_review .lux-wf-hatch').length;
+    if (revHatch !== wantRev) fail('(c) needs_review steps missing hatched bar', `${revHatch}/${wantRev}`);
+    if (qa('.lux-wf-step--violation .lux-wf-hatch').length !== 0) fail('(c) a violation step is hatched (must be solid)');
+    // the under-review zone is a distinct block from the confident zone (outside the confident total)
+    if (wantRev > 0 && !q('.lux-wf-zone.z-review')) fail('(c) no under-review zone separating needs_review from the confident subtotal');
+    // every step family is direct-labelled
+    if (qa('.lux-wf-family').length !== steps.length) fail('(c) family label count', `${qa('.lux-wf-family').length}/${steps.length}`);
+  })();
+
+  // ---- (d) counts line matches payload counts ----
+  (function () {
+    const counts = payload.counts || {};
+    const findings = payload.findings || [];
+    const nViol = findings.filter((f) => f.state === 'violation').length;
+    const nRev = findings.filter((f) => f.state === 'needs_review').length;
+    const chip = (sel) => { const e = q(sel + ' b'); return e ? norm(e.textContent) : null; };
+    const total = chip('.lux-c-total');
+    if (total !== String(counts.total)) fail('(d) total chip', `${total} vs counts.total ${counts.total}`);
+    if (chip('.lux-c-confirmed') !== String(nViol)) fail('(d) confirmed chip', `${chip('.lux-c-confirmed')} vs ${nViol}`);
+    if (chip('.lux-c-review') !== String(nRev)) fail('(d) review chip', `${chip('.lux-c-review')} vs ${nRev}`);
+    if (payload.frameworksAssessed != null && chip('.lux-c-assessed') !== String(payload.frameworksAssessed)) fail('(d) assessed chip', chip('.lux-c-assessed'));
+    if (payload.frameworksBinding != null && chip('.lux-c-binding') !== String(payload.frameworksBinding)) fail('(d) binding chip', chip('.lux-c-binding'));
+    if (payload.rulesChecked != null && chip('.lux-c-rules') !== String(payload.rulesChecked)) fail('(d) rules chip', chip('.lux-c-rules'));
+    // the count line must be consistent with the findings array itself
+    if (counts.total !== findings.length) fail('(d) counts.total disagrees with findings.length', `${counts.total} vs ${findings.length}`);
+  })();
+
+  // ---- (e) zero fabrication: every DOM amount + name traces to the payload JSON ----
+  (function () {
+    const payloadDigits = digitRuns(goldenText);
+    const domDigits = digitRuns(appText);
+    for (const d of domDigits) {
+      if (!payloadDigits.has(d)) fail('(e) DOM number NOT in payload (possible fabricated figure)', d);
+    }
+    // framework / regulator / family names must be verbatim substrings of the payload
+    for (const sel of ['.lux-fw-name', '.lux-reg-name', '.lux-wf-family']) {
+      for (const el of qa(sel)) {
+        const t = norm(el.textContent);
+        if (t && !goldenText.includes(t)) fail('(e) name NOT in payload (' + sel + ')', JSON.stringify(t).slice(0, 80));
+      }
+    }
+  })();
+}
+
+// ---- (f) legacy fixture routes legacy; golden routes lux ----
+(function () {
+  if (isV11(legacyPayload) !== false) fail('(f) isV11 must be false for a legacy fixture (greystar)');
+  if (isV11(payload) !== true) fail('(f) isV11 must be true for the v1.1 golden');
+})();
+
+// ---- bonus: the empty-steps path renders the compliant state honestly (no invented bars) ----
+(function () {
+  const clone = JSON.parse(goldenText);
+  clone.exposureWaterfall = { steps: [], ceiling: null };
+  const d2 = renderDom(clone);
+  const a2 = d2.window.document.getElementById('app');
+  if (!a2 || !a2.innerHTML.trim()) { fail('(empty) #app not built for empty-steps payload'); d2.window.close(); return; }
+  if (a2.querySelectorAll('.lux-wf-bar').length !== 0) fail('(empty) invented waterfall bars for empty steps');
+  if (!a2.querySelector('.lux-wf-empty')) fail('(empty) no honest empty-state block for empty steps');
+  d2.window.close();
+})();
+
+// ---- bonus: a ceiling-present payload draws a labelled plateau, never the headline, never summed ----
+// The real golden carries exposureWaterfall.ceiling = null, so the plateau is correctly absent above.
+// This clone (a figure already in the payload, so the trace property holds) proves the plateau path.
+(function () {
+  const clone = JSON.parse(goldenText);
+  const withMax = (clone.findings || []).find((f) => f.penalty && f.penalty.statutory_max != null);
+  const ceilVal = withMax ? withMax.penalty.statutory_max : 17500000;
+  clone.exposureWaterfall = { steps: clone.exposureWaterfall.steps, ceiling: { value: ceilVal, label: 'statutory ceiling', currency: 'GBP' } };
+  const d3 = renderDom(clone);
+  const a3 = d3.window.document.getElementById('app');
+  if (!a3 || !a3.innerHTML.trim()) { fail('(ceiling) #app not built for ceiling-present payload'); d3.window.close(); return; }
+  const ce = a3.querySelector('.lux-wf-ceiling');
+  if (!ce) fail('(ceiling) no plateau element for a ceiling-present payload');
+  else {
+    if (!norm(ce.textContent).includes('statutory ceiling')) fail('(ceiling) plateau missing its label');
+    if (![...digitRuns(ce.textContent)].includes(String(ceilVal))) fail('(ceiling) plateau missing the ceiling value');
+  }
+  // the headline must STILL be exposure.value, never the ceiling
+  const hv = a3.querySelector('.lux-band .lux-expo .v');
+  if (hv && [...digitRuns(hv.textContent)].includes(String(ceilVal))) fail('(ceiling) headline shows the ceiling value (must be exposure.value)');
+  d3.window.close();
+})();
+
+dom.window.close();
+
+if (issues.length) {
+  console.log(`\n### qa_lux · ${issues.length} issue(s) on the v1.1 golden`);
+  issues.forEach((i) => console.log('   - ' + i));
+  console.log(`\n==== ${issues.length} total issues ====`);
+  process.exit(1);
+}
+console.log('OK  qa_lux · lomond-realestate-uk-v11 renders clean through the lux path (B1 + B4, honesty contract holds)');
+console.log('\n==== 0 total issues ====');
+process.exit(0);

@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "node scripts/generate-og.js && node scripts/build-cockpit.mjs && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "qa:lux": "node _qa/qa_lux.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

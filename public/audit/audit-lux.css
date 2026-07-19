@@ -1,0 +1,124 @@
+/* ============================================================
+   TAMAZIA AUDIT · LUX (contract-v1.1) render layer
+   B0 token foundation + B1 verdict band + B4 exposure waterfall.
+   Additive: the legacy audit.css is byte-untouched and unrelated to this file.
+   Palette is the EXACT :root set from audit.css (no invented colours).
+   ------------------------------------------------------------
+   WCAG 2.2 (SC 1.4.3 body >= 4.5:1, large/UI >= 3:1), computed not rounded:
+     ink #1A0A0E on cream #F8F4EE ....... 16.7:1  (body)
+     muted #6E625F on cream ............. 5.3:1   (secondary prose, meta)
+     cream #F8F4EE on ox #5A1A2B ........ 11.7:1  (verdict band headline)
+     gold #C9A87C on ox-deep #2A0C14 .... 8.1:1   (band eyebrow/labels)
+     white on red #B3261E ............... 6.6:1   (violation badge)
+     ink on amber-bg #F6ECD8 ............ ~15:1   (needs-review badge text)
+     red #B3261E on cream ............... 5.9:1   (violation mark)
+     amber #B6791F as border/mark only .. 3.3:1   (>=3:1 UI, never body prose)
+   The three states are distinguishable WITHOUT colour: violation = filled +
+   solid rule + up-triangle glyph; needs-review = outlined + dashed + REVIEW;
+   pass = light + check glyph.
+   ============================================================ */
+:root{
+  --ox:#5A1A2B; --ox-deep:#2A0C14; --ox-mid:#7A2A3B; --ox-soft:#8a4453;
+  --gold:#C9A87C; --gold-light:#E8D4B0; --gold-pale:#F5EDD8;
+  --cream:#F8F4EE; --cream-2:#F1EAE0; --paper:#FFFFFF; --ink:#1A0A0E;
+  --muted:#6E625F; --muted-2:#9a8f8b; --line:#E7DDD0; --line-2:#D8CCBC;
+  --red:#B3261E; --red-deep:#8A1C16; --red-bg:#F7E7E4; --amber:#B6791F; --amber-bg:#F6ECD8;
+  --green:#2F7A4A; --green-bg:#E4EFE7; --blue:#2A5DA8;
+  --shadow:0 1px 2px rgba(42,12,20,.04),0 8px 24px rgba(42,12,20,.06);
+  --shadow-lg:0 2px 6px rgba(42,12,20,.06),0 22px 54px rgba(42,12,20,.11);
+  --r:14px;
+  --serif:'Fraunces',Georgia,serif; --body:'Newsreader',Georgia,serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  --fs-3xs:10px; --fs-2xs:11px; --fs-xs:12px; --fs-sm:13px; --fs-ms:14px;
+  --fs-base:16px; --fs-md:17px; --fs-lg:19px; --fs-xl:21px; --fs-2xl:24px;
+  --fs-3xl:28px; --fs-4xl:32px; --fs-5xl:40px;
+  --lh-tight:1.15; --lh-snug:1.4; --lh-body:1.6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:var(--fs-base);line-height:var(--lh-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.lux{max-width:920px;margin:0 auto;padding:34px 28px 128px;min-height:100vh}
+.lux .mono{font-family:var(--mono)} .lux .serif{font-family:var(--serif)}
+.lux .num{font-family:var(--serif);font-variant-numeric:tabular-nums;line-height:.95}
+.lux h1,.lux h2,.lux h3{font-family:var(--serif);font-weight:400;line-height:var(--lh-tight);letter-spacing:-.01em}
+.lux .eyebrow{font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+
+/* ---- B1 · verdict band ------------------------------------------------ */
+.lux-band{background:linear-gradient(158deg,var(--ox),var(--ox-deep));border-radius:var(--r);color:var(--gold-pale);padding:30px 30px 26px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.lux-band .lux-eyebrow{color:var(--gold);font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.16em;text-transform:uppercase;font-weight:500;display:block;margin-bottom:12px}
+.lux-band .lux-for{color:var(--gold-light)}
+.lux-verdict{color:#fff;font-family:var(--serif);font-size:var(--fs-3xl);line-height:1.14;letter-spacing:-.01em;max-width:34ch;margin:2px 0 18px}
+.lux-band .lux-domain{font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.06em;color:var(--gold-light);opacity:.82;text-transform:none}
+.lux-expo{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-top:18px;border-top:1px solid rgba(201,168,124,.28);margin-top:4px}
+.lux-expo .v{font-family:var(--serif);font-size:var(--fs-5xl);color:#fff;line-height:1;font-variant-numeric:tabular-nums}
+.lux-expo .l{font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.05em;text-transform:uppercase;color:var(--gold-light);opacity:.9;line-height:1.5;padding-bottom:5px;max-width:24ch}
+.lux-counts{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.lux-count{font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.04em;color:var(--gold-pale);background:rgba(245,237,216,.09);border:1px solid rgba(201,168,124,.24);border-radius:999px;padding:5px 11px}
+.lux-count b{font-family:var(--serif);font-weight:500;color:#fff;letter-spacing:0}
+.lux-screened{margin-top:14px;font-family:var(--body);font-size:var(--fs-sm);color:var(--gold-light);opacity:.9;line-height:1.5}
+
+/* ---- section scaffolding ---------------------------------------------- */
+.lux-sec{margin-top:34px}
+.lux-sec > .lux-eyebrow{color:var(--ox);display:block;margin-bottom:8px}
+.lux-sec h2{font-size:var(--fs-2xl);color:var(--ox-deep);margin-bottom:6px;max-width:40ch}
+.lux-sec .lux-lede{font-family:var(--body);font-size:var(--fs-base);color:var(--muted);max-width:64ch;line-height:1.55}
+
+/* ---- B4 · exposure waterfall ------------------------------------------ */
+.lux-wf-wrap{overflow-x:auto;margin-top:16px;padding-bottom:4px}
+.lux-wf{min-width:560px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);padding:20px 22px 16px}
+.lux-wf-zone{padding:0}
+/* the under-review zone is visually OUTSIDE the confident subtotal: a hard dashed divide above it */
+.lux-wf-zone.z-review{margin-top:16px;padding-top:16px;border-top:2px dashed var(--line-2)}
+.lux-wf-ztitle{font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.lux-wf-ztitle.z-solid{color:var(--ox)}
+.lux-wf-ztitle.z-review{color:var(--amber)}
+.lux-wf-track{position:relative;height:auto}
+.lux-wf-step{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:14px}
+.lux-wf-step:last-child{margin-bottom:2px}
+.lux-wf-family{font-family:var(--body);font-size:var(--fs-sm);color:var(--ink);line-height:1.3;text-transform:capitalize}
+.lux-wf-barrow{position:relative;height:26px;background:var(--cream-2);border-radius:6px;overflow:hidden}
+.lux-wf-bar{position:absolute;top:0;bottom:0;border-radius:6px;min-width:6px}
+/* violation = SOLID fill + solid left rule */
+.lux-wf-step--violation .lux-wf-bar{background:linear-gradient(180deg,var(--ox-mid),var(--ox));border-left:3px solid var(--ox-deep)}
+/* needs_review = HATCHED + dashed outline; drawn in the under-review zone, never in the confident total */
+.lux-wf-hatch{background:repeating-linear-gradient(45deg,rgba(182,121,31,.55) 0 5px,rgba(246,236,216,.9) 5px 11px);border:1.5px dashed var(--amber)}
+.lux-wf-band{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--muted);letter-spacing:.02em}
+.lux-wf-band .st{color:var(--amber);text-transform:uppercase;letter-spacing:.08em}
+.lux-wf-subtotal{margin-top:6px;font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.03em;color:var(--muted)}
+.lux-wf-subtotal b{font-family:var(--serif);font-size:var(--fs-md);color:var(--ox-deep);letter-spacing:0}
+.lux-wf-subtotal.z-review b{color:var(--amber)}
+/* ceiling plateau: a labelled dashed rule, never summed into any total */
+.lux-wf-ceiling{margin-top:10px;padding-top:10px;border-top:2px dashed var(--line-2);font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.03em;color:var(--muted);display:flex;justify-content:space-between;gap:12px}
+.lux-wf-ceiling b{font-family:var(--serif);color:var(--ox-deep);letter-spacing:0}
+.lux-wf-scale{margin-top:12px;font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2)}
+.lux-wf-basis{margin-top:12px;font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.55;max-width:70ch}
+.lux-wf-empty{margin-top:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--green-bg);padding:18px 20px;font-family:var(--body);font-size:var(--fs-base);color:var(--ink);line-height:1.55}
+
+/* ---- findings list (state-badged, honest voice) ----------------------- */
+.lux-find{border:1px solid var(--line);border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);padding:18px 20px;margin-top:14px}
+.lux-find-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.lux-badge{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;font-weight:500;border-radius:999px;padding:4px 10px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.lux-badge .g{font-family:var(--serif);font-size:var(--fs-sm);line-height:1}
+.lux-badge--violation{background:var(--red);color:#fff}
+.lux-badge--needs_review{background:var(--amber-bg);color:var(--ink);border:1.5px dashed var(--amber)}
+.lux-badge--pass{background:var(--green-bg);color:var(--ink);border:1px solid var(--green)}
+.lux-fw-name{font-family:var(--serif);font-size:var(--fs-md);color:var(--ox-deep);line-height:1.25;flex:1 1 16ch;min-width:0}
+.lux-find-desc{font-family:var(--body);font-size:var(--fs-base);color:var(--ink);line-height:1.55;margin:6px 0}
+.lux-find-meta{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);display:grid;gap:6px}
+.lux-find-row{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline}
+.lux-find-row .k{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);white-space:nowrap}
+.lux-find-row .val{font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.45}
+.lux-find-row .val.reg,.lux-find-row .val.pen{color:var(--ink)}
+.lux-find-note{margin-top:8px;font-family:var(--body);font-size:var(--fs-sm);font-style:italic;color:var(--muted);line-height:1.45}
+
+/* ---- pinned not-legal-advice standing line (C-200) -------------------- */
+.lux-nla{position:sticky;bottom:0;left:0;right:0;margin:38px -28px -128px;padding:13px 28px;background:rgba(248,244,238,.96);border-top:1px solid var(--line-2);backdrop-filter:blur(6px);font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.02em;color:var(--muted);line-height:1.5;z-index:20}
+.lux-nla b{font-family:var(--body);font-style:italic;font-weight:400;color:var(--ink);letter-spacing:0}
+
+@media (max-width:600px){
+  .lux{padding:24px 18px 132px}
+  .lux-verdict{font-size:var(--fs-2xl)}
+  .lux-expo .v{font-size:var(--fs-4xl)}
+  .lux-nla{margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px}
+}
+/* honour reduced motion: nothing animates here, but keep smooth-scroll opt-out explicit */
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

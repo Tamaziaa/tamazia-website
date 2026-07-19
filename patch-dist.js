@@ -1690,6 +1690,19 @@ try {
   } else { console.log('[patch-dist]   PASS 132. dist/audit/fonts/ · all ' + need.length + ' self-hosted woff2 present'); results.push({ ok: true }); }
 } catch (e) { console.error('[patch-dist]   FAIL 132. dist/audit/fonts/ check threw · ' + e.message); results.push({ ok: false }); }
 
+// Gate 133 · lux (contract-v1.1) audit assets present in dist/ (audit-lux.js + audit-lux.css copied
+// from public/audit/). Same failure mode as gate 131: if these are not in dist/audit/ the versioned
+// v1.1 report links /audit/audit-lux.{js,css}?v= and both 404 live, rendering a blank page.
+try {
+  const auditDir = join(DIST_DIR, 'audit');
+  const need = ['audit-lux.js', 'audit-lux.css'];
+  const missing = need.filter(f => !existsSync(join(auditDir, f)));
+  if (!existsSync(auditDir) || missing.length) {
+    console.error('[patch-dist]   FAIL 133. dist/audit/ lux assets missing · ' + (existsSync(auditDir) ? missing.join(', ') : 'no dist/audit dir'));
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 133. dist/audit/ · audit-lux.js + audit-lux.css present'); results.push({ ok: true }); }
+} catch (e) { console.error('[patch-dist]   FAIL 133. dist/audit/ lux check threw · ' + e.message); results.push({ ok: false }); }
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

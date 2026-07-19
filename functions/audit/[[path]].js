@@ -5,6 +5,7 @@
 import { neonQuery } from '../api/_neon.js';
 import { payloadToD } from './_adapter.js';
 import { renderShell, errorShell } from './_shell.js';
+import { renderLuxShell, isV11 } from './_lux.js';
 
 // Founder-confirmed direct line. Threaded to window.D.contactPhone so the audit founder block
 // (and any element keyed on it) renders the number beside founder@tamazia.co.uk. env.CONTACT_PHONE
@@ -90,33 +91,45 @@ export async function onRequest(context) {
 
   let html;
   try {
-    // FOUNDER-BLOCKED links + contact (env-gated). Passed through to window.D so the client renders each
-    // element ONLY when its value is present; when an env var is unset the field is '' and the element is omitted.
-    const links = {
-      booking: env.BOOKING_URL || '',
-      stripeUnlock: env.STRIPE_LINK_UNLOCK || '',
-      stripeCover: env.STRIPE_LINK_COVER || '',
-      stripeFix10: env.STRIPE_LINK_FIX10 || '',
-      stripeFix20: env.STRIPE_LINK_FIX20 || '',
-      stripeFix30: env.STRIPE_LINK_FIX30 || '',
-    };
-    const D = payloadToD(payload, {
-      company: row.company, now: Date.now(), generated_at: row.generated_at || null,
-      // E-218: verifier verdict + row status drive the truth-filtered render for anything not verified=true.
-      verified: row.verified === true || row.verified === 't',
-      row_status: row.status || 'live',
-      // C-B: thread the page's slug+hash so D.meta carries them; both audit forms then POST
-      // audit_slug + audit_domain (+ top_finding) and the lead resolves back to this exact report.
-      slug, hash,
-      // C-D: a paying customer who lands on ?unlocked=1 sees the report open immediately even before
-      // the webhook's audit_pages.unlocked write has propagated. isUnlocked ORs the column with the param.
-      unlocked: isUnlocked,
-      links, contactPhone: env.CONTACT_PHONE || CONTACT_PHONE_DEFAULT,
-      posthogKey: env.POSTHOG_KEY || '', posthogHost: env.POSTHOG_HOST || '',
-    });
-    // E-246: hand a REAL, deploy-unique asset version to the shell. CF_PAGES_COMMIT_SHA changes on every
-    // deployment, so the ?v= query string changes with it and the 4h edge cache can never serve a stale bundle.
-    html = renderShell(D, { buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38' });
+    // VERSIONED DISPATCH (contract-v1.1): a payload the engine composed against the v1.1 contract
+    // (findings[] + notLegalAdvice) renders through the additive lux shell, which reads the RAW payload
+    // directly (window.P) and re-derives nothing. Everything else routes the legacy renderShell path
+    // unchanged. The cache/unlock/PostHog behaviour below is identical for both branches (isUnlocked was
+    // resolved above; the open beacon + PostHog fire after this block regardless of branch).
+    if (isV11(payload)) {
+      html = renderLuxShell(payload, {
+        company: row.company,
+        buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38',
+      });
+    } else {
+      // FOUNDER-BLOCKED links + contact (env-gated). Passed through to window.D so the client renders each
+      // element ONLY when its value is present; when an env var is unset the field is '' and the element is omitted.
+      const links = {
+        booking: env.BOOKING_URL || '',
+        stripeUnlock: env.STRIPE_LINK_UNLOCK || '',
+        stripeCover: env.STRIPE_LINK_COVER || '',
+        stripeFix10: env.STRIPE_LINK_FIX10 || '',
+        stripeFix20: env.STRIPE_LINK_FIX20 || '',
+        stripeFix30: env.STRIPE_LINK_FIX30 || '',
+      };
+      const D = payloadToD(payload, {
+        company: row.company, now: Date.now(), generated_at: row.generated_at || null,
+        // E-218: verifier verdict + row status drive the truth-filtered render for anything not verified=true.
+        verified: row.verified === true || row.verified === 't',
+        row_status: row.status || 'live',
+        // C-B: thread the page's slug+hash so D.meta carries them; both audit forms then POST
+        // audit_slug + audit_domain (+ top_finding) and the lead resolves back to this exact report.
+        slug, hash,
+        // C-D: a paying customer who lands on ?unlocked=1 sees the report open immediately even before
+        // the webhook's audit_pages.unlocked write has propagated. isUnlocked ORs the column with the param.
+        unlocked: isUnlocked,
+        links, contactPhone: env.CONTACT_PHONE || CONTACT_PHONE_DEFAULT,
+        posthogKey: env.POSTHOG_KEY || '', posthogHost: env.POSTHOG_HOST || '',
+      });
+      // E-246: hand a REAL, deploy-unique asset version to the shell. CF_PAGES_COMMIT_SHA changes on every
+      // deployment, so the ?v= query string changes with it and the 4h edge cache can never serve a stale bundle.
+      html = renderShell(D, { buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38' });
+    }
   } catch (e) {
     return htmlResponse(errorShell('Audit could not be rendered', 'The Tamazia team has been notified.'), 500);
   }

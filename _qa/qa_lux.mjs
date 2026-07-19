@@ -73,23 +73,39 @@ const norm = (s) => String(s == null ? '' : s).trim();
 // two not-legal-advice copies (bottom .lux-nla, rail .lux-rail-nla) cannot be read from the DOM. It
 // is instead proven directly from the stylesheet: parse the top-level @media blocks, then for a
 // given selector + width decide whether a matching block declares display:none for it.
+// Index of the '}' that closes the block opened at `open` (css[open] === '{'), plus one -- i.e. the
+// position to resume scanning from. Braces nest (a @media block wraps its own rule blocks), so this
+// tracks depth rather than stopping at the first '}'. Falls back to css.length on unbalanced input
+// so a malformed stylesheet still terminates instead of looping forever.
+function findBlockEnd(css, open) {
+  let depth = 0;
+  for (let j = open; j < css.length; j++) {
+    if (css[j] === '{') depth++;
+    else if (css[j] === '}' && --depth === 0) return j + 1;
+  }
+  return css.length;
+}
+
+// Parse the single @media block whose "@media" keyword starts at `at`. Returns null when the
+// at-rule has no opening brace at all (malformed CSS -- nothing left to parse).
+function parseMediaBlockAt(css, at) {
+  const open = css.indexOf('{', at);
+  if (open === -1) return null;
+  const end = findBlockEnd(css, open);
+  return { cond: css.slice(at + 6, open), body: css.slice(open + 1, end - 1), end };
+}
+
+// Every top-level @media block in a stylesheet, in source order, as { cond, body } pairs.
 function cssMediaBlocks(css) {
   const blocks = [];
-  const n = css.length;
   let i = 0;
-  while (i < n) {
+  while (i < css.length) {
     const at = css.indexOf('@media', i);
     if (at === -1) break;
-    const open = css.indexOf('{', at);
-    if (open === -1) break;
-    const cond = css.slice(at + 6, open);
-    let depth = 0, j = open;
-    for (; j < n; j++) {
-      if (css[j] === '{') depth++;
-      else if (css[j] === '}') { depth--; if (depth === 0) { j++; break; } }
-    }
-    blocks.push({ cond, body: css.slice(open + 1, j - 1) });
-    i = j;
+    const block = parseMediaBlockAt(css, at);
+    if (!block) break;
+    blocks.push({ cond: block.cond, body: block.body });
+    i = block.end;
   }
   return blocks;
 }
@@ -347,6 +363,26 @@ if (!app || !app.innerHTML.trim()) {
 (function () {
   if (isV11(legacyPayload) !== false) fail('(f) isV11 must be false for a legacy fixture (greystar)');
   if (isV11(payload) !== true) fail('(f) isV11 must be true for the v1.1 golden');
+})();
+
+// ---- calibration: the (m) NLA visibility check must have teeth. Feed nlaHiddenAt (the same
+//      function (m) uses against the real stylesheet) two deliberately BROKEN fixture stylesheets
+//      and confirm the visible-count arithmetic correctly flags each one: a seeded DOUBLE-VISIBLE
+//      break (neither copy is ever hidden -> both show at once) and a seeded ZERO-VISIBLE break
+//      (both copies hidden under the same breakpoint -> neither shows). A check that cannot catch
+//      its own known-bad fixture is not proving anything about the real CSS. ----
+(function () {
+  const width = 500;
+  const visibleCount = (css) =>
+    (nlaHiddenAt(css, '.lux-nla', width) ? 0 : 1) + (nlaHiddenAt(css, '.lux-rail-nla', width) ? 0 : 1);
+
+  const doubleVisibleCss = '.lux-nla{color:red}\n.lux-rail-nla{color:blue}\n';
+  const dv = visibleCount(doubleVisibleCss);
+  if (dv !== 2) fail('(calibration) seeded double-visible fixture not caught', `visible=${dv}, want 2`);
+
+  const zeroVisibleCss = '@media (max-width: 899px) { .lux-nla{display:none} .lux-rail-nla{display:none} }\n';
+  const zv = visibleCount(zeroVisibleCss);
+  if (zv !== 0) fail('(calibration) seeded zero-visible fixture not caught', `visible=${zv}, want 0`);
 })();
 
 // ---- bonus: the empty-steps path renders the compliant state honestly (no invented bars) ----

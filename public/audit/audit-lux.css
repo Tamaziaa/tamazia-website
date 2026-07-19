@@ -123,7 +123,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:
 .lux-ev-kv{display:flex;gap:8px;align-items:baseline;margin-bottom:8px;flex-wrap:wrap}
 .lux-ev-kv .k{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .lux-ev-selector{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--ox-deep);background:var(--gold-pale);border-radius:5px;padding:2px 7px;word-break:break-all}
-.lux-ev-snippet{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 11px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;line-height:1.45}
+.lux-ev-snippet{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 11px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:break-word;line-height:1.45}
 .lux-ev-detail{margin-top:8px;font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
 .lux-ev-covstats{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px}
 .lux-ev-covstat{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--muted);line-height:1.3}
@@ -182,11 +182,14 @@ body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:
 .lux-rail-cta{display:block;margin-top:16px;text-align:center;font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.06em;text-transform:uppercase;color:var(--gold-pale);background:linear-gradient(158deg,var(--ox),var(--ox-deep));border-radius:10px;padding:12px 14px;text-decoration:none;box-shadow:var(--shadow)}
 .lux-rail-cta:hover,.lux-rail-cta:focus-visible{background:var(--ox-mid)}
 
-/* mobile · rail collapses to a static summary; progress becomes a thin fixed viewport bar */
+/* mobile · rail collapses to a static summary; progress becomes a thin fixed viewport bar. The rail's
+   standing-line copy is hidden here because the bottom .lux-nla carries it below 900px (the desktop
+   grid hides that bottom copy instead), so exactly one not-legal-advice line shows at every width. */
 @media (max-width:899px){
   .lux-rail-progress{position:fixed;top:0;left:0;right:0;height:3px;border-radius:0;margin:0;z-index:40}
   .lux-rail-nav{flex-direction:row;flex-wrap:wrap}
   .lux-rail-link{flex:1 1 26%}
+  .lux-rail-nla{display:none}
 }
 
 /* ---- pinned not-legal-advice standing line (C-200) -------------------- */

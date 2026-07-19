@@ -341,6 +341,11 @@
     pass: { cls: 'lux-badge--pass', glyph: '✓', word: 'Compliant' }
   };
 
+  // The three valid finding states. Anything else falls back to needs_review (the safe, figure-free
+  // default). Kept as a lookup so cardEl carries no multi-branch conditional.
+  var STATES = { violation: 1, needs_review: 1, pass: 1 };
+  function normState(s) { return STATES[s] ? s : 'needs_review'; }
+
   function buildCards() {
     var sec = el('section', 'lux-sec lux-cards');
     sec.id = 'lux-findings';
@@ -355,8 +360,7 @@
   }
 
   function cardEl(f) {
-    var state = g(f, 'state', 'needs_review');
-    if (state !== 'violation' && state !== 'needs_review' && state !== 'pass') state = 'needs_review';
+    var state = normState(g(f, 'state', 'needs_review'));
     var meta = BADGE[state] || BADGE.needs_review;
 
     var card = el('div', 'lux-card lux-card--' + state);
@@ -389,71 +393,99 @@
     var quote = g(f, 'evidence_quote', '');
     var body = quote ? el('blockquote', 'lux-ev-quote', quote) : artifactSummary(g(f, 'artifact', null));
 
-    if (body) {
-      // lead-in only introduces evidence we actually have (never a bare lead-in · C-115)
-      var url = g(f, 'page_url', '');
-      var lead = (state === 'violation')
-        ? (url ? ('On ' + url + ', we captured the following:') : 'On your live site, we captured the following:')
-        : 'From the pages we could read, we detected the following, which needs your confirmation:';
-      col.appendChild(el('p', 'lux-ev-lead', lead));
-      col.appendChild(body);
-    } else {
-      col.appendChild(el('p', 'lux-ev-lead', state === 'violation'
-        ? 'The underlying capture is recorded against this finding.'
-        : 'This is put to you for your review.'));
-    }
+    // the lead-in is state-specific and only introduces evidence we actually have (never a bare
+    // lead-in · C-115). A pass card reads as compliant, never as review-needed or confirmed (C-200).
+    col.appendChild(el('p', 'lux-ev-lead', evidenceLead(state, g(f, 'page_url', ''), !!body)));
+    if (body) col.appendChild(body);
     return col;
   }
 
-  // Artifact summary rendered ONLY from artifact fields. Returns null when there is nothing to show.
+  // The observation lead-in, by state. hasBody picks the with-evidence phrasing over the bare one.
+  // Flat sequence of early returns (no nested blocks): each state x hasBody combination is one line.
+  function evidenceLead(state, url, hasBody) {
+    if (state === 'violation' && hasBody) return url ? ('On ' + url + ', we captured the following:') : 'On your live site, we captured the following:';
+    if (state === 'violation') return 'The underlying capture is recorded against this finding.';
+    if (state === 'pass' && hasBody) return 'On the pages we read, we found the following, which meets this obligation:';
+    if (state === 'pass') return 'This obligation appears satisfied on the pages we read.';
+    if (hasBody) return 'From the pages we could read, we detected the following, which needs your confirmation:';
+    return 'This is put to you for your review.';
+  }
+
+  // Artifact summary rendered ONLY from artifact fields. Dispatches by type to a flat per-type helper;
+  // returns null for an unknown type or an artifact with nothing to show (the fallback).
   function artifactSummary(art) {
     if (!art || typeof art !== 'object') return null;
     var type = g(art, 'type', '');
-
-    if (type === 'dom_node') {
-      var wrap = el('div', 'lux-ev-artifact lux-ev-dom');
-      var sel = g(art, 'selector', '');
-      if (sel) {
-        var r = el('div', 'lux-ev-kv');
-        r.appendChild(el('span', 'k', 'Selector'));
-        r.appendChild(el('code', 'lux-ev-selector', sel));
-        wrap.appendChild(r);
-      }
-      var snip = g(art, 'snippet', '');
-      if (snip) wrap.appendChild(el('pre', 'lux-ev-snippet', clip(snip, 240)));
-      // captured-node detail · the automated rule and WCAG success criterion, both from the artifact
-      var rule = g(art, 'rule_id', ''), wcag = g(art, 'wcag_sc', '');
-      var det = '';
-      if (rule) det = 'Automated check ' + rule;
-      if (wcag) det += (det ? ' · WCAG ' : 'WCAG ') + wcag;
-      if (det) wrap.appendChild(el('div', 'lux-ev-detail', det));
-      return (sel || snip || det) ? wrap : null;
-    }
-
-    if (type === 'network_event') {
-      var w2 = el('div', 'lux-ev-artifact lux-ev-net');
-      var host = g(art, 'host', ''), name = g(art, 'name', '');
-      if (host) { var rh = el('div', 'lux-ev-kv'); rh.appendChild(el('span', 'k', 'Host')); rh.appendChild(el('code', 'lux-ev-selector', host)); w2.appendChild(rh); }
-      if (name) { var rn = el('div', 'lux-ev-kv'); rn.appendChild(el('span', 'k', 'Request')); rn.appendChild(el('code', 'lux-ev-selector', name)); w2.appendChild(rn); }
-      return (host || name) ? w2 : null;
-    }
-
-    if (type === 'coverage_proof') {
-      var w3 = el('div', 'lux-ev-artifact lux-ev-coverage');
-      var pages = arr(g(art, 'pages_checked', []));
-      var pats = arr(g(art, 'searched_patterns', []));
-      var stats = el('div', 'lux-ev-covstats');
-      stats.appendChild(covStat(pages.length, pages.length === 1 ? 'page checked' : 'pages checked'));
-      stats.appendChild(covStat(pats.length, pats.length === 1 ? 'search pattern' : 'search patterns'));
-      w3.appendChild(stats);
-      var surface = humanise(g(art, 'surface', ''));
-      w3.appendChild(el('p', 'lux-ev-covcap',
-        'We searched the ' + (surface || 'text') + ' of these pages for the signals this obligation requires and did not find them. '
-        + 'Because such signals can sit outside the text we can read, this is put to you to confirm rather than asserted.'));
-      return w3;
-    }
-
+    if (type === 'dom_node') return domNodeSummary(art);
+    if (type === 'network_event') return networkEventSummary(art);
+    if (type === 'coverage_proof') return coverageProofSummary(art);
     return null;
+  }
+
+  // dom_node · selector + clipped snippet + the automated-check / WCAG detail line, all from the
+  // artifact. Returns null when the artifact carries none of them.
+  function domNodeSummary(art) {
+    var wrap = el('div', 'lux-ev-artifact lux-ev-dom');
+    var sel = g(art, 'selector', '');
+    if (sel) {
+      var r = el('div', 'lux-ev-kv');
+      r.appendChild(el('span', 'k', 'Selector'));
+      r.appendChild(el('code', 'lux-ev-selector', sel));
+      wrap.appendChild(r);
+    }
+    var snip = g(art, 'snippet', '');
+    if (snip) wrap.appendChild(el('pre', 'lux-ev-snippet', clip(snip, 240)));
+    var det = domNodeDetail(art);
+    if (det) wrap.appendChild(el('div', 'lux-ev-detail', det));
+    return wrap.childNodes.length ? wrap : null;
+  }
+
+  // The captured-node detail line · the automated rule id and WCAG success criterion, both from the
+  // artifact. Returns '' when neither is carried.
+  function domNodeDetail(art) {
+    var rule = g(art, 'rule_id', ''), wcag = g(art, 'wcag_sc', '');
+    var det = '';
+    if (rule) det = 'Automated check ' + rule;
+    if (wcag) det += (det ? ' · WCAG ' : 'WCAG ') + wcag;
+    return det;
+  }
+
+  // network_event · the request host + name, each from the artifact. Returns null when it carries
+  // neither.
+  function networkEventSummary(art) {
+    var wrap = el('div', 'lux-ev-artifact lux-ev-net');
+    var host = g(art, 'host', '');
+    if (host) {
+      var rh = el('div', 'lux-ev-kv');
+      rh.appendChild(el('span', 'k', 'Host'));
+      rh.appendChild(el('code', 'lux-ev-selector', host));
+      wrap.appendChild(rh);
+    }
+    var name = g(art, 'name', '');
+    if (name) {
+      var rn = el('div', 'lux-ev-kv');
+      rn.appendChild(el('span', 'k', 'Request'));
+      rn.appendChild(el('code', 'lux-ev-selector', name));
+      wrap.appendChild(rn);
+    }
+    return wrap.childNodes.length ? wrap : null;
+  }
+
+  // coverage_proof · the pages-checked + searched-patterns counts (array lengths, brief-sanctioned)
+  // and the honest observation caption. Always returns a block (the counts are meaningful at zero).
+  function coverageProofSummary(art) {
+    var wrap = el('div', 'lux-ev-artifact lux-ev-coverage');
+    var pages = arr(g(art, 'pages_checked', []));
+    var pats = arr(g(art, 'searched_patterns', []));
+    var stats = el('div', 'lux-ev-covstats');
+    stats.appendChild(covStat(pages.length, pages.length === 1 ? 'page checked' : 'pages checked'));
+    stats.appendChild(covStat(pats.length, pats.length === 1 ? 'search pattern' : 'search patterns'));
+    wrap.appendChild(stats);
+    var surface = humanise(g(art, 'surface', ''));
+    wrap.appendChild(el('p', 'lux-ev-covcap',
+      'We searched the ' + (surface || 'text') + ' of these pages for the signals this obligation requires and did not find them. '
+      + 'Because such signals can sit outside the text we can read, this is put to you to confirm rather than asserted.'));
+    return wrap;
   }
 
   function covStat(n, label) {
@@ -463,7 +495,8 @@
     return s;
   }
 
-  // RIGHT · the obligation, statute, regulator, penalty-as-context, enforcement, fix.
+  // RIGHT · the obligation, statute, regulator, penalty-as-context, enforcement, fix. Each part is a
+  // flat helper so this stays a straight-line assembler.
   function actionCol(f, state) {
     var col = el('div', 'lux-card-ac');
     col.appendChild(el('span', 'lux-col-label', 'What it means'));
@@ -471,43 +504,74 @@
     var desc = g(f, 'description', '');
     if (desc) col.appendChild(el('p', 'lux-ac-duty', desc));
 
+    col.appendChild(actionMeta(f, state));
+
+    var enf = enforcementBlock(f, state);
+    if (enf) col.appendChild(enf);
+
+    col.appendChild(remediationBlock(f));
+    return col;
+  }
+
+  // statute + regulator (verbatim) then the state-specific penalty rows.
+  function actionMeta(f, state) {
     var m = el('div', 'lux-ac-meta');
     var cite = g(f, 'statutory_citation', '');
     if (cite) m.appendChild(metaRow('Statute', cite));
     var reg = g(f, 'regulator', '');
     if (reg) m.appendChild(metaRow('Regulator', reg, 'reg', 'lux-reg-name'));
+    appendPenaltyRows(m, f, state);
+    return m;
+  }
 
-    // penalty AS CONTEXT · violation shows its typical band + basis; needs_review WITHHOLDS every
-    // figure until confirmed (Rule 10 / C-111). The contingent band still shows, hatched, in B4.
-    var pen = g(f, 'penalty', {}) || {};
-    if (state === 'violation') {
-      var cur = g(pen, 'currency', '');
-      var loS = money(g(pen, 'typical_low', null), cur), hiS = money(g(pen, 'typical_high', null), cur);
-      if (loS && hiS) m.appendChild(metaRow('Enforcement band', loS + ' to ' + hiS + ' typical', 'pen'));
-      else if (hiS) m.appendChild(metaRow('Enforcement band', 'up to ' + hiS + ' typical', 'pen'));
-      var basis = g(pen, 'basis', '');
-      if (basis) m.appendChild(metaRow('Context', basis, 'basis'));
-    } else {
+  // penalty AS CONTEXT · violation shows its typical band + basis; needs_review WITHHOLDS every figure
+  // until confirmed (Rule 10 / C-111); pass carries no exposure at all. The contingent band still
+  // shows, hatched, in B4.
+  function appendPenaltyRows(m, f, state) {
+    if (state === 'pass') {
+      m.appendChild(metaRow('Exposure', 'No exposure; this obligation appears met'));
+      return;
+    }
+    if (state !== 'violation') {
       m.appendChild(metaRow('Exposure', 'Figure withheld until confirmed', 'withheld'));
+      return;
     }
-    col.appendChild(m);
+    var pen = g(f, 'penalty', {}) || {};
+    var cur = g(pen, 'currency', '');
+    var loS = money(g(pen, 'typical_low', null), cur), hiS = money(g(pen, 'typical_high', null), cur);
+    if (loS && hiS) m.appendChild(metaRow('Enforcement band', loS + ' to ' + hiS + ' typical', 'pen'));
+    else if (hiS) m.appendChild(metaRow('Enforcement band', 'up to ' + hiS + ' typical', 'pen'));
+    var basis = g(pen, 'basis', '');
+    if (basis) m.appendChild(metaRow('Context', basis, 'basis'));
+  }
 
-    // ONE real cited enforcement case, ONLY when the payload carries enforcement[] (C-105/C-106).
-    // None carried => render nothing (never filler · C-115).
+  // ONE real cited enforcement case, ONLY when the payload carries a non-empty enforcement[] whose
+  // first entry has real content (C-105/C-106). Otherwise null (never filler · C-115).
+  function enforcementBlock(f, state) {
     var enf = arr(g(f, 'enforcement', []));
-    if (enf.length) {
-      var e0 = enf[0];
-      if (e0 && (g(e0, 'case', '') || g(e0, 'date', '') || g(e0, 'amount', ''))) col.appendChild(enforcementEl(e0, state));
-    }
+    if (!enf.length) return null;
+    var e0 = enf[0];
+    if (!enforcementHasContent(e0)) return null;
+    return enforcementEl(e0, state);
+  }
 
-    // remediation · the real fix when carried, else a neutral line (no invented specifics)
+  // true when a cited case carries any real field (case name, date, or amount). Flat single-term
+  // checks so no one conditional mixes operators.
+  function enforcementHasContent(e) {
+    if (!e) return false;
+    if (g(e, 'case', '')) return true;
+    if (g(e, 'date', '')) return true;
+    if (g(e, 'amount', '')) return true;
+    return false;
+  }
+
+  // remediation · the real fix when carried, else a neutral line (no invented specifics).
+  function remediationBlock(f) {
     var fix = g(f, 'fix', '');
     var rem = el('div', 'lux-ac-rem');
     rem.appendChild(el('span', 'lux-col-mini', 'Remediation'));
     rem.appendChild(el('p', 'lux-ac-fix', fix ? fix : 'Remediation guidance available in your walkthrough.'));
-    col.appendChild(rem);
-
-    return col;
+    return rem;
   }
 
   // One cited enforcement case. The monetary amount shows ONLY on a violation card; on a
@@ -532,7 +596,9 @@
   function voiceNote(f, state) {
     var vt = g(f, 'voice_tier', 'observation');
     var note = el('p', 'lux-card-note');
-    if (state === 'needs_review') {
+    if (state === 'pass') {
+      note.textContent = 'Evidenced as satisfied on your live pages at the time of this read.';
+    } else if (state === 'needs_review') {
       note.textContent = 'Detected on a limited read of your pages. This needs your confirmation before any figure attaches.';
     } else if (vt === 'confident') {
       note.textContent = 'Evidenced on your live site and verified against the register.';
@@ -623,26 +689,45 @@
     return s;
   }
 
-  // wireProgress · update the rail progress bar from the live scroll position. Every read is guarded:
-  // the bar is presentational, so a failed measurement must never blank the already-rendered report.
+  // scrollTop · the live vertical scroll offset, preferring window.pageYOffset and falling back to the
+  // documentElement value when no window is present (jsdom / SSR).
+  function scrollTop(de) {
+    if (typeof window !== 'undefined' && typeof window.pageYOffset === 'number') return window.pageYOffset;
+    return de.scrollTop || 0;
+  }
+
+  // scrollPct · reading progress as an integer 0..100 from the document scroll position. A pure read,
+  // no payload figure, so it asserts nothing.
+  function scrollPct() {
+    var de = doc.documentElement || {};
+    var span = (de.scrollHeight || 0) - (de.clientHeight || 0);
+    if (span <= 0) return 0;
+    var pct = Math.round((scrollTop(de) / span) * 100);
+    return Math.max(0, Math.min(100, pct));
+  }
+
+  // paintProgress · write the current percentage to the (presentational) bar + ARIA. Guarded: a failed
+  // measurement must never blank the already-mounted, fully readable report (FAIL-OPEN).
+  function paintProgress(bar, region) {
+    try {
+      var pct = scrollPct();
+      bar.style.width = pct + '%';
+      region.setAttribute('aria-valuenow', String(pct));
+    } catch (e) {
+      // FAIL-OPEN: a progress read must never break the report. The audit body is already mounted and
+      // fully readable without a progress indicator, so we swallow and leave the last value.
+    }
+  }
+
+  // wireProgress · bind the rail progress bar to the live scroll position. Every step is guarded so a
+  // wiring failure can never take the rendered report down with it (FAIL-OPEN).
   function wireProgress() {
     try {
       var bar = doc.querySelector('.lux-rail-progress-bar');
       var region = doc.querySelector('.lux-rail-progress');
-      if (!bar || !region || typeof window === 'undefined') return;
-      var update = function () {
-        try {
-          var de = doc.documentElement || {};
-          var span = (de.scrollHeight || 0) - (de.clientHeight || 0);
-          var top = (typeof window.pageYOffset === 'number' ? window.pageYOffset : (de.scrollTop || 0)) || 0;
-          var pct = span > 0 ? Math.max(0, Math.min(100, Math.round((top / span) * 100))) : 0;
-          bar.style.width = pct + '%';
-          region.setAttribute('aria-valuenow', String(pct));
-        } catch (e) {
-          // FAIL-OPEN: a progress read must never break the report. The audit body is already mounted
-          // and fully readable without a progress indicator, so we swallow and leave the last value.
-        }
-      };
+      if (!bar || !region) return;
+      if (typeof window === 'undefined') return;
+      var update = function () { paintProgress(bar, region); };
       update();
       if (typeof window.addEventListener === 'function') {
         window.addEventListener('scroll', update, { passive: true });

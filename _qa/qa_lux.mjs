@@ -68,6 +68,52 @@ function digitRuns(s) {
 }
 const norm = (s) => String(s == null ? '' : s).trim();
 
+// --- CSS media-query evaluator ----------------------------------------------------------------
+// jsdom applies no layout and stubs matchMedia to always-false, so the viewport visibility of the
+// two not-legal-advice copies (bottom .lux-nla, rail .lux-rail-nla) cannot be read from the DOM. It
+// is instead proven directly from the stylesheet: parse the top-level @media blocks, then for a
+// given selector + width decide whether a matching block declares display:none for it.
+function cssMediaBlocks(css) {
+  const blocks = [];
+  const n = css.length;
+  let i = 0;
+  while (i < n) {
+    const at = css.indexOf('@media', i);
+    if (at === -1) break;
+    const open = css.indexOf('{', at);
+    if (open === -1) break;
+    const cond = css.slice(at + 6, open);
+    let depth = 0, j = open;
+    for (; j < n; j++) {
+      if (css[j] === '{') depth++;
+      else if (css[j] === '}') { depth--; if (depth === 0) { j++; break; } }
+    }
+    blocks.push({ cond, body: css.slice(open + 1, j - 1) });
+    i = j;
+  }
+  return blocks;
+}
+function cssMediaMatches(cond, width) {
+  const mn = cond.match(/min-width:\s*(\d+)px/);
+  const mx = cond.match(/max-width:\s*(\d+)px/);
+  if (mn && width < Number(mn[1])) return false;
+  if (mx && width > Number(mx[1])) return false;
+  return true;
+}
+// Hidden by a matching @media display:none rule for `sel` at viewport `width`. Neither NLA selector
+// carries a base display rule and nothing un-hides them, so a single matching display:none decides.
+// The leading (?:^|[},]) anchor stops `.lux-nla` matching inside `.lux-rail-nla`.
+function nlaHiddenAt(css, sel, width) {
+  const escaped = sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rule = new RegExp('(?:^|[},])\\s*' + escaped + '\\s*\\{([^}]*)\\}');
+  for (const b of cssMediaBlocks(css)) {
+    if (!cssMediaMatches(b.cond, width)) continue;
+    const m = rule.exec(b.body);
+    if (m && /display\s*:\s*none/.test(m[1])) return true;
+  }
+  return false;
+}
+
 const issues = [];
 const fail = (label, detail) => issues.push(label + (detail ? ' · ' + detail : ''));
 
@@ -268,6 +314,33 @@ if (!app || !app.innerHTML.trim()) {
     ];
     for (const re of scarcity) if (re.test(t)) fail('(l) manufactured-scarcity pattern present', String(re));
   })();
+
+  // ---- (m) the not-legal-advice standing line is pinned on EVERY screen (C-200) and NEVER duplicated.
+  //          Two copies exist in the DOM (bottom .lux-nla, rail .lux-rail-nla); the stylesheet must
+  //          leave EXACTLY ONE visible at every viewport width. Proven from the CSS because jsdom
+  //          applies no media/layout. This proves both directions: never zero (pinned everywhere),
+  //          never two (no duplicate) -- and that each copy is genuinely hidden on its off-viewport. ----
+  (function () {
+    const nla = norm(payload.notLegalAdvice);
+    if (!nla) return fail('(m) payload has no notLegalAdvice string to pin');
+    const bottom = q('.lux-nla');
+    const railNla = doc.querySelector('.lux-rail-nla');
+    if (!bottom || !norm(bottom.textContent).includes(nla)) fail('(m) bottom .lux-nla copy missing or not verbatim');
+    if (!railNla || !norm(railNla.textContent).includes(nla)) fail('(m) rail .lux-rail-nla copy missing or not verbatim');
+    const widths = [320, 375, 414, 600, 699, 720, 768, 899, 900, 1024, 1200, 1440];
+    let everHidBottom = false, everHidRail = false;
+    for (const w of widths) {
+      const hBottom = nlaHiddenAt(assets.css, '.lux-nla', w);
+      const hRail = nlaHiddenAt(assets.css, '.lux-rail-nla', w);
+      everHidBottom = everHidBottom || hBottom;
+      everHidRail = everHidRail || hRail;
+      const visible = (hBottom ? 0 : 1) + (hRail ? 0 : 1);
+      if (visible === 0) fail('(m) NLA is INVISIBLE at ' + w + 'px (C-200 pinned-on-every-screen broken)');
+      if (visible > 1) fail('(m) NLA is DUPLICATED (' + visible + ' visible) at ' + w + 'px');
+    }
+    if (!everHidBottom) fail('(m) bottom .lux-nla is never hidden -> it would duplicate the rail copy on desktop');
+    if (!everHidRail) fail('(m) rail .lux-rail-nla is never hidden -> it would duplicate the bottom copy on mobile');
+  })();
 }
 
 // ---- (f) legacy fixture routes legacy; golden routes lux ----
@@ -309,6 +382,37 @@ if (!app || !app.innerHTML.trim()) {
   const hv = a3.querySelector('.lux-band .lux-expo .v');
   if (hv && [...digitRuns(hv.textContent)].includes(String(ceilVal))) fail('(ceiling) headline shows the ceiling value (must be exposure.value)');
   d3.window.close();
+})();
+
+// ---- bonus (known-bad → good): a pass (compliant) finding must render COMPLIANT copy, never the
+//      violation "captured" lead-in nor the needs_review "confirmation" / withheld-figure copy. The
+//      golden carries no pass finding, so this synthesises one to exercise the previously untested
+//      pass path (CodeRabbit): the card reads compliant, and NO review-needed / £ figure leaks in. ----
+(function () {
+  const clone = JSON.parse(goldenText);
+  const base = (clone.findings && clone.findings[0]) || {};
+  clone.findings = [{
+    state: 'pass',
+    framework: base.framework || 'Test obligation',
+    description: base.description || 'This obligation appears satisfied.',
+    evidence_quote: 'A clear cookie-consent banner is presented on first visit.',
+    statutory_citation: base.statutory_citation || '',
+    regulator: base.regulator || '',
+    voice_tier: 'confident',
+  }];
+  clone.counts = { total: 1 };
+  const d = renderDom(clone);
+  const a = d.window.document.getElementById('app');
+  if (!a || !a.innerHTML.trim()) { fail('(pass) #app not built for a pass-state payload'); d.window.close(); return; }
+  const card = a.querySelector('.lux-card--pass');
+  if (!card) { fail('(pass) no .lux-card--pass rendered for a pass finding'); d.window.close(); return; }
+  const t = norm(card.textContent);
+  if (!/which meets this obligation:/.test(t)) fail('(pass) pass card missing its compliant evidence lead-in');
+  for (const bad of [/needs your confirmation/, /put to you for your review/, /we captured the following/, /Figure withheld until confirmed/]) {
+    if (bad.test(t)) fail('(pass) pass card carries non-compliant copy', String(bad));
+  }
+  if (/£/.test(t) || /\bGBP\b/.test(t)) fail('(pass) pass card shows a monetary figure (a compliant finding carries none)');
+  d.window.close();
 })();
 
 dom.window.close();

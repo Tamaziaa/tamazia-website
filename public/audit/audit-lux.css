@@ -93,22 +93,104 @@ body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:
 .lux-wf-basis{margin-top:12px;font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.55;max-width:70ch}
 .lux-wf-empty{margin-top:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--green-bg);padding:18px 20px;font-family:var(--body);font-size:var(--fs-base);color:var(--ink);line-height:1.55}
 
-/* ---- findings list (state-badged, honest voice) ----------------------- */
-.lux-find{border:1px solid var(--line);border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);padding:18px 20px;margin-top:14px}
-.lux-find-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+/* ---- B2 · per-finding law cards (evidence-left, action-right) ---------- */
+/* contrast (computed, not rounded): muted #6E625F on paper 5.9:1, on cream-2 4.9:1, on gold-pale 5.0:1
+   (all >= 4.5 body); ink 19.2:1, ox-deep 18.1:1, ox 13.0:1 on paper; ox-deep on gold-pale 15.5:1.
+   The three states read WITHOUT colour: violation = solid left rule + up-triangle badge; needs-review
+   = dashed left rule + dashed "review" badge + figure withheld; pass = light rule + check. */
+.lux-card{border:1px solid var(--line);border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);padding:20px 22px;margin-top:16px}
+.lux-card--violation{border-left:4px solid var(--ox)}
+.lux-card--needs_review{border-left:4px dashed var(--amber)}
+.lux-card--pass{border-left:4px solid var(--green)}
+.lux-card-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .lux-badge{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;font-weight:500;border-radius:999px;padding:4px 10px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .lux-badge .g{font-family:var(--serif);font-size:var(--fs-sm);line-height:1}
 .lux-badge--violation{background:var(--red);color:#fff}
 .lux-badge--needs_review{background:var(--amber-bg);color:var(--ink);border:1.5px dashed var(--amber)}
 .lux-badge--pass{background:var(--green-bg);color:var(--ink);border:1px solid var(--green)}
-.lux-fw-name{font-family:var(--serif);font-size:var(--fs-md);color:var(--ox-deep);line-height:1.25;flex:1 1 16ch;min-width:0}
-.lux-find-desc{font-family:var(--body);font-size:var(--fs-base);color:var(--ink);line-height:1.55;margin:6px 0}
-.lux-find-meta{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);display:grid;gap:6px}
-.lux-find-row{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline}
-.lux-find-row .k{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);white-space:nowrap}
-.lux-find-row .val{font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.45}
-.lux-find-row .val.reg,.lux-find-row .val.pen{color:var(--ink)}
-.lux-find-note{margin-top:8px;font-family:var(--body);font-size:var(--fs-sm);font-style:italic;color:var(--muted);line-height:1.45}
+.lux-fw-name{font-family:var(--serif);font-size:var(--fs-lg);color:var(--ox-deep);line-height:1.25;flex:1 1 18ch;min-width:0}
+
+/* two-column card body · evidence left, action right; stacks below 720px */
+.lux-card-cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.lux-card-ev,.lux-card-ac{min-width:0}
+.lux-card-ac{border-left:1px solid var(--line);padding-left:24px}
+.lux-col-label{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.14em;text-transform:uppercase;color:var(--ox);display:block;margin-bottom:10px}
+
+/* evidence column */
+.lux-ev-lead{font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.5;margin-bottom:10px}
+.lux-ev-quote{font-family:var(--body);font-style:italic;font-size:var(--fs-base);color:var(--ink);line-height:1.55;border-left:3px solid var(--gold);padding:2px 0 2px 14px;margin:0}
+.lux-ev-artifact{border:1px solid var(--line);border-radius:10px;background:var(--cream-2);padding:12px 14px}
+.lux-ev-kv{display:flex;gap:8px;align-items:baseline;margin-bottom:8px;flex-wrap:wrap}
+.lux-ev-kv .k{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lux-ev-selector{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--ox-deep);background:var(--gold-pale);border-radius:5px;padding:2px 7px;word-break:break-all}
+.lux-ev-snippet{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 11px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:break-word;line-height:1.45}
+.lux-ev-detail{margin-top:8px;font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.lux-ev-covstats{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px}
+.lux-ev-covstat{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--muted);line-height:1.3}
+.lux-ev-covstat b{font-family:var(--serif);font-size:var(--fs-xl);color:var(--ox-deep);letter-spacing:0;display:block;line-height:1;margin-bottom:2px}
+.lux-ev-covcap{font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.5}
+
+/* action column */
+.lux-ac-duty{font-family:var(--body);font-size:var(--fs-base);color:var(--ink);line-height:1.55;margin-bottom:12px}
+.lux-ac-meta{display:grid;gap:8px}
+.lux-mrow{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline}
+.lux-mrow .k{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;padding-top:1px}
+.lux-mrow .val{font-family:var(--body);font-size:var(--fs-sm);color:var(--ink);line-height:1.45;min-width:0;overflow-wrap:anywhere}
+.lux-mrow .val.pen{font-family:var(--serif);color:var(--ox-deep)}
+.lux-mrow .val.withheld{font-style:italic;color:var(--muted)}
+.lux-mrow .val.basis{font-size:var(--fs-xs);color:var(--muted);font-style:italic}
+.lux-ac-enf{margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;background:var(--gold-pale)}
+.lux-col-mini{font-family:var(--mono);font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ox);display:block;margin-bottom:6px}
+.lux-enf-case{font-family:var(--body);font-size:var(--fs-sm);color:var(--ink);line-height:1.4}
+.lux-enf-meta{font-family:var(--mono);font-size:var(--fs-2xs);color:var(--ox-deep);letter-spacing:.02em;margin-top:3px}
+.lux-enf-sum{font-family:var(--body);font-size:var(--fs-xs);color:var(--muted);line-height:1.45;margin-top:5px}
+.lux-enf-note{font-family:var(--body);font-size:var(--fs-2xs);color:var(--muted);line-height:1.4;margin-top:6px;font-style:italic}
+.lux-ac-rem{margin-top:14px}
+.lux-ac-fix{font-family:var(--body);font-size:var(--fs-sm);color:var(--ink);line-height:1.5}
+
+.lux-card-note{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--body);font-size:var(--fs-sm);font-style:italic;color:var(--muted);line-height:1.45}
+
+@media (max-width:720px){
+  .lux-card-cols{grid-template-columns:1fr;gap:20px}
+  .lux-card-ac{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:18px}
+}
+
+/* ---- layout · left rail + main column (desktop grid, single column mobile) ---- */
+.lux-main{min-width:0}
+@media (min-width:900px){
+  .lux{display:grid;grid-template-columns:236px minmax(0,1fr);gap:44px;max-width:1200px;align-items:start}
+  .lux-rail{position:sticky;top:24px;align-self:start}
+  .lux-nla{display:none}          /* the rail carries the pinned standing line on desktop */
+}
+
+/* ---- B3 · the left rail ----------------------------------------------- */
+/* contrast (computed): ox #5A1A2B on cream 11.9:1 (links); muted on paper 5.9:1 (stat labels,
+   screened line); gold-pale on ox 11.1:1 (CTA). Progress carries its value in ARIA, never as a
+   count-up, and derives purely from scroll position so it asserts no payload figure. */
+.lux-rail{margin-bottom:20px}
+.lux-rail-progress{height:4px;border-radius:999px;background:var(--line);overflow:hidden;margin-bottom:18px}
+.lux-rail-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--ox));border-radius:999px}
+.lux-rail-stats{display:grid;gap:10px;padding:16px 16px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow)}
+.lux-rail-stat{display:flex;align-items:baseline;gap:9px}
+.lux-rail-stat b{font-family:var(--serif);font-size:var(--fs-2xl);color:var(--ox-deep);letter-spacing:-.01em;line-height:1;font-variant-numeric:tabular-nums}
+.lux-rail-stat-l{font-family:var(--body);font-size:var(--fs-sm);color:var(--muted);line-height:1.3}
+.lux-rail-screened{font-family:var(--body);font-size:var(--fs-xs);color:var(--muted);line-height:1.4;padding-bottom:8px;margin-bottom:2px;border-bottom:1px solid var(--line)}
+.lux-rail-nav{display:flex;flex-direction:column;gap:3px;margin-top:16px}
+.lux-rail-link{font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.06em;text-transform:uppercase;color:var(--ox);text-decoration:none;padding:7px 10px;border-radius:8px;border:1px solid transparent}
+.lux-rail-link:hover,.lux-rail-link:focus-visible{background:var(--gold-pale);border-color:var(--line-2);color:var(--ox-deep)}
+.lux-rail-nla{margin-top:16px;font-family:var(--body);font-size:var(--fs-2xs);font-style:italic;color:var(--muted);line-height:1.5}
+.lux-rail-cta{display:block;margin-top:16px;text-align:center;font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.06em;text-transform:uppercase;color:var(--gold-pale);background:linear-gradient(158deg,var(--ox),var(--ox-deep));border-radius:10px;padding:12px 14px;text-decoration:none;box-shadow:var(--shadow)}
+.lux-rail-cta:hover,.lux-rail-cta:focus-visible{background:var(--ox-mid)}
+
+/* mobile · rail collapses to a static summary; progress becomes a thin fixed viewport bar. The rail's
+   standing-line copy is hidden here because the bottom .lux-nla carries it below 900px (the desktop
+   grid hides that bottom copy instead), so exactly one not-legal-advice line shows at every width. */
+@media (max-width:899px){
+  .lux-rail-progress{position:fixed;top:0;left:0;right:0;height:3px;border-radius:0;margin:0;z-index:40}
+  .lux-rail-nav{flex-direction:row;flex-wrap:wrap}
+  .lux-rail-link{flex:1 1 26%}
+  .lux-rail-nla{display:none}
+}
 
 /* ---- pinned not-legal-advice standing line (C-200) -------------------- */
 .lux-nla{position:sticky;bottom:0;left:0;right:0;margin:38px -28px -128px;padding:13px 28px;background:rgba(248,244,238,.96);border-top:1px solid var(--line-2);backdrop-filter:blur(6px);font-family:var(--mono);font-size:var(--fs-2xs);letter-spacing:.02em;color:var(--muted);line-height:1.5;z-index:20}

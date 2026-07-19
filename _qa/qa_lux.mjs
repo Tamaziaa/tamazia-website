@@ -10,9 +10,18 @@
 //       hatched class and sit outside the confident subtotal (Rule 10 / C-111)
 //   (d) the counts line matches the payload counts
 //   (e) ZERO fabrication: every monetary amount and every framework/regulator/family name in
-//       the DOM traces to a field in the payload JSON (Rule 2)
+//       the DOM traces to a field in the payload JSON (Rule 2). Array-length-derived counts a
+//       coverage_proof card prints (pages_checked/searched_patterns) are declared, not invented.
 //   (f) a legacy fixture (no findings[]) routes legacy, i.e. isV11() is false for it, and true
 //       for the golden
+//   (g) B2: one law card per finding, each with an evidence column and an action column
+//   (h) the dom_node violation card shows its selector + clipped snippet and the "captured" lead-in
+//   (i) the coverage_proof needs_review card shows the observation lead-in, the pages/patterns
+//       counts, and the withheld-figure line
+//   (j) ZERO GBP amounts on any needs_review card (C-111: every figure withheld until confirmed)
+//   (k) B3: the rail prints the three honest numbers verbatim, screenedLabel, notLegalAdvice, a
+//       reading-progress bar, three jump links, and exactly ONE calm mailto CTA
+//   (l) NO manufactured scarcity anywhere in the report (DMCCA / C-200)
 //
 // The golden lives at _qa/fixtures/v11/ deliberately: qa_render.mjs and backtest.mjs scan only
 // _qa/fixtures/ and _qa/fixtures/_matrix/ and would force a v1.1 payload through the LEGACY
@@ -58,6 +67,68 @@ function digitRuns(s) {
   return out;
 }
 const norm = (s) => String(s == null ? '' : s).trim();
+
+// --- CSS media-query evaluator ----------------------------------------------------------------
+// jsdom applies no layout and stubs matchMedia to always-false, so the viewport visibility of the
+// two not-legal-advice copies (bottom .lux-nla, rail .lux-rail-nla) cannot be read from the DOM. It
+// is instead proven directly from the stylesheet: parse the top-level @media blocks, then for a
+// given selector + width decide whether a matching block declares display:none for it.
+// Index of the '}' that closes the block opened at `open` (css[open] === '{'), plus one -- i.e. the
+// position to resume scanning from. Braces nest (a @media block wraps its own rule blocks), so this
+// tracks depth rather than stopping at the first '}'. Falls back to css.length on unbalanced input
+// so a malformed stylesheet still terminates instead of looping forever.
+function findBlockEnd(css, open) {
+  let depth = 0;
+  for (let j = open; j < css.length; j++) {
+    if (css[j] === '{') depth++;
+    else if (css[j] === '}' && --depth === 0) return j + 1;
+  }
+  return css.length;
+}
+
+// Parse the single @media block whose "@media" keyword starts at `at`. Returns null when the
+// at-rule has no opening brace at all (malformed CSS -- nothing left to parse).
+function parseMediaBlockAt(css, at) {
+  const open = css.indexOf('{', at);
+  if (open === -1) return null;
+  const end = findBlockEnd(css, open);
+  return { cond: css.slice(at + 6, open), body: css.slice(open + 1, end - 1), end };
+}
+
+// Every top-level @media block in a stylesheet, in source order, as { cond, body } pairs.
+function cssMediaBlocks(css) {
+  const blocks = [];
+  let i = 0;
+  while (i < css.length) {
+    const at = css.indexOf('@media', i);
+    if (at === -1) break;
+    const block = parseMediaBlockAt(css, at);
+    if (!block) break;
+    blocks.push({ cond: block.cond, body: block.body });
+    i = block.end;
+  }
+  return blocks;
+}
+function cssMediaMatches(cond, width) {
+  const mn = cond.match(/min-width:\s*(\d+)px/);
+  const mx = cond.match(/max-width:\s*(\d+)px/);
+  if (mn && width < Number(mn[1])) return false;
+  if (mx && width > Number(mx[1])) return false;
+  return true;
+}
+// Hidden by a matching @media display:none rule for `sel` at viewport `width`. Neither NLA selector
+// carries a base display rule and nothing un-hides them, so a single matching display:none decides.
+// The leading (?:^|[},]) anchor stops `.lux-nla` matching inside `.lux-rail-nla`.
+function nlaHiddenAt(css, sel, width) {
+  const escaped = sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rule = new RegExp('(?:^|[},])\\s*' + escaped + '\\s*\\{([^}]*)\\}');
+  for (const b of cssMediaBlocks(css)) {
+    if (!cssMediaMatches(b.cond, width)) continue;
+    const m = rule.exec(b.body);
+    if (m && /display\s*:\s*none/.test(m[1])) return true;
+  }
+  return false;
+}
 
 const issues = [];
 const fail = (label, detail) => issues.push(label + (detail ? ' · ' + detail : ''));
@@ -142,6 +213,16 @@ if (!app || !app.innerHTML.trim()) {
   // ---- (e) zero fabrication: every DOM amount + name traces to the payload JSON ----
   (function () {
     const payloadDigits = digitRuns(goldenText);
+    // Counts we legitimately DERIVE from payload arrays (their .length) are not fabrication: a
+    // coverage_proof card prints pages_checked.length and searched_patterns.length. Declare them so
+    // the zero-fabrication trace still catches genuinely invented figures (e.g. a made-up fine).
+    (payload.findings || []).forEach((f) => {
+      const a = f && f.artifact;
+      if (a && a.type === 'coverage_proof') {
+        payloadDigits.add(String((a.pages_checked || []).length));
+        payloadDigits.add(String((a.searched_patterns || []).length));
+      }
+    });
     const domDigits = digitRuns(appText);
     for (const d of domDigits) {
       if (!payloadDigits.has(d)) fail('(e) DOM number NOT in payload (possible fabricated figure)', d);
@@ -154,12 +235,154 @@ if (!app || !app.innerHTML.trim()) {
       }
     }
   })();
+
+  // ---- (g) B2 · one law card per finding, each with an evidence column and an action column ----
+  (function () {
+    const findings = payload.findings || [];
+    const cards = qa('.lux-card');
+    if (cards.length !== findings.length) fail('(g) card count', `${cards.length} vs findings ${findings.length}`);
+    const wantViol = findings.filter((f) => f.state === 'violation').length;
+    const wantRev = findings.filter((f) => f.state === 'needs_review').length;
+    if (qa('.lux-card--violation').length !== wantViol) fail('(g) violation card count', `${qa('.lux-card--violation').length} vs ${wantViol}`);
+    if (qa('.lux-card--needs_review').length !== wantRev) fail('(g) needs_review card count', `${qa('.lux-card--needs_review').length} vs ${wantRev}`);
+    for (const c of cards) {
+      if (!c.querySelector('.lux-card-ev')) fail('(g) a card is missing its evidence column');
+      if (!c.querySelector('.lux-card-ac')) fail('(g) a card is missing its action column');
+      if (!c.querySelector('.lux-fw-name')) fail('(g) a card is missing its framework name');
+    }
+  })();
+
+  // ---- (h) the dom_node violation card shows selector + clipped snippet as its evidence ----
+  (function () {
+    const dn = (payload.findings || []).find((f) => f.state === 'violation' && f.artifact && f.artifact.type === 'dom_node');
+    if (!dn) return;
+    const card = qa('.lux-card--violation').find((c) => c.querySelector('.lux-ev-selector'));
+    if (!card) return fail('(h) no violation card carries a dom_node selector');
+    const sel = card.querySelector('.lux-ev-selector');
+    if (!sel || norm(sel.textContent) !== norm(dn.artifact.selector)) fail('(h) dom_node selector not shown verbatim', norm(sel && sel.textContent));
+    const snip = card.querySelector('.lux-ev-snippet');
+    if (!snip || !norm(snip.textContent) || norm(snip.textContent).replace(/…$/, '') !== norm(dn.artifact.snippet).slice(0, 240)) {
+      fail('(h) dom_node snippet not shown as evidence', norm(snip && snip.textContent).slice(0, 60));
+    }
+    if (!/we captured the following:/.test(norm(card.querySelector('.lux-card-ev').textContent))) fail('(h) violation "captured" observation lead-in missing');
+  })();
+
+  // ---- (i) the coverage_proof needs_review card shows the observation lead-in + counts + withheld line ----
+  (function () {
+    const cov = (payload.findings || []).find((f) => f.state === 'needs_review' && f.artifact && f.artifact.type === 'coverage_proof');
+    if (!cov) return;
+    const card = qa('.lux-card--needs_review').find((c) => c.querySelector('.lux-ev-coverage'));
+    if (!card) return fail('(i) no needs_review card carries a coverage_proof');
+    const t = norm(card.textContent);
+    if (!/From the pages we could read, we detected the following, which needs your confirmation:/.test(t)) fail('(i) needs_review observation lead-in missing');
+    if (!/Figure withheld until confirmed/.test(t)) fail('(i) withheld-figure line missing on the needs_review card');
+    const covText = norm(card.querySelector('.lux-ev-coverage').textContent);
+    const nPages = String((cov.artifact.pages_checked || []).length);
+    const nPat = String((cov.artifact.searched_patterns || []).length);
+    if (!covText.includes(nPages)) fail('(i) pages-checked count not shown', nPages);
+    if (!covText.includes(nPat)) fail('(i) searched-patterns count not shown', nPat);
+  })();
+
+  // ---- (j) ZERO GBP amounts on ANY needs_review card (C-111: every figure withheld until confirmed) ----
+  (function () {
+    const revCards = qa('.lux-card--needs_review');
+    if (!revCards.length) return;
+    for (const card of revCards) {
+      const t = card.textContent || '';
+      if (/£/.test(t)) fail('(j) a needs_review card shows a £ amount', norm(t).slice(0, 60));
+      if (/\bGBP\b/.test(t)) fail('(j) a needs_review card shows a GBP amount', norm(t).slice(0, 60));
+      if (!/Figure withheld until confirmed/.test(t)) fail('(j) a needs_review card is missing the withheld-figure line');
+    }
+  })();
+
+  // ---- (k) B3 · the left rail: three honest numbers verbatim, screenedLabel, notLegalAdvice, one calm CTA ----
+  (function () {
+    const rail = doc.querySelector('.lux-rail');
+    if (!rail) return fail('(k) no left rail rendered');
+    const rt = norm(rail.textContent);
+    for (const [field, val] of [['frameworksAssessed', payload.frameworksAssessed], ['frameworksBinding', payload.frameworksBinding], ['rulesChecked', payload.rulesChecked]]) {
+      if (val != null && !rt.includes(String(val))) fail('(k) rail missing verbatim count ' + field, String(val));
+    }
+    if (payload.screenedLabel && !rt.includes(norm(payload.screenedLabel))) fail('(k) rail missing screenedLabel verbatim');
+    if (payload.notLegalAdvice && !rt.includes(norm(payload.notLegalAdvice))) fail('(k) rail missing notLegalAdvice verbatim');
+    if (!rail.querySelector('.lux-rail-progress[role="progressbar"]')) fail('(k) rail missing the reading-progress bar');
+    const ctas = Array.from(rail.querySelectorAll('.lux-rail-cta'));
+    if (ctas.length !== 1) return fail('(k) rail must have exactly one CTA', String(ctas.length));
+    const href = ctas[0].getAttribute('href') || '';
+    if (!/^mailto:hello@tamazia\.co\.uk/.test(href)) fail('(k) CTA is not the calm mailto', href.slice(0, 40));
+    if (/£|\bGBP\b|\$|\bfree\b|\d+\s*%/i.test(ctas[0].textContent || '')) fail('(k) CTA text carries a price/discount');
+    for (const id of ['#lux-verdict', '#lux-exposure', '#lux-findings']) {
+      if (!rail.querySelector('.lux-rail-link[href="' + id + '"]')) fail('(k) rail missing jump link ' + id);
+    }
+  })();
+
+  // ---- (l) NO manufactured scarcity anywhere in the report (DMCCA / C-200). "Only send electronic
+  //          marketing" (a payload obligation) is NOT scarcity: the patterns require a number or a
+  //          named scarcity phrase, so a bare "only" does not trip them. ----
+  (function () {
+    const t = appText;
+    const scarcity = [
+      /\bspots?\s+left\b/i, /\bonly\s+\d+\s+(?:left|remaining|spots?|places?|seats?)\b/i,
+      /\b\d+\s+(?:spots?|places?|seats?)\s+(?:left|remaining)\b/i,
+      /\bexpires?\s+(?:in|soon|today|tonight)\b/i, /\bcountdown\b/i, /\bact\s+now\b/i,
+      /\blast\s+chance\b/i, /\blimited\s+time\b/i, /\bhurry\b/i, /\bwhile\s+stocks?\s+last\b/i,
+      /\bending\s+soon\b/i, /\b\d+\s*(?:hours?|days?|minutes?)\s+(?:left|remaining)\b/i,
+    ];
+    for (const re of scarcity) if (re.test(t)) fail('(l) manufactured-scarcity pattern present', String(re));
+  })();
+
+  // ---- (m) the not-legal-advice standing line is pinned on EVERY screen (C-200) and NEVER duplicated.
+  //          Two copies exist in the DOM (bottom .lux-nla, rail .lux-rail-nla); the stylesheet must
+  //          leave EXACTLY ONE visible at every viewport width. Proven from the CSS because jsdom
+  //          applies no media/layout. This proves both directions: never zero (pinned everywhere),
+  //          never two (no duplicate) -- and that each copy is genuinely hidden on its off-viewport. ----
+  (function () {
+    const nla = norm(payload.notLegalAdvice);
+    if (!nla) return fail('(m) payload has no notLegalAdvice string to pin');
+    const bottom = q('.lux-nla');
+    const railNla = doc.querySelector('.lux-rail-nla');
+    if (!bottom || !norm(bottom.textContent).includes(nla)) fail('(m) bottom .lux-nla copy missing or not verbatim');
+    if (!railNla || !norm(railNla.textContent).includes(nla)) fail('(m) rail .lux-rail-nla copy missing or not verbatim');
+    const widths = [320, 375, 414, 600, 699, 720, 768, 899, 900, 1024, 1200, 1440];
+    let everHidBottom = false, everHidRail = false;
+    for (const w of widths) {
+      const hBottom = nlaHiddenAt(assets.css, '.lux-nla', w);
+      const hRail = nlaHiddenAt(assets.css, '.lux-rail-nla', w);
+      everHidBottom = everHidBottom || hBottom;
+      everHidRail = everHidRail || hRail;
+      const visible = (hBottom ? 0 : 1) + (hRail ? 0 : 1);
+      if (visible === 0) fail('(m) NLA is INVISIBLE at ' + w + 'px (C-200 pinned-on-every-screen broken)');
+      if (visible > 1) fail('(m) NLA is DUPLICATED (' + visible + ' visible) at ' + w + 'px');
+    }
+    if (!everHidBottom) fail('(m) bottom .lux-nla is never hidden -> it would duplicate the rail copy on desktop');
+    if (!everHidRail) fail('(m) rail .lux-rail-nla is never hidden -> it would duplicate the bottom copy on mobile');
+  })();
 }
 
 // ---- (f) legacy fixture routes legacy; golden routes lux ----
 (function () {
   if (isV11(legacyPayload) !== false) fail('(f) isV11 must be false for a legacy fixture (greystar)');
   if (isV11(payload) !== true) fail('(f) isV11 must be true for the v1.1 golden');
+})();
+
+// ---- calibration: the (m) NLA visibility check must have teeth. Feed nlaHiddenAt (the same
+//      function (m) uses against the real stylesheet) two deliberately BROKEN fixture stylesheets
+//      and confirm the visible-count arithmetic correctly flags each one: a seeded DOUBLE-VISIBLE
+//      break (neither copy is ever hidden -> both show at once) and a seeded ZERO-VISIBLE break
+//      (both copies hidden under the same breakpoint -> neither shows). A check that cannot catch
+//      its own known-bad fixture is not proving anything about the real CSS. ----
+(function () {
+  const width = 500;
+  const visibleCount = (css) =>
+    (nlaHiddenAt(css, '.lux-nla', width) ? 0 : 1) + (nlaHiddenAt(css, '.lux-rail-nla', width) ? 0 : 1);
+
+  const doubleVisibleCss = '.lux-nla{color:red}\n.lux-rail-nla{color:blue}\n';
+  const dv = visibleCount(doubleVisibleCss);
+  if (dv !== 2) fail('(calibration) seeded double-visible fixture not caught', `visible=${dv}, want 2`);
+
+  const zeroVisibleCss = '@media (max-width: 899px) { .lux-nla{display:none} .lux-rail-nla{display:none} }\n';
+  const zv = visibleCount(zeroVisibleCss);
+  if (zv !== 0) fail('(calibration) seeded zero-visible fixture not caught', `visible=${zv}, want 0`);
 })();
 
 // ---- bonus: the empty-steps path renders the compliant state honestly (no invented bars) ----
@@ -195,6 +418,37 @@ if (!app || !app.innerHTML.trim()) {
   const hv = a3.querySelector('.lux-band .lux-expo .v');
   if (hv && [...digitRuns(hv.textContent)].includes(String(ceilVal))) fail('(ceiling) headline shows the ceiling value (must be exposure.value)');
   d3.window.close();
+})();
+
+// ---- bonus (known-bad → good): a pass (compliant) finding must render COMPLIANT copy, never the
+//      violation "captured" lead-in nor the needs_review "confirmation" / withheld-figure copy. The
+//      golden carries no pass finding, so this synthesises one to exercise the previously untested
+//      pass path (CodeRabbit): the card reads compliant, and NO review-needed / £ figure leaks in. ----
+(function () {
+  const clone = JSON.parse(goldenText);
+  const base = (clone.findings && clone.findings[0]) || {};
+  clone.findings = [{
+    state: 'pass',
+    framework: base.framework || 'Test obligation',
+    description: base.description || 'This obligation appears satisfied.',
+    evidence_quote: 'A clear cookie-consent banner is presented on first visit.',
+    statutory_citation: base.statutory_citation || '',
+    regulator: base.regulator || '',
+    voice_tier: 'confident',
+  }];
+  clone.counts = { total: 1 };
+  const d = renderDom(clone);
+  const a = d.window.document.getElementById('app');
+  if (!a || !a.innerHTML.trim()) { fail('(pass) #app not built for a pass-state payload'); d.window.close(); return; }
+  const card = a.querySelector('.lux-card--pass');
+  if (!card) { fail('(pass) no .lux-card--pass rendered for a pass finding'); d.window.close(); return; }
+  const t = norm(card.textContent);
+  if (!/which meets this obligation:/.test(t)) fail('(pass) pass card missing its compliant evidence lead-in');
+  for (const bad of [/needs your confirmation/, /put to you for your review/, /we captured the following/, /Figure withheld until confirmed/]) {
+    if (bad.test(t)) fail('(pass) pass card carries non-compliant copy', String(bad));
+  }
+  if (/£/.test(t) || /\bGBP\b/.test(t)) fail('(pass) pass card shows a monetary figure (a compliant finding carries none)');
+  d.window.close();
 })();
 
 dom.window.close();

@@ -10,9 +10,18 @@
 //       hatched class and sit outside the confident subtotal (Rule 10 / C-111)
 //   (d) the counts line matches the payload counts
 //   (e) ZERO fabrication: every monetary amount and every framework/regulator/family name in
-//       the DOM traces to a field in the payload JSON (Rule 2)
+//       the DOM traces to a field in the payload JSON (Rule 2). Array-length-derived counts a
+//       coverage_proof card prints (pages_checked/searched_patterns) are declared, not invented.
 //   (f) a legacy fixture (no findings[]) routes legacy, i.e. isV11() is false for it, and true
 //       for the golden
+//   (g) B2: one law card per finding, each with an evidence column and an action column
+//   (h) the dom_node violation card shows its selector + clipped snippet and the "captured" lead-in
+//   (i) the coverage_proof needs_review card shows the observation lead-in, the pages/patterns
+//       counts, and the withheld-figure line
+//   (j) ZERO GBP amounts on any needs_review card (C-111: every figure withheld until confirmed)
+//   (k) B3: the rail prints the three honest numbers verbatim, screenedLabel, notLegalAdvice, a
+//       reading-progress bar, three jump links, and exactly ONE calm mailto CTA
+//   (l) NO manufactured scarcity anywhere in the report (DMCCA / C-200)
 //
 // The golden lives at _qa/fixtures/v11/ deliberately: qa_render.mjs and backtest.mjs scan only
 // _qa/fixtures/ and _qa/fixtures/_matrix/ and would force a v1.1 payload through the LEGACY
@@ -142,6 +151,16 @@ if (!app || !app.innerHTML.trim()) {
   // ---- (e) zero fabrication: every DOM amount + name traces to the payload JSON ----
   (function () {
     const payloadDigits = digitRuns(goldenText);
+    // Counts we legitimately DERIVE from payload arrays (their .length) are not fabrication: a
+    // coverage_proof card prints pages_checked.length and searched_patterns.length. Declare them so
+    // the zero-fabrication trace still catches genuinely invented figures (e.g. a made-up fine).
+    (payload.findings || []).forEach((f) => {
+      const a = f && f.artifact;
+      if (a && a.type === 'coverage_proof') {
+        payloadDigits.add(String((a.pages_checked || []).length));
+        payloadDigits.add(String((a.searched_patterns || []).length));
+      }
+    });
     const domDigits = digitRuns(appText);
     for (const d of domDigits) {
       if (!payloadDigits.has(d)) fail('(e) DOM number NOT in payload (possible fabricated figure)', d);
@@ -153,6 +172,101 @@ if (!app || !app.innerHTML.trim()) {
         if (t && !goldenText.includes(t)) fail('(e) name NOT in payload (' + sel + ')', JSON.stringify(t).slice(0, 80));
       }
     }
+  })();
+
+  // ---- (g) B2 · one law card per finding, each with an evidence column and an action column ----
+  (function () {
+    const findings = payload.findings || [];
+    const cards = qa('.lux-card');
+    if (cards.length !== findings.length) fail('(g) card count', `${cards.length} vs findings ${findings.length}`);
+    const wantViol = findings.filter((f) => f.state === 'violation').length;
+    const wantRev = findings.filter((f) => f.state === 'needs_review').length;
+    if (qa('.lux-card--violation').length !== wantViol) fail('(g) violation card count', `${qa('.lux-card--violation').length} vs ${wantViol}`);
+    if (qa('.lux-card--needs_review').length !== wantRev) fail('(g) needs_review card count', `${qa('.lux-card--needs_review').length} vs ${wantRev}`);
+    for (const c of cards) {
+      if (!c.querySelector('.lux-card-ev')) fail('(g) a card is missing its evidence column');
+      if (!c.querySelector('.lux-card-ac')) fail('(g) a card is missing its action column');
+      if (!c.querySelector('.lux-fw-name')) fail('(g) a card is missing its framework name');
+    }
+  })();
+
+  // ---- (h) the dom_node violation card shows selector + clipped snippet as its evidence ----
+  (function () {
+    const dn = (payload.findings || []).find((f) => f.state === 'violation' && f.artifact && f.artifact.type === 'dom_node');
+    if (!dn) return;
+    const card = qa('.lux-card--violation').find((c) => c.querySelector('.lux-ev-selector'));
+    if (!card) return fail('(h) no violation card carries a dom_node selector');
+    const sel = card.querySelector('.lux-ev-selector');
+    if (!sel || norm(sel.textContent) !== norm(dn.artifact.selector)) fail('(h) dom_node selector not shown verbatim', norm(sel && sel.textContent));
+    const snip = card.querySelector('.lux-ev-snippet');
+    if (!snip || !norm(snip.textContent) || norm(snip.textContent).replace(/…$/, '') !== norm(dn.artifact.snippet).slice(0, 240)) {
+      fail('(h) dom_node snippet not shown as evidence', norm(snip && snip.textContent).slice(0, 60));
+    }
+    if (!/we captured the following:/.test(norm(card.querySelector('.lux-card-ev').textContent))) fail('(h) violation "captured" observation lead-in missing');
+  })();
+
+  // ---- (i) the coverage_proof needs_review card shows the observation lead-in + counts + withheld line ----
+  (function () {
+    const cov = (payload.findings || []).find((f) => f.state === 'needs_review' && f.artifact && f.artifact.type === 'coverage_proof');
+    if (!cov) return;
+    const card = qa('.lux-card--needs_review').find((c) => c.querySelector('.lux-ev-coverage'));
+    if (!card) return fail('(i) no needs_review card carries a coverage_proof');
+    const t = norm(card.textContent);
+    if (!/From the pages we could read, we detected the following, which needs your confirmation:/.test(t)) fail('(i) needs_review observation lead-in missing');
+    if (!/Figure withheld until confirmed/.test(t)) fail('(i) withheld-figure line missing on the needs_review card');
+    const covText = norm(card.querySelector('.lux-ev-coverage').textContent);
+    const nPages = String((cov.artifact.pages_checked || []).length);
+    const nPat = String((cov.artifact.searched_patterns || []).length);
+    if (!covText.includes(nPages)) fail('(i) pages-checked count not shown', nPages);
+    if (!covText.includes(nPat)) fail('(i) searched-patterns count not shown', nPat);
+  })();
+
+  // ---- (j) ZERO GBP amounts on ANY needs_review card (C-111: every figure withheld until confirmed) ----
+  (function () {
+    const revCards = qa('.lux-card--needs_review');
+    if (!revCards.length) return;
+    for (const card of revCards) {
+      const t = card.textContent || '';
+      if (/£/.test(t)) fail('(j) a needs_review card shows a £ amount', norm(t).slice(0, 60));
+      if (/\bGBP\b/.test(t)) fail('(j) a needs_review card shows a GBP amount', norm(t).slice(0, 60));
+      if (!/Figure withheld until confirmed/.test(t)) fail('(j) a needs_review card is missing the withheld-figure line');
+    }
+  })();
+
+  // ---- (k) B3 · the left rail: three honest numbers verbatim, screenedLabel, notLegalAdvice, one calm CTA ----
+  (function () {
+    const rail = doc.querySelector('.lux-rail');
+    if (!rail) return fail('(k) no left rail rendered');
+    const rt = norm(rail.textContent);
+    for (const [field, val] of [['frameworksAssessed', payload.frameworksAssessed], ['frameworksBinding', payload.frameworksBinding], ['rulesChecked', payload.rulesChecked]]) {
+      if (val != null && !rt.includes(String(val))) fail('(k) rail missing verbatim count ' + field, String(val));
+    }
+    if (payload.screenedLabel && !rt.includes(norm(payload.screenedLabel))) fail('(k) rail missing screenedLabel verbatim');
+    if (payload.notLegalAdvice && !rt.includes(norm(payload.notLegalAdvice))) fail('(k) rail missing notLegalAdvice verbatim');
+    if (!rail.querySelector('.lux-rail-progress[role="progressbar"]')) fail('(k) rail missing the reading-progress bar');
+    const ctas = Array.from(rail.querySelectorAll('.lux-rail-cta'));
+    if (ctas.length !== 1) return fail('(k) rail must have exactly one CTA', String(ctas.length));
+    const href = ctas[0].getAttribute('href') || '';
+    if (!/^mailto:hello@tamazia\.co\.uk/.test(href)) fail('(k) CTA is not the calm mailto', href.slice(0, 40));
+    if (/£|\bGBP\b|\$|\bfree\b|\d+\s*%/i.test(ctas[0].textContent || '')) fail('(k) CTA text carries a price/discount');
+    for (const id of ['#lux-verdict', '#lux-exposure', '#lux-findings']) {
+      if (!rail.querySelector('.lux-rail-link[href="' + id + '"]')) fail('(k) rail missing jump link ' + id);
+    }
+  })();
+
+  // ---- (l) NO manufactured scarcity anywhere in the report (DMCCA / C-200). "Only send electronic
+  //          marketing" (a payload obligation) is NOT scarcity: the patterns require a number or a
+  //          named scarcity phrase, so a bare "only" does not trip them. ----
+  (function () {
+    const t = appText;
+    const scarcity = [
+      /\bspots?\s+left\b/i, /\bonly\s+\d+\s+(?:left|remaining|spots?|places?|seats?)\b/i,
+      /\b\d+\s+(?:spots?|places?|seats?)\s+(?:left|remaining)\b/i,
+      /\bexpires?\s+(?:in|soon|today|tonight)\b/i, /\bcountdown\b/i, /\bact\s+now\b/i,
+      /\blast\s+chance\b/i, /\blimited\s+time\b/i, /\bhurry\b/i, /\bwhile\s+stocks?\s+last\b/i,
+      /\bending\s+soon\b/i, /\b\d+\s*(?:hours?|days?|minutes?)\s+(?:left|remaining)\b/i,
+    ];
+    for (const re of scarcity) if (re.test(t)) fail('(l) manufactured-scarcity pattern present', String(re));
   })();
 }
 

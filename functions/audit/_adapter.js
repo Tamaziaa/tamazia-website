@@ -1760,20 +1760,24 @@ function sectorInapplicable(fw, payload) {
 /* ---------------- THE ADAPTER ---------------- */
 // Named exports for the benchmark scorer (single source of truth, F5 shared blocklist).
 export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer, currencyForFramework, gbp };
+// R9 — FAIL CLOSED. The adapter must refuse to render anything it cannot prove is a real engine-produced
+// audit payload (the debug report caught a Playwright screenshot manifest producing a full audit HTML page).
+// Spec (KIMI-RENDER-DEBUG R9) asks for `engine_run.engine_version` + `engine_run.catalogue_hash`; THIS engine's
+// real payloads (all 14 live _qa fixtures, current production shape) never carry an `engine_run` object at all —
+// enforcing that literal check would 500 every legitimate audit in production, which is a worse regression than
+// the bug it fixes. The genuine, always-present signature of a real audit payload in this codebase is
+// `schema_version` + a string `domain` + an array `pointers` + a `sector` (verified against every fixture in
+// _qa/fixtures/). A screenshot manifest, or any non-audit object, carries none of these. This is the faithful
+// equivalent of R9 for this payload shape.
+function isEngineProducedPayload(payload) {
+  return !!payload.schema_version && typeof payload.domain === 'string' && !!payload.domain.trim()
+    && Array.isArray(payload.pointers) && !!payload.sector;
+}
 export function payloadToD(payload, ctx = {}) {
   payload = payload || {};
-  // R9 — FAIL CLOSED. The adapter must refuse to render anything it cannot prove is a real engine-produced
-  // audit payload (the debug report caught a Playwright screenshot manifest producing a full audit HTML page).
-  // Spec (KIMI-RENDER-DEBUG R9) asks for `engine_run.engine_version` + `engine_run.catalogue_hash`; THIS engine's
-  // real payloads (all 14 live _qa fixtures, current production shape) never carry an `engine_run` object at all —
-  // enforcing that literal check would 500 every legitimate audit in production, which is a worse regression than
-  // the bug it fixes. The genuine, always-present signature of a real audit payload in this codebase is
-  // `schema_version` + a string `domain` + an array `pointers` + a `sector` (verified against every fixture in
-  // _qa/fixtures/). A screenshot manifest, or any non-audit object, carries none of these. This is the faithful
-  // equivalent of R9 for this payload shape; callers (functions/audit/[[path]].js) already wrap payloadToD in a
-  // try/catch that renders errorShell('Audit could not be rendered', ...) on a throw, so failing closed here is safe.
-  if (!payload.schema_version || typeof payload.domain !== 'string' || !payload.domain.trim()
-      || !Array.isArray(payload.pointers) || !payload.sector) {
+  // callers (functions/audit/[[path]].js) already wrap payloadToD in a try/catch that renders
+  // errorShell('Audit could not be rendered', ...) on a throw, so failing closed here is safe.
+  if (!isEngineProducedPayload(payload)) {
     throw new Error('payload_not_engine_produced');
   }
   // E-218 TRUTH FILTER (audit-of-the-audits P-002/P-004/P-008/P-011/P-064, S-183): any row the verifier did not

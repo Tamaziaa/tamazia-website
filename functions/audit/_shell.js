@@ -68,7 +68,15 @@ export function renderShell(D, opts) {
   opts = opts || {};
   const inline = !!opts.inline;
   const a = opts.assets || {};
-  const _av = 'r37';  // asset version — bump on every deploy so the 4h-cached audit JS/CSS busts immediately
+  // E-246 — THE ASSET VERSION IS NO LONGER HAND-MAINTAINED.
+  // This was `const _av = 'r37'` with a comment saying "bump on every deploy". Nobody ever bumped it. The audit
+  // JS/CSS are edge-cached for 4h KEYED ON THIS STRING, so every fix merged since r37 was deployed to the origin
+  // and then NEVER SERVED: browsers kept getting the r37 bundle. Two whole rounds of render fixes (the collapsed
+  // register block, the "pages inspected" chip, the median-fine headline) were live on the origin and invisible in
+  // the browser. Proven live: /audit/audit-app.js?v=r37 returned 131,010 bytes of OLD code while a cache-busted
+  // fetch of the same path returned 130,999 bytes of NEW code, in the same session, seconds apart.
+  // The version is now derived from the DEPLOYMENT ITSELF, so it can never again drift behind the code.
+  const _av = (opts.buildId || (typeof globalThis !== 'undefined' && globalThis.__CF_BUILD__) || 'r38').toString().slice(0, 12);
   const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : ('<link rel="stylesheet" href="/audit/audit.css?v=' + _av + '">');
   const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : ('<script src="/audit/audit-charts.js?v=' + _av + '"></script>');
   const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : ('<script src="/audit/audit-app.js?v=' + _av + '"></script>');

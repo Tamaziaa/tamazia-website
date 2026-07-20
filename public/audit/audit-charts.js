@@ -317,19 +317,11 @@ window.CH = (function(){
   }
 
   /* ---- money + deterministic regulator-badge colour ---- */
-  // millions formatting extracted so money() carries no nested conditional (CodeScene Complex Conditional).
-  function fmtMillions(m){ return (m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M'; }
-  function money(n){
-    const c=(D&&D.cur)||'£';
-    n=Math.round(+n||0);
-    if(n>=1e6) return c+fmtMillions(n/1e6);
-    if(n>=1e3) return c+Math.round(n/1e3)+'k';
-    return c+n;
-  }
+  function money(n){const c=(D&&D.cur)||'£';const sp=c.length>1?' ':'';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+sp+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+sp+Math.round(n/1e3)+'k'; return c+sp+n;}
   // Is this exposure string a MONETARY figure (vs 'ranking'/'ranking impact')? Adapter formats every money
   // exposure with the page currency symbol D.cur ('£' default, '$'/'€'/'AED ' otherwise). Test the page symbol
   // first, then any known currency prefix, so the money/ranking caption is correct in every currency. (C-E)
-  function isMoneyStr(s){ s=String(s==null?'':s).trim(); const cur=((D&&D.cur)||'£').trim(); return (cur&&s.indexOf(cur)===0) || /^[£$€]/.test(s) || /^AED\b/i.test(s); }
+  function isMoneyStr(s){ s=String(s==null?'':s).trim(); const cur=((D&&D.cur)||'£').trim(); return (cur&&s.indexOf(cur)===0) || /^[£$€]/.test(s) || /^(AED|SAR|QAR|USD|EUR|GBP)\b/i.test(s); }
   function badgeColor(code){const pal=['#5A1A2B','#2A5DA8','#2F7A4A','#B6791F','#7A2A3B','#8A1C16','#3a2d30','#2A0C14'];let h=0;for(const ch of String(code||'FW'))h=(h*31+ch.charCodeAt(0))>>>0;return pal[h%pal.length];}
 
   /* ---- rich 10-dimension scorecard card grid (Pass · Needs work · Fail) ---- */
@@ -340,44 +332,21 @@ window.CH = (function(){
       const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
       return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${esc(d.nm)} ↗"><div class="dch"><span class="dcn">${esc(d.nm)}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
         <div class="bar-track" style="height:5px;margin:7px 0 8px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div>
-        <div class="dcs">${esc(d.sub||'')}</div></div>`;
+        <div class="dcs">${esc(d.sub||'')}</div>${d.note?`<div class="dcs dc-floor">${esc(d.note)}</div>`:''}</div>`;
     }).join('')}</div>`;
   }
 
   /* ---- exposure waterfall: how the honest number is reached ---- */
-  // Helpers extracted from waterfall() so it carries no nested conditional (CodeScene Complex Conditional).
-  function wfBarCls(cls){ return cls==='gold'?'gold':cls==='amber'?'amber':''; }
-  function wfNote(wf){
-    if(wf.savedPct>0) return `<div class="wf-note">Overlapping data-protection ceilings are collapsed instead of stacked, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`;
-    return `<div class="wf-note">This is the statutory ceiling across your binding frameworks. There were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`;
-  }
-  // Guard: true when there is no usable waterfall to render. Kept as plain if/return, one
-  // condition per line, so the compound boolean never lands inside waterfall() itself.
-  function wfMissing(wf){
-    if(!wf) return true;
-    if(!wf.steps) return true;
-    if(wf.raw<=0) return true;
-    return false;
-  }
-  // Drop adjacent steps with an identical value: when nothing collapses (no overlapping DP ceilings),
-  // the raw/collapsed/real values are equal and would render as 3 identical bars (reads as broken).
-  function wfStepChanged(s,i,a){
-    if(i===0) return true;
-    return s.v!==a[i-1].v;
-  }
-  function wfFinalCls(isFinal){
-    if(isFinal) return 'final';
-    return '';
-  }
   function waterfall(){
-    const wf=D.exposureWaterfall;
-    if(wfMissing(wf)) return '';
+    const wf=D.exposureWaterfall; if(!wf||!wf.steps||wf.raw<=0) return '';
     const max=wf.raw||1;
-    const steps=wf.steps.filter(wfStepChanged);
+    // Drop adjacent steps with an identical value: when nothing collapses (no overlapping DP ceilings),
+    // the raw/collapsed/real values are equal and would render as 3 identical bars (reads as broken).
+    const steps=wf.steps.filter((s,i,a)=> i===0 || s.v!==a[i-1].v);
     return `<div class="wf">${steps.map(s=>`<div class="wf-row"><div class="wf-l">${s.l}</div>
-      <div class="bar-track"><div class="bar-fill ${wfBarCls(s.cls)}" style="width:${Math.max(3,(s.v/max)*100)}%"></div></div>
-      <div class="wf-v ${wfFinalCls(s.final)}">${money(s.v)}</div></div>`).join('')}
-      ${wfNote(wf)}</div>`;
+      <div class="bar-track"><div class="bar-fill ${s.cls==='gold'?'gold':s.cls==='amber'?'amber':''}" style="width:${Math.max(3,(s.v/max)*100)}%"></div></div>
+      <div class="wf-v ${s.final?'final':''}">${money(s.v)}</div></div>`).join('')}
+      ${wf.savedPct>0?`<div class="wf-note">Overlapping data-protection ceilings are collapsed instead of stacked, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`:`<div class="wf-note">This is the statutory ceiling across your binding frameworks. There were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`}</div>`;
   }
 
   /* ---- GEO "why AI can't see you" causal chain ---- */

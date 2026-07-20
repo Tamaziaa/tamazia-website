@@ -317,7 +317,15 @@ window.CH = (function(){
   }
 
   /* ---- money + deterministic regulator-badge colour ---- */
-  function money(n){const c=(D&&D.cur)||'£';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+Math.round(n/1e3)+'k'; return c+n;}
+  // millions formatting extracted so money() carries no nested conditional (CodeScene Complex Conditional).
+  function fmtMillions(m){ return (m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M'; }
+  function money(n){
+    const c=(D&&D.cur)||'£';
+    n=Math.round(+n||0);
+    if(n>=1e6) return c+fmtMillions(n/1e6);
+    if(n>=1e3) return c+Math.round(n/1e3)+'k';
+    return c+n;
+  }
   // Is this exposure string a MONETARY figure (vs 'ranking'/'ranking impact')? Adapter formats every money
   // exposure with the page currency symbol D.cur ('£' default, '$'/'€'/'AED ' otherwise). Test the page symbol
   // first, then any known currency prefix, so the money/ranking caption is correct in every currency. (C-E)

@@ -1826,16 +1826,21 @@ export function payloadToD(payload, ctx = {}) {
   // never suppress on this basis — the pointer still has to clear the other evidence gates below.
   const signalsAssessed = String(g(payload, 'scan.signals.status', '')).toUpperCase() === 'ASSESSED';
   const hasEmailCap = !!g(payload, 'scan.signals.has_forms', false) || !!g(payload, 'scan.signals.newsletter', false) || !!g(payload, 'scan.signals.email_capture', false);
-  const evidenced = (p) => {
-    const ev = !!p.evidence_quote || arr(p.checked_urls).length > 0;
+  const isHighSeverityFined = (p) => (p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0;
+  // FIX-R3: a hard compliance breach that carries a monetary exposure MUST cite a law. A P0/P1 compliance finding
+  // with a fine but no statutory_citation AND no citation_url is unverifiable noise -> never render it as a breach.
+  const isUncitedComplianceFine = (p) => isHighSeverityFined(p)
+    && p.bucket === 'compliance' && !String(p.statutory_citation || p.citation_url || '').trim();
+  const isSuppressedEmailAbsence = (p) => {   // R5: only suppress on an ASSESSED absence, never a placeholder one
     const fact = String(p.fact || '').toLowerCase();
     const emailRule = /can_?spam/i.test(p.framework_short || '') || /\b(from header|postal address|unsubscribe|opt-?out within|subject line|commercial (message|email))\b/.test(fact);
-    if (emailRule && signalsAssessed && !hasEmailCap) return false;   // R5: only suppress on an ASSESSED absence, never a placeholder one
-    if ((p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0 && !ev) return false;
-    // FIX-R3: a hard compliance breach that carries a monetary exposure MUST cite a law. A P0/P1 compliance finding
-    // with a fine but no statutory_citation AND no citation_url is unverifiable noise -> never render it as a breach.
-    if ((p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0 &&
-        p.bucket === 'compliance' && !String(p.statutory_citation || p.citation_url || '').trim()) return false;
+    return emailRule && signalsAssessed && !hasEmailCap;
+  };
+  const evidenced = (p) => {
+    const ev = !!p.evidence_quote || arr(p.checked_urls).length > 0;
+    if (isSuppressedEmailAbsence(p)) return false;
+    if (isHighSeverityFined(p) && !ev) return false;
+    if (isUncitedComplianceFine(p)) return false;
     return true;
   };
   // R1 drop-counter split: one combined "dropped" figure hid WHICH gate suppressed a finding. Each gate now

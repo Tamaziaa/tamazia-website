@@ -1241,6 +1241,10 @@ function estimateTurnover(payload) {
   if (jurs >= 3) mult *= 2.2; else if (jurs >= 2) mult *= 1.4;
   return Math.max(4e5, Math.round(base * mult));
 }
+// ranking guidelines + voluntary codes + uncapped regimes carry no fixed statutory ceiling (C-018 / FIX-R1 / E1c)
+function skipForMaxFine(fw, hi, p) {
+  return !fw || !hi || noStatutoryFine(fw) || fineUncapped(fw, p);
+}
 function perFrameworkMaxFine(pointers) {
   const m = {};
   for (const p of pointers) {
@@ -1252,7 +1256,7 @@ function perFrameworkMaxFine(pointers) {
     // said "£100k to £5M typical" — the same audit contradicting itself. The exposure now falls back to the typical
     // band, which is also the honest number to headline (P-008: statutory maxima are scare tactics, not forecasts).
     const hi = (+p.fine_high_gbp || 0) || (+p.enforce_typical_high_gbp || 0);
-    if (!fw || !hi || noStatutoryFine(fw) || fineUncapped(fw, p)) continue;   // ranking guidelines + voluntary codes + uncapped regimes carry no fixed statutory ceiling (C-018 / FIX-R1 / E1c)
+    if (skipForMaxFine(fw, hi, p)) continue;
     m[fw] = Math.max(m[fw] || 0, hi);
   }
   return m;

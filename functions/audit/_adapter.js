@@ -1276,23 +1276,31 @@ function canonicalExposure(perFw) {
 // The headline is now the MEDIAN of the TYPICAL ENFORCEMENT BAND — the midpoint of what this regulator actually
 // levies for this breach — which IS the band printed on every card, so the reader can add it up themselves.
 // The statutory ceiling is retained as the top step of the waterfall, where it belongs: as context, not a headline.
+// E1c: uncapped regimes never contribute a fixed midpoint
+function skipForMedianFine(fw, p) {
+  return !fw || noStatutoryFine(fw) || isNonStatutory(p) || fineUncapped(fw, p);
+}
+// Prefer the observed enforcement band (what regulators DO). Fall back to the statutory band (what they MAY).
+function typicalOrStatutoryMidpoint(p) {
+  const tLo = +p.enforce_typical_low_gbp || 0, tHi = +p.enforce_typical_high_gbp || 0;
+  const sLo = +p.fine_low_gbp || 0, sHi = +p.fine_high_gbp || 0;
+  let mid = (tLo || tHi) ? Math.round(((tLo || tHi) + (tHi || tLo)) / 2)
+    : (sLo || sHi) ? Math.round(((sLo || sHi) + (sHi || sLo)) / 2) : 0;
+  // E-244b: the turnover rescale has already cut this firm's statutory ceiling down to 4% of ITS OWN turnover
+  // (a 12-partner firm cannot be fined the £17.5M global cap). The typical enforcement band, however, is the
+  // regulator's population-wide band and is NOT rescaled — so an un-capped median could sit ABOVE this firm's
+  // own ceiling and the audit would contradict itself again, in the other direction. The median is therefore
+  // capped at the rescaled ceiling: median <= ceiling is now an invariant of the page.
+  if (sHi > 0 && mid > sHi) mid = sHi;
+  return mid;
+}
 function perFrameworkMedianFine(pointers) {
   const m = {};
   for (const p of pointers) {
     if (p.fine_withheld) continue;
     const fw = p.framework_short || p.citation;
-    if (!fw || noStatutoryFine(fw) || isNonStatutory(p) || fineUncapped(fw, p)) continue;   // E1c: uncapped regimes never contribute a fixed midpoint
-    const tLo = +p.enforce_typical_low_gbp || 0, tHi = +p.enforce_typical_high_gbp || 0;
-    const sLo = +p.fine_low_gbp || 0, sHi = +p.fine_high_gbp || 0;
-    // Prefer the observed enforcement band (what regulators DO). Fall back to the statutory band (what they MAY).
-    let mid = (tLo || tHi) ? Math.round(((tLo || tHi) + (tHi || tLo)) / 2)
-      : (sLo || sHi) ? Math.round(((sLo || sHi) + (sHi || sLo)) / 2) : 0;
-    // E-244b: the turnover rescale has already cut this firm's statutory ceiling down to 4% of ITS OWN turnover
-    // (a 12-partner firm cannot be fined the £17.5M global cap). The typical enforcement band, however, is the
-    // regulator's population-wide band and is NOT rescaled — so an un-capped median could sit ABOVE this firm's
-    // own ceiling and the audit would contradict itself again, in the other direction. The median is therefore
-    // capped at the rescaled ceiling: median <= ceiling is now an invariant of the page.
-    if (sHi > 0 && mid > sHi) mid = sHi;
+    if (skipForMedianFine(fw, p)) continue;
+    const mid = typicalOrStatutoryMidpoint(p);
     if (!mid) continue;
     m[fw] = Math.max(m[fw] || 0, mid);
   }

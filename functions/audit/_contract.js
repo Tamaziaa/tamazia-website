@@ -31,22 +31,36 @@ const NONEMPTY = [
   'geo.engines', 'competitors.rows', 'pricing',
 ];
 
+function missingRequired(D) {
+  return REQUIRED.filter((p) => get(D, p) == null);
+}
+function missingNonEmpty(D) {
+  return NONEMPTY.filter((p) => { const v = get(D, p); return !Array.isArray(v) || v.length === 0; }).map((p) => p + ' (empty)');
+}
+// exact-count invariants the render depends on:
+function missingExactCounts(D) {
+  const out = [];
+  if ((get(D, 'dims') || []).length !== 10) out.push('dims!=10');
+  if ((get(D, 'geo.engines') || []).length !== 8) out.push('geo.engines!=8');
+  if ((get(D, 'geo.rootCause.chain') || []).length !== 4) out.push('rootCause.chain!=4');
+  return out;
+}
+// R9 (KIMI-RENDER-DEBUG) — the report asked for `payload.kind === 'audit-payload'`; this codebase's engine
+// payloads carry no `kind` field at all (verified against every _qa fixture), so the equivalent, always-present
+// signal is `payload.schema_version`, which the adapter's fail-closed guard at the top of payloadToD() already
+// requires and threads through as D.meta.schemaVersion. Asserting it here again means a render that reaches
+// this validator without having gone through that guard (e.g. a future caller that builds D by hand) still gets
+// caught — the adapter's screenshot-manifest bug was exactly a caller reaching a full render with no real
+// engine-payload signature at all.
+function missingSchemaVersion(D) {
+  return get(D, 'meta.schemaVersion') ? [] : ['meta.schemaVersion'];
+}
 function validateD(D) {
-  const missing = [];
-  for (const p of REQUIRED) { if (get(D, p) == null) missing.push(p); }
-  for (const p of NONEMPTY) { const v = get(D, p); if (!Array.isArray(v) || v.length === 0) missing.push(p + ' (empty)'); }
-  // exact-count invariants the render depends on:
-  if ((get(D, 'dims') || []).length !== 10) missing.push('dims!=10');
-  if ((get(D, 'geo.engines') || []).length !== 8) missing.push('geo.engines!=8');
-  if ((get(D, 'geo.rootCause.chain') || []).length !== 4) missing.push('rootCause.chain!=4');
-  // R9 (KIMI-RENDER-DEBUG) — the report asked for `payload.kind === 'audit-payload'`; this codebase's engine
-  // payloads carry no `kind` field at all (verified against every _qa fixture), so the equivalent, always-present
-  // signal is `payload.schema_version`, which the adapter's fail-closed guard at the top of payloadToD() already
-  // requires and threads through as D.meta.schemaVersion. Asserting it here again means a render that reaches
-  // this validator without having gone through that guard (e.g. a future caller that builds D by hand) still gets
-  // caught — the adapter's screenshot-manifest bug was exactly a caller reaching a full render with no real
-  // engine-payload signature at all.
-  if (!get(D, 'meta.schemaVersion')) missing.push('meta.schemaVersion');
-  return missing;
+  return [
+    ...missingRequired(D),
+    ...missingNonEmpty(D),
+    ...missingExactCounts(D),
+    ...missingSchemaVersion(D),
+  ];
 }
 export { REQUIRED, NONEMPTY, validateD };

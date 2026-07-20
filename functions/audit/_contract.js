@@ -19,6 +19,9 @@ const REQUIRED = [
   'geo.entityReadiness', 'geo.shareOfVoice', 'geo.radar', 'geo.schema', 'geo.citations', 'geo.sourceGap', 'geo.rootCause', 'geo.fix',
   'competitors.bestKeyword', 'competitors.youDr', 'competitors.cols', 'competitors.rows', 'competitors.drBars',
   'pricingNotes', 'upsellProof',
+  // R1/R3 (KIMI-RENDER-DEBUG) — the provenance funnel and the withheld-evidence count must always be present so a
+  // render can never silently omit the "what happened to every pointer the engine sent" accounting.
+  'provenance', 'findingsWithheldForEvidence',
 ];
 // Must be a non-empty array (the render iterates these and would show nothing if empty):
 // C-A: `addons` removed — the adapter no longer injects D.addons (the render builds its add-on grid from
@@ -36,6 +39,14 @@ function validateD(D) {
   if ((get(D, 'dims') || []).length !== 10) missing.push('dims!=10');
   if ((get(D, 'geo.engines') || []).length !== 8) missing.push('geo.engines!=8');
   if ((get(D, 'geo.rootCause.chain') || []).length !== 4) missing.push('rootCause.chain!=4');
+  // R9 (KIMI-RENDER-DEBUG) — the report asked for `payload.kind === 'audit-payload'`; this codebase's engine
+  // payloads carry no `kind` field at all (verified against every _qa fixture), so the equivalent, always-present
+  // signal is `payload.schema_version`, which the adapter's fail-closed guard at the top of payloadToD() already
+  // requires and threads through as D.meta.schemaVersion. Asserting it here again means a render that reaches
+  // this validator without having gone through that guard (e.g. a future caller that builds D by hand) still gets
+  // caught — the adapter's screenshot-manifest bug was exactly a caller reaching a full render with no real
+  // engine-payload signature at all.
+  if (!get(D, 'meta.schemaVersion')) missing.push('meta.schemaVersion');
   return missing;
 }
 export { REQUIRED, NONEMPTY, validateD };

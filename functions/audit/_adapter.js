@@ -308,7 +308,7 @@ function humanUrl(u) {
 }
 // Human, specific label for one provision. NEVER a raw ^[A-Z_]+$ code. (kept for back-compat consumers.)
 function provisionLabel(p, actK) {
-  const base = articleOf(p), subj = subjectOf(p, 46);
+  const base = articleOf(p), subj = subjectOf(p);
   if (base && subj) return base + ' · ' + subj;
   if (base) return base;
   if (subj) return subj;
@@ -2083,7 +2083,7 @@ export function payloadToD(payload, ctx = {}) {
         // E2: give a same-statute finding a node-specific subject so two Equality Act nodes never read as one
         // duplicate. The node label is appended only when there is a real parseable element behind it.
         const _nl = nodeLabel(p);
-        const _subj = subjectOf(p, 84) || '';
+        const _subj = subjectOf(p) || '';
         return {
           subject: _subj ? (_nl ? _subj + ' — ' + _nl : _subj) : (_nl || 'Required disclosure'),
           quote: _elLine ? '' : _q25(String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ')),   // NO TRUNCATION: the firm's own words in full

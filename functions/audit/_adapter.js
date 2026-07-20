@@ -137,7 +137,10 @@ function gbp(n, sym) {
   // A symbol glues to its number ('£2.6M'); an ISO-style code needs a space ('AED 2.6M', 'SAR 900k').
   const sep = sym.length > 1 ? ' ' : '';
   n = Math.round(+n || 0);
-  if (n >= 1e6) { const m = n / 1e6; return sym + sep + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
+  // E1(b): millions are formatted to ONE decimal place, never rounded to the nearest whole million. £17,515,000
+  // must read "£17.5M", not "£18M" (the ICO PECR cap is famously £17.5M; rounding it up to £18M is a false figure).
+  // Above £100M the decimal is dropped (no legally-meaningful precision left) to keep large aggregates readable.
+  if (n >= 1e6) { const m = n / 1e6; const s = (m >= 100 ? String(Math.round(m)) : (Math.round(m * 10) / 10).toString()); return sym + sep + s + 'M'; }
   if (n >= 1e3) return sym + sep + Math.round(n / 1e3) + 'k';
   return sym + sep + n;
 }
@@ -305,7 +308,7 @@ function humanUrl(u) {
 }
 // Human, specific label for one provision. NEVER a raw ^[A-Z_]+$ code. (kept for back-compat consumers.)
 function provisionLabel(p, actK) {
-  const base = articleOf(p), subj = subjectOf(p, 46);
+  const base = articleOf(p), subj = subjectOf(p);
   if (base && subj) return base + ' · ' + subj;
   if (base) return base;
   if (subj) return subj;
@@ -325,6 +328,36 @@ function setVoluntaryBinding(binding) {
   _VOLUNTARY_BINDING = v;
 }
 function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_STATUTORY_FINE.has(fw) || _VOLUNTARY_BINDING.has(fw); }
+// E1(c): frameworks whose penalties have NO fixed statutory ceiling. Equality Act 2010 s.29 damages are
+// Vento-banded and uncapped in principle (county-court injury-to-feelings, not a fixed maximum); PMO 2004 /
+// price-marking summary fines have been uncapped in England since LASPO 2012 s.85. Rendering an invented "£10k"
+// or "£5k" ceiling for these is legally false, so they carry no numeric fine and render as "uncapped": they are
+// excluded from the summed statutory ceiling and the modelled midpoint (only regimes with a real numeric ceiling,
+// e.g. PECR, feed those totals). A catalogue-provided `fine_uncapped:true` always wins.
+const UNCAPPED_FINE = new Set(['UK_EQUALITY_ACCESSIBILITY', 'UK_EQUALITY_2010', 'UK_EQA_2010', 'UK_PRICE_VAT_DISPLAY', 'UK_PMO_2004', 'UK_PRICE_MARKING', 'UK_PMO']);
+function fineUncapped(fw, p) { if (p && p.fine_uncapped === true) return true; return UNCAPPED_FINE.has(String(fw || '').toUpperCase()); }
+// E2: a short, node-identifying label derived from a finding's evidence quote, so two findings under the same
+// statute (e.g. two Equality Act nodes) read as distinct rather than as a copy-paste duplicate. Empty when there
+// is no parseable element (the caller then falls back to the finding's own subject). Never fabricated.
+function nodeLabel(p) {
+  const q = String((p && p.evidence_quote) || '').trim();
+  const m = q.match(/^<\s*([a-zA-Z0-9]+)/);
+  if (!m) return '';
+  const t = m[1].toLowerCase();
+  if (t === 'select') return 'form selector control';
+  if (t === 'textarea') return 'text area field';
+  if (t === 'input') { const ty = (q.match(/type\s*=\s*["']?([a-zA-Z]+)/) || [])[1] || 'text'; return ty.toLowerCase() + ' input field'; }
+  if (t === 'img') return 'image without alt text';
+  if (t === 'button') return 'button without an accessible name';
+  if (t === 'a') {
+    if (/facebook/i.test(q)) return 'Facebook icon link';
+    if (/instagram/i.test(q)) return 'Instagram icon link';
+    if (/twitter|x\.com|linkedin|youtube/i.test(q)) return 'social icon link';
+    if (/<\s*img/i.test(q)) return 'image link without a text alternative';
+    return 'link without discernible text';
+  }
+  return t + ' element';
+}
 // E-243 (v22.11) THE ONE CANONICAL NON-STATUTORY TEST. A finding is non-statutory when it is a ranking/visibility
 // signal rather than a legal obligation. Previously three different bucket lists existed in this file and drifted,
 // which is how a Largest-Contentful-Paint (bucket `performance`) came to be labelled an "enforcement action".
@@ -928,6 +961,8 @@ function bingoFromPointer(p, pillar, news, i, sym) {
   // on line ~765. The live page therefore branded a Core Web Vital as a regulatory enforcement action. The two
   // lists are now ONE canonical predicate (NON_STATUTORY_BUCKET), so they can never drift apart again.
   const noFine = isNonStatutory(p);   // FIX-R1 + E-243
+  const uncap = fineUncapped(p.framework_short || p.citation, p);   // E1c: Vento-banded / uncapped summary fine
+  const _node = nodeLabel(p);         // E2: node-specific descriptor to differentiate same-statute cards
   return {
     n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation) : pillar, pillar,
     // GEO/SEO/technical are not statutes; render the human "③ The law" layer, never the raw code title-cased
@@ -951,15 +986,17 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // E-243: the final fallback used to be the literal string 'enforcement action', which is (a) meaningless as a
     // penalty and (b) a REGULATORY claim stamped onto findings that carry no law at all. A finding with no fine and
     // no penalty basis states exactly that, and nothing more. We never invent a sanction.
-    exp: noFine ? (p.penalty_note || 'non-statutory (ranking and AI-visibility impact)')
+    exp: uncap ? (p.penalty_note || 'uncapped (damages set case by case, no statutory ceiling)')
+      : noFine ? (p.penalty_note || 'non-statutory (ranking and AI-visibility impact)')
       : (enfLo || enfHi) ? (gbp(enfLo, sym) + ' to ' + gbp(enfHi, sym) + ' typical')
         : (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
           : (p.penalty_note ? p.penalty_note : 'no published penalty figure'),
-    expMax: (!noFine && hiF) ? gbp(hiF, sym) : (p.penalty_note || null),   // FIX-R1
+    expMax: uncap ? 'uncapped' : ((!noFine && hiF) ? gbp(hiF, sym) : (p.penalty_note || null)),   // FIX-R1 / E1c
+    fineUncapped: uncap, node: _node,
     maxRare: !!p.enforce_max_rare,
     enfMethod: p.enforce_methodology || null,
     enfContext: p.enforce_context || null,
-    title: p.fact || g(p, 'bingo.problem', 'Finding'),
+    title: (p.fact || g(p, 'bingo.problem', 'Finding')) + (_node ? ' — ' + _node : ''),
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),
     // Prefer a verbatim on-site quote; else the engine's real nearest-miss absence line; else the bingo problem.
@@ -995,7 +1032,10 @@ function differentiateFixes(list) {
   for (const f of arr(list)) {
     if (!f || !f.fix) continue;
     if (!seen.has(fixKey(f.fix))) { seen.add(fixKey(f.fix)); continue; }
-    const subj = String(f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[,\s:.\-]+$/, '');
+    // E2: differentiate a colliding fix by its EVIDENCE NODE (e.g. "phone number field"), not by prepending the
+    // whole statute name. Prepending the title produced "Equality Act 2010 (...), Make reasonable adjustments...",
+    // a garbled concat that read as a copy-paste bug. The node label is short, specific, and node-identifying.
+    const subj = String(f.node || f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[,\s:.\-]+$/, '');
     const body = String(f.fix).replace(/^Tamazia\s+implements\s+and\s+verifies\s+"[^"]*"\s+/i, 'Tamazia implements and verifies this ').trim();
     f.fix = subj ? subj + ', ' + body : body;
     if (seen.has(fixKey(f.fix))) f.fix = '(' + (f.n || seen.size + 1) + ') ' + f.fix;   // deterministic last-resort
@@ -1006,11 +1046,10 @@ function differentiateFixes(list) {
 
 /* ---------------- jurisdiction membrane ---------------- */
 const TLD_JUR = { uk: 'UK', ae: 'AE', sa: 'SA', us: 'US', fr: 'FR', de: 'DE', it: 'IT', es: 'ES', com: null };
-const FW_JUR = (code) => {
-  const c = String(code || '').toUpperCase();
-  // Prefix checks FIRST (the catalogue's real codes: UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore
-  // law is badged to its OWN country and jurisdiction-gated correctly — never mis-mapped to "Global" (which would show
-  // it on every firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
+// Prefix checks FIRST (the catalogue's real codes: UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore
+// law is badged to its OWN country and jurisdiction-gated correctly — never mis-mapped to "Global" (which would show
+// it on every firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
+function jurisdictionByPrefix(c) {
   if (c.startsWith('UK_') || c.startsWith('GB_')) return 'UK';
   if (c.startsWith('EU_')) return 'EU';
   if (c.startsWith('US_')) return 'US';
@@ -1021,11 +1060,41 @@ const FW_JUR = (code) => {
   if (c.startsWith('FR_')) return 'FR';
   if (c.startsWith('DE_')) return 'DE';
   if (c.startsWith('IN_')) return 'IN';
-  // Fallbacks for codes that carry no jurisdiction prefix.
+  return null;
+}
+// Fallbacks for codes that carry no jurisdiction prefix.
+function jurisdictionByFallback(c) {
   if (['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA'].some((x) => c.includes(x))) return 'US';
   if (c.includes('RERA') || c.includes('DIFC') || c.includes('ADGM')) return 'AE';
   if (c.includes('CNIL')) return 'FR';
   if (c.includes('BDSG')) return 'DE';
+  return null;
+}
+// Only warn on things SHAPED like a framework code (SCREAMING_SNAKE_CASE, e.g. "UK_SOMETHING", "SOME_NEW_LAW").
+// FW_JUR is also called on free-text titles (Lighthouse audit titles, absence-finding subjects, etc.) that were
+// never meant to resolve to a jurisdiction at all; those are not "unrecognised framework codes" and warning on
+// them would drown the real signal in noise on every single render.
+function isFrameworkShapedCode(c) {
+  return !!c && /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$/.test(c) && !NON_LEGAL_FW.has(c) && !NO_STATUTORY_FINE.has(c);
+}
+// R6 — an unrecognised code falling through to GLOBAL used to do so silently, with no way to tell "genuinely
+// universal" (GOOGLE_EEAT, SCHEMA — deliberately shown to every firm regardless of jurisdiction) apart from "we
+// don't recognise this code and are guessing GLOBAL by default" (which shows a possibly-foreign law to every
+// firm). Both still resolve to GLOBAL here (changing that behaviourally would need the engine to positively
+// confirm which codes are truly universal, which it does not do today — see R6 note at the call site), but an
+// unrecognised code is now logged so it is visible instead of silently spreading.
+function warnIfUnrecognisedFrameworkCode(c) {
+  if (isFrameworkShapedCode(c)) {
+    try { console.warn('[FW_JUR] unrecognised framework code defaulted to GLOBAL:', c); } catch { /* noop */ }
+  }
+}
+const FW_JUR = (code) => {
+  const c = String(code || '').toUpperCase();
+  const byPrefix = jurisdictionByPrefix(c);
+  if (byPrefix) return byPrefix;
+  const byFallback = jurisdictionByFallback(c);
+  if (byFallback) return byFallback;
+  warnIfUnrecognisedFrameworkCode(c);
   return 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
 };
 // Authoritative allow-list = country + TLD (the trustworthy spine), + EU only with corroborating
@@ -1141,7 +1210,12 @@ const DP_FAMILY = new Set(['UK_GDPR_A13', 'UK_DPA_2018', 'UK_PECR', 'UK_ICO_COOK
 // Max realistic fine as a FRACTION of turnover, by regime harshness: data-protection caps at 4% (GDPR/PDPL),
 // sector regulators ~2% (FCA/SRA/CQC/GDC/MHRA/RERA), consumer/advertising ~1% (CMA/ASA/Trading Standards). This
 // is what turns "£18M PECR on a dental clinic" into a credible "£34k". Statutory cap still wins for large firms.
-function fineRate(fw) {
+// R4: fineRate is catalogue-driven when the payload supplies it (`penalty_model: 'turnover_pct'` + a numeric
+// `penalty_rate` between 0 and 1) — the adapter's sector-string heuristic below is the fallback for every payload
+// that does not yet carry a catalogue penalty_model (true of every fixture and every live row in this codebase
+// today; noted as a residual gap, not a regression — the heuristic is exactly what shipped before this fix).
+function fineRate(fw, penaltyModel, penaltyRate) {
+  if (penaltyModel === 'turnover_pct' && isNum(+penaltyRate) && +penaltyRate > 0 && +penaltyRate <= 1) return +penaltyRate;
   const s = String(fw || '').toUpperCase();
   if (/GDPR|PECR|\bDPA\b|_DPA|PDPL|\bDPL\b|_DPL|CCPA|CPRA|VCDPA|PDPPL|TDPSA|EPRIVACY|ICO_COOKIES|_EAA|DIFC|ADGM/.test(s)) return 0.04;
   if (/FCA|SRA|CQC|GDC|MHRA|RERA|DFSA|SDAIA|FINRA|HSE|FSA|ATTORNEY|BAR_|MEDICAL|NURSING/.test(s)) return 0.02;
@@ -1167,6 +1241,10 @@ function estimateTurnover(payload) {
   if (jurs >= 3) mult *= 2.2; else if (jurs >= 2) mult *= 1.4;
   return Math.max(4e5, Math.round(base * mult));
 }
+// ranking guidelines + voluntary codes + uncapped regimes carry no fixed statutory ceiling (C-018 / FIX-R1 / E1c)
+function skipForMaxFine(fw, hi, p) {
+  return !fw || !hi || noStatutoryFine(fw) || fineUncapped(fw, p);
+}
 function perFrameworkMaxFine(pointers) {
   const m = {};
   for (const p of pointers) {
@@ -1178,7 +1256,7 @@ function perFrameworkMaxFine(pointers) {
     // said "£100k to £5M typical" — the same audit contradicting itself. The exposure now falls back to the typical
     // band, which is also the honest number to headline (P-008: statutory maxima are scare tactics, not forecasts).
     const hi = (+p.fine_high_gbp || 0) || (+p.enforce_typical_high_gbp || 0);
-    if (!fw || !hi || noStatutoryFine(fw)) continue;   // ranking guidelines + voluntary codes carry no statutory fine (C-018 / FIX-R1)
+    if (skipForMaxFine(fw, hi, p)) continue;
     m[fw] = Math.max(m[fw] || 0, hi);
   }
   return m;
@@ -1198,23 +1276,31 @@ function canonicalExposure(perFw) {
 // The headline is now the MEDIAN of the TYPICAL ENFORCEMENT BAND — the midpoint of what this regulator actually
 // levies for this breach — which IS the band printed on every card, so the reader can add it up themselves.
 // The statutory ceiling is retained as the top step of the waterfall, where it belongs: as context, not a headline.
+// E1c: uncapped regimes never contribute a fixed midpoint
+function skipForMedianFine(fw, p) {
+  return !fw || noStatutoryFine(fw) || isNonStatutory(p) || fineUncapped(fw, p);
+}
+// Prefer the observed enforcement band (what regulators DO). Fall back to the statutory band (what they MAY).
+function typicalOrStatutoryMidpoint(p) {
+  const tLo = +p.enforce_typical_low_gbp || 0, tHi = +p.enforce_typical_high_gbp || 0;
+  const sLo = +p.fine_low_gbp || 0, sHi = +p.fine_high_gbp || 0;
+  let mid = (tLo || tHi) ? Math.round(((tLo || tHi) + (tHi || tLo)) / 2)
+    : (sLo || sHi) ? Math.round(((sLo || sHi) + (sHi || sLo)) / 2) : 0;
+  // E-244b: the turnover rescale has already cut this firm's statutory ceiling down to 4% of ITS OWN turnover
+  // (a 12-partner firm cannot be fined the £17.5M global cap). The typical enforcement band, however, is the
+  // regulator's population-wide band and is NOT rescaled — so an un-capped median could sit ABOVE this firm's
+  // own ceiling and the audit would contradict itself again, in the other direction. The median is therefore
+  // capped at the rescaled ceiling: median <= ceiling is now an invariant of the page.
+  if (sHi > 0 && mid > sHi) mid = sHi;
+  return mid;
+}
 function perFrameworkMedianFine(pointers) {
   const m = {};
   for (const p of pointers) {
     if (p.fine_withheld) continue;
     const fw = p.framework_short || p.citation;
-    if (!fw || noStatutoryFine(fw) || isNonStatutory(p)) continue;
-    const tLo = +p.enforce_typical_low_gbp || 0, tHi = +p.enforce_typical_high_gbp || 0;
-    const sLo = +p.fine_low_gbp || 0, sHi = +p.fine_high_gbp || 0;
-    // Prefer the observed enforcement band (what regulators DO). Fall back to the statutory band (what they MAY).
-    let mid = (tLo || tHi) ? Math.round(((tLo || tHi) + (tHi || tLo)) / 2)
-      : (sLo || sHi) ? Math.round(((sLo || sHi) + (sHi || sLo)) / 2) : 0;
-    // E-244b: the turnover rescale has already cut this firm's statutory ceiling down to 4% of ITS OWN turnover
-    // (a 12-partner firm cannot be fined the £17.5M global cap). The typical enforcement band, however, is the
-    // regulator's population-wide band and is NOT rescaled — so an un-capped median could sit ABOVE this firm's
-    // own ceiling and the audit would contradict itself again, in the other direction. The median is therefore
-    // capped at the rescaled ceiling: median <= ceiling is now an invariant of the page.
-    if (sHi > 0 && mid > sHi) mid = sHi;
+    if (skipForMedianFine(fw, p)) continue;
+    const mid = typicalOrStatutoryMidpoint(p);
     if (!mid) continue;
     m[fw] = Math.max(m[fw] || 0, mid);
   }
@@ -1318,6 +1404,12 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
     // The dimension is now the weighted pair it always claimed to be: entity readiness and share of voice, evenly.
     // A firm with zero share of voice cannot exceed 40 here, and the card says why.
     (() => {
+      // E3: distinguish a real AI-visibility FAILURE (probed, scored 0) from NOT ASSESSED (no entity/probe data at
+      // all). With neither ai_readiness nor geo_probe data present nothing was measured, so the dimension is "na"
+      // (excluded from scoring), never a confident "fail" on a v:0 it never actually assessed.
+      const _geoProbe = g(payload, 'geo_probe', {}) || {};
+      const _hasAiData = (aiR && Object.keys(aiR).length > 0) || (_geoProbe && Object.keys(_geoProbe).length > 0);
+      if (!_hasAiData) return { nm: 'AI / GEO visibility', key: 'ai_visibility', st: 'na', v: null, _na: true, sub: 'not assessed this scan', w: 1 };
       const _sov = +sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows')) || 0;
       const _ent = +(aiR.score || 0);
       let _v = Math.round((_ent * 0.5) + (_sov * 0.5));
@@ -1668,8 +1760,26 @@ function sectorInapplicable(fw, payload) {
 /* ---------------- THE ADAPTER ---------------- */
 // Named exports for the benchmark scorer (single source of truth, F5 shared blocklist).
 export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer, currencyForFramework, gbp };
+// R9 — FAIL CLOSED. The adapter must refuse to render anything it cannot prove is a real engine-produced
+// audit payload (the debug report caught a Playwright screenshot manifest producing a full audit HTML page).
+// Spec (KIMI-RENDER-DEBUG R9) asks for `engine_run.engine_version` + `engine_run.catalogue_hash`; THIS engine's
+// real payloads (all 14 live _qa fixtures, current production shape) never carry an `engine_run` object at all —
+// enforcing that literal check would 500 every legitimate audit in production, which is a worse regression than
+// the bug it fixes. The genuine, always-present signature of a real audit payload in this codebase is
+// `schema_version` + a string `domain` + an array `pointers` + a `sector` (verified against every fixture in
+// _qa/fixtures/). A screenshot manifest, or any non-audit object, carries none of these. This is the faithful
+// equivalent of R9 for this payload shape.
+function isEngineProducedPayload(payload) {
+  return !!payload.schema_version && typeof payload.domain === 'string' && !!payload.domain.trim()
+    && Array.isArray(payload.pointers) && !!payload.sector;
+}
 export function payloadToD(payload, ctx = {}) {
   payload = payload || {};
+  // callers (functions/audit/[[path]].js) already wrap payloadToD in a try/catch that renders
+  // errorShell('Audit could not be rendered', ...) on a throw, so failing closed here is safe.
+  if (!isEngineProducedPayload(payload)) {
+    throw new Error('payload_not_engine_produced');
+  }
   // E-218 TRUTH FILTER (audit-of-the-audits P-002/P-004/P-008/P-011/P-064, S-183): any row the verifier did not
   // pass (verified !== true — 9,700+ legacy rows plus every quarantined mint) renders ONLY what survives the
   // engine's own evidence standards, applied render-side to the stored payload. What survives renders exactly as
@@ -1691,46 +1801,113 @@ export function payloadToD(payload, ctx = {}) {
   const siteUrl = cleanDomain(payload.domain) ? ('https://' + cleanDomain(payload.domain)) : '';
 
   // --- pointers: CONFIRMED + jurisdiction-gated + EVIDENCE-gated (membrane) ---
-  const rawPointers = arr(payload.pointers).filter((p) => (p.state || 'CONFIRMED') === 'CONFIRMED');
+  // R1 (KIMI-RENDER-DEBUG) — GATE 1 FAIL-OPEN FIX. The old filter `(p.state || 'CONFIRMED') === 'CONFIRMED'`
+  // treated a MISSING or typo'd state as CONFIRMED — the membrane's entire purpose inverted, because a state the
+  // engine never asserted rendered as a verified breach. State is now read explicitly and normalised; a
+  // missing/unknown/DROPPED state is EXCLUDED, never defaulted to CONFIRMED. NEEDS_REVIEW rows are kept in a
+  // separate `provisional` tier (opt-in, never contributes to score/grade/exposure — see below).
+  const allPointers = arr(payload.pointers);
+  const confirmedPointers = [], provisionalPointers = [];
+  let droppedState = 0;
+  for (const p of allPointers) {
+    const st = String((p && p.state) || '').toUpperCase();
+    if (st === 'CONFIRMED') confirmedPointers.push(p);
+    else if (st === 'NEEDS_REVIEW') provisionalPointers.push(p);
+    else droppedState++;   // missing / unknown / DROPPED: excluded and counted, never rendered
+  }
   // A finding renders only if the engine actually EVIDENCED it on THIS site, never because the rule
   // merely exists in the catalogue. Headline fines (P0/P1) need a quote or an inspected URL; email-
   // marketing rules need an email capability on the site. This is what stops "FTC §5 email" firing on
   // a firm that sends no marketing email. (C-evidence)
+  // R5 — the capability gate must run ONLY when the engine actually assessed scan.signals (status ASSESSED); on a
+  // legacy/placeholder payload where scan.signals is just an empty/default bag, `has_forms`/`newsletter`/
+  // `email_capture` all read false NOT because the firm has no email capability, but because nothing was measured.
+  // Gating on a fabricated absence silently suppressed real, evidenced findings. When signals are unassessed we
+  // never suppress on this basis — the pointer still has to clear the other evidence gates below.
+  const signalsAssessed = String(g(payload, 'scan.signals.status', '')).toUpperCase() === 'ASSESSED';
   const hasEmailCap = !!g(payload, 'scan.signals.has_forms', false) || !!g(payload, 'scan.signals.newsletter', false) || !!g(payload, 'scan.signals.email_capture', false);
-  const evidenced = (p) => {
-    const ev = !!p.evidence_quote || arr(p.checked_urls).length > 0;
+  const isHighSeverityFined = (p) => (p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0;
+  // FIX-R3: a hard compliance breach that carries a monetary exposure MUST cite a law. A P0/P1 compliance finding
+  // with a fine but no statutory_citation AND no citation_url is unverifiable noise -> never render it as a breach.
+  const isUncitedComplianceFine = (p) => isHighSeverityFined(p)
+    && p.bucket === 'compliance' && !String(p.statutory_citation || p.citation_url || '').trim();
+  const isSuppressedEmailAbsence = (p) => {   // R5: only suppress on an ASSESSED absence, never a placeholder one
     const fact = String(p.fact || '').toLowerCase();
     const emailRule = /can_?spam/i.test(p.framework_short || '') || /\b(from header|postal address|unsubscribe|opt-?out within|subject line|commercial (message|email))\b/.test(fact);
-    if (emailRule && !hasEmailCap) return false;
-    if ((p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0 && !ev) return false;
-    // FIX-R3: a hard compliance breach that carries a monetary exposure MUST cite a law. A P0/P1 compliance finding
-    // with a fine but no statutory_citation AND no citation_url is unverifiable noise -> never render it as a breach.
-    if ((p.severity === 'P0' || p.severity === 'P1') && (+p.fine_high_gbp || 0) > 0 &&
-        p.bucket === 'compliance' && !String(p.statutory_citation || p.citation_url || '').trim()) return false;
+    return emailRule && signalsAssessed && !hasEmailCap;
+  };
+  const evidenced = (p) => {
+    const ev = !!p.evidence_quote || arr(p.checked_urls).length > 0;
+    if (isSuppressedEmailAbsence(p)) return false;
+    if (isHighSeverityFined(p) && !ev) return false;
+    if (isUncitedComplianceFine(p)) return false;
     return true;
   };
-  const pointers = rawPointers.filter((p) => {
-    const j = FW_JUR(p.framework_short || p.citation);
-    if (!(j === 'GLOBAL' || allow.has(j))) return false;
-    if (sectorInapplicable(p.framework_short || p.citation, payload)) return false; // sector-mismatch frameworks (Ofsted/DfE/OSA on a university)
+  // R1 drop-counter split: one combined "dropped" figure hid WHICH gate suppressed a finding. Each gate now
+  // increments its own counter so the provenance footer can render the real funnel (assessed -> applicable ->
+  // confirmed -> suppressed, broken down by reason), rather than a single opaque number.
+  let droppedJurisdiction = 0, droppedSector = 0, droppedReview = 0, droppedEvidence = 0;
+  // R6 — prefer the engine's OWN applicability verdict (`p.applicable` / `p.jurisdiction`) when the payload carries
+  // it: the adapter re-deriving applicability from FW_JUR/sectorInapplicable string heuristics is a SECOND
+  // applicability engine that can silently disagree with the engine's real one. Those heuristics are kept as
+  // defence-in-depth for legacy payloads that carry neither field (all current fixtures + all live rows today, so
+  // this branch is exercised for every payload until the engine starts emitting `applicable`/`jurisdiction` — noted
+  // as a residual gap, not a regression, since the fallback is the same logic that shipped before).
+  const gate = (p) => {
+    if (typeof p.applicable === 'boolean') {
+      if (!p.applicable) { droppedJurisdiction++; return false; }
+    } else {
+      const j = p.jurisdiction ? String(p.jurisdiction).toUpperCase() : FW_JUR(p.framework_short || p.citation);
+      if (!(j === 'GLOBAL' || allow.has(j))) { droppedJurisdiction++; return false; }
+      if (sectorInapplicable(p.framework_short || p.citation, payload)) { droppedSector++; return false; } // sector-mismatch frameworks (Ofsted/DfE/OSA on a university)
+    }
     // FIX-R2/R3: a low-confidence (review-band) attachment is NOT a hard breach — it renders in 'applies to you', not
     // as a breach card with a fine. This consumes the engine's conformal review_candidates contract.
-    if (reviewSet.has(String(p.framework_short || p.citation || '').toUpperCase())) return false;
-    return evidenced(p);
-  });
-  const dropped = rawPointers.length - pointers.length; // jurisdiction + unevidenced + sector-applicability suppressions
-  // EXPOSURE CREDIBILITY: rescale turnover-based statutory fines (GDPR/PDPL/CCPA…) from the global-turnover CAP the
-  // catalogue stores (£17.5M) down to 4% of THIS firm's estimated turnover, so a dental clinic shows ~£48k, not
-  // £18M, while a bank/university (whose 4% already exceeds the cap) is left untouched. Mutating the gated pointers
-  // here keeps the verdict headline, the exposure waterfall and every BINGO finding card numerically locked. Fixed-
-  // penalty regimes (ASA/ATOL/CQC) and ranking signals carry no turnover fine, so they pass through. (exposure-credibility)
+    if (reviewSet.has(String(p.framework_short || p.citation || '').toUpperCase())) { droppedReview++; return false; }
+    if (!evidenced(p)) { droppedEvidence++; return false; }
+    return true;
+  };
+  const pointers = confirmedPointers.filter(gate);
+  // R1 — provisional tier: opt-in (renderOpts.includeProvisional, default false), never contributes to
+  // score/grade/exposure. Applicability gates (jurisdiction/sector/evidence) apply to BOTH tiers — an inapplicable
+  // finding is not even provisionally showable. Rendered separately below as D.provisional, always neutral/amber,
+  // never breach-red, with no fine figures presented as the firm's exposure (§1(a) of the debug report).
+  const _includeProvisional = !!(ctx.renderOpts && ctx.renderOpts.includeProvisional);
+  const provisionalTier = _includeProvisional ? provisionalPointers.filter(gate) : [];
+  // R3 — CONFIRMED findings that fail the evidence gate must never vanish without a trace. `droppedEvidence`
+  // (incremented above) already counts them; surfaced later as `findingsWithheldForEvidence` in the provenance
+  // footer, so a human-signed P0/P1 lacking a quote/URL is visible as "withheld pending evidence repair", never
+  // silently swallowed as if the report were clean.
+  // R4 — THE CATALOGUE'S STATUTORY FIGURE IS NEVER MUTATED. The old code rescaled fine_high_gbp/fine_low_gbp IN
+  // PLACE down to a heuristic ceiling (with a `Math.max(8000, ...)` floor with no legal basis), so every downstream
+  // consumer of fine_high_gbp — the breach cards, the exposure waterfall, the heat map — then displayed a
+  // FABRICATED number as if it were the statutory maximum. UK GDPR's real cap of £17.5m (or 4% of global turnover,
+  // whichever is higher) IS the legally correct statutory maximum for a small firm too; mutating it produced a
+  // legally false figure in one direction (a rescaled "~£48k" presented as THE penalty) while making the untouched
+  // ceiling look incredible in the other. Fix: `fine_high_gbp`/`fine_low_gbp` are the catalogue's legal fact and
+  // are NEVER written here. `fine_statutory_max_gbp` is a copy for card-level clarity. A SEPARATE, clearly-labelled
+  // `exposure_modelled_gbp` (turnover-based, footnoted with its basis) is attached ONLY when a `penalty_model` is
+  // catalogue-provided or turnover is known — it is additive data for a future card, never a replacement for the
+  // real number, and it is capped at the statutory max so a modelled figure can never legally exceed the cap.
   const _turnover = estimateTurnover(payload);
+  const _expSym = moneySymbol(payload);
   for (const p of pointers) {
     const fw = String(p.framework_short || p.citation || '');
-    if (noStatutoryFine(fw)) continue;                                  // ranking signals + voluntary codes carry no statutory fine (FIX-R1)
-    const cap = Math.max(8000, Math.round(_turnover * fineRate(fw)));          // realistic ceiling at THIS firm's scale
-    const hi = +p.fine_high_gbp || 0;
-    if (hi > cap) { const lo = +p.fine_low_gbp || Math.round(hi * 0.4); p.fine_high_gbp = cap; p.fine_low_gbp = Math.max(3000, Math.round(lo * (cap / hi))); }
+    // E1c: an uncapped regime has no fixed statutory maximum. Do not stamp the catalogue's placeholder figure onto
+    // it (that placeholder is legally false), and do not derive a modelled exposure from a non-existent ceiling.
+    if (fineUncapped(fw, p)) { p.fine_statutory_max_gbp = 0; p.fine_uncapped = true; continue; }
+    p.fine_statutory_max_gbp = +p.fine_high_gbp || 0;   // legal fact, byte-for-byte from the catalogue, untouched
+    if (noStatutoryFine(fw)) continue;                  // ranking signals + voluntary codes carry no statutory fine (FIX-R1)
+    if (p.fine_statutory_max_gbp > 0 && _turnover > 0) {
+      // fineRate() prefers a catalogue-provided penalty_model/penalty_rate (R4: "fineRate(fw) must come from
+      // catalogue-provided penalty_model... not be adapter-inferred") and falls back to the existing sector
+      // heuristic only when the catalogue doesn't yet emit one (true of every payload seen in this codebase today).
+      const rate = fineRate(fw, p.penalty_model, p.penalty_rate);
+      const modelled = Math.round(_turnover * rate);
+      p.exposure_modelled_gbp = Math.min(p.fine_statutory_max_gbp, modelled);   // never exceeds the real statutory cap
+      p.exposure_model_basis = `${Math.round(rate * 1000) / 10}% of estimated turnover ${gbp(_turnover, _expSym)} (modelled estimate, not measured; statutory maximum ${gbp(p.fine_statutory_max_gbp, currencyForFramework(fw) || _expSym)} shown separately)`;
+    }
+    // fine_high_gbp / fine_low_gbp are NEVER mutated below this line: they remain the catalogue's real figures.
   }
 
   const sig = g(payload, 'scan.signals', {}) || {};
@@ -1786,10 +1963,14 @@ export function payloadToD(payload, ctx = {}) {
     raw: rawSum, collapsed: exposureN, ceiling: ceilingN, median: exposureN, cur: curSym,
     frameworks: Object.keys(_medGroups[curSym] || {}).length,
     savedPct: rawSum > 0 ? Math.round((1 - exposureN / rawSum) * 100) : 0,
+    // E1(a)(c): the top step sums only the regimes that HAVE a numeric statutory ceiling (uncapped regimes such as
+    // the Equality Act and PMO are excluded, not invented at a fixed figure). The final step is the modelled midpoint
+    // of the published enforcement band, labelled as illustrative: it is NOT a median of what regulators actually
+    // levy and must never be presented as such.
     steps: [
-      { l: 'Statutory ceilings, summed (what the law permits)', v: rawSum, cls: 'amber' },
-      { l: 'Overlapping data-protection fines collapsed (max, not sum)', v: ceilingN, cls: 'gold' },
-      { l: 'Median of the typical enforcement band, what regulators actually levy', v: exposureN, cls: 'red', final: true },
+      { l: 'Published statutory ceilings, summed (regimes with a numeric maximum)', v: rawSum, cls: 'amber' },
+      { l: 'Overlapping data-protection ceilings collapsed (max, not sum)', v: ceilingN, cls: 'gold' },
+      { l: 'Modelled midpoint of the published enforcement band (illustrative, not a prediction)', v: exposureN, cls: 'red', final: true },
     ],
   };
 
@@ -1902,7 +2083,9 @@ export function payloadToD(payload, ctx = {}) {
   for (const p of compForFw) { const fw = actKey(p.framework_short || p.citation || 'OTHER'); (byFw[fw] = byFw[fw] || []).push(p); }
   const frameworks = Object.entries(byFw).map(([fw, ps]) => {
     // Fine from the merged group's own pointers (perFw is keyed by raw code; a collapsed group must read max of both).
-    const maxFine = noStatutoryFine(fw) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => noStatutoryFine(p.framework_short || p.citation || '') ? 0 : (+p.fine_high_gbp || 0)));
+    // E1c: an uncapped regime (Equality Act s.29, PMO 2004) renders "uncapped", never an invented numeric ceiling.
+    const _fwUncapped = fineUncapped(fw, ps[0]) || ps.some((p) => fineUncapped(p.framework_short || p.citation || '', p));
+    const maxFine = (noStatutoryFine(fw) || _fwUncapped) ? 0 : Math.max(perFw[fw] || 0, ...ps.map((p) => (noStatutoryFine(p.framework_short || p.citation || '') || fineUncapped(p.framework_short || p.citation || '', p)) ? 0 : (+p.fine_high_gbp || 0)));
     const top = ps[0] || {};
     // Group this Act's EVIDENCED breaches by Article so "Art. 13" appears ONCE with its distinct
     // sub-breaches listed beneath (never repeated 8x), each carrying its live proof (the quote, or the
@@ -1918,15 +2101,23 @@ export function payloadToD(payload, ctx = {}) {
         // more specific and evidence-grounded than the generic nearest-miss. Otherwise keep the verbatim quote, then
         // the nearest-miss absence line.
         const _elLine = elementLine(p);
+        // E2: give a same-statute finding a node-specific subject so two Equality Act nodes never read as one
+        // duplicate. The node label is appended only when there is a real parseable element behind it.
+        const _nl = nodeLabel(p);
+        const _subj = subjectOf(p) || '';
         return {
-          subject: subjectOf(p, 84) || 'Required disclosure',
+          subject: _subj ? (_nl ? _subj + ' — ' + _nl : _subj) : (_nl || 'Required disclosure'),
           quote: _elLine ? '' : _q25(String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ')),   // NO TRUNCATION: the firm's own words in full
           // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
           // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
           absence: _elLine || (String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence)),
           fix: craftFix(p), sev: p.severity,
+          // E2: dedup identity is the ACTUAL evidence node (rule + verbatim quote / analysis line), not the shared
+          // statute subject. Keying on the subject dropped every distinct Equality Act evidence quote but one and made
+          // the framework tally disagree with counts.total. Distinct evidence nodes now all survive and reconcile.
+          _k: String(p.rule_id || p.framework_short || p.citation || '') + '|' + (String(p.evidence_quote || '').trim() || _elLine || _subj || String(i)),
         };
-      }).filter((it, i, a2) => a2.findIndex((x) => x.subject.toLowerCase() === it.subject.toLowerCase()) === i).slice(0, 12);
+      }).filter((it, i, a2) => a2.findIndex((x) => x._k === it._k) === i).slice(0, 12);
       return { article, inspected, items };
     }).filter((gp) => gp.items.length).sort((a, b) => b.items.length - a.items.length).slice(0, 6);
     // flat provisions retained for back-compat consumers + the merge-stable QA assertion
@@ -1937,6 +2128,10 @@ export function payloadToD(payload, ctx = {}) {
     const h = _it.filter((x) => x.sev === 'P1').length;
     const findings = _it.length || ps.length;
     const s = Math.max(0, findings - c - h);
+    // E3: strip the internal triage token off the client-facing item. "NEEDS_HUMAN"/"P0"/"P1" are engine vocabulary
+    // and must never reach the render; the item carries the client-safe word ("Needs review" for an un-triaged
+    // finding). The counts above were computed from the raw token first, so they are unaffected.
+    for (const it of _it) it.sev = SEV_WORD[it.sev] || 'Needs review';
     // Regulator: prefer the curated map, then the engine's own (payload) regulator (correct, e.g. UK GDPR -> ICO),
     // and only then the generic fallback — so a framework the map lacks never renders as "Sector regulator".
     // accept the engine's regulator unless it's a raw framework code (codes carry underscores; "ICO"/"FCA" do not).
@@ -1960,7 +2155,10 @@ export function payloadToD(payload, ctx = {}) {
       code: fwCode(fw), name: fwName(fw), regulator: _reg, binding: bindingType(fw), binding_label: bindingLabel(fw),
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
-      findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : 'ranking', expN: maxFine / 1e6,
+      findings, c, h, s, exp: _fwUncapped ? 'uncapped' : (maxFine ? gbp(maxFine, curSym) : 'ranking'), expN: maxFine / 1e6, fineUncapped: _fwUncapped,
+      // E5(meta): the real crawl scope behind this framework's findings, so the card can say "inspected N of M pages"
+      // instead of naming three pages when far more were crawled. Distinct URLs actually checked for this Act.
+      pagesCrawled: [...new Set(ps.flatMap((p) => arr(p.checked_urls)).filter(Boolean))].length,
       // E-233: verified curated enforcement (real penalty, real source) leads; then live news_map; then a ported
       // example. NO PROSE FALLBACK — an unsourced "the regulator actively enforces this" is an invented claim and
       // is exactly what made the section read as filler. Empty is honest; the obligations still carry the card.
@@ -2122,7 +2320,12 @@ export function payloadToD(payload, ctx = {}) {
         ? `The full regulatory catalogue was screened against your jurisdiction. ${breachedFwCount} ${breachedFwCount === 1 ? 'obligation is' : 'obligations are'} verified as breached on ${_scanLabel}${_viaArchive ? ' (re-scan confirms live state)' : ' right now'}. ${(_boundN - breachedFwCount) > 0 ? (_boundN - breachedFwCount) + ' further ' + ((_boundN - breachedFwCount) === 1 ? 'framework binds' : 'frameworks bind') + ' you and were assessed at page level.' : ''}`
         : (compHighs > 0
           ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, with ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap' : 'gaps'} to close. Your ranking and AI-visibility gaps in the pillars below are where buyers are being lost today.`
-          : `Your live pages passed the checks a regulator's first sweep would run. What binds you, what was inspected, and what a full engagement verifies beyond the page is set out below.`));
+          // E1(d): NEVER claim "your live pages passed a regulator's first sweep" while confirmed findings exist. The
+          // clean-pass line gates on confirmed===0, not critical===0 — an un-triaged confirmed finding (severity yet
+          // to be graded) is still a finding, and asserting a pass over it is false and directly contradicts the exec.
+          : (pointers.length > 0
+            ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}. ${pointers.length} ${pointers.length === 1 ? 'finding is' : 'findings are'} evidenced on ${_scanLabel} and flagged for named-analyst verification before enforcement severity is assigned. What was inspected, and what a full engagement verifies beyond the page, is set out below.`
+            : `Your live pages passed the checks a regulator's first sweep would run. What binds you, what was inspected, and what a full engagement verifies beyond the page is set out below.`)));
   }
 
   // --- exposure bars (£M, chart max 18) ---
@@ -2178,7 +2381,11 @@ export function payloadToD(payload, ctx = {}) {
   }
   const SEC = [['hsts', 'HSTS', 'Strict-Transport-Security absent, connection can be downgraded'], ['csp', 'Content-Security-Policy', 'No CSP, exposed to injection / XSS'], ['xfo', 'X-Frame-Options', 'Clickjacking protection missing'], ['xcto', 'X-Content-Type-Options', 'MIME-sniffing not blocked'], ['refpol', 'Referrer-Policy', 'Referrer leakage to third parties'], ['permpol', 'Permissions-Policy', 'Browser features not locked down']];
   // present:null = "not assessed" (no scan) so the consumer can show n/a instead of a confirmed "MISSING".
-  const security = SEC.map(([k, hh, note]) => ({ h: hh, present: siteScanned ? !!sig[k] : null, sev: 'high', note }));
+  // E3: when the site was not read this scan, the header was NOT fetched, so we must not assert a specific absence
+  // ("Strict-Transport-Security absent…") — that is an unevidenced factual claim about the firm's live
+  // infrastructure that any agency can disprove with one `curl -I`. The note collapses to "Not checked this scan".
+  const securityAssessed = !!siteScanned;
+  const security = SEC.map(([k, hh, note]) => { const present = siteScanned ? !!sig[k] : null; return { h: hh, present, sev: 'high', note: present === null ? 'Not checked this scan' : note }; });
   // Keyword RELEVANCE + ACCURACY filter (Gate 2 / Gate 7 / §5.5). A query is shown only if it genuinely
   // matches the firm's brand + vertical and reads in the right market. Three accuracy gates layer here:
   //  (1) RELEVANCE — you rank for it, OR a REAL firm (not a denylisted directory/aggregator) leads it AND
@@ -2231,10 +2438,22 @@ export function payloadToD(payload, ctx = {}) {
     // signal bag, so they read null too when the site wasn't scanned, never a fabricated 0%. (psi-null / scan-fabrication)
     psi: { performance: isNum(psi.perf) ? Math.round(psi.perf * 100) : null, seo: isNum(psi.seo) ? Math.round(psi.seo * 100) : null, security: siteScanned ? Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100) : null, mobile: siteScanned ? (sig.viewport ? 92 : 28) : null },
     cwv: buildCwv(psi),
+    // R8: this codebase's PSI data is ALL Lighthouse lab data (no CrUX field/loadingExperience object is wired
+    // in anywhere) — cwvSource/cwvHeading say so explicitly rather than letting a generic "Core Web Vitals"
+    // heading imply real-user field data that was never measured.
+    cwvSource: 'lab', cwvHeading: 'Lighthouse lab test',
     onpage: onpage.length ? onpage : [{ issue: siteScanned ? 'On-page basics present' : 'On-page not assessed this scan', sev: 'std', impact: siteScanned ? 'Title, meta and H1 detected, the deeper wins are schema, internal linking and content depth' : 'The live site was not readable this scan (bot-challenge / thin render), so on-page signals were not assessed, not confirmed absent. A re-scan completes it.', fix: siteScanned ? 'Tamazia layers compliant schema + topical depth on top of the basics.' : 'Tamazia re-scans with archive + rendered-DOM fallback to assess on-page signals on your live site.' }],
-    security,
-    // Accessibility list also infers from missing signals; when unscanned, only the generic exposure note stands.
-    a11y: (function () { const l = []; if (siteScanned) { if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); } l.push('Unlabelled forms + low-contrast text block screen-reader users today, the Equality Act exposure most firms never see coming'); return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l }; })(),
+    security, securityAssessed,
+    // E3: accessibility. When the site was not read this scan we must NOT emit a fabricated score (the old "84" was
+    // unsourced and contradicted "not assessed" elsewhere), and we must NOT smuggle in an unevidenced "low-contrast
+    // text" breach that no finding supports. The issue count is aligned to the ACTUAL confirmed accessibility
+    // findings (Equality Act nodes) so it reconciles with the framework tally, never a fabricated "1".
+    a11y: (function () {
+      const l = [];
+      if (siteScanned) { if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); }
+      const confirmedA11y = pointers.filter((p) => /EQUALITY|ACCESSIB/i.test(String(p.framework_short || p.citation || '')) || String(p.bucket || '').toLowerCase() === 'accessibility').length;
+      return { score: siteScanned ? Math.max(20, 100 - l.length * 16) : null, issues: siteScanned ? l.length : confirmedA11y, list: l, assessed: !!siteScanned };
+    })(),
     tech: { ssl: siteScanned ? (isHttps ? 'Valid · HTTPS' : 'Not HTTPS') : 'Not assessed', mobile: siteScanned ? !!sig.viewport : null, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : (siteScanned ? 'None detected' : 'Not assessed'), adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : (siteScanned ? 'None detected' : 'Not assessed'), pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : (siteScanned ? 'Not measured' : 'Not assessed'), render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered') },
     keywords: kws.length ? kws : [{ kw: categoryLabel(payload), vol: 'specialist', you: 'Not ranking', who: ', ', pos: '', intent: 'high' }],
     keywordsThin: kwThin,
@@ -2270,6 +2489,11 @@ export function payloadToD(payload, ctx = {}) {
   const _cwvDim = dims.find((d) => d.key === 'cwv'); if (_cwvDim && _cwvDim.st !== 'na' && _spd.length) _cwvDim.sub = _spd.join(' · ');
 
   // --- GEO section ---
+  // E3: did a LIVE AI probe actually run this scan? The 8-engine readiness panel is a structural estimate modelled
+  // from entity signals; only a real geo_probe result substantiates "named 0 of 2 runs" / "no reliable information".
+  // When no live probe ran, those sentences would be a fabricated methodology claim, so the panel is badged as an
+  // estimate and the run-count / sentiment sentences are replaced with honest "not probed this scan" copy.
+  const _liveProbe = !!(geoP && (geoP.ai_knows != null || geoP.repeatability != null || geoP.samples != null || Array.isArray(geoP.runs)));
   const sov = sovClamp(geoP.share_of_voice, geoP.samples, geoP.ai_knows);
   // Per-engine readiness is MODELLED from your real entity signals (each engine weights them
   // differently), not a fabricated per-engine score. Citation status is the real probe result. (S-040)
@@ -2277,7 +2501,7 @@ export function payloadToD(payload, ctx = {}) {
   const ENGINE_W = { ChatGPT: ['schema', 'same', 'llms'], Gemini: ['wiki', 'schema', 'crawl'], Perplexity: ['schema', 'cite', 'llms'], Claude: ['same', 'llms', 'crawl'], Copilot: ['schema', 'same', 'crawl'], Grok: ['same', 'crawl'], 'Meta AI': ['same', 'schema'], 'Google AI': ['wiki', 'eeat', 'schema'] };
   const engines = Object.keys(ENGINE_W).map((nm) => {
     const ws = ENGINE_W[nm]; const present = ws.filter((s) => sig6[s]).length;
-    return { nm, cites: !!geoP.ai_knows, readiness: Math.round(6 + (present / ws.length) * 90) };
+    return { nm, cites: _liveProbe ? !!geoP.ai_knows : null, readiness: Math.round(6 + (present / ws.length) * 90), estimated: !_liveProbe };
   });
   const radar = [
     { ax: 'Entity', v: aiR.has_org_schema ? 80 : (aiR.score || 0) }, { ax: 'Crawler access', v: (arr(aiR.blocked_ai_bots).length ? 40 : 100) },
@@ -2317,17 +2541,26 @@ export function payloadToD(payload, ctx = {}) {
     .slice(0, 5)
     .map((k) => ({ q: k.keyword, who: compName(k.leader), pos: k.leader_position }));
   const geo = {
-    entityReadiness: aiR.score || 0, shareOfVoice: sov, repeatability: `named ${geoP.repeatability || 0} of ${(geoP.samples || 2)} runs`,
-    aiKnows: !!geoP.ai_knows, sentiment: geoP.ai_knows ? (geoP.ai_sentiment || 'neutral') : 'No reliable information, risk of hallucination',
-    engines, engineEstimate: true, radar, schema,
+    entityReadiness: aiR.score || 0, shareOfVoice: sov,
+    // E3: never imply live runs that did not happen.
+    repeatability: _liveProbe ? `named ${geoP.repeatability || 0} of ${(geoP.samples || 2)} runs` : 'no live engine query performed this scan',
+    aiKnows: _liveProbe ? !!geoP.ai_knows : null,
+    sentiment: _liveProbe ? (geoP.ai_knows ? (geoP.ai_sentiment || 'neutral') : 'No reliable information, risk of hallucination') : 'Not probed this scan',
+    engines, engineEstimate: !_liveProbe, liveProbe: _liveProbe,
+    estimateLabel: _liveProbe ? '' : 'Structural estimate — no live engine query performed this scan. Readiness is modelled from your entity signals, not a measured citation rate.',
+    radar, schema,
     citations: citations.length ? citations : arr(geoP.top_competitors).filter((t) => t && t.name && !looksAggregator(t.name) && !_isSelfName(t.name)).slice(0, 5).map((t) => ({ q: km.service_noun || categoryLabel(payload), who: compName(t.name) })),
+    // E3: only the Wikidata row is backed by a real signal (the entity probe). The Google Business Profile,
+    // Trustpilot and directory rows had NO evidence field behind them yet asserted "unverified NAP", "no review
+    // presence", "inconsistent NAP" about the named firm's third-party footprint. Those are suppressed to
+    // "Not checked this scan" (you:null) unless a real signal backs them, and they no longer inflate issueCount.
     sourceGap: [
-      { src: 'Wikipedia / Wikidata', you: !!aiR.in_wikidata, note: "No entity, AI's primary trust source" },
-      { src: 'Google Business Profile', you: 'unverified', note: 'Incomplete NAP + no posts' },
-      { src: 'Trustpilot / Reviews', you: false, note: 'No managed review presence, AI reads your reputation from whatever it finds, not what’s true' },
-      { src: 'Industry directories', you: 'partial', note: 'Inconsistent NAP across listings' },
+      { src: 'Wikipedia / Wikidata', you: !!aiR.in_wikidata, note: aiR.in_wikidata ? 'Entity present in the public knowledge graph' : "No entity, AI's primary trust source" },
+      { src: 'Google Business Profile', you: null, note: 'Not checked this scan' },
+      { src: 'Trustpilot / Reviews', you: null, note: 'Not checked this scan' },
+      { src: 'Industry directories', you: null, note: 'Not checked this scan' },
     ],
-    aiOverview: 'AI Overviews now sit above the classic results on a large, growing share of searches, and AI-referred visitors arrive ready to buy.' + (sov > 0 ? '' : ' You appear in none for your category.'),
+    aiOverview: 'AI Overviews now sit above the classic results on a large, growing share of searches, and AI-referred visitors arrive ready to buy.' + (_liveProbe && sov === 0 ? ' You appear in none for your category.' : ''),
   };
   // GEO ROOT-CAUSE, diagnose WHICH of three real defects makes AI invisible, then chain it to the
   // consequence and the rivals it names. The "I didn't even think of that" insight. (§1.3)
@@ -2352,7 +2585,7 @@ export function payloadToD(payload, ctx = {}) {
       chain: [
         { k: 'Crawler access', ok: !blocked.length, v: blocked.length ? blocked.length + ' AI bots blocked' : 'open to AI crawlers' },
         { k: 'Identity anchors', ok: missing.length <= 2, v: (6 - missing.length) + ' of 6 present' },
-        { k: 'AI knows you', ok: !!geoP.ai_knows, v: geoP.ai_knows ? 'recognised' : '“no reliable information”' },
+        { k: 'AI knows you', ok: _liveProbe ? !!geoP.ai_knows : null, v: _liveProbe ? (geoP.ai_knows ? 'recognised' : '“no reliable information”') : 'not probed this scan' },
         { k: 'Share of voice', ok: sov > 0, v: sov + ' / 100' },
       ],
     };
@@ -2425,6 +2658,9 @@ export function payloadToD(payload, ctx = {}) {
   const drHidden = drRivals.length < 2;
   const competitors = {
     you: company, bestKeyword: bestKw.term, youDr, youPos: bestKw.youPos, needsReview: ladder.length === 0,
+    // E3: suppress the table entirely when there is no real rival to compare against (a one-row table containing
+    // only the firm itself is not a competitor comparison and reads as a bug). Consumer hides on `suppress`.
+    suppress: ladder.length === 0,
     cols: ['Domain rating', 'AI answer set'],
     rows: [{ name: company, you: true, dr: youDr, cells: [{ v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
       ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.dr, cls: c.drEstimated ? 'mid' : 'good', est: c.drEstimated }, { v: c.signal, cls: 'good' }] }))],
@@ -2473,7 +2709,10 @@ export function payloadToD(payload, ctx = {}) {
   // £0 exposure but the exec still talks about a fine/penalty ("fine exposure of up to £0") is self-contradictory, 
   // drop it for the ranking/AI-visibility framing.
   const _execFineWhenZero = !(exposureN > 0) && /\bfine|penalt|statutory exposure|exposure of up to|regulatory (fine|penalty)/i.test(_execRaw);
-  const exec = (_execRaw && !_execHype && !_execFineWhenZero) ? _execRaw : '';
+  // E1(e): "statutory exposure" overstates the modelled midpoint (which is an illustrative band midpoint, not a
+  // statutory figure). Relabel it in the exec prose to "modelled enforcement exposure" so the language matches the
+  // waterfall and the exposure note.
+  const exec = ((_execRaw && !_execHype && !_execFineWhenZero) ? _execRaw : '').replace(/statutory exposure/gi, 'modelled enforcement exposure');
   // Build the jurisdiction statement from the AUTHORITATIVE set, never the engine's leaked prose,
   // so the statement can never contradict the findings actually shown. (F2/C-001/S-003)
   const jurisdiction = jurStatement(company, allow);
@@ -2491,6 +2730,22 @@ export function payloadToD(payload, ctx = {}) {
     // E-218 (S-099): the page carries the SCAN date, not the render date — a months-old audit must never
     // present itself as generated today.
     date: fmtDate(ctx.generated_at ? new Date(ctx.generated_at) : now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
+    // E5/Kimi §4: the point-in-time carries the actual scan ISO timestamp from the engine export when present, so a
+    // date-sensitive legal claim is anchored to when the site was really read, not just a display date.
+    scanIso: String(payload.scanned_at || g(payload, 'scan.scanned_at', '') || g(payload, 'scan.fetched_at', '') || payload.generated_at || g(payload, 'engine_run.scanned_at', '') || ''),
+    // E5/Kimi §4: the provenance seal. `meta.hash` (the per-recipient slug hash) is empty outside the serve route,
+    // which left the founder's integrity signature invisible. `seal` threads the engine's own provenance from the
+    // payload (catalogue hash + engine version + run id) so the render can display a real signature/seal whenever
+    // the payload carries one, independent of ctx.hash. Never fabricated: empty when the payload carries nothing.
+    seal: (function () { const er = g(payload, 'engine_run', {}) || {}; const h = String(er.catalogue_hash || payload.catalogue_hash || ''); return h ? { hash: h, short: h.slice(0, 12), engineVersion: String(er.engine_version || ''), runId: String(er.run_id || '') } : null; })(),
+    // R9 — passthrough of the payload's own schema_version, the same field the fail-closed guard at the top of
+    // payloadToD checked. Lets validateD() (in _contract.js) independently confirm the RENDERED output actually
+    // came from a payload that passed that guard, not just that the adapter didn't throw.
+    schemaVersion: String(payload.schema_version || ''),
+    // E5/Kimi §4: the REAL crawl scope (distinct URLs actually checked across all findings), so a card can say
+    // "inspected N of M pages" instead of naming three pages when far more were crawled. Under-reporting the work
+    // (three named pages when 100+ URLs were read) leaves free credibility on the table.
+    urlsCrawled: [...new Set(arr(payload.pointers).flatMap((p) => arr(p.checked_urls)).filter(Boolean))].length || 0,
   };
 
   // THE THREE NUMBERS (E31-E35). catalogueSize is READ, never invented: the engine currently emits no catalogue
@@ -2509,6 +2764,47 @@ export function payloadToD(payload, ctx = {}) {
   // rulesChecked = the page-level RULE checks executed on the laws that attach to this firm's jurisdictions.
   const ruleChecks = arr(payload.rules).filter((r) => { const j = FW_JUR(r && (r.framework_short || r.framework || r.citation)); return j === 'GLOBAL' || allow.has(j); }).length
     || arr(payload.applicable_frameworks).length || frameworks.length;
+
+  // R2 — the honest zero-confirmed-findings fallback. `crawlOk` mirrors the report's spec (engine_run.pages_crawled
+  // / scan.reachable) but this codebase's real, always-populated signal for "was the live site actually read" is
+  // `siteScanned` (computed above from scan.site_scan_reachable + a non-empty signal bag); pages_crawled/
+  // scan.reachable are read too, in case a payload carries them, but siteScanned is the reliable fallback.
+  const _pagesCrawled = (+g(payload, 'engine_run.pages_crawled', 0)) || (+g(payload, 'scan.pages_crawled', 0)) || 0;
+  const crawlOk = siteScanned || (!!g(payload, 'scan.reachable', false)) || _pagesCrawled > 0;
+  const _zeroFindingsFallback = !crawlOk
+    ? { n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full rule catalogue with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }
+    : provisionalTier.length > 0
+      ? { n: 1, reg: 'Review', pillar: 'Regulatory', law: 'Pending verification', exp: 'not yet asserted', title: `Site read successfully. 0 confirmed findings; ${provisionalTier.length} potential ${provisionalTier.length === 1 ? 'issue is' : 'issues are'} pending analyst verification`, plain: 'The live site was fully read this scan. Nothing was confirmed as a breach yet; the items below are flagged by automated analysis for a named analyst to verify before they would count as findings.', prec: '', quote: '', fix: 'Tamazia verifies the flagged items against the live site before any of them is presented as a confirmed finding.', plan: 'Review · Week 1' }
+      : { n: 1, reg: 'Screened', pillar: 'Regulatory', law: 'Assessed, no confirmed findings', exp: 'ranking impact', title: `${(payload.pages_crawled && payload.pages_crawled.length) || _pagesCrawled || 'The'} pages assessed against ${frameworks.length || 0} applicable ${frameworks.length === 1 ? 'framework' : 'frameworks'} — no confirmed findings`, plain: 'The live site was fully read this scan and screened against every applicable framework. No confirmed breach exists to report; the gaps costing you today sit in the ranking, authority and AI-visibility pillars below.', prec: '', quote: '', fix: 'Tamazia focuses on the ranking and AI-visibility gaps below, the levers that move a clean regulatory sheet forward.', plan: 'Ranking · Week 1' };
+
+  // R1 — provisional tier card build (opt-in, renderOpts.includeProvisional). Every card is built through the same
+  // bingoFromPointer() the confirmed findings use, then explicitly stripped of anything that could read as a
+  // firm's confirmed exposure: no fine figure presented as owed, neutral wording, never breach-red.
+  const provisional = provisionalTier.map((p, i) => {
+    const card = bingoFromPointer(p, pillarOf(p), news, i, curSym);
+    return Object.assign({}, card, {
+      status: 'NEEDS_REVIEW',
+      statusLabel: 'Flagged by automated analysis — not yet verified; no breach is asserted.',
+      exp: 'not yet asserted', expMax: null,
+      severityClass: 'amber',   // never breach-red — R1 hard constraint
+    });
+  });
+  // R1 drop-counter split + R3 withheld-evidence visibility. One opaque "dropped" figure hid WHICH gate suppressed
+  // a finding; the funnel is now: assessed (every pointer the engine sent) -> state-confirmed (passed GATE 1) ->
+  // applicable (passed jurisdiction + sector) -> evidenced (passed GATE 2, what actually renders) -> suppressed
+  // (broken down by reason). `findingsWithheldForEvidence` is R3's "surfaced loudly, never silently dropped": a
+  // CONFIRMED, applicable finding that failed only the evidence gate is counted here even though it never renders,
+  // so the report can say "N findings withheld pending evidence repair" instead of implying an all-clear.
+  const provenance = {
+    assessed: allPointers.length,
+    stateConfirmed: confirmedPointers.length,
+    stateProvisional: provisionalPointers.length,
+    droppedState, droppedJurisdiction, droppedSector, droppedReview, droppedEvidence,
+    confirmed: pointers.length,
+    provisionalShown: provisional.length,
+    suppressed: droppedState + droppedJurisdiction + droppedSector + droppedReview + droppedEvidence,
+  };
+  const findingsWithheldForEvidence = droppedEvidence;
 
   const D = {
     meta, score, grade, scoreBand: bandOf(score),
@@ -2542,7 +2838,7 @@ export function payloadToD(payload, ctx = {}) {
     exposureHeadline: exposureN > 0 ? exposureAggregate : 'Ranking & AI',
     // E-14: count-aware. One verified breach is "the breach", not "the breaches".
     exposureNote: exposureN > 0
-      ? `Median enforcement exposure across the ${counts.total} ${counts.total === 1 ? 'breach' : 'breaches'} evidenced on your live site. ${exposureBasis}`
+      ? `Modelled midpoint of the published enforcement band across the ${counts.total} ${counts.total === 1 ? 'finding' : 'findings'} evidenced on your live site. Illustrative, not a prediction of any fine and not a figure a regulator has levied. ${exposureBasis}`
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
     // E-244: the ceiling is kept, but as secondary context under the median, never as the headline.
     exposureCeiling: ceilingN > 0 ? gbp(ceilingN, curSym) : null,
@@ -2611,7 +2907,15 @@ export function payloadToD(payload, ctx = {}) {
     dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub, note: d.note || '' })),   // E-28 floor note
     seo, geo, competitors,
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
-    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full rule catalogue with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
+    // R2 — THE FALLBACK CARD MUST NOT LIE ABOUT THIS RUN. The old fallback always claimed "the live site could not
+    // be fully read this scan" whenever there were zero confirmed fixes, even when the site WAS fully read and
+    // simply carried zero confirmed findings — an adverse "we couldn't read you" claim with no basis, printed on a
+    // clean scan. The three real states (unreadable / read-but-only-provisional / read-and-genuinely-clean) are now
+    // told apart honestly. (This codebase's own scoreFromDims already refuses to stamp a punitive score/grade on a
+    // zero-confirmed-findings payload — see the `compNA` 'not assessed' path and the `exposureN<=0` confidence cap
+    // above — so unlike the report's original repro this fallback text was the one remaining place a false "could
+    // not be read" claim could still reach a fully-read, clean site.)
+    fixes: fixes.length ? fixes : [_zeroFindingsFallback],
     glossary: buildGlossary(payload, allow),
     // C-A: ONE commerce source. The render (audit-app.js) owns ALL displayed prices/copy from the single PRICES
     // block (mirrored from src/content/pricing.ts); the server-side Stripe/Cal mapping lives in _commerce.js.
@@ -2621,7 +2925,12 @@ export function payloadToD(payload, ctx = {}) {
     pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, upsellProof: COMMERCE.upsellProof,
     // E12 · the three severity words, defined inline on first use and carried as the dot hover tips.
     severityDefs: SEV_DEFS.map(([word, def]) => ({ word, def })),
-    _meta: { droppedByJurisdiction: dropped, exposureN, generatedAt: ctx.generated_at || null },
+    // R1 — the provisional tier (opt-in, default off; never contributes to score/grade/exposure) and the drop-
+    // counter/provenance funnel (R1 + R3), rendered as a footer so the report can prove what happened to every
+    // pointer the engine sent, not just what survived.
+    provisional, provenance, findingsWithheldForEvidence,
+    readFailed: !crawlOk,
+    _meta: { droppedByJurisdiction: droppedJurisdiction, droppedState, droppedSector, droppedReview, droppedEvidence, exposureN, generatedAt: ctx.generated_at || null },
   };
   // Optional scoring trace (benchmark harness only; NEVER passed on the production render route, so it
   // is not injected into window.D). Lets _tools/benchmark.mjs score the LIVE rendered output (R1–R6).
@@ -2651,12 +2960,28 @@ function sovClamp(v, samples, aiKnows) {
   if (!isNum(v)) return 0;
   return Math.max(0, Math.min(100, Math.round(v)));
 }
+// R8 — PSI LABELLING. Every metric this adapter reads (psi.cls/perf and the per-strategy lcp_ms/inp_ms/cls/
+// fcp_ms/tbt_ms) comes from a single Lighthouse PSI call (this codebase has no separate CrUX `loadingExperience`
+// field-data object wired in anywhere — verified against every _qa fixture). All of it is therefore LAB data, a
+// simulated run, not real-user field data. TBT specifically is never itself a Core Web Vital (it is Lighthouse's
+// lab proxy for INP) and must never be presented as if it were one. Every row below now carries an explicit
+// `lane` ('lab' always, today) and `isCwv` (true only for the genuine CWV metrics LCP/INP/CLS, false for TBT/FCP/
+// perf score) so a consumer can render "Lighthouse lab test" vs "CrUX field data (real users)" as two separate,
+// correctly-labelled headings instead of one undifferentiated "Core Web Vitals" block. When this engine starts
+// emitting real CrUX field data, it gets its own `lane: 'field'` rows here — nothing here fabricates field data
+// that was never measured.
 function buildCwv(psi) {
   const out = [];
+  const cl = (n) => Math.max(8, Math.min(100, Math.round(n)));
+  // E3/Kimi §4: the PSI v5 response carries LCP and (when field data exists) INP. Render the REAL Core Web Vitals
+  // that were measured — the old panel showed only the Lighthouse performance score + CLS and mislabelled that as
+  // "Core Web Vitals". LCP/INP/CLS are the actual CWV (isCwv:true); the overall performance score is not (isCwv:false).
+  if (isNum(psi.lcp_ms)) { const s = +psi.lcp_ms; out.push({ k: 'LCP', label: 'Largest Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 2.5s', pct: cl(100 - (s - 1000) / 40), st: s > 4000 ? 'fail' : s > 2500 ? 'warn' : 'pass', plain: 'How long until the main content appears. Slow LCP is the top reason visitors leave before the page loads.', lane: 'lab', isCwv: true }); }
+  if (isNum(psi.inp_ms)) { const s = +psi.inp_ms; out.push({ k: 'INP', label: 'Interaction to Next Paint', v: Math.round(s) + 'ms', target: '< 200ms', pct: cl(100 - (s - 100) / 5), st: s > 500 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How fast the page responds to a tap or click. Laggy interaction reads as a broken, low-trust site.', lane: 'lab', isCwv: true }); }
   const cls = +psi.cls;
-  if (isNum(cls)) out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: cls.toFixed(2), target: '< 0.10', pct: Math.max(8, Math.round(100 - cls * 100)), st: cls > 0.25 ? 'fail' : cls > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.' });
-  if (isNum(psi.perf)) out.push({ k: 'PERF', label: 'Performance score', v: Math.round(psi.perf * 100) + '/100', target: '> 90', pct: Math.round(psi.perf * 100), st: psi.perf >= 0.9 ? 'pass' : psi.perf >= 0.5 ? 'warn' : 'fail', plain: 'Overall mobile performance. Google ranks slow pages lower and visitors leave before 3s.' });
-  if (!out.length) out.push({ k: 'CWV', label: 'Core Web Vitals', v: 'not assessed', target: 'PageSpeed unavailable', pct: 0, st: 'warn', plain: 'PageSpeed data was unavailable on this scan, the live site was unreachable or behind a bot-challenge. Speed is captured on the next live scan.' });
+  if (isNum(cls)) out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: cls.toFixed(2), target: '< 0.10', pct: cl(100 - cls * 100), st: cls > 0.25 ? 'fail' : cls > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.', lane: 'lab', isCwv: true });
+  if (isNum(psi.perf)) out.push({ k: 'PERF', label: 'Performance score', v: Math.round(psi.perf * 100) + '/100', target: '> 90', pct: Math.round(psi.perf * 100), st: psi.perf >= 0.9 ? 'pass' : psi.perf >= 0.5 ? 'warn' : 'fail', plain: 'Overall Lighthouse mobile performance score. It is a lab summary, not itself a Core Web Vital.', lane: 'lab', isCwv: false });
+  if (!out.length) out.push({ k: 'CWV', label: 'Lighthouse lab test', v: 'not assessed', target: 'PageSpeed unavailable', pct: 0, st: 'warn', plain: 'PageSpeed data was unavailable on this scan, the live site was unreachable or behind a bot-challenge. Speed is captured on the next live scan.', lane: 'lab', isCwv: false });
   return out;
 }
 // Core Web Vitals rows for ONE strategy (mobile or desktop) from the engine's rich per-strategy cwv.
@@ -2664,11 +2989,15 @@ function buildCwv(psi) {
 function buildCwvStrat(cwv) {
   if (!cwv) return [];
   const out = [], r = Math.round, cl = (n) => Math.max(8, Math.min(100, r(n)));
-  if (isNum(cwv.lcp_ms)) { const s = cwv.lcp_ms; out.push({ k: 'LCP', label: 'Largest Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 2.5s', pct: cl(100 - (s - 1000) / 40), st: s > 4000 ? 'fail' : s > 2500 ? 'warn' : 'pass', plain: 'How long until the main content appears. Slow LCP is the top reason visitors leave before the page loads.' }); }
-  if (isNum(cwv.inp_ms)) { const s = cwv.inp_ms; out.push({ k: 'INP', label: 'Interaction to Next Paint', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - (s - 100) / 5), st: s > 500 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How fast the page responds to a tap or click. Laggy interaction reads as a broken, low-trust site.' }); }
-  if (isNum(cwv.cls)) { const s = cwv.cls; out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: s.toFixed(2), target: '< 0.10', pct: cl(100 - s * 100), st: s > 0.25 ? 'fail' : s > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.' }); }
-  if (isNum(cwv.fcp_ms)) { const s = cwv.fcp_ms; out.push({ k: 'FCP', label: 'First Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 1.8s', pct: cl(100 - (s - 800) / 30), st: s > 3000 ? 'fail' : s > 1800 ? 'warn' : 'pass', plain: 'How fast anything first appears. A slow first paint makes the site feel dead on arrival.' }); }
-  if (isNum(cwv.tbt_ms)) { const s = cwv.tbt_ms; out.push({ k: 'TBT', label: 'Total Blocking Time', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - s / 10), st: s > 600 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How long the page is frozen while scripts run. High TBT means taps do nothing for seconds.' }); }
+  if (isNum(cwv.lcp_ms)) { const s = cwv.lcp_ms; out.push({ k: 'LCP', label: 'Largest Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 2.5s', pct: cl(100 - (s - 1000) / 40), st: s > 4000 ? 'fail' : s > 2500 ? 'warn' : 'pass', plain: 'How long until the main content appears. Slow LCP is the top reason visitors leave before the page loads.', lane: 'lab', isCwv: true }); }
+  if (isNum(cwv.inp_ms)) { const s = cwv.inp_ms; out.push({ k: 'INP', label: 'Interaction to Next Paint', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - (s - 100) / 5), st: s > 500 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How fast the page responds to a tap or click. Laggy interaction reads as a broken, low-trust site.', lane: 'lab', isCwv: true }); }
+  if (isNum(cwv.cls)) { const s = cwv.cls; out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: s.toFixed(2), target: '< 0.10', pct: cl(100 - s * 100), st: s > 0.25 ? 'fail' : s > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.', lane: 'lab', isCwv: true }); }
+  if (isNum(cwv.fcp_ms)) { const s = cwv.fcp_ms; out.push({ k: 'FCP', label: 'First Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 1.8s', pct: cl(100 - (s - 800) / 30), st: s > 3000 ? 'fail' : s > 1800 ? 'warn' : 'pass', plain: 'How fast anything first appears. A slow first paint makes the site feel dead on arrival.', lane: 'lab', isCwv: false }); }
+  // R8: TBT is a Lighthouse LAB metric and is NEVER itself a Core Web Vital — it must not render under a "Core
+  // Web Vitals" heading. `isCwv: false` marks it so explicitly; the label is unchanged (still "Total Blocking
+  // Time") so no existing display text breaks, but any consumer grouping by `isCwv`/`lane` now keeps it out of
+  // the CWV group.
+  if (isNum(cwv.tbt_ms)) { const s = cwv.tbt_ms; out.push({ k: 'TBT', label: 'Total Blocking Time', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - s / 10), st: s > 600 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How long the page is frozen while scripts run. High TBT means taps do nothing for seconds. It is a Lighthouse lab metric, not a Core Web Vital.', lane: 'lab', isCwv: false }); }
   return out;
 }
 // One strategy's full PSI view: the 4 Lighthouse dials (0-100, always present), CWV rows, and the
@@ -2680,7 +3009,7 @@ function buildPsiStrat(strat) {
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
     .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
-  return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
+  return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), cwvSource: 'lab', cwvHeading: 'Lighthouse lab test', audits };
 }
 // Region-specific legal glossary terms that must NOT be defined for a firm whose jurisdiction set doesn't
 // include that region (a UAE-only firm should never see GDPR / UK GDPR / PECR / CCPA defined). Term ↗ the

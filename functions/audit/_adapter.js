@@ -1046,11 +1046,10 @@ function differentiateFixes(list) {
 
 /* ---------------- jurisdiction membrane ---------------- */
 const TLD_JUR = { uk: 'UK', ae: 'AE', sa: 'SA', us: 'US', fr: 'FR', de: 'DE', it: 'IT', es: 'ES', com: null };
-const FW_JUR = (code) => {
-  const c = String(code || '').toUpperCase();
-  // Prefix checks FIRST (the catalogue's real codes: UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore
-  // law is badged to its OWN country and jurisdiction-gated correctly — never mis-mapped to "Global" (which would show
-  // it on every firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
+// Prefix checks FIRST (the catalogue's real codes: UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore
+// law is badged to its OWN country and jurisdiction-gated correctly — never mis-mapped to "Global" (which would show
+// it on every firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
+function jurisdictionByPrefix(c) {
   if (c.startsWith('UK_') || c.startsWith('GB_')) return 'UK';
   if (c.startsWith('EU_')) return 'EU';
   if (c.startsWith('US_')) return 'US';
@@ -1061,24 +1060,41 @@ const FW_JUR = (code) => {
   if (c.startsWith('FR_')) return 'FR';
   if (c.startsWith('DE_')) return 'DE';
   if (c.startsWith('IN_')) return 'IN';
-  // Fallbacks for codes that carry no jurisdiction prefix.
+  return null;
+}
+// Fallbacks for codes that carry no jurisdiction prefix.
+function jurisdictionByFallback(c) {
   if (['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA'].some((x) => c.includes(x))) return 'US';
   if (c.includes('RERA') || c.includes('DIFC') || c.includes('ADGM')) return 'AE';
   if (c.includes('CNIL')) return 'FR';
   if (c.includes('BDSG')) return 'DE';
-  // R6 — an unrecognised code falling through to GLOBAL used to do so silently, with no way to tell "genuinely
-  // universal" (GOOGLE_EEAT, SCHEMA — deliberately shown to every firm regardless of jurisdiction) apart from "we
-  // don't recognise this code and are guessing GLOBAL by default" (which shows a possibly-foreign law to every
-  // firm). Both still resolve to GLOBAL here (changing that behaviourally would need the engine to positively
-  // confirm which codes are truly universal, which it does not do today — see R6 note at the call site), but an
-  // unrecognised code is now logged so it is visible instead of silently spreading.
-  // Only warn on things SHAPED like a framework code (SCREAMING_SNAKE_CASE, e.g. "UK_SOMETHING", "SOME_NEW_LAW").
-  // FW_JUR is also called on free-text titles (Lighthouse audit titles, absence-finding subjects, etc.) that were
-  // never meant to resolve to a jurisdiction at all; those are not "unrecognised framework codes" and warning on
-  // them would drown the real signal in noise on every single render.
-  if (c && /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$/.test(c) && !NON_LEGAL_FW.has(c) && !NO_STATUTORY_FINE.has(c)) {
+  return null;
+}
+// Only warn on things SHAPED like a framework code (SCREAMING_SNAKE_CASE, e.g. "UK_SOMETHING", "SOME_NEW_LAW").
+// FW_JUR is also called on free-text titles (Lighthouse audit titles, absence-finding subjects, etc.) that were
+// never meant to resolve to a jurisdiction at all; those are not "unrecognised framework codes" and warning on
+// them would drown the real signal in noise on every single render.
+function isFrameworkShapedCode(c) {
+  return !!c && /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$/.test(c) && !NON_LEGAL_FW.has(c) && !NO_STATUTORY_FINE.has(c);
+}
+// R6 — an unrecognised code falling through to GLOBAL used to do so silently, with no way to tell "genuinely
+// universal" (GOOGLE_EEAT, SCHEMA — deliberately shown to every firm regardless of jurisdiction) apart from "we
+// don't recognise this code and are guessing GLOBAL by default" (which shows a possibly-foreign law to every
+// firm). Both still resolve to GLOBAL here (changing that behaviourally would need the engine to positively
+// confirm which codes are truly universal, which it does not do today — see R6 note at the call site), but an
+// unrecognised code is now logged so it is visible instead of silently spreading.
+function warnIfUnrecognisedFrameworkCode(c) {
+  if (isFrameworkShapedCode(c)) {
     try { console.warn('[FW_JUR] unrecognised framework code defaulted to GLOBAL:', c); } catch { /* noop */ }
   }
+}
+const FW_JUR = (code) => {
+  const c = String(code || '').toUpperCase();
+  const byPrefix = jurisdictionByPrefix(c);
+  if (byPrefix) return byPrefix;
+  const byFallback = jurisdictionByFallback(c);
+  if (byFallback) return byFallback;
+  warnIfUnrecognisedFrameworkCode(c);
   return 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
 };
 // Authoritative allow-list = country + TLD (the trustworthy spine), + EU only with corroborating

@@ -317,11 +317,11 @@ window.CH = (function(){
   }
 
   /* ---- money + deterministic regulator-badge colour ---- */
-  function money(n){const c=(D&&D.cur)||'£';const sp=c.length>1?' ':'';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+sp+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+sp+Math.round(n/1e3)+'k'; return c+sp+n;}
+  function money(n){const c=(D&&D.cur)||'£';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+Math.round(n/1e3)+'k'; return c+n;}
   // Is this exposure string a MONETARY figure (vs 'ranking'/'ranking impact')? Adapter formats every money
   // exposure with the page currency symbol D.cur ('£' default, '$'/'€'/'AED ' otherwise). Test the page symbol
   // first, then any known currency prefix, so the money/ranking caption is correct in every currency. (C-E)
-  function isMoneyStr(s){ s=String(s==null?'':s).trim(); const cur=((D&&D.cur)||'£').trim(); return (cur&&s.indexOf(cur)===0) || /^[£$€]/.test(s) || /^(AED|SAR|QAR|USD|EUR|GBP)\b/i.test(s); }
+  function isMoneyStr(s){ s=String(s==null?'':s).trim(); const cur=((D&&D.cur)||'£').trim(); return (cur&&s.indexOf(cur)===0) || /^[£$€]/.test(s) || /^AED\b/i.test(s); }
   function badgeColor(code){const pal=['#5A1A2B','#2A5DA8','#2F7A4A','#B6791F','#7A2A3B','#8A1C16','#3a2d30','#2A0C14'];let h=0;for(const ch of String(code||'FW'))h=(h*31+ch.charCodeAt(0))>>>0;return pal[h%pal.length];}
 
   /* ---- rich 10-dimension scorecard card grid (Pass · Needs work · Fail) ---- */
@@ -332,7 +332,7 @@ window.CH = (function(){
       const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
       return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${esc(d.nm)} ↗"><div class="dch"><span class="dcn">${esc(d.nm)}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
         <div class="bar-track" style="height:5px;margin:7px 0 8px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div>
-        <div class="dcs">${esc(d.sub||'')}</div>${d.note?`<div class="dcs dc-floor">${esc(d.note)}</div>`:''}</div>`;
+        <div class="dcs">${esc(d.sub||'')}</div></div>`;
     }).join('')}</div>`;
   }
 

@@ -351,15 +351,32 @@ window.CH = (function(){
     if(wf.savedPct>0) return `<div class="wf-note">Overlapping data-protection ceilings are collapsed instead of stacked, removing <b>${wf.savedPct}%</b> of the figure a naïve "add-it-all-up" audit would quote. <b>${money(wf.collapsed)}</b> is the number a regulator's GC would accept.</div>`;
     return `<div class="wf-note">This is the statutory ceiling across your binding frameworks. There were no overlapping data-protection maxima to collapse, so the figure stands as your real exposure.</div>`;
   }
+  // Guard: true when there is no usable waterfall to render. Kept as plain if/return, one
+  // condition per line, so the compound boolean never lands inside waterfall() itself.
+  function wfMissing(wf){
+    if(!wf) return true;
+    if(!wf.steps) return true;
+    if(wf.raw<=0) return true;
+    return false;
+  }
+  // Drop adjacent steps with an identical value: when nothing collapses (no overlapping DP ceilings),
+  // the raw/collapsed/real values are equal and would render as 3 identical bars (reads as broken).
+  function wfStepChanged(s,i,a){
+    if(i===0) return true;
+    return s.v!==a[i-1].v;
+  }
+  function wfFinalCls(isFinal){
+    if(isFinal) return 'final';
+    return '';
+  }
   function waterfall(){
-    const wf=D.exposureWaterfall; if(!wf||!wf.steps||wf.raw<=0) return '';
+    const wf=D.exposureWaterfall;
+    if(wfMissing(wf)) return '';
     const max=wf.raw||1;
-    // Drop adjacent steps with an identical value: when nothing collapses (no overlapping DP ceilings),
-    // the raw/collapsed/real values are equal and would render as 3 identical bars (reads as broken).
-    const steps=wf.steps.filter((s,i,a)=> i===0 || s.v!==a[i-1].v);
+    const steps=wf.steps.filter(wfStepChanged);
     return `<div class="wf">${steps.map(s=>`<div class="wf-row"><div class="wf-l">${s.l}</div>
       <div class="bar-track"><div class="bar-fill ${wfBarCls(s.cls)}" style="width:${Math.max(3,(s.v/max)*100)}%"></div></div>
-      <div class="wf-v ${s.final?'final':''}">${money(s.v)}</div></div>`).join('')}
+      <div class="wf-v ${wfFinalCls(s.final)}">${money(s.v)}</div></div>`).join('')}
       ${wfNote(wf)}</div>`;
   }
 

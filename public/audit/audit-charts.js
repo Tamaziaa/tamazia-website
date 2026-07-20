@@ -316,6 +316,30 @@ window.CH = (function(){
       </div></details>`;
   }
 
+  /* ---- severe-findings caution card (the top breaches, yellow --caution treatment) ----
+     Renders as <article class="finding sev-card"> so the freemium-lock, the data-finding jump
+     and the qa "#sec-overview .finding" contract all hold, with the board-warning caution motif
+     layered on top. The --caution yellow is used ONLY here. lockFix(opts.locked) keeps the
+     half-visible lock byte-identical to CH.finding — no fact, figure or fine is altered. */
+  const SEV_MARK='<span class="sev-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>';
+  function severeCaption(exp){ return isMoneyStr(exp) ? 'max statutory penalty' : 'not a statutory fine'; }
+  function pad2(n){ return n<10 ? '0'+String(n) : String(n); }
+  function severeCard(f, i, opts={}){
+    f = Object.assign({reg:'',title:'Finding',exp:'',quote:'',plain:'',fix:''}, f||{});
+    const idAttr = opts.id ? ` id="${opts.id}"` : '';
+    const quote = f.quote ? `<blockquote class="sev-quote">&ldquo;${esc(f.quote)}&rdquo;</blockquote>` : '';
+    const what = f.plain ? `<div class="sev-what">${esc(f.plain)}</div>` : '';
+    return `<article class="finding sev-card" role="group" aria-label="Severe finding ${pad2(i+1)}, ${esc(f.title)}"${idAttr}>
+      <header class="sev-flag">${SEV_MARK}<span class="sev-kicker">Severe finding ${pad2(i+1)}</span>
+        <span class="sev-fine">${esc(f.exp)} <small>${severeCaption(f.exp)}</small></span></header>
+      <div class="sev-body">
+        <h4 class="sev-title">${esc(f.title)}</h4>
+        ${quote}${what}
+        <div class="sev-fix"><b>Tamazia fix</b> ${lockFix(esc(f.fix), opts.locked)}</div>
+      </div>
+    </article>`;
+  }
+
   /* ---- money + deterministic regulator-badge colour ---- */
   function money(n){const c=(D&&D.cur)||'£';const sp=c.length>1?' ':'';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+sp+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+sp+Math.round(n/1e3)+'k'; return c+sp+n;}
   // Is this exposure string a MONETARY figure (vs 'ranking'/'ranking impact')? Adapter formats every money
@@ -403,7 +427,7 @@ window.CH = (function(){
   }
 
   return {gauge,dial,bars,exposureBars,heatmap,radar,trajectory,donut,pill,dimScorecard,dimCardGrid,
-    waterfall,causalChain,psiAuditList,frameworkBars,lockFix,
+    waterfall,causalChain,psiAuditList,frameworkBars,lockFix,severeCard,
     cwvMeters,psiDials,psiDialRow,cwvMeterRow,psiAuditRow,issueList,securityGrid,engineGrid,schemaChecklist,sourceGap,
     competitorTable,citationTable,keywordTable,stat,urgent,finding};
 })();

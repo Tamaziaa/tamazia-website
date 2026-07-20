@@ -213,7 +213,7 @@
     </div>
     <div class="subhead"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
     ${severityKey()}
-    ${D.fixes.map((f,i,a)=>CH.finding(f,i===0,{id:'fx-'+(i+1),locked:i>=Math.ceil(a.length/2)})).join('')}
+    ${severeTrio()}
     <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
   P.regulatory = ()=>{
@@ -395,27 +395,11 @@
 
   P.plan = ()=> planAndPricing();
 
-  /* ---------------- TRUSTED-BY (demo / placeholder logos only) ---------------- */
-  // Continuously-scrolling grey watermark strip. The SVGs in /audit/trusted-logos/ are
-  // GENERIC PLACEHOLDERS (abstract marks + invented wordmarks), never real client names.
-  // If a logo SVG is missing it onerrors into a styled grey text-name placeholder that
-  // drops in cleanly when the real demo SVGs land.
-  const TRUSTED_LOGOS = [
-    ['demo-1','Meridian'],['demo-2','Calloway'],['demo-3','Ardent'],
-    ['demo-4','Thornbury'],['demo-5','Vaughn & Hale'],['demo-6','Sterling Park'],
-    ['demo-7','Lockhart'],['demo-8','Ashbourne'],['adidas','adidas'],
-  ];
-  function tbItem(n,label){
-    const fb="this.outerHTML='<span class=\\'tb-name\\'>"+label.replace(/'/g,'')+"</span>'";
-    return `<img class="tb-logo" src="/audit/trusted-logos/${n}.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="150" height="34" onerror="${fb}">`;
-  }
-  function trustedStrip(){
-    const row=TRUSTED_LOGOS.map(([n,l])=>tbItem(n,l)).join('');
-    return `<div class="trusted-by" aria-label="Representative client profile, demo logos">
-      <div class="tb-label">Trusted by regulated firms across UK, EU, USA, Middle East, Asia and worldwide</div>
-      <div class="tb-marquee"><div class="tb-track">${row}${row}</div></div>
-    </div>`;
-  }
+  /* TRUSTED-BY marquee removed (founder request 2026-07-20): the strip rendered placeholder/
+     invented wordmarks and a real "adidas" mark under a "Trusted by regulated firms…" label —
+     false client claims on a client-facing report. No client names are asserted anywhere now;
+     credibility rests on the founder credential + the adjudication line, which are real. The
+     .trusted-by / .tb-* CSS and the /audit/trusted-logos assets are no longer referenced. */
 
   // E12/E40 · severity language, defined inline at first use. "P0" was internal engineering vocabulary,
   // and every finding was being called "critical" regardless of its actual severity. The three words are
@@ -430,6 +414,17 @@
       <span class="sev-key-h">How severity is graded here:</span>
       ${SEV_KEY.map(x=>`<span class="sev-key-i"><b>${escH(x.word)}</b> ${escH(x.def)}</span>`).join('')}
     </div>`;
+  }
+
+  // The top breaches as yellow-caution severe cards (Kimi §3); any beyond three continue as the existing
+  // collapsed .finding rows. The locked flag is computed on the FULL D.fixes list exactly as before
+  // (i >= ⌈N/2⌉) so the freemium half-lock counts are byte-identical. ids stay fx-1..N; severeCard renders
+  // <article class="finding sev-card"> so the data-finding jump + the .finding contract still hold.
+  function severeTrio(){
+    const all=D.fixes||[]; const n=all.length; const lockOf=i=>i>=Math.ceil(n/2);
+    const sev=all.slice(0,3).map((f,i)=>CH.severeCard(f,i,{id:'fx-'+(i+1),locked:lockOf(i)})).join('');
+    const rest=all.slice(3).map((f,j)=>CH.finding(f,false,{id:'fx-'+(j+4),locked:lockOf(j+3)})).join('');
+    return `<div class="sev3">${sev}</div>${rest}`;
   }
 
   /* ---------------- PLAN + PRICING + ADD-ONS + BOOKING ---------------- */
@@ -906,8 +901,6 @@
       <button type="button" class="addon-nav addon-next" aria-label="More solutions">&rsaquo;</button>
     </div>
     <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: /legal/service-terms.</p>
-
-    ${trustedStrip()}
 
     <div class="subhead founder-subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Walk the report through in 20 minutes</h3></div>
     <div class="founder-cred">Every report is reviewed by the legal team, led by Aman Pareek, LLM in International Business Law, King&rsquo;s College London, before it reaches you.</div>

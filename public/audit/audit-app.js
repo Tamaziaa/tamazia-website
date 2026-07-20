@@ -143,7 +143,7 @@
   const escH = s=>String(s==null?'':s).replace(/\s*[—–]\s*/g,', ').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
   // C-G: the SINGLE source for "which retainer tier do we recommend this firm". The adapter flags the
-  // recommended tier on D.pricing (rec:true). The rail CTA + the founder-session CTA both route to THIS tier
+  // recommended tier on D.pricing (rec:true). The rail CTA routes to THIS tier
   // (not a hardcoded Enterprise/Authority), so the call the buyer books matches the tier the report recommends.
   // Falls back to Enterprise only if no rec flag is present (matches planData()'s default).
   function recommendedTierName(){
@@ -172,12 +172,6 @@
       <div class="rail-band">${D.screenedLabel} · ${D.frameworksBinding} bind you</div>
       <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
       ${D.adjudication ? `<div class="rail-adj"><div class="adj-h">✓ ${D.adjudication.reviewed} findings re-examined against the statute</div><div class="adj-l">${escH(D.adjudication.line)}</div></div>` : ''}
-      <div class="rail-kpis">
-        <div class="rail-kpi"><div class="v red">${D.counts.critical}</div><div class="l">Critical findings<span class="scope">${(D.counts&&D.counts.scope)?(" · "+D.counts.scope):""}</span></div></div>
-        <div class="rail-kpi"><div class="v">${D.confirmed}</div><div class="l">Confirmed v. evidence</div></div>
-        <div class="rail-kpi"><div class="v red">${D.geo.shareOfVoice}</div><div class="l">AI share of voice</div></div>
-        <div class="rail-kpi"><div class="v">${D.competitors.rows[0].dr}</div><div class="l">Domain rating</div></div>
-      </div>
       <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rule ${plur(D.rulesChecked,'check','checks')}</div></div>
       <div class="rail-social">
         <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
@@ -979,33 +973,9 @@
       </div></div>`;
   }
 
-  /* ---------------- FOUNDER SESSION (E2) — directly under the score header ---------------- */
-  // Copy is VERBATIM and locked. Credential EXACTLY "LLM in International Business Law, King's College London".
-  // "Claim the session" → BOOKING_URL when that env is set; otherwise it falls back to the live Cal intake
-  // (data-book="package") so the button is never dead. founder@tamazia.co.uk always renders. The phone line is
-  // FOUNDER-BLOCKED: rendered ONLY when CONTACT_PHONE is set, omitted entirely otherwise (no placeholder).
-  function founderSession(){
-    // Founder r28: "Claim the session" ALWAYS opens the on-page calendar (data-book → intake+Cal), never an external link.
-    const claim = `<a class="btn solid fsx-claim" data-book="package" data-tier="${escH(recommendedTierName())}">Claim the session ↗</a>`;
-    const phone = CONTACT_PHONE
-      ? `<a class="fsx-contact fsx-phone" href="tel:${escH(CONTACT_PHONE.replace(/[^0-9+]/g,''))}"><svg class="fsx-ph-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${escH(CONTACT_PHONE)}</a>`
-      : '';
-    return `<section class="founder-session" aria-label="Book the review">
-      <div class="fsx-inner">
-        <div class="fsx-copy">
-          <div class="fsx-lead">Walk the report through in 20 minutes.</div>
-          <div class="fsx-name">Reviewed by the legal team, led by Aman Pareek, LLM in International Business Law, King&rsquo;s College London.</div>
-          <p class="fsx-body">A real conversation about the findings, the exact fixes, and what a regulator would ask first.</p>
-        </div>
-        <div class="fsx-act">
-          ${claim}
-          <div class="fsx-contacts">
-            <a class="fsx-contact" href="mailto:founder@tamazia.co.uk">founder@tamazia.co.uk</a>${phone}
-          </div>
-        </div>
-      </div>
-    <div class="cta-blindsend"><a class="btn-book" href="${escH(ctaHref('cta_findings','findings'))}" target="_blank" rel="noopener">${escH(ctaText('cta_findings','Walk through these findings in 20 minutes. The exact fixes, and what a regulator would ask first: book the review.'))}</a><a class="btn-book alt" href="${escH(ctaHref('cta_assessed','scoping'))}" target="_blank" rel="noopener">${escH(ctaText('cta_assessed','Everything marked APPLIES · ASSESSED is verified at page level. Records, processes and filings are the full engagement: book the scoping call.'))}</a></div></section>`;
-  }
+  /* Founder-session yellow band removed (founder request 2026-07-20). The recommended-tier
+     booking CTA remains on the rail (.rail-cta data-book="package") and in the Plan pane, so
+     Drawer/Commerce wiring is unaffected. No .fsx-* / .cta-blindsend markup is emitted anywhere. */
 
   /* ---------------- PSI box (mobile|desktop) — rendered on the FIRST view, under the scorecard ---------------- */
   function psiBlock(){
@@ -1061,7 +1031,6 @@
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
-    ${founderSession()}
     ${heroCharts()}
     ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${SUMM[k].nm}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
   </main>`;

@@ -325,16 +325,19 @@ window.CH = (function(){
      layered on top. The --caution yellow is used ONLY here. lockFix(opts.locked) keeps the
      half-visible lock byte-identical to CH.finding — no fact, figure or fine is altered. */
   const SEV_MARK='<span class="sev-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>';
-  function severeCaption(exp){ return isMoneyStr(exp) ? 'max statutory penalty' : 'not a statutory fine'; }
+  // Money exposures carry the "max statutory penalty" caption; a non-money exposure string is already
+  // self-describing ("non-statutory (ranking and AI-visibility impact)"), so no caption is appended.
+  function severeCaption(exp){ return isMoneyStr(exp) ? 'max statutory penalty' : ''; }
   function pad2(n){ return n<10 ? '0'+String(n) : String(n); }
   function severeCard(f, i, opts={}){
     f = Object.assign({reg:'',title:'Finding',exp:'',quote:'',plain:'',fix:''}, f||{});
     const idAttr = opts.id ? ` id="${opts.id}"` : '';
     const quote = f.quote ? `<blockquote class="sev-quote">&ldquo;${esc(f.quote)}&rdquo;</blockquote>` : '';
     const what = f.plain ? `<div class="sev-what">${esc(f.plain)}</div>` : '';
+    const cap = severeCaption(f.exp);
     return `<article class="finding sev-card" role="group" aria-label="Severe finding ${pad2(i+1)}, ${esc(f.title)}"${idAttr}>
       <header class="sev-flag">${SEV_MARK}<span class="sev-kicker">Severe finding ${pad2(i+1)}</span>
-        <span class="sev-fine">${esc(f.exp)} <small>${severeCaption(f.exp)}</small></span></header>
+        <span class="sev-fine">${esc(f.exp)}${cap?`<small>${cap}</small>`:''}</span></header>
       <div class="sev-body">
         <h4 class="sev-title">${esc(f.title)}</h4>
         ${quote}${what}

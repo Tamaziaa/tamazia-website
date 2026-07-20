@@ -198,7 +198,11 @@
   const P = {};
 
   P.overview = ()=>`
-    <div class="grid g2">
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
+    ${severityKey()}
+    ${severeTrio()}
+    ${heroCharts()}
+    <div class="grid g2" style="margin-top:12px">
       <div class="card pad"><div class="card-h"><div class="t">Findings by severity</div><div class="meta">${D.confirmed} confirmed v. evidence</div></div>${CH.donut()}</div>
       <div class="card pad"><div class="card-h"><div class="t">Risk heatmap</div><div class="meta">likelihood &times; financial impact</div></div>${CH.heatmap()}</div>
     </div>
@@ -212,9 +216,6 @@
         <div class="scorebands">${D.scoring.bands.map(b=>`<div class="sb ${b.g===D.grade[0]?'on':''}"><span class="sbg">${b.g}</span><span class="sbr">${b.r}</span><span class="sbd">${b.d}</span></div>`).join('')}</div>
       </div>
     </div>
-    <div class="subhead"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
-    ${severityKey()}
-    ${severeTrio()}
     <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
   P.regulatory = ()=>{
@@ -1025,8 +1026,7 @@
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
-    ${heroCharts()}
-    ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${SUMM[k].nm}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
+    ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"${k==='overview'?' open':''}><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${SUMM[k].nm}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
   </main>`;
 
   /* ---------------- NAV, one pillar open at a time ---------------- */

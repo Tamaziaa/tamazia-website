@@ -200,8 +200,9 @@
   P.overview = ()=>`
     <div class="grid g2">
       <div class="card pad"><div class="card-h"><div class="t">Findings by severity</div><div class="meta">${D.confirmed} confirmed v. evidence</div></div>${CH.donut()}</div>
-      <div class="card pad"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${escH(D.jurisdiction)}</p></div>
+      <div class="card pad"><div class="card-h"><div class="t">Risk heatmap</div><div class="meta">likelihood &times; financial impact</div></div>${CH.heatmap()}</div>
     </div>
+    <div class="card pad" style="margin-top:9px"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${escH(D.jurisdiction)}</p></div>
     <div class="card pad" style="margin-top:9px">
       <div class="card-h"><div class="t" style="font-size:11px;color:var(--muted);letter-spacing:.02em">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksBinding} binding ${plur(D.frameworksBinding,'framework','frameworks')} · ${D.confirmed} evidence checks</div></div>
       <div class="grid g-7-5" style="gap:20px">

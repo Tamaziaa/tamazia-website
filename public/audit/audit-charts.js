@@ -101,18 +101,21 @@ window.CH = (function(){
     return bars(D.exposureBars.map(b=>({l:b.l, v:b.v})), {max:18, fmt:v=> v>=1?c+v+'M':c+(v*1000)+'k'});
   }
 
-  /* 5x5 risk heatmap */
+  /* 5x5 risk heatmap — likelihood (x) × impact (y); each cell shows the finding count that lands
+     in that band. role="img" + aria-label so it reads as a labelled exhibit (consulting-deck rule). */
+  function heatCellClass(v, risk){ if(v<=0) return 'h0'; if(risk>=7) return 'h4'; if(risk>=5) return 'h3'; if(risk>=3) return 'h2'; return 'h1'; }
   function heatmap(){
-    let h='<div class="heat">';
+    if(!Array.isArray(D.heat) || !D.heat.length || !Array.isArray(D.heatRows) || !Array.isArray(D.heatCols)) return naNote('Risk-distribution data not available for this scan.');
+    const total=D.heat.reduce((s,row)=>s+row.reduce((a,b)=>a+(+b||0),0),0);
+    let h=`<div class="heat" role="img" aria-label="Risk heatmap: ${total} findings plotted by likelihood against financial impact">`;
     for(let r=0;r<5;r++){
-      h+=`<div class="axL">${D.heatRows[r]}</div>`;
+      h+=`<div class="axL">${esc(D.heatRows[r])}</div>`;
       for(let cI=0;cI<5;cI++){
-        const v=D.heat[r][cI], risk=(4-r)+cI;
-        let cls='h0'; if(v>0) cls= risk>=7?'h4':risk>=5?'h3':risk>=3?'h2':'h1';
-        h+=`<div class="cell ${cls}">${v||''}</div>`;
+        const v=+D.heat[r][cI]||0, risk=(4-r)+cI;
+        h+=`<div class="cell ${heatCellClass(v,risk)}">${v||''}</div>`;
       }
     }
-    h+='<div class="blank"></div>'; D.heatCols.forEach(c=> h+=`<div class="axB">${c}</div>`);
+    h+='<div class="blank"></div>'; D.heatCols.forEach(c=> h+=`<div class="axB">${esc(c)}</div>`);
     return h+'</div>';
   }
 
@@ -354,8 +357,9 @@ window.CH = (function(){
     return `<div class="dimgrid">${D.dims.map(d=>{
       const w=d.st==='na'?0:Math.max(4,d.v||0);
       const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
+      const scoreTxt=d.st==='na'?'n/a':(Math.round(d.v||0)+'<span style="font-size:8px;color:var(--muted-2)">/100</span>');
       return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${esc(d.nm)} ↗"><div class="dch"><span class="dcn">${esc(d.nm)}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
-        <div class="bar-track" style="height:5px;margin:7px 0 8px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div>
+        <div class="dc-barrow" style="display:flex;align-items:center;gap:8px;margin:7px 0 8px"><div class="bar-track" style="flex:1;height:5px;margin:0"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div><span class="dc-score" style="font-family:var(--serif);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ox-deep);line-height:1;min-width:34px;text-align:right">${scoreTxt}</span></div>
         <div class="dcs">${esc(d.sub||'')}</div>${d.note?`<div class="dcs dc-floor">${esc(d.note)}</div>`:''}</div>`;
     }).join('')}</div>`;
   }

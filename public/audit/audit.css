@@ -478,7 +478,6 @@ body.no-notes .engnote{display:none}
    (appended · Slice 5/6 commerce wiring)
    ============================================================ */
 
-/* ---- trusted-by (demo/placeholder logos only) ---- */
 /* .trusted-by / .tb-* removed with the placeholder-logo marquee (founder request 2026-07-20,
    false client claims). No client names are asserted anywhere in the report. */
 
@@ -520,7 +519,6 @@ body.cmx-lock{overflow:hidden}
   .cmx-grid{grid-template-columns:1fr}
   .cmx{padding:22px 18px 18px}
   .cmx-head h3{font-size:var(--fs-2xl)}
-  .trusted-by .tb-row{gap:12px 22px}
 }
 
 /* ============================================================

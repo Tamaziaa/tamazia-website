@@ -262,17 +262,22 @@
     const book = (D.links&&D.links.booking)?(': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">book the re-check</a>'):'.';
     return `<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">Point-in-time scan${when}${sup}. This view shows register facts, the binding-law map and only the findings that pass Tamazia&rsquo;s evidence gates from that scan. A fresh verified assessment re-checks every line against your live site${book}</div>`;
   };
-  const regHeadlineText = ()=>{
-    if (D.compliance_unassessed) {
-      if (D.render_mode==='knowledge' && (D.frameworksBinding||0)>0) {
-        return 'Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.';
-      }
-      return 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.';
+  const regKnowledgeMode = ()=> D.render_mode==='knowledge' && (D.frameworksBinding||0)>0;
+  const regHeadlineUnassessed = ()=>{
+    if (regKnowledgeMode()) {
+      return 'Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.';
     }
+    return 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.';
+  };
+  const regScreenedLine = ()=>{
+    if (D.catalogueSize) return 'All '+D.catalogueSize.toLocaleString('en-GB')+' compliance rules in the register were screened. ';
+    return 'The full regulatory catalogue was screened. ';
+  };
+  const regHeadlineText = ()=>{
+    if (D.compliance_unassessed) return regHeadlineUnassessed();
     if (D.regulatoryHeadline) return D.regulatoryHeadline;
-    const screened = D.catalogueSize ? ('All '+D.catalogueSize.toLocaleString('en-GB')+' compliance rules in the register were screened. ') : 'The full regulatory catalogue was screened. ';
     const nb = D.frameworksBinding||D.frameworksAssessed;
-    return screened+nb+' '+plur(nb,'framework legally binds','frameworks legally bind')+' you, '+D.rulesChecked+' rule '+plur(D.rulesChecked,'check was','checks were')+' executed against them, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.';
+    return regScreenedLine()+nb+' '+plur(nb,'framework legally binds','frameworks legally bind')+' you, '+D.rulesChecked+' rule '+plur(D.rulesChecked,'check was','checks were')+' executed against them, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.';
   };
   const sevDotCls = (sev)=>{
     if (sev==='P0') return 'c';

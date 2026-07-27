@@ -104,8 +104,12 @@ window.CH = (function(){
   /* 5x5 risk heatmap — likelihood (x) × impact (y); each cell shows the finding count that lands
      in that band. role="img" + aria-label so it reads as a labelled exhibit (consulting-deck rule). */
   function heatCellClass(v, risk){ if(v<=0) return 'h0'; if(risk>=7) return 'h4'; if(risk>=5) return 'h3'; if(risk>=3) return 'h2'; return 'h1'; }
+  function heatDataOk(){
+    if(!Array.isArray(D.heat) || !D.heat.length) return false;
+    return Array.isArray(D.heatRows) && Array.isArray(D.heatCols);
+  }
   function heatmap(){
-    if(!Array.isArray(D.heat) || !D.heat.length || !Array.isArray(D.heatRows) || !Array.isArray(D.heatCols)) return naNote('Risk-distribution data not available for this scan.');
+    if(!heatDataOk()) return naNote('Risk-distribution data not available for this scan.');
     const total=D.heat.reduce((s,row)=>s+row.reduce((a,b)=>a+(+b||0),0),0);
     let h=`<div class="heat" role="img" aria-label="Risk heatmap: ${total} findings plotted by likelihood against financial impact">`;
     for(let r=0;r<5;r++){

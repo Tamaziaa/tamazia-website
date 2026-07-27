@@ -381,3 +381,36 @@ export const FW_NAME_CAT = {
   'US_VCDPA': 'US Virginia Consumer Data Protection Act',
   'US_WA_MHMDA': 'Washington My Health My Data Act',
 };
+
+// FW_JUR: framework code -> jurisdiction badge. Prefix table FIRST (the catalogue's real codes:
+// UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore law is badged to its OWN country
+// and jurisdiction-gated correctly - never mis-mapped to "Global" (which would show it on every
+// firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
+const JUR_PREFIXES = [
+  [['UK_', 'GB_'], 'UK'],
+  [['EU_'], 'EU'],
+  [['US_'], 'US'],
+  [['UAE_', 'AE_', 'DIFC_', 'ADGM_'], 'AE'],
+  [['SAUDI_', 'SA_', 'KSA_'], 'SA'],
+  [['QATAR_', 'QA_'], 'QA'],
+  [['SG_', 'SINGAPORE_'], 'SG'],
+  [['FR_'], 'FR'],
+  [['DE_'], 'DE'],
+  [['IN_'], 'IN'],
+];
+const JUR_SUBSTRINGS = [
+  [['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA'], 'US'],
+  [['RERA', 'DIFC', 'ADGM'], 'AE'],
+  [['CNIL'], 'FR'],
+  [['BDSG'], 'DE'],
+];
+export const FW_JUR = (code) => {
+  const c = String(code || '').toUpperCase();
+  for (const [prefixes, jur] of JUR_PREFIXES) {
+    if (prefixes.some((p) => c.startsWith(p))) return jur;
+  }
+  for (const [tokens, jur] of JUR_SUBSTRINGS) {
+    if (tokens.some((t) => c.includes(t))) return jur;
+  }
+  return 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
+};

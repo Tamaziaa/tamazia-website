@@ -404,13 +404,13 @@ const JUR_SUBSTRINGS = [
   [['CNIL'], 'FR'],
   [['BDSG'], 'DE'],
 ];
+// One flat rule list: prefix rules first (order preserved), then substring fallbacks.
+const JUR_RULES = [
+  ...JUR_PREFIXES.map(([prefixes, jur]) => ({ jur, hit: (c) => prefixes.some((p) => c.startsWith(p)) })),
+  ...JUR_SUBSTRINGS.map(([tokens, jur]) => ({ jur, hit: (c) => tokens.some((t) => c.includes(t)) })),
+];
 export const FW_JUR = (code) => {
   const c = String(code || '').toUpperCase();
-  for (const [prefixes, jur] of JUR_PREFIXES) {
-    if (prefixes.some((p) => c.startsWith(p))) return jur;
-  }
-  for (const [tokens, jur] of JUR_SUBSTRINGS) {
-    if (tokens.some((t) => c.includes(t))) return jur;
-  }
-  return 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
+  const rule = JUR_RULES.find((r) => r.hit(c));
+  return rule ? rule.jur : 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
 };

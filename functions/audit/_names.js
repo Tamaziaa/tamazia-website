@@ -66,6 +66,9 @@ export function looksLikeTitle(s) {
   if (!t) return true;
   return TITLE_SIGNS.some((sign) => sign(t));
 }
+// The comparable form of a domain stem: lowercase alphanumerics only.
+const normStem = (domain) => String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
 // NAME-01 — A FIRM'S NAME SHARES A TOKEN WITH ITS OWN DOMAIN. A PAGE HEADING DOES NOT.
 // Caught on the live birketts audit: the report was addressed to "Bristol Office". The engine had no company name
 // on the queue row, derived one from the page, and grabbed an office heading. `looksLikeTitle` did not catch it —
@@ -76,19 +79,24 @@ export function looksLikeTitle(s) {
 // A heading lifted off the page usually shares nothing with it. If the candidate shares no token with the domain,
 // we do not trust it and fall back to the clean domain stem, which is always right and never embarrassing.
 // Sending a magic-circle firm a compliance report addressed to "Bristol Office" ends the conversation.
+const SUFFIX_WORD = /^(llp|ltd|limited|plc|lp|llc|inc|pc|the|and|group|solicitors|law|legal)$/;
+// Legal suffixes are never evidence of identity; compare the remaining words only.
+const nameWords = (name) => (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => !SUFFIX_WORD.test(t));
+const wholeNameMatchesStem = (words, stem) => {
+  const whole = words.join('');
+  return stem.includes(whole) || whole.includes(stem);      // one-word firms: BDO -> bdo.co.uk
+};
 export function sharesTokenWithDomain(name, domain) {
-  const stem = String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const stem = normStem(domain);
   if (!stem) return true;                                   // no domain to compare against: do not block
   // NAME-01c: the 4-character floor rejected genuinely SHORT firm names. "BDO LLP" on bdo.co.uk has no token of
   // 4+ letters once 'llp' is set aside, so the guard rejected the firm's own name and fell back to the domain
   // stem: "Bdo". A guard that rejects a real name is as wrong as one that admits a fake one. Legal suffixes are
   // never evidence of identity, so they are stripped; the remaining tokens are compared at 3+ characters, and the
   // whole normalised name is also compared against the stem so a one-word firm (BDO, DWF, DAC) always matches.
-  const SUFFIX = /^(llp|ltd|limited|plc|lp|llc|inc|pc|the|and|group|solicitors|law|legal)$/;
-  const words = (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => !SUFFIX.test(t));
+  const words = nameWords(name);
   if (!words.length) return false;
-  const whole = words.join('');
-  if (stem.includes(whole) || whole.includes(stem)) return true;   // one-word firms: BDO -> bdo.co.uk
+  if (wholeNameMatchesStem(words, stem)) return true;
   const tokenMatchesStem = (t) => stem.includes(t) || t.includes(stem);
   return words.filter((t) => t.length >= 3).some(tokenMatchesStem);
 }
@@ -119,7 +127,7 @@ export function humaniseName(n, domain) {
   // guesses were wrong ("DWF LAW LLP" -> "DWF LAW LLP", "WARD HADAWAY" -> "WARD Hadaway"). The reliable test is
   // identity: a firm that trades as an acronym OWNS THAT ACRONYM AS ITS DOMAIN. BDO is bdo.co.uk; DWF is dwf.law.
   // "Ward" is not wardhadaway.com. So a token is capitalised only if it IS the domain stem, and never otherwise.
-  const stem = String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const stem = normStem(domain);
   return raw.split(/(\s+|-|&)/).map((tok) => humaniseToken(tok, stem)).join('');
 }
 

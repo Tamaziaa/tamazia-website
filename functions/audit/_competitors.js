@@ -63,19 +63,26 @@ export const JUNK_PATTERNS = [
 const STEM_JUNK_RX = /^(reviews?|directory|directories|compare|comparison|rated|ranking|rankings|listings?|top\d+|bestrated|bestof|find(a|an|my)|nearme|nearby)/i;
 const parentDomain = (host) => { const p = String(host).split('.'); return p.length > 2 ? p.slice(-2).join('.') : host; };
 const MARKET_TLD = { UK: ['co.uk', 'uk', 'org.uk'], GB: ['co.uk', 'uk', 'org.uk'], US: ['com', 'us'], USA: ['com', 'us'], UAE: ['ae', 'com'], AE: ['ae', 'com'], SA: ['sa', 'com'], KSA: ['sa', 'com'], QA: ['qa', 'com'] };
+// One membrane rule per predicate (flat; same resolution order as the previous inline chain).
+const deniedHost = (host) => COMPETITOR_DENYLIST.has(host) || COMPETITOR_DENYLIST.has(parentDomain(host));
+const junkHost = (host) => JUNK_PATTERNS.some((rx) => rx.test(host)) || STEM_JUNK_RX.test(parentDomain(host).split('.')[0]);
+// strong directory/comparison SUBSTRING signal anywhere in the registrable label (catches comparebanks,
+// moneyfactscompare, agentseeker, estateagentfinder that the token-bounded patterns miss). (P7)
+const DIRECTORY_STEM_RX = /compare|comparison|finder|seeker|directory|listings?|whatclinic|bestbanks?|whichbank|ratemy|news|magazine|gazette|herald|tribune/;
+const directoryStem = (host) => DIRECTORY_STEM_RX.test(host.split('.')[0].replace(/[^a-z0-9]/g, ''));
+function wrongMarketTld(host, firmMarket) {
+  const allowed = MARKET_TLD[String(firmMarket || '').toUpperCase()];
+  if (!allowed) return false;
+  const tld1 = host.split('.').pop();
+  const tld2 = host.split('.').slice(-2).join('.');
+  if (!/^(ae|sa|qa|in|de|fr|it|es|ca|au)$/i.test(tld1)) return false;
+  return !allowed.includes(tld1) && !allowed.includes(tld2);
+}
 export function isRealCompetitor(domain, firmMarket) {
   const host = cleanDomain(domain).toLowerCase();
   if (!host || !host.includes('.')) return false;
-  if (COMPETITOR_DENYLIST.has(host) || COMPETITOR_DENYLIST.has(parentDomain(host))) return false;
-  if (JUNK_PATTERNS.some((rx) => rx.test(host))) return false;
-  if (STEM_JUNK_RX.test(parentDomain(host).split('.')[0])) return false;   // directory verb at the stem start (reviewbritain)
-  // strong directory/comparison SUBSTRING signal anywhere in the registrable label (catches comparebanks,
-  // moneyfactscompare, agentseeker, estateagentfinder that the token-bounded patterns miss). (P7)
-  const _stem = host.split('.')[0].replace(/[^a-z0-9]/g, '');
-  if (/compare|comparison|finder|seeker|directory|listings?|whatclinic|bestbanks?|whichbank|ratemy|news|magazine|gazette|herald|tribune/.test(_stem)) return false;
-  const allowed = MARKET_TLD[String(firmMarket || '').toUpperCase()];
-  if (allowed) { const tld1 = host.split('.').pop(); const tld2 = host.split('.').slice(-2).join('.'); if (/^(ae|sa|qa|in|de|fr|it|es|ca|au)$/i.test(tld1) && !allowed.includes(tld1) && !allowed.includes(tld2)) return false; }
-  return true;
+  if (deniedHost(host) || junkHost(host) || directoryStem(host)) return false;
+  return !wrongMarketTld(host, firmMarket);
 }
 export function corroborated(host, payload) {
   host = cleanDomain(host).toLowerCase();

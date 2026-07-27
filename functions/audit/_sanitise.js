@@ -71,18 +71,27 @@ function keepUnverifiedPointer(x, allowNarrow, dropped) {
 }
 // The screened/'applies to you' layer makes applicability CLAIMS, so it takes the same family
 // filter: a US firm's unverified page must not list UK statutes even as screened rows.
+const fwKeyOf = (f) => (f && (f.framework_short || f.code)) || f;
+const ruleKeyOf = (r) => (r && (r.framework_short || r.framework)) || '';
+const reviewKeyOf = (r) => (r && (r.framework_short || r.citation)) || '';
+const FAMILY_LISTS = [
+  ['applicable_frameworks', fwKeyOf],
+  ['frameworks', fwKeyOf],
+  ['rules', ruleKeyOf],
+  ['needs_review', reviewKeyOf],
+];
+function filterBindingMap(out, p, famOK) {
+  if (!p.binding || typeof p.binding !== 'object') return;
+  const b = {};
+  for (const [k, v] of Object.entries(p.binding)) if (famOK(k)) b[k] = v;
+  out.binding = b;
+}
 function applyFamilyFilters(out, p, allowNarrow) {
   const famOK = (code) => familyAllowed(String(code || ''), allowNarrow);
-  const fwOf = (f) => (f && (f.framework_short || f.code)) || f;
-  if (Array.isArray(p.applicable_frameworks)) out.applicable_frameworks = p.applicable_frameworks.filter((f) => famOK(fwOf(f)));
-  if (Array.isArray(p.frameworks)) out.frameworks = p.frameworks.filter((f) => famOK(fwOf(f)));
-  if (Array.isArray(p.rules)) out.rules = p.rules.filter((r) => famOK((r && (r.framework_short || r.framework)) || ''));
-  if (p.binding && typeof p.binding === 'object') {
-    const b = {};
-    for (const [k, v] of Object.entries(p.binding)) if (famOK(k)) b[k] = v;
-    out.binding = b;
+  for (const [key, keyOf] of FAMILY_LISTS) {
+    if (Array.isArray(p[key])) out[key] = p[key].filter((item) => famOK(keyOf(item)));
   }
-  if (Array.isArray(p.needs_review)) out.needs_review = p.needs_review.filter((r) => famOK((r && (r.framework_short || r.citation)) || ''));
+  filterBindingMap(out, p, famOK);
 }
 // E-218: render-side sanitiser for verified!==true rows. Mirrors the engine's evidence gates
 // (E-041/E-044, V05 absence-proof, V09 fine discipline, P-011 template-accusation threshold) over

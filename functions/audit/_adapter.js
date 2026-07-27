@@ -79,7 +79,10 @@ function moneySymbol(payload) {
   const cc = String(payload.country || '').toUpperCase();
   const isUS = cc === 'US' || cc === 'USA';
   // Clearly USD: US firm whose currencies are USD-only (or USD-led and not GBP). Keep '£' for everyone else.
-  if (curs.length && curs.every((c) => c === 'USD')) return isUS ? '$' : (curs.length === 1 ? '$' : '£');
+  if (curs.length && curs.every((c) => c === 'USD')) {
+    if (isUS) return '$';
+    return curs.length === 1 ? '$' : '£';
+  }
   if (isUS && curs[0] === 'USD' && !curs.includes('GBP')) return '$';
   return '£';
 }
@@ -486,7 +489,7 @@ function bingoFromPointer(p, pillar, news, i, sym) {
           : (fwName(p.framework_short) || p.citation || pillar),
     // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
     // "Signal" — never label a non-statutory finding "③ Law".
-    labelKind: /GEO|AI/.test(pillar) ? 'Signal' : /SEO|Technical/.test(pillar) ? 'Standard' : 'Law',
+    labelKind: labelKindFor(pillar),
     // Precise controlling provision (instrument + section/article) when known, e.g. "Companies Act 2006 s.82",
     // "UK GDPR Art. 13(2)(f)", "SRA Transparency Rules 2018 r.1.1-1.5" — legally-defensible specificity. (legal-QA citation)
     statute: p.statutory_citation || null,
@@ -745,7 +748,17 @@ function gradeOf(score) {
   if (score >= 85) return 'A'; if (score >= 70) return 'B'; if (score >= 55) return 'C';
   if (score >= 47) return 'D'; if (score >= 40) return 'D-'; if (score >= 25) return 'F'; return 'F-';
 }
-const bandOf = (s) => s >= 70 ? 'Strong' : s >= 55 ? 'Workable' : s >= 40 ? 'At risk' : 'Critical';
+function labelKindFor(pillar) {
+  if (/GEO|AI/.test(pillar)) return 'Signal';
+  if (/SEO|Technical/.test(pillar)) return 'Standard';
+  return 'Law';
+}
+function bandOf(s) {
+  if (s >= 70) return 'Strong';
+  if (s >= 55) return 'Workable';
+  if (s >= 40) return 'At risk';
+  return 'Critical';
+}
 
 /* ---------------- dimensions + strict score ---------------- */
 function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {

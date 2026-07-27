@@ -40,15 +40,19 @@ export function decodeEnt(s) {
 // A scraped page <title> is NOT a company name. Reject candidates that read like a title/marketing line so the
 // render falls back to the clean domain stem (cert: "Conference & Event Venue in Leeds", "14 Independent Brands...",
 // "New Construction Homes for Sale in New York by Toll Brothers", "Pricing Plans", "Our Team").
+// Each sign that a candidate string is a page TITLE rather than a firm name, one rule per entry.
+const TITLE_SIGNS = [
+  (t) => t.length > 42,                                                 // real names are short; titles are long
+  (t) => /[|»·–—]| - | \| /.test(t),                                    // title separators
+  (t) => /\b(reviews?|top \d+|best |guide|how to|pricing|plans?|welcome|home ?page|our team|about us|contact|menu|blog|news|brands?|things to do)\b/i.test(t),
+  (t) => /^\d/.test(t),
+  (t) => /\b(in|near|for sale in)\b .*\b(london|leeds|bristol|edinburgh|manchester|new york|dubai|miami)\b/i.test(t),
+  (t) => (t.match(/\s/g) || []).length >= 6,                            // >6 words = a sentence, not a name
+];
 export function looksLikeTitle(s) {
   const t = String(s || '').trim();
   if (!t) return true;
-  if (t.length > 42) return true;                              // real names are short; titles are long
-  if (/[|»·–—]| - | \| /.test(t)) return true;                 // title separators
-  if (/\b(reviews?|top \d+|best |guide|how to|pricing|plans?|welcome|home ?page|our team|about us|contact|menu|blog|news|brands?|things to do)\b/i.test(t)) return true;
-  if (/^\d/.test(t) || /\b(in|near|for sale in)\b .*\b(london|leeds|bristol|edinburgh|manchester|new york|dubai|miami)\b/i.test(t)) return true;
-  if ((t.match(/\s/g) || []).length >= 6) return true;         // >6 words = a sentence, not a name
-  return false;
+  return TITLE_SIGNS.some((sign) => sign(t));
 }
 // NAME-01 — A FIRM'S NAME SHARES A TOKEN WITH ITS OWN DOMAIN. A PAGE HEADING DOES NOT.
 // Caught on the live birketts audit: the report was addressed to "Bristol Office". The engine had no company name
@@ -80,23 +84,29 @@ export function sharesTokenWithDomain(name, domain) {
 // suffixes (LLP, LTD, PLC), and initialisms the firm actually uses (BDO, DWF, DAC). Never lower-case those.
 const _SHORT_WORDS = new Set(['law', 'and', 'the', 'for', 'new', 'old', 'son', 'sons', 'co', 'of', 'at', 'in', 'on', 'to', 'legal', 'firm', 'lex', 'bar']);
 const _KEEP_CAPS = new Set(['LLP', 'LTD', 'PLC', 'LP', 'LLC', 'INC', 'PC', 'UK', 'GB', 'AG', 'SA', 'NV', 'BV', 'GMBH', 'SARL', 'PTE', 'FZE', 'DMCC', 'DIFC', 'ADGM']);
+// One token of a SHOUTING name: keep legal suffixes/initialisms upper (an initialism owns its
+// domain stem - BDO is bdo.co.uk), title-case everything else. Separators pass through.
+function humaniseToken(tok, stem) {
+  if (/^\s+$/.test(tok) || tok === '-' || tok === '&') return tok;
+  const bare = tok.replace(/[^A-Za-z]/g, '');
+  if (_KEEP_CAPS.has(bare.toUpperCase())) return tok.toUpperCase();
+  if (bare.length > 1 && bare.length <= 5 && bare.toLowerCase() === stem) return tok.toUpperCase();
+  return tok.charAt(0).toUpperCase() + tok.slice(1).toLowerCase();
+}
+const isShouting = (raw) => {
+  const letters = raw.replace(/[^A-Za-z]/g, '');
+  return Boolean(letters) && letters === letters.toUpperCase();
+};
 export function humaniseName(n, domain) {
   const raw = String(n || '').trim();
   if (!raw) return raw;
   // Only intervene when the name is SHOUTING; a properly-cased name is left exactly as the firm writes it.
-  const letters = raw.replace(/[^A-Za-z]/g, '');
-  if (!letters || letters !== letters.toUpperCase()) return raw;
+  if (!isShouting(raw)) return raw;
   // AN INITIALISM IS NOT MERELY A SHORT TOKEN. Length cannot tell "DWF" from "LAW", or "BDO" from "WARD" - both
   // guesses were wrong ("DWF LAW LLP" -> "DWF LAW LLP", "WARD HADAWAY" -> "WARD Hadaway"). The reliable test is
   // identity: a firm that trades as an acronym OWNS THAT ACRONYM AS ITS DOMAIN. BDO is bdo.co.uk; DWF is dwf.law.
   // "Ward" is not wardhadaway.com. So a token is capitalised only if it IS the domain stem, and never otherwise.
   const stem = String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-  return raw.split(/(\s+|-|&)/).map((tok) => {
-    if (/^\s+$/.test(tok) || tok === '-' || tok === '&') return tok;
-    const bare = tok.replace(/[^A-Za-z]/g, '');
-    if (_KEEP_CAPS.has(bare.toUpperCase())) return tok.toUpperCase();           // LLP, LTD, PLC
-    if (bare.length > 1 && bare.length <= 5 && bare.toLowerCase() === stem) return tok.toUpperCase();  // BDO, DWF
-    return tok.charAt(0).toUpperCase() + tok.slice(1).toLowerCase();
-  }).join('');
+  return raw.split(/(\s+|-|&)/).map((tok) => humaniseToken(tok, stem)).join('');
 }
 

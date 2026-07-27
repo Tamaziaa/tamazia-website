@@ -93,6 +93,12 @@ function applyFamilyFilters(out, p, allowNarrow) {
   }
   filterBindingMap(out, p, famOK);
 }
+// S-183 predicate: a legacy row with zero pages and zero surviving findings was never assessed.
+function neverAssessed(p, kept, out) {
+  if (arr(p.pages_crawled).length) return false;
+  if (kept.length) return false;
+  return out.compliance_unassessed !== true;
+}
 // E-218: render-side sanitiser for verified!==true rows. Mirrors the engine's evidence gates
 // (E-041/E-044, V05 absence-proof, V09 fine discipline, P-011 template-accusation threshold) over
 // the STORED payload, so the public page can never assert more than the evidence carries.
@@ -111,7 +117,7 @@ export function sanitiseUnverified(p) {
     out.pointers = KEEP;
     applyFamilyFilters(out, p, allowNarrow);
     // S-183: a legacy row with zero pages and zero surviving findings was never assessed - say so.
-    if (!arr(p.pages_crawled).length && !KEEP.length && out.compliance_unassessed !== true) out.compliance_unassessed = true;
+    if (neverAssessed(p, KEEP, out)) out.compliance_unassessed = true;
     out._sanitised = Object.assign({ applied: true }, dropped);
     // authJurisdictions honours this narrow set, so the screened-injection floor, the jurisdiction
     // selector and the membrane all agree on scope for an unverified row.

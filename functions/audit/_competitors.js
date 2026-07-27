@@ -78,10 +78,12 @@ function wrongMarketTld(host, firmMarket) {
   if (!/^(ae|sa|qa|in|de|fr|it|es|ca|au)$/i.test(tld1)) return false;
   return !allowed.includes(tld1) && !allowed.includes(tld2);
 }
+const hostShapeOk = (host) => Boolean(host) && host.includes('.');
+const EXCLUDED_HOST_RULES = [deniedHost, junkHost, directoryStem];
 export function isRealCompetitor(domain, firmMarket) {
   const host = cleanDomain(domain).toLowerCase();
-  if (!host || !host.includes('.')) return false;
-  if (deniedHost(host) || junkHost(host) || directoryStem(host)) return false;
+  if (!hostShapeOk(host)) return false;
+  if (EXCLUDED_HOST_RULES.some((excluded) => excluded(host))) return false;
   return !wrongMarketTld(host, firmMarket);
 }
 export function corroborated(host, payload) {

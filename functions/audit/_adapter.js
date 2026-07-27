@@ -1,4 +1,5 @@
 // functions/audit/_adapter.js
+import { FW_NAME, FW_REGULATOR, FW_NAME_CAT } from './_lawmaps.js';
 // THE PIPE: deterministic payload_json -> window.D adapter.
 // Pure (no I/O, no Date.now/Math.random, `now` is passed in). TOTAL, DEFENSIVE,
 // EVIDENCE-GATED, NUMERIC-LOCKED. Doubles as the render-side safety membrane.
@@ -178,79 +179,6 @@ function moneySymbol(payload) {
 }
 const SEV_BAND = { P0: 'critical', P1: 'high', P2: 'standard', P3: 'standard' };
 
-const FW_NAME = {
-  UK_GDPR_A13: 'UK GDPR · Art. 13', UK_DPA_2018: 'UK Data Protection Act 2018', UK_PECR: 'UK PECR · Cookies & e-Privacy', UK_ICO_COOKIES: 'ICO Cookies Guidance',
-  EU_GDPR: 'EU GDPR', EU_EPRIVACY: 'EU ePrivacy Directive', EU_EAA_2025: 'EU Accessibility Act 2025', EU_WHISTLEBLOWER: 'EU Whistleblower Directive', EU_AI_ACT: 'EU AI Act',
-  UK_CQC: 'CQC Fundamental Standards', UK_GDC: 'GDC Standards', UK_MHRA: 'MHRA Advertising Rules', UK_SRA: 'SRA Transparency Rules', UK_FCA: 'FCA Financial Promotions',
-  UK_ASA_CAP: 'ASA / CAP Code', UK_CMA: 'CMA · DMCC Act 2024', UK_DMCC_2024: 'DMCC Act 2024', UK_EQUALITY_2010: 'Equality Act 2010', UK_COMPANIES_ACT: 'Companies Act 2006 · s.82',
-  UK_TRADING_STANDARDS: 'Trading Standards', UK_MODERN_SLAVERY: 'Modern Slavery Act 2015', UK_CAA: 'ATOL / Package Travel Rules', UK_FSA: "Food Info Regs (Natasha's Law)", GOOGLE_EEAT: 'Google E-E-A-T',
-  AE_PDPL: 'UAE PDPL', AE_RERA: 'RERA (Dubai)', DIFC_DPL: 'DIFC Data Protection Law', ADGM_DPR: 'ADGM Data Protection', SAUDI_PDPL: 'Saudi PDPL', QATAR_PDPPL: 'Qatar PDPPL',
-  US_CCPA: 'US CCPA', US_CPRA: 'US CPRA', US_FTC: 'US FTC Act § 5', US_CAN_SPAM: 'US CAN-SPAM', FR_CNIL: 'France · CNIL', DE_BDSG: 'Germany · BDSG',
-  US_STATE_PRIVACY: 'US State Privacy Laws', US_VCDPA: 'Virginia VCDPA', US_ADA: 'US ADA · Title III', US_ATTORNEY_ADVERTISING: 'US Attorney Advertising Rules', US_FTC_ENDORSE: 'FTC Endorsement Guides',
-  EU_EAA_2025B2C: 'EU Accessibility Act 2025', UAE_PDPL: 'UAE PDPL', UK_CRA_2015: 'Consumer Rights Act 2015', UK_HSE: 'Health & Safety (HSE)', UK_CAA_ATOL: 'ATOL / Package Travel Rules', UK_CAAATOL: 'ATOL / Package Travel Rules',
-  // Sector / consumer / online-safety codes that previously fell through to raw title-case ("Uk Arla", "Eu Dsa").
-  UK_ARLA: 'ARLA Propertymark Rules', UK_RICS: 'RICS Rules of Conduct', UK_FCA_CONC25: 'FCA Consumer Credit (CONC)', EU_DSA: 'EU Digital Services Act',
-  UK_UKCA: 'UKCA Marking', UK_FOOD_INFO_2014: 'Food Information Regs 2014', UK_LICENSING_ACT: 'Licensing Act 2003', UK_OSA_2023: 'Online Safety Act 2023',
-  UK_OFSTED: 'Ofsted requirements', UK_DFE: 'DfE information duties', UK_OFS: 'OfS registration conditions',
-  // Further real codes present in the matrix fixtures that otherwise rendered raw title-case ("Uk Sra Coc"). (no-raw-framework-code)
-  UK_SRA_COC: 'SRA Code of Conduct', UK_SRA_TRANSPARENCY: 'SRA Transparency Rules', UK_FCA_MAR: 'FCA Market Abuse Regulation', UK_FSMA_S21: 'FSMA s.21 Financial Promotions',
-  UK_ACCA: 'ACCA Rulebook', UK_FRC: 'FRC Ethical Standard', UK_PRA: 'PRA Rulebook', UK_SMCR: 'Senior Managers & Certification Regime', UK_FOS_FSCS: 'FOS / FSCS Disclosure',
-  UK_CE_PLUS: 'Cyber Essentials Plus', UK_NCSC_CYBER_ESSENTIALS: 'Cyber Essentials', UK_DSIT_NIS2: 'UK NIS Regulations', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'UK Corporate Governance Code',
-  EU_CSRD: 'EU CSRD', EU_PSD2: 'EU PSD2', EU_DMA: 'EU Digital Markets Act', EU_DORA: 'EU DORA', EU_NIS2: 'EU NIS2 Directive', EU_AML6: 'EU 6th Anti-Money-Laundering Directive', EU_MIFID_II: 'EU MiFID II', EU_SFDR: 'EU SFDR', EU_GPSR: 'EU General Product Safety Regulation',
-  US_TCPA: 'US TCPA', US_TDPSA: 'Texas Data Privacy Act', US_FINRA_2210: 'FINRA Rule 2210', US_SEC_506C: 'SEC Rule 506(c)', US_SEC_REG_FD: 'SEC Regulation FD', US_NYDFS_500: 'NYDFS Part 500', US_GLBA: 'US GLBA', US_HIPAA: 'US HIPAA', US_COPPA: 'US COPPA', US_FERPA: 'US FERPA', US_MEDICAL_BOARD: 'State Medical Board Rules',
-  UAE_CONSUMER: 'UAE Consumer Protection Law', UAE_ECOMMERCE: 'UAE E-Commerce Law', UAE_RERA: 'RERA (Dubai)', FR_CNIL_2025: 'France · CNIL',
-};
-const FW_REGULATOR = {
-  // E08 — the real enforcing authority. Previously these rendered the literal placeholder "Sector regulator".
-  'UK_ECOMMERCE_2002': 'Trading Standards / CMA',
-  'UK_LEGAL_SERVICES_2007': 'Legal Services Board / SRA',
-  'UK_CLC': 'Council for Licensed Conveyancers',
-  'UK_CRIMINAL_FINANCES_2017': 'HMRC and the Serious Fraud Office',
-  'UK_ECCTA_2023': 'Serious Fraud Office / Crown Prosecution Service',
-  'UK_LEGAL_OMBUDSMAN': 'Legal Ombudsman',
-  'EU_ECD_ART5': 'The competent national authority of the member state',
-  'EU_SERVICES_DIRECTIVE': 'The competent national authority of the member state',
-  'DE_IMPRESSUM': 'Competitor Abmahnung and the competent Landesmedienanstalt',
-  'FR_LCEN': 'DGCCRF',
-  'BAHRAIN_PDPL': 'Bahrain Personal Data Protection Authority',
-  'EGYPT_PDPL': 'Egyptian Data Protection Centre',
-  'ISRAEL_PPL': 'Israeli Privacy Protection Authority',
-  'JORDAN_PDPL': 'Jordan Ministry of Digital Economy and Entrepreneurship',
-  'OMAN_PDPL': 'Oman Ministry of Transport, Communications and IT',
-  UK_GDPR_A13: "Information Commissioner's Office", UK_DPA_2018: "Information Commissioner's Office", UK_PECR: "Information Commissioner's Office", UK_ICO_COOKIES: "Information Commissioner's Office",
-  EU_GDPR: 'EU data-protection authorities', EU_EPRIVACY: 'EU data-protection authorities', EU_EAA_2025: 'EU accessibility regulators', EU_WHISTLEBLOWER: 'EU member-state authorities', EU_AI_ACT: 'EU AI Office',
-  UK_CQC: 'Care Quality Commission', UK_GDC: 'General Dental Council', UK_MHRA: 'MHRA', UK_SRA: 'Solicitors Regulation Authority', UK_FCA: 'Financial Conduct Authority',
-  UK_ASA_CAP: 'Advertising Standards Authority', UK_CMA: 'Competition & Markets Authority', UK_DMCC_2024: 'Competition & Markets Authority', UK_EQUALITY_2010: 'Equality & Human Rights Commission', UK_COMPANIES_ACT: 'Companies House',
-  UK_TRADING_STANDARDS: 'Trading Standards', UK_MODERN_SLAVERY: 'Home Office', UK_CAA: 'Civil Aviation Authority', UK_FSA: 'Food Standards Agency', GOOGLE_EEAT: 'Google Search',
-  AE_PDPL: 'UAE Data Office', AE_RERA: 'RERA Dubai', DIFC_DPL: 'DIFC Commissioner of Data Protection', ADGM_DPR: 'ADGM Office of Data Protection', SAUDI_PDPL: 'Saudi Data & AI Authority', QATAR_PDPPL: 'Qatar NCSA',
-  US_CCPA: 'California Privacy Protection Agency', US_CPRA: 'California Privacy Protection Agency', US_FTC: 'Federal Trade Commission', US_CAN_SPAM: 'Federal Trade Commission', FR_CNIL: 'CNIL (France)', DE_BDSG: 'German data-protection authorities',
-  UK_ARLA: 'Propertymark (NTSELAT)', UK_RICS: 'RICS', UK_FCA_CONC25: 'Financial Conduct Authority', EU_DSA: 'European Commission', UK_UKCA: 'Office for Product Safety & Standards',
-  UK_FOOD_INFO_2014: 'Food Standards Agency', UK_LICENSING_ACT: 'Local licensing authority', UK_OSA_2023: 'Ofcom', UK_OFSTED: 'Ofsted', UK_DFE: 'Department for Education', UK_OFS: 'Office for Students',
-  UK_SRA_COC: 'Solicitors Regulation Authority', UK_SRA_TRANSPARENCY: 'Solicitors Regulation Authority', UK_FCA_MAR: 'Financial Conduct Authority', UK_FSMA_S21: 'Financial Conduct Authority',
-  UK_ACCA: 'ACCA', UK_FRC: 'Financial Reporting Council', UK_PRA: 'Prudential Regulation Authority', UK_SMCR: 'FCA / PRA', UK_FOS_FSCS: 'Financial Ombudsman Service',
-  UK_CE_PLUS: 'NCSC / IASME', UK_NCSC_CYBER_ESSENTIALS: 'NCSC / IASME', UK_DSIT_NIS2: 'DSIT', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'Financial Reporting Council',
-  EU_CSRD: 'EU member-state authorities', EU_PSD2: 'European Banking Authority', EU_DMA: 'European Commission', EU_DORA: 'European Supervisory Authorities', EU_NIS2: 'EU member-state authorities', EU_AML6: 'EU member-state authorities', EU_MIFID_II: 'ESMA', EU_SFDR: 'ESMA', EU_GPSR: 'European Commission',
-  US_TCPA: 'Federal Communications Commission', US_TDPSA: 'Texas Attorney General', US_FINRA_2210: 'FINRA', US_SEC_506C: 'Securities & Exchange Commission', US_SEC_REG_FD: 'Securities & Exchange Commission', US_NYDFS_500: 'NY Department of Financial Services', US_GLBA: 'Federal Trade Commission', US_HIPAA: 'HHS Office for Civil Rights', US_COPPA: 'Federal Trade Commission', US_FERPA: 'US Department of Education', US_MEDICAL_BOARD: 'State Medical Board', US_FTC_ENDORSE: 'Federal Trade Commission',
-  UAE_CONSUMER: 'UAE Ministry of Economy', UAE_ECOMMERCE: 'UAE Ministry of Economy', UAE_RERA: 'RERA Dubai', FR_CNIL_2025: 'CNIL (France)',
-  UK_HSE: 'Health & Safety Executive', US_STATE_PRIVACY: 'US state attorneys general', US_VCDPA: 'Virginia Attorney General', US_ADA: 'US Department of Justice', US_ATTORNEY_ADVERTISING: 'State bar associations',
-  // Sector regulators that were rendering as the generic "Sector regulator" placeholder on screened cards (Phase 5.1).
-  UK_FCA_CONDUCT: 'Financial Conduct Authority', UK_FCA_CONSUMER_DUTY: 'Financial Conduct Authority', UK_CONSUMER_DUTY: 'Financial Conduct Authority', UK_FCA_HRI_PROMO: 'Financial Conduct Authority', UK_EMR_2011: 'Financial Conduct Authority', UK_ABI: 'Association of British Insurers', UK_MLR_2017: 'HMRC / FCA',
-  UK_CRA_2015: 'Trading Standards / CMA', UK_CCR_2013: 'Trading Standards / CMA', UK_NATASHAS_LAW: 'Food Standards Agency',
-  UAE_DHA: 'Dubai Health Authority / MOHAP', UAE_MOHAP: 'Ministry of Health & Prevention', UAE_DHCC: 'Dubai Healthcare City Authority', UAE_PDPL: 'UAE Data Office', UAE_HEALTH_DATA_LAW: 'UAE health authorities', UAE_ICT_HEALTH_LAW: 'UAE health authorities', UAE_CONSUMER_PROTECTION: 'UAE Ministry of Economy',
-  US_FAIR_HOUSING_ACT: 'HUD / DOJ', US_RESPA: 'Consumer Financial Protection Bureau', US_STATE_PROF_CONDUCT: 'State licensing boards', US_FTC_FAKE_REVIEWS: 'Federal Trade Commission', US_FTC_REVIEWS_RULE: 'Federal Trade Commission',
-  // Regulator names for the frameworks surfaced by the 10-company multi-sector/jurisdiction validation (UK accounting/
-  // bar, UAE health/finance/real-estate, US health/dental, EU health). (multi-sector-validation-20260629)
-  UK_HMRC_AML: 'HMRC', UK_BSB: 'Bar Standards Board', UK_BOTOX_FILLERS_CHILDREN_2021: 'MHRA / local authorities', UK_CMP_2019: 'NTSELAT / approved redress scheme',
-  EU_EHDS: 'European Health Data Space authorities', EU_GDPR_ART9: 'EU data-protection authorities', EU_UCPD: 'EU consumer-protection authorities',
-  UAE_ART_LAW: 'UAE health authorities (MOHAP/DHA)', UAE_DOH: 'Abu Dhabi Department of Health', UAE_AML_2018: 'Central Bank of the UAE / Ministry of Economy', AE_AML_2018: 'Central Bank of the UAE / Ministry of Economy',
-  UAE_ENV_2024: 'UAE Ministry of Climate Change & Environment', UAE_MOHRE: 'UAE Ministry of Human Resources & Emiratisation',
-  AE_CBUAE_CONSUMER: 'Central Bank of the UAE', CBUAE_INSURANCE: 'Central Bank of the UAE', CBUAE_RPSCS: 'Central Bank of the UAE', AE_DFSA_COB: 'DFSA (DIFC)', AE_FSRA_COBS: 'ADGM FSRA', AE_SCA: 'UAE Securities & Commodities Authority',
-  US_CDC_ART_REPORTING: 'US CDC / FTC', US_FTC_HBNR: 'Federal Trade Commission', US_FTC_HEALTH_BREACH_RULE: 'Federal Trade Commission', US_NV_SB370: 'Nevada Attorney General', US_RYAN_HAIGHT: 'US DEA', US_CDCA: 'US CDC / FTC',
-  // Second validation pass (cap raise surfaced more frameworks): US health/medical, UK medical/real-estate, EU device.
-  US_FDA: 'US Food & Drug Administration', US_FDA_HCTP: 'US Food & Drug Administration', US_TELEHEALTH_LICENSURE: 'State medical boards (IMLC)', US_WA_MHMDA: 'Washington Attorney General', US_CMS_LTC: 'US Centers for Medicare & Medicaid Services',
-  UK_GMC: 'General Medical Council', UK_NMC: 'Nursing & Midwifery Council', UK_HFEA: 'Human Fertilisation & Embryology Authority', UK_MEDICAL_DEVICES: 'MHRA', UK_HMRC_GIFTAID: 'HMRC', EU_IVDR: 'EU notified bodies / MHRA',
-  UK_ESTATE_AGENTS_ACT: 'NTSELAT / Trading Standards', UK_NTSELAT_MATERIAL_INFO: 'NTSELAT / Trading Standards', UK_TENANT_FEES_2019: 'NTSELAT / Trading Standards',
-};
 // Frameworks that overlap so heavily they must render as ONE row, never two near-identical cards under the
 // same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the
 // Food Info Regs and the FSA "Natasha's Law" food card). Collapse the overlapping code into its canonical
@@ -434,310 +362,6 @@ function fixAcronyms(s) { return String(s || '').replace(_ACR_RX, (m) => m.toUpp
 // FW_NAME_CAT: complete framework display-name map generated from the live catalogue (framework_versions,
 // 285 frameworks). The hardcoded FW_NAME only knew the old ~40, so every newer framework rendered as a
 // title-cased code ("UAE Dha"). fwName now prefers the real catalogue name. Regenerate when the catalogue grows.
-const FW_NAME_CAT = {
-  // E07 — THE EXACT LEGAL TITLE. These 14 frameworks were promoted into the catalogue (E-254, "the lost law") but
-  // nobody ever gave them a display name, so they rendered as title-cased codes: "Uk Ecommerce 2002",
-  // "Eu Ecd Art5". In a lawyer-led report every citation must be the instrument's real name.
-  'UK_ECOMMERCE_2002': 'Electronic Commerce (EC Directive) Regulations 2002',
-  'UK_LEGAL_SERVICES_2007': 'Legal Services Act 2007',
-  'UK_CLC': 'CLC Handbook (Council for Licensed Conveyancers)',
-  'EU_ECD_ART5': 'e-Commerce Directive 2000/31/EC, Article 5',
-  'EU_SERVICES_DIRECTIVE': 'Services Directive 2006/123/EC',
-  // Verified: the Impressum duty moved from TMG s.5 to DDG s.5 on 14 May 2024. Citing the repealed TMG is itself
-  // an Abmahnung risk in Germany, so the name carries the CURRENT basis.
-  'DE_IMPRESSUM': 'Digitale-Dienste-Gesetz (DDG) s.5 - Impressumspflicht',
-  'FR_LCEN': 'Loi pour la confiance dans l\'economie numerique (LCEN), Loi 2004-575',
-  'BAHRAIN_PDPL': 'Bahrain Personal Data Protection Law (Law No. 30 of 2018)',
-  'EGYPT_PDPL': 'Egypt Personal Data Protection Law (Law No. 151 of 2020)',
-  'ISRAEL_PPL': 'Israel Protection of Privacy Law, 5741-1981',
-  'JORDAN_PDPL': 'Jordan Personal Data Protection Law (Law No. 24 of 2023)',
-  'OMAN_PDPL': 'Oman Personal Data Protection Law (Royal Decree 6/2022)',
-  'ADGM_DPR': 'ADGM Data Protection Regulations 2021',
-  'AE_AML_2018': 'UAE Federal Decree-Law No. 20 of 2018 on AML/CFT',
-  'AE_CBUAE_CONSUMER': 'CBUAE Consumer Protection Regulation & Standards',
-  'AE_DFSA_COB': 'DFSA Conduct of Business (DIFC)',
-  'AE_FSRA_COBS': 'ADGM FSRA Conduct of Business (COBS)',
-  'AE_FUNDRAISING_LICENCE': 'UAE Fundraising Regulation',
-  'AE_SCA': 'UAE Securities and Commodities Authority (onshore)',
-  'AE_VARA': 'Dubai Virtual Assets Regulatory Authority (VARA)',
-  'CBUAE_INSURANCE': 'CBUAE Insurance Regulation (Federal Decree-Law No. 48 of 2023)',
-  'CBUAE_RPSCS': 'CBUAE Retail Payment Services and Card Schemes Regulation',
-  'DE_BDSG': 'DE Bundesdatenschutzgesetz',
-  'DE_HWG': 'Heilmittelwerbegesetz (HWG) — German Act on Advertising in the Field of Healthcare',
-  'DIFC_DPL': 'DIFC Data Protection Law No. 5 of 2020',
-  'EU_AI_ACT': 'EU AI Act (Regulation (EU) 2024/1689)',
-  'EU_AML6': 'EU 6th Anti-Money Laundering Directive',
-  'EU_AUDIT_REG': 'EU Statutory Audit Regulation & Directive',
-  'EU_BAR_CONDUCT': 'CCBE Code of Conduct for European Lawyers & National Bar Rules',
-  'EU_CE_MARKING': 'EU CE Marking — Machinery Regulation, LVD, EMC',
-  'EU_CLP': 'EU CLP — Classification, Labelling and Packaging (Reg (EC) 1272/2008)',
-  'EU_CONSTRUCTION_SITES_DIRECTIVE': 'Temporary or Mobile Construction Sites Directive 92/57/EEC',
-  'EU_CPR_305_2011': 'Construction Products Regulation (EU) 305/2011',
-  'EU_CRD': 'EU Consumer Rights Directive (2011/83/EU)',
-  'EU_CROSSBORDER_HEALTHCARE': 'Cross-Border Healthcare Directive & Professional Qualifications Recognition',
-  'EU_CSRD': 'EU Corporate Sustainability Reporting Directive (CSRD)',
-  'EU_DIR_2001_83': 'EU Community Code on Medicinal Products (Directive 2001/83/EC)',
-  'EU_DMA': 'EU Digital Markets Act',
-  'EU_DORA': 'EU Digital Operational Resilience Act',
-  'EU_DSA': 'EU Digital Services Act',
-  'EU_EAA_2025': 'EU European Accessibility Act',
-  'EU_EDU_MEMBERSTATE': 'EU Education (Member-State Competence) + GDPR Art 8 Child Consent',
-  'EU_EHDS': 'European Health Data Space (Regulation (EU) 2025/327)',
-  'EU_EMD2': 'E-Money Directive 2 (2009/110/EC)',
-  'EU_EPBD_EPC': 'EU Energy Performance of Buildings Directive (EPC in adverts)',
-  'EU_EPRIVACY': 'ePrivacy Regulation',
-  'EU_ESPR': 'EU Ecodesign for Sustainable Products Regulation (Reg (EU) 2024/1781)',
-  'EU_FIC_1169_2011': 'EU Food Information to Consumers Regulation',
-  'EU_FMD_2011_62': 'EU Falsified Medicines Directive (Directive 2011/62/EU)',
-  'EU_GDPR': 'EU GDPR (Regulation 2016/679)',
-  'EU_GDPR_ART9': 'GDPR Article 9 — Special Category (Health) Data',
-  'EU_GPSR': 'EU General Product Safety Regulation 2023/988',
-  'EU_IDD': 'EU Insurance Distribution Directive (Directive 2016/97)',
-  'EU_IED': 'EU Industrial Emissions Directive (Directive 2010/75/EU)',
-  'EU_INSTANT_PAYMENTS': 'Instant Payments Regulation (EU) 2024/886',
-  'EU_IVDR': 'In Vitro Diagnostic Medical Devices Regulation (EU) 2017/746',
-  'EU_MDR': 'EU Medical Device Regulation',
-  'EU_MEMBER_STATE_SOCIAL_CARE': 'EU Member-State Long-Term / Social Care Licensing & Inspection Regimes',
-  'EU_MICA': 'Markets in Crypto-Assets Regulation',
-  'EU_MIFID_II': 'EU Markets in Financial Instruments Directive II',
-  'EU_NIS2': 'EU NIS2 Directive',
-  'EU_OMNIBUS': 'EU Omnibus Directive 2019/2161 (Modernising Consumer Protection)',
-  'EU_PACKAGE_TRAVEL': 'EU Package Travel Directive',
-  'EU_PRIIPS': 'PRIIPs Regulation — Packaged Retail and Insurance-based Investment Products (Key Information Document)',
-  'EU_PSD2': 'EU Payment Services Directive 2',
-  'EU_REACH': 'EU REACH — Registration, Evaluation, Authorisation of Chemicals (Reg (EC) 1907/2006)',
-  'EU_ROHS': 'EU RoHS — Restriction of Hazardous Substances (Directive 2011/65/EU)',
-  'EU_SFDR': 'EU Sustainable Finance Disclosure Regulation',
-  'EU_SOHO': 'EU Substances of Human Origin (SoHO) Regulation & Tissues and Cells Directive regime',
-  'EU_SOLVENCY_II': 'EU Solvency II (Directive 2009/138/EC)',
-  'EU_STR_2024_1028': 'EU Short-Term Rental Data Regulation',
-  'EU_UCPD': 'Unfair Commercial Practices Directive 2005/29/EC',
-  'EU_WHISTLEBLOWER': 'EU Whistleblower Protection Directive',
-  'FR_CNIL_2025': 'FR CNIL Privacy Sweep 2025',
-  'GOOGLE_EEAT': 'Google E-E-A-T Quality Rater Guidelines',
-  'QATAR_PDPPL': 'Qatar Personal Data Privacy Protection Law (Law 13 of 2016)',
-  'SAUDI_PDPL': 'Saudi Personal Data Protection Law (SDAIA)',
-  'UAE_ADEK': 'Abu Dhabi Department of Education and Knowledge',
-  'UAE_ALCOHOL_LICENSING': 'UAE Emirate Alcohol Licensing Regime',
-  'UAE_AML_2018': 'UAE AML/CFT (Federal Decree-Law No. 20 of 2018)',
-  'UAE_ART_LAW': 'UAE Medically Assisted Reproduction Law (Federal Decree-Law No. 7 of 2019)',
-  'UAE_CAA': 'Commission for Academic Accreditation (UAE Higher Education)',
-  'UAE_CONSTRUCTION_SAFETY': 'UAE Construction Safety & Contractor Classification (OSHAD-SF / Dubai Municipality / Trakhees)',
-  'UAE_CONSUMER': 'UAE Consumer Protection Law (Federal Law 15 of 2020)',
-  'UAE_DET': 'UAE Tourism & Hospitality Licensing / Hotel Classification (Dubai DET / Abu Dhabi DCT)',
-  'UAE_DHA': 'UAE Health Advertising (MOHAP / DHA / DOH)',
-  'UAE_DHCC': 'Dubai Healthcare City Authority (DHCA/DHCR) Free Zone Clinical Governance',
-  'UAE_DOH': 'Abu Dhabi Department of Health (DOH) / JAWDA Healthcare Standards',
-  'UAE_ECOMMERCE': 'UAE E-Commerce & Electronic Transactions (Federal Decree-Law 46 of 2021)',
-  'UAE_ELDERLY_RIGHTS': 'UAE Federal Law on the Rights of the Elderly (Federal Law No. 9 of 2019)',
-  'UAE_ENV_2024': 'UAE Environment Law (Federal Decree-Law No. 11 of 2024)',
-  'UAE_FOOD_SAFETY': 'UAE Food Safety (Federal Law No. 10 of 2015 + Dubai Municipality Food Code / ADAFSA)',
-  'UAE_HALAL_FOOD': 'UAE Halal & Food Labelling (ESMA/MOIAT, GSO Standards)',
-  'UAE_HEALTH_ADVERTISING': 'UAE Health Advertising Permit Regime (DHA / DOH)',
-  'UAE_HEALTH_AD_PERMIT': 'UAE Health Advertising Permit (DHA / DOH / MOHAP advertising controls)',
-  'UAE_HEALTH_DATA_LAW': 'UAE Federal Law No. 2 of 2019 on the Use of ICT in Health Fields',
-  'UAE_ICT_HEALTH_LAW': 'UAE Use of ICT in Health Fields Law (Federal Law No. 2 of 2019)',
-  'UAE_KHDA': 'Knowledge and Human Development Authority (Dubai)',
-  'UAE_LEGAL_PRACTICE': 'UAE Legal Profession Licensing & Advertising (MoJ / Emirate / DLAD)',
-  'UAE_MOE': 'UAE Ministry of Education (Federal)',
-  'UAE_MOHAP': 'UAE Ministry of Health and Prevention (MOHAP) - Federal/Northern Emirates',
-  'UAE_MOHRE': 'UAE Labour Law / MoHRE (Federal Decree-Law No. 33 of 2021)',
-  'UAE_MOHRE_RECRUITMENT': 'UAE MOHRE Recruitment Agency Regulation (Onshore Labour Recruitment)',
-  'UAE_MOIAT_ESMA': 'UAE MoIAT/ESMA Emirates Conformity Assessment Scheme (ECAS)',
-  'UAE_MOJ_PROFESSION': 'UAE Professional Licensing — Ministry of Justice (Legal) & Ministry of Economy (Audit)',
-  'UAE_PDPL': 'UAE Personal Data Protection Law (Federal Decree-Law 45/2021)',
-  'UAE_RERA': 'RERA Law No. 7 of 2013 · Trakheesi',
-  'UK_ABI': 'Association of British Insurers',
-  'UK_ABPI': 'ABPI Code of Practice',
-  'UK_ACCA': 'ACCA Code of Ethics and Conduct',
-  'UK_AI_ICO': 'UK AI Governance Overlay (ICO AI & Data Protection Guidance)',
-  'UK_ARLA': 'ARLA Propertymark Conduct',
-  'UK_ASA_CAP': 'ASA / CAP Code',
-  'UK_AWR_2010': 'Agency Workers Regulations 2010',
-  'UK_BOTOX_FILLERS_CHILDREN_2021': 'Botulinum Toxin and Cosmetic Fillers (Children) Act 2021',
-  'UK_BRIBERY_2010': 'UK Bribery Act 2010',
-  'UK_BSB': 'Bar Standards Board Handbook',
-  'UK_BUILDING_SAFETY_ACT_2022': 'Building Safety Act 2022',
-  'UK_CAA': 'Civil Aviation Authority',
-  'UK_CCR_2013': 'Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013',
-  'UK_CDM_2015': 'Construction (Design and Management) Regulations 2015',
-  'UK_CE_PLUS': 'UK Cyber Essentials Plus',
-  'UK_CFA_2017': 'Criminal Finances Act 2017 (Failure to Prevent Facilitation of Tax Evasion)',
-  'UK_CHARITY_COMMISSION': 'Charity Commission for England and Wales',
-  'UK_CITB': 'CITB Construction Training Levy',
-  'UK_CMA': 'Competition and Markets Authority',
-  'UK_CMP_2019': 'Client Money Protection Schemes for Property Agents Regulations 2019',
-  'UK_COMPANIES_ACT': 'UK Companies Act 2006 — Website Disclosure (s.1064/s.82)',
-  'UK_CONSTRUCTION_PRODUCTS': 'UK Construction Products Regulations 2013 (UKCA/CE, DoP)',
-  'UK_CONSUMER_DUTY': 'FCA Consumer Duty (PRIN 2A)',
-  'UK_COSMETIC_LICENSING': 'UK Non-Surgical Cosmetic Procedures Licensing (HCA 2022 s.180)',
-  'UK_CQC': 'Care Quality Commission Marketing Standards',
-  'UK_CQC_FUNDAMENTAL_STANDARDS': 'CQC Fundamental Standards (Health & Social Care Act 2008 (Regulated Activities) Regulations 2014)',
-  'UK_CRA_2015': 'UK Consumer Rights Act 2015',
-  'UK_DFE': 'Department for Education Guidance',
-  'UK_DMCC_2024': 'UK Digital Markets, Competition & Consumers Act 2024',
-  'UK_DPA_2018': 'Data Protection Act 2018',
-  'UK_DSIT_NIS2': 'DSIT NIS Regulations',
-  'UK_DVSA': 'Driver and Vehicle Standards Agency',
-  'UK_EAA_1973': 'Employment Agencies Act 1973 / Conduct Regulations 2003 (EAS Inspectorate / Fair Work Agency)',
-  'UK_ECCTA_2023': 'Economic Crime and Corporate Transparency Act 2023 (Failure to Prevent Fraud)',
-  'UK_ECOMM_REGS_2002': 'Electronic Commerce (EC Directive) Regulations 2002',
-  'UK_EMR_2011': 'UK Electronic Money Regulations 2011',
-  'UK_ENV_AGENCY': 'Environment Agency Permits',
-  'UK_EQUALITY_2010': 'UK Equality Act 2010 (Digital Accessibility)',
-  'UK_ESTATE_AGENTS_ACT': 'Estate Agents Act 1979',
-  'UK_FCA_CONC25': 'FCA CONC 2.5 Financial Promotions',
-  'UK_FCA_CONDUCT': 'FCA Conduct of Business Sourcebook (COBS) + Consumer Duty 2023',
-  'UK_FCA_CONSUMER_DUTY': 'FCA Consumer Duty (PRIN 2A / Principle 12)',
-  'UK_FCA_HRI_PROMO': 'FCA — High-Risk Investments & Cryptoasset Financial Promotions',
-  'UK_FCA_MAR': 'FCA MAR',
-  'UK_FOIA_2000': 'Freedom of Information Act 2000',
-  'UK_FOOD_INFO_2014': 'Food Information Regulations 2014',
-  'UK_FOS_FSCS': 'FOS + FSCS Disclosure',
-  'UK_FRC': 'Financial Reporting Council UK Audit Framework',
-  'UK_FSA': 'Food Standards Agency',
-  'UK_FSMA_S21': 'UK Financial Services & Markets Act s.21 (Financial Promotions)',
-  'UK_FUNDRAISING_REG': 'Fundraising Regulator Code',
-  'UK_GAS_SAFE': 'UK Gas Safe Registration (Gas Safety Regulations 1998)',
-  'UK_GDC': 'General Dental Council Standards',
-  'UK_GDPR_A13': 'UK GDPR Article 13 Disclosure Requirements',
-  'UK_GMC': 'GMC Good Medical Practice 2024',
-  'UK_GPHC': 'General Pharmaceutical Council Standards',
-  'UK_HCPC': 'Health and Care Professions Council — Standards of Conduct, Performance and Ethics',
-  'UK_HFEA': 'Human Fertilisation and Embryology Authority (HFEA)',
-  'UK_HMRC_AML': 'HMRC Money Laundering Supervision',
-  'UK_HMRC_GIFTAID': 'HMRC Gift Aid Rules',
-  'UK_HMR_2012': 'Human Medicines Regulations 2012',
-  'UK_HRA_1998': 'Human Rights Act 1998',
-  'UK_HSE': 'HSE Health and Safety',
-  'UK_HSE_ENERGY': 'HSE Energy Sector Guidance',
-  'UK_ICAEW': 'ICAEW Code of Ethics',
-  'UK_ICOBS': 'FCA Insurance: Conduct of Business Sourcebook (ICOBS)',
-  'UK_ICO_COOKIES': 'ICO Cookie and Similar Technologies Guidance',
-  'UK_INSURANCE_ACT_2015': 'Insurance Act 2015 & Consumer Insurance (Disclosure and Representations) Act 2012',
-  'UK_IPSO': 'IPSO Editors Code of Practice',
-  'UK_IR35_OFFPAYROLL': 'Off-Payroll Working Rules (IR35) — Chapter 10, Part 2 ITEPA 2003',
-  'UK_KCSIE_SAFEGUARDING': 'Keeping Children Safe in Education — Statutory Safeguarding (s.175 Education Act 2002)',
-  'UK_LEGAL_OMBUDSMAN': 'Legal Ombudsman Complaints Signposting (Scheme Rules)',
-  'UK_LICENSING_ACT': 'Licensing Act 2003',
-  'UK_MCA_DOLS': 'Mental Capacity Act 2005 / Deprivation of Liberty Safeguards',
-  'UK_MDA_1971': 'Misuse of Drugs Act 1971 / Misuse of Drugs Regulations 2001 (Controlled Drugs)',
-  'UK_MEDICAL_DEVICES': 'UK Medical Devices Regulations 2002 (as amended)',
-  'UK_MHRA': 'Medicines and Healthcare products Regulatory Agency',
-  'UK_MLR_2017': 'UK Money Laundering Regulations 2017 & Proceeds of Crime Act 2002',
-  'UK_MODERN_SLAVERY': 'UK Modern Slavery Act 2015 — Transparency in Supply Chains',
-  'UK_NATASHAS_LAW': 'Natasha’s Law — Food Information (Amendment) (England) Regulations 2019 (PPDS labelling)',
-  'UK_NCSC_CYBER_ESSENTIALS': 'NCSC Cyber Essentials',
-  'UK_NMC': 'Nursing and Midwifery Council — The Code',
-  'UK_NTSELAT_MATERIAL_INFO': 'NTSELAT Material Information in Property Listings',
-  'UK_OFCOM': 'Ofcom Broadcasting Code',
-  'UK_OFGEM': 'Ofgem Standards of Conduct',
-  'UK_OFS': 'Office for Students',
-  'UK_OFSTED': 'Ofsted School Inspection Framework',
-  'UK_ORR': 'Office of Rail and Road',
-  'UK_OSA_2023': 'UK Online Safety Act 2023',
-  'UK_PECR': 'Privacy and Electronic Communications Regulations',
-  'UK_PRA': 'PRA Rulebook',
-  'UK_PREVENT': 'Prevent Duty — Counter-Terrorism and Security Act 2015',
-  'UK_PSBAR_2018': 'Public Sector Bodies Accessibility Regulations 2018',
-  'UK_PSR': 'Payment Systems Regulator',
-  'UK_PSRS_2017': 'UK Payment Services Regulations 2017',
-  'UK_REACH': 'UK REACH (Registration, Evaluation, Authorisation and Restriction of Chemicals)',
-  'UK_RICS': 'RICS Rules of Conduct',
-  'UK_SMCR': 'UK Senior Managers & Certification Regime',
-  'UK_SRA_COC': 'Solicitors Regulation Authority Code of Conduct',
-  'UK_SRA_TRANSPARENCY': 'SRA Transparency Rules 2018',
-  'UK_TENANT_FEES_2019': 'Tenant Fees Act 2019',
-  'UK_TPO': 'The Property Ombudsman Code',
-  'UK_TRADING_STANDARDS': 'CTSI Trading Standards',
-  'UK_UKCA': 'UKCA Conformity Marking',
-  'UK_UKGC': 'UK Gambling Commission (LCCP + advertising)',
-  'US_ABA_TRUST_ACCOUNTING': 'ABA Model Rule 1.15 / IOLTA Client Trust Accounting',
-  'US_ADA': 'ADA Title III Digital Accessibility',
-  'US_ADA_WEB': 'ADA Title III Website Accessibility & DOJ Hotel Reservation Rule',
-  'US_ADEA': 'US Age Discrimination in Employment Act (ADEA)',
-  'US_ATTORNEY_ADVERTISING': 'US Attorney Advertising (ABA Model Rules 7.1-7.3 + State Bars)',
-  'US_BAR_ADVERTISING': 'US Lawyer Advertising — ABA Model Rules 7.1–7.5 / State Bar Rules',
-  'US_BIPA': 'US Illinois Biometric Information Privacy Act',
-  'US_BSA_FINCEN': 'Bank Secrecy Act / FinCEN MSB Regime',
-  'US_CANSPAM': 'US CAN-SPAM Act',
-  'US_CAN_SPAM': 'CAN-SPAM Act',
-  'US_CA_ARL': 'California Automatic Renewal Law',
-  'US_CA_UNRUH': 'California Unruh Civil Rights Act (Accessibility Damages)',
-  'US_CCPA': 'CCPA / CPRA',
-  'US_CDC_ART_REPORTING': 'US CDC ART Mandatory Success-Rate Reporting (FCSRCA 1992)',
-  'US_CFPB_UDAAP': 'US CFPB - UDAAP (Dodd-Frank)',
-  'US_CHARITY_SOLICITATION': 'US State Charitable Solicitation Registration',
-  'US_CMS_LTC': 'CMS Long-Term Care Requirements of Participation (Nursing Home Reform Act)',
-  'US_COLORADO_AI_ACT': 'Colorado Artificial Intelligence Act (SB24-205)',
-  'US_CONTRACTOR_LICENSING': 'US State Contractor Licensing Boards (e.g. California CSLB)',
-  'US_COPPA': 'US Children’s Online Privacy Protection Act',
-  'US_CO_AI_ACT': 'Colorado Artificial Intelligence Act (SB24-205)',
-  'US_CPRA': 'US California Privacy Rights Act (CPRA expansion of CCPA)',
-  'US_CPSC': 'US Consumer Product Safety Commission (CPSA)',
-  'US_DEA_CSA': 'US DEA / Controlled Substances Act',
-  'US_DENTAL_BOARD': 'State Dental Board Practice Acts and Advertising Rules',
-  'US_DSCSA': 'Drug Supply Chain Security Act',
-  'US_EPA': 'US Environmental Protection Agency (CAA/CWA/RCRA/TSCA)',
-  'US_EPA_RRP': 'EPA Lead Renovation, Repair and Painting (RRP) Rule',
-  'US_FAIR_HOUSING_ACT': 'Fair Housing Act',
-  'US_FCRA': 'US Fair Credit Reporting Act',
-  'US_FDA': 'US Food, Drug & Cosmetic Act (FDA) — Drug/Device Approval & Promotion',
-  'US_FDA_FDCA': 'Federal Food, Drug, and Cosmetic Act - Prescription Drug Advertising & Labeling',
-  'US_FDA_HCTP': 'US FDA Human Cells, Tissues and Cellular/Tissue-Based Products (HCT/P) Rules',
-  'US_FERPA': 'US Family Educational Rights and Privacy Act',
-  'US_FINRA_2210': 'FINRA Rule 2210',
-  'US_FSMA_MANUFACTURING': 'US Manufacturing - Cross-Border Data Framework Gating & Sector Regulator Baseline',
-  'US_FTC': 'US FTC CAN-SPAM Act',
-  'US_FTC_AI_CLAIMS': 'FTC Section 5 — Deceptive AI Claims',
-  'US_FTC_ENDORSE': 'US Section 5 FTC Endorsement Guides 2024',
-  'US_FTC_FAKE_REVIEWS': 'FTC Rule on the Use of Consumer Reviews and Testimonials',
-  'US_FTC_HBNR': 'FTC Health Breach Notification Rule',
-  'US_FTC_HEALTH_BREACH_RULE': 'FTC Health Breach Notification Rule',
-  'US_FTC_JUNK_FEES': 'FTC Rule on Unfair or Deceptive Fees',
-  'US_FTC_NEGATIVE_OPTION': 'FTC Negative Option / Click-to-Cancel Rule',
-  'US_FTC_REVIEWS_RULE': 'FTC Rule on Use of Consumer Reviews and Testimonials (16 CFR Part 465)',
-  'US_FTC_SAFEGUARDS': 'FTC Safeguards Rule (GLBA) for Accountants & Tax Preparers',
-  'US_GLBA': 'US Gramm-Leach-Bliley Act',
-  'US_HIPAA': 'HIPAA Privacy Rule · 45 CFR 164',
-  'US_IA_MARKETING_RULE': 'SEC Investment Advisers Act Marketing Rule (Rule 206(4)-1)',
-  'US_IL_AIVIA': 'Illinois Artificial Intelligence Video Interview Act',
-  'US_IRS_501C3': 'US IRS 501(c)(3) Public Disclosure & Donation Substantiation',
-  'US_MEDICAL_BOARD': 'US Medical/Dental Board Advertising + FTC',
-  'US_NAIC_DOI': 'US State Insurance Regulation (NAIC / State Departments of Insurance)',
-  'US_NAIC_UCSPA': 'NAIC Unfair Claims Settlement Practices Act & Unfair Trade Practices Act (state adoptions)',
-  'US_NV_SB370': 'Nevada Consumer Health Data Privacy Law (SB 370)',
-  'US_NYC_LL144': 'NYC Local Law 144 (Automated Employment Decision Tools)',
-  'US_NYDFS_500': 'US NYDFS Cybersecurity Regulation Part 500',
-  'US_OSHA': 'US Occupational Safety and Health Administration (OSH Act)',
-  'US_OSHA_CONSTRUCTION': 'OSHA Construction Safety Standards (29 CFR Part 1926)',
-  'US_PAY_TRANSPARENCY': 'US State Pay Transparency Laws',
-  'US_PCAOB_SOX': 'Sarbanes-Oxley Act / PCAOB & AICPA Auditor Independence',
-  'US_PPRA': 'Protection of Pupil Rights Amendment (PPRA)',
-  'US_REG_E_EFTA': 'US Electronic Fund Transfer Act / Regulation E',
-  'US_RESPA': 'Real Estate Settlement Procedures Act (RESPA / TILA-RESPA)',
-  'US_RYAN_HAIGHT': 'Ryan Haight Online Pharmacy Consumer Protection Act / DEA remote-prescribing rules',
-  'US_SALES_TAX_NEXUS': 'US State Sales-Tax Economic Nexus (post-Wayfair)',
-  'US_SECTION_504_IDEA': 'Section 504 of the Rehabilitation Act & IDEA (Disability / Special Education)',
-  'US_SEC_506C': 'US Securities Act Rule 506(c)',
-  'US_SEC_MARKETING': 'US SEC Investment Adviser Marketing Rule',
-  'US_SEC_REG_BI': 'SEC Regulation Best Interest (Reg BI)',
-  'US_SEC_REG_FD': 'SEC Regulation FD',
-  'US_STATE_BREACH_NOTIF': 'US State Data Breach Notification Laws',
-  'US_STATE_MTL': 'State Money Transmitter Licensing',
-  'US_STATE_PHARMACY_BOARD': 'US State Boards of Pharmacy (State Pharmacy Practice Acts / NABP)',
-  'US_STATE_PRIVACY': 'US State Consumer Privacy Laws (20 states)',
-  'US_STATE_PROF_CONDUCT': 'US State Professional Conduct & Licensing',
-  'US_TCPA': 'US Telephone Consumer Protection Act',
-  'US_TDPSA': 'US Texas Data Privacy & Security Act',
-  'US_TELEHEALTH_LICENSURE': 'US Telehealth Cross-State Licensure (state medical practice acts / IMLC)',
-  'US_TILA_REG_Z': 'US Truth in Lending Act / Regulation Z',
-  'US_TITLE_IX': 'Title IX of the Education Amendments of 1972 (Sex Discrimination)',
-  'US_TITLE_VI': 'Title VI of the Civil Rights Act 1964 (Race / National Origin)',
-  'US_TITLE_VII': 'US Title VII / EEOC — Employment Discrimination in Hiring (incl. AI/algorithmic hiring)',
-  'US_VCDPA': 'US Virginia Consumer Data Protection Act',
-  'US_WA_MHMDA': 'Washington My Health My Data Act',
-};
 function fwName(fw) {
   const base = titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase());
   const _m = metaOf(fw);
@@ -1051,64 +675,103 @@ const FW_JUR = (code) => {
 // E-218: render-side sanitiser for verified!==true rows. Mirrors the engine's evidence gates (E-041/E-044,
 // V05 absence-proof, V09 fine discipline, P-011 template-accusation threshold) over the STORED payload, so the
 // public page can never assert more than the evidence carries. Pure; never throws (any error returns the input).
+// Dual-shape tolerance: stored payloads carry inspected_by_framework either as an ARRAY of page
+// identifiers (#184 graft shape) or as a summary object {rule_checked, inspected:N, findings:N}
+// (8f08af6-era mint, the shape of the LIVE dental audit). Never crash a stored payload on shape:
+// an object maps to the real crawled pages, capped by its own inspected count.
+function inspectedPagesFor(payload, fw) {
+  const map = payload.inspected_by_framework || {};
+  const entry = map[fw] !== undefined ? map[fw] : map[fwCanon(fw)];
+  const pages = arr(payload.pages_crawled);
+  if (Array.isArray(entry)) return entry.slice(0, 6);
+  if (entry && typeof entry === 'object') {
+    const n = Math.min(+entry.inspected || 6, pages.length, 6);
+    return pages.slice(0, Math.max(n, 0));
+  }
+  return pages.slice(0, 6);
+}
+// E-218 sanitiser helpers - each membrane rule is a single-purpose pass so the whole
+// pipeline stays flat and auditable. Behaviour is identical to the previous inline version.
+const _SAN_CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK' };
+const _SAN_EU = ['FR', 'DE', 'IT', 'ES', 'NL', 'IE', 'BE', 'PT', 'AT', 'SE', 'DK', 'FI', 'PL', 'LU', 'GR', 'CZ', 'HU', 'RO', 'BG', 'HR', 'SI', 'SK', 'LT', 'LV', 'EE', 'CY', 'MT'];
+// V02/P-003 render-side: on an UNVERIFIED row only the REGISTERED country's family (+ EU when a
+// member state) and GLOBAL law render; a verified fresh mint restores the full set.
+function narrowAllowSet(p) {
+  const cc0 = String(p.country || '').toUpperCase();
+  const cc = _SAN_CMAP[cc0] || cc0;
+  const allow = new Set(['GLOBAL']);
+  if (cc) allow.add(cc);
+  if (_SAN_EU.includes(cc)) allow.add('EU');
+  return allow;
+}
+function familyAllowed(code, allowNarrow) {
+  if (!code) return true;
+  const j = FW_JUR(code);
+  return j === 'GLOBAL' || allowNarrow.has(j);
+}
+// V05/P-004: an absence claim is valid only with a proving page (the page that SHOULD have carried it).
+function absenceHasProof(x) {
+  const ae = x.absence_evidence;
+  return Boolean((ae && (ae.target_url || ae.pages_checked)) || arr(x.checked_urls).length || x.proof_url || x.page);
+}
+// One pointer through every membrane rule; returns the sanitised pointer or null (and counts the drop).
+function keepUnverifiedPointer(x, allowNarrow, dropped) {
+  if (!x || typeof x !== 'object') { dropped.malformed++; return null; }
+  const fw = String(x.framework_short || x.framework || x.citation || '');
+  const fact = String(x.fact || x.description || '');
+  if (!fw && !fact) { dropped.malformed++; return null; }
+  if (!familyAllowed(fw, allowNarrow)) { dropped.foreign_family++; return null; }
+  const q = String(x.evidence_quote || x.evidence_snippet || '').trim();
+  // P-011: a "site compromised / injected spam" accusation must quote the injected URLs verbatim,
+  // or it is boilerplate that must never blind-render against a named firm.
+  if (/SITE_INTEGRITY|SUSPECTED_COMPROMISE/i.test(fw + ' ' + String(x.code || '')) && !/https?:\/\//i.test(q)) { dropped.template_accusation++; return null; }
+  const isAbsence = x.kind === 'absence' || x.status === 'miss';
+  if (isAbsence && !absenceHasProof(x)) { dropped.absence_no_proof++; return null; }
+  // E-041: a presence claim anchored only on a sub-25-char fragment is not evidence.
+  if (!isAbsence && q && q.length < 25 && !arr(x.checked_urls).length) { dropped.short_evidence++; return null; }
+  // P-008: on an unverified row, statutory-maximum ceilings are withheld unless the engine supplied
+  // a calibrated typical-enforcement band. The finding still renders; the scare number does not.
+  const y = Object.assign({}, x);
+  if (!(+y.enforce_typical_low_gbp || +y.enforce_typical_high_gbp)) y.fine_withheld = true;
+  return y;
+}
+// The screened/'applies to you' layer makes applicability CLAIMS, so it takes the same family
+// filter: a US firm's unverified page must not list UK statutes even as screened rows.
+function applyFamilyFilters(out, p, allowNarrow) {
+  const famOK = (code) => familyAllowed(String(code || ''), allowNarrow);
+  const fwOf = (f) => (f && (f.framework_short || f.code)) || f;
+  if (Array.isArray(p.applicable_frameworks)) out.applicable_frameworks = p.applicable_frameworks.filter((f) => famOK(fwOf(f)));
+  if (Array.isArray(p.frameworks)) out.frameworks = p.frameworks.filter((f) => famOK(fwOf(f)));
+  if (Array.isArray(p.rules)) out.rules = p.rules.filter((r) => famOK((r && (r.framework_short || r.framework)) || ''));
+  if (p.binding && typeof p.binding === 'object') {
+    const b = {};
+    for (const [k, v] of Object.entries(p.binding)) if (famOK(k)) b[k] = v;
+    out.binding = b;
+  }
+  if (Array.isArray(p.needs_review)) out.needs_review = p.needs_review.filter((r) => famOK((r && (r.framework_short || r.citation)) || ''));
+}
+// E-218: render-side sanitiser for verified!==true rows. Mirrors the engine's evidence gates
+// (E-041/E-044, V05 absence-proof, V09 fine discipline, P-011 template-accusation threshold) over
+// the STORED payload, so the public page can never assert more than the evidence carries.
+// Pure; never throws (any error returns the input).
 function sanitiseUnverified(p) {
   try {
     p = p || {};
     const out = Object.assign({}, p);
     const dropped = { absence_no_proof: 0, short_evidence: 0, template_accusation: 0, malformed: 0, foreign_family: 0 };
-    // V02/P-003 render-side: on an UNVERIFIED row the payload's own jurisdiction claims (engine_jurisdictions,
-    // office_countries) cannot be trusted — they are exactly what the kitchen-sink era inflated. Only the
-    // REGISTERED country's family (+ EU when the country is a member state) and GLOBAL law render; a verified
-    // fresh mint restores a genuine international firm's full set.
-    const CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK' };
-    const EU_M = ['FR', 'DE', 'IT', 'ES', 'NL', 'IE', 'BE', 'PT', 'AT', 'SE', 'DK', 'FI', 'PL', 'LU', 'GR', 'CZ', 'HU', 'RO', 'BG', 'HR', 'SI', 'SK', 'LT', 'LV', 'EE', 'CY', 'MT'];
-    const cc0 = String(p.country || '').toUpperCase();
-    const cc = CMAP[cc0] || cc0;
-    const allowNarrow = new Set(['GLOBAL']);
-    if (cc) allowNarrow.add(cc);
-    if (EU_M.includes(cc)) allowNarrow.add('EU');
+    const allowNarrow = narrowAllowSet(p);
     const KEEP = [];
     for (const x of arr(p.pointers)) {
-      if (!x || typeof x !== 'object') { dropped.malformed++; continue; }
-      const fw = String(x.framework_short || x.framework || x.citation || '');
-      const fact = String(x.fact || x.description || '');
-      if (!fw && !fact) { dropped.malformed++; continue; }
-      if (fw) { const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allowNarrow.has(j))) { dropped.foreign_family++; continue; } }
-      const q = String(x.evidence_quote || x.evidence_snippet || '').trim();
-      const isAbsence = x.kind === 'absence' || x.status === 'miss';
-      // P-011: a P0 "site compromised / injected spam" accusation must quote the injected URLs verbatim, or it
-      // is boilerplate that must never blind-render against a named firm.
-      if (/SITE_INTEGRITY|SUSPECTED_COMPROMISE/i.test(fw + ' ' + String(x.code || '')) && !/https?:\/\//i.test(q)) { dropped.template_accusation++; continue; }
-      if (isAbsence) {
-        // V05/P-004: an absence claim is valid only with a proving page (the page that SHOULD have carried it).
-        const ae = x.absence_evidence;
-        const proof = (ae && (ae.target_url || ae.pages_checked)) || arr(x.checked_urls).length || x.proof_url || x.page;
-        if (!proof) { dropped.absence_no_proof++; continue; }
-      } else if (q && q.length < 25 && !arr(x.checked_urls).length) {
-        // E-041: a presence claim anchored only on a sub-25-char fragment is not evidence.
-        dropped.short_evidence++; continue;
-      }
-      // P-008: on an unverified row, statutory-maximum fine ceilings are withheld unless the engine supplied a
-      // calibrated typical-enforcement band. The finding itself still renders; the scare number does not.
-      const y = Object.assign({}, x);
-      if (!(+y.enforce_typical_low_gbp || +y.enforce_typical_high_gbp)) y.fine_withheld = true;
-      KEEP.push(y);
+      const y = keepUnverifiedPointer(x, allowNarrow, dropped);
+      if (y) KEEP.push(y);
     }
     out.pointers = KEEP;
-    // The screened/'applies to you' layer makes applicability CLAIMS, so it takes the same family filter:
-    // a US firm's unverified page must not list UK statutes even as screened rows.
-    const _famOK = (code) => { const j = FW_JUR(String(code || '')); return j === 'GLOBAL' || allowNarrow.has(j); };
-    if (Array.isArray(p.applicable_frameworks)) out.applicable_frameworks = p.applicable_frameworks.filter((f) => _famOK((f && (f.framework_short || f.code)) || f));
-    if (Array.isArray(p.frameworks)) out.frameworks = p.frameworks.filter((f) => _famOK((f && (f.framework_short || f.code)) || f));
-    if (Array.isArray(p.rules)) out.rules = p.rules.filter((r) => _famOK((r && (r.framework_short || r.framework)) || ''));
-    if (p.binding && typeof p.binding === 'object') { const b = {}; for (const [k, v] of Object.entries(p.binding)) if (_famOK(k)) b[k] = v; out.binding = b; }
-    if (Array.isArray(p.needs_review)) out.needs_review = p.needs_review.filter((r) => _famOK((r && (r.framework_short || r.citation)) || ''));
-    // S-183: a legacy row with zero pages and zero surviving findings was never assessed — say so, never imply
-    // a clean live-site read.
+    applyFamilyFilters(out, p, allowNarrow);
+    // S-183: a legacy row with zero pages and zero surviving findings was never assessed - say so.
     if (!arr(p.pages_crawled).length && !KEEP.length && out.compliance_unassessed !== true) out.compliance_unassessed = true;
     out._sanitised = Object.assign({ applied: true }, dropped);
-    // authJurisdictions honours this narrow set, so the screened-injection floor, the jurisdiction selector and
-    // the membrane all agree on scope for an unverified row (no UK baseline injected onto a US firm's page).
+    // authJurisdictions honours this narrow set, so the screened-injection floor, the jurisdiction
+    // selector and the membrane all agree on scope for an unverified row.
     out._allow_narrow = [...allowNarrow];
     return out;
   } catch (_e) { return p; }
@@ -2062,7 +1725,7 @@ export function payloadToD(payload, ctx = {}) {
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: ((payload.inspected_by_framework || {})[fw] || (payload.inspected_by_framework || {})[fwCanon(fw)] || payload.pages_crawled || []).slice(0, 6), binding: bindingType(fw), binding_label: bindingLabel(fw),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: inspectedPagesFor(payload, fw), binding: bindingType(fw), binding_label: bindingLabel(fw),
         // E-233: NO INVENTED ENFORCEMENT. The old fallback asserted "<regulator> actively enforces this regime"
         // for any framework we had no intel on — an unsourced claim that read as filler and gave the section its
         // "no value" feel. Enforcement now renders ONLY when a real, curated, cited action exists; otherwise the

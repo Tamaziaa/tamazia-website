@@ -173,7 +173,7 @@ window.CH = (function(){
   function dimScorecard(){
     return `<div>${D.dims.map(d=>`<div class="dimrow">
       <div style="min-width:0"><div class="nm">${esc(d.nm)}</div><div class="sub">${esc(d.sub)}</div>
-      <div class="bar-track" style="height:5px;margin-top:6px"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${d.v}%"></div></div></div>
+      <div class="bar-track" style="height:5px;margin-top:6px"><div class="bar-fill ${dimBarClass(d.st)}" style="width:${d.v}%"></div></div></div>
       ${pill(d.st)}</div>`).join('')}</div>`;
   }
 
@@ -347,22 +347,51 @@ window.CH = (function(){
   }
 
   /* ---- money + deterministic regulator-badge colour ---- */
-  function money(n){const c=(D&&D.cur)||'£';const sp=c.length>1?' ':'';n=Math.round(+n||0); if(n>=1e6){const m=n/1e6;return c+sp+(m>=10?Math.round(m):m.toFixed(1).replace(/\.0$/,''))+'M';} if(n>=1e3)return c+sp+Math.round(n/1e3)+'k'; return c+sp+n;}
+  function moneyScale(n){
+    if(n>=1e6){
+      const m=n/1e6;
+      if(m>=10) return Math.round(m)+'M';
+      return m.toFixed(1).replace(/\.0$/,'')+'M';
+    }
+    if(n>=1e3) return Math.round(n/1e3)+'k';
+    return String(n);
+  }
+  function money(n){
+    const c=(D&&D.cur)||'£';
+    const sp=c.length>1?' ':'';
+    return c+sp+moneyScale(Math.round(+n||0));
+  }
   // Is this exposure string a MONETARY figure (vs 'ranking'/'ranking impact')? Adapter formats every money
   // exposure with the page currency symbol D.cur ('£' default, '$'/'€'/'AED ' otherwise). Test the page symbol
   // first, then any known currency prefix, so the money/ranking caption is correct in every currency. (C-E)
   function isMoneyStr(s){ s=String(s==null?'':s).trim(); const cur=((D&&D.cur)||'£').trim(); return (cur&&s.indexOf(cur)===0) || /^[£$€]/.test(s) || /^(AED|SAR|QAR|USD|EUR|GBP)\b/i.test(s); }
   function badgeColor(code){const pal=['#5A1A2B','#2A5DA8','#2F7A4A','#B6791F','#7A2A3B','#8A1C16','#3a2d30','#2A0C14'];let h=0;for(const ch of String(code||'FW'))h=(h*31+ch.charCodeAt(0))>>>0;return pal[h%pal.length];}
 
+  /* dimension-card helpers: route each dimension to its pane + bar colour without nested ternaries */
+  function dimPaneFor(nm){
+    if(/geo|ai search|ai visib|answer engine/i.test(nm)) return 'geo';
+    if(/authorit|backlink|domain|referring/i.test(nm)) return 'competitors';
+    if(/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(nm)) return 'regulatory';
+    return 'seo';
+  }
+  function dimBarClass(st){
+    if(st==='fail') return '';
+    if(st==='warn') return 'amber';
+    return 'gold';
+  }
+  function dimScoreText(d){
+    if(d.st==='na') return 'n/a';
+    return Math.round(d.v||0)+'<span style="font-size:8px;color:var(--muted-2)">/100</span>';
+  }
   /* ---- rich 10-dimension scorecard card grid (Pass · Needs work · Fail) ---- */
   function dimCardGrid(){
     const lab={pass:'Pass',warn:'Needs work',fail:'Fail',na:'Not assessed'};
     return `<div class="dimgrid">${D.dims.map(d=>{
       const w=d.st==='na'?0:Math.max(4,d.v||0);
-      const pane=/geo|ai search|ai visib|answer engine/i.test(d.nm)?'geo':/authorit|backlink|domain|referring/i.test(d.nm)?'competitors':/complian|regulat|gdpr|privac|consent|cookie|breach/i.test(d.nm)?'regulatory':'seo';
-      const scoreTxt=d.st==='na'?'n/a':(Math.round(d.v||0)+'<span style="font-size:8px;color:var(--muted-2)">/100</span>');
+      const pane=dimPaneFor(d.nm);
+      const scoreTxt=dimScoreText(d);
       return `<div class="dimcard ${d.st}" data-pane="${pane}" role="button" tabindex="0" title="Open ${esc(d.nm)} ↗"><div class="dch"><span class="dcn">${esc(d.nm)}</span><span class="pill ${d.st}">${lab[d.st]||d.st}</span></div>
-        <div class="dc-barrow" style="display:flex;align-items:center;gap:8px;margin:7px 0 8px"><div class="bar-track" style="flex:1;height:5px;margin:0"><div class="bar-fill ${d.st==='fail'?'':d.st==='warn'?'amber':'gold'}" style="width:${w}%"></div></div><span class="dc-score" style="font-family:var(--serif);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ox-deep);line-height:1;min-width:34px;text-align:right">${scoreTxt}</span></div>
+        <div class="dc-barrow" style="display:flex;align-items:center;gap:8px;margin:7px 0 8px"><div class="bar-track" style="flex:1;height:5px;margin:0"><div class="bar-fill ${dimBarClass(d.st)}" style="width:${w}%"></div></div><span class="dc-score" style="font-family:var(--serif);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ox-deep);line-height:1;min-width:34px;text-align:right">${scoreTxt}</span></div>
         <div class="dcs">${esc(d.sub||'')}</div>${d.note?`<div class="dcs dc-floor">${esc(d.note)}</div>`:''}</div>`;
     }).join('')}</div>`;
   }

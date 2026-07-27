@@ -64,22 +64,35 @@ const HEAD = buildHead('');
 
 const NOTES_BTN = '<button id="notesToggle" style="position:fixed;bottom:16px;right:16px;z-index:80;font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#2A5DA8;background:rgba(248,244,238,.94);border:1px solid rgba(42,93,168,.3);border-radius:8px;padding:6px 11px;cursor:pointer;backdrop-filter:blur(6px)">Notes on</button>';
 
+// E-246 — THE ASSET VERSION IS NO LONGER HAND-MAINTAINED.
+// This was `const _av = 'r37'` with a comment saying "bump on every deploy". Nobody ever bumped it. The audit
+// JS/CSS are edge-cached for 4h KEYED ON THIS STRING, so every fix merged since r37 was deployed to the origin
+// and then NEVER SERVED: browsers kept getting the r37 bundle. Proven live: /audit/audit-app.js?v=r37 returned
+// 131,010 bytes of OLD code while a cache-busted fetch returned 130,999 bytes of NEW code, seconds apart.
+// The version is now derived from the DEPLOYMENT ITSELF, so it can never again drift behind the code.
+function assetVersion(opts) {
+  return (opts.buildId || (typeof globalThis !== 'undefined' && globalThis.__CF_BUILD__) || 'r38').toString().slice(0, 12);
+}
+// Local test ({inline:true}) embeds the three assets; production links them, cache-keyed on the build id.
+function buildAssetBlocks(opts) {
+  const a = opts.assets || {};
+  if (opts.inline) {
+    return {
+      styleBlock: '<style>\n' + (a.css || '') + '\n</style>',
+      chartsBlock: '<script>\n' + (a.charts || '') + '\n</script>',
+      appBlock: '<script>\n' + (a.app || '') + '\n</script>',
+    };
+  }
+  const v = assetVersion(opts);
+  return {
+    styleBlock: '<link rel="stylesheet" href="/audit/audit.css?v=' + v + '">',
+    chartsBlock: '<script src="/audit/audit-charts.js?v=' + v + '"></script>',
+    appBlock: '<script src="/audit/audit-app.js?v=' + v + '"></script>',
+  };
+}
 export function renderShell(D, opts) {
   opts = opts || {};
-  const inline = !!opts.inline;
-  const a = opts.assets || {};
-  // E-246 — THE ASSET VERSION IS NO LONGER HAND-MAINTAINED.
-  // This was `const _av = 'r37'` with a comment saying "bump on every deploy". Nobody ever bumped it. The audit
-  // JS/CSS are edge-cached for 4h KEYED ON THIS STRING, so every fix merged since r37 was deployed to the origin
-  // and then NEVER SERVED: browsers kept getting the r37 bundle. Two whole rounds of render fixes (the collapsed
-  // register block, the "pages inspected" chip, the median-fine headline) were live on the origin and invisible in
-  // the browser. Proven live: /audit/audit-app.js?v=r37 returned 131,010 bytes of OLD code while a cache-busted
-  // fetch of the same path returned 130,999 bytes of NEW code, in the same session, seconds apart.
-  // The version is now derived from the DEPLOYMENT ITSELF, so it can never again drift behind the code.
-  const _av = (opts.buildId || (typeof globalThis !== 'undefined' && globalThis.__CF_BUILD__) || 'r38').toString().slice(0, 12);
-  const styleBlock = inline ? ('<style>\n' + (a.css || '') + '\n</style>') : ('<link rel="stylesheet" href="/audit/audit.css?v=' + _av + '">');
-  const chartsBlock = inline ? ('<script>\n' + (a.charts || '') + '\n</script>') : ('<script src="/audit/audit-charts.js?v=' + _av + '"></script>');
-  const appBlock = inline ? ('<script>\n' + (a.app || '') + '\n</script>') : ('<script src="/audit/audit-app.js?v=' + _av + '"></script>');
+  const { styleBlock, chartsBlock, appBlock } = buildAssetBlocks(opts);
   const head = buildHead(D && D.meta && D.meta.company);   // C-J: per-company <title>/OG (still noindex)
   return head + '\n' + styleBlock + '\n</head>\n<body>\n'
     + '<div class="tz-shell" id="app"></div>\n'

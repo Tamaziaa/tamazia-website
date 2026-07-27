@@ -218,67 +218,123 @@
     </div>
     <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
 
-  P.regulatory = ()=>{
-    // #3: only render the "breaches in full" subhead + cards when the Regulatory-filtered
-    // fixes list is non-empty, otherwise the heading/subhead sit above an empty body.
-    const regFixes=(D.fixes||[]).filter(f=>f.pillar==='Regulatory');
-    // E-213 REGISTERED REALITY: the government-register cross-check rows. Every line links to the official
-    // source so the reader verifies Tamazia in one click. Renders whenever the payload carries registers,
-    // independent of crawl success; a link-out row invites verification rather than asserting a delta.
-    const regRows=(D.registers&&D.registers.rows)||[];
-    const registersBlock = regRows.length?`
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Registered reality: your public register record, checked</h3></div>
-    <p class="reg-sub">These lines come from the government registers your firm is already on, by API, not from your website. Verify each one on the official source.</p>
-    <div class="reglist">${regRows.map(r=>{
-      // E-233: OWN markup + OWN classes. The previous build reused .fw/.fw-head, which is a 4-column GRID
-      // (46px 1fr auto auto) expecting .code/.fwn-wrap/.cnt/.fwe — passing one child dropped the content into
-      // the 46px column and the text rendered one word per line. Never reuse the framework grid here.
-      const cls=r.status==='confirmed'?'ok':(r.status==='not_found'?'miss':(r.status==='unavailable'?'na':'link'));
-      const st=r.status==='confirmed'?'On the register':(r.status==='not_found'?'No exact match, confirm on the call':(r.status==='unavailable'?'Register unavailable this scan':'Verify on the register'));
-      const rec=r.record?(escH(String(r.record.name||''))+(r.record.number?(' &middot; '+escH(String(r.record.number))):'')+(r.record.detail?(' &middot; '+escH(String(r.record.detail))):'')):'';
-      const site=(r.on_site===true)?'Displayed on your site.':(r.on_site===false)?'Not found on your site on this scan.':'Site display not confirmed on this scan.';
-      return `<div class="regrow ${cls}">
+  // --- P.regulatory helpers: single-purpose builders (CodeScene: flat conditionals, small methods).
+  // Output is identical to the previous inline build; only the structure changed.
+  const regRowStatus = (r)=>{
+    if (r.status==='confirmed') return {cls:'ok', st:'On the register'};
+    if (r.status==='not_found') return {cls:'miss', st:'No exact match, confirm on the call'};
+    if (r.status==='unavailable') return {cls:'na', st:'Register unavailable this scan'};
+    return {cls:'link', st:'Verify on the register'};
+  };
+  const regRowSite = (r)=>{
+    if (r.on_site===true) return 'Displayed on your site.';
+    if (r.on_site===false) return 'Not found on your site on this scan.';
+    return 'Site display not confirmed on this scan.';
+  };
+  // E-233: OWN markup + OWN classes. Never reuse the framework grid (.fw/.fw-head) here - passing one
+  // child into that 4-column grid dropped the content into the 46px column (one word per line).
+  const regRowHtml = (r)=>{
+    const {cls,st}=regRowStatus(r);
+    const rec=r.record?(escH(String(r.record.name||''))+(r.record.number?(' &middot; '+escH(String(r.record.number))):'')+(r.record.detail?(' &middot; '+escH(String(r.record.detail))):'')):'';
+    return `<div class="regrow ${cls}">
         <div class="regrow-top"><span class="reg-name">${escH(r.label)}</span><span class="reg-status ${cls}">${st}</span></div>
         ${rec?`<div class="reg-rec">${rec}</div>`:''}
         <div class="reg-line">${escH(r.statute_line)}</div>
-        <div class="reg-foot"><span class="reg-site">${site}</span><a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="reg-verify">Verify on the official register &#8599;</a></div>
+        <div class="reg-foot"><span class="reg-site">${regRowSite(r)}</span><a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="reg-verify">Verify on the official register &#8599;</a></div>
       </div>`;
-    }).join('')}</div>`:'';
-    // E-218: point-in-time banner for anything the verifier has not passed. Honest scope, zero fear theatre,
-    // and the re-check is the conversion mechanic.
-    const pitBanner = (!D.verified)?`<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">Point-in-time scan${D.meta&&D.meta.date?(' of '+escH(D.meta.date)):''}${D.superseded?', since superseded by a newer assessment':''}. This view shows register facts, the binding-law map and only the findings that pass Tamazia&rsquo;s evidence gates from that scan. A fresh verified assessment re-checks every line against your live site${D.links&&D.links.booking?': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">book the re-check</a>':'.'}</div>`:'';
-  return `
-    ${pitBanner}
-    ${registersBlock}
-    <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
-      <h2>${(D.compliance_unassessed ? (D.render_mode==='knowledge' && (D.frameworksBinding||0)>0 ? ('Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.') : 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.') : (D.regulatoryHeadline || ((D.catalogueSize ? ('All '+D.catalogueSize.toLocaleString('en-GB')+' compliance rules in the register were screened. ') : 'The full regulatory catalogue was screened. ')+(D.frameworksBinding||D.frameworksAssessed)+' '+plur(D.frameworksBinding||D.frameworksAssessed,'framework legally binds','frameworks legally bind')+' you, '+D.rulesChecked+' rule '+plur(D.rulesChecked,'check was','checks were')+' executed against them, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.')))}</h2>
-      <p>Every scan screens the full framework register${D.catalogueSize?(' ('+D.catalogueSize+' frameworks)'):''}; each one is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach to you appear here. ${D.frameworksBinding} ${plur(D.frameworksBinding,'framework binds','frameworks bind')} you, and ${D.rulesChecked} page-level rule ${plur(D.rulesChecked,'check was','checks were')} executed against them. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The ${D.frameworksAssessed} frameworks carrying your exposure${D.counts.critical>0?(', with '+D.counts.critical+' breached on your live site right now'):''}, worst exposure first</h3></div>
-    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
-    ${(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:''}
-    ${D.frameworks.map((fw,i)=>{
-      const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
-      return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
-      <summary>
-        <div class="fw-head"><span class="code">${escH(fw.code)}</span>
-          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} <span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}</div>${fw.screened ? `<div class="fw-assessed"><span class="abadge">${escH(fw.assessed_label || 'APPLIES · ASSESSED')}</span>${(fw.inspected_pages && fw.inspected_pages.length) ? `<span class="inspected" title="${escH(fw.inspected_pages.slice(0,8).join('  '))}">${fw.inspected_pages.length} ${plur(fw.inspected_pages.length,'page','pages')} inspected</span>` : ''}</div>` : ''}<div class="fwr">${escH(fw.regulator)} · ${fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'))}</div></div>
-          <div class="cnt">${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}</div>
-          <div class="fwe">${escH(fw.exp)}</div></div>
-        <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
-      </summary>
-      <div class="fwbody">
+  };
+  // E-213 REGISTERED REALITY: the government-register cross-check rows; every line links to the
+  // official source. Renders whenever the payload carries registers, independent of crawl success.
+  const regRegistersBlock = ()=>{
+    const regRows=(D.registers&&D.registers.rows)||[];
+    if(!regRows.length) return '';
+    return `
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Registered reality: your public register record, checked</h3></div>
+    <p class="reg-sub">These lines come from the government registers your firm is already on, by API, not from your website. Verify each one on the official source.</p>
+    <div class="reglist">${regRows.map(regRowHtml).join('')}</div>`;
+  };
+  // E-218: point-in-time banner for anything the verifier has not passed. Honest scope, zero fear
+  // theatre, and the re-check is the conversion mechanic.
+  const regPitBanner = ()=>{
+    if (D.verified) return '';
+    const when = (D.meta&&D.meta.date)?(' of '+escH(D.meta.date)):'';
+    const sup = D.superseded?', since superseded by a newer assessment':'';
+    const book = (D.links&&D.links.booking)?(': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">book the re-check</a>'):'.';
+    return `<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">Point-in-time scan${when}${sup}. This view shows register facts, the binding-law map and only the findings that pass Tamazia&rsquo;s evidence gates from that scan. A fresh verified assessment re-checks every line against your live site${book}</div>`;
+  };
+  const regHeadlineText = ()=>{
+    if (D.compliance_unassessed) {
+      if (D.render_mode==='knowledge' && (D.frameworksBinding||0)>0) {
+        return 'Your live pages could not be deep-read on this scan, so no breach is asserted anywhere below. What follows instead is the statute map: the '+(D.frameworksBinding)+' frameworks that bind a '+((D.meta&&D.meta.sector)||'regulated')+' firm established in your jurisdiction. Every row is catalogue fact tied to your registration, not inference from your site. A rendered-DOM re-scan completes the breach assessment on top of it.';
+      }
+      return 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.';
+    }
+    if (D.regulatoryHeadline) return D.regulatoryHeadline;
+    const screened = D.catalogueSize ? ('All '+D.catalogueSize.toLocaleString('en-GB')+' compliance rules in the register were screened. ') : 'The full regulatory catalogue was screened. ';
+    const nb = D.frameworksBinding||D.frameworksAssessed;
+    return screened+nb+' '+plur(nb,'framework legally binds','frameworks legally bind')+' you, '+D.rulesChecked+' rule '+plur(D.rulesChecked,'check was','checks were')+' executed against them, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.';
+  };
+  const sevDotCls = (sev)=>{
+    if (sev==='P0') return 'c';
+    if (sev==='P1') return 'h';
+    return 's';
+  };
+  const regBreachItem = (it, locked)=>`<div class="art-item"><div class="art-subj"><span class="art-dot ${sevDotCls(it.sev)}"></span>${escH(it.subject)}</div>${it.quote?`<div class="art-quote">&ldquo;${escH(it.quote)}&rdquo;</div>`:''}${(!it.quote&&it.absence)?`<div class="art-absence">${escH(it.absence)}</div>`:''}<div class="art-fix"><b>Tamazia fix</b>${CH.lockFix(escH(it.fix), locked)}</div></div>`;
+  const regBreachList = (fw)=>{
+    const groups=fw.articleGroups||[];
+    if(!groups.length) return '';
+    const all=groups.reduce((s,g)=>s+((g.items||[]).length),0);
+    const half=Math.ceil(all/2);
+    let k=0;
+    return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
+        <div class="artlist">${groups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
+          <div class="art-items">${gp.items.map(it=>regBreachItem(it,(k++)>=half)).join('')}</div>
+        </div>`).join('')}</div>`;
+  };
+  const regFwAssessed = (fw)=>{
+    if(!fw.screened) return '';
+    const pages=(fw.inspected_pages&&fw.inspected_pages.length)?`<span class="inspected" title="${escH(fw.inspected_pages.slice(0,8).join('  '))}">${fw.inspected_pages.length} ${plur(fw.inspected_pages.length,'page','pages')} inspected</span>`:'';
+    return `<div class="fw-assessed"><span class="abadge">${escH(fw.assessed_label || 'APPLIES · ASSESSED')}</span>${pages}</div>`;
+  };
+  const regFwSummary = (fw)=>{
+    const badges=`<span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}`;
+    const status=fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'));
+    const cnt=`${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}`;
+    return `<div class="fw-head"><span class="code">${escH(fw.code)}</span>
+          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} ${badges}</div>${regFwAssessed(fw)}<div class="fwr">${escH(fw.regulator)} · ${status}</div></div>
+          <div class="cnt">${cnt}</div>
+          <div class="fwe">${escH(fw.exp)}</div></div>`;
+  };
+  const regFwBody = (fw)=>`<div class="fwbody">
         <div class="lbl">Why this framework matters</div>${escH(fw.why)}
         ${(fw.obligations||[]).length?`<div class="lbl">What ${escH(fw.regulator)} assesses</div><ul class="obl">${fw.obligations.map(o=>`<li>${escH(o)}</li>`).join('')}</ul>`:''}
         ${fw.reg_focus?`<div class="lbl">What ${escH(fw.regulator)} is enforcing right now</div><div class="action">${escH(fw.reg_focus)}</div>`:''}
         ${fw.action?`<div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}${fw.enforcement_url?` <a href="${escH(fw.enforcement_url)}" target="_blank" rel="noopener nofollow" class="lawcite">source &#8599;</a>`:''}</div>`:''}
         ${fw.guidance?`<div class="lbl">Recent regulatory change</div><div class="action">${escH(fw.guidance)}</div>`:''}
         ${fw.citation_url?`<div class="lbl">The law</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(fw.name)}, ${escH(fw.regulator)} official source &#8599;</a></div>`:''}
-        ${(fw.articleGroups||[]).length?(()=>{const _all=(fw.articleGroups||[]).reduce((s,g)=>s+((g.items||[]).length),0);const _half=Math.ceil(_all/2);let _k=0;return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
-        <div class="artlist">${fw.articleGroups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
-          <div class="art-items">${gp.items.map(it=>`<div class="art-item"><div class="art-subj"><span class="art-dot ${it.sev==='P0'?'c':it.sev==='P1'?'h':'s'}"></span>${escH(it.subject)}</div>${it.quote?`<div class="art-quote">&ldquo;${escH(it.quote)}&rdquo;</div>`:''}${(!it.quote&&it.absence)?`<div class="art-absence">${escH(it.absence)}</div>`:''}<div class="art-fix"><b>Tamazia fix</b>${CH.lockFix(escH(it.fix), (_k++)>=_half)}</div></div>`).join('')}</div>
-        </div>`).join('')}</div>`;})():''}
-      </div></details>`;
-    }).join('')}`;
+        ${regBreachList(fw)}
+      </div>`;
+  const regFwCard = (fw,i)=>{
+    const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
+    return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
+      <summary>
+        ${regFwSummary(fw)}
+        <div class="fwbar"><div class="fwbar-track">${cp?`<span style="width:${cp}%;background:var(--red)"></span>`:''}${hp?`<span style="width:${hp}%;background:var(--amber)"></span>`:''}${sp?`<span style="width:${sp}%;background:var(--gold-light)"></span>`:''}</div></div>
+      </summary>
+      ${regFwBody(fw)}</details>`;
+  };
+  P.regulatory = ()=>{
+    const jurFilter=(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:'';
+    return `
+    ${regPitBanner()}
+    ${regRegistersBlock()}
+    <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
+      <h2>${regHeadlineText()}</h2>
+      <p>Every scan screens the full framework register${D.catalogueSize?(' ('+D.catalogueSize+' frameworks)'):''}; each one is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach to you appear here. ${D.frameworksBinding} ${plur(D.frameworksBinding,'framework binds','frameworks bind')} you, and ${D.rulesChecked} page-level rule ${plur(D.rulesChecked,'check was','checks were')} executed against them. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
+    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The ${D.frameworksAssessed} frameworks carrying your exposure${D.counts.critical>0?(', with '+D.counts.critical+' breached on your live site right now'):''}, worst exposure first</h3></div>
+    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
+    ${jurFilter}
+    ${D.frameworks.map(regFwCard).join('')}`;
   };
 
   P.seo = ()=>{

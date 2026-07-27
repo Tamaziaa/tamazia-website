@@ -1,4 +1,8 @@
 // functions/audit/_adapter.js
+import { FW_NAME, FW_REGULATOR, FW_NAME_CAT, FW_JUR } from './_lawmaps.js';
+import { sanitiseUnverified } from './_sanitise.js';
+import { cleanDomain, isRealCompetitor, corroborated, looksAggregator, COMPETITOR_DENYLIST, JUNK_PATTERNS } from './_competitors.js';
+import { domainStem, decodeEnt, looksLikeDomain, looksLikeTitle, sharesTokenWithDomain, humaniseName } from './_names.js';
 // THE PIPE: deterministic payload_json -> window.D adapter.
 // Pure (no I/O, no Date.now/Math.random, `now` is passed in). TOTAL, DEFENSIVE,
 // EVIDENCE-GATED, NUMERIC-LOCKED. Doubles as the render-side safety membrane.
@@ -15,59 +19,17 @@ function g(obj, path, def) {
 }
 const arr = (v) => Array.isArray(v) ? v : [];
 const titleCase = (s) => String(s || '').replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()).trim();
-const cleanDomain = (d) => String(d || '').replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/.*$/, '').trim();
-// Multi-part public suffixes we must strip WHOLE, otherwise the brand stem keeps a TLD fragment
-// (e.g. "greystar.co.uk" -> stem must be "greystar", never "greystar.co"). Single-label TLDs are
-// stripped by dropping the last label.
-const MULTI_TLD = /\.(co|com|org|net|gov|edu|ac|ltd|plc)\.[a-z]{2}$/i;
-// The clean brand STEM of a domain with the TLD removed: "monzo.com" -> "monzo",
-// "greystar.co.uk" -> "greystar", "thirdspace.london" -> "thirdspace". Never returns a "*.com" fragment.
-function domainStem(d) {
-  let h = cleanDomain(d).toLowerCase();
-  if (!h) return '';
-  h = h.replace(MULTI_TLD, '');           // drop .co.uk / .com.au / .org.uk … as a unit
-  const parts = h.split('.').filter(Boolean);
-  if (parts.length > 1) parts.pop();      // drop a remaining single-label TLD (.com, .london, .ae)
-  return (parts.pop() || h).replace(/[^a-z0-9 &+'-]/g, ' ').replace(/\s{2,}/g, ' ').trim();
-}
-// The displayed firm name. A real name from firm_profile wins; a caller-supplied `company` wins next, 
-// UNLESS it is itself a bare TLD-bearing domain (the "Monzo.Com" bug, where company fell back to a
-// title-cased domain upstream), in which case we clean it. The cleaned, TLD-stripped domain stem is the
-// last resort and is ALWAYS clean ("Monzo", never "Monzo.Com"). Single-word stems get title-cased too.
-const looksLikeDomain = (s) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(String(s || '').trim());
-// Decode HTML entities so user-facing text never shows raw "&amp;"/"&#x27;"/"&#8211;". Safe because the client
-// inserts these as textContent (the entities currently render LITERALLY), so decoding to the character is correct
-// and not an XSS vector. Handles named + decimal + hex numeric references.
-// FIX-R4 (XSS): NEVER decode into tag-forming chars. Firm-supplied text (crawled titles/quotes) may contain
-// &lt;script&gt; / &#60; / &#x3c; — decoding those to < > would let markup form if any field is innerHTML'd. We
-// decode only typographic entities; &lt;/&gt; and numeric 60/62 stay ENCODED, rendering as literal text everywhere.
-const _ENT = { amp: '&', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', hellip: '…', copy: '©', reg: '®', trade: '™' };
-function decodeEnt(s) {
-  if (typeof s !== 'string' || s.indexOf('&') === -1) return s;
-  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, c) => {
-    if (c[0] === '#') { const code = c[1] === 'x' || c[1] === 'X' ? parseInt(c.slice(2), 16) : parseInt(c.slice(1), 10); if (code === 60 || code === 62 || !Number.isFinite(code)) return m; return String.fromCodePoint(code); }   // FIX-R4: never decode < or >
-    const k = c.toLowerCase(); return Object.prototype.hasOwnProperty.call(_ENT, k) ? _ENT[k] : m;
-  });
-}
-// A scraped page <title> is NOT a company name. Reject candidates that read like a title/marketing line so the
-// render falls back to the clean domain stem (cert: "Conference & Event Venue in Leeds", "14 Independent Brands...",
-// "New Construction Homes for Sale in New York by Toll Brothers", "Pricing Plans", "Our Team").
-function looksLikeTitle(s) {
-  const t = String(s || '').trim();
-  if (!t) return true;
-  if (t.length > 42) return true;                              // real names are short; titles are long
-  if (/[|»·–—]| - | \| /.test(t)) return true;                 // title separators
-  if (/\b(reviews?|top \d+|best |guide|how to|pricing|plans?|welcome|home ?page|our team|about us|contact|menu|blog|news|brands?|things to do)\b/i.test(t)) return true;
-  if (/^\d/.test(t) || /\b(in|near|for sale in)\b .*\b(london|leeds|bristol|edinburgh|manchester|new york|dubai|miami)\b/i.test(t)) return true;
-  if ((t.match(/\s/g) || []).length >= 6) return true;         // >6 words = a sentence, not a name
-  return false;
-}
 function firmName(payload, passed) {
   const fp = g(payload, 'firm_profile', {}) || {};
   const fromProfile = fp.name || fp.legal_name || fp.display_name || fp.trading_name || fp.brand || payload.firm_name || payload.company;
-  if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)) return decodeEnt(String(fromProfile).trim());
+  if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)
+      && sharesTokenWithDomain(fromProfile, payload.domain)) return humaniseName(decodeEnt(String(fromProfile).trim()), payload.domain);
+  // NAME-01b: the SAME guard must sit on THIS door too. The live render passes audit_pages.company in as `passed`,
+  // so guarding only the firm_profile branch above fixed nothing on the actual page — the birketts report still
+  // said "Bristol Office". A fix applied to one of two doors is not a fix; it just looks like one.
   const p = String(passed == null ? '' : passed).trim();
-  if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return decodeEnt(p);
+  if (p && !looksLikeDomain(p) && !looksLikeTitle(p) && sharesTokenWithDomain(p, payload.domain)
+      && !/\.(com|co|org|net|io|ai|ae|uk|us|sa|qa|de|fr|it|es)$/i.test(p)) return humaniseName(decodeEnt(p), payload.domain);
   // passed is empty OR is a dirty/title-like string -> rebuild from the clean domain stem
   const src = (p && looksLikeDomain(p)) ? p : payload.domain;
   return titleCase(domainStem(src)) || titleCase(domainStem(payload.domain)) || 'This firm';
@@ -79,10 +41,35 @@ const nameOf = (t) => (typeof t === 'string' ? t : (t && (t.name || t.type || t.
 // the symbol changes — the magnitude formatting (M/k) is identical, and we deliberately do not convert FX. (currency)
 function gbp(n, sym) {
   sym = sym || '£';
+  // A symbol glues to its number ('£2.6M'); an ISO-style code needs a space ('AED 2.6M', 'SAR 900k').
+  const sep = sym.length > 1 ? ' ' : '';
   n = Math.round(+n || 0);
-  if (n >= 1e6) { const m = n / 1e6; return sym + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
-  if (n >= 1e3) return sym + Math.round(n / 1e3) + 'k';
-  return sym + n;
+  if (n >= 1e6) { const m = n / 1e6; return sym + sep + (m >= 10 ? Math.round(m) : m.toFixed(1).replace(/\.0$/, '')) + 'M'; }
+  if (n >= 1e3) return sym + sep + Math.round(n / 1e3) + 'k';
+  return sym + sep + n;
+}
+// CURRENCY BY BINDING REGIME (never by the firm's home country, and never by FX). The currency of a fine is fixed
+// by the STATUTE THAT SETS IT: an EU GDPR maximum is denominated in euros whoever you are; a DIFC Data Protection
+// Law fine is denominated in US DOLLARS (USD 25,000 / 50,000 / 100,000 — not dirhams), as is ADGM's; UAE FEDERAL
+// PDPL is in dirhams; Saudi in riyals; Qatar in Qatari riyals; every UK regime (ICO/SRA/CMA/PECR/Equality Act)
+// sets its maxima in pounds. We therefore quote each finding in its own regime's statutory currency and NEVER
+// apply an exchange rate — an invented FX rate on a legal document is a fabrication. Unknown / global codes
+// (GOOGLE_EEAT, schema…) carry no statutory currency: they return null and inherit the firm's primary currency.
+function currencyForFramework(code) {
+  const c = String(code || '').toUpperCase();
+  if (!c) return null;
+  // Free zones FIRST: DIFC and ADGM sit inside the UAE but denominate their penalties in USD.
+  if (c.includes('DIFC') || c.includes('ADGM')) return '$';
+  if (c.startsWith('UK_') || c.startsWith('GB_')) return '£';
+  if (c.startsWith('EU_')) return '€';
+  if (c.startsWith('FR_') || c.includes('CNIL')) return '€';   // CNIL fines are set in euros
+  if (c.startsWith('DE_') || c.includes('BDSG')) return '€';
+  if (c.startsWith('US_')) return '$';
+  if (['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA', 'FTC'].some((x) => c.includes(x))) return '$';
+  if (c.startsWith('SAUDI_') || c.startsWith('KSA_') || c.startsWith('SA_')) return 'SAR';
+  if (c.startsWith('QATAR_') || c.startsWith('QA_')) return 'QAR';
+  if (c.startsWith('UAE_') || c.startsWith('AE_')) return 'AED';   // UAE FEDERAL PDPL — dirhams
+  return null;
 }
 // Detect the firm's display currency symbol from its scanned markets, CONSERVATIVELY: only switch to '$' when
 // the firm is clearly US (USD is its sole/primary currency and it isn't a GBP firm). Default '£' when unknown,
@@ -92,75 +79,15 @@ function moneySymbol(payload) {
   const cc = String(payload.country || '').toUpperCase();
   const isUS = cc === 'US' || cc === 'USA';
   // Clearly USD: US firm whose currencies are USD-only (or USD-led and not GBP). Keep '£' for everyone else.
-  if (curs.length && curs.every((c) => c === 'USD')) return isUS ? '$' : (curs.length === 1 ? '$' : '£');
+  if (curs.length && curs.every((c) => c === 'USD')) {
+    if (isUS) return '$';
+    return curs.length === 1 ? '$' : '£';
+  }
   if (isUS && curs[0] === 'USD' && !curs.includes('GBP')) return '$';
   return '£';
 }
 const SEV_BAND = { P0: 'critical', P1: 'high', P2: 'standard', P3: 'standard' };
-// 2026-07-20 sniper edit (b): SEVERITY vocabulary. The render's chip/colour/rank maps are keyed to the
-// literal P0..P3 scale. The new compliance engine may ship that same scale, or a descriptive one
-// (critical/high/medium/standard/low); normalise to canonical P0..P3 so every existing chip/colour/sort
-// site keeps working unchanged (KIMI-GRAFT-SYNC-2026-07-20.md §5 trap 2).
-const SEV_ALIAS = { P0: 'P0', P1: 'P1', P2: 'P2', P3: 'P3', CRITICAL: 'P0', HIGH: 'P1', MEDIUM: 'P2', MODERATE: 'P2', STANDARD: 'P2', LOW: 'P3', MINOR: 'P3', INFO: 'P3' };
-function normSeverity(s) { const v = String(s || '').trim().toUpperCase(); return SEV_ALIAS[v] || (/^P[0-3]$/.test(v) ? v : 'P2'); }
 
-const FW_NAME = {
-  UK_GDPR_A13: 'UK GDPR · Art. 13', UK_DPA_2018: 'UK Data Protection Act 2018', UK_PECR: 'UK PECR · Cookies & e-Privacy', UK_ICO_COOKIES: 'ICO Cookies Guidance',
-  EU_GDPR: 'EU GDPR', EU_EPRIVACY: 'EU ePrivacy Directive', EU_EAA_2025: 'EU Accessibility Act 2025', EU_WHISTLEBLOWER: 'EU Whistleblower Directive', EU_AI_ACT: 'EU AI Act',
-  UK_CQC: 'CQC Fundamental Standards', UK_GDC: 'GDC Standards', UK_MHRA: 'MHRA Advertising Rules', UK_SRA: 'SRA Transparency Rules', UK_FCA: 'FCA Financial Promotions',
-  UK_ASA_CAP: 'ASA / CAP Code', UK_CMA: 'CMA · DMCC Act 2024', UK_DMCC_2024: 'DMCC Act 2024', UK_EQUALITY_2010: 'Equality Act 2010', UK_COMPANIES_ACT: 'Companies Act 2006 · s.82',
-  UK_TRADING_STANDARDS: 'Trading Standards', UK_MODERN_SLAVERY: 'Modern Slavery Act 2015', UK_CAA: 'ATOL / Package Travel Rules', UK_FSA: "Food Info Regs (Natasha's Law)", GOOGLE_EEAT: 'Google E-E-A-T',
-  AE_PDPL: 'UAE PDPL', AE_RERA: 'RERA (Dubai)', DIFC_DPL: 'DIFC Data Protection Law', ADGM_DPR: 'ADGM Data Protection', SAUDI_PDPL: 'Saudi PDPL', QATAR_PDPPL: 'Qatar PDPPL',
-  US_CCPA: 'US CCPA', US_CPRA: 'US CPRA', US_FTC: 'US FTC Act § 5', US_CAN_SPAM: 'US CAN-SPAM', FR_CNIL: 'France · CNIL', DE_BDSG: 'Germany · BDSG',
-  US_STATE_PRIVACY: 'US State Privacy Laws', US_VCDPA: 'Virginia VCDPA', US_ADA: 'US ADA · Title III', US_ATTORNEY_ADVERTISING: 'US Attorney Advertising Rules', US_FTC_ENDORSE: 'FTC Endorsement Guides',
-  EU_EAA_2025B2C: 'EU Accessibility Act 2025', UAE_PDPL: 'UAE PDPL', UK_CRA_2015: 'Consumer Rights Act 2015', UK_HSE: 'Health & Safety (HSE)', UK_CAA_ATOL: 'ATOL / Package Travel Rules', UK_CAAATOL: 'ATOL / Package Travel Rules',
-  // Sector / consumer / online-safety codes that previously fell through to raw title-case ("Uk Arla", "Eu Dsa").
-  UK_ARLA: 'ARLA Propertymark Rules', UK_RICS: 'RICS Rules of Conduct', UK_FCA_CONC25: 'FCA Consumer Credit (CONC)', EU_DSA: 'EU Digital Services Act',
-  UK_UKCA: 'UKCA Marking', UK_FOOD_INFO_2014: 'Food Information Regs 2014', UK_LICENSING_ACT: 'Licensing Act 2003', UK_OSA_2023: 'Online Safety Act 2023',
-  UK_OFSTED: 'Ofsted requirements', UK_DFE: 'DfE information duties', UK_OFS: 'OfS registration conditions',
-  // Further real codes present in the matrix fixtures that otherwise rendered raw title-case ("Uk Sra Coc"). (no-raw-framework-code)
-  UK_SRA_COC: 'SRA Code of Conduct', UK_SRA_TRANSPARENCY: 'SRA Transparency Rules', UK_FCA_MAR: 'FCA Market Abuse Regulation', UK_FSMA_S21: 'FSMA s.21 Financial Promotions',
-  UK_ACCA: 'ACCA Rulebook', UK_FRC: 'FRC Ethical Standard', UK_PRA: 'PRA Rulebook', UK_SMCR: 'Senior Managers & Certification Regime', UK_FOS_FSCS: 'FOS / FSCS Disclosure',
-  UK_CE_PLUS: 'Cyber Essentials Plus', UK_NCSC_CYBER_ESSENTIALS: 'Cyber Essentials', UK_DSIT_NIS2: 'UK NIS Regulations', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'UK Corporate Governance Code',
-  EU_CSRD: 'EU CSRD', EU_PSD2: 'EU PSD2', EU_DMA: 'EU Digital Markets Act', EU_DORA: 'EU DORA', EU_NIS2: 'EU NIS2 Directive', EU_AML6: 'EU 6th Anti-Money-Laundering Directive', EU_MIFID_II: 'EU MiFID II', EU_SFDR: 'EU SFDR', EU_GPSR: 'EU General Product Safety Regulation',
-  US_TCPA: 'US TCPA', US_TDPSA: 'Texas Data Privacy Act', US_FINRA_2210: 'FINRA Rule 2210', US_SEC_506C: 'SEC Rule 506(c)', US_SEC_REG_FD: 'SEC Regulation FD', US_NYDFS_500: 'NYDFS Part 500', US_GLBA: 'US GLBA', US_HIPAA: 'US HIPAA', US_COPPA: 'US COPPA', US_FERPA: 'US FERPA', US_MEDICAL_BOARD: 'State Medical Board Rules', US_FTC_ENDORSE: 'FTC Endorsement Guides',
-  UAE_CONSUMER: 'UAE Consumer Protection Law', UAE_ECOMMERCE: 'UAE E-Commerce Law', UAE_RERA: 'RERA (Dubai)', FR_CNIL_2025: 'France · CNIL',
-};
-const FW_REGULATOR = {
-  UK_GDPR_A13: "Information Commissioner's Office", UK_DPA_2018: "Information Commissioner's Office", UK_PECR: "Information Commissioner's Office", UK_ICO_COOKIES: "Information Commissioner's Office",
-  EU_GDPR: 'EU data-protection authorities', EU_EPRIVACY: 'EU data-protection authorities', EU_EAA_2025: 'EU accessibility regulators', EU_WHISTLEBLOWER: 'EU member-state authorities', EU_AI_ACT: 'EU AI Office',
-  UK_CQC: 'Care Quality Commission', UK_GDC: 'General Dental Council', UK_MHRA: 'MHRA', UK_SRA: 'Solicitors Regulation Authority', UK_FCA: 'Financial Conduct Authority',
-  UK_ASA_CAP: 'Advertising Standards Authority', UK_CMA: 'Competition & Markets Authority', UK_DMCC_2024: 'Competition & Markets Authority', UK_EQUALITY_2010: 'Equality & Human Rights Commission', UK_COMPANIES_ACT: 'Companies House',
-  UK_TRADING_STANDARDS: 'Trading Standards', UK_MODERN_SLAVERY: 'Home Office', UK_CAA: 'Civil Aviation Authority', UK_FSA: 'Food Standards Agency', GOOGLE_EEAT: 'Google Search',
-  AE_PDPL: 'UAE Data Office', AE_RERA: 'RERA Dubai', DIFC_DPL: 'DIFC Commissioner of Data Protection', ADGM_DPR: 'ADGM Office of Data Protection', SAUDI_PDPL: 'Saudi Data & AI Authority', QATAR_PDPPL: 'Qatar NCSA',
-  US_CCPA: 'California Privacy Protection Agency', US_CPRA: 'California Privacy Protection Agency', US_FTC: 'Federal Trade Commission', US_CAN_SPAM: 'Federal Trade Commission', FR_CNIL: 'CNIL (France)', DE_BDSG: 'German data-protection authorities',
-  UK_ARLA: 'Propertymark (NTSELAT)', UK_RICS: 'RICS', UK_FCA_CONC25: 'Financial Conduct Authority', EU_DSA: 'European Commission', UK_UKCA: 'Office for Product Safety & Standards',
-  UK_FOOD_INFO_2014: 'Food Standards Agency', UK_LICENSING_ACT: 'Local licensing authority', UK_OSA_2023: 'Ofcom', UK_OFSTED: 'Ofsted', UK_DFE: 'Department for Education', UK_OFS: 'Office for Students',
-  UK_SRA_COC: 'Solicitors Regulation Authority', UK_SRA_TRANSPARENCY: 'Solicitors Regulation Authority', UK_FCA_MAR: 'Financial Conduct Authority', UK_FSMA_S21: 'Financial Conduct Authority',
-  UK_ACCA: 'ACCA', UK_FRC: 'Financial Reporting Council', UK_PRA: 'Prudential Regulation Authority', UK_SMCR: 'FCA / PRA', UK_FOS_FSCS: 'Financial Ombudsman Service',
-  UK_CE_PLUS: 'NCSC / IASME', UK_NCSC_CYBER_ESSENTIALS: 'NCSC / IASME', UK_DSIT_NIS2: 'DSIT', UK_TPO: 'The Property Ombudsman', UK_FRC_GOV: 'Financial Reporting Council',
-  EU_CSRD: 'EU member-state authorities', EU_PSD2: 'European Banking Authority', EU_DMA: 'European Commission', EU_DORA: 'European Supervisory Authorities', EU_NIS2: 'EU member-state authorities', EU_AML6: 'EU member-state authorities', EU_MIFID_II: 'ESMA', EU_SFDR: 'ESMA', EU_GPSR: 'European Commission',
-  US_TCPA: 'Federal Communications Commission', US_TDPSA: 'Texas Attorney General', US_FINRA_2210: 'FINRA', US_SEC_506C: 'Securities & Exchange Commission', US_SEC_REG_FD: 'Securities & Exchange Commission', US_NYDFS_500: 'NY Department of Financial Services', US_GLBA: 'Federal Trade Commission', US_HIPAA: 'HHS Office for Civil Rights', US_COPPA: 'Federal Trade Commission', US_FERPA: 'US Department of Education', US_MEDICAL_BOARD: 'State Medical Board', US_FTC_ENDORSE: 'Federal Trade Commission',
-  UAE_CONSUMER: 'UAE Ministry of Economy', UAE_ECOMMERCE: 'UAE Ministry of Economy', UAE_RERA: 'RERA Dubai', FR_CNIL_2025: 'CNIL (France)',
-  UK_HSE: 'Health & Safety Executive', US_STATE_PRIVACY: 'US state attorneys general', US_VCDPA: 'Virginia Attorney General', US_ADA: 'US Department of Justice', US_ATTORNEY_ADVERTISING: 'State bar associations', US_CAN_SPAM: 'Federal Trade Commission',
-  // Sector regulators that were rendering as the generic "Sector regulator" placeholder on screened cards (Phase 5.1).
-  UK_FCA_CONDUCT: 'Financial Conduct Authority', UK_FCA_CONSUMER_DUTY: 'Financial Conduct Authority', UK_CONSUMER_DUTY: 'Financial Conduct Authority', UK_FCA_HRI_PROMO: 'Financial Conduct Authority', UK_EMR_2011: 'Financial Conduct Authority', UK_ABI: 'Association of British Insurers', UK_MLR_2017: 'HMRC / FCA',
-  UK_CRA_2015: 'Trading Standards / CMA', UK_CCR_2013: 'Trading Standards / CMA', UK_NATASHAS_LAW: 'Food Standards Agency',
-  UAE_DHA: 'Dubai Health Authority / MOHAP', UAE_MOHAP: 'Ministry of Health & Prevention', UAE_DHCC: 'Dubai Healthcare City Authority', UAE_PDPL: 'UAE Data Office', UAE_HEALTH_DATA_LAW: 'UAE health authorities', UAE_ICT_HEALTH_LAW: 'UAE health authorities', UAE_CONSUMER_PROTECTION: 'UAE Ministry of Economy',
-  US_FAIR_HOUSING_ACT: 'HUD / DOJ', US_RESPA: 'Consumer Financial Protection Bureau', US_STATE_PROF_CONDUCT: 'State licensing boards', US_FTC_FAKE_REVIEWS: 'Federal Trade Commission', US_FTC_REVIEWS_RULE: 'Federal Trade Commission',
-  // Regulator names for the frameworks surfaced by the 10-company multi-sector/jurisdiction validation (UK accounting/
-  // bar, UAE health/finance/real-estate, US health/dental, EU health). (multi-sector-validation-20260629)
-  UK_HMRC_AML: 'HMRC', UK_BSB: 'Bar Standards Board', UK_BOTOX_FILLERS_CHILDREN_2021: 'MHRA / local authorities', UK_CMP_2019: 'NTSELAT / approved redress scheme',
-  EU_EHDS: 'European Health Data Space authorities', EU_GDPR_ART9: 'EU data-protection authorities', EU_UCPD: 'EU consumer-protection authorities',
-  UAE_ART_LAW: 'UAE health authorities (MOHAP/DHA)', UAE_DOH: 'Abu Dhabi Department of Health', UAE_AML_2018: 'Central Bank of the UAE / Ministry of Economy', AE_AML_2018: 'Central Bank of the UAE / Ministry of Economy',
-  UAE_ENV_2024: 'UAE Ministry of Climate Change & Environment', UAE_MOHRE: 'UAE Ministry of Human Resources & Emiratisation',
-  AE_CBUAE_CONSUMER: 'Central Bank of the UAE', CBUAE_INSURANCE: 'Central Bank of the UAE', CBUAE_RPSCS: 'Central Bank of the UAE', AE_DFSA_COB: 'DFSA (DIFC)', AE_FSRA_COBS: 'ADGM FSRA', AE_SCA: 'UAE Securities & Commodities Authority',
-  US_CDC_ART_REPORTING: 'US CDC / FTC', US_FTC_HBNR: 'Federal Trade Commission', US_FTC_HEALTH_BREACH_RULE: 'Federal Trade Commission', US_NV_SB370: 'Nevada Attorney General', US_RYAN_HAIGHT: 'US DEA', US_CDCA: 'US CDC / FTC',
-  // Second validation pass (cap raise surfaced more frameworks): US health/medical, UK medical/real-estate, EU device.
-  US_FDA: 'US Food & Drug Administration', US_FDA_HCTP: 'US Food & Drug Administration', US_TELEHEALTH_LICENSURE: 'State medical boards (IMLC)', US_WA_MHMDA: 'Washington Attorney General', US_CMS_LTC: 'US Centers for Medicare & Medicaid Services',
-  UK_GMC: 'General Medical Council', UK_NMC: 'Nursing & Midwifery Council', UK_HFEA: 'Human Fertilisation & Embryology Authority', UK_MEDICAL_DEVICES: 'MHRA', UK_HMRC_GIFTAID: 'HMRC', EU_IVDR: 'EU notified bodies / MHRA',
-  UK_ESTATE_AGENTS_ACT: 'NTSELAT / Trading Standards', UK_NTSELAT_MATERIAL_INFO: 'NTSELAT / Trading Standards', UK_TENANT_FEES_2019: 'NTSELAT / Trading Standards', UAE_RERA: 'RERA Dubai',
-};
 // Frameworks that overlap so heavily they must render as ONE row, never two near-identical cards under the
 // same regulator (Four Seasons showed "CMA · DMCC Act 2024" AND "DMCC DMCC Act 2024", both CMA; and both the
 // Food Info Regs and the FSA "Natasha's Law" food card). Collapse the overlapping code into its canonical
@@ -194,10 +121,10 @@ function articleOf(p) {
   return '';
 }
 // The short distinctive subject of a single breach ("Who the data controller is"). Never a raw code.
-function subjectOf(p, maxLen) {
-  let s = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
-  if (/^[A-Z0-9_]{2,}$/.test(s)) s = '';
-  const L = maxLen || 72; if (s.length > L) s = s.slice(0, L - 2).replace(/[\s,;:.\-]+\S*$/, '') + '…';
+function subjectOf(p) {
+  // NO TRUNCATION (founder): the subject of a breach is never cut. It renders in full and wraps.
+  const s = String((p && (p.short_title || p.title || p.requirement || p.fact)) || '').trim().replace(/\s{2,}/g, ' ');
+  if (/^[A-Z0-9_]{2,}$/.test(s)) return '';
   return s;
 }
 // Humanise a checked URL into the page we inspected ("your privacy policy") — the live proof.
@@ -235,12 +162,95 @@ function setVoluntaryBinding(binding) {
   _VOLUNTARY_BINDING = v;
 }
 function noStatutoryFine(fw) { fw = String(fw || '').toUpperCase(); return NO_STATUTORY_FINE.has(fw) || _VOLUNTARY_BINDING.has(fw); }
+// E-243 (v22.11) THE ONE CANONICAL NON-STATUTORY TEST. A finding is non-statutory when it is a ranking/visibility
+// signal rather than a legal obligation. Previously three different bucket lists existed in this file and drifted,
+// which is how a Largest-Contentful-Paint (bucket `performance`) came to be labelled an "enforcement action".
+// NOTE what is deliberately NOT here: `accessibility` (Equality Act 2010 is a statute) and `tracking`/`consent`
+// (PECR reg.6 + UK GDPR are statutes). Those DO carry real fines and must keep them.
+const NON_STATUTORY_BUCKET = /^(seo|technical_seo|technical|tech|tls_dns|performance|core_web_vitals|cwv|speed|ai_visibility|geo|ai|answer_engine|ux|content|eeat|authority|backlinks|schema|structured_data|knowledge_graph|brand|social)$/i;
+function isNonStatutory(p) {
+  if (!p) return false;
+  const fw = String(p.framework_short || '');
+  if (noStatutoryFine(fw)) return true;                       // voluntary code / ranking guideline
+  // A real statute code (UK_GDPR, DPA2018, PECR, EQA2010...) always wins over the bucket: a statutory breach found
+  // while measuring a technical page is still statutory.
+  if (/^[A-Z]{2,}_/.test(fw) && !noStatutoryFine(fw)) return false;
+  return NON_STATUTORY_BUCKET.test(String(p.bucket || ''));
+}
 // #17a: expose the engine's per-framework binding STATUS as a human label so a prospect can see whether an
 // obligation is a hard statute or voluntary guidance (drives trust + how urgently to act). Seeded per-request.
+// FRAMEWORK_META — THE CATALOGUE IS THE SOURCE OF TRUTH; THIS RENDERER STOPS GUESSING.
+// FW_NAME / FW_NAME_CAT / FW_REGULATOR / _BINDING_LABEL are hand-maintained maps that DRIFT from the catalogue, and
+// every drift is a false statement on a legal document: 151 frameworks had no regulator so we printed the literal
+// words "Sector regulator" (E08); no entry for `statutory_code` so the SRA rulebook rendered as "Statute" (E09);
+// twelve promoted laws had no name so they rendered as title-cased codes (E07). Each time, the catalogue was RIGHT.
+// The engine now ships `framework_meta` with the audit. We read it FIRST and fall back to the maps only for older
+// payloads. Adding a law to the catalogue now fixes the render everywhere, with no code change.
+let _FW_META = {};
+function setFrameworkMeta(m) { _FW_META = (m && typeof m === 'object') ? m : {}; }
+function metaOf(fw) { return _FW_META[String(fw || '').toUpperCase()] || _FW_META[fw] || null; }
+// A statute can legitimately carry NO numeric ceiling (Equality Act 2010 s.119: uncapped county-court
+// compensation). perFrameworkMaxFine() only ever sees a POSITIVE fine_high_gbp, so an uncapped statute's `exp`
+// fell through to the literal string 'ranking' — the same label used for non-statutory ranking/voluntary
+// regimes, which falsely reads as "no real exposure". The catalogue already carries the true answer
+// (framework_meta[fw].penalty.statutory_max === null + a cited penalty_label, e.g. the Vento bands). This is a
+// defensive null-guard for that legitimately-optional numeric field: when there is no numeric ceiling AND the
+// framework is not a voluntary/non-statutory one, show the catalogue's own uncapped label instead of guessing.
+// Never invents a number; never touches any framework that already has a real fine_high_gbp.
+function uncappedExp(fw) {
+  const m = metaOf(fw);
+  const pen = m && m.penalty;
+  if (!pen || pen.statutory_max != null) return null;                 // has a real ceiling, or no catalogue data
+  const label = String(m.penalty_label || pen.basis || '').trim();
+  if (!/uncapp|unlimited|no statutory cap/i.test(label + ' ' + (pen.basis || ''))) return null;
+  const short = label.match(/^[^(]*\([^)]*\)/);                       // "Unlimited (Vento bands £1,200-£60,700...)"
+  return (short ? short[0] : label).slice(0, 80) || 'Uncapped';
+}
+
 let _BINDING_MAP = {};
 function setBindingMap(binding) { _BINDING_MAP = binding && typeof binding === 'object' ? binding : {}; }
-const _BINDING_LABEL = { statute: 'Statute', statutory_code: 'Statutory code', statutory_redress: 'Statutory redress', regulator_code: 'Regulator code', professional_code: 'Professional code', voluntary_code: 'Voluntary code' };
-function bindingLabel(fw) { const b = _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw]; return (b && _BINDING_LABEL[b]) || (noStatutoryFine(fw) ? 'Voluntary code' : 'Statute'); }
+// E09 — THE BINDING-LABEL TAXONOMY. The SRA Transparency Rules, the SRA Code of Conduct and the LeO Scheme Rules
+// were all labelled "Statute". They are REGULATORY RULES made under the Legal Services Act 2007. That is exactly
+// the distinction a solicitor is trained to notice, and getting it wrong in a column headed "Binding" tells a
+// partner we do not know the difference between an Act and a rulebook.
+// E09 — THE TAXONOMY MUST MATCH WHAT THE CATALOGUE ACTUALLY STORES.
+// The catalogue was RIGHT all along: framework_versions types the SRA Transparency Rules, the SRA Code and the LeO
+// Scheme Rules as `statutory_code` (rules made UNDER the Legal Services Act 2007), not `statute`. The bug was here:
+// this map had no entry for `statutory_code`, so every one of them fell through to the fallback and rendered as
+// "Statute". We were calling a regulator's rulebook an Act of Parliament, which is the single easiest error for a
+// solicitor to catch. Every binding_status the database can emit now has a label.
+const _BINDING_LABEL = {
+  statute: 'Statute',
+  statutory_instrument: 'Statutory instrument',
+  statutory_code: 'Regulatory rules',          // made under statute: SRA, BSB, GDC, Legal Ombudsman
+  regulator_code: 'Regulator code',
+  professional_code: 'Professional code',
+  statutory_redress: 'Statutory redress scheme',
+  regulatory_rules: 'Regulatory rules',
+  enforceable_code: 'Regulator code',
+  industry_code: 'Industry code',
+  voluntary_code: 'Voluntary code',
+  guidance: 'Guidance',
+};
+// E-218 (S-100): when the payload carries NO binding map at all (legacy rows), a guessed 'Statute' label is a
+// false legal claim — a voluntary code must never read as a statute. Neutral 'Framework' until a real map exists.
+// CODERABBIT caught this: `binding_label` read the catalogue but the RAW `binding` field still read _BINDING_MAP
+// alone, so the two disagreed on the same framework. One accessor, one answer.
+function bindingType(fw) {
+  const _m = metaOf(fw);
+  return (_m && _m.binding_type) || _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw] || null;
+}
+
+function bindingLabel(fw) {
+  const _m = metaOf(fw);
+  const b = (_m && _m.binding_type) || _BINDING_MAP[String(fw || '').toUpperCase()] || _BINDING_MAP[fw];   // catalogue first
+  if (b && _BINDING_LABEL[b]) return _BINDING_LABEL[b];
+  if (noStatutoryFine(fw)) return 'Voluntary code';
+  // E09: the old fallback was `_BINDING_MAP.length ? 'Statute' : 'Framework'` — i.e. if the map held ANY entry but
+  // not THIS one, we guessed "Statute". A guess is not a classification. Calling a regulator's rulebook an Act of
+  // Parliament is a false legal claim, and it is the single easiest error for a solicitor to catch. Neutral always.
+  return 'Framework';
+}
 // Non-legal synthetic codes that the engine buckets as "compliance" but are NOT a law/regulator (e.g. SITE_INTEGRITY,
 // a technical site-tamper check). They must never appear as a framework in the Regulatory section. (Phase 5.1)
 const NON_LEGAL_FW = new Set(['SITE_INTEGRITY', 'SITE_HEALTH', 'TECH_SEO', 'CONTENT_DEPTH',
@@ -261,315 +271,22 @@ function fixAcronyms(s) { return String(s || '').replace(_ACR_RX, (m) => m.toUpp
 // FW_NAME_CAT: complete framework display-name map generated from the live catalogue (framework_versions,
 // 285 frameworks). The hardcoded FW_NAME only knew the old ~40, so every newer framework rendered as a
 // title-cased code ("UAE Dha"). fwName now prefers the real catalogue name. Regenerate when the catalogue grows.
-const FW_NAME_CAT = {
-  'ADGM_DPR': 'ADGM Data Protection Regulations 2021',
-  'AE_AML_2018': 'UAE Federal Decree-Law No. 20 of 2018 on AML/CFT',
-  'AE_CBUAE_CONSUMER': 'CBUAE Consumer Protection Regulation & Standards',
-  'AE_DFSA_COB': 'DFSA Conduct of Business (DIFC)',
-  'AE_FSRA_COBS': 'ADGM FSRA Conduct of Business (COBS)',
-  'AE_FUNDRAISING_LICENCE': 'UAE Fundraising Regulation',
-  'AE_SCA': 'UAE Securities and Commodities Authority (onshore)',
-  'AE_VARA': 'Dubai Virtual Assets Regulatory Authority (VARA)',
-  'CBUAE_INSURANCE': 'CBUAE Insurance Regulation (Federal Decree-Law No. 48 of 2023)',
-  'CBUAE_RPSCS': 'CBUAE Retail Payment Services and Card Schemes Regulation',
-  'DE_BDSG': 'DE Bundesdatenschutzgesetz',
-  'DE_HWG': 'Heilmittelwerbegesetz (HWG) — German Act on Advertising in the Field of Healthcare',
-  'DIFC_DPL': 'DIFC Data Protection Law No. 5 of 2020',
-  'EU_AI_ACT': 'EU AI Act (Regulation (EU) 2024/1689)',
-  'EU_AML6': 'EU 6th Anti-Money Laundering Directive',
-  'EU_AUDIT_REG': 'EU Statutory Audit Regulation & Directive',
-  'EU_BAR_CONDUCT': 'CCBE Code of Conduct for European Lawyers & National Bar Rules',
-  'EU_CE_MARKING': 'EU CE Marking — Machinery Regulation, LVD, EMC',
-  'EU_CLP': 'EU CLP — Classification, Labelling and Packaging (Reg (EC) 1272/2008)',
-  'EU_CONSTRUCTION_SITES_DIRECTIVE': 'Temporary or Mobile Construction Sites Directive 92/57/EEC',
-  'EU_CPR_305_2011': 'Construction Products Regulation (EU) 305/2011',
-  'EU_CRD': 'EU Consumer Rights Directive (2011/83/EU)',
-  'EU_CROSSBORDER_HEALTHCARE': 'Cross-Border Healthcare Directive & Professional Qualifications Recognition',
-  'EU_CSRD': 'EU Corporate Sustainability Reporting Directive (CSRD)',
-  'EU_DIR_2001_83': 'EU Community Code on Medicinal Products (Directive 2001/83/EC)',
-  'EU_DMA': 'EU Digital Markets Act',
-  'EU_DORA': 'EU Digital Operational Resilience Act',
-  'EU_DSA': 'EU Digital Services Act',
-  'EU_EAA_2025': 'EU European Accessibility Act',
-  'EU_EDU_MEMBERSTATE': 'EU Education (Member-State Competence) + GDPR Art 8 Child Consent',
-  'EU_EHDS': 'European Health Data Space (Regulation (EU) 2025/327)',
-  'EU_EMD2': 'E-Money Directive 2 (2009/110/EC)',
-  'EU_EPBD_EPC': 'EU Energy Performance of Buildings Directive (EPC in adverts)',
-  'EU_EPRIVACY': 'ePrivacy Regulation',
-  'EU_ESPR': 'EU Ecodesign for Sustainable Products Regulation (Reg (EU) 2024/1781)',
-  'EU_FIC_1169_2011': 'EU Food Information to Consumers Regulation',
-  'EU_FMD_2011_62': 'EU Falsified Medicines Directive (Directive 2011/62/EU)',
-  'EU_GDPR': 'EU GDPR (Regulation 2016/679)',
-  'EU_GDPR_ART9': 'GDPR Article 9 — Special Category (Health) Data',
-  'EU_GPSR': 'EU General Product Safety Regulation 2023/988',
-  'EU_IDD': 'EU Insurance Distribution Directive (Directive 2016/97)',
-  'EU_IED': 'EU Industrial Emissions Directive (Directive 2010/75/EU)',
-  'EU_INSTANT_PAYMENTS': 'Instant Payments Regulation (EU) 2024/886',
-  'EU_IVDR': 'In Vitro Diagnostic Medical Devices Regulation (EU) 2017/746',
-  'EU_MDR': 'EU Medical Device Regulation',
-  'EU_MEMBER_STATE_SOCIAL_CARE': 'EU Member-State Long-Term / Social Care Licensing & Inspection Regimes',
-  'EU_MICA': 'Markets in Crypto-Assets Regulation',
-  'EU_MIFID_II': 'EU Markets in Financial Instruments Directive II',
-  'EU_NIS2': 'EU NIS2 Directive',
-  'EU_OMNIBUS': 'EU Omnibus Directive 2019/2161 (Modernising Consumer Protection)',
-  'EU_PACKAGE_TRAVEL': 'EU Package Travel Directive',
-  'EU_PRIIPS': 'PRIIPs Regulation — Packaged Retail and Insurance-based Investment Products (Key Information Document)',
-  'EU_PSD2': 'EU Payment Services Directive 2',
-  'EU_REACH': 'EU REACH — Registration, Evaluation, Authorisation of Chemicals (Reg (EC) 1907/2006)',
-  'EU_ROHS': 'EU RoHS — Restriction of Hazardous Substances (Directive 2011/65/EU)',
-  'EU_SFDR': 'EU Sustainable Finance Disclosure Regulation',
-  'EU_SOHO': 'EU Substances of Human Origin (SoHO) Regulation & Tissues and Cells Directive regime',
-  'EU_SOLVENCY_II': 'EU Solvency II (Directive 2009/138/EC)',
-  'EU_STR_2024_1028': 'EU Short-Term Rental Data Regulation',
-  'EU_UCPD': 'Unfair Commercial Practices Directive 2005/29/EC',
-  'EU_WHISTLEBLOWER': 'EU Whistleblower Protection Directive',
-  'FR_CNIL_2025': 'FR CNIL Privacy Sweep 2025',
-  'GOOGLE_EEAT': 'Google E-E-A-T Quality Rater Guidelines',
-  'QATAR_PDPPL': 'Qatar Personal Data Privacy Protection Law (Law 13 of 2016)',
-  'SAUDI_PDPL': 'Saudi Personal Data Protection Law (SDAIA)',
-  'UAE_ADEK': 'Abu Dhabi Department of Education and Knowledge',
-  'UAE_ALCOHOL_LICENSING': 'UAE Emirate Alcohol Licensing Regime',
-  'UAE_AML_2018': 'UAE AML/CFT (Federal Decree-Law No. 20 of 2018)',
-  'UAE_ART_LAW': 'UAE Medically Assisted Reproduction Law (Federal Decree-Law No. 7 of 2019)',
-  'UAE_CAA': 'Commission for Academic Accreditation (UAE Higher Education)',
-  'UAE_CONSTRUCTION_SAFETY': 'UAE Construction Safety & Contractor Classification (OSHAD-SF / Dubai Municipality / Trakhees)',
-  'UAE_CONSUMER': 'UAE Consumer Protection Law (Federal Law 15 of 2020)',
-  'UAE_DET': 'UAE Tourism & Hospitality Licensing / Hotel Classification (Dubai DET / Abu Dhabi DCT)',
-  'UAE_DHA': 'UAE Health Advertising (MOHAP / DHA / DOH)',
-  'UAE_DHCC': 'Dubai Healthcare City Authority (DHCA/DHCR) Free Zone Clinical Governance',
-  'UAE_DOH': 'Abu Dhabi Department of Health (DOH) / JAWDA Healthcare Standards',
-  'UAE_ECOMMERCE': 'UAE E-Commerce & Electronic Transactions (Federal Decree-Law 46 of 2021)',
-  'UAE_ELDERLY_RIGHTS': 'UAE Federal Law on the Rights of the Elderly (Federal Law No. 9 of 2019)',
-  'UAE_ENV_2024': 'UAE Environment Law (Federal Decree-Law No. 11 of 2024)',
-  'UAE_FOOD_SAFETY': 'UAE Food Safety (Federal Law No. 10 of 2015 + Dubai Municipality Food Code / ADAFSA)',
-  'UAE_HALAL_FOOD': 'UAE Halal & Food Labelling (ESMA/MOIAT, GSO Standards)',
-  'UAE_HEALTH_ADVERTISING': 'UAE Health Advertising Permit Regime (DHA / DOH)',
-  'UAE_HEALTH_AD_PERMIT': 'UAE Health Advertising Permit (DHA / DOH / MOHAP advertising controls)',
-  'UAE_HEALTH_DATA_LAW': 'UAE Federal Law No. 2 of 2019 on the Use of ICT in Health Fields',
-  'UAE_ICT_HEALTH_LAW': 'UAE Use of ICT in Health Fields Law (Federal Law No. 2 of 2019)',
-  'UAE_KHDA': 'Knowledge and Human Development Authority (Dubai)',
-  'UAE_LEGAL_PRACTICE': 'UAE Legal Profession Licensing & Advertising (MoJ / Emirate / DLAD)',
-  'UAE_MOE': 'UAE Ministry of Education (Federal)',
-  'UAE_MOHAP': 'UAE Ministry of Health and Prevention (MOHAP) - Federal/Northern Emirates',
-  'UAE_MOHRE': 'UAE Labour Law / MoHRE (Federal Decree-Law No. 33 of 2021)',
-  'UAE_MOHRE_RECRUITMENT': 'UAE MOHRE Recruitment Agency Regulation (Onshore Labour Recruitment)',
-  'UAE_MOIAT_ESMA': 'UAE MoIAT/ESMA Emirates Conformity Assessment Scheme (ECAS)',
-  'UAE_MOJ_PROFESSION': 'UAE Professional Licensing — Ministry of Justice (Legal) & Ministry of Economy (Audit)',
-  'UAE_PDPL': 'UAE Personal Data Protection Law (Federal Decree-Law 45/2021)',
-  'UAE_RERA': 'RERA Law No. 7 of 2013 · Trakheesi',
-  'UK_ABI': 'Association of British Insurers',
-  'UK_ABPI': 'ABPI Code of Practice',
-  'UK_ACCA': 'ACCA Code of Ethics and Conduct',
-  'UK_AI_ICO': 'UK AI Governance Overlay (ICO AI & Data Protection Guidance)',
-  'UK_ARLA': 'ARLA Propertymark Conduct',
-  'UK_ASA_CAP': 'ASA / CAP Code',
-  'UK_AWR_2010': 'Agency Workers Regulations 2010',
-  'UK_BOTOX_FILLERS_CHILDREN_2021': 'Botulinum Toxin and Cosmetic Fillers (Children) Act 2021',
-  'UK_BRIBERY_2010': 'UK Bribery Act 2010',
-  'UK_BSB': 'Bar Standards Board Handbook',
-  'UK_BUILDING_SAFETY_ACT_2022': 'Building Safety Act 2022',
-  'UK_CAA': 'Civil Aviation Authority',
-  'UK_CCR_2013': 'Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013',
-  'UK_CDM_2015': 'Construction (Design and Management) Regulations 2015',
-  'UK_CE_PLUS': 'UK Cyber Essentials Plus',
-  'UK_CFA_2017': 'Criminal Finances Act 2017 (Failure to Prevent Facilitation of Tax Evasion)',
-  'UK_CHARITY_COMMISSION': 'Charity Commission for England and Wales',
-  'UK_CITB': 'CITB Construction Training Levy',
-  'UK_CMA': 'Competition and Markets Authority',
-  'UK_CMP_2019': 'Client Money Protection Schemes for Property Agents Regulations 2019',
-  'UK_COMPANIES_ACT': 'UK Companies Act 2006 — Website Disclosure (s.1064/s.82)',
-  'UK_CONSTRUCTION_PRODUCTS': 'UK Construction Products Regulations 2013 (UKCA/CE, DoP)',
-  'UK_CONSUMER_DUTY': 'FCA Consumer Duty (PRIN 2A)',
-  'UK_COSMETIC_LICENSING': 'UK Non-Surgical Cosmetic Procedures Licensing (HCA 2022 s.180)',
-  'UK_CQC': 'Care Quality Commission Marketing Standards',
-  'UK_CQC_FUNDAMENTAL_STANDARDS': 'CQC Fundamental Standards (Health & Social Care Act 2008 (Regulated Activities) Regulations 2014)',
-  'UK_CRA_2015': 'UK Consumer Rights Act 2015',
-  'UK_DFE': 'Department for Education Guidance',
-  'UK_DMCC_2024': 'UK Digital Markets, Competition & Consumers Act 2024',
-  'UK_DPA_2018': 'Data Protection Act 2018',
-  'UK_DSIT_NIS2': 'DSIT NIS Regulations',
-  'UK_DVSA': 'Driver and Vehicle Standards Agency',
-  'UK_EAA_1973': 'Employment Agencies Act 1973 / Conduct Regulations 2003 (EAS Inspectorate / Fair Work Agency)',
-  'UK_ECCTA_2023': 'Economic Crime and Corporate Transparency Act 2023 (Failure to Prevent Fraud)',
-  'UK_ECOMM_REGS_2002': 'Electronic Commerce (EC Directive) Regulations 2002',
-  'UK_EMR_2011': 'UK Electronic Money Regulations 2011',
-  'UK_ENV_AGENCY': 'Environment Agency Permits',
-  'UK_EQUALITY_2010': 'UK Equality Act 2010 (Digital Accessibility)',
-  'UK_ESTATE_AGENTS_ACT': 'Estate Agents Act 1979',
-  'UK_FCA_CONC25': 'FCA CONC 2.5 Financial Promotions',
-  'UK_FCA_CONDUCT': 'FCA Conduct of Business Sourcebook (COBS) + Consumer Duty 2023',
-  'UK_FCA_CONSUMER_DUTY': 'FCA Consumer Duty (PRIN 2A / Principle 12)',
-  'UK_FCA_HRI_PROMO': 'FCA — High-Risk Investments & Cryptoasset Financial Promotions',
-  'UK_FCA_MAR': 'FCA MAR',
-  'UK_FOIA_2000': 'Freedom of Information Act 2000',
-  'UK_FOOD_INFO_2014': 'Food Information Regulations 2014',
-  'UK_FOS_FSCS': 'FOS + FSCS Disclosure',
-  'UK_FRC': 'Financial Reporting Council UK Audit Framework',
-  'UK_FSA': 'Food Standards Agency',
-  'UK_FSMA_S21': 'UK Financial Services & Markets Act s.21 (Financial Promotions)',
-  'UK_FUNDRAISING_REG': 'Fundraising Regulator Code',
-  'UK_GAS_SAFE': 'UK Gas Safe Registration (Gas Safety Regulations 1998)',
-  'UK_GDC': 'General Dental Council Standards',
-  'UK_GDPR_A13': 'UK GDPR Article 13 Disclosure Requirements',
-  'UK_GMC': 'GMC Good Medical Practice 2024',
-  'UK_GPHC': 'General Pharmaceutical Council Standards',
-  'UK_HCPC': 'Health and Care Professions Council — Standards of Conduct, Performance and Ethics',
-  'UK_HFEA': 'Human Fertilisation and Embryology Authority (HFEA)',
-  'UK_HMRC_AML': 'HMRC Money Laundering Supervision',
-  'UK_HMRC_GIFTAID': 'HMRC Gift Aid Rules',
-  'UK_HMR_2012': 'Human Medicines Regulations 2012',
-  'UK_HRA_1998': 'Human Rights Act 1998',
-  'UK_HSE': 'HSE Health and Safety',
-  'UK_HSE_ENERGY': 'HSE Energy Sector Guidance',
-  'UK_ICAEW': 'ICAEW Code of Ethics',
-  'UK_ICOBS': 'FCA Insurance: Conduct of Business Sourcebook (ICOBS)',
-  'UK_ICO_COOKIES': 'ICO Cookie and Similar Technologies Guidance',
-  'UK_INSURANCE_ACT_2015': 'Insurance Act 2015 & Consumer Insurance (Disclosure and Representations) Act 2012',
-  'UK_IPSO': 'IPSO Editors Code of Practice',
-  'UK_IR35_OFFPAYROLL': 'Off-Payroll Working Rules (IR35) — Chapter 10, Part 2 ITEPA 2003',
-  'UK_KCSIE_SAFEGUARDING': 'Keeping Children Safe in Education — Statutory Safeguarding (s.175 Education Act 2002)',
-  'UK_LEGAL_OMBUDSMAN': 'Legal Ombudsman Complaints Signposting (Scheme Rules)',
-  'UK_LICENSING_ACT': 'Licensing Act 2003',
-  'UK_MCA_DOLS': 'Mental Capacity Act 2005 / Deprivation of Liberty Safeguards',
-  'UK_MDA_1971': 'Misuse of Drugs Act 1971 / Misuse of Drugs Regulations 2001 (Controlled Drugs)',
-  'UK_MEDICAL_DEVICES': 'UK Medical Devices Regulations 2002 (as amended)',
-  'UK_MHRA': 'Medicines and Healthcare products Regulatory Agency',
-  'UK_MLR_2017': 'UK Money Laundering Regulations 2017 & Proceeds of Crime Act 2002',
-  'UK_MODERN_SLAVERY': 'UK Modern Slavery Act 2015 — Transparency in Supply Chains',
-  'UK_NATASHAS_LAW': 'Natasha’s Law — Food Information (Amendment) (England) Regulations 2019 (PPDS labelling)',
-  'UK_NCSC_CYBER_ESSENTIALS': 'NCSC Cyber Essentials',
-  'UK_NMC': 'Nursing and Midwifery Council — The Code',
-  'UK_NTSELAT_MATERIAL_INFO': 'NTSELAT Material Information in Property Listings',
-  'UK_OFCOM': 'Ofcom Broadcasting Code',
-  'UK_OFGEM': 'Ofgem Standards of Conduct',
-  'UK_OFS': 'Office for Students',
-  'UK_OFSTED': 'Ofsted School Inspection Framework',
-  'UK_ORR': 'Office of Rail and Road',
-  'UK_OSA_2023': 'UK Online Safety Act 2023',
-  'UK_PECR': 'Privacy and Electronic Communications Regulations',
-  'UK_PRA': 'PRA Rulebook',
-  'UK_PREVENT': 'Prevent Duty — Counter-Terrorism and Security Act 2015',
-  'UK_PSBAR_2018': 'Public Sector Bodies Accessibility Regulations 2018',
-  'UK_PSR': 'Payment Systems Regulator',
-  'UK_PSRS_2017': 'UK Payment Services Regulations 2017',
-  'UK_REACH': 'UK REACH (Registration, Evaluation, Authorisation and Restriction of Chemicals)',
-  'UK_RICS': 'RICS Rules of Conduct',
-  'UK_SMCR': 'UK Senior Managers & Certification Regime',
-  'UK_SRA_COC': 'Solicitors Regulation Authority Code of Conduct',
-  'UK_SRA_TRANSPARENCY': 'SRA Transparency Rules 2018',
-  'UK_TENANT_FEES_2019': 'Tenant Fees Act 2019',
-  'UK_TPO': 'The Property Ombudsman Code',
-  'UK_TRADING_STANDARDS': 'CTSI Trading Standards',
-  'UK_UKCA': 'UKCA Conformity Marking',
-  'UK_UKGC': 'UK Gambling Commission (LCCP + advertising)',
-  'US_ABA_TRUST_ACCOUNTING': 'ABA Model Rule 1.15 / IOLTA Client Trust Accounting',
-  'US_ADA': 'ADA Title III Digital Accessibility',
-  'US_ADA_WEB': 'ADA Title III Website Accessibility & DOJ Hotel Reservation Rule',
-  'US_ADEA': 'US Age Discrimination in Employment Act (ADEA)',
-  'US_ATTORNEY_ADVERTISING': 'US Attorney Advertising (ABA Model Rules 7.1-7.3 + State Bars)',
-  'US_BAR_ADVERTISING': 'US Lawyer Advertising — ABA Model Rules 7.1–7.5 / State Bar Rules',
-  'US_BIPA': 'US Illinois Biometric Information Privacy Act',
-  'US_BSA_FINCEN': 'Bank Secrecy Act / FinCEN MSB Regime',
-  'US_CANSPAM': 'US CAN-SPAM Act',
-  'US_CAN_SPAM': 'CAN-SPAM Act',
-  'US_CA_ARL': 'California Automatic Renewal Law',
-  'US_CA_UNRUH': 'California Unruh Civil Rights Act (Accessibility Damages)',
-  'US_CCPA': 'CCPA / CPRA',
-  'US_CDC_ART_REPORTING': 'US CDC ART Mandatory Success-Rate Reporting (FCSRCA 1992)',
-  'US_CFPB_UDAAP': 'US CFPB - UDAAP (Dodd-Frank)',
-  'US_CHARITY_SOLICITATION': 'US State Charitable Solicitation Registration',
-  'US_CMS_LTC': 'CMS Long-Term Care Requirements of Participation (Nursing Home Reform Act)',
-  'US_COLORADO_AI_ACT': 'Colorado Artificial Intelligence Act (SB24-205)',
-  'US_CONTRACTOR_LICENSING': 'US State Contractor Licensing Boards (e.g. California CSLB)',
-  'US_COPPA': 'US Children’s Online Privacy Protection Act',
-  'US_CO_AI_ACT': 'Colorado Artificial Intelligence Act (SB24-205)',
-  'US_CPRA': 'US California Privacy Rights Act (CPRA expansion of CCPA)',
-  'US_CPSC': 'US Consumer Product Safety Commission (CPSA)',
-  'US_DEA_CSA': 'US DEA / Controlled Substances Act',
-  'US_DENTAL_BOARD': 'State Dental Board Practice Acts and Advertising Rules',
-  'US_DSCSA': 'Drug Supply Chain Security Act',
-  'US_EPA': 'US Environmental Protection Agency (CAA/CWA/RCRA/TSCA)',
-  'US_EPA_RRP': 'EPA Lead Renovation, Repair and Painting (RRP) Rule',
-  'US_FAIR_HOUSING_ACT': 'Fair Housing Act',
-  'US_FCRA': 'US Fair Credit Reporting Act',
-  'US_FDA': 'US Food, Drug & Cosmetic Act (FDA) — Drug/Device Approval & Promotion',
-  'US_FDA_FDCA': 'Federal Food, Drug, and Cosmetic Act - Prescription Drug Advertising & Labeling',
-  'US_FDA_HCTP': 'US FDA Human Cells, Tissues and Cellular/Tissue-Based Products (HCT/P) Rules',
-  'US_FERPA': 'US Family Educational Rights and Privacy Act',
-  'US_FINRA_2210': 'FINRA Rule 2210',
-  'US_FSMA_MANUFACTURING': 'US Manufacturing - Cross-Border Data Framework Gating & Sector Regulator Baseline',
-  'US_FTC': 'US FTC CAN-SPAM Act',
-  'US_FTC_AI_CLAIMS': 'FTC Section 5 — Deceptive AI Claims',
-  'US_FTC_ENDORSE': 'US Section 5 FTC Endorsement Guides 2024',
-  'US_FTC_FAKE_REVIEWS': 'FTC Rule on the Use of Consumer Reviews and Testimonials',
-  'US_FTC_HBNR': 'FTC Health Breach Notification Rule',
-  'US_FTC_HEALTH_BREACH_RULE': 'FTC Health Breach Notification Rule',
-  'US_FTC_JUNK_FEES': 'FTC Rule on Unfair or Deceptive Fees',
-  'US_FTC_NEGATIVE_OPTION': 'FTC Negative Option / Click-to-Cancel Rule',
-  'US_FTC_REVIEWS_RULE': 'FTC Rule on Use of Consumer Reviews and Testimonials (16 CFR Part 465)',
-  'US_FTC_SAFEGUARDS': 'FTC Safeguards Rule (GLBA) for Accountants & Tax Preparers',
-  'US_GLBA': 'US Gramm-Leach-Bliley Act',
-  'US_HIPAA': 'HIPAA Privacy Rule · 45 CFR 164',
-  'US_IA_MARKETING_RULE': 'SEC Investment Advisers Act Marketing Rule (Rule 206(4)-1)',
-  'US_IL_AIVIA': 'Illinois Artificial Intelligence Video Interview Act',
-  'US_IRS_501C3': 'US IRS 501(c)(3) Public Disclosure & Donation Substantiation',
-  'US_MEDICAL_BOARD': 'US Medical/Dental Board Advertising + FTC',
-  'US_NAIC_DOI': 'US State Insurance Regulation (NAIC / State Departments of Insurance)',
-  'US_NAIC_UCSPA': 'NAIC Unfair Claims Settlement Practices Act & Unfair Trade Practices Act (state adoptions)',
-  'US_NV_SB370': 'Nevada Consumer Health Data Privacy Law (SB 370)',
-  'US_NYC_LL144': 'NYC Local Law 144 (Automated Employment Decision Tools)',
-  'US_NYDFS_500': 'US NYDFS Cybersecurity Regulation Part 500',
-  'US_OSHA': 'US Occupational Safety and Health Administration (OSH Act)',
-  'US_OSHA_CONSTRUCTION': 'OSHA Construction Safety Standards (29 CFR Part 1926)',
-  'US_PAY_TRANSPARENCY': 'US State Pay Transparency Laws',
-  'US_PCAOB_SOX': 'Sarbanes-Oxley Act / PCAOB & AICPA Auditor Independence',
-  'US_PPRA': 'Protection of Pupil Rights Amendment (PPRA)',
-  'US_REG_E_EFTA': 'US Electronic Fund Transfer Act / Regulation E',
-  'US_RESPA': 'Real Estate Settlement Procedures Act (RESPA / TILA-RESPA)',
-  'US_RYAN_HAIGHT': 'Ryan Haight Online Pharmacy Consumer Protection Act / DEA remote-prescribing rules',
-  'US_SALES_TAX_NEXUS': 'US State Sales-Tax Economic Nexus (post-Wayfair)',
-  'US_SECTION_504_IDEA': 'Section 504 of the Rehabilitation Act & IDEA (Disability / Special Education)',
-  'US_SEC_506C': 'US Securities Act Rule 506(c)',
-  'US_SEC_MARKETING': 'US SEC Investment Adviser Marketing Rule',
-  'US_SEC_REG_BI': 'SEC Regulation Best Interest (Reg BI)',
-  'US_SEC_REG_FD': 'SEC Regulation FD',
-  'US_STATE_BREACH_NOTIF': 'US State Data Breach Notification Laws',
-  'US_STATE_MTL': 'State Money Transmitter Licensing',
-  'US_STATE_PHARMACY_BOARD': 'US State Boards of Pharmacy (State Pharmacy Practice Acts / NABP)',
-  'US_STATE_PRIVACY': 'US State Consumer Privacy Laws (20 states)',
-  'US_STATE_PROF_CONDUCT': 'US State Professional Conduct & Licensing',
-  'US_TCPA': 'US Telephone Consumer Protection Act',
-  'US_TDPSA': 'US Texas Data Privacy & Security Act',
-  'US_TELEHEALTH_LICENSURE': 'US Telehealth Cross-State Licensure (state medical practice acts / IMLC)',
-  'US_TILA_REG_Z': 'US Truth in Lending Act / Regulation Z',
-  'US_TITLE_IX': 'Title IX of the Education Amendments of 1972 (Sex Discrimination)',
-  'US_TITLE_VI': 'Title VI of the Civil Rights Act 1964 (Race / National Origin)',
-  'US_TITLE_VII': 'US Title VII / EEOC — Employment Discrimination in Hiring (incl. AI/algorithmic hiring)',
-  'US_VCDPA': 'US Virginia Consumer Data Protection Act',
-  'US_WA_MHMDA': 'Washington My Health My Data Act',
-};
-// legacy-map implementation (285-entry FW_NAME/FW_NAME_CAT + acronym-fix + titleCase fallback). Renamed off
-// "fwName" so payloadToD can shadow fwName with a payload-first version without losing this fallback chain
-// (2026-07-20 render-restore sniper edit (a) — payload-provided field -> legacy map -> literal fallback).
-function fwNameLegacy(fw) {
+function fwName(fw) {
   const base = titleCase(String(fw || '').replace(/_/g, ' ').toLowerCase());
-  let n = fixAcronyms(FW_NAME[fw] || FW_NAME_CAT[fw] || base || 'Framework');
+  const _m = metaOf(fw);
+  let n = fixAcronyms((_m && _m.name) || FW_NAME[fw] || FW_NAME_CAT[fw] || base || 'Framework');   // catalogue first
   if (/^[A-Z]{2,}$/.test(n)) n = base || 'Framework';   // never a bare all-caps token (raw-code QA guard)
   return String(n).replace(/[<>]/g, '').replace(/\s{2,}/g, ' ').trim() || 'Framework';
 }
-// Default (payload-unaware) name resolver — every call site outside payloadToD (which has no payload/PTR
-// in scope) keeps calling this, unchanged behaviour. Inside payloadToD this identifier is shadowed by a
-// payload-first version; see the PTR block near the top of payloadToD.
-function fwName(fw) { return fwNameLegacy(fw); }
 // Clean, short tag for the finding badge, NEVER a raw underscore code ("US_STATE_PRIVACY"); derived from the
 // friendly name with the "· Art.13" suffix and trailing year stripped. (no-raw-framework-code) (G-regtag)
-// 2026-07-20 sniper edit (a): optional fwNameFn lets a caller inside payloadToD thread its payload-first
-// name resolver through (this function is module-scope, so it can't see payloadToD's local PTR shadow on
-// its own); defaults to the payload-unaware fwName for every other caller, unchanged behaviour.
-function regTag(fw, fwNameFn) { const n = (fwNameFn || fwName)(fw); return n.replace(/\s*·.*$/, '').replace(/\s+\d{4}[A-Z0-9]*\b.*$/, '').trim() || 'Framework'; }
-// legacy-map regulator resolver (see fwNameLegacy comment above for the shadowing pattern).
-function fwRegulatorLegacy(fw) { return FW_REGULATOR[fw] || 'Sector regulator'; }
-function fwRegulator(fw) { return fwRegulatorLegacy(fw); }
+function regTag(fw) { const n = fwName(fw); return n.replace(/\s*·.*$/, '').replace(/\s+\d{4}[A-Z0-9]*\b.*$/, '').trim() || 'Framework'; }
+// E08 — WE WERE PRINTING THE WORDS "Sector regulator" AS IF THEY WERE THE ENFORCING AUTHORITY.
+// 151 of the 294 active frameworks are absent from FW_REGULATOR, so on more than half the catalogue this
+// placeholder shipped to a law firm in the column headed "Regulator". A reader takes that as our answer. It is not
+// an answer, it is a gap wearing the costume of one. A regulator we cannot name must be OMITTED, never invented:
+// the renderer drops the regulator line rather than assert a body that does not exist.
+function fwRegulator(fw) { const _m = metaOf(fw); return (_m && _m.regulator) || FW_REGULATOR[fw] || null; }   // catalogue first; NEVER a placeholder
 function fwCode(fw) { const s = String(fw || '').replace(/^(UK|EU|US|AE|FR|DE|SAUDI|QATAR|DIFC|ADGM)_?/, ''); return (s.replace(/[^A-Za-z0-9]/g, '').slice(0, 4) || String(fw).slice(0, 4) || 'FW').toUpperCase(); }
 
 /* ---------------- Lighthouse audit intelligence (element-level evidence) ----------------
@@ -676,7 +393,7 @@ function compName(raw) { const s = String(raw || '').trim(); if (!s) return s; i
 // issue type so the selling layer never reads as a checklist echo. (F-craftfix)
 function craftFix(p) {
   const cur = String(p.tamazia_fix_short || p.recommendation || '').trim();
-  const generic = !cur || /implements and verifies|resolves and verifies|closes this gap as part of the engagement|on your live site\.?$/i.test(cur) || new RegExp('verifies ["‘’\'"]', 'i').test(cur);
+  const generic = !cur || /(?:implements and verifies|resolves and verifies|closes this gap as part of the engagement)|(?:on your live site\.?$)/i.test(cur) || new RegExp('verifies ["‘’\'"]', 'i').test(cur);
   if (cur && !generic) return cur;
   const fw = String(p.framework_short || p.citation || '').toUpperCase();
   const t = (String(p.fact || '') + ' ' + fw).toLowerCase();
@@ -701,11 +418,12 @@ function craftFix(p) {
 // Correct pillar for a finding so a SEO/technical/AI-visibility pointer is never mislabelled "Regulatory"
 // (which filled the "breaches in full, walk the chain" Regulatory section with LCP/crawlability cards). Only
 // genuinely-regulatory buckets are Regulatory; everything else routes to its own pane. (pillar-misroute)
+const SEO_BUCKETS = new Set(['seo', 'technical', 'technical_seo', 'tls_dns', 'tech', 'performance', 'accessibility']);
 function pillarOf(p) {
   const b = String((p && p.bucket) || '').toLowerCase();
   if (b === 'ai_visibility') return 'AI / GEO';
   if (b === 'compliance' || b === 'public_records') return 'Regulatory';
-  if (b === 'seo' || b === 'technical' || b === 'technical_seo' || b === 'tls_dns' || b === 'tech' || b === 'performance' || b === 'accessibility') return 'SEO + Technical';
+  if (SEO_BUCKETS.has(b)) return 'SEO + Technical';
   // Unknown bucket: fall back on the framework code (GEO↗AI, SEO↗SEO), else treat as Regulatory only if it
   // actually carries a regulatory framework code, otherwise SEO + Technical.
   const fw = String((p && (p.framework_short || p.citation)) || '').toUpperCase();
@@ -724,7 +442,9 @@ function elementLine(p) {
   const page = humanUrl(p.evidence_url) || 'your site';
   const q = (Array.isArray(p.elements) ? (p.elements.find((e) => e.present && e.quote) || {}).quote : '') || '';
   if (present.length) {
-    return `On ${page} you show ${present.join('; ')}${q ? `, for example “${String(q).replace(/\s{2,}/g, ' ').slice(0, 90)}”` : ''}. The scan did not find: ${missing.join('; ')}.`;
+    // NO TRUNCATION: the quote is the firm's own words, quoted back to it. Cutting it mid-word ("…cooperation, se")
+    // destroys the evidence. It renders in full and the CSS wraps it.
+    return `On ${page} you show ${present.join('; ')}${q ? `, for example “${String(q).replace(/\s{2,}/g, ' ').trim()}”` : ''}. The scan did not find: ${missing.join('; ')}.`;
   }
   return `The scan did not find the required elements on ${page}: ${missing.join('; ')}.`;
 }
@@ -735,7 +455,7 @@ function absenceLine(ae) {
   if (!ae || typeof ae !== 'object') return '';
   const page = ae.target_url ? humanUrl(ae.target_url) : '';
   if (ae.state === 'related_present_requirement_absent' && ae.nearest_quote) {
-    return `On ${page || 'your site'} the scan read “${String(ae.nearest_quote).slice(0, 150)}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
+    return `On ${page || 'your site'} the scan read “${String(ae.nearest_quote).replace(/\s{2,}/g, ' ').trim()}”, but ${ae.requirement || 'the required disclosure'} is not present.`;
   }
   if (ae.state === 'page_silent' && page) {
     return `${page} was inspected and makes no mention of ${ae.requirement || 'this disclosure'}.`;
@@ -745,46 +465,48 @@ function absenceLine(ae) {
   }
   return '';
 }
-// 2026-07-20 sniper edit (a)+(b): optional fwNameFn/penaltySymFn let a caller inside payloadToD thread its
-// payload-first name resolver + penalty-currency resolver through (this function is module-scope, so it
-// can't see payloadToD's local PTR/penaltySym shadows on its own); default to the payload-unaware/legacy
-// versions for every other caller, unchanged behaviour.
-function bingoFromPointer(p, pillar, news, i, sym, fwNameFn, penaltySymFn) {
+function bingoFromPointer(p, pillar, news, i, sym) {
   i = i || 0;
-  fwNameFn = fwNameFn || fwName;
-  const pSym = penaltySymFn ? penaltySymFn(p, sym) : sym;
+  // The fine is printed in the currency of the regime that SETS it, not the firm's home currency. `sym` (the
+  // page's primary currency) is only the fallback for codes with no statutory currency of their own. No FX.
+  sym = currencyForFramework(p.framework_short || p.citation) || sym || '£';
   const lowF = +p.fine_low_gbp || 0, hiF = +p.fine_high_gbp || 0;
   const enfLo = +p.enforce_typical_low_gbp || 0, enfHi = +p.enforce_typical_high_gbp || 0;
-  const noFine = noStatutoryFine(p.framework_short) || p.bucket === 'ai_visibility' || p.bucket === 'seo';   // FIX-R1: voluntary codes never show a fine
+  // E-243 (v22.11) — "AN SEO METRIC CANNOT CARRY AN ENFORCEMENT ACTION."
+  // This guard used to test ONLY `ai_visibility` and `seo`, while the `law` line below tested a WIDER bucket list
+  // (performance, technical, tls_dns...). A Largest-Contentful-Paint finding has bucket `performance`: it escaped
+  // this guard, carried no fine and no penalty_note, and fell through to the literal string 'enforcement action'
+  // on line ~765. The live page therefore branded a Core Web Vital as a regulatory enforcement action. The two
+  // lists are now ONE canonical predicate (NON_STATUTORY_BUCKET), so they can never drift apart again.
+  const noFine = isNonStatutory(p);   // FIX-R1 + E-243
   return {
-    n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation, fwNameFn) : pillar, pillar,
+    n: i + 1, reg: (p.framework_short || p.citation) ? regTag(p.framework_short || p.citation) : pillar, pillar,
     // GEO/SEO/technical are not statutes; render the human "③ The law" layer, never the raw code title-cased
     // ("Geo") and never a bare "Framework" for a non-regulatory finding that carries no framework code. (geo-law)
     law: (/^GEO$/i.test(p.framework_short) || (p.bucket === 'ai_visibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Generative-engine visibility'
       : (/^SEO$/i.test(p.framework_short) || (/^(seo|technical_seo|technical|tech|tls_dns|performance)$/.test(String(p.bucket || '')) && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Search-engine visibility'
         : (p.bucket === 'accessibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || ''))) ? 'Accessibility (WCAG / Equality Act)'
-          : (fwNameFn(p.framework_short) || p.citation || pillar),
+          : (fwName(p.framework_short) || p.citation || pillar),
     // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
     // "Signal" — never label a non-statutory finding "③ Law".
-    labelKind: /GEO|AI/.test(pillar) ? 'Signal' : /SEO|Technical/.test(pillar) ? 'Standard' : 'Law',
+    labelKind: labelKindFor(pillar),
     // Precise controlling provision (instrument + section/article) when known, e.g. "Companies Act 2006 s.82",
     // "UK GDPR Art. 13(2)(f)", "SRA Transparency Rules 2018 r.1.1-1.5" — legally-defensible specificity. (legal-QA citation)
     statute: p.statutory_citation || null,
-    // Penalty display: a ready-print penalty_label wins outright when the engine supplies one (2026-07-20
-    // sniper edit (b)); else a fixed £/$/€ range when the law sets one, formatted with the pointer's own
-    // penalty_currency (falling back to the firm's default symbol, never a hardcoded '£'); else the
-    // penalty_basis note (e.g. "up to 10% of global annual turnover", "unlimited fine", "per-violation
-    // penalty", "non-monetary sanctions") so turnover-% / unlimited / per-violation regimes are stated
-    // accurately instead of a misleading £0 or "ranking impact". Only genuine SEO/AI signals fall through
-    // to "ranking impact". (legal-QA penalty-basis fix)
-    // FIX-R1: when the framework carries NO statutory fine (SEO/AI signal OR voluntary code), NEVER emit a
-    // monetary figure even if the payload attached one — show the non-monetary sanction note or 'ranking impact'.
-    exp: noFine ? (p.penalty_note || 'non-statutory (code sanction / ranking impact)')
-      : p.penalty_label ? p.penalty_label
-        : (enfLo || enfHi) ? (gbp(enfLo, pSym) + ' to ' + gbp(enfHi, pSym) + ' typical')
-          : (lowF || hiF) ? (gbp(lowF, pSym) + ' to ' + gbp(hiF, pSym))
-            : (p.penalty_note ? p.penalty_note : 'enforcement action'),
-    expMax: (!noFine && hiF) ? gbp(hiF, pSym) : (p.penalty_label || p.penalty_note || null),   // FIX-R1
+    // Penalty display: a fixed £ range when the law sets one; else the penalty_basis note (e.g. "up to 10% of
+    // global annual turnover", "unlimited fine", "per-violation penalty", "non-monetary sanctions") so turnover-%
+    // / unlimited / per-violation regimes are stated accurately instead of a misleading £0 or "ranking impact".
+    // Only genuine SEO/AI signals fall through to "ranking impact". (legal-QA penalty-basis fix)
+    // FIX-R1: when the framework carries NO statutory fine (SEO/AI signal OR voluntary code), NEVER emit a GBP
+    // figure even if the payload attached one — show the non-monetary sanction note or 'ranking impact'.
+    // E-243: the final fallback used to be the literal string 'enforcement action', which is (a) meaningless as a
+    // penalty and (b) a REGULATORY claim stamped onto findings that carry no law at all. A finding with no fine and
+    // no penalty basis states exactly that, and nothing more. We never invent a sanction.
+    exp: noFine ? (p.penalty_note || 'non-statutory (ranking and AI-visibility impact)')
+      : (enfLo || enfHi) ? (gbp(enfLo, sym) + ' to ' + gbp(enfHi, sym) + ' typical')
+        : (lowF || hiF) ? (gbp(lowF, sym) + ' to ' + gbp(hiF, sym))
+          : (p.penalty_note ? p.penalty_note : 'no published penalty figure'),
+    expMax: (!noFine && hiF) ? gbp(hiF, sym) : (p.penalty_note || null),   // FIX-R1
     maxRare: !!p.enforce_max_rare,
     enfMethod: p.enforce_methodology || null,
     enfContext: p.enforce_context || null,
@@ -792,11 +514,24 @@ function bingoFromPointer(p, pillar, news, i, sym, fwNameFn, penaltySymFn) {
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),
     // Prefer a verbatim on-site quote; else the engine's real nearest-miss absence line; else the bingo problem.
-    quote: p.evidence_quote || absenceLine(p.absence_evidence) || g(p, 'bingo.problem', ''),
+    quote: _q25(p.evidence_quote) || absenceLine(p.absence_evidence) || g(p, 'bingo.problem', ''),
     fix: craftFix(p),
-    plan: 'Severity ' + (p.severity || 'P1') + ' · ' + (i === 0 ? 'Week 1' : 'Weeks 1 to 4') + ' · every mandate',
+    // E12/E40: "Severity P0" is internal engineering vocabulary; the buyer asked, correctly, what a P0 was.
+    // The severity word is now the client-facing one, defined inline in the report (Critical / High / Standard),
+    // and the closing window is stated in the language of the products that close it.
+    sevWord: SEV_WORD[p.severity] || 'Standard',
+    plan: (SEV_WORD[p.severity] || 'Standard') + ' · closed in ' + (i === 0 ? 'week 1' : 'weeks 1 to 4') + ' of any Sprint or mandate',
   };
 }
+// E12 · Global severity language. P0/P1/P2/P3 are internal engine tokens and never reach a client.
+// The three definitions are printed inline on first use and carried on the severity dots as hover tips.
+const SEV_WORD = { P0: 'Critical', P1: 'High', P2: 'Standard', P3: 'Standard' };
+const SEV_DEFS = [
+  ['Critical', 'A live breach of binding law on your site today, the item a regulator\'s first letter cites.'],
+  ['High', 'Regulator-visible on inspection, one step from a breach citation.'],
+  ['Standard', 'A best-practice gap costing rankings and AI visibility, not enforcement.'],
+];
+
 // The engine emits a templated remediation, `Tamazia implements and verifies "{finding}" on your site
 // so it satisfies the {framework}.`, for a large class of findings. When the top-3 BINGO cards all draw
 // from that template their `fix` text is identical for the first ~32 chars, so three cards open with the
@@ -811,7 +546,7 @@ function differentiateFixes(list) {
   for (const f of arr(list)) {
     if (!f || !f.fix) continue;
     if (!seen.has(fixKey(f.fix))) { seen.add(fixKey(f.fix)); continue; }
-    const subj = String(f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[, :.,\-\s]+$/, '');
+    const subj = String(f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[,\s:.\-]+$/, '');
     const body = String(f.fix).replace(/^Tamazia\s+implements\s+and\s+verifies\s+"[^"]*"\s+/i, 'Tamazia implements and verifies this ').trim();
     f.fix = subj ? subj + ', ' + body : body;
     if (seen.has(fixKey(f.fix))) f.fix = '(' + (f.n || seen.size + 1) + ') ' + f.fix;   // deterministic last-resort
@@ -822,32 +557,31 @@ function differentiateFixes(list) {
 
 /* ---------------- jurisdiction membrane ---------------- */
 const TLD_JUR = { uk: 'UK', ae: 'AE', sa: 'SA', us: 'US', fr: 'FR', de: 'DE', it: 'IT', es: 'ES', com: null };
-const FW_JUR = (code) => {
-  const c = String(code || '').toUpperCase();
-  // Prefix checks FIRST (the catalogue's real codes: UAE_*, SAUDI_*, QATAR_*, SG_*), so a UAE/Saudi/Qatar/Singapore
-  // law is badged to its OWN country and jurisdiction-gated correctly — never mis-mapped to "Global" (which would show
-  // it on every firm) or to the wrong country. Bare-substring fallbacks run only when no prefix matched. (multi-jur)
-  if (c.startsWith('UK_') || c.startsWith('GB_')) return 'UK';
-  if (c.startsWith('EU_')) return 'EU';
-  if (c.startsWith('US_')) return 'US';
-  if (c.startsWith('UAE_') || c.startsWith('AE_') || c.startsWith('DIFC_') || c.startsWith('ADGM_')) return 'AE';
-  if (c.startsWith('SAUDI_') || c.startsWith('SA_') || c.startsWith('KSA_')) return 'SA';
-  if (c.startsWith('QATAR_') || c.startsWith('QA_')) return 'QA';
-  if (c.startsWith('SG_') || c.startsWith('SINGAPORE_')) return 'SG';
-  if (c.startsWith('FR_')) return 'FR';
-  if (c.startsWith('DE_')) return 'DE';
-  if (c.startsWith('IN_')) return 'IN';
-  // Fallbacks for codes that carry no jurisdiction prefix.
-  if (['HIPAA', 'CCPA', 'CPRA', 'CAN_SPAM', 'COPPA', 'FERPA', 'TCPA', 'GLBA'].some((x) => c.includes(x))) return 'US';
-  if (c.includes('RERA') || c.includes('DIFC') || c.includes('ADGM')) return 'AE';
-  if (c.includes('CNIL')) return 'FR';
-  if (c.includes('BDSG')) return 'DE';
-  return 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
-};
 // Authoritative allow-list = country + TLD (the trustworthy spine), + EU only with corroborating
 // evidence. We deliberately do NOT union the engine's other jurisdiction codes: markets.js can
 // over-attach US/foreign law on weak signals (the Al Tamimi leak). country+TLD is authoritative. (G2/S-001)
+// E-218: render-side sanitiser for verified!==true rows. Mirrors the engine's evidence gates (E-041/E-044,
+// V05 absence-proof, V09 fine discipline, P-011 template-accusation threshold) over the STORED payload, so the
+// public page can never assert more than the evidence carries. Pure; never throws (any error returns the input).
+// Dual-shape tolerance: stored payloads carry inspected_by_framework either as an ARRAY of page
+// identifiers (#184 graft shape) or as a summary object {rule_checked, inspected:N, findings:N}
+// (8f08af6-era mint, the shape of the LIVE dental audit). Never crash a stored payload on shape:
+// an object maps to the real crawled pages, capped by its own inspected count.
+function inspectedPagesFor(payload, fw) {
+  const map = payload.inspected_by_framework || {};
+  const entry = map[fw] !== undefined ? map[fw] : map[fwCanon(fw)];
+  const pages = arr(payload.pages_crawled);
+  if (Array.isArray(entry)) return entry.slice(0, 6);
+  if (entry && typeof entry === 'object') {
+    const n = Math.min(+entry.inspected || 6, pages.length, 6);
+    return pages.slice(0, Math.max(n, 0));
+  }
+  return pages.slice(0, 6);
+}
 function authJurisdictions(payload) {
+  // E-218: a sanitised (unverified) payload carries its own narrow scope — registered family + GLOBAL — and every
+  // consumer (membrane, screened injection, selector) must honour it rather than re-deriving from payload claims.
+  if (payload && Array.isArray(payload._allow_narrow) && payload._allow_narrow.length) return new Set(payload._allow_narrow);
   const set = new Set(['GLOBAL']);
   const CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK', UK: 'UK' };
   const country = String(payload.country || '').toUpperCase();
@@ -874,12 +608,7 @@ function authJurisdictions(payload) {
   // detected_jurisdictions is the considered set connect() used to ATTACH the frameworks now in the payload, so
   // unioning it aligns the render gate with the engine (a UK+UAE firm shows its UAE laws too, not just UK). Frameworks
   // are still individually jurisdiction- and sector-gated by connect()/the resolver, so this never invents a wrong law.
-  const _JNAME = { 'UNITED KINGDOM': 'UK', 'GREAT BRITAIN': 'UK', 'ENGLAND': 'UK', 'SCOTLAND': 'UK', 'WALES': 'UK', 'UNITED STATES': 'US', 'USA': 'US', 'UNITED ARAB EMIRATES': 'AE', 'UAE': 'AE', 'DUBAI': 'AE', 'ABU DHABI': 'AE', 'SAUDI ARABIA': 'SA', 'KSA': 'SA', 'QATAR': 'QA', 'SINGAPORE': 'SG', 'EUROPEAN UNION': 'EU', 'FRANCE': 'FR', 'GERMANY': 'DE', 'ITALY': 'IT', 'SPAIN': 'ES', 'NETHERLANDS': 'NL', 'IRELAND': 'IE', 'INDIA': 'IN', 'CANADA': 'CA', 'AUSTRALIA': 'AU',
-    // 2026-07-20 sniper edit (b): the new compliance engine's applicability.jurisdictions ships bare
-    // render-vocabulary codes ('UK', not 'UNITED KINGDOM') — self-map the codes this render already
-    // understands so a bare code from the new engine registers in the authoritative jurisdiction set
-    // exactly like the old full-name strings did (KIMI-GRAFT-SYNC-2026-07-20.md §5 trap 4).
-    'UK': 'UK', 'GB': 'UK', 'US': 'US', 'AE': 'AE', 'SA': 'SA', 'QA': 'QA', 'SG': 'SG', 'EU': 'EU', 'FR': 'FR', 'DE': 'DE', 'IN': 'IN' };
+  const _JNAME = { 'UNITED KINGDOM': 'UK', 'GREAT BRITAIN': 'UK', 'ENGLAND': 'UK', 'SCOTLAND': 'UK', 'WALES': 'UK', 'UNITED STATES': 'US', 'USA': 'US', 'UNITED ARAB EMIRATES': 'AE', 'UAE': 'AE', 'DUBAI': 'AE', 'ABU DHABI': 'AE', 'SAUDI ARABIA': 'SA', 'KSA': 'SA', 'QATAR': 'QA', 'SINGAPORE': 'SG', 'EUROPEAN UNION': 'EU', 'FRANCE': 'FR', 'GERMANY': 'DE', 'ITALY': 'IT', 'SPAIN': 'ES', 'NETHERLANDS': 'NL', 'IRELAND': 'IE', 'INDIA': 'IN', 'CANADA': 'CA', 'AUSTRALIA': 'AU' };
   for (const d of det) { const code = _JNAME[String(d || '').toUpperCase().trim()]; if (code) { set.add(code); if (EU_MEMBERS.includes(code)) set.add('EU'); } }
   return set;
 }
@@ -925,7 +654,12 @@ function perFrameworkMaxFine(pointers) {
   for (const p of pointers) {
     if (p.fine_withheld) continue;
     const fw = p.framework_short || p.citation;
-    const hi = +p.fine_high_gbp || 0;
+    // E-234 (v22.8) NUMERIC CONSISTENCY: the headline exposure read ONLY fine_high_gbp, while the breach cards
+    // render the CALIBRATED TYPICAL band (enforce_typical_*). On a payload carrying typical bands but no statutory
+    // ceiling, the left panel therefore said "Ranking & AI · no statutory fine confirmed" while the card beside it
+    // said "£100k to £5M typical" — the same audit contradicting itself. The exposure now falls back to the typical
+    // band, which is also the honest number to headline (P-008: statutory maxima are scare tactics, not forecasts).
+    const hi = (+p.fine_high_gbp || 0) || (+p.enforce_typical_high_gbp || 0);
     if (!fw || !hi || noStatutoryFine(fw)) continue;   // ranking guidelines + voluntary codes carry no statutory fine (C-018 / FIX-R1)
     m[fw] = Math.max(m[fw] || 0, hi);
   }
@@ -936,13 +670,73 @@ function canonicalExposure(perFw) {
   for (const [fw, v] of Object.entries(perFw)) { if (DP_FAMILY.has(fw)) dp = Math.max(dp, v); else sum += v; }
   return sum + dp;
 }
+// E-244 (v22.11) THE MEDIAN FINE, RESTORED.
+// The left rail headlined the SUM OF STATUTORY CEILINGS ("£5M · MAXIMUM STATUTORY PENALTY"). Two problems:
+//   1. CREDIBILITY. A statutory maximum is what the regulator COULD levy in the worst case in history. No law firm
+//      believes it will be fined £5M for a missing reviews policy, so the number reads as a scare tactic and the
+//      whole report loses authority — the opposite of what it is for. (P-008)
+//   2. TRACEABILITY. £5M appeared NOWHERE else on the page. The cards said "£100k to £5M typical"; the rail said
+//      "£5M maximum". Same audit, two different framings, and the headline figure was unfindable in the body.
+// The headline is now the MEDIAN of the TYPICAL ENFORCEMENT BAND — the midpoint of what this regulator actually
+// levies for this breach — which IS the band printed on every card, so the reader can add it up themselves.
+// The statutory ceiling is retained as the top step of the waterfall, where it belongs: as context, not a headline.
+function perFrameworkMedianFine(pointers) {
+  const m = {};
+  for (const p of pointers) {
+    if (p.fine_withheld) continue;
+    const fw = p.framework_short || p.citation;
+    if (!fw || noStatutoryFine(fw) || isNonStatutory(p)) continue;
+    const tLo = +p.enforce_typical_low_gbp || 0, tHi = +p.enforce_typical_high_gbp || 0;
+    const sLo = +p.fine_low_gbp || 0, sHi = +p.fine_high_gbp || 0;
+    // Prefer the observed enforcement band (what regulators DO). Fall back to the statutory band (what they MAY).
+    let mid = (tLo || tHi) ? Math.round(((tLo || tHi) + (tHi || tLo)) / 2)
+      : (sLo || sHi) ? Math.round(((sLo || sHi) + (sHi || sLo)) / 2) : 0;
+    // E-244b: the turnover rescale has already cut this firm's statutory ceiling down to 4% of ITS OWN turnover
+    // (a 12-partner firm cannot be fined the £17.5M global cap). The typical enforcement band, however, is the
+    // regulator's population-wide band and is NOT rescaled — so an un-capped median could sit ABOVE this firm's
+    // own ceiling and the audit would contradict itself again, in the other direction. The median is therefore
+    // capped at the rescaled ceiling: median <= ceiling is now an invariant of the page.
+    if (sHi > 0 && mid > sHi) mid = sHi;
+    if (!mid) continue;
+    m[fw] = Math.max(m[fw] || 0, mid);
+  }
+  return m;
+}
 // Scrub any £/GBP figure out of LLM prose and replace with the canonical figure (no LLM number leaks).
 // The unit space is grouped WITH the unit so a trailing word (e.g. "fine") keeps its space. (P2)
+// E04 / E27 — THE CONSISTENCY-FIXER WAS THE FABRICATOR.
+// scrubMoney used to replace EVERY money figure in the executive summary with the canonical AGGREGATE exposure, so
+// that the numbers "agreed". But when the model correctly wrote "an SRA penalty of up to £25,000", the scrubber
+// rewrote it to £2.6M — producing the exact sentence a managing partner reads first:
+//     "failure to comply with SRA regulations could result in a statutory penalty of up to £2.6M"
+// The SRA's internal limit is £25,000. The £2.6M is the MEDIAN AGGREGATE across every framework in the report. That
+// is not a rounding error, it is a fabricated legal claim, and it was manufactured by our own tidy-up pass.
+// Same defect produced E04 ("the potential £2.8M penalty for non-compliance with data protection regulations").
+//
+// THE RULE: an aggregate belongs to the REPORT, never to a single regulator or statute.
+//  - A figure in a clause that names NO specific body is the aggregate: normalise it to the canonical figure.
+//  - A figure in a clause that DOES name a body (SRA, ICO, the CMA, GDPR, PECR...) is a SPECIFIC statutory claim we
+//    cannot verify from here. We do not rewrite it to the aggregate and we do not assert it: the figure is removed
+//    and the qualitative statement survives. Saying less is always available; saying something false is not.
+const _NAMED_BODY = /\b(SRA|ICO|CMA|FCA|CQC|ASA|Ofcom|SDT|Legal Ombudsman|Trading Standards|DGCCRF|GDPR|PECR|DPA\s?2018|Equality Act|Companies Act|Transparency Rules|Code of Conduct)\b/i;
+const _MONEY_RX = /(?:GBP|USD|AED|SAR|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi;
+
 function scrubMoney(text, canonical, sym) {
   if (!text) return '';
-  return String(text)
-    .replace(/(?:GBP|USD|AED|SAR|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi, gbp(canonical, sym))
-    .replace(/\s{2,}/g, ' ').trim();
+  // Work clause by clause so the decision is made where the attribution actually sits.
+  const parts = String(text).split(/(?<=[.;])\s+/);
+  const out = parts.map((clause) => {
+    if (!_MONEY_RX.test(clause)) { _MONEY_RX.lastIndex = 0; return clause; }
+    _MONEY_RX.lastIndex = 0;
+    if (_NAMED_BODY.test(clause)) {
+      // A number attributed to a NAMED body. We cannot stand behind it, so we do not print it.
+      return clause.replace(_MONEY_RX, '').replace(/\s+of up to\s+(?=[.,;]|$)/i, '')
+                   .replace(/\s+up to\s+(?=[.,;]|$)/i, '').replace(/\s{2,}/g, ' ')
+                   .replace(/\s+([.,;])/g, '$1').trim();
+    }
+    return clause.replace(_MONEY_RX, gbp(canonical, sym));
+  });
+  return out.join(' ').replace(/\s{2,}/g, ' ').trim();
 }
 
 /* ---------------- static commerce + scoring scaffold (Slice 5 wires live config) ---------------- */
@@ -954,7 +748,17 @@ function gradeOf(score) {
   if (score >= 85) return 'A'; if (score >= 70) return 'B'; if (score >= 55) return 'C';
   if (score >= 47) return 'D'; if (score >= 40) return 'D-'; if (score >= 25) return 'F'; return 'F-';
 }
-const bandOf = (s) => s >= 70 ? 'Strong' : s >= 55 ? 'Workable' : s >= 40 ? 'At risk' : 'Critical';
+function labelKindFor(pillar) {
+  if (/GEO|AI/.test(pillar)) return 'Signal';
+  if (/SEO|Technical/.test(pillar)) return 'Standard';
+  return 'Law';
+}
+function bandOf(s) {
+  if (s >= 70) return 'Strong';
+  if (s >= 55) return 'Workable';
+  if (s >= 40) return 'At risk';
+  return 'Critical';
+}
 
 /* ---------------- dimensions + strict score ---------------- */
 function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
@@ -998,13 +802,51 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
     { nm: 'Core Web Vitals', key: 'cwv', v: perf == null ? null : perf, sub: perf == null ? 'not assessed' : `perf ${perf} · CLS ${(+psi.cls || 0).toFixed(2)}`, w: 1 },
     { nm: 'Security headers', key: 'security', v: siteScanned ? Math.round([sig.hsts, sig.csp, sig.xfo, sig.xcto, sig.refpol, sig.permpol].filter(Boolean).length / 6 * 100) : null, sub: siteScanned ? (`${sig.hsts ? '' : 'no HSTS · '}${sig.csp ? '' : 'no CSP · '}${sig.xfo ? '' : 'no X-Frame'}`.replace(/ · $/, '') || 'ok') : 'not assessed', w: 1 },
     { nm: 'Accessibility (WCAG)', key: 'a11y', v: siteScanned ? Math.round((sig.lang ? 30 : 0) + (sig.viewport ? 30 : 0) + 40 * pointerHealth) : null, sub: siteScanned ? `${sig.lang ? '' : 'no lang · '}contrast/labels` : 'not assessed', w: 1 },
-    { nm: 'AI / GEO visibility', key: 'ai_visibility', st: (aiR.score || 0) < 40 ? 'fail' : 'warn', v: aiR.score || 0, sub: `share of voice ${sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows'))} · entity ${aiR.score || 0}`, w: 1 },
+    // E11 — THE SCORE CONTRADICTED THE EVIDENCE PRINTED BESIDE IT.
+    // The dimension rendered 80/100 while its own sub-line said "share of voice 0". That is because the score WAS
+    // entity readiness alone: being machine-readable was counted, being cited was not. But the dimension is called
+    // AI VISIBILITY, and a firm no engine ever names is not visible, however clean its schema. A reader who sees 80
+    // beside a zero stops trusting every other number on the page.
+    // The dimension is now the weighted pair it always claimed to be: entity readiness and share of voice, evenly.
+    // A firm with zero share of voice cannot exceed 40 here, and the card says why.
+    (() => {
+      const _sov = +sovClamp(g(payload, 'geo_probe.share_of_voice'), g(payload, 'geo_probe.samples'), g(payload, 'geo_probe.ai_knows')) || 0;
+      const _ent = +(aiR.score || 0);
+      let _v = Math.round((_ent * 0.5) + (_sov * 0.5));
+      const _capped = _sov === 0;          // no engine names you: the ceiling applies whether or not it bites
+      if (_capped && _v > 40) _v = 40;
+      return {
+        nm: 'AI / GEO visibility', key: 'ai_visibility',
+        st: _v < 40 ? 'fail' : _v < 70 ? 'warn' : 'pass',
+        v: _v,
+        sub: `share of voice ${_sov} · entity ${_ent}`
+           + (_capped ? ' · capped at 40: you are machine-readable but no engine names you' : ''),
+        w: 1,
+      };
+    })(),
     { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', 'n/a')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
     (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent'), w: 1 }; })(),
   ];
+  // E-28: a dimension that reads a bare "0" is unexplained and reads as a bug. Say WHY it is zero, in the card
+  // itself. When Critical findings sit in the dimension, that is the reason: each Critical floors it until closed.
+  const DIM_BUCKETS = {
+    compliance: ['compliance', 'public_records'], seo: ['seo'], technical_seo: ['technical_seo', 'technical', 'tls_dns'],
+    content: ['eeat', 'content'], cwv: ['performance', 'core_web_vitals'], security: ['tls_dns', 'security'],
+    a11y: ['accessibility'], ai_visibility: ['ai_visibility', 'geo'], authority: ['authority', 'backlinks'], tracking: ['tracking', 'cookies'],
+  };
+  const critsIn = (key) => {
+    const bs = DIM_BUCKETS[key] || [];
+    return pointers.filter((p) => p.severity === 'P0' && bs.includes(String(p.bucket || ''))).length;
+  };
   return dims.map((d) => {
     if (d.v == null) { d.st = 'na'; d.v = 0; d._na = true; }
     else if (!d.st) d.st = d.v >= 75 ? 'pass' : d.v >= 45 ? 'warn' : 'fail';
+    if (d.v === 0 && !d._na) {
+      const n = critsIn(d.key);
+      d.note = n > 0
+        ? `Scored 0 because ${n} Critical ${n === 1 ? 'finding sits' : 'findings sit'} in this dimension; each Critical caps the dimension at zero until closed.`
+        : 'Scored 0 because none of the checks in this dimension passed on your live site.';
+    }
     return d;
   });
 }
@@ -1027,90 +869,6 @@ function scoreFromDims(dims, exposureN) {
   return Math.max(2, Math.min(100, s));
 }
 
-/* ---------------- competitor + keyword intelligence (REAL competitors, not directories/blogs) ---------------- */
-const COMPETITOR_DENYLIST = new Set([
-  'google.com','bing.com','bing.co.uk','yahoo.com','duckduckgo.com','wikipedia.org','facebook.com','linkedin.com','instagram.com','twitter.com','x.com','youtube.com','pinterest.com','tiktok.com','reddit.com','quora.com','mumsnet.com','apple.com','amazon.com',
-  'trustpilot.com','yelp.com','yelp.co.uk','yell.com','yell.co.uk','tripadvisor.com','tripadvisor.co.uk','glassdoor.com','glassdoor.co.uk','indeed.com','g2.com','clutch.co','goodfirms.co','expertise.com','threebestrated.co.uk','bark.com','checkatrade.com','which.co.uk','yellowpages.com','yellowpages.co.uk','justdial.com','thomsonlocal.com','freeindex.co.uk','hotfrog.co.uk','cylex-uk.co.uk','scoot.co.uk','192.com','topconsumerreviews.com','aeroleads.com','f6s.com','disfold.com','rankred.com','spocket.co','metricscart.com','merchantmachine.co.uk','ecommerceguide.com','homelight.com','findanyagent.ae','toppropertydevelopers.com','dentistsearch.co.uk',
-  'legal500.com','chambers.com','chambersandpartners.com','chambersstudent.co.uk','reviewsolicitors.co.uk','lawsociety.org.uk','sra.org.uk','findlaw.com','lawyers.findlaw.com','justia.com','avvo.com','lawyers.com','lawfuel.com','bestlawfirms.com','law.usnews.com','bcgsearch.com','statebarattorneys.com','thelawyer.com','courtscast.com','lawzana.com','lawyersuae.ae','dubaimatic.com','dubaisbest.com','edarabia.com',
-  'zocdoc.com','whatclinic.com','whatclinic.co.uk','doctify.com','topdoctors.co.uk','topdoctors.com','healthgrades.com','vitals.com','ratemds.com','opencare.com','theteledentists.com','treatwell.co.uk',
-  'rightmove.co.uk','zoopla.co.uk','onthemarket.com','primelocation.com','zillow.com','realtor.com','realestate.usnews.com','dubaisells.com','bhomes.com','uniqueproperties.ae','propertyfinder.ae','bayut.com','dubizzle.com','homes.com','redfin.com','trulia.com','apartments.com','loopnet.com',
-  'booking.com','expedia.com','hotels.com','opentable.com','luxuryhotel.guide','thehotelguru.com','bestofluxury.com','lastminute.com','agoda.com','trivago.com','trivago.co.uk','kayak.com','kayak.co.uk','skyscanner.net','airbnb.com','vrbo.com','hostelworld.com','laterooms.com','travelsupermarket.com',
-  'forbes.com','timeout.com','robbreport.com','luxurylondon.co.uk','londontheinside.com','factmagazines.com','luxsphere.co','thegentlemansjournal.com','ceoreviewmagazine.com','bostoninsider.org','dubaiweek.ae','mr7.ae','investinreading.com','joyofcreating.org','safehome.org','propertysecurity.org','goodguardsecurity.com','cheyenne.org','gov.uk','nhs.uk',
-  // additional news/magazine/listicle hosts whose stems dodge the token patterns (ibtimes != "times",
-  // lawyermag != "magazine", bestinlondon has no separator after "best"). These co-rank by aggregating firms.
-  'ibtimes.co.uk','ibtimes.com','lawyermag.co.uk','lawyermonthly.com','legalfutures.co.uk','bestinlondon.london','bestlondon.co.uk','citymatters.london','londonpost.news','thelondoneconomic.com','standard.co.uk','mirror.co.uk','dailymail.co.uk','telegraph.co.uk','independent.co.uk','metro.co.uk','huffingtonpost.co.uk',
-  // tech/SaaS/software listicle, review-aggregator & roundup blogs that co-rank for "saas"/"software"
-  // category terms by aggregating vendors (NOT real vendors themselves — real vendors are kept).
-  'geekflare.com','g2crowd.com','capterra.com','getapp.com','softwareadvice.com','trustradius.com','techradar.com','pcmag.com','cnet.com','techcrunch.com','venturebeat.com','producthunt.com','saashub.com','slashdot.org','sourceforge.net','financesonline.com','softwaresuggest.com','selecthub.com',
-  // listicle / magazine / no-name aggregator hosts the LLM surfaced as "leaders" whose stems dodge the token
-  // patterns (no separator before the keyword). These co-rank by aggregating firms and must never be peers. (citations-junk)
-  'topschoolguide.com','luxurycolumnist.com','britainsfinest.co.uk','retailgazette.co.uk','lawfuel.com','lawandlegal.co.uk','hrjforemanlaws.co.uk','robertsonmoss.com','counselindex.com','vault.com','thehotelguru.com','lhw.com',
-  // fintech / banking & real-estate comparison + directory hosts that co-rank for the category but are NOT real
-  // operating rivals (mirrors the engine per-sector blocklist; belt-and-braces for SERP-cache artifacts). (P7)
-  'monito.com','pocketwise.co.uk','idobusiness.co.uk','comparebanks.co.uk','moneyfactscompare.co.uk','moneyfacts.co.uk','thebanks.eu','moneyzine.com','compareremit.com','bankofengland.co.uk','fca.org.uk',
-  'agentseeker.co.uk','estateagentfinder.co.uk','britishproperty.uk','nethouseprices.com','mouseprice.com','startood.com',
-  // e-commerce / retail PLATFORMS — tools a retailer is built ON, never a retail rival (the Gymshark fix). (E2b)
-  'shopify.com','woocommerce.com','bigcommerce.com','magento.com','squarespace.com','wix.com','prestashop.com','wordpress.com','weebly.com','ecwid.com','bigcartel.com','volusion.com','godaddy.com',
-  // 20-sector directory/platform/news hosts most likely to co-rank as false competitors (E4 mirror of the engine 20-sector blocklist)
-  'realself.com','consultingroom.com','glowday.com','save-face.co.uk',
-  'coinmarketcap.com','coingecko.com','etherscan.io','blockchain.com','cointelegraph.com','coindesk.com','messari.io','glassnode.com','cryptocompare.com','dappradar.com','defillama.com','cryptoslate.com','decrypt.co','bitcoinmagazine.com','coinjournal.net','cryptonews.com','invezz.com','coingabbar.com','tradingguide.co.uk','theinvestorscentre.co.uk','newsbtc.com','beincrypto.com','cryptopotato.com','ambcrypto.com','u.today','bitcoinist.com','blockworks.co','theblock.co','99bitcoins.com','benzinga.com','coinbureau.com','webopedia.com','investing.com','fool.com','datawallet.com','milkroad.com','techopedia.com','koinly.io','cointracker.io',
-  'coursera.org','udemy.com','edx.org','khanacademy.org','greatschools.org','niche.com','qs.com','timeshighereducation.com','topuniversities.com','ratemyprofessors.com','whatuni.com','thecompleteuniversityguide.co.uk','studyportals.com',
-  'autotrader.com','autotrader.co.uk','edmunds.com','cars.com','carvana.com','vroom.com','kbb.com','carfax.com','truecar.com','whatcar.com','carwow.co.uk','parkers.co.uk','heycar.co.uk','motors.co.uk','cinch.co.uk','honestjohn.co.uk','mobile.de','autoscout24.de',
-  'viator.com','getyourguide.com','klook.com','musement.com','tripadvisor.co.uk','lonelyplanet.com','loveholidays.com','secretescapes.com','civitatis.com',
-  'clutch.co','upwork.com','goodfirms.co','toptal.com','fiverr.com','designrush.com','sortlist.com','manta.com','thumbtack.com',
-  'labdoor.com','supplementreviews.com','examine.com','iherb.com','leafly.com','weedmaps.com','cbdoracle.com',
-  'energysage.com','solarreviews.com','cleanenergyreviews.info','pv-magazine.com','rechargenews.com','energysavingtrust.org.uk',
-  'rover.com','care.com','vetster.com','petmd.com','vethelpdirect.com','find-a-vet.co.uk','thedodo.com',
-  'treatwell.com','treatwell.co.uk','mindbody.com','classpass.com','fresha.com','booksy.com','wahanda.com','spafinder.com',
-  'muckrack.com','about.me','crunchbase.com','pitchbook.com',
-]);
-const JUNK_PATTERNS = [
-  /(^|\.)wikipedia\.org$/i, /(^|\.)(facebook|linkedin|youtube|instagram|tiktok|x)\.com$/i, /(^|\.)google\./i, /\.gov(\.[a-z]{2})?$/i, /(^|\.)nhs\.uk$/i,
-  /(^|[.\-])(directory|directories|reviews?|rated|ranking|rankings|listings?|compare|comparison)([.\-]|$)/i,
-  /(^|[.\-])(finder|locator|nearby|near-?me)([.\-]|$)/i,
-  /(^|[.\-])(best|top|top-?\d+|leading|guide|guides|hub|portal|insider)([.\-]|$)/i,
-  /(^|[.\-])(magazine|magazines|news|times|weekly|daily|journal|gazette|press|blog|wiki)([.\-]|$)/i,
-  /(^|[.\-])(marketplace|aggregat|leadgen|lead-?gen)([.\-]|$)/i,
-];
-// Directory/listicle signal at the START of the registrable stem with NO trailing separator — e.g. reviewbritain.com,
-// directorylaw.co.uk, comparethefirm.com, top10lawyers.com. The token-bounded JUNK_PATTERNS miss these because the
-// keyword runs straight into the next word. Conservative set (clear directory verbs only) so real brands are kept.
-const STEM_JUNK_RX = /^(reviews?|directory|directories|compare|comparison|rated|ranking|rankings|listings?|top\d+|bestrated|bestof|find(a|an|my)|nearme|nearby)/i;
-const parentDomain = (host) => { const p = String(host).split('.'); return p.length > 2 ? p.slice(-2).join('.') : host; };
-const MARKET_TLD = { UK: ['co.uk', 'uk', 'org.uk'], GB: ['co.uk', 'uk', 'org.uk'], US: ['com', 'us'], USA: ['com', 'us'], UAE: ['ae', 'com'], AE: ['ae', 'com'], SA: ['sa', 'com'], KSA: ['sa', 'com'], QA: ['qa', 'com'] };
-function isRealCompetitor(domain, firmMarket) {
-  const host = cleanDomain(domain).toLowerCase();
-  if (!host || !host.includes('.')) return false;
-  if (COMPETITOR_DENYLIST.has(host) || COMPETITOR_DENYLIST.has(parentDomain(host))) return false;
-  if (JUNK_PATTERNS.some((rx) => rx.test(host))) return false;
-  if (STEM_JUNK_RX.test(parentDomain(host).split('.')[0])) return false;   // directory verb at the stem start (reviewbritain)
-  // strong directory/comparison SUBSTRING signal anywhere in the registrable label (catches comparebanks,
-  // moneyfactscompare, agentseeker, estateagentfinder that the token-bounded patterns miss). (P7)
-  const _stem = host.split('.')[0].replace(/[^a-z0-9]/g, '');
-  if (/compare|comparison|finder|seeker|directory|listings?|whatclinic|bestbanks?|whichbank|ratemy|news|magazine|gazette|herald|tribune/.test(_stem)) return false;
-  const allowed = MARKET_TLD[String(firmMarket || '').toUpperCase()];
-  if (allowed) { const tld1 = host.split('.').pop(); const tld2 = host.split('.').slice(-2).join('.'); if (/^(ae|sa|qa|in|de|fr|it|es|ca|au)$/i.test(tld1) && !allowed.includes(tld1) && !allowed.includes(tld2)) return false; }
-  return true;
-}
-function corroborated(host, payload) {
-  host = cleanDomain(host).toLowerCase();
-  const cb = arr(g(payload, 'competitive_benchmark.competitors', []));
-  const ai = arr(g(payload, 'ai_citation.competitors', []));
-  const auth = arr(g(payload, 'authority.ranked', []));
-  const n = [cb.some((c) => cleanDomain(c.domain).toLowerCase() === host), ai.some((c) => cleanDomain(c.domain).toLowerCase() === host), auth.some((r) => cleanDomain(r.domain).toLowerCase() === host)].filter(Boolean).length;
-  const dr10 = ((auth.find((r) => cleanDomain(r.domain).toLowerCase() === host) || {}).dr || 0) * 10;
-  return n >= 2 || dr10 >= 20;
-}
-// Aggregator check that also works on firm NAMES (not just domains), drops OTA / directory / marketplace
-// brands the LLM sometimes names as "competitors" (Booking.com for a hotel, Amazon for a sofa maker), which
-// must never appear in the rendered peer set. (S-aggname)
-const AGG_BRANDS = new Set(['booking', 'expedia', 'hotels', 'agoda', 'trivago', 'kayak', 'tripadvisor', 'trustpilot', 'yelp', 'glassdoor', 'indeed', 'forbes', 'timeout', 'findlaw', 'justia', 'bestlawfirms', 'lawyers', 'avvo', 'zocdoc', 'healthgrades', 'rightmove', 'zoopla', 'onthemarket', 'zillow', 'realtor', 'amazon', 'ebay', 'etsy', 'aliexpress', 'walmart', 'yell', 'thomson', 'clutch', 'g2', 'capterra', 'wikipedia', 'reddit']);
-function looksAggregator(name) {
-  const h = cleanDomain(name).toLowerCase();
-  if (h.includes('.') && (COMPETITOR_DENYLIST.has(h) || COMPETITOR_DENYLIST.has(parentDomain(h)) || JUNK_PATTERNS.some((rx) => rx.test(h)) || STEM_JUNK_RX.test(parentDomain(h).split('.')[0]))) return true;
-  const first = String(name || '').toLowerCase().replace(/[^a-z0-9 .]/g, '').split(/[ .]/)[0];
-  return AGG_BRANDS.has(first);
-}
 // Best secondary keyword: the most specific on-brand term, never a bare head term / wrong city / brand name.
 function bestSecondaryKeyword(payload, market) {
   const kws = arr(g(payload, 'keyword_map.keywords', []));
@@ -1155,7 +913,7 @@ const KW_NOISE_RX = /\b(work experience|training contract|vacation scheme|gradua
 // (e.g. a UAE hotel group minted with city "London") is detected as foreign and stripped. Keys are the
 // adapter's normalised country codes (UK/US/AE/SA/QA/FR/DE/etc.).
 const CITY_COUNTRY = {
-  london: 'UK', manchester: 'UK', birmingham: 'UK', edinburgh: 'UK', glasgow: 'UK', leeds: 'UK', bristol: 'UK', liverpool: 'UK', sheffield: 'UK', newcastle: 'UK', nottingham: 'UK', leicester: 'UK', coventry: 'UK', cardiff: 'UK', belfast: 'UK', aberdeen: 'UK', brighton: 'UK', oxford: 'UK', cambridge: 'UK', reading: 'UK', southampton: 'UK', norwich: 'UK', exeter: 'UK', derby: 'UK', plymouth: 'UK', wolverhampton: 'UK', leeds: 'UK',
+ london: 'UK', manchester: 'UK', birmingham: 'UK', edinburgh: 'UK', glasgow: 'UK', leeds: 'UK', bristol: 'UK', liverpool: 'UK', sheffield: 'UK', newcastle: 'UK', nottingham: 'UK', leicester: 'UK', coventry: 'UK', cardiff: 'UK', belfast: 'UK', aberdeen: 'UK', brighton: 'UK', oxford: 'UK', cambridge: 'UK', reading: 'UK', southampton: 'UK', norwich: 'UK', exeter: 'UK', derby: 'UK', plymouth: 'UK', wolverhampton: 'UK',
   'new york': 'US', nyc: 'US', miami: 'US', 'los angeles': 'US', 'san francisco': 'US', chicago: 'US', boston: 'US', seattle: 'US', austin: 'US', dallas: 'US', houston: 'US', washington: 'US', atlanta: 'US', denver: 'US', phoenix: 'US', philadelphia: 'US',
   dubai: 'AE', 'abu dhabi': 'AE', sharjah: 'AE', ajman: 'AE',
   riyadh: 'SA', jeddah: 'SA', dammam: 'SA', mecca: 'SA', medina: 'SA',
@@ -1317,11 +1075,18 @@ function sectorInapplicable(fw, payload) {
 
 /* ---------------- THE ADAPTER ---------------- */
 // Named exports for the benchmark scorer (single source of truth, F5 shared blocklist).
-export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer };
+export { isRealCompetitor, FW_JUR, COMPETITOR_DENYLIST, JUNK_PATTERNS, noStatutoryFine, setVoluntaryBinding, bingoFromPointer, currencyForFramework, gbp };
 export function payloadToD(payload, ctx = {}) {
+  payload = payload || {};
+  // E-218 TRUTH FILTER (audit-of-the-audits P-002/P-004/P-008/P-011/P-064, S-183): any row the verifier did not
+  // pass (verified !== true — 9,700+ legacy rows plus every quarantined mint) renders ONLY what survives the
+  // engine's own evidence standards, applied render-side to the stored payload. What survives renders exactly as
+  // before (real breaches stay line-by-line); what fails the standards is removed, and its fine with it. This is
+  // the render-side sanitiser the 11 Jul catalogue prescribed instead of a mass re-mint.
+  if (ctx.verified !== true) payload = sanitiseUnverified(payload);
   setVoluntaryBinding(payload && payload.binding);   // FIX-R1: seed voluntary-code guard from the engine payload
   setBindingMap(payload && payload.binding);            // #17a: seed the binding-status label map
-  payload = payload || {};
+  setFrameworkMeta(payload && payload.framework_meta);  // the catalogue's own name/regulator/binding_type: read, never guessed
   // FIX-R2/R3: consume the evidence-ledger contract. review_candidates = low-confidence attachments (below the
   // conformal band) that must NOT render as hard breaches; they still appear in the 'applies to you' framework list.
   const reviewSet = new Set(arr(payload.review_candidates).map((x) => String(x).toUpperCase()));
@@ -1330,21 +1095,11 @@ export function payloadToD(payload, ctx = {}) {
   const allow = authJurisdictions(payload);
   const company = firmName(payload, ctx.company);
   const market = String(payload.country || '').toUpperCase();
-  const curSym = moneySymbol(payload);   // '£' unless the firm is clearly USD/US, then '$' (no FX conversion)
   // A safe absolute URL for screenshots even when payload.domain is missing, never "https://undefined".
   const siteUrl = cleanDomain(payload.domain) ? ('https://' + cleanDomain(payload.domain)) : '';
 
   // --- pointers: CONFIRMED + jurisdiction-gated + EVIDENCE-gated (membrane) ---
-  // 2026-07-20 sniper edit (b): STATE vocabulary. The new compliance engine emits an explicit state on every
-  // pointer ('CONFIRMED' = a confirmed, render-as-breach finding); normalise case/whitespace so a casing
-  // drift from the engine can't silently drop every pointer. Absent state still defaults to CONFIRMED
-  // (legacy contract, unchanged).
-  const rawPointers = arr(payload.pointers).filter((p) => String(p.state || 'CONFIRMED').trim().toUpperCase() === 'CONFIRMED');
-  // 2026-07-20 sniper edit (b): SEVERITY vocabulary. Every severity-keyed site downstream (SEV_BAND, SEVRANK,
-  // the finding-chip colour classes in audit-app.js) keys off the literal P0/P1/P2/P3 scale. Normalise EVERY
-  // pointer's severity to that canonical scale once, at the door, so the new engine's severities render with
-  // the correct colour/rank instead of silently falling through to grey/'standard'.
-  for (const p of rawPointers) p.severity = normSeverity(p.severity);
+  const rawPointers = arr(payload.pointers).filter((p) => (p.state || 'CONFIRMED') === 'CONFIRMED');
   // A finding renders only if the engine actually EVIDENCED it on THIS site, never because the rule
   // merely exists in the catalogue. Headline fines (P0/P1) need a quote or an inspected URL; email-
   // marketing rules need an email capability on the site. This is what stops "FTC §5 email" firing on
@@ -1372,28 +1127,6 @@ export function payloadToD(payload, ctx = {}) {
     return evidenced(p);
   });
   const dropped = rawPointers.length - pointers.length; // jurisdiction + unevidenced + sector-applicability suppressions
-
-  // ---- 2026-07-20 sniper edit (a): PAYLOAD-FIRST LAW CONNECTION (KIMI-GRAFT-SYNC-2026-07-20.md §1) ----
-  // The new compliance engine emits its own framework_ids (UK_EQUALITY_ACCESSIBILITY, UK_PECR_COOKIES_MARKETING,
-  // UK_CQC_20A_RATING, UK_GDC_ADVERTISING, UK_PRICE_VAT_DISPLAY, ...) that are not, and never will all be, in the
-  // legacy 285-entry FW_NAME/FW_REGULATOR maps below (hand-maintaining that map for every new pack is the drift
-  // failure mode that produced it in the first place). Precedence: payload-provided field -> legacy map ->
-  // literal fallback. Built from the RAW pointer set (not just the gated `pointers`) so a screened/applies-to-
-  // you framework injected later in this function still resolves its real name off the engine's own data.
-  const PTR = Object.create(null);
-  for (const p of (payload.pointers || [])) if (p && p.framework_short) PTR[p.framework_short] = p;
-  const fwName = (fw) => (PTR[fw] && PTR[fw].display_name) || FW_NAME[fw] || fwNameLegacy(fw);
-  const fwRegulator = (fw) => (PTR[fw] && PTR[fw].regulator) || FW_REGULATOR[fw] || fwRegulatorLegacy(fw);
-  // The statutory-provision line ("PECR 2003, reg 6"). Render with a null-guard — omit the line entirely for
-  // non-statutory frameworks (CAP code) rather than print an empty/"undefined" line.
-  const fwProvision = (fw) => (PTR[fw] && PTR[fw].provision) || '';
-  // 2026-07-20 sniper edit (b): PENALTY formatting. gbp() defaults to a hardcoded '£' when no symbol is passed;
-  // a new pointer's `penalty_currency` (GBP/USD/EUR/AED) must drive the symbol instead, and a ready-print
-  // `penalty_label` ("Up to £500,000 (ICO monetary penalty notice)") is preferred outright over reconstructing
-  // a range from raw numbers, so a new pointer never prints a misleading or blank/"£undefined" figure
-  // (KIMI-GRAFT-SYNC-2026-07-20.md §5 trap 1).
-  const PENALTY_CUR_SYM = { GBP: '£', USD: '$', EUR: '€', AED: 'AED ' };
-  const penaltySym = (p, fallbackSym) => (p && PENALTY_CUR_SYM[String(p.penalty_currency || '').toUpperCase()]) || fallbackSym;
   // EXPOSURE CREDIBILITY: rescale turnover-based statutory fines (GDPR/PDPL/CCPA…) from the global-turnover CAP the
   // catalogue stores (£17.5M) down to 4% of THIS firm's estimated turnover, so a dental clinic shows ~£48k, not
   // £18M, while a bank/university (whose 4% already exceeds the cap) is left untouched. Mutating the gated pointers
@@ -1422,19 +1155,49 @@ export function payloadToD(payload, ctx = {}) {
   const km = g(payload, 'keyword_map', {}) || {};
 
   // --- counts + exposure (numeric-lock) ---
-  const counts = { critical: 0, high: 0, standard: 0, total: pointers.length };
+  // E05 / E29 — TWO CONTRADICTORY TALLIES SHIPPED ON ONE PAGE. The rail said "1 critical / 15 high / 34 standard"
+  // while the Regulatory dimension said "1 critical / 11 high / 28 standard", with no stated relationship. A reader
+  // cannot tell which is true, so they trust neither. They were never in conflict: one counts EVERY dimension, the
+  // other counts REGULATORY findings only. The numbers were fine; the missing word was the scope. Both tallies now
+  // carry it explicitly, and the renderer prints the scope beside each.
+  const counts = { critical: 0, high: 0, standard: 0, total: pointers.length, scope: 'across all ten dimensions' };
   for (const p of pointers) counts[SEV_BAND[p.severity] || 'standard']++;
+  const _regPtrs = pointers.filter((p) => !isNonStatutory(p));
+  const countsRegulatory = { critical: 0, high: 0, standard: 0, total: _regPtrs.length, scope: 'regulatory findings only' };
+  for (const p of _regPtrs) countsRegulatory[SEV_BAND[p.severity] || 'standard']++;
   const perFw = perFrameworkMaxFine(pointers);
-  const exposureN = canonicalExposure(perFw);
-  // Exposure waterfall, show HOW the honest number is reached (we DON'T just sum ceilings). (§4.3)
-  const rawSum = Object.values(perFw).reduce((a, b) => a + b, 0);
+  const perFwMed = perFrameworkMedianFine(pointers);
+  // CURRENCY BY REGIME. Every fine is grouped by the currency of the statute that sets it (currencyForFramework):
+  // a GDPR fine is euros, a DIFC fine is US dollars, an ICO fine is pounds. Currencies are NEVER summed together
+  // and NEVER converted — an exchange rate invented on a legal document is a fabrication. The headline is printed
+  // in the firm's PRIMARY binding currency (the regime carrying the largest exposure) and any other binding
+  // currency is stated ALONGSIDE it in its own units ("£2.6M + €900k").
+  const _fallbackSym = moneySymbol(payload);   // only for codes with no statutory currency of their own
+  const byCur = (m) => { const o = {}; for (const [fw, v] of Object.entries(m)) { const c = currencyForFramework(fw) || _fallbackSym; (o[c] = o[c] || {})[fw] = v; } return o; };
+  const _medGroups = byCur(perFwMed), _maxGroups = byCur(perFw);
+  const medTotals = {}; for (const [c, m] of Object.entries(_medGroups)) medTotals[c] = canonicalExposure(m);
+  const ceilTotals = {}; for (const [c, m] of Object.entries(_maxGroups)) ceilTotals[c] = canonicalExposure(m);
+  const _ranked = Object.entries(medTotals).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  const curSym = (_ranked[0] && _ranked[0][0]) || _fallbackSym;     // PRIMARY binding currency (no FX, ever)
+  const ceilingN = ceilTotals[curSym] || 0;                         // statutory ceiling, primary currency (context only, E-244)
+  const exposureN = medTotals[curSym] || 0;                         // headline = MEDIAN, never the ceiling
+  const otherCurs = _ranked.slice(1);                               // other binding regimes, each in its own currency
+  const exposureByCurrency = _ranked.map(([c, v]) => ({ cur: c, amount: v, display: gbp(v, c) }));
+  const exposureAggregate = _ranked.length ? _ranked.map(([c, v]) => gbp(v, c)).join(' + ') : gbp(0, curSym);
+  const exposureBasis = otherCurs.length
+    ? `Stated per binding regime in its own statutory currency (${_ranked.map(([c]) => c).join(', ')}). Regulators set these maxima in their own currency, so the figures are shown side by side and no exchange rate is applied.`
+    : `Stated in ${curSym}, the statutory currency of the regimes that bind you. No exchange rate is applied.`;
+  // Exposure waterfall, show HOW the honest number is reached (we DON'T just sum ceilings). (§4.3 + E-244)
+  // It is built on the PRIMARY-currency group only, so every step adds up to the headline figure beside it.
+  const rawSum = Object.values(_maxGroups[curSym] || {}).reduce((a, b) => a + b, 0);
   const exposureWaterfall = {
-    raw: rawSum, collapsed: exposureN, frameworks: Object.keys(perFw).length,
+    raw: rawSum, collapsed: exposureN, ceiling: ceilingN, median: exposureN, cur: curSym,
+    frameworks: Object.keys(_medGroups[curSym] || {}).length,
     savedPct: rawSum > 0 ? Math.round((1 - exposureN / rawSum) * 100) : 0,
     steps: [
-      { l: 'Statutory ceilings, summed', v: rawSum, cls: 'amber' },
-      { l: 'Overlapping data-protection fines collapsed (max, not sum)', v: exposureN, cls: 'gold' },
-      { l: 'Your real exposure', v: exposureN, cls: 'red', final: true },
+      { l: 'Statutory ceilings, summed (what the law permits)', v: rawSum, cls: 'amber' },
+      { l: 'Overlapping data-protection fines collapsed (max, not sum)', v: ceilingN, cls: 'gold' },
+      { l: 'Median of the typical enforcement band, what regulators actually levy', v: exposureN, cls: 'red', final: true },
     ],
   };
 
@@ -1481,8 +1244,8 @@ export function payloadToD(payload, ctx = {}) {
   const PORTED_NEWS = {
     'UK_GDPR_A13': 'ICO issued GBP 19.6M across 7 cases in 2025 (Capita GBP 14M, Advanced Computer Software GBP 3.07M, 23andMe GBP 2.31M, LastPass GBP 1.23M); two-thirds were UK GDPR breaches.',
     'UK_DPA_2018': 'ICO 2025 enforcement hit GBP 19.6M from 7 cases (vs GBP 2.7M in 2024); the DUAA came into force 5 Feb 2026 with new compulsion powers.',
-    'UK_PECR': 'The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to GBP 17.5M (from GBP 500k); the ICO is reviewing the UK top 1,000 websites cookie banners.',
-    'UK_ICO_COOKIES': 'DUAA (in force 5 Feb 2026) lifts PECR fines to GBP 17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.',
+    'UK_PECR': 'The DUAA came into force 5 Feb 2026, raising the maximum PECR fine to £17.5M (from £500k); the ICO is reviewing the UK top 1,000 websites cookie banners.',
+    'UK_ICO_COOKIES': 'DUAA (in force 5 Feb 2026) lifts PECR fines to £17.5M; the ICO is actively reviewing the top 1,000 UK sites and warned non-compliant cookie banners.',
     'UK_FCA_CONC25': 'FCA charged 9 finfluencers in 2024. Consumer Duty enforcement is FCA top 2025 priority.',
     'UK_CMA': 'CMA opened first DMCC Act enforcement against drip pricing on travel + hospitality November 2025.',
     'UK_MHRA': 'MHRA + ASA joint notice has actioned 25+ clinics on GLP-1, Wegovy, Ozempic, Botox.',
@@ -1565,7 +1328,7 @@ export function payloadToD(payload, ctx = {}) {
         const _elLine = elementLine(p);
         return {
           subject: subjectOf(p, 84) || 'Required disclosure',
-          quote: _elLine ? '' : String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ').slice(0, 180),
+          quote: _elLine ? '' : _q25(String(p.evidence_quote || '').trim().replace(/\s{2,}/g, ' ')),   // NO TRUNCATION: the firm's own words in full
           // the engine's REAL nearest-miss line (what IS on the page that should carry the disclosure vs the specific
           // missing element) — rendered as our ANALYSIS, not a verbatim site quote, and only when there's no quote.
           absence: _elLine || (String(p.evidence_quote || '').trim() ? '' : absenceLine(p.absence_evidence)),
@@ -1588,31 +1351,44 @@ export function payloadToD(payload, ctx = {}) {
     const _regP = (top.regulator && !/_/.test(top.regulator) && !/^https?:/.test(top.regulator)) ? String(top.regulator).trim() : '';
     // The regulatory MERGE can key the box on a synthesised code (e.g. UK_GDPR) the map lacks while the
     // representative finding's own framework_short (UK_GDPR_A13) IS mapped — try both before the generic fallback.
-    // 2026-07-20 sniper edit (a): payload-first name/regulator/provision (KIMI-GRAFT-SYNC-2026-07-20.md §1).
-    // PTR is keyed by the raw framework_short; `fw` here may be a canonicalised/merged group key
-    // (FW_CANON / ACT_MERGE_PREFIXES) that PTR never carries directly, so try the group's representative
-    // raw code (top.framework_short) first, then the group key itself, before the legacy map/fallback.
-    const _pfwName = fwName(top.framework_short) || fwName(fw);
-    const _pfwProvision = fwProvision(top.framework_short) || fwProvision(fw);
-    const _reg = (PTR[top.framework_short] && PTR[top.framework_short].regulator) || FW_REGULATOR[fw] || FW_REGULATOR[top.framework_short] || FW_REGULATOR[String(fw).replace(/_A?\d+.*$/, '')] || _regP || 'Sector regulator';
+    // THE SECOND DOOR, AGAIN. This card built its own regulator instead of calling fwRegulator(), so the catalogue's
+    // answer never reached it. Every single defect this session had a second door. Route BOTH through one function.
+    // A THIRD DOOR. I wrote this comment saying "route BOTH through one function", and CodeRabbit pointed out there
+    // were THREE: the truncated-code fallback still read FW_REGULATOR directly, so a framework whose regulator the
+    // CATALOGUE knows could still be answered from a stale map. Every route now goes through fwRegulator(), which
+    // reads the catalogue first. This is the third time in one session that a fix was applied to one door of many.
+    const _reg = fwRegulator(fw)
+              || fwRegulator(top.framework_short)
+              || fwRegulator(String(fw).replace(/_A?\d+.*$/, ''))
+              || _regP || null;   // catalogue first, every route; null, never fabricated
     // citation_url + section_ref so the actual law is CITED (a clickable source), per the engine payload.
     const _cite = top.citation_url || top.citation || '';
     const _intel = intelOf(fw, top.framework_short);
     return {
-      code: fwCode(fw), name: _pfwName, regulator: _reg, provision: _pfwProvision, binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
+      code: fwCode(fw), name: fwName(fw), regulator: _reg, binding: bindingType(fw), binding_label: bindingLabel(fw),
       citation_url: /^https?:\/\//.test(_cite) ? _cite : '',
       jur: ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || FW_JUR(fw) || 'Global'),
-      // 2026-07-20 sniper edit (b): a ready-print penalty_label wins outright; else format from the pointer's
-      // own penalty_currency (never a hardcoded '£').
-      findings, c, h, s, exp: top.penalty_label ? top.penalty_label : (maxFine ? gbp(maxFine, penaltySym(top, curSym)) : 'ranking'), expN: maxFine / 1e6,
-      // Verified curated enforcement (with a real penalty) leads; then live news_map; then ported/example; then prose.
-      action: (_intel && _intel.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || (_reg + ' actively enforces this regime, a confirmed breach here is exactly what they act on.'),
+      findings, c, h, s, exp: maxFine ? gbp(maxFine, curSym) : (noStatutoryFine(fw) ? 'ranking' : (uncappedExp(fw) || 'ranking')), expN: maxFine / 1e6,
+      // E-233: verified curated enforcement (real penalty, real source) leads; then live news_map; then a ported
+      // example. NO PROSE FALLBACK — an unsourced "the regulator actively enforces this" is an invented claim and
+      // is exactly what made the section read as filler. Empty is honest; the obligations still carry the card.
+      action: (_intel && _intel.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || PORTED_NEWS[top.framework_short] || top.enforcement_example || '',
       enforcement_url: (_intel && _intel.enforcement_url) || '',
       obligations: obligationsOf(_intel), reg_focus: (_intel && _intel.focus) || '', guidance: (_intel && _intel.guidance) || '',
-      why: top.layman_explanation || top.fact || ('A confirmed gap against ' + _pfwName + ' on your live site, the regulator can act on it as it stands today.'),
+      why: top.layman_explanation || top.fact || ('A confirmed gap against ' + fwName(fw) + ' on your live site, the regulator can act on it as it stands today.'),
       provisions, articleGroups,
     };
   }).sort((a, b) => (b.c - a.c) || (b.expN - a.expN)).slice(0, 12);
+  // E-251 — NO HOLLOW CARDS. A screened framework whose card carries NEITHER obligations NOR a cited enforcement
+  // action is an empty box with a regulator's name on it. It is exactly the "this section provides no value"
+  // complaint: the reader opens it and finds nothing. kingsleynapley shipped three (FRC, HMRC, ICAEW) — which were
+  // also a sector leak, fixed at source in E-250, but the render must be defensive regardless: we do not know every
+  // framework we will ever attach, and any one of them can lack curated intel.
+  // A card must EARN its place: it renders only if it can say something true and useful. A BREACHED framework
+  // always earns it (the breach itself is the content). A SCREENED one must bring obligations or a real enforcement
+  // action. Silence is better than a hollow box.
+  const _hollow = (f) => f.screened && !(f.obligations || []).length && !String(f.action || '').trim();
+
   // (The empty-state SCAN fallback used to sit here, but it asserted "no statutory breach evidenced" even when binding
   // laws were about to be injected below — contradictory. It now runs AFTER the screened injection, so it only appears
   // when genuinely nothing binds/was readable.)
@@ -1630,7 +1406,18 @@ export function payloadToD(payload, ctx = {}) {
   // show EVERY country's laws (founder requirement) instead of the first country's filling all 10. Single-jurisdiction
   // stays at 10. (multi-jur-cap)
   const _jurCount = [...allow].filter((j) => j !== 'GLOBAL').length || 1;
-  const REG_CAP = Math.min(20, 10 + 4 * Math.max(0, _jurCount - 1));
+  // E-247 — A LAW THAT BINDS THE FIRM CAN NEVER BE CROWDED OUT BY A DISPLAY CAP.
+  // The engine's `binding` map IS the audit's own assertion of which laws bind this firm. On russell-cooke it held
+  // 14 frameworks INCLUDING UK_PECR and UK_ICO_COOKIES. But the framework list was built ONLY from findings, and the
+  // screened-injection that back-fills the clean-but-binding laws opened with `if (frameworks.length >= REG_CAP)`.
+  // With 10 breached frameworks and REG_CAP = 10, that guard fired on its FIRST line and every clean binding law was
+  // dropped: the cookie law and the e-privacy law simply vanished, and the page then told the reader
+  // "10 frameworks bind you" when its own payload said 14. Under-reporting the law is as much a defect as
+  // over-reporting it, and it hid exactly the laws (cookies, privacy, data protection) that bind EVERY website.
+  // The cap now governs only DISCRETIONARY extras. Everything in `binding` is mandatory and renders unconditionally.
+  const _bound = new Set(Object.keys(g(payload, 'binding', {}) || {}).map((c) => fwCanon(c)));
+  const _isBound = (fw) => _bound.has(fwCanon(fw));
+  const REG_CAP = Math.max(_bound.size, Math.min(20, 10 + 4 * Math.max(0, _jurCount - 1)));
   const BASELINE = {
     UK: ['UK_GDPR_A13', 'UK_PECR', 'UK_EQUALITY_2010', 'UK_CRA_2015', 'UK_COMPANIES_ACT'],
     EU: ['EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025', 'EU_DSA'],
@@ -1643,7 +1430,8 @@ export function payloadToD(payload, ctx = {}) {
     const _jurName = (fw) => ({ UK: 'UK', EU: 'EU', US: 'US', AE: 'UAE', SA: 'KSA', QA: 'Qatar', SG: 'Singapore', IN: 'India', FR: 'France', DE: 'Germany', GLOBAL: 'Global' }[FW_JUR(fw)] || 'Global');
     const _baselineSet = new Set(Object.values(BASELINE).flat().map(fwCanon));
     const _pushScreened = (fw) => {
-      if (frameworks.length >= REG_CAP) return;
+      // E-247: the cap governs DISCRETIONARY rows only. A law the engine says BINDS this firm always renders.
+      if (frameworks.length >= REG_CAP && !_isBound(fw)) return;
       if (noStatutoryFine(fw) || sectorInapplicable(fw, payload)) return;
       const j = FW_JUR(fw); if (!(j === 'GLOBAL' || allow.has(j))) return;
       const nm = fwName(fw);
@@ -1664,16 +1452,22 @@ export function payloadToD(payload, ctx = {}) {
       _shownFw.add(nm);
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
-        code: fwCode(fw), name: nm, regulator: fwRegulator(fw), provision: fwProvision(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, binding: (_BINDING_MAP[String(fw).toUpperCase()] || null), binding_label: bindingLabel(fw),
-        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || (fwRegulator(fw) + ' actively enforces this regime, and the obligations it sets are exactly what it acts on.'),
+        code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: inspectedPagesFor(payload, fw), binding: bindingType(fw), binding_label: bindingLabel(fw),
+        // E-233: NO INVENTED ENFORCEMENT. The old fallback asserted "<regulator> actively enforces this regime"
+        // for any framework we had no intel on — an unsourced claim that read as filler and gave the section its
+        // "no value" feel. Enforcement now renders ONLY when a real, curated, cited action exists; otherwise the
+        // field is empty and the card leads with the regulator's obligations, which are always true.
+        action: (_it && _it.enforcement) || g(news, fw, '') || PORTED_NEWS[fw] || '',
         enforcement_url: (_it && _it.enforcement_url) || '',
         obligations: obligationsOf(_it), reg_focus: _focus, guidance: (_it && _it.guidance) || '',
         // Per founder: present a non-breached law as one that BINDS the firm, with its obligations — never as "we
         // scanned your site and found no breach". Lead with the curated regulator-focus line when we have it.
         why: _focus
           ? (_focus + ' This framework legally binds you, and the obligations below are the controls you must be able to demonstrate.')
-          : ('This framework legally binds you in your jurisdiction. The obligations below are the controls ' + fwRegulator(fw) + ' expects you to be able to demonstrate, and the gap most firms in your sector carry here.'),
+          : ('This framework legally binds you in your jurisdiction. The obligations below are the controls '
+              + (fwRegulator(fw) ? fwRegulator(fw) + ' expects' : 'its regulator expects')
+              + ' you to be able to demonstrate, and the gap most firms in your sector carry here.'),   // E08: reads correctly when the authority is unknown
       });
     };
     // 1) the firm's SECTOR-SPECIFIC applicable frameworks first (never crowded out), 2) the rest of applicable,
@@ -1687,6 +1481,11 @@ export function payloadToD(payload, ctx = {}) {
     const _rank = (fw) => (FW_JUR(fw) === _home ? 0 : 2) + (_baselineSet.has(fw) ? 1 : 0);
     [..._applic].sort((a, b) => _rank(a) - _rank(b)).forEach(_pushScreened);
     for (const j of ['UK', 'EU', 'US', 'AE', 'SA', 'QA', 'FR', 'DE']) { if (!allow.has(j)) continue; for (const fw of BASELINE[j]) _pushScreened(fwCanon(fw)); }
+    // E-247: FINALLY, and unconditionally, EVERY law in the engine's own binding map. `applicable_frameworks` and the
+    // hardcoded BASELINE table are both incomplete views; `binding` is the engine's actual verdict on what governs
+    // this firm, and it is what the sidebar counts. Anything in it that has not yet rendered renders now, screened.
+    // Without this the audit under-reports the law and contradicts its own payload.
+    [..._bound].sort((a, b) => _rank(a) - _rank(b)).forEach(_pushScreened);
   }
 
   // Collapse near-duplicate framework rows (a few overlapping catalogue codes render almost identically — e.g. two
@@ -1707,6 +1506,8 @@ export function payloadToD(payload, ctx = {}) {
     for (const f of frameworks) { const k = _stem(f.name); if (_seen.has(k)) continue; _seen.add(k); _out.push(_best.get(k)); }
     frameworks.length = 0; frameworks.push(..._out);
   }
+  // E-251: drop hollow cards LAST, after every intel-grafting pass has had its chance to fill them.
+  { const _kept = frameworks.filter((f) => !_hollow(f)); frameworks.length = 0; frameworks.push(..._kept); }
 
   // Empty-state fallback — ONLY when nothing binds/was readable after breached + screened injection (rare: an
   // unreadable site). Reframed per founder: no "no statutory breach evidenced" language.
@@ -1726,10 +1527,10 @@ export function payloadToD(payload, ctx = {}) {
     regulatoryHeadline = _boundN === 0
       ? 'The full regulatory catalogue was screened against your jurisdiction. Your material gaps this scan sit in the ranking, authority and AI-visibility signals in the pillars below.'
       : (compCriticals > 0
-        ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, and ${breachedFwCount} ${breachedFwCount === 1 ? 'is' : 'are'} breached on ${_scanLabel}${_viaArchive ? ' (re-scan confirms live state)' : ' right now'}.`
+        ? `The full regulatory catalogue was screened against your jurisdiction. ${breachedFwCount} ${breachedFwCount === 1 ? 'obligation is' : 'obligations are'} verified as breached on ${_scanLabel}${_viaArchive ? ' (re-scan confirms live state)' : ' right now'}. ${(_boundN - breachedFwCount) > 0 ? (_boundN - breachedFwCount) + ' further ' + ((_boundN - breachedFwCount) === 1 ? 'framework binds' : 'frameworks bind') + ' you and were assessed at page level.' : ''}`
         : (compHighs > 0
           ? `The full regulatory catalogue was screened against your jurisdiction. ${_b(_boundN)}, with ${compHighs} high-severity compliance ${compHighs === 1 ? 'gap' : 'gaps'} to close. Your ranking and AI-visibility gaps in the pillars below are where buyers are being lost today.`
-          : `${_b(_boundN).charAt(0).toUpperCase() + _b(_boundN).slice(1)} in your jurisdiction, and each below sets out the obligations you must be able to demonstrate. Your ranking, authority and AI-visibility gaps in the pillars below are where named competitors are taking the buyers you should be winning.`));
+          : `Your live pages passed the checks a regulator's first sweep would run. What binds you, what was inspected, and what a full engagement verifies beyond the page is set out below.`));
   }
 
   // --- exposure bars (£M, chart max 18) ---
@@ -1850,7 +1651,7 @@ export function payloadToD(payload, ctx = {}) {
   // Element-level PSI evidence, the real failing Lighthouse audits on YOUR live DOM (selector + cost). (R-018/N2)
   seo.psiAudits = arr(g(payload, 'scan.psi.audits', []))
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   // Desktop + mobile PSI (engine now returns both strategies). When present, the render shows a
   // Mobile|Desktop toggle with the 4 Lighthouse dials + Core Web Vitals + element-level audits-with-fixes
@@ -1950,7 +1751,7 @@ export function payloadToD(payload, ctx = {}) {
     const recommendsRival = rival ? `recommends ${rival} instead` : 'recommends a competitor it can read instead';
     const overRival = rival ? cleanDomain(rival) : 'the firms it can read today';
     let branch, reason;
-    if (blocked.length) { branch = 'crawler-block'; reason = `You block the ${blocked.length} named AI crawlers (${blocked.slice(0, 3).map(nameOf).filter(Boolean).join(', ')}…) that feed ChatGPT, Claude, Perplexity and Google AI. They literally cannot read you, so even with schema present, your share of voice is 0 while AI ${namesRival} every run.`; }
+    if (blocked.length) { branch = 'crawler-block'; reason = `You block the ${blocked.length} named AI crawlers (${blocked.map(nameOf).filter(Boolean).join(', ')}) that feed ChatGPT, Claude, Perplexity and Google AI. They literally cannot read you, so even with schema present, your share of voice is 0 while AI ${namesRival} every run.`; }
     else if (!aiR.has_org_schema && !aiR.has_same_as && !aiR.in_wikidata) { branch = 'entity-absence'; reason = `You have 0 of the 3 identity anchors, no Organization schema, no sameAs, no Wikidata. To an AI you are an unknown string, not a citable firm; asked who you are it returns “no reliable information” and ${recommendsRival}.`; }
     else if (aiR.has_org_schema && !aiR.in_wikidata) { branch = 'no-wikidata'; reason = `You have schema, but no Wikidata entity, the knowledge base AI checks to decide who is real. Without it AI still can’t vouch for you and ${namesRival}. Schema makes you machine-readable; the entity makes you trusted.`; }
     else { branch = 'near-ready'; reason = `Your identity signals are largely present, the work is to defend and deepen them so you become the default named answer over ${overRival}.`; }
@@ -2054,11 +1855,11 @@ export function payloadToD(payload, ctx = {}) {
   // --- top-3 BINGO fixes ---
   const SEVRANK = { P0: 0, P1: 1, P2: 2, P3: 3 };
   const fixOrder = [...pointers].sort((a, b) => (SEVRANK[a.severity] - SEVRANK[b.severity]) || ((+b.fine_high_gbp || 0) - (+a.fine_high_gbp || 0)));
-  const fixes = fixOrder.slice(0, 3).map((p, i) => { const f = bingoFromPointer(p, pillarOf(p), news, i, curSym, fwName, penaltySym); const shotUrl = p.evidence || arr(p.checked_urls)[0] || siteUrl; f.shot = shotUrl ? thum(shotUrl) : ''; return f; });
+  const fixes = fixOrder.slice(0, 3).map((p, i) => { const f = bingoFromPointer(p, pillarOf(p), news, i, curSym); const shotUrl = p.evidence || arr(p.checked_urls)[0] || siteUrl; f.shot = shotUrl ? thum(shotUrl) : ''; return f; });
   differentiateFixes(fixes); // each BINGO card must read as a distinct remediation (no shared templated prefix)
   // GEO pane needs its own GEO-specific BINGO card (never D.fixes[2], which may not exist / may be compliance).
   const geoPtr = pointers.find((p) => p.bucket === 'ai_visibility');
-  geo.fix = geoPtr ? bingoFromPointer(geoPtr, 'AI / GEO', news, 2, curSym, fwName, penaltySym) : {
+  geo.fix = geoPtr ? bingoFromPointer(geoPtr, 'AI / GEO', news, 2, curSym) : {
     n: 3, reg: 'AI / GEO', pillar: 'AI / GEO', law: 'Generative-engine visibility', exp: 'ranking impact',
     title: 'AI answer engines do not yet cite you',
     plain: 'With no Organization schema, sameAs links or Wikidata entity, AI engines cannot identify you as a citable provider in your category.',
@@ -2095,8 +1896,27 @@ export function payloadToD(payload, ctx = {}) {
     slug: String(ctx.slug || ''), hash: String(ctx.hash || ''),
     sector: titleCase(payload.detected_sector || payload.sector), country: jurLabel(payload.country),
     city: cleanCity(km.city, payload), markets: arr(payload.detected_jurisdictions),
-    date: fmtDate(now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
+    // E-218 (S-099): the page carries the SCAN date, not the render date — a months-old audit must never
+    // present itself as generated today.
+    date: fmtDate(ctx.generated_at ? new Date(ctx.generated_at) : now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
   };
+
+  // THE THREE NUMBERS (E31-E35). catalogueSize is READ, never invented: the engine currently emits no catalogue
+  // count at all (no catalogue_size / rules_total key on any payload), so it stays null and the rail prints the
+  // honest fallback label. The moment the generator emits it, the true number appears everywhere automatically.
+  // THE 400+ CLAIM. The register holds 671 ACTIVE RULES across 294 FRAMEWORKS. Those are different units and the
+  // report must never confuse them: "400+ frameworks" would be a FALSE CLAIM on a document that fines other firms
+  // for false claims (CAP 3.7 binds us too). We screen RULES; FRAMEWORKS bind. The engine now emits both, measured
+  // from the live register (catalogue_rules / catalogue_frameworks), and neither is ever invented here.
+  const catalogueRules = (+payload.catalogue_rules || +g(payload, 'scan.catalogue_rules', 0)) || null;
+  const catalogueFrameworks = (+payload.catalogue_frameworks || +g(payload, 'scan.catalogue_frameworks', 0)) || null;
+  const catalogueSize = catalogueRules;   // "size" has always meant the screened register; that register is RULES
+  const screenedLabel = catalogueRules
+    ? (catalogueRules.toLocaleString('en-GB') + ' compliance rules screened')
+    : 'Full catalogue screened';
+  // rulesChecked = the page-level RULE checks executed on the laws that attach to this firm's jurisdictions.
+  const ruleChecks = arr(payload.rules).filter((r) => { const j = FW_JUR(r && (r.framework_short || r.framework || r.citation)); return j === 'GLOBAL' || allow.has(j); }).length
+    || arr(payload.applicable_frameworks).length || frameworks.length;
 
   const D = {
     meta, score, grade, scoreBand: bandOf(score),
@@ -2107,7 +1927,9 @@ export function payloadToD(payload, ctx = {}) {
     // FOUNDER-BLOCKED links + contact, threaded from env by [[path]].js. The client renders each element ONLY
     // when its value is a non-empty string (no placeholder when unset). Pure pass-through; never affects scoring.
     links: {
-      booking: String((ctx.links && ctx.links.booking) || ''),
+      booking: bookingHref(ctx, ''),
+      cta_findings: { text: 'Walk through these findings in 20 minutes. The exact fixes, and what a regulator would ask first: book the review.', href: bookingHref(ctx, 'findings') },
+      cta_assessed: { text: 'Everything marked APPLIES · ASSESSED is verified at page level. Records, processes and filings are the full engagement: book the scoping call.', href: bookingHref(ctx, 'scoping') },
       stripeUnlock: String((ctx.links && ctx.links.stripeUnlock) || ''),
       stripeCover: String((ctx.links && ctx.links.stripeCover) || ''),
       stripeFix10: String((ctx.links && ctx.links.stripeFix10) || ''),
@@ -2120,40 +1942,84 @@ export function payloadToD(payload, ctx = {}) {
     // (shown only when a firm is genuinely multi-jurisdiction) and the per-framework jurisdiction badges.
     jurisdictions: Array.from(new Set((frameworks || []).map((f) => f.jur).filter((j) => j && j !== 'Global'))),
     projected: { wk12, wk24, wk12grade: gradeOf(wk12), wk24grade: gradeOf(wk24) },
-    cur: curSym, // display currency symbol ('£' default, '$' for clearly-US firms) — charts read this so bars match the headline
-    exposure: gbp(exposureN, curSym), exposureFull: +(exposureN / 1e6).toFixed(1), exposureWaterfall,
+    cur: curSym, // PRIMARY binding currency, set by the REGIME that fines you (not your home country). Charts read this.
+    exposureByCurrency, exposureBasis,   // every other binding regime, each in its own statutory currency. No FX.
+    exposure: exposureAggregate, exposureFull: +(exposureN / 1e6).toFixed(1), exposureWaterfall,
     // When no fineable framework is confirmed, "£0 / across 0 binding frameworks" reads as broken next to
     // the (ranking-only) frameworks shown. Present the exposure tile honestly instead. (£0-leak / consistency)
-    exposureHeadline: exposureN > 0 ? gbp(exposureN, curSym) : 'Ranking & AI',
+    exposureHeadline: exposureN > 0 ? exposureAggregate : 'Ranking & AI',
+    // E-14: count-aware. One verified breach is "the breach", not "the breaches".
     exposureNote: exposureN > 0
-      ? 'Maximum statutory penalty across the breaches evidenced on your live site'
+      ? `Median enforcement exposure across the ${counts.total} ${counts.total === 1 ? 'breach' : 'breaches'} evidenced on your live site. ${exposureBasis}`
       : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
-    counts, confirmed: pointers.length,
+    // E-244: the ceiling is kept, but as secondary context under the median, never as the headline.
+    exposureCeiling: ceilingN > 0 ? gbp(ceilingN, curSym) : null,
+    // E-253d (v23.1) — SHOW THE ADJUDICATION. This is the strongest credibility line in the whole report.
+    // Until v23.0 every breach we sent was a regex match no model had ever read. Now each one is ruled on against
+    // the actual text of the statute, and the false positives are removed BEFORE the client sees them. A managing
+    // partner does not care that we ran a scan; they care that someone checked it. Say so, precisely, or not at all.
+    adjudication: (() => {
+      const a = g(payload, 'adjudication', null);
+      if (!a || a.ran !== true || !(a.total > 0)) return null;   // never claim a review that did not happen
+      return {
+        reviewed: Number(a.total) || 0,
+        upheld: Number(a.breach) || 0,
+        dropped: Number(a.dropped) || 0,          // false positives removed before you saw them
+        needs_review: Number(a.insufficient) || 0,
+        line: 'Every finding on this page was re-examined against the text of the statute it cites, and '
+          + ((Number(a.dropped) || 0) > 0
+            ? ((Number(a.dropped) || 0) + ' candidate ' + ((Number(a.dropped) || 0) === 1 ? 'finding was' : 'findings were') + ' discarded as unproven before this report reached you.')
+            : 'each one was upheld on the evidence quoted.'),
+      };
+    })(),
+    counts, countsRegulatory,   // E05/E29: two tallies, each carrying its own explicit scope
+    confirmed: pointers.length,
     // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
     // consumer should use these instead of asserting "N breached / PASS". (zero-critical-honest)
     regulatoryHeadline, regulatoryCriticalsZero,
-    // ONE catalogue figure everywhere: the real rules count (fallback 403). frameworksTotal previously read
-    // a magic "400+" in the rail/scoring meta while the body said "all {rulesChecked}", a visible mismatch. (fw-count)
-    // D-2: single source of truth for all displayed framework counts. frameworksBinding was previously
-    // Math.max(applicable, displayed) which diverged visually when the display filter excluded some rows.
-    // Now both are `frameworks.length` (the shown, binding set). rulesChecked remains informational.
-    frameworksAssessed: frameworks.length, frameworksBinding: frameworks.length, rulesChecked: arr(payload.applicable_frameworks).length || frameworks.length, frameworksTotal: frameworks.length,
+    // #48: pass compliance-unassessed through so the render never implies a clean bill when the scan could not read the site.
+    compliance_unassessed: !!g(payload, 'compliance_unassessed', false),
+    render_mode: g(payload, 'render_mode', null),
+    // E-218: verifier verdict + row lifecycle drive the truth-filtered presentation. point_in_time renders the
+    // banner on unverified rows; superseded marks a row replaced by a newer mint (old links keep working).
+    verified: ctx.verified === true,
+    superseded: String(ctx.row_status || 'live') === 'superseded',
+    point_in_time: ctx.generated_at ? fmtDate(new Date(ctx.generated_at)) : '',
+    sanitised: g(payload, '_sanitised', null),
+    // E-213 REGISTERED REALITY: government-register rows minted by the engine (Companies House / CQC / FCA live
+    // API checks + ICO/SRA/DHA/RERA link-outs). Every row links to the official source; renders on any payload
+    // that carries it, independent of crawl success.
+    registers: g(payload, 'registers', null),
+    sub_sector: g(payload, 'sub_sector', null),
+    // THE THREE-NUMBER DOCTRINE (E31-E35). Three DISTINCT numbers, printed once each, never conflated:
+    //   catalogueSize     the FULL register the engine screens against. It is NOT guessed: it is read from the
+    //                     payload if (and only if) the engine emits it. When it does not, `catalogueSize` is null
+    //                     and the render prints the safe screened-label ("Full catalogue screened") instead of a
+    //                     number we cannot prove.
+    //   frameworksBinding what attaches to THIS firm (frameworks.length — the rows actually shown).
+    //   rulesChecked      the page-level rule checks executed against the binding set (payload.rules, gated to
+    //                     the firm's jurisdictions). This is a RULE count and must never be printed with the word
+    //                     "frameworks" — that is what made the body say "all 18 frameworks" beside "400+".
+    // Setting frameworksTotal = frameworks.length (the old line) rendered "15 FRAMEWORKS SCREENED · 15 BIND YOU",
+    // erasing the screening story entirely.
+    catalogueSize, screenedLabel, frameworksAssessed: frameworks.length, frameworksBinding: frameworks.length,
+    rulesChecked: ruleChecks, frameworksTotal: catalogueSize,
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0 to 100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,
       why: counts.critical > 0
         ? `Your ${score} is held down by the failing dimensions a regulator and an AI engine can both see on your live site today. Fix the ${counts.critical} critical ${counts.critical === 1 ? 'finding' : 'findings'} and the heaviest-weighted dimension lifts first, which is why ${wk12} by week 12 is realistic once those gaps close.`
         : `Your ${score} is held down by the ranking, authority and AI-visibility dimensions an AI engine and a buyer can both see today, not by a confirmed fine. Close the highest-weighted gaps below and the score lifts fast, which is why ${wk12} by week 12 is realistic once those gaps close.`,
-      inputs: `${arr(payload.applicable_frameworks).length} frameworks bind · ${pointers.length} findings confirmed against live evidence · ${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
+      inputs: `${screenedLabel} · ${frameworks.length} ${frameworks.length === 1 ? 'framework binds' : 'frameworks bind'} you · ${ruleChecks} rule ${ruleChecks === 1 ? 'check' : 'checks'} executed · ${pointers.length} ${pointers.length === 1 ? 'finding' : 'findings'} confirmed against live evidence · ${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
     },
     exec: exec || execFallback(exposureN, Object.keys(perFw).length, counts.critical, curSym),
     jurisdiction,
     frameworks, exposureBars, heat,
-    heatRows: ['£10M+', '£1M+', '£100k+', '£10k+', '<£10k'], heatCols: ['Rare', 'Low', 'Possible', 'High', 'Near-certain'],
-    dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub })),
+    heatRows: [gbp(1e7, curSym) + '+', gbp(1e6, curSym) + '+', gbp(1e5, curSym) + '+', gbp(1e4, curSym) + '+', '<' + gbp(1e4, curSym)], heatCols: ['Rare', 'Low', 'Possible', 'High', 'Near-certain'],
+    dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub, note: d.note || '' })),   // E-28 floor note
     seo, geo, competitors,
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
-    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full 400+ rule scan with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
+    fixes: fixes.length ? fixes : [{ n: 1, reg: 'Re-scan', pillar: 'Regulatory', law: 'Limited assessment', exp: 'ranking impact', title: 'The live site could not be fully read this scan', plain: 'Few findings are shown because the site was not fully readable (bot-challenge, JS-only render or thin content). This is honest suppression, not a clean bill of health.', prec: '', quote: 'site not fully readable', fix: 'Tamazia re-runs the full rule catalogue with archive + rendered-DOM fallback to produce a complete assessment.', plan: 'Re-scan · Week 1 · every mandate' }],
     glossary: buildGlossary(payload, allow),
     // C-A: ONE commerce source. The render (audit-app.js) owns ALL displayed prices/copy from the single PRICES
     // block (mirrored from src/content/pricing.ts); the server-side Stripe/Cal mapping lives in _commerce.js.
@@ -2161,6 +2027,8 @@ export function payloadToD(payload, ctx = {}) {
     // (D.pricing[].rec / .popular, keyed by .tier) + the two notes. The old injected `addons`/`addonsMore`
     // catalogues were NEVER read by the render (it builds ADDONS from PRICES.independent) — removed as dead.
     pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, upsellProof: COMMERCE.upsellProof,
+    // E12 · the three severity words, defined inline on first use and carried as the dot hover tips.
+    severityDefs: SEV_DEFS.map(([word, def]) => ({ word, def })),
     _meta: { droppedByJurisdiction: dropped, exposureN, generatedAt: ctx.generated_at || null },
   };
   // Optional scoring trace (benchmark harness only; NEVER passed on the production render route, so it
@@ -2218,7 +2086,7 @@ function buildPsiStrat(strat) {
   const sc = strat.scores, dial = (v) => isNum(v) ? Math.round(v * 100) : null;
   const audits = arr(strat.audits)
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim().slice(0, 64), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
 }
@@ -2230,6 +2098,30 @@ const GLOSSARY_TERM_JUR = {
   ccpa: ['US'], cpra: ['US'], 'us state privacy': ['US'], hipaa: ['US'], ferpa: ['US'], coppa: ['US'], glba: ['US'], 'ada title iii': ['US'],
   pdpl: ['AE', 'SA'], 'uae pdpl': ['AE'], rera: ['AE'], difc: ['AE'], adgm: ['AE'],
 };
+// E-10 / E-55. Two defects live in the glossary the ENGINE ships on the payload, so they are fixed render-side:
+//   E-10  the only place on the page that printed "GBP 17.5M" instead of "£17.5M".
+//   E-55  two entries for one law — "gdpr" ("The data-protection law for the UK and EU…") AND "uk gdpr"
+//         ("The UK version of the EU data-protection law…"). One law, one entry, keyed to the firm's own regime,
+//         with the bare term kept as an alias so the reader who scans for "GDPR" still finds it.
+function normaliseGlossary(out, allowSet) {
+  const fixed = {};
+  const money = (v) => String(v || '')
+    .replace(/\bGBP\s?(?=[\d£])/g, '£').replace(/\bUSD\s?(?=[\d$])/g, '$').replace(/\bEUR\s?(?=[\d€])/g, '€');
+  for (const [k, v] of Object.entries(out)) fixed[k] = money(v);
+  const keys = Object.keys(fixed);
+  const kOf = (want) => keys.find((k) => String(k).toLowerCase().trim() === want);
+  const gk = kOf('gdpr'), uk = kOf('uk gdpr'), eu = kOf('eu gdpr');
+  if (gk && (uk || eu)) {                       // a jurisdictional entry exists: the bare duplicate is dropped
+    const keep = uk || eu; const def = fixed[keep]; const label = uk ? 'UK GDPR' : 'EU GDPR';
+    delete fixed[gk]; delete fixed[keep];
+    fixed[label] = def + ' Also referred to on this page simply as “GDPR”.';
+  } else if (gk && !uk && !eu) {                 // only the bare term: name it for the regime that binds this firm
+    const label = allowSet.has('UK') ? 'UK GDPR' : allowSet.has('EU') ? 'EU GDPR' : 'GDPR';
+    const def = fixed[gk]; delete fixed[gk];
+    fixed[label] = def + (label === 'GDPR' ? '' : ' Also referred to on this page simply as “GDPR”.');
+  }
+  return fixed;
+}
 function buildGlossary(payload, allow) {
   const allowSet = allow || authJurisdictions(payload);
   // A term is allowed if it isn't region-scoped, OR the firm's jurisdictions include one of its regions.
@@ -2245,7 +2137,7 @@ function buildGlossary(payload, allow) {
       if (!termAllowed(k)) continue;                                     // foreign-law term for this firm
       out[k] = typeof v === 'string' ? v : (v && v.def) || '';
     }
-    if (Object.keys(out).length) return out;
+    if (Object.keys(out).length) return normaliseGlossary(out, allowSet);
   }
   return {
     geo: 'Generative Engine Optimisation, whether AI answer engines name and cite you when a buyer asks for a provider like you.',
@@ -2274,7 +2166,9 @@ function jurStatement(company, allow) {
   const where = parts.length === 0 ? 'its registered jurisdiction'
     : parts.length === 1 ? parts[0]
       : parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
-  return `${company} is assessed under the law of ${where}, the jurisdiction(s) its own website shows it serves. Frameworks from every other region are screened but do not attach here, so only the law that genuinely binds this firm is shown.`;
+  // E-03: count-aware. "jurisdiction(s)" is a form field, not client-facing legal prose.
+  const jw = parts.length > 1 ? 'the jurisdictions' : 'the jurisdiction';
+  return `${company} is assessed under the law of ${where}, ${jw} its own website shows it serves. Frameworks from every other region are screened but do not attach here, so only the law that genuinely binds this firm is shown.`;
 }
 function execFallback(exp, nfw, crit, sym) {
   // £0 statutory exposure: never claim a fine. The value at stake is ranking, qualified buyers and AI-assistant
@@ -2283,6 +2177,21 @@ function execFallback(exp, nfw, crit, sym) {
   const lead = `Right now you are carrying ${gbp(exp, sym)} of avoidable statutory exposure across ${nfw} binding framework${nfw === 1 ? '' : 's'}.`;
   return crit > 0 ? `${lead} Close the ${crit} critical finding${crit === 1 ? '' : 's'} first, they are the ones a regulator can act on today.` : `${lead} The high-severity gaps below are the priority.`;
 }
+// E16 / E54 · THE defect that cost the most: every commercial link on both live reports was an empty
+// string, and the renderer removes dead buttons, so the buyer at peak intent had nothing to press.
+// The booking href now ALWAYS resolves. The env var wins when set; otherwise the public calendar is used,
+// with the report slug and the intent carried as query params so the booked call arrives with context.
+const CAL_BOOKING_BASE = 'https://cal.com/tamazia/strategy-call';
+function bookingHref(ctx, intent) {
+  const base = String((ctx && ctx.links && ctx.links.booking) || '').trim() || CAL_BOOKING_BASE;
+  const slug = String((ctx && ctx.slug) || '').trim();
+  const q = [];
+  if (slug) q.push('report=' + encodeURIComponent(slug));
+  if (intent) q.push('intent=' + encodeURIComponent(intent));
+  if (!q.length) return base;
+  return base + (base.indexOf('?') > -1 ? '&' : '?') + q.join('&');
+}
+
 function jurLabel(c) { c = String(c || '').toUpperCase(); return { UK: 'United Kingdom', USA: 'United States', US: 'United States', UAE: 'United Arab Emirates', AE: 'United Arab Emirates', KSA: 'Saudi Arabia' }[c] || c || 'n/a'; }
 function fmtArchive(d) { const s = String(d || ''); return s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` : s; }
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -2298,7 +2207,7 @@ function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.g
    deliberately NOT held here (they would be a fourth place to drift). The previously-injected
    `addons`/`addonsMore` catalogues were dead (the render never read them) and are removed. */
 const COMMERCE = {
-  pricingNotes: '90-day rolling · no long-term contract · work belongs to you once paid · founder reviews every onboarding personally.',
+  pricingNotes: '90-day rolling · no long-term contract · the work is owned outright once paid · every onboarding is legally reviewed before work begins.',
   upsellProof: 'Each add-on layers onto your core programme as it proves out. Start with the audit\'s top priority, then add the next lever once it is working.',
   // tier = the key the render matches on (audit-app.js byName); rec/popular = the only fields consumed.
   pricing: [
@@ -2307,3 +2216,7 @@ const COMMERCE = {
     { tier: 'Enterprise', rec: true, popular: false },
   ],
 };
+
+// E-091 (blind-send): render-side twin of the engine evidence gate. A sub-25-char quote renders the
+// absence sentence instead of a fragment that cannot be defended in front of the firm's own lawyer.
+function _q25(q) { q = String(q || '').trim(); return q.length >= 25 ? q : ''; }

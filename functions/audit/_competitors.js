@@ -99,9 +99,10 @@ export function corroborated(host, payload) {
 // brands the LLM sometimes names as "competitors" (Booking.com for a hotel, Amazon for a sofa maker), which
 // must never appear in the rendered peer set. (S-aggname)
 const AGG_BRANDS = new Set(['booking', 'expedia', 'hotels', 'agoda', 'trivago', 'kayak', 'tripadvisor', 'trustpilot', 'yelp', 'glassdoor', 'indeed', 'forbes', 'timeout', 'findlaw', 'justia', 'bestlawfirms', 'lawyers', 'avvo', 'zocdoc', 'healthgrades', 'rightmove', 'zoopla', 'onthemarket', 'zillow', 'realtor', 'amazon', 'ebay', 'etsy', 'aliexpress', 'walmart', 'yell', 'thomson', 'clutch', 'g2', 'capterra', 'wikipedia', 'reddit']);
+const junkOrDeniedHost = (h) => deniedHost(h) || junkHost(h);
+const firstBrandWord = (name) => String(name || '').toLowerCase().replace(/[^a-z0-9 .]/g, '').split(/[ .]/)[0];
 export function looksAggregator(name) {
   const h = cleanDomain(name).toLowerCase();
-  if (h.includes('.') && (COMPETITOR_DENYLIST.has(h) || COMPETITOR_DENYLIST.has(parentDomain(h)) || JUNK_PATTERNS.some((rx) => rx.test(h)) || STEM_JUNK_RX.test(parentDomain(h).split('.')[0]))) return true;
-  const first = String(name || '').toLowerCase().replace(/[^a-z0-9 .]/g, '').split(/[ .]/)[0];
-  return AGG_BRANDS.has(first);
+  if (h.includes('.') && junkOrDeniedHost(h)) return true;
+  return AGG_BRANDS.has(firstBrandWord(name));
 }

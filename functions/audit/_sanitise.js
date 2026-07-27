@@ -3,29 +3,12 @@
 // Mirrors the engine's evidence gates (E-041/E-044, V05 absence-proof, V09 fine discipline,
 // P-011 template-accusation threshold) over the STORED payload, so the public page can never
 // assert more than the evidence carries. Pure; never throws (any error returns the input).
-import { FW_JUR } from './_lawmaps.js';
+import { FW_JUR, narrowAllowSet, familyAllowed } from './_lawmaps.js';
 
 const arr = (x) => (Array.isArray(x) ? x : []);
 
 // E-218 sanitiser helpers - each membrane rule is a single-purpose pass so the whole
 // pipeline stays flat and auditable. Behaviour is identical to the previous inline version.
-const _SAN_CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK' };
-const _SAN_EU = ['FR', 'DE', 'IT', 'ES', 'NL', 'IE', 'BE', 'PT', 'AT', 'SE', 'DK', 'FI', 'PL', 'LU', 'GR', 'CZ', 'HU', 'RO', 'BG', 'HR', 'SI', 'SK', 'LT', 'LV', 'EE', 'CY', 'MT'];
-// V02/P-003 render-side: on an UNVERIFIED row only the REGISTERED country's family (+ EU when a
-// member state) and GLOBAL law render; a verified fresh mint restores the full set.
-function narrowAllowSet(p) {
-  const cc0 = String(p.country || '').toUpperCase();
-  const cc = _SAN_CMAP[cc0] || cc0;
-  const allow = new Set(['GLOBAL']);
-  if (cc) allow.add(cc);
-  if (_SAN_EU.includes(cc)) allow.add('EU');
-  return allow;
-}
-function familyAllowed(code, allowNarrow) {
-  if (!code) return true;
-  const j = FW_JUR(code);
-  return j === 'GLOBAL' || allowNarrow.has(j);
-}
 // V05/P-004: an absence claim is valid only with a proving page (the page that SHOULD have carried it).
 function absenceHasProof(x) {
   const ae = x.absence_evidence;

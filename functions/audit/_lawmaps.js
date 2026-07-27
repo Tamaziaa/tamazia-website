@@ -414,3 +414,22 @@ export const FW_JUR = (code) => {
   const rule = JUR_RULES.find((r) => r.hit(c));
   return rule ? rule.jur : 'GLOBAL'; // GOOGLE_EEAT, schema, etc., universal
 };
+
+// Unverified-row jurisdiction scope (E-218/V02/P-003): the REGISTERED country's family
+// (+ EU when a member state) + GLOBAL. Lives beside FW_JUR because family scope IS a
+// jurisdiction-map concern; the sanitiser consumes it.
+const _SAN_CMAP = { USA: 'US', UAE: 'AE', KSA: 'SA', GBR: 'UK', GB: 'UK' };
+const _SAN_EU = ['FR', 'DE', 'IT', 'ES', 'NL', 'IE', 'BE', 'PT', 'AT', 'SE', 'DK', 'FI', 'PL', 'LU', 'GR', 'CZ', 'HU', 'RO', 'BG', 'HR', 'SI', 'SK', 'LT', 'LV', 'EE', 'CY', 'MT'];
+export function narrowAllowSet(p) {
+  const cc0 = String(p.country || '').toUpperCase();
+  const cc = _SAN_CMAP[cc0] || cc0;
+  const allow = new Set(['GLOBAL']);
+  if (cc) allow.add(cc);
+  if (_SAN_EU.includes(cc)) allow.add('EU');
+  return allow;
+}
+export function familyAllowed(code, allowNarrow) {
+  if (!code) return true;
+  const j = FW_JUR(code);
+  return j === 'GLOBAL' || allowNarrow.has(j);
+}

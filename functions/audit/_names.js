@@ -30,11 +30,23 @@ export const looksLikeDomain = (s) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(String
 // &lt;script&gt; / &#60; / &#x3c; — decoding those to < > would let markup form if any field is innerHTML'd. We
 // decode only typographic entities; &lt;/&gt; and numeric 60/62 stay ENCODED, rendering as literal text everywhere.
 const _ENT = { amp: '&', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', hellip: '…', copy: '©', reg: '®', trade: '™' };
+// Numeric character reference -> the character, refusing 60/62 so &#60;/&#x3c; can never form
+// markup (FIX-R4). Returns the raw match unchanged when the reference is refused or malformed.
+function decodeNumericEnt(ref, raw) {
+  const hex = ref[1] === 'x' || ref[1] === 'X';
+  const code = hex ? parseInt(ref.slice(2), 16) : parseInt(ref.slice(1), 10);
+  if (code === 60 || code === 62 || !Number.isFinite(code)) return raw;
+  return String.fromCodePoint(code);
+}
+function decodeNamedEnt(ref, raw) {
+  const k = ref.toLowerCase();
+  return Object.prototype.hasOwnProperty.call(_ENT, k) ? _ENT[k] : raw;
+}
 export function decodeEnt(s) {
   if (typeof s !== 'string' || s.indexOf('&') === -1) return s;
   return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, c) => {
-    if (c[0] === '#') { const code = c[1] === 'x' || c[1] === 'X' ? parseInt(c.slice(2), 16) : parseInt(c.slice(1), 10); if (code === 60 || code === 62 || !Number.isFinite(code)) return m; return String.fromCodePoint(code); }   // FIX-R4: never decode < or >
-    const k = c.toLowerCase(); return Object.prototype.hasOwnProperty.call(_ENT, k) ? _ENT[k] : m;
+    if (c[0] === '#') return decodeNumericEnt(c, m);   // FIX-R4: never decode < or >
+    return decodeNamedEnt(c, m);
   });
 }
 // A scraped page <title> is NOT a company name. Reject candidates that read like a title/marketing line so the
@@ -77,7 +89,8 @@ export function sharesTokenWithDomain(name, domain) {
   if (!words.length) return false;
   const whole = words.join('');
   if (stem.includes(whole) || whole.includes(stem)) return true;   // one-word firms: BDO -> bdo.co.uk
-  return words.filter((t) => t.length >= 3).some((t) => stem.includes(t) || t.includes(stem));
+  const tokenMatchesStem = (t) => stem.includes(t) || t.includes(stem);
+  return words.filter((t) => t.length >= 3).some(tokenMatchesStem);
 }
 // Companies House returns names in UPPER CASE ("BIRKETTS LLP"). Shipping that to a managing partner reads as a
 // database dump, not a report. Title-case it, but preserve the forms that are genuinely capitalised: the legal

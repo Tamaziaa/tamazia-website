@@ -115,11 +115,18 @@ const _SHORT_WORDS = new Set(['law', 'and', 'the', 'for', 'new', 'old', 'son', '
 const _KEEP_CAPS = new Set(['LLP', 'LTD', 'PLC', 'LP', 'LLC', 'INC', 'PC', 'UK', 'GB', 'AG', 'SA', 'NV', 'BV', 'GMBH', 'SARL', 'PTE', 'FZE', 'DMCC', 'DIFC', 'ADGM']);
 // One token of a SHOUTING name: keep legal suffixes/initialisms upper (an initialism owns its
 // domain stem - BDO is bdo.co.uk), title-case everything else. Separators pass through.
+const SEPARATOR_TOKENS = new Set(['-', '&']);
+const isSeparatorToken = (tok) => SEPARATOR_TOKENS.has(tok) || /^\s+$/.test(tok);
+// A firm that trades as an acronym OWNS that acronym as its domain (BDO -> bdo.co.uk).
+function isOwnInitialism(bare, stem) {
+  if (bare.length <= 1 || bare.length > 5) return false;
+  return bare.toLowerCase() === stem;
+}
 function humaniseToken(tok, stem) {
-  if (/^\s+$/.test(tok) || tok === '-' || tok === '&') return tok;
+  if (isSeparatorToken(tok)) return tok;
   const bare = tok.replace(/[^A-Za-z]/g, '');
   if (_KEEP_CAPS.has(bare.toUpperCase())) return tok.toUpperCase();
-  if (bare.length > 1 && bare.length <= 5 && bare.toLowerCase() === stem) return tok.toUpperCase();
+  if (isOwnInitialism(bare, stem)) return tok.toUpperCase();
   return tok.charAt(0).toUpperCase() + tok.slice(1).toLowerCase();
 }
 const isShouting = (raw) => {

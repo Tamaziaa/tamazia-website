@@ -32,10 +32,18 @@ export const looksLikeDomain = (s) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(String
 const _ENT = { amp: '&', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', hellip: '…', copy: '©', reg: '®', trade: '™' };
 // Numeric character reference -> the character, refusing 60/62 so &#60;/&#x3c; can never form
 // markup (FIX-R4). Returns the raw match unchanged when the reference is refused or malformed.
+const REFUSED_CODEPOINTS = new Set([60, 62]);   // '<' and '>': markup must never form (FIX-R4)
+function refusedNumericCode(code) {
+  if (!Number.isFinite(code)) return true;
+  return REFUSED_CODEPOINTS.has(code);
+}
+function parseNumericRef(ref) {
+  if (ref[1] === 'x' || ref[1] === 'X') return parseInt(ref.slice(2), 16);
+  return parseInt(ref.slice(1), 10);
+}
 function decodeNumericEnt(ref, raw) {
-  const hex = ref[1] === 'x' || ref[1] === 'X';
-  const code = hex ? parseInt(ref.slice(2), 16) : parseInt(ref.slice(1), 10);
-  if (code === 60 || code === 62 || !Number.isFinite(code)) return raw;
+  const code = parseNumericRef(ref);
+  if (refusedNumericCode(code)) return raw;
   return String.fromCodePoint(code);
 }
 function decodeNamedEnt(ref, raw) {

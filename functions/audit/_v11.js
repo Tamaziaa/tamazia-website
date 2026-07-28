@@ -168,19 +168,20 @@ function bindingMapOf(frameworks) {
 
 // v11ToLegacy(p) -> the adapter-input payload derived from a v1.1 mint. Compliance only; the
 // probe sections ride through overlaySections() untouched.
-export function v11ToLegacy(p) {
-  const meta = p.meta || {};
-  const frameworks = Array.isArray(p.frameworks) ? p.frameworks : [];
-  const fwByCode = {};
-  for (const fw of frameworks) fwByCode[fw.code] = fw;
-  const findings = Array.isArray(p.findings) ? p.findings : [];
-  const violations = findings.filter((f) => f.state === 'violation');
-  const review = findings.filter((f) => f.state === 'needs_review');
+// One field group per builder: firm identity, the compliance lattice, and the scan facts.
+function firmFieldsOf(meta) {
   return {
     company: meta.company || null,
     domain: meta.domain || null,
     country: meta.country || null,
     firm_profile: { name: meta.company || null, hq_country: meta.country || null, primary_sector: meta.sector || null },
+  };
+}
+function complianceFieldsOf(p, frameworks, fwByCode) {
+  const findings = Array.isArray(p.findings) ? p.findings : [];
+  const violations = findings.filter((f) => f.state === 'violation');
+  const review = findings.filter((f) => f.state === 'needs_review');
+  return {
     pointers: violations.map((f) => pointerFromViolation(f, fwByCode)),
     // needs_review findings surface as 'applies to you' framework rows, never hard breaches
     review_candidates: [...new Set(review.map((f) => f.record_id))],
@@ -188,10 +189,14 @@ export function v11ToLegacy(p) {
     framework_meta: frameworkMetaOf(frameworks),
     binding: bindingMapOf(frameworks),
     framework_intel: frameworkIntelOf(frameworks),
+  };
+}
+function scanFieldsOf(p, meta) {
+  return {
     scan: {
       signals: signalsOf(p),
       final_url: meta.domain ? 'https://' + meta.domain : null,
-      catalogue_frameworks: p.frameworksAssessed || frameworks.length,
+      catalogue_frameworks: p.frameworksAssessed || (Array.isArray(p.frameworks) ? p.frameworks.length : 0),
       catalogue_rules: p.rulesChecked || null,
       markets: { currencies: currenciesOf(meta) },
       psi: usablePsi(p),
@@ -200,6 +205,19 @@ export function v11ToLegacy(p) {
     compliance_unassessed: false,
     framework_last_reviewed: meta.date || null,
   };
+}
+// v11ToLegacy(p) -> the adapter-input payload derived from a v1.1 mint. Compliance only; probe
+// sections are deliberately not blanket-copied (see below).
+export function v11ToLegacy(p) {
+  const meta = p.meta || {};
+  const frameworks = Array.isArray(p.frameworks) ? p.frameworks : [];
+  const fwByCode = {};
+  for (const fw of frameworks) fwByCode[fw.code] = fw;
+  return Object.assign(
+    firmFieldsOf(meta),
+    complianceFieldsOf(p, frameworks, fwByCode),
+    scanFieldsOf(p, meta)
+  );
 }
 
 // Probe-section overlays are deliberately NOT blanket-copied: the v1.1 probe shapes carry

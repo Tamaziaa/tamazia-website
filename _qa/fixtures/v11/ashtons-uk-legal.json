@@ -1,0 +1,2200 @@
+{
+ "seo": {
+  "psi": {
+   "state": "probe_unavailable",
+   "reason": "no_data"
+  },
+  "cwv": {
+   "state": "probe_unavailable",
+   "reason": "no_data"
+  },
+  "onpage": {
+   "state": "measured",
+   "json_ld": true,
+   "has_org_schema": false,
+   "word_count": 1374,
+   "title_len": 78,
+   "meta_description": true,
+   "meta_description_len": 142,
+   "open_graph": true,
+   "twitter_card": true,
+   "canonical": true,
+   "viewport": true,
+   "lang": true,
+   "h1_count": 1,
+   "favicon": true
+  },
+  "security": {
+   "state": "measured",
+   "hsts": false,
+   "csp": false,
+   "xcto": false,
+   "xfo": false,
+   "refpol": false,
+   "permpol": false
+  },
+  "a11y": {
+   "state": "measured",
+   "h1_count": 1,
+   "lang_declared": true,
+   "viewport": true
+  },
+  "tech": {
+   "state": "measured",
+   "canonical": true,
+   "favicon": true,
+   "json_ld": true
+  },
+  "keywordSummary": {
+   "state": "probe_unavailable",
+   "reason": "no_operating_city"
+  },
+  "psiAudits": {
+   "state": "probe_unavailable",
+   "reason": "no_data"
+  },
+  "keywords": [
+   {
+    "term": "solicitors",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "legal",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "ashtons",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "lawyers",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "claims",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "injury",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "advice",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "business",
+    "state": "derived_from_corpus"
+   }
+  ],
+  "note": "SEO signals: real PageSpeed Insights + live SERP keyword map where keys/city were available; a leaf carries state:probe_unavailable when its underlying key or input was absent."
+ },
+ "geo": {
+  "entityReadiness": {
+   "score": 57,
+   "blocked_ai_bots": [],
+   "has_llms_txt": false,
+   "has_org_schema": false,
+   "has_same_as": false,
+   "in_wikidata": false,
+   "state": "measured"
+  },
+  "shareOfVoice": {
+   "value": 0,
+   "repeatability": 0,
+   "samples": 5,
+   "provider": "cloudflare::@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+   "top_competitors": [
+    {
+     "name": "Baker McKenzie",
+     "in_runs": 5,
+     "of": 5
+    },
+    {
+     "name": "Skadden, Arps, Slate, Meagher & Flom",
+     "in_runs": 5,
+     "of": 5
+    },
+    {
+     "name": "Kirkland & Ellis",
+     "in_runs": 5,
+     "of": 5
+    }
+   ],
+   "state": "measured"
+  },
+  "radar": {
+   "axes": [
+    {
+     "label": "Entity",
+     "v": 0
+    },
+    {
+     "label": "Crawler access",
+     "v": 100
+    },
+    {
+     "label": "Share of voice",
+     "v": 0
+    },
+    {
+     "label": "Schema",
+     "v": 0
+    },
+    {
+     "label": "Knowledge graph",
+     "v": 0
+    },
+    {
+     "label": "Citations",
+     "v": 24
+    }
+   ],
+   "state": "measured"
+  },
+  "schema": {
+   "has_org_schema": false,
+   "has_localbusiness": false,
+   "has_service": false,
+   "has_faq": false,
+   "has_same_as": false,
+   "state": "measured"
+  },
+  "citations": {
+   "state": "probe_unavailable",
+   "reason": "no_grounding_data"
+  },
+  "sourceGap": {
+   "in_wikidata": false,
+   "has_llms_txt": false,
+   "state": "measured"
+  },
+  "fix": {
+   "gaps": [
+    "publish an llms.txt",
+    "ship Organization/LocalBusiness schema",
+    "add sameAs links to authoritative profiles",
+    "establish a Wikidata entity",
+    "build the content/authority signals that lift AI share of voice"
+   ],
+   "state": "measured"
+  },
+  "engines": [
+   {
+    "engine": "ChatGPT",
+    "readiness": 40,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Gemini",
+    "readiness": 30,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Perplexity",
+    "readiness": 50,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Claude",
+    "readiness": 40,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Copilot",
+    "readiness": 35,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Grok",
+    "readiness": 40,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Meta AI",
+    "readiness": 40,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Google AI",
+    "readiness": 25,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   }
+  ],
+  "rootCause": {
+   "state": "measured",
+   "chain": [
+    {
+     "label": "Crawler access",
+     "ok": true,
+     "state": "measured"
+    },
+    {
+     "label": "Identity anchors",
+     "ok": false,
+     "state": "measured"
+    },
+    {
+     "label": "Knowledge graph",
+     "ok": false,
+     "state": "measured"
+    },
+    {
+     "label": "Share of voice",
+     "ok": false,
+     "state": "measured"
+    }
+   ]
+  },
+  "note": "GEO signals: real AI-entity readiness (robots.txt/llms.txt/schema/Wikidata, zero-key) + a real multi-sample AI share-of-voice probe where a free LLM key was available. Per-engine readiness and the radar are MODELLED from these real signals (engineEstimate:true), never a per-engine live probe."
+ },
+ "competitors": {
+  "bestKeyword": {
+   "state": "probe_unavailable",
+   "reason": "no_operating_city"
+  },
+  "youDr": {
+   "state": "measured",
+   "dr": 2.38,
+   "rank": 21520645,
+   "da_100": 24
+  },
+  "cols": [
+   "domain",
+   "da_100"
+  ],
+  "drBars": [
+   {
+    "l": "You",
+    "v": 24,
+    "you": true
+   }
+  ],
+  "rows": [
+   {
+    "name": null,
+    "state": "probe_unavailable",
+    "reason": "no_competitor_data"
+   }
+  ],
+  "note": "Competitor Domain Rating is REAL OpenPageRank data only; a competitor with no public DR is never given a fabricated estimate (Rule 10 - the old estate's name-hash drFallback is deliberately not ported)."
+ },
+ "dims": [
+  {
+   "key": "dim-1",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-2",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-3",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-4",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-5",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-6",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-7",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-8",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-9",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-10",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  }
+ ],
+ "trajectory": [
+  {
+   "state": "not_probed",
+   "note": "A trajectory was not projected in this audit run."
+  }
+ ],
+ "pricing": [
+  {
+   "tier": null,
+   "state": "not_probed"
+  }
+ ],
+ "pricingNotes": {
+  "state": "not_probed",
+  "note": "Pricing analysis was not probed in this audit run."
+ },
+ "upsellProof": {
+  "state": "not_probed",
+  "note": "Pricing analysis was not probed in this audit run."
+ },
+ "score": {
+  "state": "not_probed"
+ },
+ "grade": {
+  "state": "not_probed"
+ },
+ "scoreBand": {
+  "state": "not_probed"
+ },
+ "scoring": {
+  "formula": {
+   "state": "not_probed"
+  },
+  "why": {
+   "state": "not_probed"
+  },
+  "inputs": {
+   "state": "not_probed"
+  },
+  "bands": [
+   {
+    "state": "not_probed"
+   }
+  ],
+  "note": "A headline score was not computed in this audit run; no score is asserted."
+ },
+ "exec": {
+  "state": "not_probed",
+  "note": "An executive summary was not composed in this audit run."
+ },
+ "glossary": {
+  "state": "not_probed"
+ },
+ "heat": {
+  "state": "not_probed"
+ },
+ "heatRows": {
+  "state": "not_probed"
+ },
+ "heatCols": {
+  "state": "not_probed"
+ },
+ "projected": {
+  "wk12": {
+   "state": "not_probed"
+  },
+  "wk24": {
+   "state": "not_probed"
+  }
+ },
+ "fixes": [
+  {
+   "state": "not_probed",
+   "note": "A remediation plan was not composed in this audit run."
+  }
+ ],
+ "meta": {
+  "company": "Ashtons Legal",
+  "domain": "ashtonslegal.co.uk",
+  "sector": "law-firms",
+  "country": "UK",
+  "date": "2026-07-28T13:26:46.492Z"
+ },
+ "jurisdiction": {
+  "bound": [
+   "UK"
+  ],
+  "primary": "UK",
+  "abstained": false
+ },
+ "findings": [
+  {
+   "record_id": "UK_CAP_CODE",
+   "state": "needs_review",
+   "kind": "absence-breach",
+   "artifact": {
+    "type": "coverage_proof",
+    "page_class": "pricing",
+    "surface": "visible_text",
+    "pages_checked": [
+     "https://www.ashtonslegal.co.uk/pricing/"
+    ],
+    "searched_patterns": [
+     {
+      "kind": "token-set",
+      "tokens": [
+       "marketing",
+       "ensure"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "documentary",
+       "objective"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "identifiable",
+       "advertising"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "environmental",
+       "misleading"
+      ],
+      "mode": "all"
+     }
+    ],
+    "tier1_fetched": true,
+    "truncated": false
+   },
+   "framework": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code)",
+   "statutory_citation": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code, 12th edition) - self-regulatory, backed by the CPRs/DMCC via CMA/Trading Standards referral, CAP Code rules 1-3 (misleadingness, substantiation), rule 2 (recognition of marketing communications)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Ensure marketing is legal, decent, honest and truthful, with claims capable of substantiation and ads clearly identifiable",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "ASA sanctions are non-monetary (ruling published, ad removal, ad alerts, paid-search removal, referral to Trading Standards/CMA where the CPRs/DMCC then apply monetary penalties)",
+    "max_is_rare": true
+   },
+   "regulator": "Advertising Standards Authority (ASA) / Committee of Advertising Practice (CAP)"
+  },
+  {
+   "record_id": "UK_CCR_2013",
+   "state": "needs_review",
+   "kind": "absence-breach",
+   "artifact": {
+    "type": "coverage_proof",
+    "page_class": "pricing",
+    "surface": "visible_text",
+    "pages_checked": [
+     "https://www.ashtonslegal.co.uk/pricing/"
+    ],
+    "searched_patterns": [
+     {
+      "kind": "token-set",
+      "tokens": [
+       "pre-contract",
+       "information"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "characteristics",
+       "services"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "total",
+       "price"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "geographic",
+       "identity"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "14-day",
+       "cancel"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "cancellation",
+       "exceptions"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "labelled",
+       "button"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "pre-ticked",
+       "optional"
+      ],
+      "mode": "all"
+     }
+    ],
+    "tier1_fetched": true,
+    "truncated": false
+   },
+   "framework": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (B2C distance selling)",
+   "statutory_citation": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (SI 2013/3134), Sch 2 (pre-contract information for distance contracts); reg 27-38 (14-day cancellation right and model cancellation form); reg 40 (additional payments require active consent)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Give the prescribed pre-contract information before the consumer is bound, with the total price shown before payment",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 5000,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Breach can make the contract unenforceable, extend the cancellation period by up to 12 months, and support Trading Standards action; some breaches are criminal offences with a fine",
+    "max_is_rare": true
+   },
+   "regulator": "Trading Standards / Competition and Markets Authority (CMA)"
+  },
+  {
+   "record_id": "UK_CRA_2015",
+   "state": "needs_review",
+   "kind": "absence-breach",
+   "artifact": {
+    "type": "coverage_proof",
+    "page_class": "pricing",
+    "surface": "visible_text",
+    "pages_checked": [
+     "https://www.ashtonslegal.co.uk/pricing/"
+    ],
+    "searched_patterns": [
+     {
+      "kind": "token-set",
+      "tokens": [
+       "transparent",
+       "legible"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "intelligible",
+       "written"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "statutory",
+       "exclude"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "giving",
+       "trader"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "services",
+       "digital"
+      ],
+      "mode": "all"
+     }
+    ],
+    "tier1_fetched": true,
+    "truncated": false
+   },
+   "framework": "Consumer Rights Act 2015 (fair and transparent terms; goods, services and digital content standards)",
+   "statutory_citation": "Consumer Rights Act 2015, Part 1 (goods, digital content, services: satisfactory quality, as described, reasonable care); Part 2 (unfair terms; transparency and the grey list at Sch 2)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Publish terms that are fair, transparent and legible, avoiding terms on the Schedule 2 grey list",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 300000,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Unfair terms are unenforceable against the consumer; CMA/Trading Standards can seek undertakings or court orders and consumers can claim; no fixed statutory fine under Part 2",
+    "max_is_rare": true
+   },
+   "regulator": "Competition and Markets Authority (CMA) / Trading Standards"
+  },
+  {
+   "record_id": "UK_EQUALITY_ACCESSIBILITY",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ashtonslegal.co.uk/insights/business-news/key-employment-law-changes-updated-timeline/\">\n\n\t\t\t<span data-image=\"https://www.ashtonslegal.co.uk/wp-content/uploads/2019/04/Employment-Law-Solicitors-for-Employers-Top.jpg\" class=\"load\">\n\n\t\t\t\t\t\t\t\t\n\t\t\t</span>\n\t\t\t<!-- <img width=\"1024\" ",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+   "statutory_citation": "Equality Act 2010, s.20-21 (duty to make reasonable adjustments), s.29 (services and public functions: not to discriminate against a person requiring the service)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make reasonable adjustments so disabled users are not put at a substantial disadvantage; WCAG 2.2 AA is the recognised evidence benchmark",
+   "penalty": {
+    "typical_low": 1200,
+    "typical_high": 60700,
+    "statutory_max": null,
+    "penalty_model": "uncapped",
+    "currency": "GBP",
+    "basis": "No statutory cap. Liability is uncapped county-court compensation (injury to feelings plus any financial loss) per claimant; damages are litigation-led, not regulator-fined. Tribunals and courts follow the Vento bands as guidance for injury-to-feelings awards, uprated annually for claims presented on or after 6 April 2025: lower band GBP 1,200-12,100 (less serious, one-off), middle band GBP 12,100-36,400, upper band GBP 36,400-60,700 (most serious), with the upper band exceeded only in the most exceptional cases. The EHRC can also take separate enforcement action (investigations, agreements, injunctions) but does not itself issue fines.",
+    "max_is_rare": false
+   },
+   "regulator": "Equality and Human Rights Commission (EHRC)"
+  },
+  {
+   "record_id": "UK_GREEN_CLAIMS",
+   "state": "pass",
+   "kind": "presence-breach",
+   "artifact": {
+    "type": "quote",
+    "text": "In 2023, ClientEarth sought the court\u2019s permission to bring a derivative claim against the directors of Shell plc, alleging that they had breached their duty to exercise reasonable care, skill and diligence by failing to adopt policies capable of achieving the company\u2019s target of reaching net zero emissions by 2050.",
+    "surface": "visible_text"
+   },
+   "framework": "Environmental claims: CMA Green Claims Code under the DMCC unfair practices regime (universal-conditional)",
+   "statutory_citation": "Digital Markets, Competition and Consumers Act 2024, Part 4 Ch 1 (misleading actions and omissions); CMA Green Claims Code (guidance, 2021), DMCC ss.224-226 applied to environmental claims; Green Claims Code six principles (truthful, clear, no material omissions, fair comparisons, full life cycle, substantiated)",
+   "page_url": "https://www.ashtonslegal.co.uk/feed/",
+   "voice_tier": "observation",
+   "evidence_quote": "In 2023, ClientEarth sought the court\u2019s permission to bring a derivative claim against the directors of Shell plc, alleging that they had breached their duty to exercise reasonable care, skill and diligence by failing to adopt policies capable of achieving the company\u2019s target of reaching net zero emissions by 2050.",
+   "description": "Every environmental claim is substantiated, specific and not misleading (the breach is the unsubstantiated green claim being present)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": 300000,
+    "currency": "GBP",
+    "basis": "CMA direct enforcement under DMCC: up to 10% of global turnover or GBP 300,000; ASA rulings as the fast lane",
+    "max_is_rare": true
+   },
+   "regulator": "Competition and Markets Authority (CMA), with ASA co-enforcement",
+   "enforcement": [
+    {
+     "case": "CMA v ASOS, Boohoo and George at Asda (fashion green claims)",
+     "date": "2024-03",
+     "amount": "formal undertakings; compliance reporting to the CMA",
+     "url": "https://www.gov.uk/government/news/green-claims-cma-secures-landmark-changes-from-asos-boohoo-and-asda",
+     "summary": "CMA secured undertakings restricting vague green ranges and requiring specific, evidenced material claims across sites selling GBP 4.4bn/yr of fashion."
+    }
+   ]
+  },
+  {
+   "record_id": "UK_PRICE_VAT_DISPLAY",
+   "state": "needs_review",
+   "kind": "absence-breach",
+   "artifact": {
+    "type": "coverage_proof",
+    "page_class": "pricing",
+    "surface": "visible_text",
+    "pages_checked": [
+     "https://www.ashtonslegal.co.uk/pricing/"
+    ],
+    "searched_patterns": [
+     {
+      "kind": "token-set",
+      "tokens": [
+       "inclusive",
+       "selling"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "consumers",
+       "inclusive"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "products",
+       "price"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "unambiguous",
+       "associated"
+      ],
+      "mode": "all"
+     },
+     {
+      "kind": "token-set",
+      "tokens": [
+       "mandatory",
+       "delivery"
+      ],
+      "mode": "all"
+     }
+    ],
+    "tier1_fetched": true,
+    "truncated": false
+   },
+   "framework": "Price and VAT display to consumers (Price Marking Order 2004 and VAT-inclusive pricing)",
+   "statutory_citation": "Price Marking Order 2004 (SI 2004/102); Value Added Tax Act 1994; read with CCRs 2013 and DMCC Act 2024 on total price, Price Marking Order 2004 arts 4-7 (selling price and unit price, inclusive of VAT, to consumers)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Show a clear selling price inclusive of VAT to consumers, with a unit price where required (this duty does not apply to VAT-exempt health services - see excluded_when)",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 5000,
+    "statutory_max": null,
+    "penalty_model": "uncapped",
+    "currency": "GBP",
+    "basis": "Breach of the Price Marking Order 2004 is a criminal offence (art.11) triable summarily; the historic level-5 standard-scale maximum (GBP 5,000) was made unlimited by s.85 Legal Aid, Sentencing and Punishment of Offenders Act 2012, in force 12 March 2015, so magistrates may now impose a fine of any amount. typical_high is an illustrative low-level enforcement figure, not a statutory ceiling. DMCC drip-pricing penalties (up to 10% turnover) apply separately where mandatory fees are hidden.",
+    "max_is_rare": true
+   },
+   "regulator": "Trading Standards / Competition and Markets Authority (CMA)"
+  }
+ ],
+ "applicability": {
+  "assessed": [
+   {
+    "record_id": "UK_CAP_CODE",
+    "framework": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code)",
+    "state": "needs_review"
+   },
+   {
+    "record_id": "UK_CCR_2013",
+    "framework": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (B2C distance selling)",
+    "state": "needs_review"
+   },
+   {
+    "record_id": "UK_CILEX_TRANSPARENCY",
+    "framework": "CILEx Regulation transparency - price and service information for CILEx-regulated practices",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_COMPANIES_ACT_S82_LEGAL",
+    "framework": "Companies Act 2006 s.82 and Company, LLP and Business (Names and Trading Disclosures) Regulations - website trading disclosures",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_CPUT_MISLEADING",
+    "framework": "Consumer Protection from Unfair Trading (misleading actions and omissions baseline)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_CRA_2015",
+    "framework": "Consumer Rights Act 2015 (fair and transparent terms; goods, services and digital content standards)",
+    "state": "needs_review"
+   },
+   {
+    "record_id": "UK_DATA_SECURITY_TRANSPORT",
+    "framework": "UK GDPR security of processing (encryption in transit and secure transport of personal data submitted through the website)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_DMCC_UNFAIR_PRACTICES",
+    "framework": "Digital Markets, Competition and Consumers Act 2024 (fake reviews, drip pricing and false urgency)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_DUAA_2025",
+    "framework": "Data (Use and Access) Act 2025 (changes to UK GDPR, DPA 2018 and PECR)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_EQUALITY_ACCESSIBILITY",
+    "framework": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+    "state": "violation"
+   },
+   {
+    "record_id": "UK_GDPR_INTERNATIONAL_TRANSFER",
+    "framework": "UK GDPR international data transfers (restricted transfers of personal data to a third country outside the UK)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_GDPR_PRIVACY_NOTICE",
+    "framework": "UK GDPR and Data Protection Act 2018 (privacy notice, transparency and marketing lawful basis)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_GREEN_CLAIMS",
+    "framework": "Environmental claims: CMA Green Claims Code under the DMCC unfair practices regime (universal-conditional)",
+    "state": "pass"
+   },
+   {
+    "record_id": "UK_ICO_FEE_REGISTRATION",
+    "framework": "ICO data protection fee and register of fee payers (Data Protection (Charges and Information) Regulations 2018)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_LEGAL_OMBUDSMAN_SIGNPOST",
+    "framework": "Legal Ombudsman signposting in complaints handling (SRA Code paras 8.3-8.4 and LeO Scheme Rules)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_LSA_2007_RESERVED",
+    "framework": "Legal Services Act 2007 - authorisation to carry on reserved legal activities",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_MLR_2017_LEGAL",
+    "framework": "Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017 - AML supervision (legal sector)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_MODERN_SLAVERY_S54",
+    "framework": "Modern Slavery Act 2015 s.54 (transparency in supply chains statement)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_PECR_COOKIES_MARKETING",
+    "framework": "Privacy and Electronic Communications Regulations 2003 (cookie consent and electronic marketing)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_PRICE_VAT_DISPLAY",
+    "framework": "Price and VAT display to consumers (Price Marking Order 2004 and VAT-inclusive pricing)",
+    "state": "needs_review"
+   },
+   {
+    "record_id": "UK_PROVISION_OF_SERVICES_2009",
+    "framework": "Provision of Services Regulations 2009 - professional service-provider information duties",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_SRA_CODE_PUBLICITY",
+    "framework": "SRA Code of Conduct - client information, publicity and unsolicited approaches (Section 8)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_SRA_DIVERSITY_DATA",
+    "framework": "SRA workforce diversity data collection and publication",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_SRA_PII_INDEMNITY",
+    "framework": "SRA professional indemnity insurance - qualifying cover and insurer information (SRA Indemnity Insurance Rules; PSR 2009 reg 8(1)(n))",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_SRA_TRANSPARENCY",
+    "framework": "SRA Transparency Rules 2018 (price and service publication, complaints, regulatory information and digital badge)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_TRADING_DISCLOSURES",
+    "framework": "Company and online trading disclosures (Companies Act 2006 s.82 and Electronic Commerce Regulations 2002 reg 6)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "UK_TRUSTMARK_ACCREDITATION_CLAIMS",
+    "framework": "Accreditation, trust mark and approval claims: DMCC banned practices (universal-conditional register check)",
+    "state": "not_evaluated"
+   }
+  ],
+  "assessedCompliant": [
+   {
+    "record_id": "UK_GREEN_CLAIMS",
+    "framework": "Environmental claims: CMA Green Claims Code under the DMCC unfair practices regime (universal-conditional)",
+    "state": "pass"
+   }
+  ],
+  "excludedCount": 99
+ },
+ "notLegalAdvice": "This automated audit is not legal advice; findings are evidence-backed observations for your review and verification with your own advisers.",
+ "frameworks": [
+  {
+   "code": "UK_CAP_CODE",
+   "name": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code)",
+   "regulator": "Advertising Standards Authority (ASA) / Committee of Advertising Practice (CAP)",
+   "jurisdiction": "UK",
+   "citation": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code, 12th edition) - self-regulatory, backed by the CPRs/DMCC via CMA/Trading Standards referral, CAP Code rules 1-3 (misleadingness, substantiation), rule 2 (recognition of marketing communications)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "ASA sanctions are non-monetary (ruling published, ad removal, ad alerts, paid-search removal, referral to Trading Standards/CMA where the CPRs/DMCC then apply monetary penalties)",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "needs_review",
+   "findings": [
+    {
+     "record_id": "UK_CAP_CODE",
+     "state": "needs_review",
+     "kind": "absence-breach",
+     "artifact": {
+      "type": "coverage_proof",
+      "page_class": "pricing",
+      "surface": "visible_text",
+      "pages_checked": [
+       "https://www.ashtonslegal.co.uk/pricing/"
+      ],
+      "searched_patterns": [
+       {
+        "kind": "token-set",
+        "tokens": [
+         "marketing",
+         "ensure"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "documentary",
+         "objective"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "identifiable",
+         "advertising"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "environmental",
+         "misleading"
+        ],
+        "mode": "all"
+       }
+      ],
+      "tier1_fetched": true,
+      "truncated": false
+     },
+     "framework": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code)",
+     "statutory_citation": "UK Code of Non-broadcast Advertising and Direct & Promotional Marketing (CAP Code, 12th edition) - self-regulatory, backed by the CPRs/DMCC via CMA/Trading Standards referral, CAP Code rules 1-3 (misleadingness, substantiation), rule 2 (recognition of marketing communications)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Ensure marketing is legal, decent, honest and truthful, with claims capable of substantiation and ads clearly identifiable",
+     "penalty": {
+      "typical_low": null,
+      "typical_high": null,
+      "statutory_max": null,
+      "currency": "GBP",
+      "basis": "ASA sanctions are non-monetary (ruling published, ad removal, ad alerts, paid-search removal, referral to Trading Standards/CMA where the CPRs/DMCC then apply monetary penalties)",
+      "max_is_rare": true
+     },
+     "regulator": "Advertising Standards Authority (ASA) / Committee of Advertising Practice (CAP)"
+    }
+   ],
+   "obligations": [
+    "Ensure marketing is legal, decent, honest and truthful, with claims capable of substantiation and ads clearly identifiable"
+   ],
+   "why": "The CAP Code governs the claims on a business's own website; while ASA sanctions are reputational, unsubstantiated claims also breach the statutory CPRs/DMCC that sit behind it.",
+   "focus": "Where is the evidence for this claim, and is this content clearly marked as advertising?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.asa.org.uk/codes-and-rulings/advertising-codes/non-broadcast-code.html"
+  },
+  {
+   "code": "UK_CCR_2013",
+   "name": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (B2C distance selling)",
+   "regulator": "Trading Standards / Competition and Markets Authority (CMA)",
+   "jurisdiction": "UK",
+   "citation": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (SI 2013/3134), Sch 2 (pre-contract information for distance contracts); reg 27-38 (14-day cancellation right and model cancellation form); reg 40 (additional payments require active consent)",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 5000,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Breach can make the contract unenforceable, extend the cancellation period by up to 12 months, and support Trading Standards action; some breaches are criminal offences with a fine",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "needs_review",
+   "findings": [
+    {
+     "record_id": "UK_CCR_2013",
+     "state": "needs_review",
+     "kind": "absence-breach",
+     "artifact": {
+      "type": "coverage_proof",
+      "page_class": "pricing",
+      "surface": "visible_text",
+      "pages_checked": [
+       "https://www.ashtonslegal.co.uk/pricing/"
+      ],
+      "searched_patterns": [
+       {
+        "kind": "token-set",
+        "tokens": [
+         "pre-contract",
+         "information"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "characteristics",
+         "services"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "total",
+         "price"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "geographic",
+         "identity"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "14-day",
+         "cancel"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "cancellation",
+         "exceptions"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "labelled",
+         "button"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "pre-ticked",
+         "optional"
+        ],
+        "mode": "all"
+       }
+      ],
+      "tier1_fetched": true,
+      "truncated": false
+     },
+     "framework": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (B2C distance selling)",
+     "statutory_citation": "Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013 (SI 2013/3134), Sch 2 (pre-contract information for distance contracts); reg 27-38 (14-day cancellation right and model cancellation form); reg 40 (additional payments require active consent)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Give the prescribed pre-contract information before the consumer is bound, with the total price shown before payment",
+     "penalty": {
+      "typical_low": 500,
+      "typical_high": 5000,
+      "statutory_max": null,
+      "currency": "GBP",
+      "basis": "Breach can make the contract unenforceable, extend the cancellation period by up to 12 months, and support Trading Standards action; some breaches are criminal offences with a fine",
+      "max_is_rare": true
+     },
+     "regulator": "Trading Standards / Competition and Markets Authority (CMA)"
+    }
+   ],
+   "obligations": [
+    "Give the prescribed pre-contract information before the consumer is bound, with the total price shown before payment"
+   ],
+   "why": "Every checkout for consumers is governed by these rules; a missing cancellation notice or a hidden total price is a direct, testable breach on the purchase flow.",
+   "focus": "Where in the buying journey do you state the 14-day cancellation right and the full inclusive price before payment?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/uksi/2013/3134/contents/made"
+  },
+  {
+   "code": "UK_CILEX_TRANSPARENCY",
+   "name": "CILEx Regulation transparency - price and service information for CILEx-regulated practices",
+   "regulator": "CILEx Regulation (CRL)",
+   "jurisdiction": "UK",
+   "citation": "CILEx Regulation (CRL) Code of Conduct and transparency requirements, CILEx Regulation transparency requirements on price, service and complaints information for authorised entities and individuals",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Enforced by CILEx Regulation through supervision and disciplinary action. No fixed statutory website tariff is published; do not assert a specific figure.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Publish price, service and complaints information in line with CILEx Regulation transparency requirements"
+   ],
+   "why": "CILEx-regulated practices are held to transparency requirements comparable to the SRA and CLC, but firms often assume the rules do not reach them.",
+   "focus": "Does the site publish price and service information, the complaints/Legal Ombudsman route, and the CILEx Regulation status?",
+   "enforcement": null,
+   "register_url": "https://cilexregulation.org.uk/find-a-professional/",
+   "citation_url": "https://cilexregulation.org.uk/"
+  },
+  {
+   "code": "UK_COMPANIES_ACT_S82_LEGAL",
+   "name": "Companies Act 2006 s.82 and Company, LLP and Business (Names and Trading Disclosures) Regulations - website trading disclosures",
+   "regulator": "Companies House / local authority trading standards",
+   "jurisdiction": "UK",
+   "citation": "Companies Act 2006 s.82; The Company, Limited Liability Partnership and Business (Names and Trading Disclosures) Regulations 2015 (SI 2015/17), CA 2006 s.82; SI 2015/17 regs on disclosure of registered particulars on websites and business communications",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 1000,
+    "statutory_max": 1000,
+    "currency": "GBP",
+    "basis": "Failure to make required trading disclosures is a criminal offence; a fine up to level 3 on the standard scale (GBP 1,000) for the company/LLP and every officer in default, with a daily default fine for continued contravention.",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Display the registered particulars on the website and business communications"
+   ],
+   "why": "Law firms are overwhelmingly LLPs or limited companies, yet many display only a trading name; the registered name, number, place of registration and registered office are a legal requirement and are trivially checkable against Companies House.",
+   "focus": "Does the footer show the registered name, company/LLP number, place of registration and registered office?",
+   "enforcement": null,
+   "register_url": "https://find-and-update.company-information.service.gov.uk/",
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2006/46/section/82"
+  },
+  {
+   "code": "UK_CPUT_MISLEADING",
+   "name": "Consumer Protection from Unfair Trading (misleading actions and omissions baseline)",
+   "regulator": "Trading Standards / Competition and Markets Authority (CMA)",
+   "jurisdiction": "UK",
+   "citation": "Consumer Protection from Unfair Trading Regulations 2008 (SI 2008/1277), now read with the DMCC Act 2024 Part 4, regs 5-6 (misleading actions and omissions), reg 7 (aggressive practices), Sch 1 (banned practices); superseded for practices after 6 April 2025 by DMCC Part 4 Ch 1",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Unlimited fine on conviction and up to 2 years imprisonment for the most serious offences; post-April-2025 conduct enforced under DMCC with direct CMA penalties",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Do not make misleading claims or omit material information that the consumer needs to make an informed decision"
+   ],
+   "why": "This is the general anti-deception backstop behind more specific rules; any exaggerated claim, hidden ad, or omitted material fact on the site can be a breach.",
+   "focus": "Can you substantiate every claim, and is every paid endorsement disclosed?",
+   "enforcement": {
+    "case": "CMA fake reviews programme",
+    "date": "2024-09",
+    "amount": "Undertakings and enforcement",
+    "url": "https://www.gov.uk/government/news/cma-secures-changes-from-major-websites-to-tackle-fake-reviews",
+    "summary": "CMA action against fake and misleading reviews on online platforms under the CPRs, with powers extended by the DMCC Act."
+   },
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/uksi/2008/1277/contents"
+  },
+  {
+   "code": "UK_CRA_2015",
+   "name": "Consumer Rights Act 2015 (fair and transparent terms; goods, services and digital content standards)",
+   "regulator": "Competition and Markets Authority (CMA) / Trading Standards",
+   "jurisdiction": "UK",
+   "citation": "Consumer Rights Act 2015, Part 1 (goods, digital content, services: satisfactory quality, as described, reasonable care); Part 2 (unfair terms; transparency and the grey list at Sch 2)",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 300000,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Unfair terms are unenforceable against the consumer; CMA/Trading Standards can seek undertakings or court orders and consumers can claim; no fixed statutory fine under Part 2",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "needs_review",
+   "findings": [
+    {
+     "record_id": "UK_CRA_2015",
+     "state": "needs_review",
+     "kind": "absence-breach",
+     "artifact": {
+      "type": "coverage_proof",
+      "page_class": "pricing",
+      "surface": "visible_text",
+      "pages_checked": [
+       "https://www.ashtonslegal.co.uk/pricing/"
+      ],
+      "searched_patterns": [
+       {
+        "kind": "token-set",
+        "tokens": [
+         "transparent",
+         "legible"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "intelligible",
+         "written"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "statutory",
+         "exclude"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "giving",
+         "trader"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "services",
+         "digital"
+        ],
+        "mode": "all"
+       }
+      ],
+      "tier1_fetched": true,
+      "truncated": false
+     },
+     "framework": "Consumer Rights Act 2015 (fair and transparent terms; goods, services and digital content standards)",
+     "statutory_citation": "Consumer Rights Act 2015, Part 1 (goods, digital content, services: satisfactory quality, as described, reasonable care); Part 2 (unfair terms; transparency and the grey list at Sch 2)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Publish terms that are fair, transparent and legible, avoiding terms on the Schedule 2 grey list",
+     "penalty": {
+      "typical_low": 50000,
+      "typical_high": 300000,
+      "statutory_max": null,
+      "currency": "GBP",
+      "basis": "Unfair terms are unenforceable against the consumer; CMA/Trading Standards can seek undertakings or court orders and consumers can claim; no fixed statutory fine under Part 2",
+      "max_is_rare": true
+     },
+     "regulator": "Competition and Markets Authority (CMA) / Trading Standards"
+    }
+   ],
+   "obligations": [
+    "Publish terms that are fair, transparent and legible, avoiding terms on the Schedule 2 grey list"
+   ],
+   "why": "Terms and conditions pages are read against the CRA grey list; an unfair or missing terms page both fails the law and exposes the trader to unenforceable contracts.",
+   "focus": "Are your consumer terms fair, transparent and free of terms that strip statutory rights?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2015/15/contents"
+  },
+  {
+   "code": "UK_DATA_SECURITY_TRANSPORT",
+   "name": "UK GDPR security of processing (encryption in transit and secure transport of personal data submitted through the website)",
+   "regulator": "Information Commissioner's Office (ICO)",
+   "jurisdiction": "UK",
+   "citation": "UK GDPR (assimilated Regulation (EU) 2016/679); Data Protection Act 2018 Part 2, Art 32 (security of processing, including the encryption of personal data) read with Art 5(1)(f) (integrity and confidentiality); standard-tier penalty under Art 83(4)",
+   "penalty": {
+    "typical_low": 60000,
+    "typical_high": 4400000,
+    "statutory_max": 8700000,
+    "penalty_model": "turnover_pct",
+    "currency": "GBP",
+    "basis": "Standard maximum of GBP 8,700,000 or 2% of total worldwide annual turnover, whichever is higher (UK GDPR Art 83(4), covering the Art 32 security obligations). Typical band from ICO Art 32 and Art 5(1)(f) security penalties: GBP 60,000 (DPP Law, 2025), GBP 98,000 (Tuckers Solicitors, 2022), GBP 1,228,283 (LastPass UK, 2025), GBP 3.07m (Advanced, 2025) and GBP 4.4m (Interserve, 2022); large-scale breaches reach higher through the 2% turnover route (British Airways GBP 20m and Marriott GBP 18.4m, 2020).",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Transmit personal data over the website using appropriate transport security (an encrypted HTTPS/TLS connection) so it is not sent in plaintext; a form on a secure page that submits to an insecure http endpoint, or mixed insecure content on a data-collecting page, is a transport-security risk indicator to review against the controller's own Art 32 risk assessment, not an automatic breach"
+   ],
+   "why": "Every form that collects a name, email or payment detail must be transmitted securely; a page that submits personal data over plaintext http, or mixes insecure content, exposes that data in transit and is one of the clearest technical-security failings the ICO can point to.",
+   "focus": "Is every form that collects personal data submitted over an encrypted connection, and where is your assessment that the transport security is appropriate to the risk?",
+   "enforcement": {
+    "case": "ICO v LastPass UK Ltd",
+    "date": "2025-11",
+    "amount": "GBP 1,228,283",
+    "url": "https://ico.org.uk/action-weve-taken/enforcement/2025/11/lastpass-uk-ltd/",
+    "summary": "Penalty of GBP 1,228,283 issued to password-management provider LastPass UK Ltd on 20 November 2025 for infringements of Art 5(1)(f) and Art 32(1)(f) UK GDPR: a failure to implement appropriate technical and organisational measures to keep personal data secure."
+   },
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/eur/2016/679/article/32"
+  },
+  {
+   "code": "UK_DMCC_UNFAIR_PRACTICES",
+   "name": "Digital Markets, Competition and Consumers Act 2024 (fake reviews, drip pricing and false urgency)",
+   "regulator": "Competition and Markets Authority (CMA)",
+   "jurisdiction": "UK",
+   "citation": "Digital Markets, Competition and Consumers Act 2024, Part 4 Ch 1 (unfair commercial practices) and Sch 20 (banned practices, including fake/concealed-incentive reviews and hidden mandatory fees); commenced by SI 2025/272 on 6 April 2025",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "penalty_model": "turnover_pct",
+    "currency": "GBP",
+    "basis": "CMA can impose direct penalties up to 10% of global annual turnover for businesses (up to GBP 300,000 for individuals) without going to court",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Do not publish, commission or fail to remove fake or incentivised consumer reviews without disclosure",
+    "Show the total price including any mandatory fees at the invitation to purchase (no drip pricing)",
+    "Do not use false or misleading urgency or scarcity claims"
+   ],
+   "why": "Since April 2025 the CMA can fine up to 10% of global turnover directly, and fake reviews, hidden fees and fake urgency are exactly the growth-hacking patterns many sites still use.",
+   "focus": "Is every mandatory fee in your headline price, and is every countdown timer and 'X left' claim actually true?",
+   "enforcement": {
+    "case": "CMA first DMCC direct consumer-enforcement investigations (online pricing)",
+    "date": "2025-11-18",
+    "amount": "Investigations opened (8 businesses; advisory letters to around 100 firms)",
+    "url": "https://www.gov.uk/government/news/cma-launches-major-consumer-protection-drive-focused-on-online-pricing-practices",
+    "summary": "On 18 November 2025 the CMA opened its first direct consumer-protection enforcement investigations under the DMCC Act 2024 into eight businesses over a range of online pricing practices: mandatory/drip fees not included in the headline price (StubHub, viagogo, AA Driving School, BSM Driving School and Gold's Gym), misleading time-limited sales (Wayfair, and Appliances Direct) and automatic default opt-ins to optional charges (Marks Electrical, and Appliances Direct). It also issued advisory letters to around 100 further businesses across 14 sectors."
+   },
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2024/13/contents"
+  },
+  {
+   "code": "UK_DUAA_2025",
+   "name": "Data (Use and Access) Act 2025 (changes to UK GDPR, DPA 2018 and PECR)",
+   "regulator": "Information Commissioner's Office (ICO)",
+   "jurisdiction": "UK",
+   "citation": "Data (Use and Access) Act 2025, Provisions amending UK GDPR, DPA 2018 and PECR (including PECR penalty uplift and low-risk cookie exemptions); phased commencement by regulations",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": 17500000,
+    "penalty_model": "turnover_pct",
+    "currency": "GBP",
+    "basis": "DUAA s.115/Sch 12 raises the PECR maximum to UK-GDPR levels (the higher of GBP 17.5m or 4% of worldwide turnover); commenced for PECR purposes by the Data (Use and Access) Act 2025 (Commencement No. 6 and Transitional and Saving Provisions) Regulations 2026 (SI 2026/82), in force 5 February 2026, applying to conduct from that date",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Track DUAA commencement and reflect the raised PECR penalty ceiling and any narrowed cookie-consent exemptions for low-risk analytics as they come into force"
+   ],
+   "why": "DUAA is the moving part of the UK data regime; the headline change owners feel is that a cookie or spam breach can now attract a UK-GDPR-scale fine rather than the old GBP 500k cap.",
+   "focus": "Are you relying on a cookie exemption that DUAA actually grants, and does your banner still gate everything else?",
+   "enforcement": {
+    "case": "ICO PECR enforcement escalation following DUAA commencement",
+    "date": "2026-02",
+    "amount": "Raised PECR maxima in force",
+    "url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/",
+    "summary": "Following DUAA commencement the ICO can apply UK-GDPR-level maxima to PECR breaches and continues to review the top 1,000 UK sites for cookie compliance."
+   },
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2025/18/contents"
+  },
+  {
+   "code": "UK_EQUALITY_ACCESSIBILITY",
+   "name": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+   "regulator": "Equality and Human Rights Commission (EHRC)",
+   "jurisdiction": "UK",
+   "citation": "Equality Act 2010, s.20-21 (duty to make reasonable adjustments), s.29 (services and public functions: not to discriminate against a person requiring the service)",
+   "penalty": {
+    "typical_low": 1200,
+    "typical_high": 60700,
+    "statutory_max": null,
+    "penalty_model": "uncapped",
+    "currency": "GBP",
+    "basis": "No statutory cap. Liability is uncapped county-court compensation (injury to feelings plus any financial loss) per claimant; damages are litigation-led, not regulator-fined. Tribunals and courts follow the Vento bands as guidance for injury-to-feelings awards, uprated annually for claims presented on or after 6 April 2025: lower band GBP 1,200-12,100 (less serious, one-off), middle band GBP 12,100-36,400, upper band GBP 36,400-60,700 (most serious), with the upper band exceeded only in the most exceptional cases. The EHRC can also take separate enforcement action (investigations, agreements, injunctions) but does not itself issue fines.",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "violation",
+   "findings": [
+    {
+     "record_id": "UK_EQUALITY_ACCESSIBILITY",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ashtonslegal.co.uk/insights/business-news/key-employment-law-changes-updated-timeline/\">\n\n\t\t\t<span data-image=\"https://www.ashtonslegal.co.uk/wp-content/uploads/2019/04/Employment-Law-Solicitors-for-Employers-Top.jpg\" class=\"load\">\n\n\t\t\t\t\t\t\t\t\n\t\t\t</span>\n\t\t\t<!-- <img width=\"1024\" ",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Equality Act 2010 (accessible website as a reasonable adjustment; WCAG 2.2 AA evidence standard)",
+     "statutory_citation": "Equality Act 2010, s.20-21 (duty to make reasonable adjustments), s.29 (services and public functions: not to discriminate against a person requiring the service)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make reasonable adjustments so disabled users are not put at a substantial disadvantage; WCAG 2.2 AA is the recognised evidence benchmark",
+     "penalty": {
+      "typical_low": 1200,
+      "typical_high": 60700,
+      "statutory_max": null,
+      "penalty_model": "uncapped",
+      "currency": "GBP",
+      "basis": "No statutory cap. Liability is uncapped county-court compensation (injury to feelings plus any financial loss) per claimant; damages are litigation-led, not regulator-fined. Tribunals and courts follow the Vento bands as guidance for injury-to-feelings awards, uprated annually for claims presented on or after 6 April 2025: lower band GBP 1,200-12,100 (less serious, one-off), middle band GBP 12,100-36,400, upper band GBP 36,400-60,700 (most serious), with the upper band exceeded only in the most exceptional cases. The EHRC can also take separate enforcement action (investigations, agreements, injunctions) but does not itself issue fines.",
+      "max_is_rare": false
+     },
+     "regulator": "Equality and Human Rights Commission (EHRC)"
+    }
+   ],
+   "obligations": [
+    "Make reasonable adjustments so disabled users are not put at a substantial disadvantage; WCAG 2.2 AA is the recognised evidence benchmark"
+   ],
+   "why": "Accessibility failures are testable from the page with automated and manual checks, and the duty is anticipatory: the business must have already made the site usable, not wait for a complaint.",
+   "focus": "What reasonable adjustments have you made so a disabled user can complete the same journey as everyone else?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2010/15/section/29"
+  },
+  {
+   "code": "UK_GDPR_INTERNATIONAL_TRANSFER",
+   "name": "UK GDPR international data transfers (restricted transfers of personal data to a third country outside the UK)",
+   "regulator": "Information Commissioner's Office (ICO)",
+   "jurisdiction": "UK",
+   "citation": "UK GDPR (assimilated Regulation (EU) 2016/679), Chapter V, as amended by the Data (Use and Access) Act 2025; Data Protection Act 2018 Part 2, Arts 44A (general principles for transfers), 45A (transfers approved by adequacy regulations), 46 (appropriate safeguards, including the ICO International Data Transfer Agreement and the UK Addendum), 47A (standard data protection clauses) and 49 (derogations); higher-tier penalty under Art 83(5)(c). Chapter V substituted and amended by the Data (Use and Access) Act 2025 s.142 and Sch 7, in force 5 February 2026 (SI 2026/82)",
+   "penalty": {
+    "typical_low": 250000,
+    "typical_high": 7552800,
+    "statutory_max": 17500000,
+    "penalty_model": "turnover_pct",
+    "currency": "GBP",
+    "basis": "Higher maximum of GBP 17,500,000 or 4% of total worldwide annual turnover, whichever is higher (UK GDPR Art 83(5)(c), covering transfers under Arts 44A to 49). The ICO has not issued a monetary penalty for a pure Chapter V transfer breach, so the modelled band reflects the ICO's cross-border and higher-tier practice (the GBP 7,552,800 Clearview AI fine, 2022) and the reprimand-first reality for transfer issues; the landmark restricted-transfer penalty is the EU/EDPB Meta decision (EUR 1.2bn, May 2023).",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Where website personal data reaches a receiver outside the UK, rely on a valid Chapter V transfer route (adequacy regulations, an Art 46 appropriate safeguard such as the ICO International Data Transfer Agreement or Addendum, or an Art 49 derogation); an observed third-country receiver of personal data is a signal to review the transfer basis, not by itself proof of an unlawful transfer"
+   ],
+   "why": "Almost every website sends personal data abroad the moment it loads a US-hosted advertising, hosting or embedded-media tool, and since the Data (Use and Access) Act reforms (in force 5 February 2026) that transfer needs a lawful Chapter V route unless the receiver is covered by UK adequacy such as the UK Extension to the EU-US Data Privacy Framework.",
+   "focus": "Which of your website tools send personal data outside the UK, and for each one, is it adequacy-covered, on an Art 46 safeguard with a transfer risk assessment, or relying on an Art 49 derogation?",
+   "enforcement": {
+    "case": "ICO v Clearview AI Inc (Upper Tribunal judgment)",
+    "date": "2025-10",
+    "amount": "GBP 7,552,800",
+    "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/10/uk-upper-tribunal-hands-down-judgment-on-clearview-ai-inc/",
+    "summary": "Illustrates ICO enforcement over the cross-border processing of UK residents' personal data by a US company: the ICO fined Clearview AI Inc GBP 7,552,800 in May 2022 for scraping UK residents' images into a global facial-recognition database. The fine rested on lawful basis and transparency rather than the Chapter V export-mechanism rules; after appeals, the Upper Tribunal (October 2025) upheld three of the ICO's four grounds. The archetypal restricted-transfer penalty remains the EU/EDPB Meta decision (EUR 1.2bn, 22 May 2023), an EU action noted for context, not UK enforcement."
+   },
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/eur/2016/679/article/44A"
+  },
+  {
+   "code": "UK_GDPR_PRIVACY_NOTICE",
+   "name": "UK GDPR and Data Protection Act 2018 (privacy notice, transparency and marketing lawful basis)",
+   "regulator": "Information Commissioner's Office (ICO)",
+   "jurisdiction": "UK",
+   "citation": "UK GDPR (assimilated Regulation (EU) 2016/679); Data Protection Act 2018, UK GDPR Arts 5, 6, 13, 14, 21 (transparency, lawful basis, right to object to direct marketing); DPA 2018 Part 2",
+   "penalty": {
+    "typical_low": 1230000,
+    "typical_high": 14000000,
+    "statutory_max": 17500000,
+    "penalty_model": "turnover_pct",
+    "currency": "GBP",
+    "basis": "Higher maximum of GBP 17.5m or 4% of total worldwide annual turnover (UK GDPR Art 83(5)); typical band from 2025 ICO monetary penalties",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Publish an accessible privacy notice carrying the Article 13/14 disclosures, reachable from every page",
+    "State a valid lawful basis for marketing (consent, or legitimate interests for existing-customer postal/limited channels) rather than relying on a bare privacy policy"
+   ],
+   "why": "Almost every business website processes personal data, so the privacy notice is the single most universally binding obligation and the first thing the ICO and a data subject look for.",
+   "focus": "Show me your privacy notice and tell me your lawful basis for each processing purpose, especially marketing.",
+   "enforcement": {
+    "case": "ICO v Capita plc",
+    "date": "2025-10",
+    "amount": "GBP 14,000,000",
+    "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/10/capita-fined-14m-for-data-breach-affecting-over-6m-people/",
+    "summary": "Fined GBP 14m (GBP 8m controller plus GBP 6m processor) after a March 2023 cyber attack exposed the personal data of around 6.6 million people; failure to implement appropriate security measures."
+   },
+   "register_url": "https://ico.org.uk/ESDWebPages/Search",
+   "citation_url": "https://www.legislation.gov.uk/eur/2016/679/contents"
+  },
+  {
+   "code": "UK_GREEN_CLAIMS",
+   "name": "Environmental claims: CMA Green Claims Code under the DMCC unfair practices regime (universal-conditional)",
+   "regulator": "Competition and Markets Authority (CMA), with ASA co-enforcement",
+   "jurisdiction": "UK",
+   "citation": "Digital Markets, Competition and Consumers Act 2024, Part 4 Ch 1 (misleading actions and omissions); CMA Green Claims Code (guidance, 2021), DMCC ss.224-226 applied to environmental claims; Green Claims Code six principles (truthful, clear, no material omissions, fair comparisons, full life cycle, substantiated)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": 300000,
+    "currency": "GBP",
+    "basis": "CMA direct enforcement under DMCC: up to 10% of global turnover or GBP 300,000; ASA rulings as the fast lane",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "pass",
+   "findings": [
+    {
+     "record_id": "UK_GREEN_CLAIMS",
+     "state": "pass",
+     "kind": "presence-breach",
+     "artifact": {
+      "type": "quote",
+      "text": "In 2023, ClientEarth sought the court\u2019s permission to bring a derivative claim against the directors of Shell plc, alleging that they had breached their duty to exercise reasonable care, skill and diligence by failing to adopt policies capable of achieving the company\u2019s target of reaching net zero emissions by 2050.",
+      "surface": "visible_text"
+     },
+     "framework": "Environmental claims: CMA Green Claims Code under the DMCC unfair practices regime (universal-conditional)",
+     "statutory_citation": "Digital Markets, Competition and Consumers Act 2024, Part 4 Ch 1 (misleading actions and omissions); CMA Green Claims Code (guidance, 2021), DMCC ss.224-226 applied to environmental claims; Green Claims Code six principles (truthful, clear, no material omissions, fair comparisons, full life cycle, substantiated)",
+     "page_url": "https://www.ashtonslegal.co.uk/feed/",
+     "voice_tier": "observation",
+     "evidence_quote": "In 2023, ClientEarth sought the court\u2019s permission to bring a derivative claim against the directors of Shell plc, alleging that they had breached their duty to exercise reasonable care, skill and diligence by failing to adopt policies capable of achieving the company\u2019s target of reaching net zero emissions by 2050.",
+     "description": "Every environmental claim is substantiated, specific and not misleading (the breach is the unsubstantiated green claim being present)",
+     "penalty": {
+      "typical_low": null,
+      "typical_high": null,
+      "statutory_max": 300000,
+      "currency": "GBP",
+      "basis": "CMA direct enforcement under DMCC: up to 10% of global turnover or GBP 300,000; ASA rulings as the fast lane",
+      "max_is_rare": true
+     },
+     "regulator": "Competition and Markets Authority (CMA), with ASA co-enforcement",
+     "enforcement": [
+      {
+       "case": "CMA v ASOS, Boohoo and George at Asda (fashion green claims)",
+       "date": "2024-03",
+       "amount": "formal undertakings; compliance reporting to the CMA",
+       "url": "https://www.gov.uk/government/news/green-claims-cma-secures-landmark-changes-from-asos-boohoo-and-asda",
+       "summary": "CMA secured undertakings restricting vague green ranges and requiring specific, evidenced material claims across sites selling GBP 4.4bn/yr of fashion."
+      }
+     ]
+    }
+   ],
+   "obligations": [
+    "Every environmental claim is substantiated, specific and not misleading (the breach is the unsubstantiated green claim being present)"
+   ],
+   "why": "Green claims moved from ASA slap-on-wrist territory to CMA direct-fining territory in April 2025; the code's six principles are now the de facto legal test.",
+   "focus": "Take the greenest sentence on your homepage: what is the evidence, and is the qualification next to the claim?",
+   "enforcement": {
+    "case": "CMA v ASOS, Boohoo and George at Asda (fashion green claims)",
+    "date": "2024-03",
+    "amount": "formal undertakings; compliance reporting to the CMA",
+    "url": "https://www.gov.uk/government/news/green-claims-cma-secures-landmark-changes-from-asos-boohoo-and-asda",
+    "summary": "CMA secured undertakings restricting vague green ranges and requiring specific, evidenced material claims across sites selling GBP 4.4bn/yr of fashion."
+   },
+   "register_url": "https://www.gov.uk/cma-cases",
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2024/13"
+  },
+  {
+   "code": "UK_ICO_FEE_REGISTRATION",
+   "name": "ICO data protection fee and register of fee payers (Data Protection (Charges and Information) Regulations 2018)",
+   "regulator": "Information Commissioner's Office (ICO)",
+   "jurisdiction": "UK",
+   "citation": "Data Protection Act 2018 s.137; Data Protection (Charges and Information) Regulations 2018 (SI 2018/480), DPA 2018 s.137-138 (duty to pay charges); SI 2018/480 (fee tiers, register)",
+   "penalty": {
+    "typical_low": 400,
+    "typical_high": 4350,
+    "statutory_max": 4350,
+    "penalty_model": "fixed",
+    "currency": "GBP",
+    "basis": "Non-payment attracts a penalty of up to 150% of the highest fee tier (up to about GBP 4,350) under the DPA 2018 fee regime",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Pay the annual data protection fee and appear on the ICO public register of fee payers"
+   ],
+   "why": "This is a binary, register-checkable duty: the business is either on the ICO register or it is not, and absence is an immediate hard finding needing no interpretation.",
+   "focus": "Are you on our register of fee payers, and if not why do you say you are exempt?",
+   "enforcement": {
+    "case": "ICO non-payment enforcement programme",
+    "date": "2024-01",
+    "amount": "Fixed penalties up to GBP 4,350",
+    "url": "https://ico.org.uk/about-the-ico/media-centre/data-protection-fee/",
+    "summary": "ICO routinely issues fixed monetary penalties to organisations that fail to pay the data protection fee, identified by cross-referencing Companies House against its register."
+   },
+   "register_url": "https://ico.org.uk/ESDWebPages/Search",
+   "citation_url": "https://www.legislation.gov.uk/uksi/2018/480/contents/made"
+  },
+  {
+   "code": "UK_LEGAL_OMBUDSMAN_SIGNPOST",
+   "name": "Legal Ombudsman signposting in complaints handling (SRA Code paras 8.3-8.4 and LeO Scheme Rules)",
+   "regulator": "Legal Ombudsman (and the firm's front-line regulator: SRA/BSB/CLC)",
+   "jurisdiction": "UK",
+   "citation": "SRA Code of Conduct for Solicitors, RELs, RFLs and RSLs paras 8.3-8.4; Legal Ombudsman Scheme Rules, SRA Code 8.3 (tell clients at engagement of their right to complain to the Legal Ombudsman and when), 8.4 (written signpost after 8 weeks unresolved with the time frame and contact details); LeO Scheme Rules time limits",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": 25000,
+    "statutory_max": 25000,
+    "currency": "GBP",
+    "basis": "Failure to signpost is a conduct breach handled by the relevant regulator (SRA up to GBP 25,000 for traditional firms/individuals, or SDT referral). A defective final response that omits the six-month warning also means the LeO time limit never starts, so stale complaints remain live against the firm.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Publish complaints information that signposts the Legal Ombudsman with the correct time limits and contact details"
+   ],
+   "why": "If the final response letter omits the Legal Ombudsman signpost and the six-month deadline, the deadline never runs, so a client can escalate months or years later; the website complaints page is the cheapest place to get this right for every matter.",
+   "focus": "Does the complaints page name the Legal Ombudsman with contact details and both time limits, and do final responses carry the six-month warning?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.legalombudsman.org.uk/information-centre/learning-resources/signposting-consumers-to-the-legal-ombudsman/"
+  },
+  {
+   "code": "UK_LSA_2007_RESERVED",
+   "name": "Legal Services Act 2007 - authorisation to carry on reserved legal activities",
+   "regulator": "Legal Services Board; front-line regulators SRA/BSB/CLC/CILEx Regulation/Faculty Office",
+   "jurisdiction": "UK",
+   "citation": "Legal Services Act 2007, s.12-15 (reserved legal activities and authorisation), s.14 (offence to carry on a reserved activity when not entitled), s.16-17 (offence to pretend to be entitled)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Carrying on a reserved legal activity while not entitled, or pretending to be entitled, is a criminal offence under s.14 and s.16-17: on indictment an unlimited fine and/or up to two years' imprisonment. No civil tariff.",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Where the site advertises a reserved legal activity, the provider must in fact be authorised and should make its regulated status and regulator visible"
+   ],
+   "why": "A website that advertises litigation, court advocacy, conveyancing or probate implicitly asserts authorisation; if the entity is not authorised for that reserved activity the advertising itself is evidence of a criminal offence.",
+   "focus": "For every reserved activity the site advertises, is the entity actually authorised and is its regulator named?",
+   "enforcement": null,
+   "register_url": "https://www.sra.org.uk/consumers/register/",
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2007/29/contents"
+  },
+  {
+   "code": "UK_MLR_2017_LEGAL",
+   "name": "Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017 - AML supervision (legal sector)",
+   "regulator": "Solicitors Regulation Authority (AML supervisor for most solicitors); HM Treasury/OPBAS oversight; HMRC for some sectors",
+   "jurisdiction": "UK",
+   "citation": "The Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017 (SI 2017/692), reg 8-9 (relevant persons and supervision), reg 18-21 (risk assessment, policies and controls), reg 27-38 (customer due diligence); Part 7 Proceeds of Crime Act 2002 for the underlying offences",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Breach of the MLR 2017 can lead to civil penalties from the supervisor and, for the underlying money-laundering offences under POCA 2002, an unlimited fine and up to 14 years' imprisonment. The website nexus is narrow: the site is mainly evidence of an accurate (or overstated) supervision claim, not the primary breach.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Where the firm holds itself out as AML-supervised, name the correct supervisor (for most solicitors this is the SRA, not HMRC) so the claim is accurate; do not overstate the supervision"
+   ],
+   "why": "Most solicitors are supervised for AML by the SRA, yet firms sometimes state 'HMRC supervised' on the website, which is inaccurate and flags weak AML control.",
+   "focus": "If the site mentions AML supervision, does it name the correct supervisor for this firm type?",
+   "enforcement": null,
+   "register_url": "https://www.sra.org.uk/consumers/register/",
+   "citation_url": "https://www.legislation.gov.uk/uksi/2017/692/contents"
+  },
+  {
+   "code": "UK_MODERN_SLAVERY_S54",
+   "name": "Modern Slavery Act 2015 s.54 (transparency in supply chains statement)",
+   "regulator": "Home Office (modern slavery statement registry)",
+   "jurisdiction": "UK",
+   "citation": "Modern Slavery Act 2015, s.54 (transparency in supply chains); threshold set by the Modern Slavery Act 2015 (Transparency in Supply Chains) Regulations 2015 (SI 2015/1833)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "No financial penalty; the Secretary of State may seek an injunction to compel publication, and non-publication is a reputational and procurement risk",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Publish an annual slavery and human trafficking statement, approved by the board and signed by a director, with a prominent link on the homepage"
+   ],
+   "why": "For large businesses the homepage link to a current statement is a hard, binary check; for SMEs the value is knowing the threshold so the audit does not raise a false flag.",
+   "focus": "Is your turnover GBP 36m or more, and if so where is the prominent homepage link to this year's statement?",
+   "enforcement": null,
+   "register_url": "https://modern-slavery-statement-registry.service.gov.uk/",
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2015/30/section/54"
+  },
+  {
+   "code": "UK_PECR_COOKIES_MARKETING",
+   "name": "Privacy and Electronic Communications Regulations 2003 (cookie consent and electronic marketing)",
+   "regulator": "Information Commissioner's Office (ICO)",
+   "jurisdiction": "UK",
+   "citation": "Privacy and Electronic Communications (EC Directive) Regulations 2003 (SI 2003/2426), reg 6 (storing/accessing information on terminal equipment - cookies); reg 22 (unsolicited electronic mail marketing)",
+   "penalty": {
+    "typical_low": 100000,
+    "typical_high": 17500000,
+    "statutory_max": 17500000,
+    "penalty_model": "turnover_pct",
+    "currency": "GBP",
+    "basis": "For conduct on or after 5 February 2026: the higher of GBP 17,500,000 or 4% of total worldwide annual turnover (PECR reg 31, as substituted by the Data (Use and Access) Act 2025 s.115/Sch 12, commenced by the Data (Use and Access) Act 2025 (Commencement No. 6 and Transitional and Saving Provisions) Regulations 2026). The ICO has confirmed the new ceiling applies only to conduct from that commencement date; conduct before 5 February 2026 remains subject to the pre-DUAA GBP 500,000 PECR cap. typical_high of GBP 17.5m is the statutory ceiling itself, not a typical fine - actual PECR fines to date (see enforcement[]) have been far lower; render must not present the ceiling as 'what regulators actually levy'.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Obtain prior informed consent before setting non-essential cookies, with reject as easy as accept and no pre-consent firing",
+    "Only send electronic marketing with consent or a valid soft opt-in, and give a working unsubscribe"
+   ],
+   "why": "Cookie banners and newsletter signups are on almost every commercial site, and the ICO is actively sweeping the top 1,000 sites, so this is high-visibility and easy to test from the page.",
+   "focus": "Do non-essential cookies fire before consent, and is reject-all as easy as accept-all?",
+   "enforcement": {
+    "case": "ICO v Grocery Delivery E-Services UK Ltd (HelloFresh)",
+    "date": "2024-01",
+    "amount": "GBP 140,000",
+    "url": "https://ico.org.uk/action-weve-taken/enforcement/2024/01/grocery-delivery-e-services-uk-ltd-ta-hellofresh/",
+    "summary": "Fined for 79m spam emails and 1m spam texts; consent was neither specific nor informed under PECR reg 22."
+   },
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/uksi/2003/2426/contents"
+  },
+  {
+   "code": "UK_PRICE_VAT_DISPLAY",
+   "name": "Price and VAT display to consumers (Price Marking Order 2004 and VAT-inclusive pricing)",
+   "regulator": "Trading Standards / Competition and Markets Authority (CMA)",
+   "jurisdiction": "UK",
+   "citation": "Price Marking Order 2004 (SI 2004/102); Value Added Tax Act 1994; read with CCRs 2013 and DMCC Act 2024 on total price, Price Marking Order 2004 arts 4-7 (selling price and unit price, inclusive of VAT, to consumers)",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 5000,
+    "statutory_max": null,
+    "penalty_model": "uncapped",
+    "currency": "GBP",
+    "basis": "Breach of the Price Marking Order 2004 is a criminal offence (art.11) triable summarily; the historic level-5 standard-scale maximum (GBP 5,000) was made unlimited by s.85 Legal Aid, Sentencing and Punishment of Offenders Act 2012, in force 12 March 2015, so magistrates may now impose a fine of any amount. typical_high is an illustrative low-level enforcement figure, not a statutory ceiling. DMCC drip-pricing penalties (up to 10% turnover) apply separately where mandatory fees are hidden.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "needs_review",
+   "findings": [
+    {
+     "record_id": "UK_PRICE_VAT_DISPLAY",
+     "state": "needs_review",
+     "kind": "absence-breach",
+     "artifact": {
+      "type": "coverage_proof",
+      "page_class": "pricing",
+      "surface": "visible_text",
+      "pages_checked": [
+       "https://www.ashtonslegal.co.uk/pricing/"
+      ],
+      "searched_patterns": [
+       {
+        "kind": "token-set",
+        "tokens": [
+         "inclusive",
+         "selling"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "consumers",
+         "inclusive"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "products",
+         "price"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "unambiguous",
+         "associated"
+        ],
+        "mode": "all"
+       },
+       {
+        "kind": "token-set",
+        "tokens": [
+         "mandatory",
+         "delivery"
+        ],
+        "mode": "all"
+       }
+      ],
+      "tier1_fetched": true,
+      "truncated": false
+     },
+     "framework": "Price and VAT display to consumers (Price Marking Order 2004 and VAT-inclusive pricing)",
+     "statutory_citation": "Price Marking Order 2004 (SI 2004/102); Value Added Tax Act 1994; read with CCRs 2013 and DMCC Act 2024 on total price, Price Marking Order 2004 arts 4-7 (selling price and unit price, inclusive of VAT, to consumers)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Show a clear selling price inclusive of VAT to consumers, with a unit price where required (this duty does not apply to VAT-exempt health services - see excluded_when)",
+     "penalty": {
+      "typical_low": 500,
+      "typical_high": 5000,
+      "statutory_max": null,
+      "penalty_model": "uncapped",
+      "currency": "GBP",
+      "basis": "Breach of the Price Marking Order 2004 is a criminal offence (art.11) triable summarily; the historic level-5 standard-scale maximum (GBP 5,000) was made unlimited by s.85 Legal Aid, Sentencing and Punishment of Offenders Act 2012, in force 12 March 2015, so magistrates may now impose a fine of any amount. typical_high is an illustrative low-level enforcement figure, not a statutory ceiling. DMCC drip-pricing penalties (up to 10% turnover) apply separately where mandatory fees are hidden.",
+      "max_is_rare": true
+     },
+     "regulator": "Trading Standards / Competition and Markets Authority (CMA)"
+    }
+   ],
+   "obligations": [
+    "Show a clear selling price inclusive of VAT to consumers, with a unit price where required (this duty does not apply to VAT-exempt health services - see excluded_when)"
+   ],
+   "why": "Consumers must see the VAT-inclusive price up front; showing ex-VAT prices to consumers or hiding VAT until checkout is both a Price Marking Order and a total-price failure.",
+   "focus": "Is the price a consumer sees inclusive of VAT and all unavoidable charges?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/uksi/2004/102/contents/made"
+  },
+  {
+   "code": "UK_PROVISION_OF_SERVICES_2009",
+   "name": "Provision of Services Regulations 2009 - professional service-provider information duties",
+   "regulator": "Local authority trading standards (Provision of Services Regulations enforcement)",
+   "jurisdiction": "UK",
+   "citation": "The Provision of Services Regulations 2009 (SI 2009/2999), reg 8 (information a provider must make available), reg 9 (further information on request), reg 11 (professional liability insurance information where the provider is required to hold it)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "GBP",
+    "basis": "Enforced by trading standards / weights and measures authorities and via the courts; the Regulations work through enforcement orders and consumer redress rather than a fixed statutory fine tariff. Do not assert a specific penalty figure.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Make available to recipients the core provider information (typically via the website)",
+    "Where the provider is required to hold professional liability (PI) insurance, make available details of that insurance"
+   ],
+   "why": "These are the baseline 'who we are and how we are regulated' disclosures that every professional-services website should carry, and legal firms are explicitly in scope; the Bar Council and Law Society both publish checklists against these Regulations.",
+   "focus": "Does the site show the provider's name, legal status, address, VAT number, professional body and rules, and PI insurance details where required?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.legislation.gov.uk/uksi/2009/2999/contents/made"
+  },
+  {
+   "code": "UK_SRA_CODE_PUBLICITY",
+   "name": "SRA Code of Conduct - client information, publicity and unsolicited approaches (Section 8)",
+   "regulator": "Solicitors Regulation Authority (SRA)",
+   "jurisdiction": "UK",
+   "citation": "SRA Code of Conduct for Solicitors, RELs, RFLs and RSLs; SRA Code of Conduct for Firms (SRA Standards and Regulations), para 8.8 (publicity accurate and not misleading), 8.9 (no unsolicited approaches to the public), 8.10 (clients understand whether/how services are regulated), 8.11 (comply with the Transparency Rules)",
+   "penalty": {
+    "typical_low": 2000,
+    "typical_high": 25000,
+    "statutory_max": 25000,
+    "currency": "GBP",
+    "basis": "SRA internal financial penalty up to GBP 25,000 for traditional firms and individuals (unlimited where the failure relates to economic crime, from 4 March 2024); serious cases are referred to the Solicitors Disciplinary Tribunal, which can impose unlimited fines, suspension or strike-off. Licensed bodies/ABS face higher SRA caps.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Ensure all website publicity is accurate and not misleading, including statements about charges and about interest (para 8.8)",
+    "Do not present the website as making unsolicited approaches to members of the public beyond current or former clients (para 8.9)",
+    "Make clear on the site whether and how the services offered are regulated and which activities are carried out as an authorised person (para 8.10)"
+   ],
+   "why": "Practice-area and results pages are exactly where firms over-claim; the SRA treats a misleading website as a Code breach in its own right, independent of any client complaint.",
+   "focus": "Can every superlative, success-rate or 'guaranteed' claim on the site be substantiated, and is the regulated status of each service made clear?",
+   "enforcement": {
+    "case": "SRA warning notice on misleading no-win-no-fee and outcome marketing",
+    "date": "2025-01",
+    "amount": "Warning notices / conduct action",
+    "url": "https://www.sra.org.uk/solicitors/guidance/",
+    "summary": "The SRA warned firms about misleading no-win-no-fee marketing and unsubstantiated claims, reinforcing that website publicity must be accurate under the Code."
+   },
+   "register_url": "https://www.sra.org.uk/consumers/register/",
+   "citation_url": "https://www.sra.org.uk/solicitors/standards-regulations/code-conduct-solicitors/"
+  },
+  {
+   "code": "UK_SRA_DIVERSITY_DATA",
+   "name": "SRA workforce diversity data collection and publication",
+   "regulator": "Solicitors Regulation Authority (SRA)",
+   "jurisdiction": "UK",
+   "citation": "SRA Standards and Regulations - collection and publication of diversity data (arising from the Legal Services Act 2007 s.149 regulatory objective on diversity), SRA requirement to collect workforce diversity data every two years and publish it (with the SRA reporting aggregate outcomes)",
+   "penalty": {
+    "typical_low": 750,
+    "typical_high": 25000,
+    "statutory_max": 25000,
+    "currency": "GBP",
+    "basis": "The SRA has issued fixed penalties (from GBP 750) to firms that failed to report diversity data; wider conduct action can follow, subject to the SRA's GBP 25,000 cap for traditional firms/individuals.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Collect workforce diversity data and publish it (e.g. on the website) as the SRA requires"
+   ],
+   "why": "Diversity-data publication is a distinct, easily-missed SRA obligation that has already produced fixed penalties, separate from the pricing transparency sweeps.",
+   "focus": "Has the firm collected and published its workforce diversity data as the SRA requires?",
+   "enforcement": {
+    "case": "SRA first fixed penalty for failure to submit diversity data",
+    "date": "2023-12",
+    "amount": "GBP 750",
+    "url": "https://www.sra.org.uk/sra/news/press/2024-press-releases/more-fixed-penalties/",
+    "summary": "The SRA issued its first fixed penalty for a firm failing to submit its diversity data, alongside transparency-rules fixed penalties."
+   },
+   "register_url": "https://www.sra.org.uk/consumers/register/",
+   "citation_url": "https://www.sra.org.uk/solicitors/resources/diversity-toolkit/collect-report-diversity-data/"
+  },
+  {
+   "code": "UK_SRA_PII_INDEMNITY",
+   "name": "SRA professional indemnity insurance - qualifying cover and insurer information (SRA Indemnity Insurance Rules; PSR 2009 reg 8(1)(n))",
+   "regulator": "Solicitors Regulation Authority (SRA)",
+   "jurisdiction": "UK",
+   "citation": "SRA Indemnity Insurance Rules (SRA Standards and Regulations); Provision of Services Regulations 2009, Rule 2 (an authorised body must take out and maintain qualifying insurance); Rule 3 (adequate and appropriate cover for current and past practice); Rule 9 (on a claim, provide the participating insurer's name, policy number and contact details); Annex 1 cl 2.1 (minimum GBP 3m any-one-claim for relevant recognised/licensed bodies, GBP 2m for other authorised bodies); PSR 2009 reg 8(1)(n) (make professional indemnity insurance details and territorial coverage available to service recipients)",
+   "penalty": {
+    "typical_low": 750,
+    "typical_high": 25000,
+    "statutory_max": 25000,
+    "currency": "GBP",
+    "basis": "Practising without qualifying insurance is a serious regulatory breach (intervention-grade); information failures sit in the SRA's fixed-penalty and conduct framework, subject to the GBP 25,000 cap for traditional firms/individuals",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Make professional indemnity insurance information available to clients as the Provision of Services Regulations require",
+    "Maintain qualifying insurance at or above the SRA minimum terms while practising"
+   ],
+   "why": "PII is the client-protection backbone of SRA regulation: the PSR 2009 information duty is website-checkable, and practising without qualifying cover is an intervention-grade breach clients never see coming.",
+   "focus": "Where do you tell clients about your professional indemnity insurance and its territorial coverage?",
+   "enforcement": null,
+   "register_url": "https://www.sra.org.uk/consumers/register/",
+   "citation_url": "https://www.sra.org.uk/solicitors/standards-regulations/indemnity-insurance-rules/"
+  },
+  {
+   "code": "UK_SRA_TRANSPARENCY",
+   "name": "SRA Transparency Rules 2018 (price and service publication, complaints, regulatory information and digital badge)",
+   "regulator": "Solicitors Regulation Authority (SRA)",
+   "jurisdiction": "UK",
+   "citation": "SRA Transparency Rules 2018 (made under s.31 and s.156 Legal Services Act 2007; part of the SRA Standards and Regulations), Rule 1 (cost and service information), Rule 2 (complaints information), Rule 3 (VAT/disbursements), Rule 4 (regulatory information and SRA digital badge)",
+   "penalty": {
+    "typical_low": 750,
+    "typical_high": 25000,
+    "statutory_max": 25000,
+    "currency": "GBP",
+    "basis": "SRA fixed penalties for transparency breaches begin at GBP 750 and escalate to GBP 1,500 on continued non-compliance; the SRA's internal financial-penalty cap for traditional firms and individuals is GBP 25,000 (from 20 July 2022). Licensed bodies/ABS and referral to the Solicitors Disciplinary Tribunal carry far higher or unlimited fines; a headline figure such as GBP 2.6m is an SDT/court outcome, not an SRA-imposed transparency fine (E27).",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Publish cost information for each in-scope service the firm offers, on the website in a prominent place",
+    "Publish the firm's complaints handling procedure including how and when a complaint can be made to the Legal Ombudsman and to the SRA (Rule 2)",
+    "Display regulatory information: the statement that the firm is authorised and regulated by the Solicitors Regulation Authority and the firm's SRA number (Rule 4)",
+    "Display the clickable SRA digital badge (SRA-issued verification badge) in a prominent place (Rule 4)"
+   ],
+   "why": "The SRA runs recurring automated and manual website sweeps against the exact in-scope service list; a firm that offers conveyancing, probate or immigration but has no compliant price page is an easy fixed-penalty target.",
+   "focus": "For each in-scope service you advertise, is there a price page with costs, basis, disbursements, VAT treatment and timescales, plus a complaints procedure naming the Legal Ombudsman, your SRA number and the digital badge?",
+   "enforcement": {
+    "case": "SRA fixed penalties for Transparency Rules non-compliance (multiple firms)",
+    "date": "2024-12",
+    "amount": "GBP 750 (rising to GBP 1,500)",
+    "url": "https://www.sra.org.uk/sra/news/press/2024-press-releases/more-fixed-penalties/",
+    "summary": "The SRA issued fixed penalties to firms that failed to publish price information or diversity data, part of an ongoing programme of website transparency sweeps."
+   },
+   "register_url": "https://www.sra.org.uk/consumers/register/",
+   "citation_url": "https://www.sra.org.uk/solicitors/standards-regulations/transparency-rules/"
+  },
+  {
+   "code": "UK_TRADING_DISCLOSURES",
+   "name": "Company and online trading disclosures (Companies Act 2006 s.82 and Electronic Commerce Regulations 2002 reg 6)",
+   "regulator": "Companies House / local authority Trading Standards",
+   "jurisdiction": "UK",
+   "citation": "Companies Act 2006 s.82; Company, Limited Liability Partnership and Business (Names and Trading Disclosures) Regulations 2015 (SI 2015/17); Electronic Commerce (EC Directive) Regulations 2002 (SI 2002/2013), CA 2006 s.82-84 and SI 2015/17 regs 24-25 (trading disclosures); SI 2002/2013 reg 6 (information to be provided by an online service provider)",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 1000,
+    "statutory_max": 1000,
+    "penalty_model": "fixed",
+    "currency": "GBP",
+    "basis": "CA 2006 s.84: a fine on the company and every officer in default at level 3 on the standard scale (up to GBP 1,000); reg 6 breach is actionable and can support enforcement orders",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Display the statutory company trading disclosures on the website",
+    "Provide the reg 6 online service-provider information in an easily, directly and permanently accessible form"
+   ],
+   "why": "These are the simplest binary checks in any audit: the required identifiers are either printed in the footer or they are not, and their absence also undermines consumer trust and refund routes.",
+   "focus": "Where on your site do you show your registered company name, number and office address?",
+   "enforcement": null,
+   "register_url": "https://find-and-update.company-information.service.gov.uk/",
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2006/46/section/82"
+  },
+  {
+   "code": "UK_TRUSTMARK_ACCREDITATION_CLAIMS",
+   "name": "Accreditation, trust mark and approval claims: DMCC banned practices (universal-conditional register check)",
+   "regulator": "CMA / Trading Standards (plus the issuing scheme's own regulator)",
+   "jurisdiction": "UK",
+   "citation": "Digital Markets, Competition and Consumers Act 2024, s.226 and Sch 20 paras 1-4 (banned practices: displaying a trust mark without authorisation; claiming to be a signatory to a code; claiming approval/endorsement by a public or private body that is not held or whose conditions are not met)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": 300000,
+    "currency": "GBP",
+    "basis": "banned practices are automatically unfair; CMA direct fines up to 10% global turnover or GBP 300,000; scheme-specific criminal offences can stack (e.g. false Gas Safe or ATOL claims prosecuted by HSE/CAA)",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Every displayed accreditation is genuinely held, current, and used within the scheme's terms (the breach is a false or lapsed mark being present)"
+   ],
+   "why": "Logo walls are sales assets and legal claims at once; CAA published enforcement policy moves from advisory to formal action, including prosecution, where ATOL compliance shortcomings are found, and HSE prosecutes false Gas Safe pretence.",
+   "focus": "Pick each badge in the footer: does it appear on the issuing register today?",
+   "enforcement": null,
+   "register_url": "https://www.gov.uk/cma-cases",
+   "citation_url": "https://www.legislation.gov.uk/ukpga/2024/13/schedule/20"
+  }
+ ],
+ "counts": {
+  "critical": 1,
+  "high": 0,
+  "standard": 4,
+  "total": 5
+ },
+ "confirmed": 1,
+ "screenedLabel": "Screened the catalogue",
+ "coverageCaveats": [],
+ "frameworksAssessed": 66,
+ "frameworksBinding": 26,
+ "rulesChecked": 39,
+ "exposure": {
+  "value": 30950,
+  "currency": "GBP",
+  "label": "median enforcement exposure"
+ },
+ "exposureFull": {
+  "value": 211450,
+  "currency": "GBP",
+  "label": "median exposure including items under review"
+ },
+ "exposureNote": "Exposure is the midpoint of each statute family's typical enforcement band, de-duplicated to one figure per family; the statutory ceiling shown is the single highest maximum across breached families, never a sum of maxima. Figures follow each statute's own currency and are not converted.",
+ "exposureWaterfall": {
+  "steps": [
+   {
+    "family": "equality act 2010",
+    "typical_low": 1200,
+    "typical_high": 60700,
+    "familyCeiling": null,
+    "currency": "GBP",
+    "state": "violation"
+   },
+   {
+    "family": "consumer rights act 2015",
+    "typical_low": 50000,
+    "typical_high": 300000,
+    "familyCeiling": null,
+    "currency": "GBP",
+    "state": "needs_review"
+   },
+   {
+    "family": "consumer contracts (information, cancellation and additional charges) regulations 2013 (si 2013/3134)",
+    "typical_low": 500,
+    "typical_high": 5000,
+    "familyCeiling": null,
+    "currency": "GBP",
+    "state": "needs_review"
+   },
+   {
+    "family": "price marking order 2004 (si 2004/102); value added tax act 1994; read with ccrs 2013 and dmcc act 2024 on total price",
+    "typical_low": 500,
+    "typical_high": 5000,
+    "familyCeiling": null,
+    "currency": "GBP",
+    "state": "needs_review"
+   },
+   {
+    "family": "uk code of non-broadcast advertising and direct & promotional marketing (cap code, 12th edition) - self-regulatory, backed by the cprs/dmcc via cma/trading standards referral",
+    "typical_low": null,
+    "typical_high": null,
+    "familyCeiling": null,
+    "currency": "GBP",
+    "state": "needs_review"
+   }
+  ],
+  "ceiling": null
+ }
+}

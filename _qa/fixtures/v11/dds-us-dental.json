@@ -1,0 +1,2524 @@
+{
+ "seo": {
+  "psi": {
+   "state": "probe_unavailable",
+   "reason": "no_data"
+  },
+  "cwv": {
+   "state": "probe_unavailable",
+   "reason": "no_data"
+  },
+  "onpage": {
+   "state": "measured",
+   "json_ld": true,
+   "has_org_schema": true,
+   "word_count": 1438,
+   "title_len": 55,
+   "meta_description": true,
+   "meta_description_len": 161,
+   "open_graph": true,
+   "twitter_card": true,
+   "canonical": true,
+   "viewport": true,
+   "lang": true,
+   "h1_count": 1,
+   "favicon": true
+  },
+  "security": {
+   "state": "measured",
+   "hsts": false,
+   "csp": false,
+   "xcto": false,
+   "xfo": false,
+   "refpol": false,
+   "permpol": false
+  },
+  "a11y": {
+   "state": "measured",
+   "h1_count": 1,
+   "lang_declared": true,
+   "viewport": true
+  },
+  "tech": {
+   "state": "measured",
+   "canonical": true,
+   "favicon": true,
+   "json_ld": true
+  },
+  "keywordSummary": {
+   "state": "probe_unavailable",
+   "reason": "no_operating_city"
+  },
+  "psiAudits": {
+   "state": "probe_unavailable",
+   "reason": "no_data"
+  },
+  "keywords": [
+   {
+    "term": "dental",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "lower",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "manhattan",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "group",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "meet",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "dentist",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "oral",
+    "state": "derived_from_corpus"
+   },
+   {
+    "term": "teeth",
+    "state": "derived_from_corpus"
+   }
+  ],
+  "note": "SEO signals: real PageSpeed Insights + live SERP keyword map where keys/city were available; a leaf carries state:probe_unavailable when its underlying key or input was absent."
+ },
+ "geo": {
+  "entityReadiness": {
+   "score": 72,
+   "blocked_ai_bots": [],
+   "has_llms_txt": false,
+   "has_org_schema": true,
+   "has_same_as": false,
+   "in_wikidata": false,
+   "state": "measured"
+  },
+  "shareOfVoice": {
+   "value": 0,
+   "repeatability": 0,
+   "samples": 5,
+   "provider": "cloudflare::@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+   "top_competitors": [
+    {
+     "name": "Delta Dental",
+     "in_runs": 5,
+     "of": 5
+    },
+    {
+     "name": "MetLife",
+     "in_runs": 5,
+     "of": 5
+    },
+    {
+     "name": "UnitedHealthcare",
+     "in_runs": 5,
+     "of": 5
+    }
+   ],
+   "state": "measured"
+  },
+  "radar": {
+   "axes": [
+    {
+     "label": "Entity",
+     "v": 60
+    },
+    {
+     "label": "Crawler access",
+     "v": 100
+    },
+    {
+     "label": "Share of voice",
+     "v": 0
+    },
+    {
+     "label": "Schema",
+     "v": 60
+    },
+    {
+     "label": "Knowledge graph",
+     "v": 0
+    },
+    {
+     "label": "Citations",
+     "v": 11
+    }
+   ],
+   "state": "measured"
+  },
+  "schema": {
+   "has_org_schema": true,
+   "has_localbusiness": false,
+   "has_service": false,
+   "has_faq": false,
+   "has_same_as": false,
+   "state": "measured"
+  },
+  "citations": {
+   "state": "measured",
+   "sources": [
+    {
+     "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHJActwV8jnxX0BdN5wGJuX9g5TbKDMUo8Pc0EgzoqzFc-eB7uTfd_3yT3UhBhx5tq_3wAFcMdjmW69zvlHLQced-YvaQW7TIl0vMphT5WbdwZADGEwjE7ldSPym4n1Cj09gdoHGw9v0dXQlbCLH6_efE3Rn-OHP-5hhda3KYGCCnL9-do=",
+     "title": "dentalreviewed.com"
+    },
+    {
+     "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQvk9SvW-2gg3ZEyUK2D7YxOwZJGStDP_PJule2vPYZCuQfDYGG4PLfkMaQ00dfJ3MkYGOxeB4fp4oiRmr_wAia5f3M0Aop3O_k4Et2y6e8v1nCTbX3eghkw==",
+     "title": "deltadentalid.com"
+    },
+    {
+     "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF_yFqSdytwAPux6XPm8G-OG9zTnMP-8tJ1PcknnO7RAF9e7WeJEGC7HVgaUsUDubQI7Xw85AtoI5elSl7-HlhziDKiQj50NOYgbiUHQgTEh1hhPwcVmkQ=",
+     "title": "deltadental.com"
+    },
+    {
+     "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE_sz2mJJf-v95W-HqlWju4d03b7dpjRI8uh_8USEMI1OqFWysWSC1tuclDGqeGr9nZsbnN_FrF4lLGCUE2N_eU2ut4PVocpQ_nFSuvHouj2Z-_1pD23RytzWSVqPPB_raY5jq13j3twGhen06LLeiRdJmAyUCB6aREJbFIYaZsvcapsaKgjEkb5ALmzsE_n0yVxQguhljvuWtM5lI=",
+     "title": "forbes.com"
+    },
+    {
+     "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHKuQYO1uh3JVmLy4_yaIxX_Gq6EjrKnDsPvjXs5jUra_7pWvcp3MlI46hUJzuKkP2JNDopdKY4oSlJNbm52aUHsV0QiHR39R9_a9xR1OFwmDgdyND5QAqUJStsv-nSLz6B3Iw=",
+     "title": "money.com"
+    }
+   ],
+   "source_domains": [
+    "vertexaisearch.cloud.google.com",
+    "vertexaisearch.cloud.google.com",
+    "vertexaisearch.cloud.google.com",
+    "vertexaisearch.cloud.google.com",
+    "vertexaisearch.cloud.google.com"
+   ],
+   "you_cited": false
+  },
+  "sourceGap": {
+   "in_wikidata": false,
+   "has_llms_txt": false,
+   "state": "measured"
+  },
+  "fix": {
+   "gaps": [
+    "publish an llms.txt",
+    "add sameAs links to authoritative profiles",
+    "establish a Wikidata entity",
+    "build the content/authority signals that lift AI share of voice"
+   ],
+   "state": "measured"
+  },
+  "engines": [
+   {
+    "engine": "ChatGPT",
+    "readiness": 64,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Gemini",
+    "readiness": 48,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Perplexity",
+    "readiness": 68,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Claude",
+    "readiness": 64,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Copilot",
+    "readiness": 56,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Grok",
+    "readiness": 64,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Meta AI",
+    "readiness": 64,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   },
+   {
+    "engine": "Google AI",
+    "readiness": 40,
+    "cited": false,
+    "engineEstimate": true,
+    "state": "modelled"
+   }
+  ],
+  "rootCause": {
+   "state": "measured",
+   "chain": [
+    {
+     "label": "Crawler access",
+     "ok": true,
+     "state": "measured"
+    },
+    {
+     "label": "Identity anchors",
+     "ok": false,
+     "state": "measured"
+    },
+    {
+     "label": "Knowledge graph",
+     "ok": false,
+     "state": "measured"
+    },
+    {
+     "label": "Share of voice",
+     "ok": false,
+     "state": "measured"
+    }
+   ]
+  },
+  "note": "GEO signals: real AI-entity readiness (robots.txt/llms.txt/schema/Wikidata, zero-key) + a real multi-sample AI share-of-voice probe where a free LLM key was available. Per-engine readiness and the radar are MODELLED from these real signals (engineEstimate:true), never a per-engine live probe."
+ },
+ "competitors": {
+  "bestKeyword": {
+   "state": "probe_unavailable",
+   "reason": "no_operating_city"
+  },
+  "youDr": {
+   "state": "measured",
+   "dr": 1.11,
+   "rank": 130168532,
+   "da_100": 11
+  },
+  "cols": [
+   "domain",
+   "da_100"
+  ],
+  "drBars": [
+   {
+    "l": "You",
+    "v": 11,
+    "you": true
+   }
+  ],
+  "rows": [
+   {
+    "name": null,
+    "state": "probe_unavailable",
+    "reason": "no_competitor_data"
+   }
+  ],
+  "note": "Competitor Domain Rating is REAL OpenPageRank data only; a competitor with no public DR is never given a fabricated estimate (Rule 10 - the old estate's name-hash drFallback is deliberately not ported)."
+ },
+ "dims": [
+  {
+   "key": "dim-1",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-2",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-3",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-4",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-5",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-6",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-7",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-8",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-9",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  },
+  {
+   "key": "dim-10",
+   "label": null,
+   "score": null,
+   "state": "not_probed"
+  }
+ ],
+ "trajectory": [
+  {
+   "state": "not_probed",
+   "note": "A trajectory was not projected in this audit run."
+  }
+ ],
+ "pricing": [
+  {
+   "tier": null,
+   "state": "not_probed"
+  }
+ ],
+ "pricingNotes": {
+  "state": "not_probed",
+  "note": "Pricing analysis was not probed in this audit run."
+ },
+ "upsellProof": {
+  "state": "not_probed",
+  "note": "Pricing analysis was not probed in this audit run."
+ },
+ "score": {
+  "state": "not_probed"
+ },
+ "grade": {
+  "state": "not_probed"
+ },
+ "scoreBand": {
+  "state": "not_probed"
+ },
+ "scoring": {
+  "formula": {
+   "state": "not_probed"
+  },
+  "why": {
+   "state": "not_probed"
+  },
+  "inputs": {
+   "state": "not_probed"
+  },
+  "bands": [
+   {
+    "state": "not_probed"
+   }
+  ],
+  "note": "A headline score was not computed in this audit run; no score is asserted."
+ },
+ "exec": {
+  "state": "not_probed",
+  "note": "An executive summary was not composed in this audit run."
+ },
+ "glossary": {
+  "state": "not_probed"
+ },
+ "heat": {
+  "state": "not_probed"
+ },
+ "heatRows": {
+  "state": "not_probed"
+ },
+ "heatCols": {
+  "state": "not_probed"
+ },
+ "projected": {
+  "wk12": {
+   "state": "not_probed"
+  },
+  "wk24": {
+   "state": "not_probed"
+  }
+ },
+ "fixes": [
+  {
+   "state": "not_probed",
+   "note": "A remediation plan was not composed in this audit run."
+  }
+ ],
+ "meta": {
+  "company": "DDS Group NYC",
+  "domain": "ddsgroupnyc.com",
+  "sector": "healthcare",
+  "country": "US",
+  "date": "2026-07-28T13:23:25.409Z"
+ },
+ "jurisdiction": {
+  "bound": [
+   "US"
+  ],
+  "primary": "US",
+  "abstained": false
+ },
+ "findings": [
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.google.com/maps/place/DDS+Group/data=!4m2!3m1!1s0x0:0xe4ffcb1f20b2ece6?sa=X&amp;ved=1t:2428&amp;ictx=111\" target=\"_blank\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/map-location.png\" class=\"attachment-full size-full wp",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"mailto:info@ddsgroupnyc.com\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/open-email.png\" class=\"attachment-full size-full wp-image-191\" alt=\"\"></a>",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+    "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+    "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(4) > button:nth-of-type(1)",
+    "snippet": "<button class=\"forminator-button forminator-pagination-submit\" style=\"display: none;\" disabled=\"\">Submit</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(1)",
+    "snippet": "<button class=\"forminator-button forminator-button-back forminator-hidden\">Previous</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA3",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(2)",
+    "snippet": "<button class=\"forminator-button forminator-button-next\">Next</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+   "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "enforcement": [
+    {
+     "case": "accessiBe Inc. (FTC final order)",
+     "date": "2025-04",
+     "amount": "USD 1,000,000",
+     "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+     "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+    },
+    {
+     "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+     "date": "2019-10",
+     "amount": "n/a (injunctive precedent)",
+     "url": "https://www.ada.gov/resources/web-guidance/",
+     "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+    }
+   ]
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"https://www.google.com/maps/place/DDS+Group/data=!4m2!3m1!1s0x0:0xe4ffcb1f20b2ece6?sa=X&amp;ved=1t:2428&amp;ictx=111\" target=\"_blank\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/map-location.png\" class=\"attachment-full size-full wp",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "link-name",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+    "snippet": "<a href=\"mailto:info@ddsgroupnyc.com\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/open-email.png\" class=\"attachment-full size-full wp-image-191\" alt=\"\"></a>",
+    "wcag_sc": "4.1.2",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+    "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+    "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(4) > button:nth-of-type(1)",
+    "snippet": "<button class=\"forminator-button forminator-pagination-submit\" style=\"display: none;\" disabled=\"\">Submit</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(1)",
+    "snippet": "<button class=\"forminator-button forminator-button-back forminator-hidden\">Previous</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  },
+  {
+   "record_id": "US_ADA_TITLE_III_WEB",
+   "state": "violation",
+   "kind": "behavioural",
+   "artifact": {
+    "rule_id": "color-contrast",
+    "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(2)",
+    "snippet": "<button class=\"forminator-button forminator-button-next\">Next</button>",
+    "wcag_sc": "1.4.3",
+    "state": "violation",
+    "tier": "deterministic",
+    "type": "dom_node"
+   },
+   "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "page_url": null,
+   "voice_tier": "observation",
+   "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+  }
+ ],
+ "applicability": {
+  "assessed": [
+   {
+    "record_id": "US_ADA3",
+    "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+    "state": "violation"
+   },
+   {
+    "record_id": "US_ADA_TITLE_III_WEB",
+    "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+    "state": "violation"
+   },
+   {
+    "record_id": "US_CAN_SPAM",
+    "framework": "CAN-SPAM Act \u2014 commercial email requirements",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_FTC5_HEALTH",
+    "framework": "FTC Act Section 5 - Unfair or Deceptive Practices (Health Data and Privacy Claims)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_FTC_ACT_S5_UDAP",
+    "framework": "FTC Act Section 5 \u2014 Unfair or Deceptive Acts or Practices (website deception)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_FTC_GREEN_GUIDES",
+    "framework": "FTC Green Guides \u2014 environmental marketing claims (16 CFR Part 260)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_FTC_HBNR",
+    "framework": "FTC Health Breach Notification Rule (2024 Final Rule)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_FTC_MADE_IN_USA",
+    "framework": "FTC Made in USA Labeling Rule \u2014 origin claims (16 CFR Part 323)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_FTC_REVIEWS_ENDORSEMENTS",
+    "framework": "FTC Endorsement Guides 2023 + Consumer Reviews and Testimonials Rule (16 CFR Part 465)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_HIPAA_MKT",
+    "framework": "HIPAA Privacy Rule - Marketing Authorization and Notice of Privacy Practices",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_HIPAA_TRACKING",
+    "framework": "HIPAA Online Tracking Technologies Guidance (OCR Bulletin) and Post-Vacatur Status",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_MEDBOARD_ADV_NY",
+    "framework": "Professional Advertising Rules - New York (Regents professions incl. dental, nursing, pharmacy; physicians via Educ. Law 6530)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_ROSCA_NEGATIVE_OPTION",
+    "framework": "Restore Online Shoppers' Confidence Act (ROSCA) \u2014 online subscriptions and auto-renewal",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_SEC1557_NOTICES",
+    "framework": "ACA Section 1557 - Notice of Nondiscrimination and Notice of Availability of Language Assistance (45 CFR Part 92)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_STATE_UDAP_MINI_FTC",
+    "framework": "State UDAP / 'mini-FTC' acts \u2014 unfair and deceptive practices (advisory overlay)",
+    "state": "not_evaluated"
+   },
+   {
+    "record_id": "US_TCPA_WEB_CONSENT",
+    "framework": "Telephone Consumer Protection Act \u2014 web consent capture for calls and texts",
+    "state": "not_evaluated"
+   }
+  ],
+  "assessedCompliant": [],
+  "excludedCount": 110
+ },
+ "notLegalAdvice": "This automated audit is not legal advice; findings are evidence-backed observations for your review and verification with your own advisers.",
+ "frameworks": [
+  {
+   "code": "US_ADA3",
+   "name": "Americans with Disabilities Act Title III - Website Accessibility",
+   "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+   "jurisdiction": "US",
+   "citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+   "penalty": {
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "statutory_max": 236451,
+    "currency": "USD",
+    "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "violation",
+   "findings": [
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.google.com/maps/place/DDS+Group/data=!4m2!3m1!1s0x0:0xe4ffcb1f20b2ece6?sa=X&amp;ved=1t:2428&amp;ictx=111\" target=\"_blank\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/map-location.png\" class=\"attachment-full size-full wp",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"mailto:info@ddsgroupnyc.com\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/open-email.png\" class=\"attachment-full size-full wp-image-191\" alt=\"\"></a>",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+      "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+      "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(4) > button:nth-of-type(1)",
+      "snippet": "<button class=\"forminator-button forminator-pagination-submit\" style=\"display: none;\" disabled=\"\">Submit</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(1)",
+      "snippet": "<button class=\"forminator-button forminator-button-back forminator-hidden\">Previous</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    },
+    {
+     "record_id": "US_ADA3",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(2)",
+      "snippet": "<button class=\"forminator-button forminator-button-next\">Next</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "Americans with Disabilities Act Title III - Website Accessibility",
+     "statutory_citation": "Americans with Disabilities Act; 28 CFR Part 36, 42 U.S.C. 12181 et seq.; DOJ web accessibility guidance (2022) referencing WCAG 2.1 AA",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Make the public-facing website accessible, in practice to WCAG 2.1 AA",
+     "penalty": {
+      "typical_low": 25000,
+      "typical_high": 236451,
+      "statutory_max": 236451,
+      "currency": "USD",
+      "basis": "Private suits seek injunctive relief plus attorney fees (settlements commonly tens of thousands); DOJ civil penalties in government-initiated Title III actions are inflation-adjusted to up to 118,225 dollars for a first violation and 236,451 for subsequent violations (28 CFR 85.5, referenced by 28 CFR 36.504, effective 3 July 2025)",
+      "max_is_rare": true
+     },
+     "regulator": "U.S. Department of Justice, Civil Rights Division (plus private litigants)",
+     "enforcement": [
+      {
+       "case": "accessiBe Inc. (FTC final order)",
+       "date": "2025-04",
+       "amount": "USD 1,000,000",
+       "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+       "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+      },
+      {
+       "case": "Robles v. Domino's Pizza (9th Cir.; cert. denied)",
+       "date": "2019-10",
+       "amount": "n/a (injunctive precedent)",
+       "url": "https://www.ada.gov/resources/web-guidance/",
+       "summary": "Leading authority that ADA Title III applies to the websites of public accommodations, the engine behind thousands of annual web-accessibility suits."
+      }
+     ]
+    }
+   ],
+   "obligations": [
+    "Make the public-facing website accessible, in practice to WCAG 2.1 AA"
+   ],
+   "why": "Health-provider sites are frequent ADA web-suit targets, and an overlay widget does not cure it; a genuine WCAG 2.1 AA pass plus a statement is the defensible posture.",
+   "focus": "Does the site meet WCAG 2.1 AA in practice and publish an accessibility statement, or is it relying on an overlay?",
+   "enforcement": {
+    "case": "accessiBe Inc. (FTC final order)",
+    "date": "2025-04",
+    "amount": "USD 1,000,000",
+    "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+    "summary": "1m order for claiming an AI accessibility widget could make any website WCAG-compliant and for formatting paid reviews as independent; confirms an accessibility overlay is not a defence to Title III."
+   },
+   "register_url": "https://www.ada.gov/",
+   "citation_url": "https://www.ada.gov/resources/web-guidance/"
+  },
+  {
+   "code": "US_ADA_TITLE_III_WEB",
+   "name": "ADA Title III \u2014 website accessibility for places of public accommodation",
+   "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits",
+   "jurisdiction": "US",
+   "citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "violation",
+   "findings": [
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.ddsgroupnyc.com\">\n\t\t\t\t\t\t\t<img fetchpriority=\"high\" width=\"300\" height=\"370\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDSGroupLogo-369h.webp\" class=\"attachment-full size-full wp-image-18\" alt=\"\" srcset=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/DDS",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"https://www.google.com/maps/place/DDS+Group/data=!4m2!3m1!1s0x0:0xe4ffcb1f20b2ece6?sa=X&amp;ved=1t:2428&amp;ictx=111\" target=\"_blank\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/map-location.png\" class=\"attachment-full size-full wp",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "link-name",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1) > figure:nth-of-type(1) > a:nth-of-type(1)",
+      "snippet": "<a href=\"mailto:info@ddsgroupnyc.com\" tabindex=\"-1\"><img width=\"512\" height=\"512\" src=\"https://www.ddsgroupnyc.com/wp-content/uploads/2025/08/open-email.png\" class=\"attachment-full size-full wp-image-191\" alt=\"\"></a>",
+      "wcag_sc": "4.1.2",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+      "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > nav:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(1)",
+      "snippet": "<button class=\"elementskit-menu-close elementskit-menu-toggler\" type=\"button\">X</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(4) > button:nth-of-type(1)",
+      "snippet": "<button class=\"forminator-button forminator-pagination-submit\" style=\"display: none;\" disabled=\"\">Submit</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(1)",
+      "snippet": "<button class=\"forminator-button forminator-button-back forminator-hidden\">Previous</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    },
+    {
+     "record_id": "US_ADA_TITLE_III_WEB",
+     "state": "violation",
+     "kind": "behavioural",
+     "artifact": {
+      "rule_id": "color-contrast",
+      "selector": "body:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > form:nth-of-type(1) > div:nth-of-type(5) > button:nth-of-type(2)",
+      "snippet": "<button class=\"forminator-button forminator-button-next\">Next</button>",
+      "wcag_sc": "1.4.3",
+      "state": "violation",
+      "tier": "deterministic",
+      "type": "dom_node"
+     },
+     "framework": "ADA Title III \u2014 website accessibility for places of public accommodation",
+     "statutory_citation": "Americans with Disabilities Act, Title III, 42 U.S.C. \u00a712181 et seq.; 28 CFR Part 36; DOJ web accessibility guidance (2022, references WCAG)",
+     "page_url": null,
+     "voice_tier": "observation",
+     "description": "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+     "penalty": {
+      "typical_low": 10000,
+      "typical_high": 150000,
+      "statutory_max": null,
+      "currency": "USD",
+      "basis": "no fixed statutory web penalty; most exposure is private-lawsuit settlement plus plaintiff attorneys' fees (commonly five figures); DOJ civil penalties apply in government-initiated Title III actions",
+      "max_is_rare": true
+     },
+     "regulator": "US Department of Justice (DOJ); overwhelmingly enforced via private ADA lawsuits"
+    }
+   ],
+   "obligations": [
+    "Provide a website accessible to people with disabilities; courts and DOJ measure conformance against WCAG (2.0/2.1 Level AA)",
+    "Offer an accessible alternative contact route where full conformance is not yet achieved"
+   ],
+   "why": "Website accessibility suits and demand letters number in the thousands each year; they target obvious WCAG failures (missing alt text, unlabeled forms, poor contrast) that a scan surfaces immediately.",
+   "focus": "Can a screen-reader and keyboard-only user complete the same core tasks (browse, add to cart, check out, contact you) as everyone else?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.ada.gov/resources/web-guidance/"
+  },
+  {
+   "code": "US_CAN_SPAM",
+   "name": "CAN-SPAM Act \u2014 commercial email requirements",
+   "regulator": "Federal Trade Commission (FTC); also enforceable by state AGs and ISPs",
+   "jurisdiction": "US",
+   "citation": "Controlling the Assault of Non-Solicited Pornography And Marketing Act of 2003, 15 U.S.C. \u00a7\u00a77701-7713; FTC CAN-SPAM Rule, 16 CFR Part 316",
+   "penalty": {
+    "typical_low": 10000,
+    "typical_high": 2000000,
+    "statutory_max": 53088,
+    "currency": "USD",
+    "basis": "civil penalties up to $53,088 per non-compliant email (2025 adjustment); aggregate judgments reach the millions where volume is high",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Every commercial email must carry accurate routing and a valid physical postal address",
+    "Provide a clear opt-out and honour it (opt-out model, not opt-in)"
+   ],
+   "why": "CAN-SPAM is a per-email liability; a newsletter footer missing a postal address or a broken unsubscribe multiplies fast across a send list.",
+   "focus": "Does every marketing email carry a real postal address and a one-click unsubscribe you honour within ten business days?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316"
+  },
+  {
+   "code": "US_FTC5_HEALTH",
+   "name": "FTC Act Section 5 - Unfair or Deceptive Practices (Health Data and Privacy Claims)",
+   "regulator": "Federal Trade Commission (FTC)",
+   "jurisdiction": "US",
+   "citation": "Federal Trade Commission Act, 15 U.S.C. 45",
+   "penalty": {
+    "typical_low": 7100000,
+    "typical_high": 7800000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "FTC Act Section 5 carries no general civil penalty for a first unfair/deceptive act; relief is consumer redress, disgorgement and injunctive bans. A civil penalty (up to 53,088 dollars per violation, 16 CFR 1.98, 15 U.S.C. 45(l)/(m)) attaches only where the conduct violates a prior FTC order or a specific FTC rule",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Ensure privacy and security representations are truthful and not contradicted by actual data flows"
+   ],
+   "why": "The BetterHelp and Cerebral cases turned ordinary marketing pixels plus a privacy promise into multi-million-dollar orders; the deceptive gap is between the stated policy and the actual data flows.",
+   "focus": "Do the site privacy claims (including any 'HIPAA compliant' badge) match where consumer data actually goes?",
+   "enforcement": {
+    "case": "BetterHelp, Inc. (FTC final order)",
+    "date": "2023-07",
+    "amount": "USD 7,800,000",
+    "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2023169-betterhelp-inc-matter",
+    "summary": "7.8m consumer refund and a ban on sharing health data for advertising, after disclosing email, IP and mental-health questionnaire data to Facebook, Snapchat, Criteo and Pinterest despite privacy promises."
+   },
+   "register_url": "https://www.ftc.gov/legal-library/browse/cases-proceedings",
+   "citation_url": "https://www.ftc.gov/legal-library/browse/statutes/federal-trade-commission-act"
+  },
+  {
+   "code": "US_FTC_ACT_S5_UDAP",
+   "name": "FTC Act Section 5 \u2014 Unfair or Deceptive Acts or Practices (website deception)",
+   "regulator": "Federal Trade Commission (FTC); state attorneys general concurrently under state UDAP",
+   "jurisdiction": "US",
+   "citation": "Federal Trade Commission Act, Section 5, 15 U.S.C. \u00a745(a); enforcement/penalty authority \u00a75(l), \u00a75(m); .com Disclosures guidance (2013)",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 5000000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "no per se fine for a first \u00a75(a) violation; civil penalties up to $53,088 per violation (2025 adjustment) attach to conduct that violates an FTC rule or a prior order, plus redress/disgorgement; typical band reflects negotiated monetary judgments",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Do not publish false, misleading or deceptive representations about a product or service (the breach is a deceptive claim being present on the site)",
+    "Hold a reasonable basis (competent and reliable evidence) for every objective claim before it is published",
+    "Material terms and disclosures are clear and conspicuous, not buried in fine print, hyperlinks, or hover text (.com Disclosures)",
+    "No dark patterns that trick or trap the consumer (obstructed cancellation, pre-checked add-ons, false urgency, hidden fees)"
+   ],
+   "why": "Section 5 is the backstop the FTC reaches for when no specific rule fits; almost every misleading headline, fake 'was/now' price, unsupported 'clinically proven' or 'guaranteed results' line on a US site is a \u00a75 exposure.",
+   "focus": "What is the net impression to a reasonable consumer, and what evidence did you hold before you published the claim?",
+   "enforcement": {
+    "case": "FTC v. Fashion Nova, LLC",
+    "date": "2022-01",
+    "amount": "$4.2m",
+    "url": "https://www.ftc.gov/news-events/news/press-releases/2022/01/fashion-nova-will-pay-42-million-part-settlement-ftc-allegations-it-blocked-negative-reviews",
+    "summary": "First FTC action over suppression of negative reviews; presenting a curated 4-5 star wall as all reviews was a deceptive \u00a75 practice."
+   },
+   "register_url": null,
+   "citation_url": "https://www.ftc.gov/legal-library/browse/statutes/federal-trade-commission-act"
+  },
+  {
+   "code": "US_FTC_GREEN_GUIDES",
+   "name": "FTC Green Guides \u2014 environmental marketing claims (16 CFR Part 260)",
+   "regulator": "Federal Trade Commission (FTC); state AGs",
+   "jurisdiction": "US",
+   "citation": "FTC Act \u00a75; Guides for the Use of Environmental Marketing Claims, 16 CFR Part 260 (Green Guides); \u00a75, 15 U.S.C. \u00a745",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 2000000,
+    "statutory_max": 53088,
+    "currency": "USD",
+    "basis": "the Guides are interpretive; deceptive green claims are enforced as \u00a75 violations, and where tied to a rule or order carry civil penalties up to $53,088 per violation plus corrective advertising",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Every environmental claim is truthful, substantiated, specific, and qualified so it is not deceptive"
+   ],
+   "why": "Greenwashing is a stated FTC priority and the Green Guides are the yardstick; vague 'sustainable' or 'carbon-neutral' badges without qualification are the classic finding.",
+   "focus": "What specific, substantiated environmental benefit are you claiming, and can a consumer see the qualification and evidence next to the claim?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260"
+  },
+  {
+   "code": "US_FTC_HBNR",
+   "name": "FTC Health Breach Notification Rule (2024 Final Rule)",
+   "regulator": "Federal Trade Commission (FTC)",
+   "jurisdiction": "US",
+   "citation": "Federal Trade Commission Act; American Recovery and Reinvestment Act 2009 s.13407; 16 CFR Part 318, 16 CFR Part 318 (as amended, final rule published 30 May 2024, effective 29 July 2024)",
+   "penalty": {
+    "typical_low": 1500000,
+    "typical_high": 7800000,
+    "statutory_max": 53088,
+    "currency": "USD",
+    "basis": "Civil penalty up to 53,088 dollars per violation per day (inflation-adjusted) for Rule violations; individual consumer-level counts drive very large totals",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Do not disclose consumers' identifiable health data to advertising or analytics vendors without affirmative express consent",
+    "Maintain a breach-notification capability and disclosure"
+   ],
+   "why": "Non-HIPAA health apps and direct-to-consumer wellness sites wrongly assume they are unregulated; the HBNR reaches exactly the tracker-and-SDK sharing that is visible in their network traffic.",
+   "focus": "Does the app or site share any identifiable health data with third-party advertisers or analytics vendors, and did the consumer affirmatively consent?",
+   "enforcement": {
+    "case": "GoodRx Holdings, Inc.",
+    "date": "2023-02",
+    "amount": "USD 1,500,000",
+    "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2023090-goodrx-holdings-inc",
+    "summary": "FTC's first Health Breach Notification Rule action: 1.5m civil penalty for disclosing health data to Facebook, Google, Criteo, Branch and Twilio through tracking pixels and SDKs, and a ban on sharing health data for advertising."
+   },
+   "register_url": "https://www.ftc.gov/legal-library/browse/cases-proceedings",
+   "citation_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-318"
+  },
+  {
+   "code": "US_FTC_MADE_IN_USA",
+   "name": "FTC Made in USA Labeling Rule \u2014 origin claims (16 CFR Part 323)",
+   "regulator": "Federal Trade Commission (FTC)",
+   "jurisdiction": "US",
+   "citation": "FTC Made in USA Labeling Rule; FTC Act \u00a75, 16 CFR Part 323 (effective 13 Aug 2021); \u00a75, 15 U.S.C. \u00a745",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 2000000,
+    "statutory_max": 53088,
+    "currency": "USD",
+    "basis": "the Labeling Rule is a Trade Regulation Rule; violations carry civil penalties up to $53,088 per violation (2025 adjustment) plus redress",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Do not make an unqualified US-origin claim unless the product is 'all or virtually all' made in the United States"
+   ],
+   "why": "Since 2021 the FTC has a dedicated rule with per-violation civil penalties for false US-origin claims; 'Made in USA' badges are a specific, checkable claim with real teeth.",
+   "focus": "Is this product 'all or virtually all' made in the US, and if not, is the origin claim properly qualified?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.ftc.gov/legal-library/browse/rules/made-usa-labeling-rule"
+  },
+  {
+   "code": "US_FTC_REVIEWS_ENDORSEMENTS",
+   "name": "FTC Endorsement Guides 2023 + Consumer Reviews and Testimonials Rule (16 CFR Part 465)",
+   "regulator": "Federal Trade Commission (FTC)",
+   "jurisdiction": "US",
+   "citation": "FTC Act \u00a75; Guides Concerning the Use of Endorsements and Testimonials (16 CFR Part 255, revised 2023); Trade Regulation Rule on the Use of Consumer Reviews and Testimonials (16 CFR Part 465, 2024), 16 CFR Part 255 (effective 26 Jun 2023, 88 FR 48092); 16 CFR Part 465 (effective 21 Oct 2024)",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 2000000,
+    "statutory_max": 53088,
+    "currency": "USD",
+    "basis": "Part 465 is a Trade Regulation Rule, so knowing violations carry civil penalties up to $53,088 per violation (2025 adjustment) plus consumer redress; the Guides themselves are interpretive but breaches are actionable as \u00a75 deception",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Clearly and conspicuously disclose every material connection between an endorser and the brand, near the claim",
+    "Do not publish, buy, sell or incentivise fake, AI-generated, or misrepresented reviews (Part 465 binding prohibitions)",
+    "Do not misrepresent testimonial results; disclose when depicted results are not typical"
+   ],
+   "why": "Since 21 Oct 2024 fake and suppressed reviews are not just deception, they carry per-violation civil penalties under a binding rule; undisclosed influencer and affiliate relationships remain the most-cited endorsement failure.",
+   "focus": "Are all reviews genuine and unfiltered, and is every paid or gifted relationship disclosed where the consumer sees the claim?",
+   "enforcement": {
+    "case": "FTC v. Fashion Nova, LLC (review suppression)",
+    "date": "2022-01",
+    "amount": "$4.2m",
+    "url": "https://www.ftc.gov/news-events/news/press-releases/2022/01/fashion-nova-will-pay-42-million-part-settlement-ftc-allegations-it-blocked-negative-reviews",
+    "summary": "Blocking sub-four-star reviews and displaying only high ratings misrepresented the body of reviews; foundational case now codified into Part 465."
+   },
+   "register_url": null,
+   "citation_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255"
+  },
+  {
+   "code": "US_HIPAA_MKT",
+   "name": "HIPAA Privacy Rule - Marketing Authorization and Notice of Privacy Practices",
+   "regulator": "U.S. Department of Health and Human Services, Office for Civil Rights (OCR)",
+   "jurisdiction": "US",
+   "citation": "Health Insurance Portability and Accountability Act; 45 CFR Part 164, 45 CFR 164.508 (marketing authorization); 164.520 (Notice of Privacy Practices); 164.501 (marketing definition)",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 1500000,
+    "statutory_max": 2190294,
+    "currency": "USD",
+    "basis": "Tiered civil monetary penalties per violation, with an annual cap per identical provision (inflation-adjusted; the highest-tier per-violation maximum and the calendar-year cap are both 2,190,294 dollars for 2026); OCR resolution agreements common",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Post a compliant Notice of Privacy Practices and link it from the site",
+    "Obtain valid HIPAA authorization before any use or disclosure of PHI for marketing"
+   ],
+   "why": "A missing Notice of Privacy Practices or PHI used to build marketing lists is the most basic HIPAA failing OCR checks first, and it is visible on the public site.",
+   "focus": "Is a current Notice of Privacy Practices posted and linked, and can the entity show a signed authorization for any PHI used in marketing?",
+   "enforcement": {
+    "case": "Gums Dental Care (OCR civil monetary penalty)",
+    "date": "2024-10",
+    "amount": "USD 70,000",
+    "url": "https://www.hhs.gov/hipaa/for-professionals/compliance-enforcement/agreements/index.html",
+    "summary": "OCR imposed a 70,000 civil monetary penalty on a solo dental practice over a delayed patient records request, a signal that small practices are within enforcement reach."
+   },
+   "register_url": "https://ocrportal.hhs.gov/ocr/breach/breach_report.jsf",
+   "citation_url": "https://www.ecfr.gov/current/title-45/section-164.508"
+  },
+  {
+   "code": "US_HIPAA_TRACKING",
+   "name": "HIPAA Online Tracking Technologies Guidance (OCR Bulletin) and Post-Vacatur Status",
+   "regulator": "U.S. Department of Health and Human Services, Office for Civil Rights (OCR)",
+   "jurisdiction": "US",
+   "citation": "HIPAA Privacy and Security Rules; 45 CFR Part 164; OCR guidance 'Use of Online Tracking Technologies by HIPAA Covered Entities and Business Associates', 45 CFR 164.502 (disclosures); 164.308/164.312 (safeguards); OCR bulletin Dec 2022, revised Mar 2024",
+   "penalty": {
+    "typical_low": 50000,
+    "typical_high": 1500000,
+    "statutory_max": 2190294,
+    "currency": "USD",
+    "basis": "HIPAA civil monetary penalties where an impermissible disclosure occurs; separate class-action and FTC exposure runs far higher (see enforcement)",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Prevent impermissible disclosure of PHI to tracking vendors on authenticated and PHI-bearing pages"
+   ],
+   "why": "A tracking pixel on an appointment or portal page is the single highest-cost web-compliance failure in US healthcare, with aggregate settlement exposure across the hospital pixel-tracking litigation wave above 100m dollars, and it is detectable from network requests.",
+   "focus": "Which third-party trackers load on authenticated and appointment pages, and is each covered by a BAA or removed?",
+   "enforcement": null,
+   "register_url": "https://ocrportal.hhs.gov/ocr/breach/breach_report.jsf",
+   "citation_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html"
+  },
+  {
+   "code": "US_MEDBOARD_ADV_NY",
+   "name": "Professional Advertising Rules - New York (Regents professions incl. dental, nursing, pharmacy; physicians via Educ. Law 6530)",
+   "regulator": "New York State Board for Professional Medical Conduct / Office of the Professions",
+   "jurisdiction": "US",
+   "citation": "New York Education Law; Rules of the Board of Regents, N.Y. Educ. Law 6530(27); 8 NYCRR 29.1(b)(12) (advertising or soliciting not in the public interest, including false, deceptive or misleading advertising)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": 10000,
+    "currency": "USD",
+    "basis": "New York State Board for Professional Medical Conduct disciplinary action for professional misconduct (false, deceptive or misleading advertising under N.Y. Educ. Law 6530(27) / 8 NYCRR 29.1(b)(12)). Penalties under N.Y. Public Health Law 230-a: censure and reprimand, licence suspension, limitation, revocation or annulment, and a fine not exceeding USD 10,000 upon each specification of charges of which the licensee is found guilty; no fixed website-specific tariff. Verified on N.Y. Public Health Law 230-a (official) 2026-07-17.",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Keep all advertising truthful, non-misleading, and properly substantiated"
+   ],
+   "why": "State boards, alongside the FTC, act on misleading treatment claims and inaccurate board-certification statements; the risky language sits on the homepage.",
+   "focus": "Are the board-certification statements accurate and are outcome or superiority claims substantiated?",
+   "enforcement": null,
+   "register_url": "https://www.health.ny.gov/professionals/doctors/conduct/",
+   "citation_url": "https://www.op.nysed.gov/title8/rules-board-regents/part-29"
+  },
+  {
+   "code": "US_ROSCA_NEGATIVE_OPTION",
+   "name": "Restore Online Shoppers' Confidence Act (ROSCA) \u2014 online subscriptions and auto-renewal",
+   "regulator": "Federal Trade Commission (FTC); state AGs under state Automatic Renewal Laws",
+   "jurisdiction": "US",
+   "citation": "Restore Online Shoppers' Confidence Act; FTC Negative Option Rule (pre-2024 prenotification version, 16 CFR Part 425), 15 U.S.C. \u00a7\u00a78401-8405 (esp. \u00a78403); Negative Option Rule 16 CFR Part 425",
+   "penalty": {
+    "typical_low": 100000,
+    "typical_high": 5000000,
+    "statutory_max": 53088,
+    "currency": "USD",
+    "basis": "ROSCA violations are treated as violations of an FTC rule, so civil penalties up to $53,088 per violation (2025 adjustment) plus redress apply; state Automatic Renewal Laws add parallel penalties",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Clearly disclose all material terms before obtaining billing information",
+    "Obtain express informed consent to the negative-option feature before charging",
+    "Provide a simple mechanism to cancel and stop future charges"
+   ],
+   "why": "Subscriptions are a top FTC and state-AG enforcement priority; the exposure sits in unclear renewal disclosure, pre-checked auto-renewal, and cancellation friction.",
+   "focus": "Before you took the card, did you clearly disclose the recurring charge, get separate consent to it, and is cancellation as easy as signup?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule"
+  },
+  {
+   "code": "US_SEC1557_NOTICES",
+   "name": "ACA Section 1557 - Notice of Nondiscrimination and Notice of Availability of Language Assistance (45 CFR Part 92)",
+   "regulator": "HHS Office for Civil Rights (OCR)",
+   "jurisdiction": "US",
+   "citation": "Patient Protection and Affordable Care Act s.1557; HHS 2024 final rule, 45 CFR Part 92, 45 CFR 92.10 (notice of nondiscrimination: provided annually and posted in a conspicuous location on the website, with OCR complaint information and, where required, the Section 1557 Coordinator's contact details); 45 CFR 92.11 (notice of availability of free language assistance services and auxiliary aids, in English and at least the 15 most common non-English languages of the State, posted conspicuously including on the website)",
+   "penalty": {
+    "typical_low": null,
+    "typical_high": null,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "Enforced by the HHS Office for Civil Rights through the civil-rights framework: corrective-action plans, resolution agreements and, ultimately, suspension or termination of federal financial assistance; private civil-rights liability can follow",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Post the Section 1557 notice of nondiscrimination conspicuously on the website",
+    "Post the notice of availability of free language assistance services and auxiliary aids"
+   ],
+   "why": "The 2024 final rule re-established the notice duties as concrete, website-checkable items - a missing nondiscrimination notice or missing 15-language taglines is visible on the homepage footer in seconds, and it is distinct from the s.504 accessibility duty already screened.",
+   "focus": "Where on your website is your notice of nondiscrimination, and does your language-assistance notice cover the top-15 languages for your State?",
+   "enforcement": null,
+   "register_url": "https://www.hhs.gov/civil-rights/index.html",
+   "citation_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-A/part-92/subpart-A/section-92.10"
+  },
+  {
+   "code": "US_STATE_UDAP_MINI_FTC",
+   "name": "State UDAP / 'mini-FTC' acts \u2014 unfair and deceptive practices (advisory overlay)",
+   "regulator": "State Attorneys General; frequently a private right of action for consumers",
+   "jurisdiction": "US",
+   "citation": "State unfair and deceptive acts and practices (UDAP) statutes; every state has one (e.g., California UCL/FAL, Cal. Bus. & Prof. Code \u00a7\u00a717200 & 17500; Florida FDUTPA; Massachusetts Ch. 93A; New York GBL \u00a7349), Representative anchor: Cal. Bus. & Prof. Code \u00a717200 (unfair competition) and \u00a717500 (false advertising)",
+   "penalty": {
+    "typical_low": 2000,
+    "typical_high": 10000,
+    "statutory_max": null,
+    "currency": "USD",
+    "basis": "per-violation penalties vary widely by state (commonly $2,000-$10,000 per violation); many acts add a private right of action, attorneys' fees, and in some states treble or statutory damages",
+    "max_is_rare": true
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "The same truthful, substantiated, non-deceptive standard as FTC \u00a75 applies at state level, often with a private right of action and, in some states, statutory or treble damages"
+   ],
+   "why": "Even where the FTC does not act, a deceptive US page is exposed under all fifty states' UDAP laws, several of which let consumers sue directly and recover multiplied damages.",
+   "focus": "Is the claim truthful and substantiated to the same standard a state AG or a consumer plaintiff would apply?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=7.&chapter=5.&lawCode=BPC"
+  },
+  {
+   "code": "US_TCPA_WEB_CONSENT",
+   "name": "Telephone Consumer Protection Act \u2014 web consent capture for calls and texts",
+   "regulator": "Federal Communications Commission (FCC); private right of action and state AGs",
+   "jurisdiction": "US",
+   "citation": "Telephone Consumer Protection Act, 47 U.S.C. \u00a7227; FCC rules 47 CFR \u00a764.1200; revocation-of-consent rule effective 11 Apr 2025",
+   "penalty": {
+    "typical_low": 500,
+    "typical_high": 1500,
+    "statutory_max": 1500,
+    "currency": "USD",
+    "basis": "private right of action: $500 per negligent violation, up to $1,500 per willful violation, per call or text; class exposure runs to seven and eight figures",
+    "max_is_rare": false
+   },
+   "binding": true,
+   "state": "screened",
+   "findings": [],
+   "obligations": [
+    "Obtain prior express written consent for autodialed/prerecorded marketing calls and texts at the point of capture",
+    "Provide and honour a simple revocation ('STOP' in any reasonable manner), honoured within 10 business days"
+   ],
+   "why": "TCPA is plaintiff-lawyer territory: each text is its own statutory-damages unit, so a lead form that captures a phone number without proper consent is a class-action magnet.",
+   "focus": "Where is the express-written-consent language, is it unchecked, and does it say consent is not required to buy?",
+   "enforcement": null,
+   "register_url": null,
+   "citation_url": "https://www.ecfr.gov/current/title-47/part-64/section-64.1200"
+  }
+ ],
+ "counts": {
+  "critical": 20,
+  "high": 0,
+  "standard": 0,
+  "total": 20
+ },
+ "confirmed": 20,
+ "screenedLabel": "Screened the catalogue",
+ "coverageCaveats": [],
+ "frameworksAssessed": 49,
+ "frameworksBinding": 15,
+ "rulesChecked": 29,
+ "exposure": {
+  "value": 210725.5,
+  "currency": "USD",
+  "label": "median enforcement exposure"
+ },
+ "exposureFull": {
+  "value": 210725.5,
+  "currency": "USD",
+  "label": "median exposure including items under review"
+ },
+ "exposureNote": "Exposure is the midpoint of each statute family's typical enforcement band, de-duplicated to one figure per family; the statutory ceiling shown is the single highest maximum across breached families, never a sum of maxima. Figures follow each statute's own currency and are not converted.",
+ "exposureWaterfall": {
+  "steps": [
+   {
+    "family": "americans with disabilities act; 28 cfr part 36",
+    "typical_low": 25000,
+    "typical_high": 236451,
+    "familyCeiling": 236451,
+    "currency": "USD",
+    "state": "violation"
+   },
+   {
+    "family": "americans with disabilities act, title iii",
+    "typical_low": 10000,
+    "typical_high": 150000,
+    "familyCeiling": null,
+    "currency": "USD",
+    "state": "violation"
+   }
+  ],
+  "ceiling": {
+   "value": 236451,
+   "label": "statutory ceiling",
+   "currency": "USD"
+  }
+ }
+}

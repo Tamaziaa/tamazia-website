@@ -6,6 +6,7 @@ import { neonQuery } from '../api/_neon.js';
 import { payloadToD } from './_adapter.js';
 import { renderShell, errorShell } from './_shell.js';
 import { renderLuxShell, isV11 } from './_lux.js';
+import { v11ToD } from './_v11.js';
 
 // Founder-confirmed direct line. Threaded to window.D.contactPhone so the audit founder block
 // (and any element keyed on it) renders the number beside founder@tamazia.co.uk. env.CONTACT_PHONE
@@ -91,12 +92,14 @@ export async function onRequest(context) {
 
   let html;
   try {
-    // VERSIONED DISPATCH (contract-v1.1): a payload the engine composed against the v1.1 contract
-    // (findings[] + notLegalAdvice) renders through the additive lux shell, which reads the RAW payload
-    // directly (window.P) and re-derives nothing. Everything else routes the legacy renderShell path
-    // unchanged. The cache/unlock/PostHog behaviour below is identical for both branches (isUnlocked was
-    // resolved above; the open beacon + PostHog fire after this block regardless of branch).
-    if (isV11(payload)) {
+    // VERSIONED DISPATCH (contract-v1.1): a v1.1 payload (findings[] + notLegalAdvice) now renders
+    // through the SAME rich report as every legacy payload - the _v11.js bridge maps its compliance
+    // half into the adapter's input contract and overlays the probe sections, so one product has ONE
+    // look (the founder's verdict on the sparse lux shell). The lux shell stays reachable at
+    // ?shell=lux as a debugging view of the raw payload, never the default. The cache/unlock/PostHog
+    // behaviour below is identical for both branches.
+    const wantLux = url.searchParams.get('shell') === 'lux';
+    if (isV11(payload) && wantLux) {
       html = renderLuxShell(payload, {
         company: row.company,
         buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38',
@@ -112,7 +115,8 @@ export async function onRequest(context) {
         stripeFix20: env.STRIPE_LINK_FIX20 || '',
         stripeFix30: env.STRIPE_LINK_FIX30 || '',
       };
-      const D = payloadToD(payload, {
+      const toD = isV11(payload) ? v11ToD : payloadToD;
+      const D = toD(payload, {
         company: row.company, now: Date.now(), generated_at: row.generated_at || null,
         // E-218: verifier verdict + row status drive the truth-filtered render for anything not verified=true.
         verified: row.verified === true || row.verified === 't',

@@ -154,17 +154,26 @@ function enforcementLine(e) {
   if (e.summary && head) return head + ': ' + e.summary;
   return e.summary || head || null;
 }
-// One framework's intel entry ({obligations,focus,why,enforcement,...}) or null when the card
-// carries none - the adapter's E-233 no-filler rule then decides what renders.
+// Truthy fields only; null when nothing survives - the adapter's E-233 no-filler rule then
+// decides what renders.
+function compactEntry(entry) {
+  const out = {};
+  for (const [k, v] of Object.entries(entry)) { if (v) out[k] = v; }
+  return Object.keys(out).length ? out : null;
+}
+function joinedObligations(fw) {
+  if (!Array.isArray(fw.obligations)) return null;
+  return fw.obligations.length ? fw.obligations.join('\n') : null;
+}
+// One framework's intel entry ({obligations,focus,why,enforcement,...}) or null.
 function intelEntryOf(fw) {
-  const entry = {};
-  if (Array.isArray(fw.obligations) && fw.obligations.length) entry.obligations = fw.obligations.join('\n');
-  if (fw.why) entry.why = fw.why;
-  if (fw.focus) entry.focus = fw.focus;
-  const enf = enforcementLine(fw.enforcement);
-  if (enf) entry.enforcement = enf;
-  if (fw.enforcement && fw.enforcement.url) entry.enforcement_url = fw.enforcement.url;
-  return Object.keys(entry).length ? entry : null;
+  return compactEntry({
+    obligations: joinedObligations(fw),
+    why: fw.why || null,
+    focus: fw.focus || null,
+    enforcement: enforcementLine(fw.enforcement),
+    enforcement_url: (fw.enforcement && fw.enforcement.url) || null,
+  });
 }
 function frameworkIntelOf(frameworks) {
   const out = {};

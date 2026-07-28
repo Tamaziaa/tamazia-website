@@ -127,20 +127,23 @@ function currenciesOf(meta) {
   return c ? [c] : ['GBP'];
 }
 
+// One framework's meta entry: the catalogue identity the adapter reads first (fwName/uncappedExp/
+// screened-row citation), maps as legacy fallback only.
+function metaEntryOf(fw) {
+  return {
+    name: fw.name || null,
+    regulator: fw.regulator || null,
+    jurisdiction: fw.jurisdiction || null,
+    provision: fw.citation || null,
+    penalty: fw.penalty || null,
+    penalty_label: (fw.penalty && fw.penalty.basis) || null,
+    citation_url: fw.citation_url || null,
+    binding_type: bindingLabelFor(fw),
+  };
+}
 function frameworkMetaOf(frameworks) {
   const out = {};
-  for (const fw of frameworks) {
-    out[fw.code] = {
-      name: fw.name || null,
-      regulator: fw.regulator || null,
-      jurisdiction: fw.jurisdiction || null,
-      provision: fw.citation || null,
-      penalty: fw.penalty || null,
-      penalty_label: (fw.penalty && fw.penalty.basis) || null,
-      citation_url: fw.citation_url || null,
-      binding_type: bindingLabelFor(fw),
-    };
-  }
+  for (const fw of frameworks) out[fw.code] = metaEntryOf(fw);
   return out;
 }
 

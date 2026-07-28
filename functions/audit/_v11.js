@@ -11,13 +11,21 @@
 // carried verbatim from the engine payload.
 import { payloadToD } from './_adapter.js';
 
+// Tiny accessors: one read or one fallback each, so every builder below stays a flat field list.
+const firstOf = (a, b) => a || b || null;
+const orNull = (v) => v || null;
+const penaltyBasisOf = (fw) => orNull(fw.penalty && fw.penalty.basis);
+const enforcementUrlOf = (fw) => orNull(fw.enforcement && fw.enforcement.url);
+
 // The engine emits severities implicitly (mint/composer deriveCounts): a violation on a record
 // with a monetary band is critical, a violation without one is high. Mirror that exact rule so
 // the rich report's counts equal the minted counts.
+function hasMonetaryBand(pen) {
+  return [pen.typical_low, pen.typical_high, pen.statutory_max].some((v) => v != null);
+}
 function sevOfViolation(fw) {
   const pen = (fw && fw.penalty) || {};
-  const banded = pen.typical_low != null || pen.typical_high != null || pen.statutory_max != null;
-  return banded ? 'P0' : 'P1';
+  return hasMonetaryBand(pen) ? 'P0' : 'P1';
 }
 
 // artifact.snippet is raw crawled HTML; the report quotes TEXT. Strip tags/comments, squash
@@ -30,10 +38,14 @@ function quoteFromArtifact(f) {
   return raw.replace(/\s+/g, ' ').trim().slice(0, 220);
 }
 
+function wcagSuffixOf(f) {
+  const sc = f.artifact && f.artifact.wcag_sc;
+  return sc ? ' (WCAG ' + sc + ')' : '';
+}
 function factOf(f) {
   const d = String(f.description || '').trim();
-  const sc = f.artifact && f.artifact.wcag_sc ? ' (WCAG ' + f.artifact.wcag_sc + ')' : '';
-  return d ? d + sc : ('Rule check failed' + sc);
+  const base = d || 'Rule check failed';
+  return base + wcagSuffixOf(f);
 }
 
 const numOrNull = (v) => (v == null ? null : v);
@@ -41,10 +53,10 @@ const numOrNull = (v) => (v == null ? null : v);
 // every value verbatim from the engine payload.
 function legalIdentityOf(f, fw) {
   return {
-    display_name: f.framework || fw.name || null,
-    regulator: f.regulator || fw.regulator || null,
-    provision: f.statutory_citation || fw.citation || null,
-    citation_url: fw.citation_url || null,
+    display_name: firstOf(f.framework, fw.name),
+    regulator: firstOf(f.regulator, fw.regulator),
+    provision: firstOf(f.statutory_citation, fw.citation),
+    citation_url: orNull(fw.citation_url),
   };
 }
 // The catalogue's penalty numbers for one violation, in the adapter's field names.
@@ -88,10 +100,11 @@ function bindingLabelFor(fw) {
 // canonical/json_ld/h1/lang/viewport. Families the v1.1 probes do NOT measure (title, meta
 // description, Open Graph, page bytes) are deliberately absent - dimsHonesty() below marks those
 // dims "not assessed" rather than let a missing input read as a failing site.
+const measuredFamily = (obj) => Boolean(obj && obj.state === 'measured');
 // One measured family into the signal bag: only state:"measured" objects contribute, and only
 // their non-null facts. rename maps probe field names onto the adapter's signal names.
 function takeMeasured(sig, obj, keys, rename) {
-  if (!obj || obj.state !== 'measured') return;
+  if (!measuredFamily(obj)) return;
   for (const k of keys) {
     if (obj[k] == null) continue;
     sig[(rename && rename[k]) || k] = obj[k];
@@ -131,13 +144,13 @@ function currenciesOf(meta) {
 // screened-row citation), maps as legacy fallback only.
 function metaEntryOf(fw) {
   return {
-    name: fw.name || null,
-    regulator: fw.regulator || null,
-    jurisdiction: fw.jurisdiction || null,
-    provision: fw.citation || null,
-    penalty: fw.penalty || null,
-    penalty_label: (fw.penalty && fw.penalty.basis) || null,
-    citation_url: fw.citation_url || null,
+    name: orNull(fw.name),
+    regulator: orNull(fw.regulator),
+    jurisdiction: orNull(fw.jurisdiction),
+    provision: orNull(fw.citation),
+    penalty: orNull(fw.penalty),
+    penalty_label: penaltyBasisOf(fw),
+    citation_url: orNull(fw.citation_url),
     binding_type: bindingLabelFor(fw),
   };
 }
@@ -169,10 +182,10 @@ function joinedObligations(fw) {
 function intelEntryOf(fw) {
   return compactEntry({
     obligations: joinedObligations(fw),
-    why: fw.why || null,
-    focus: fw.focus || null,
+    why: orNull(fw.why),
+    focus: orNull(fw.focus),
     enforcement: enforcementLine(fw.enforcement),
-    enforcement_url: (fw.enforcement && fw.enforcement.url) || null,
+    enforcement_url: enforcementUrlOf(fw),
   });
 }
 function frameworkIntelOf(frameworks) {
@@ -194,10 +207,10 @@ function bindingMapOf(frameworks) {
 // One field group per builder: firm identity, the compliance lattice, and the scan facts.
 function firmFieldsOf(meta) {
   return {
-    company: meta.company || null,
-    domain: meta.domain || null,
-    country: meta.country || null,
-    firm_profile: { name: meta.company || null, hq_country: meta.country || null, primary_sector: meta.sector || null },
+    company: orNull(meta.company),
+    domain: orNull(meta.domain),
+    country: orNull(meta.country),
+    firm_profile: { name: orNull(meta.company), hq_country: orNull(meta.country), primary_sector: orNull(meta.sector) },
   };
 }
 function complianceFieldsOf(p, frameworks, fwByCode) {
@@ -214,12 +227,16 @@ function complianceFieldsOf(p, frameworks, fwByCode) {
     framework_intel: frameworkIntelOf(frameworks),
   };
 }
+function assessedCountOf(p) {
+  if (p.frameworksAssessed) return p.frameworksAssessed;
+  return Array.isArray(p.frameworks) ? p.frameworks.length : 0;
+}
 function scanFieldsOf(p, meta) {
   return {
     scan: {
       signals: signalsOf(p),
       final_url: meta.domain ? 'https://' + meta.domain : null,
-      catalogue_frameworks: p.frameworksAssessed || (Array.isArray(p.frameworks) ? p.frameworks.length : 0),
+      catalogue_frameworks: assessedCountOf(p),
       catalogue_rules: p.rulesChecked || null,
       markets: { currencies: currenciesOf(meta) },
       psi: usablePsi(p),
@@ -252,12 +269,14 @@ export function v11ToLegacy(p) {
 // The v1.1 probes never measure titles/meta descriptions/Open Graph/page depth, and the legacy
 // dim formulas read a missing input as a failing one ("no title" against a site that has titles).
 // Those two dims state the truth instead: not assessed on this scan.
-const measuredFamily = (obj) => Boolean(obj && obj.state === 'measured');
 function unmeasuredDimKeys(p) {
   const seo = p.seo || {};
   const keys = new Set(['seo', 'content']);   // titles/meta/OG/page depth: never probed on v1.1
   if (!measuredFamily(seo.security)) keys.add('security');
-  if (!(measuredFamily(seo.tech) && measuredFamily(seo.a11y))) keys.add('technical_seo');
+  const techMeasured = measuredFamily(seo.tech);
+  const a11yMeasured = measuredFamily(seo.a11y);
+  if (!techMeasured) keys.add('technical_seo');
+  if (!a11yMeasured) keys.add('technical_seo');
   return keys;
 }
 function dimsHonesty(D, p) {

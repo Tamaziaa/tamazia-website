@@ -36,27 +36,43 @@ function factOf(f) {
   return d ? d + sc : ('Rule check failed' + sc);
 }
 
-function pointerFromViolation(f, fwByCode) {
-  const fw = fwByCode[f.record_id] || {};
-  const pen = (f.penalty || fw.penalty || {});
+const numOrNull = (v) => (v == null ? null : v);
+// The legal identity of one violation: finding fields first, its framework card as fallback -
+// every value verbatim from the engine payload.
+function legalIdentityOf(f, fw) {
   return {
-    framework_short: f.record_id,
-    bucket: 'compliance',
-    state: 'CONFIRMED',
-    severity: sevOfViolation({ penalty: pen }),
     display_name: f.framework || fw.name || null,
     regulator: f.regulator || fw.regulator || null,
     provision: f.statutory_citation || fw.citation || null,
     citation_url: fw.citation_url || null,
+  };
+}
+// The catalogue's penalty numbers for one violation, in the adapter's field names.
+function penaltyFieldsOf(pen) {
+  return {
+    enforce_typical_low_gbp: numOrNull(pen.typical_low),
+    enforce_typical_high_gbp: numOrNull(pen.typical_high),
+    fine_high_gbp: numOrNull(pen.statutory_max),
+    enforce_context: pen.basis || null,
+  };
+}
+function evidenceFieldsOf(f) {
+  return {
     fact: factOf(f),
     evidence_quote: quoteFromArtifact(f),
     page: f.page_url || null,
-    enforce_typical_low_gbp: pen.typical_low != null ? pen.typical_low : null,
-    enforce_typical_high_gbp: pen.typical_high != null ? pen.typical_high : null,
-    fine_high_gbp: pen.statutory_max != null ? pen.statutory_max : null,
-    enforce_context: pen.basis || null,
     checked_urls: f.page_url ? [f.page_url] : [],
   };
+}
+function pointerFromViolation(f, fwByCode) {
+  const fw = fwByCode[f.record_id] || {};
+  const pen = f.penalty || fw.penalty || {};
+  return Object.assign(
+    { framework_short: f.record_id, bucket: 'compliance', state: 'CONFIRMED', severity: sevOfViolation({ penalty: pen }) },
+    legalIdentityOf(f, fw),
+    penaltyFieldsOf(pen),
+    evidenceFieldsOf(f)
+  );
 }
 
 // The catalogue's own words decide whether a regime is a voluntary/self-regulatory code (the

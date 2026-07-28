@@ -197,6 +197,13 @@ function metaOf(fw) { return _FW_META[String(fw || '').toUpperCase()] || _FW_MET
 // defensive null-guard for that legitimately-optional numeric field: when there is no numeric ceiling AND the
 // framework is not a voluntary/non-statutory one, show the catalogue's own uncapped label instead of guessing.
 // Never invents a number; never touches any framework that already has a real fine_high_gbp.
+// The catalogue's own official-source link for a framework (framework_meta.citation_url), URL-shaped
+// or empty - lets a screened "applies to you" row cite the actual law exactly like a breached row.
+function metaCitationUrl(fw) {
+  const m = metaOf(fw);
+  const u = m && m.citation_url ? String(m.citation_url) : '';
+  return /^https?:\/\//.test(u) ? u : '';
+}
 function uncappedExp(fw) {
   const m = metaOf(fw);
   const pen = m && m.penalty;
@@ -1453,7 +1460,7 @@ export function payloadToD(payload, ctx = {}) {
       const _focus = (_it && _it.focus) || '';
       frameworks.push({
         code: fwCode(fw), name: nm, regulator: fwRegulator(fw), jur: _jurName(fw),
-        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: inspectedPagesFor(payload, fw), binding: bindingType(fw), binding_label: bindingLabel(fw),
+        findings: 0, c: 0, h: 0, s: 0, exp: 'applies to you', expN: 0, screened: true, assessed_label: 'APPLIES · ASSESSED', inspected_pages: inspectedPagesFor(payload, fw), binding: bindingType(fw), binding_label: bindingLabel(fw), citation_url: metaCitationUrl(fw),
         // E-233: NO INVENTED ENFORCEMENT. The old fallback asserted "<regulator> actively enforces this regime"
         // for any framework we had no intel on — an unsourced claim that read as filler and gave the section its
         // "no value" feel. Enforcement now renders ONLY when a real, curated, cited action exists; otherwise the

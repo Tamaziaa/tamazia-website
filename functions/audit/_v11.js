@@ -151,17 +151,23 @@ function enforcementLine(e) {
   if (e.summary && head) return head + ': ' + e.summary;
   return e.summary || head || null;
 }
+// One framework's intel entry ({obligations,focus,why,enforcement,...}) or null when the card
+// carries none - the adapter's E-233 no-filler rule then decides what renders.
+function intelEntryOf(fw) {
+  const entry = {};
+  if (Array.isArray(fw.obligations) && fw.obligations.length) entry.obligations = fw.obligations.join('\n');
+  if (fw.why) entry.why = fw.why;
+  if (fw.focus) entry.focus = fw.focus;
+  const enf = enforcementLine(fw.enforcement);
+  if (enf) entry.enforcement = enf;
+  if (fw.enforcement && fw.enforcement.url) entry.enforcement_url = fw.enforcement.url;
+  return Object.keys(entry).length ? entry : null;
+}
 function frameworkIntelOf(frameworks) {
   const out = {};
   for (const fw of frameworks) {
-    const entry = {};
-    if (Array.isArray(fw.obligations) && fw.obligations.length) entry.obligations = fw.obligations.join('\n');
-    if (fw.why) entry.why = fw.why;
-    if (fw.focus) entry.focus = fw.focus;
-    const enf = enforcementLine(fw.enforcement);
-    if (enf) entry.enforcement = enf;
-    if (fw.enforcement && fw.enforcement.url) entry.enforcement_url = fw.enforcement.url;
-    if (Object.keys(entry).length) out[fw.code] = entry;
+    const entry = intelEntryOf(fw);
+    if (entry) out[fw.code] = entry;
   }
   return out;
 }

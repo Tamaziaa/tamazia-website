@@ -88,24 +88,29 @@ function bindingLabelFor(fw) {
 // canonical/json_ld/h1/lang/viewport. Families the v1.1 probes do NOT measure (title, meta
 // description, Open Graph, page bytes) are deliberately absent - dimsHonesty() below marks those
 // dims "not assessed" rather than let a missing input read as a failing site.
+// One measured family into the signal bag: only state:"measured" objects contribute, and only
+// their non-null facts. rename maps probe field names onto the adapter's signal names.
+function takeMeasured(sig, obj, keys, rename) {
+  if (!obj || obj.state !== 'measured') return;
+  for (const k of keys) {
+    if (obj[k] == null) continue;
+    sig[(rename && rename[k]) || k] = obj[k];
+  }
+}
+// DOM-evidenced findings PROVE the crawler read the site even when every probe family is
+// unprobed - without this real observation, a probe outage would hide every clean-but-binding
+// framework row behind the adapter's siteScanned gate.
+function domEvidenceCount(p) {
+  const findings = Array.isArray(p.findings) ? p.findings : [];
+  return findings.filter((f) => f.artifact && f.artifact.type === 'dom_node').length;
+}
 function signalsOf(p) {
   const seo = p.seo || {};
   const sig = {};
-  const take = (obj, keys, rename) => {
-    if (!obj || obj.state !== 'measured') return;
-    for (const k of keys) {
-      if (obj[k] == null) continue;
-      sig[(rename && rename[k]) || k] = obj[k];
-    }
-  };
-  take(seo.security, ['hsts', 'csp', 'xcto', 'xfo', 'refpol', 'permpol']);
-  take(seo.tech, ['canonical', 'json_ld', 'favicon']);
-  take(seo.a11y, ['h1_count', 'viewport', 'lang_declared'], { lang_declared: 'lang' });
-  // Even when every probe family is unprobed, DOM-evidenced findings PROVE the crawler read the
-  // site - record that real observation so the adapter's siteScanned gate reflects the truth
-  // (without it, a probe outage would hide every clean-but-binding framework row).
-  const domNodes = (Array.isArray(p.findings) ? p.findings : [])
-    .filter((f) => f.artifact && f.artifact.type === 'dom_node').length;
+  takeMeasured(sig, seo.security, ['hsts', 'csp', 'xcto', 'xfo', 'refpol', 'permpol']);
+  takeMeasured(sig, seo.tech, ['canonical', 'json_ld', 'favicon']);
+  takeMeasured(sig, seo.a11y, ['h1_count', 'viewport', 'lang_declared'], { lang_declared: 'lang' });
+  const domNodes = domEvidenceCount(p);
   if (domNodes > 0) sig.dom_evidence_nodes = domNodes;
   return sig;
 }

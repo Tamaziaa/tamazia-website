@@ -289,8 +289,15 @@ function dimsHonesty(D, p) {
   }
 }
 
+// A real glossary object, not a probe state-marker.
+function realGlossaryOf(p) {
+  const g = p.glossary;
+  if (!g || typeof g !== 'object') return null;
+  return g.state ? null : g;
+}
 export function overlaySections(D, p) {
-  if (p.glossary && typeof p.glossary === 'object' && !p.glossary.state) D.glossary = p.glossary;
+  const glossary = realGlossaryOf(p);
+  if (glossary) D.glossary = glossary;
   dimsHonesty(D, p);
   return D;
 }

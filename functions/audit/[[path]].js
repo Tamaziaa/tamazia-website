@@ -6,7 +6,11 @@ import { neonQuery } from '../api/_neon.js';
 import { payloadToD } from './_adapter.js';
 import { renderShell, errorShell } from './_shell.js';
 import { renderLuxShell, isV11 } from './_lux.js';
-import { v11ToD } from './_v11.js';
+// BRIDGE v1.1 (second edition). _v12.js is a FULL REPLACEMENT for _v11.js and exports the same
+// v11ToD / v11ToLegacy / overlaySections names, so this route changes only its import specifier.
+// _v11.js stays on disk because _qa/qa_v11.mjs still pins the old bridge's contract; nothing on the
+// serving path reads it any more.
+import { v11ToD } from './_v12.js';
 
 // Founder-confirmed direct line. Threaded to window.D.contactPhone so the audit founder block
 // (and any element keyed on it) renders the number beside founder@tamazia.co.uk. env.CONTACT_PHONE
@@ -93,7 +97,7 @@ export async function onRequest(context) {
   let html;
   try {
     // VERSIONED DISPATCH (contract-v1.1): a v1.1 payload (findings[] + notLegalAdvice) now renders
-    // through the SAME rich report as every legacy payload - the _v11.js bridge maps its compliance
+    // through the SAME rich report as every legacy payload - the _v12.js bridge maps its compliance
     // half into the adapter's input contract and overlays the probe sections, so one product has ONE
     // look (the founder's verdict on the sparse lux shell). The lux shell stays reachable at
     // ?shell=lux as a debugging view of the raw payload, never the default. The cache/unlock/PostHog

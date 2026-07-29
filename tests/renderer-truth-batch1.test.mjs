@@ -96,7 +96,12 @@ t('FIX-1: NO FX. Two regimes, two currencies, printed side by side and never con
 t('FIX-1: a Gulf firm is never quoted in pounds', () => {
   const D = payloadToD(base('UAE', ['AE'], [breach('DIFC_DPL'), breach('UAE_PDPL')]), { verified: true });
   assert.ok(!/£/.test(D.exposureHeadline), 'a DIFC/UAE firm must not see a pound sign: ' + D.exposureHeadline);
-  assert.ok(D.heatRows.every((r) => !/£/.test(r)), 'the exposure ladder must be in the firms own currency: ' + D.heatRows.join(' '));
+  // A3: the 5x5 risk heatmap is deleted at every layer, so the currency ladder it printed (D.heatRows)
+  // is gone with it. The currency rule is unchanged and is now asserted on the surfaces that survive.
+  assert.equal(D.heat, undefined, 'the heatmap emit is deleted (A3)');
+  assert.equal(D.heatRows, undefined, 'the heatmap currency ladder is deleted with it (A3)');
+  assert.equal(D.heatCols, undefined, 'the heatmap likelihood axis is deleted with it (A3)');
+  assert.ok(!/£/.test(D.exposureBars.map((b) => b.l).join(' ')), 'no exposure bar may print £ for a Gulf firm');
   assert.ok(!/£/.test(D.frameworks.map((f) => f.exp).join(' ')), 'no framework card may print £ for a Gulf firm');
 });
 
@@ -113,23 +118,36 @@ t('FIX-2: SCREENED and BIND are different numbers — the rail never says "N scr
   assert.equal(D.frameworksBinding, D.frameworks.length, 'binding = what attaches to THIS firm');
   // the engine emits no catalogue count today -> we print a safe label, we do NOT print the binding count twice
   assert.equal(D.catalogueSize, null, 'catalogueSize is READ from the payload, never guessed');
-  assert.equal(D.screenedLabel, 'Full catalogue screened');
+  // R5: the numberless fallback is the ENGINE's own label (payload/composer/compose.js:390), which the
+  // v1.1 bridge forwards at scan.screened_label. With nothing to forward it is 'Screened the catalogue'.
+  assert.equal(D.screenedLabel, 'Screened the catalogue');
+  assert.ok(!/\d/.test(D.screenedLabel), 'with no register total we claim no number at all');
   assert.ok(!new RegExp('^' + D.frameworksBinding + ' frameworks screened$').test(D.screenedLabel),
     'the screened figure must never just be the binding figure again');
 });
 
-// SUPERSEDED BY THE 400+ DECISION. This test used to assert `screenedLabel === '403 frameworks screened'`, i.e. it
-// ENCODED THE DEFECT: the register holds 294 frameworks, so any "400+ frameworks" claim is false, on a document that
-// fines other firms for false claims. We screen RULES (671 of them); FRAMEWORKS bind. The payload key is now
-// catalogue_rules, and the label says rules.
-t('FIX-2: when the engine emits the register count, it is used verbatim and reads as RULES', () => {
-  const p = base('UK', ['UK'], [breach('UK_PECR')]);
-  p.catalogue_rules = 671;
-  const D = payloadToD(p, { verified: true });
-  assert.equal(D.catalogueSize, 671);
-  assert.equal(D.screenedLabel, '671 compliance rules screened');
-  assert.ok(!/frameworks screened/i.test(D.screenedLabel), 'frameworks do not get screened; rules do');
-  assert.ok(D.catalogueSize > D.frameworksBinding, 'screened must exceed binding');
+// SUPERSEDED TWICE. It first asserted `screenedLabel === '403 frameworks screened'`, i.e. it ENCODED the defect:
+// the register holds 294 frameworks, so any "400+ frameworks" claim is false, on a document that fines other firms
+// for false claims. It then asserted '671 compliance rules screened'. R5 retires that too: ONE number cannot carry
+// three units. The label now prints all THREE, each READ not derived (register obligations / frameworks that bind
+// this firm / obligations evaluated on this firm's pages), or it prints no number at all.
+t('R5: THREE numbers, three units — the label prints all three or none', () => {
+  const partial = base('UK', ['UK'], [breach('UK_PECR')]);
+  partial.catalogue_rules = 671;                       // register total only: two of three units missing
+  const Dp = payloadToD(partial, { verified: true });
+  assert.equal(Dp.catalogueSize, 671, 'the register total is still READ verbatim');
+  assert.ok(!/\d/.test(Dp.screenedLabel), 'one number out of three claims nothing: ' + Dp.screenedLabel);
+  assert.ok(!/compliance rules screened/i.test(Dp.screenedLabel), 'a register total is not a screening claim');
+
+  const full = base('UK', ['UK'], [breach('UK_PECR')]);
+  full.catalogue_obligations = 200; full.rules_evaluated = 47;
+  const Df = payloadToD(full, { verified: true });
+  assert.match(Df.screenedLabel, /^200 obligations screened · \d+ frameworks bind you · 47 checked on your pages$/,
+    Df.screenedLabel);
+  assert.ok(!/frameworks screened/i.test(Df.screenedLabel), 'frameworks do not get screened; obligations do');
+  assert.ok(Df.catalogueSize > Df.frameworksBinding, 'screened must exceed binding');
+  assert.equal(Df.rulesChecked, 47, 'rules_evaluated is READ, never re-derived from a framework count');
+  assert.equal(Df.rulesChecksAssessed, true);
 });
 
 t('FIX-2: rulesChecked is a RULE count (from payload.rules), not a framework count', () => {
@@ -169,11 +187,16 @@ t('FIX-3: no "(s)" survives anywhere in the adapter client-facing prose', () => 
 /* ---------------- FIX 4 · nothing is cut ---------------- */
 const LONG = "The regulator took into account the firm's cooperation, self-reporting and the remedial steps taken after the incident, together with the absence of any prior enforcement history, and reduced the penalty accordingly before publication of the final notice.";
 
-t('FIX-4 (E13): enfContext is NEVER truncated — no mid-word cut, no ellipsis', () => {
-  const b = bingoFromPointer(breach('UK_PECR', { enforce_context: LONG }), 'Regulatory', {}, 0, '£');
-  assert.equal(b.enfContext, LONG, 'enfContext must survive the adapter byte-for-byte');
-  assert.ok(!/…|\.\.\.$/.test(b.enfContext), 'enfContext ends in an ellipsis');
-  assert.ok(/\.$/.test(b.enfContext), 'enfContext must end at a sentence boundary, not mid-word');
+// W3 RETARGETED THIS. `enfContext` is no longer emitted at all: grep returns 0 render references across
+// audit-app.js + audit-charts.js, and it was ~644 chars x 3 fixes = 1.9 KB of dead payload per report. The
+// E13 rule ("nothing client-facing is ever cut") is unchanged and is now asserted on `prec`, the enforcement
+// precedent that DOES render, plus a guard that the dead field stayed dead.
+t('FIX-4 (E13): long prose is NEVER truncated — no mid-word cut, no ellipsis', () => {
+  const b = bingoFromPointer(breach('UK_PECR', { enforcement_example: LONG, enforce_context: LONG }), 'Regulatory', {}, 0, '£');
+  assert.equal(b.prec, LONG, 'the enforcement precedent must survive the adapter byte-for-byte');
+  assert.ok(!/…|\.\.\.$/.test(b.prec), 'the precedent ends in an ellipsis');
+  assert.ok(/\.$/.test(b.prec), 'the precedent must end at a sentence boundary, not mid-word');
+  assert.equal(b.enfContext, undefined, 'W3: enfContext is dead payload and must not be re-emitted');
 });
 
 t('FIX-4: a long evidence quote reaches the page in full (no .slice on the firms own words)', () => {
@@ -221,12 +244,17 @@ t('FIX-5 (E55): ONE GDPR glossary entry — "UK GDPR", with "GDPR" as an alias',
   assert.match(gl['UK GDPR'], /GDPR/, 'the alias must be stated so a reader scanning for "GDPR" still finds it');
 });
 
-t('FIX-5 (E14): the exposure note counts the breaches it sits beside', () => {
+// G/L2/W4 MOVED THIS. The 171-character note cost the rail 4 to 6 rows, a third of the one-viewport
+// overflow. The tile now carries <=6 words and the derivation moved to the title= tooltip. E14's rule
+// (count-aware, never "1 breaches") is unchanged and now lives on exposureNoteTip.
+t('FIX-5 (E14): the exposure tooltip counts the breaches it sits beside; the tile stays short', () => {
   const one = payloadToD(base('UK', ['UK'], [breach('UK_PECR')]), { verified: true });
-  assert.match(one.exposureNote, /across the 1 breach evidenced/, one.exposureNote);
-  assert.ok(!/1 breaches/.test(one.exposureNote));
+  assert.match(one.exposureNoteTip, /across the 1 breach evidenced/, one.exposureNoteTip);
+  assert.ok(!/1 breaches/.test(one.exposureNoteTip));
+  assert.ok(one.exposureNote.split(/\s+/).length <= 6, 'the rail tile must stay <=6 words: ' + one.exposureNote);
   const two = payloadToD(base('UK', ['UK'], [breach('UK_PECR'), breach('UK_GDPR_A13')]), { verified: true });
-  assert.match(two.exposureNote, /across the 2 breaches evidenced/, two.exposureNote);
+  assert.match(two.exposureNoteTip, /across the 2 breaches evidenced/, two.exposureNoteTip);
+  assert.ok(two.exposureNote.split(/\s+/).length <= 6, two.exposureNote);
 });
 
 t('FIX-5 (E28): a dimension that scores 0 says WHY', () => {

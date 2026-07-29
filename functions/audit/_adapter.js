@@ -20,6 +20,16 @@ function g(obj, path, def) {
 const arr = (v) => Array.isArray(v) ? v : [];
 const titleCase = (s) => String(s || '').replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()).trim();
 function firmName(payload, passed) {
+  // ── B6 · THE ENGINE ALREADY RESOLVED THIS, WITH EVIDENCE ──────────────────────────────────────────────
+  // firm_identity is the engine's resolved identity: a display_name, the rung it came from, a confidence, the
+  // candidates it REJECTED and why. This function never read it, so a name the engine proved from the firm's own
+  // schema.org AND its own prose ("DiMichaelangelo Family Dentistry") was thrown away here for failing the same
+  // domain-token proxy the engine had already overruled on evidence — and the report was addressed to
+  // "Healthysmiles". Trust any source except the domain stem; the stem still falls through to the logic below.
+  const fi = g(payload, 'firm_identity', null) || {};
+  if (fi.display_name && fi.source && fi.source !== 'domain_stem' && String(fi.display_name).trim()) {
+    return humaniseName(decodeEnt(String(fi.display_name).trim()), payload.domain);
+  }
   const fp = g(payload, 'firm_profile', {}) || {};
   const fromProfile = fp.name || fp.legal_name || fp.display_name || fp.trading_name || fp.brand || payload.firm_name || payload.company;
   if (fromProfile && String(fromProfile).trim() && !looksLikeTitle(fromProfile)
@@ -516,7 +526,9 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     expMax: (!noFine && hiF) ? gbp(hiF, sym) : (p.penalty_note || null),   // FIX-R1
     maxRare: !!p.enforce_max_rare,
     enfMethod: p.enforce_methodology || null,
-    enfContext: p.enforce_context || null,
+    // enfContext dropped (W3): 0 render references, ~644 chars per fix. The Vento-band derivation moves
+    // behind the "how this figure is derived" disclosure in the Regulatory pane, sourced from the
+    // framework card's own penalty.basis, not duplicated onto every fix.
     title: p.fact || g(p, 'bingo.problem', 'Finding'),
     plain: p.layman_explanation || g(p, 'bingo.problem', ''),
     prec: p.enforcement_example || g(news, p.framework_short, ''),
@@ -539,27 +551,105 @@ const SEV_DEFS = [
   ['Standard', 'A best-practice gap costing rankings and AI visibility, not enforcement.'],
 ];
 
-// The engine emits a templated remediation, `Tamazia implements and verifies "{finding}" on your site
-// so it satisfies the {framework}.`, for a large class of findings. When the top-3 BINGO cards all draw
-// from that template their `fix` text is identical for the first ~32 chars, so three cards open with the
-// same sentence (a real UX smell) and the `fixes-unique` QA gate (which keys on the first 30 chars) flags
-// a duplicate. We don't fabricate: we lead each *colliding* card with its own finding subject (the
-// finding's title/fact, already on the pointer) so the remediation reads as specific from the first word,
-// and drop the now-redundant quoted subject from the template body so it isn't said twice. A deterministic
-// ordinal guard covers the pathological case of two sibling findings whose subjects also collide. (QA: fixes-unique)
-const fixKey = (s) => String(s || '').toLowerCase().slice(0, 30);
-function differentiateFixes(list) {
-  const seen = new Set();
-  for (const f of arr(list)) {
-    if (!f || !f.fix) continue;
-    if (!seen.has(fixKey(f.fix))) { seen.add(fixKey(f.fix)); continue; }
-    const subj = String(f.title || f.law || '').replace(/\s+/g, ' ').trim().replace(/["“”]/g, '').replace(/[,\s:.\-]+$/, '');
-    const body = String(f.fix).replace(/^Tamazia\s+implements\s+and\s+verifies\s+"[^"]*"\s+/i, 'Tamazia implements and verifies this ').trim();
-    f.fix = subj ? subj + ', ' + body : body;
-    if (seen.has(fixKey(f.fix))) f.fix = '(' + (f.n || seen.size + 1) + ') ' + f.fix;   // deterministic last-resort
-    seen.add(fixKey(f.fix));
-  }
-  return list;
+// RULE IDENTITY (T3/N3). `pointers` is one entry per failing DOM node, so the top-N must be sliced off
+// the DEDUPED RULE set, never off the instance list. Duplicated from functions/audit/_v12.js on purpose:
+// _v12.js imports payloadToD from here, so importing back would be a module cycle.
+const ruleKey = (p) => String((p && (p.framework_short || p.citation)) || '') + '|'
+  + String((p && (p.fact || p.description)) || '').toLowerCase().slice(0, 60);
+const dedupeByRule = (list) => { const s = new Set(); return arr(list).filter((p) => { const k = ruleKey(p); if (s.has(k)) return false; s.add(k); return true; }); };
+
+// buildBreachLadder(payload, uniqPointers, ctx) -> at most 3 cards, never two with one ruleKey (T3).
+//   slot fill 1  BREACHED               deduped confirmed pointers, severity then statutory maximum
+//   slot fill 2  AT RISK                review_candidates, ordered by their framework's statutory max
+//   slot fill 3  BINDING, NOT VERIFIED  highest-penalty binding frameworks evaluated with no evidence
+// Fewer than 3 candidates yields fewer cards; the headers are count-aware (T4) and the literal "three"
+// is banned. The v1.1 bridge already computes this payload-side (functions/audit/_v12.js breachLadder),
+// so a v1.1 payload short-circuits straight onto payload.breach_ladder and every renderer agrees.
+const LADDER_BADGE = { BREACHED: 'evidenced on your live site', 'AT RISK': 'assessed, not asserted', 'BINDING, NOT VERIFIED': 'binds you, unproven this scan' };
+// pointerForKey: the surviving pointer for a ladder entry, so a BREACHED card still renders through
+// bingoFromPointer with its real quote and evidence. Non-breach entries have no pointer, by design.
+const pointerForKey = (uniq, key) => arr(uniq).find((p) => ruleKey(p) === key) || null;
+// bingoFromLadderEntry: the AT RISK / BINDING card. Same field names bingoFromPointer emits, built from
+// the framework card's own catalogue facts. It asserts NOTHING: no quote, no evidence, no breach verb.
+function bingoFromLadderEntry(e, i, sym) {
+  return {
+    n: i + 1, reg: e.framework, pillar: 'Regulatory', law: e.name || e.framework,
+    exp: e.fine_high ? gbp(e.fine_high, sym) : 'no published penalty figure',
+    expMax: e.fine_high ? gbp(e.fine_high, sym) : null,
+    title: e.fact, plain: '', prec: '', quote: '', fix: '', sevWord: 'Standard', plan: '',
+  };
+}
+function ladderCard(entry, i, ctx) {
+  const f = entry.pointer
+    ? bingoFromPointer(entry.pointer, pillarOf(entry.pointer), ctx.news, i, ctx.curSym)
+    : bingoFromLadderEntry(entry, i, ctx.curSym);
+  f.state = entry.state;                     // BREACHED | AT RISK | BINDING, NOT VERIFIED
+  f.badge = LADDER_BADGE[entry.state] || '';
+  f.ruleKey = entry.ruleKey;
+  const shotUrl = (entry.pointer && (entry.pointer.evidence || arr(entry.pointer.checked_urls)[0])) || ctx.siteUrl;
+  f.shot = shotUrl ? thum(shotUrl) : '';
+  return f;
+}
+// localLadder: the legacy-path twin of _v12.js breachLadder(). Fill 1 from uniqPointers; fill 2 from
+// payload.review_records / payload.review_candidates keyed into payload.framework_meta; fill 3 from
+// framework_meta[code].penalty.statutory_max descending over BINDING codes that produced no evidence
+// either way, one obligation each from framework_intel[code].obligations. Ported from _v12.js.
+const _LADDER_SEVRANK = { P0: 0, P1: 1, P2: 2, P3: 3 };
+const _fineOf = (p) => Number((p && p.fine_high_gbp) || 0) || 0;
+function localLadder(payload, uniqPointers, limit = 3) {
+  const used = new Set();
+  const out = [];
+  const push = (entry) => {
+    if (out.length >= limit || used.has(entry.ruleKey)) return;
+    used.add(entry.ruleKey); out.push(entry);
+  };
+  const meta = g(payload, 'framework_meta', {}) || {};
+  const maxOf = (code) => Number(g(meta, String(code) + '.penalty.statutory_max', 0)) || 0;
+
+  arr(uniqPointers).slice()
+    .sort((a, b) => (_LADDER_SEVRANK[a.severity] - _LADDER_SEVRANK[b.severity]) || (_fineOf(b) - _fineOf(a)))
+    .forEach((p) => push({
+      state: 'BREACHED', ruleKey: ruleKey(p), framework: p.framework_short, name: p.display_name,
+      fact: p.fact, page: p.page, quote: p.evidence_quote, severity: p.severity, fine_high: _fineOf(p) || null,
+    }));
+
+  const reviews = arr(payload.review_records).length ? arr(payload.review_records) : arr(payload.review_candidates);
+  reviews.slice()
+    .sort((a, b) => maxOf(b && b.record_id) - maxOf(a && a.record_id))
+    .forEach((r) => push({
+      state: 'AT RISK', ruleKey: ruleKey({ framework_short: r.record_id, fact: r.fact }),
+      framework: r.record_id, name: r.framework, fact: r.fact, page: r.page,
+      quote: null, severity: 'P2', fine_high: maxOf(r.record_id) || null,
+    }));
+
+  const evidenced = new Set(arr(payload.pointers).map((p) => p && p.framework_short));
+  const atRisk = new Set(reviews.map((r) => r && r.record_id));
+  const intel = g(payload, 'framework_intel', {}) || {};
+  const binding = g(payload, 'binding', {}) || {};
+  Object.keys(meta)
+    .filter((code) => !evidenced.has(code) && !atRisk.has(code))
+    .filter((code) => String(binding[code] || '').toLowerCase() === 'binding')
+    .sort((a, b) => maxOf(b) - maxOf(a))
+    .forEach((code) => {
+      const obligation = String(g(intel, String(code) + '.obligations', '') || '').split('\n').map((s) => String(s || '').trim()).filter(Boolean)[0];
+      if (!obligation) return;                       // no obligation text means nothing honest to show
+      push({
+        state: 'BINDING, NOT VERIFIED', ruleKey: ruleKey({ framework_short: code, fact: obligation }),
+        framework: code, name: (meta[code] || {}).name, fact: obligation, page: null,
+        quote: null, severity: 'P3', fine_high: maxOf(code) || null,
+      });
+    });
+
+  return out;
+}
+function buildBreachLadder(payload, uniqPointers, ctx) {
+  const pre = arr(payload.breach_ladder);                     // v1.1 path: already built by _v12.js
+  const raw = pre.length ? pre : localLadder(payload, uniqPointers);   // legacy path: same three fills, derived here
+  // The pointer is resolved on BOTH paths, not just the v1.1 one. A BREACHED entry MUST render through
+  // bingoFromPointer or it loses its quote, its evidence and its craftFix() remediation; an AT RISK /
+  // BINDING entry has no pointer by design and pointerForKey correctly returns null for it.
+  const entries = raw.map((e) => Object.assign({}, e, { pointer: e.pointer || pointerForKey(uniqPointers, e.ruleKey) }));
+  return entries.slice(0, 3).map((e, i) => ladderCard(e, i, ctx));
 }
 
 /* ---------------- jurisdiction membrane ---------------- */
@@ -725,26 +815,9 @@ function perFrameworkMedianFine(pointers) {
 //  - A figure in a clause that DOES name a body (SRA, ICO, the CMA, GDPR, PECR...) is a SPECIFIC statutory claim we
 //    cannot verify from here. We do not rewrite it to the aggregate and we do not assert it: the figure is removed
 //    and the qualitative statement survives. Saying less is always available; saying something false is not.
-const _NAMED_BODY = /\b(SRA|ICO|CMA|FCA|CQC|ASA|Ofcom|SDT|Legal Ombudsman|Trading Standards|DGCCRF|GDPR|PECR|DPA\s?2018|Equality Act|Companies Act|Transparency Rules|Code of Conduct)\b/i;
-const _MONEY_RX = /(?:GBP|USD|AED|SAR|£|\$|EUR|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|bn|billion|k|m)\b)?/gi;
-
-function scrubMoney(text, canonical, sym) {
-  if (!text) return '';
-  // Work clause by clause so the decision is made where the attribution actually sits.
-  const parts = String(text).split(/(?<=[.;])\s+/);
-  const out = parts.map((clause) => {
-    if (!_MONEY_RX.test(clause)) { _MONEY_RX.lastIndex = 0; return clause; }
-    _MONEY_RX.lastIndex = 0;
-    if (_NAMED_BODY.test(clause)) {
-      // A number attributed to a NAMED body. We cannot stand behind it, so we do not print it.
-      return clause.replace(_MONEY_RX, '').replace(/\s+of up to\s+(?=[.,;]|$)/i, '')
-                   .replace(/\s+up to\s+(?=[.,;]|$)/i, '').replace(/\s{2,}/g, ' ')
-                   .replace(/\s+([.,;])/g, '$1').trim();
-    }
-    return clause.replace(_MONEY_RX, gbp(canonical, sym));
-  });
-  return out.join(' ').replace(/\s{2,}/g, ' ').trim();
-}
+// W3 ADDENDUM. scrubMoney() and its two regexes are DELETED with the `exec` emit above: they had exactly
+// one caller, the `_execRaw` binding, and grep confirms zero others. The RULE they enforced still stands
+// and binds anything that ever re-introduces an LLM-written summary to this page.
 
 /* ---------------- static commerce + scoring scaffold (Slice 5 wires live config) ---------------- */
 const SCORING_BANDS = [
@@ -1011,9 +1084,11 @@ function categoryLabel(payload) {
   const sec = titleCase(g(payload, 'firm_profile.primary_sector', '') || payload.detected_sector || payload.sector);
   return sec ? sec + ' services' : 'your core service area';
 }
-// Phase 7: deterministic 50-70 Domain-Rating fallback, name-seeded (stable, no random — adapter is pure),
-// used ONLY when a rival has no public DR after the real-data lookups. Flagged "est" wherever shown.
-function drFallback(name) { let h = 0; const s = String(name || ''); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return 50 + (h % 21); }
+// C1/N2: drFallback() is DELETED. It hashed a rival's NAME into a 50-70 "Domain Rating" and flagged it
+// "est", which is how the golden dental capture shipped `Hove Dental Clinic dr:51` and `mydentist dr:58`
+// on a live page: both fabrications. The new engine explicitly refuses to port it (probes/index.js:178)
+// and B-golden-producers.md §3(g) says "Keep that refusal." A rival with no public DR renders
+// "not assessed", never a number.
 // Real Tamazia capability levers (verbatim USPs from the offer), rotated per rival so each "how you beat them"
 // row cites a DIFFERENT real lever — never five cloned rows.
 const TAMAZIA_LEVERS = [
@@ -1167,11 +1242,18 @@ export function payloadToD(payload, ctx = {}) {
   // cannot tell which is true, so they trust neither. They were never in conflict: one counts EVERY dimension, the
   // other counts REGULATORY findings only. The numbers were fine; the missing word was the scope. Both tallies now
   // carry it explicitly, and the renderer prints the scope beside each.
-  const counts = { critical: 0, high: 0, standard: 0, total: pointers.length, scope: 'across all ten dimensions' };
-  for (const p of pointers) counts[SEV_BAND[p.severity] || 'standard']++;
-  const _regPtrs = pointers.filter((p) => !isNonStatutory(p));
-  const countsRegulatory = { critical: 0, high: 0, standard: 0, total: _regPtrs.length, scope: 'regulatory findings only' };
+  // N3: the HEADLINE count is the deduped RULE count; the element instances are a separate sub-line
+  // ("1 rule · 15 failing elements"). The v1.1 bridge computes both payload-side (_v12.js ruleCountsOf)
+  // and emits them at payload.rule_counts, so the rail, the chips and the boxes cannot disagree.
+  const _rulePtrs = dedupeByRule(pointers);
+  const counts = { critical: 0, high: 0, standard: 0, total: _rulePtrs.length, instances: pointers.length, scope: 'across all ten dimensions' };
+  for (const p of _rulePtrs) counts[SEV_BAND[p.severity] || 'standard']++;
+  const _regInstances = pointers.filter((p) => !isNonStatutory(p));
+  const _regPtrs = dedupeByRule(_regInstances);
+  const countsRegulatory = { critical: 0, high: 0, standard: 0, total: _regPtrs.length, instances: _regInstances.length, scope: 'regulatory findings only' };
   for (const p of _regPtrs) countsRegulatory[SEV_BAND[p.severity] || 'standard']++;
+  // per-rule instance map, so a card can print "15 failing elements" beside its single rule
+  const instancesByRule = {}; for (const p of pointers) { const k = ruleKey(p); instancesByRule[k] = (instancesByRule[k] || 0) + 1; }
   const perFw = perFrameworkMaxFine(pointers);
   const perFwMed = perFrameworkMedianFine(pointers);
   // CURRENCY BY REGIME. Every fine is grouped by the currency of the statute that sets it (currencyForFramework):
@@ -1548,14 +1630,10 @@ export function payloadToD(payload, ctx = {}) {
   const exposureBars = Object.entries(perFwBars).sort((a, b) => b[1] - a[1]).slice(0, 8)
     .map(([fw, v]) => ({ l: fwName(fw), v: Math.min(18, +(v / 1e6).toFixed(v >= 1e6 ? 1 : 3)) }));
 
-  // --- 5x5 risk heatmap from findings (impact rows x likelihood cols) ---
-  const heat = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-  for (const p of pointers) {
-    const hi = +p.fine_high_gbp || 0;
-    const row = hi >= 1e7 ? 0 : hi >= 1e6 ? 1 : hi >= 1e5 ? 2 : hi >= 1e4 ? 3 : 4;
-    const col = p.severity === 'P0' ? 4 : p.severity === 'P1' ? 3 : p.severity === 'P2' ? 2 : 1;
-    heat[row][col]++;
-  }
+  // A3: the 5x5 risk heatmap is DELETED, at every layer. It was a 25-cell grid derived from two fields we
+  // already print (severity and fine_high_gbp) and it carried no information neither of them carried:
+  // ashtonslegal's `.heat` was 24 zeros and a single 1. The likelihood axis in particular was asserted, not
+  // measured - we have never measured the likelihood of an enforcement action against anyone.
 
   // --- SEO section ---
   // Every push below INFERS a problem from a MISSING signal. With no readable scan (siteScanned===false) that
@@ -1690,10 +1768,21 @@ export function payloadToD(payload, ctx = {}) {
   // differently), not a fabricated per-engine score. Citation status is the real probe result. (S-040)
   const sig6 = { schema: !!sig.json_ld, org: !!aiR.has_org_schema, same: !!aiR.has_same_as, wiki: !!aiR.in_wikidata, llms: !!aiR.has_llms_txt, crawl: !arr(aiR.blocked_ai_bots).length, cite: sov > 0, eeat: !!sig.json_ld && (sig.h1_count || 0) > 0 };
   const ENGINE_W = { ChatGPT: ['schema', 'same', 'llms'], Gemini: ['wiki', 'schema', 'crawl'], Perplexity: ['schema', 'cite', 'llms'], Claude: ['same', 'llms', 'crawl'], Copilot: ['schema', 'same', 'crawl'], Grok: ['same', 'crawl'], 'Meta AI': ['same', 'schema'], 'Google AI': ['wiki', 'eeat', 'schema'] };
-  const engines = Object.keys(ENGINE_W).map((nm) => {
-    const ws = ENGINE_W[nm]; const present = ws.filter((s) => sig6[s]).length;
-    return { nm, cites: !!geoP.ai_knows, readiness: Math.round(6 + (present / ws.length) * 90) };
-  });
+  // ── B3 · NO ENGINE ROW WITHOUT A PROBE ────────────────────────────────────────────────────────────────
+  // This block used to fan ONE provider's boolean (`geoP.ai_knows`) across all EIGHT names above, each rendered
+  // "cites you" / "not citing you". Seven of the eight were never asked anything. `engineEstimate:true` softens
+  // the READINESS score to "modelled"; it says nothing about the cite/not-cite claim, which is not modelled at
+  // all. The engine now ships the authoritative list in `payload.geo_engines` — probed engines only, each with
+  // a probe receipt, plus `fanout_forbidden: true`. Consume it; never invent a row.
+  const geoEng = g(payload, 'geo_engines', null) || {};
+  const probed = arr(geoEng.engines);
+  const engines = probed.length
+    ? probed.map((e) => {
+      const ws = ENGINE_W[e.name] || [];
+      const present = ws.filter((s) => sig6[s]).length;
+      return { nm: e.name, cites: !!e.cited, readiness: ws.length ? Math.round(6 + (present / ws.length) * 90) : null, probed: true };
+    })
+    : [];   // nothing probed: the grid renders nothing and the section says so. Silence beats a fabricated row.
   const radar = [
     { ax: 'Entity', v: aiR.has_org_schema ? 80 : (aiR.score || 0) }, { ax: 'Crawler access', v: (arr(aiR.blocked_ai_bots).length ? 40 : 100) },
     { ax: 'Share of voice', v: sov }, { ax: 'Schema', v: sig.json_ld ? 80 : 0 },
@@ -1734,7 +1823,11 @@ export function payloadToD(payload, ctx = {}) {
   const geo = {
     entityReadiness: aiR.score || 0, shareOfVoice: sov, repeatability: `named ${geoP.repeatability || 0} of ${(geoP.samples || 2)} runs`,
     aiKnows: !!geoP.ai_knows, sentiment: geoP.ai_knows ? (geoP.ai_sentiment || 'neutral') : 'No reliable information, risk of hallucination',
-    engines, engineEstimate: true, radar, schema,
+    engines,
+    // engineEstimate describes the READINESS number only. enginesProbed says whether the cite/not-cite column
+    // is a measurement at all, so the renderer can withhold the column instead of showing eight grey cells.
+    engineEstimate: true, enginesProbed: engines.length > 0, enginesNote: engines.length ? null : (geoEng.not_probed_note || 'per-engine AI citation was not probed on this scan'),
+    radar, schema,
     citations: citations.length ? citations : arr(geoP.top_competitors).filter((t) => t && t.name && !looksAggregator(t.name) && !_isSelfName(t.name)).slice(0, 5).map((t) => ({ q: km.service_noun || categoryLabel(payload), who: compName(t.name) })),
     sourceGap: [
       { src: 'Wikipedia / Wikidata', you: !!aiR.in_wikidata, note: "No entity, AI's primary trust source" },
@@ -1829,8 +1922,8 @@ export function payloadToD(payload, ctx = {}) {
     if (dr == null) { const sk = Object.keys(drByStem).find((s) => s.length > 3 && (nk.includes(s) || s.includes(nk))); if (sk) dr = drByStem[sk]; }
     const drEstimated = dr == null;                         // no public DR after the real-data lookups
     const signal = c.src === 'AI' ? ('AI-named' + (c.runs && c.of ? ' ' + c.runs + '/' + c.of : '')) : (c.pos ? 'SERP #' + c.pos : (!drEstimated ? 'DR ' + dr : 'real peer'));
-    if (drEstimated) dr = drFallback(c.name);               // Phase 7: never unknown, so the DR chart + table always populate (flagged "est")
-    return { name: compName(c.name), dr, drKnown: true, drEstimated, signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
+    // C1/N2: no name-hash Domain Rating. A rival with no public DR renders "not assessed", never a number.
+    return { name: compName(c.name), dr: drEstimated ? null : dr, drKnown: !drEstimated, drEstimated, drState: drEstimated ? 'not_assessed' : 'measured', signal, beatBy: beatBy(c, { youDr, youEntity: aiR.score || 0, aiKnows: !!geoP.ai_knows, bestKw: bestKw.term, category: categoryLabel(payload), i }) };
   });
   const totalKw = arr(km.keywords).length;
   // DR comparison chart needs at least 2 rivals with a KNOWN Domain Rating to be a meaningful "vs rivals"
@@ -1842,7 +1935,10 @@ export function payloadToD(payload, ctx = {}) {
     you: company, bestKeyword: bestKw.term, youDr, youPos: bestKw.youPos, needsReview: ladder.length === 0,
     cols: ['Domain rating', 'AI answer set'],
     rows: [{ name: company, you: true, dr: youDr, cells: [{ v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
-      ...ladder.map((c) => ({ name: c.name, you: false, cells: [{ v: c.dr, cls: c.drEstimated ? 'mid' : 'good', est: c.drEstimated }, { v: c.signal, cls: 'good' }] }))],
+      // C1/N2: an unrated rival's DR cell reads "Not assessed" and carries NO `est` flag. The old cell
+      // printed a name-hash number badged "Estimated from authority signals", which is a fabrication with
+      // a footnote. `est` is deliberately not set: there is no estimate, there is no measurement.
+      ...ladder.map((c) => ({ name: c.name, you: false, cells: [c.drKnown ? { v: c.dr, cls: 'good' } : { v: 'Not assessed', cls: 'mid' }, { v: c.signal, cls: 'good' }] }))],
     ladder,
     // Empty bars + drHidden flag so audit-charts.js skips the single-bar DR chart; chip drops "vs N" when hidden.
     drHidden, drRivalCount: drRivals.length,
@@ -1862,8 +1958,8 @@ export function payloadToD(payload, ctx = {}) {
   // --- top-3 BINGO fixes ---
   const SEVRANK = { P0: 0, P1: 1, P2: 2, P3: 3 };
   const fixOrder = [...pointers].sort((a, b) => (SEVRANK[a.severity] - SEVRANK[b.severity]) || ((+b.fine_high_gbp || 0) - (+a.fine_high_gbp || 0)));
-  const fixes = fixOrder.slice(0, 3).map((p, i) => { const f = bingoFromPointer(p, pillarOf(p), news, i, curSym); const shotUrl = p.evidence || arr(p.checked_urls)[0] || siteUrl; f.shot = shotUrl ? thum(shotUrl) : ''; return f; });
-  differentiateFixes(fixes); // each BINGO card must read as a distinct remediation (no shared templated prefix)
+  const fixOrderUniq = dedupeByRule(fixOrder);
+  const fixes = buildBreachLadder(payload, fixOrderUniq, { news, curSym, siteUrl, allow });
   // GEO pane needs its own GEO-specific BINGO card (never D.fixes[2], which may not exist / may be compliance).
   const geoPtr = pointers.find((p) => p.bucket === 'ai_visibility');
   geo.fix = geoPtr ? bingoFromPointer(geoPtr, 'AI / GEO', news, 2, curSym) : {
@@ -1878,17 +1974,10 @@ export function payloadToD(payload, ctx = {}) {
   geo.fix.labelKind = 'Signal';   // GEO/AI visibility is a SIGNAL, not a law — the ③ row must read "③ Signal", never "③ Law"
   geo.fix.shot = g(payload, 'screenshots.homepage', '') || (siteUrl ? thum(siteUrl) : '');
 
-  // --- exec (numeric-locked) + jurisdiction ---
-  // The LLM exec is written at mint from the engine's UNSCALED fines, so for a small firm whose fine we have since
-  // rescaled to its real size, the exec's magnitude language ("existential threat", "sheer scale", "millions") now
-  // contradicts the figure. When the exposure is modest AND the exec carries that hyperbole, drop it for the
-  // measured, always-consistent deterministic exec, never let a £207k clinic read "existential". (exec-credibility)
-  const _execRaw = scrubMoney(g(payload, 'exec_summary', ''), exposureN, curSym);
-  const _execHype = exposureN < 2e6 && /existential|sheer scale|catastroph|devastat|bankrupt|crippl|millions?|billions?|wipe out|severe financial|enormous/i.test(_execRaw);
-  // £0 exposure but the exec still talks about a fine/penalty ("fine exposure of up to £0") is self-contradictory, 
-  // drop it for the ranking/AI-visibility framing.
-  const _execFineWhenZero = !(exposureN > 0) && /\bfine|penalt|statutory exposure|exposure of up to|regulatory (fine|penalty)/i.test(_execRaw);
-  const exec = (_execRaw && !_execHype && !_execFineWhenZero) ? _execRaw : '';
+  // --- jurisdiction ---
+  // W3: the `exec` binding and its three hype/zero-fine guards are DELETED with the emit. `grep -c "D.exec"`
+  // over public/audit/audit-app.js + audit-charts.js returns 0: the LLM exec summary was carried the whole
+  // way through the adapter and then never rendered. execFallback() goes with it.
   // Build the jurisdiction statement from the AUTHORITATIVE set, never the engine's leaked prose,
   // so the statement can never contradict the findings actually shown. (F2/C-001/S-003)
   const jurisdiction = jurStatement(company, allow);
@@ -1902,7 +1991,10 @@ export function payloadToD(payload, ctx = {}) {
     // unlock path also falls back to meta.slug. Empty string when rendered outside the serve route (backtest).
     slug: String(ctx.slug || ''), hash: String(ctx.hash || ''),
     sector: titleCase(payload.detected_sector || payload.sector), country: jurLabel(payload.country),
-    city: cleanCity(km.city, payload), markets: arr(payload.detected_jurisdictions),
+    // §S2 item 8: the RECEIPTED seat first, the keyword probe only as a fallback. cityEvidence is null
+    // whenever the fallback supplied the city, so a probe can never be badged as a register lookup.
+    city: seatCity(payload) || cleanCity(km.city, payload), cityEvidence: seatEvidence(payload),
+    markets: arr(payload.detected_jurisdictions),
     // E-218 (S-099): the page carries the SCAN date, not the render date — a months-old audit must never
     // present itself as generated today.
     date: fmtDate(ctx.generated_at ? new Date(ctx.generated_at) : now), catalogue: 'v' + (payload.framework_version || '7'), snapshot,
@@ -1915,15 +2007,28 @@ export function payloadToD(payload, ctx = {}) {
   // report must never confuse them: "400+ frameworks" would be a FALSE CLAIM on a document that fines other firms
   // for false claims (CAP 3.7 binds us too). We screen RULES; FRAMEWORKS bind. The engine now emits both, measured
   // from the live register (catalogue_rules / catalogue_frameworks), and neither is ever invented here.
-  const catalogueRules = (+payload.catalogue_rules || +g(payload, 'scan.catalogue_rules', 0)) || null;
-  const catalogueFrameworks = (+payload.catalogue_frameworks || +g(payload, 'scan.catalogue_frameworks', 0)) || null;
-  const catalogueSize = catalogueRules;   // "size" has always meant the screened register; that register is RULES
-  const screenedLabel = catalogueRules
-    ? (catalogueRules.toLocaleString('en-GB') + ' compliance rules screened')
-    : 'Full catalogue screened';
-  // rulesChecked = the page-level RULE checks executed on the laws that attach to this firm's jurisdictions.
-  const ruleChecks = arr(payload.rules).filter((r) => { const j = FW_JUR(r && (r.framework_short || r.framework || r.citation)); return j === 'GLOBAL' || allow.has(j); }).length
-    || arr(payload.applicable_frameworks).length || frameworks.length;
+  // THREE NUMBERS, THREE UNITS, EACH READ NOT DERIVED (R5).
+  //   catalogueObligations  the REGISTER's total website obligations   (engine ask E2; null until emitted)
+  //   frameworksBinding     the frameworks that bind THIS firm         (engine counts, connect.js:410)
+  //   rulesEvaluated        the obligations evaluated on THIS firm      (engine rulesChecked, connect.js:405)
+  // A "~400 rules screened" round number is NOT claimable: the v1.1 catalogue holds 129 records / 200
+  // obligations, and tests/renderer-truth-batch1.test.mjs already ruled the 400+ claim false.
+  const _n = (k) => (+g(payload, 'scan.' + k, 0) || +payload[k] || 0) || null;
+  const frameworksBindingN = frameworks.length;
+  const catalogueObligations = _n('catalogue_obligations') || _n('catalogue_rules');
+  const catalogueRecords = _n('catalogue_records');
+  const catalogueFrameworks = _n('catalogue_frameworks');
+  const rulesEvaluated = _n('rules_evaluated');
+  const catalogueSize = catalogueObligations;
+  const screenedLabel = (catalogueObligations && frameworksBindingN && rulesEvaluated)
+    ? (catalogueObligations.toLocaleString('en-GB') + ' obligations screened · '
+       + frameworksBindingN.toLocaleString('en-GB') + ' frameworks bind you · '
+       + rulesEvaluated.toLocaleString('en-GB') + ' checked on your pages')
+    : (g(payload, 'scan.screened_label', '') || payload.screenedLabel || 'Screened the catalogue');
+  // NEVER a framework count printed as a rule count (the old `|| applicable_frameworks.length` fallback).
+  const ruleChecks = rulesEvaluated
+    || arr(payload.rules).filter((r) => { const j = FW_JUR(r && (r.framework_short || r.framework || r.citation)); return j === 'GLOBAL' || allow.has(j); }).length
+    || null;
 
   const D = {
     meta, score, grade, scoreBand: bandOf(score),
@@ -1956,9 +2061,14 @@ export function payloadToD(payload, ctx = {}) {
     // the (ranking-only) frameworks shown. Present the exposure tile honestly instead. (£0-leak / consistency)
     exposureHeadline: exposureN > 0 ? exposureAggregate : 'Ranking & AI',
     // E-14: count-aware. One verified breach is "the breach", not "the breaches".
+    // G/L2/W4: <=6 words on the tile; the derivation and the no-FX sentence move to the title= tooltip.
+    // The old note was 171 characters and cost the rail 4 to 6 rows, a third of the one-viewport overflow.
     exposureNote: exposureN > 0
+      ? `Median enforcement exposure · ${curSym}`
+      : 'Ranking and AI exposure, no statutory fine',
+    exposureNoteTip: exposureN > 0
       ? `Median enforcement exposure across the ${counts.total} ${counts.total === 1 ? 'breach' : 'breaches'} evidenced on your live site. ${exposureBasis}`
-      : 'No statutory fine confirmed, the exposure here is lost rankings, buyers and AI visibility',
+      : 'No statutory fine is confirmed on this scan. The exposure here is lost rankings, buyers and AI visibility.',
     // E-244: the ceiling is kept, but as secondary context under the median, never as the headline.
     exposureCeiling: ceilingN > 0 ? gbp(ceilingN, curSym) : null,
     // E-253d (v23.1) — SHOW THE ADJUDICATION. This is the strongest credibility line in the whole report.
@@ -1980,6 +2090,9 @@ export function payloadToD(payload, ctx = {}) {
       };
     })(),
     counts, countsRegulatory,   // E05/E29: two tallies, each carrying its own explicit scope
+    // N3: the instance sub-line. counts.total is the DEDUPED RULE count; this is the failing-element
+    // count behind it, so a card can print "1 rule · 15 failing elements" and nothing contradicts.
+    countsInstances: { total: pointers.length, byRule: instancesByRule },
     confirmed: pointers.length,
     // Honest regulatory headline + flag for the 0-critical-but-low-grade case (Al Tamimi / Emaar): the
     // consumer should use these instead of asserting "N breached / PASS". (zero-critical-honest)
@@ -2009,20 +2122,31 @@ export function payloadToD(payload, ctx = {}) {
     //                     "frameworks" — that is what made the body say "all 18 frameworks" beside "400+".
     // Setting frameworksTotal = frameworks.length (the old line) rendered "15 FRAMEWORKS SCREENED · 15 BIND YOU",
     // erasing the screening story entirely.
-    catalogueSize, screenedLabel, frameworksAssessed: frameworks.length, frameworksBinding: frameworks.length,
-    rulesChecked: ruleChecks, frameworksTotal: catalogueSize,
+    catalogueSize, catalogueRecords, catalogueFrameworks,
+    screenedLabel, frameworksAssessed: frameworks.length, frameworksBinding: frameworksBindingN,
+    // rulesChecksAssessed is false when nothing counted a rule, so the render withholds the clause
+    // instead of printing "null rule checks executed".
+    rulesChecked: ruleChecks, rulesChecksAssessed: !!ruleChecks, frameworksTotal: catalogueSize,
     scoring: {
       formula: 'Weighted mean of the assessed dimensions, scaled 0 to 100. Regulatory compliance is weighted ×2, for a regulated firm a legal breach outranks a slow page.',
       bands: SCORING_BANDS,
       why: counts.critical > 0
         ? `Your ${score} is held down by the failing dimensions a regulator and an AI engine can both see on your live site today. Fix the ${counts.critical} critical ${counts.critical === 1 ? 'finding' : 'findings'} and the heaviest-weighted dimension lifts first, which is why ${wk12} by week 12 is realistic once those gaps close.`
         : `Your ${score} is held down by the ranking, authority and AI-visibility dimensions an AI engine and a buyer can both see today, not by a confirmed fine. Close the highest-weighted gaps below and the score lifts fast, which is why ${wk12} by week 12 is realistic once those gaps close.`,
-      inputs: `${screenedLabel} · ${frameworks.length} ${frameworks.length === 1 ? 'framework binds' : 'frameworks bind'} you · ${ruleChecks} rule ${ruleChecks === 1 ? 'check' : 'checks'} executed · ${pointers.length} ${pointers.length === 1 ? 'finding' : 'findings'} confirmed against live evidence · ${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
+      // R5: a null ruleChecks DROPS its clause. It never renders as "null rule checks executed".
+      inputs: [
+        screenedLabel,
+        `${frameworks.length} ${frameworks.length === 1 ? 'framework binds' : 'frameworks bind'} you`,
+        ruleChecks ? `${ruleChecks} rule ${ruleChecks === 1 ? 'check' : 'checks'} executed` : '',
+        `${pointers.length} ${pointers.length === 1 ? 'finding' : 'findings'} confirmed against live evidence`,
+        `${g(payload, 'trust_summary.confirmed', 0)} evidence checks passed`,
+      ].filter(Boolean).join(' · '),
     },
-    exec: exec || execFallback(exposureN, Object.keys(perFw).length, counts.critical, curSym),
+    // W3: `exec` is dropped. grep over public/audit/audit-app.js + audit-charts.js returns 0 render
+    // references for it, so every byte of it was dead payload. A3: `heat` / `heatRows` / `heatCols` go
+    // with the heatmap itself.
     jurisdiction,
-    frameworks, exposureBars, heat,
-    heatRows: [gbp(1e7, curSym) + '+', gbp(1e6, curSym) + '+', gbp(1e5, curSym) + '+', gbp(1e4, curSym) + '+', '<' + gbp(1e4, curSym)], heatCols: ['Rare', 'Low', 'Possible', 'High', 'Near-certain'],
+    frameworks, exposureBars,
     dims: dims.map((d) => ({ nm: d.nm, st: d.st, v: d.v, sub: d.sub, note: d.note || '' })),   // E-28 floor note
     seo, geo, competitors,
     trajectory: [{ x: 'Today', v: score, g: grade }, { x: 'Week 12', v: wk12, g: gradeOf(wk12) }, { x: 'Week 24', v: wk24, g: gradeOf(wk24) }],
@@ -2033,7 +2157,9 @@ export function payloadToD(payload, ctx = {}) {
     // The adapter therefore injects ONLY the per-firm tier recommendation flags the render consumes
     // (D.pricing[].rec / .popular, keyed by .tier) + the two notes. The old injected `addons`/`addonsMore`
     // catalogues were NEVER read by the render (it builds ADDONS from PRICES.independent) — removed as dead.
-    pricing: COMMERCE.pricing, pricingNotes: COMMERCE.pricingNotes, upsellProof: COMMERCE.upsellProof,
+    // P1: exactly ONE emphasis flag across the card set (pricingFlags). W3: `upsellProof` dropped, 0 render
+    // references.
+    pricing: pricingFlags(COMMERCE.pricing), pricingNotes: COMMERCE.pricingNotes,
     // E12 · the three severity words, defined inline on first use and carried as the dot hover tips.
     severityDefs: SEV_DEFS.map(([word, def]) => ({ word, def })),
     _meta: { droppedByJurisdiction: dropped, exposureN, generatedAt: ctx.generated_at || null },
@@ -2154,11 +2280,37 @@ function buildGlossary(payload, allow) {
     schema: 'Hidden structured-data code that tells search + AI exactly who you are. Without it they guess, and guess wrong.',
   };
 }
+// A country is not a city, and "london London" is one town said twice. Shared by both lanes below.
+function tidyCity(city) {
+  const c = String(city || '').trim().replace(/\b(\w+)\s+\1\b/gi, '$1'); // dup-token strip ("london London")
+  return (!c || /^(uk|uae|usa?|gb|gbr|ksa|sa|ae|eu|europe)$/i.test(c)) ? '' : c;
+}
+// ── §S2 item 8 · THE ENGINE PROVED A SEAT AND THE RENDER ASKED A DIFFERENT LANE ──────────────────────
+// `cleanCity(km.city)` reads the KEYWORD MAP: a phrase probe over the firm's own copy. That is a guess,
+// which is exactly why it is gated to UK/.uk firms only (the "Reading on Emaar" domino). The engine's
+// firm-seat resolver emits a RECEIPTED seat instead — `payload.city` plus `payload.city_evidence`
+// {source, confidence, postcode, evidence, candidates} — and doyleclayton's payload carried
+// city "London" / source companies_house_registered_office / EC1Y 4TY while its rendered report carried
+// meta.city "". A register-grade seat is not a guess, so it is NOT subject to the guess guard; it is used
+// only when it carries its source, and no receipt falls straight through to the probe below.
+function seatCity(payload) {
+  const ev = g(payload, 'city_evidence', null) || {};
+  const source = ev.source || g(payload, 'scan.markets.city_source', '') || '';
+  if (!source) return '';
+  return tidyCity(payload.city || ev.city || g(payload, 'scan.markets.primary_city', ''));
+}
+// The receipt the render badges the seat with. Null whenever the city came from the keyword probe, so a
+// probed city can never be presented as register-grade.
+function seatEvidence(payload) {
+  const ev = g(payload, 'city_evidence', null) || {};
+  if (!seatCity(payload)) return null;
+  return { source: ev.source || g(payload, 'scan.markets.city_source', '') || null, confidence: +ev.confidence || null, postcode: ev.postcode || null };
+}
 function cleanCity(city, payload) {
-  let c = String(city || '').trim().replace(/\b(\w+)\s+\1\b/gi, '$1'); // dup-token strip ("london London")
-  if (!c || /^(uk|uae|usa?|gb|gbr|ksa|sa|ae|eu|europe)$/i.test(c)) return '';
-  // The engine's city detection is UK-biased and unreliable cross-market (the "Reading on Emaar"
-  // domino). Only trust a detected city for UK/.uk firms; otherwise omit rather than guess. (F1/S-001/S-002)
+  const c = tidyCity(city);
+  if (!c) return '';
+  // The engine's KEYWORD city detection is UK-biased and unreliable cross-market (the "Reading on Emaar"
+  // domino). Only trust a probed city for UK/.uk firms; otherwise omit rather than guess. (F1/S-001/S-002)
   const cc = String(payload.country || '').toUpperCase();
   const tld = String(payload.domain || '').toLowerCase().split('.').pop();
   return (cc === 'UK' || cc === 'GB' || cc === 'GBR' || tld === 'uk') ? c : '';
@@ -2177,13 +2329,7 @@ function jurStatement(company, allow) {
   const jw = parts.length > 1 ? 'the jurisdictions' : 'the jurisdiction';
   return `${company} is assessed under the law of ${where}, ${jw} its own website shows it serves. Frameworks from every other region are screened but do not attach here, so only the law that genuinely binds this firm is shown.`;
 }
-function execFallback(exp, nfw, crit, sym) {
-  // £0 statutory exposure: never claim a fine. The value at stake is ranking, qualified buyers and AI-assistant
-  // visibility, frame it as that, so the exec never contradicts a "no statutory fine confirmed" headline.
-  if (!(+exp > 0)) return 'No statutory fine surfaced on the live site this scan, but you are losing rankings, qualified buyers and AI-assistant visibility to named competitors every day. That is the exposure that matters here, and it compounds while the gaps below stay open.';
-  const lead = `Right now you are carrying ${gbp(exp, sym)} of avoidable statutory exposure across ${nfw} binding framework${nfw === 1 ? '' : 's'}.`;
-  return crit > 0 ? `${lead} Close the ${crit} critical finding${crit === 1 ? '' : 's'} first, they are the ones a regulator can act on today.` : `${lead} The high-severity gaps below are the priority.`;
-}
+// W3: execFallback() is DELETED with the `exec` emit. Its only caller was the D literal.
 // E16 / E54 · THE defect that cost the most: every commercial link on both live reports was an empty
 // string, and the renderer removes dead buttons, so the buyer at peak intent had nothing to press.
 // The booking href now ALWAYS resolves. The env var wins when set; otherwise the public calendar is used,
@@ -2213,9 +2359,22 @@ function fmtDate(d) { try { return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.g
    (D.pricing[].rec / .popular, matched by .tier) plus the two prose notes. Prices/feature lists are
    deliberately NOT held here (they would be a fourth place to drift). The previously-injected
    `addons`/`addonsMore` catalogues were dead (the render never read them) and are removed. */
+// P1: exactly ONE emphasis flag across the whole card set. `rec` (the per-firm recommendation) wins
+// when present because it is the only firm-specific signal; `popular` is the catalogue-wide default and
+// is cleared whenever a recommendation exists. Never both, never two cards. COMMERCE.pricing currently
+// flags TWO (Authority.popular AND Enterprise.rec), confirmed on all five captures, and two emphases on
+// one card set is no emphasis at all.
+function pricingFlags(tiers) {
+  const list = arr(tiers).map((t) => Object.assign({}, t));
+  const rec = list.find((t) => t.rec);
+  const chosen = rec || list.find((t) => t.popular) || null;
+  for (const t of list) { t.rec = false; t.popular = false; }
+  if (chosen) { chosen.rec = !!rec; chosen.popular = !rec; }
+  return list;
+}
 const COMMERCE = {
   pricingNotes: '90-day rolling · no long-term contract · the work is owned outright once paid · every onboarding is legally reviewed before work begins.',
-  upsellProof: 'Each add-on layers onto your core programme as it proves out. Start with the audit\'s top priority, then add the next lever once it is working.',
+  // W3: upsellProof deleted. 0 render references across audit-app.js + audit-charts.js.
   // tier = the key the render matches on (audit-app.js byName); rec/popular = the only fields consumed.
   pricing: [
     { tier: 'Foundation', rec: false, popular: false },

@@ -299,7 +299,13 @@ window.CH = (function(){
   function gradeOf(score){ const n=+score; if(!isFinite(n)) return 'NA'; if(n>=85)return 'A'; if(n>=70)return 'B'; if(n>=55)return 'C'; if(n>=40)return 'D'; return 'E'; }
   function gradeColor(g){ return g==='A'?'var(--green)':g==='B'?'var(--ox)':g==='C'?'var(--amber)':'var(--red)'; }
   function engineGrid(){
-    // Logo-hero: the 8 engine LOGOS lead (28px), name demoted to a tiny caption. Readiness shown as an A–E GRADE
+    // B3 LAST MILE. The adapter no longer fans one provider's boolean across eight engine names, so this list
+    // is now ONLY the engines actually probed, and it is legitimately EMPTY on every payload minted before the
+    // engine started emitting `geo_engines`. An empty frame is not an honest empty state: say what was not
+    // measured. (05-wave1/SOUNDNESS-REPORT.md §2 B3, "the last mile is the renderer's".)
+    const engs=(D.geo&&D.geo.engines)||[];
+    if(!engs.length) return naNote(esc((D.geo&&D.geo.enginesNote)||'Per-engine AI citation was not probed on this scan.'));
+    // Logo-hero: the engine LOGOS lead (28px), name demoted to a tiny caption. Readiness shown as an A–E GRADE
     // (big) with the raw score small/secondary, per founder. Cite status kept.
     // CONF-213 · letter and number are separated and the scale is stated (E · 36/100).
     // CONF-214 · while the card meta says "modelled estimate", a tick may not assert a fact.
@@ -307,7 +313,7 @@ window.CH = (function(){
     const modelled=!!(D.geo&&D.geo.engineEstimate);
     const yes=modelled?(CP().engineLikely||'Likely to cite'):(CP().engineCiting||'Citing you');
     const no =modelled?(CP().engineUnlikely||'Unlikely to cite'):(CP().engineNotCiting||'Not citing you');
-    return `<div class="enggrid">${D.geo.engines.map(e=>{
+    return `<div class="enggrid">${engs.map(e=>{
       const slug=ENG_SLUG[e.nm]||String(e.nm||'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
       const g=gradeOf(e.readiness);
       return `<div class="engcell ${e.cites?'':'no'}"><span class="eng-logo" style="${e.cites?'':'opacity:.4;filter:grayscale(1)'}">${ENG_LOGO[slug]||''}</span>

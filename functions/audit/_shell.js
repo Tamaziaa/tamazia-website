@@ -73,31 +73,47 @@ const NOTES_BTN = '<button id="notesToggle" style="position:fixed;bottom:16px;ri
 function assetVersion(opts) {
   return (opts.buildId || (typeof globalThis !== 'undefined' && globalThis.__CF_BUILD__) || 'r38').toString().slice(0, 12);
 }
-// Local test ({inline:true}) embeds the three assets; production links them, cache-keyed on the build id.
+// ── AUDIT_RENDER_V2 ────────────────────────────────────────────────────────────────────────────────────
+// The v2 render layer (public/audit/*-v2.*) ships DARK. This flag is the only thing that serves it, and it
+// is OFF unless the Pages env var AUDIT_RENDER_V2 is exactly the string "1": anything else, including
+// unset, "true", "yes" or "0", keeps the v1 asset set byte-for-byte as it is today. v2 additionally loads
+// copy-v2.js, which must be evaluated BEFORE audit-charts-v2.js (the charts read CP() from it).
+// Flip procedure and rollback are in AUDIT-FINAL/06-deploy/WEB-BRANCH-REPORT.md.
+export function wantsV2(opts) {
+  return String((opts && opts.renderV2) || '') === '1';
+}
+const V2_ASSETS = { css: 'audit-v2.css', copy: 'copy-v2.js', charts: 'audit-charts-v2.js', app: 'audit-app-v2.js' };
+const V1_ASSETS = { css: 'audit.css', copy: null, charts: 'audit-charts.js', app: 'audit-app.js' };
+
+// Local test ({inline:true}) embeds the assets; production links them, cache-keyed on the build id.
 function buildAssetBlocks(opts) {
   const a = opts.assets || {};
   if (opts.inline) {
     return {
       styleBlock: '<style>\n' + (a.css || '') + '\n</style>',
+      copyBlock: a.copy ? '<script>\n' + a.copy + '\n</script>' : '',
       chartsBlock: '<script>\n' + (a.charts || '') + '\n</script>',
       appBlock: '<script>\n' + (a.app || '') + '\n</script>',
     };
   }
   const v = assetVersion(opts);
+  const set = wantsV2(opts) ? V2_ASSETS : V1_ASSETS;
   return {
-    styleBlock: '<link rel="stylesheet" href="/audit/audit.css?v=' + v + '">',
-    chartsBlock: '<script src="/audit/audit-charts.js?v=' + v + '"></script>',
-    appBlock: '<script src="/audit/audit-app.js?v=' + v + '"></script>',
+    styleBlock: '<link rel="stylesheet" href="/audit/' + set.css + '?v=' + v + '">',
+    copyBlock: set.copy ? '<script src="/audit/' + set.copy + '?v=' + v + '"></script>' : '',
+    chartsBlock: '<script src="/audit/' + set.charts + '?v=' + v + '"></script>',
+    appBlock: '<script src="/audit/' + set.app + '?v=' + v + '"></script>',
   };
 }
 export function renderShell(D, opts) {
   opts = opts || {};
-  const { styleBlock, chartsBlock, appBlock } = buildAssetBlocks(opts);
+  const { styleBlock, copyBlock, chartsBlock, appBlock } = buildAssetBlocks(opts);
   const head = buildHead(D && D.meta && D.meta.company);   // C-J: per-company <title>/OG (still noindex)
   return head + '\n' + styleBlock + '\n</head>\n<body>\n'
     + '<div class="tz-shell" id="app"></div>\n'
     + NOTES_BTN + '\n'
     + '<script>window.D = ' + injectJSON(D) + ';</script>\n'
+    + (copyBlock ? copyBlock + '\n' : '')
     + chartsBlock + '\n'
     + appBlock + '\n'
     + '</body>\n</html>';

@@ -1703,6 +1703,21 @@ try {
   } else { console.log('[patch-dist]   PASS 133. dist/audit/ · audit-lux.js + audit-lux.css present'); results.push({ ok: true }); }
 } catch (e) { console.error('[patch-dist]   FAIL 133. dist/audit/ lux check threw · ' + e.message); results.push({ ok: false }); }
 
+// Gate 134 · v2 render assets present in dist/ (copied from public/audit/). The set is DARK until the Pages
+// env var AUDIT_RENDER_V2=1, but the whole point of a flag is that the flip is an env change with no code
+// deploy — so the assets must already be on the origin when it is thrown. Same failure mode as gates 131/133:
+// a missing file 404s under its ?v= URL and the report renders blank. copy-v2.js is included because
+// audit-charts-v2.js reads CP() from it and throws without it.
+try {
+  const auditDir = join(DIST_DIR, 'audit');
+  const need = ['audit-v2.css', 'copy-v2.js', 'audit-charts-v2.js', 'audit-app-v2.js'];
+  const missing = need.filter(f => !existsSync(join(auditDir, f)));
+  if (!existsSync(auditDir) || missing.length) {
+    console.error('[patch-dist]   FAIL 134. dist/audit/ v2 assets missing · ' + (existsSync(auditDir) ? missing.join(', ') : 'no dist/audit dir'));
+    results.push({ ok: false });
+  } else { console.log('[patch-dist]   PASS 134. dist/audit/ · all 4 v2 render assets present'); results.push({ ok: true }); }
+} catch (e) { console.error('[patch-dist]   FAIL 134. dist/audit/ v2 check threw · ' + e.message); results.push({ ok: false }); }
+
 const failed = results.filter(r => !r.ok);
 if (failed.length > 0) {
   console.error(`[patch-dist] PATCH VERIFICATION FAILED · ${failed.length}/${results.length} checks failed`);

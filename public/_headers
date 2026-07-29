@@ -35,6 +35,16 @@
   Cache-Control: no-cache
 /audit/audit.css
   Cache-Control: no-cache
+# v2 render bundle. Dark until AUDIT_RENDER_V2=1, but it must carry the same revalidate policy the day it
+# is flipped, or the flip serves a 4h-stale bundle and looks like it did nothing.
+/audit/audit-app-v2.js
+  Cache-Control: no-cache
+/audit/audit-charts-v2.js
+  Cache-Control: no-cache
+/audit/copy-v2.js
+  Cache-Control: no-cache
+/audit/audit-v2.css
+  Cache-Control: no-cache
 /audit/kings-logo.png
   Cache-Control: no-cache
 

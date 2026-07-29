@@ -136,7 +136,12 @@ export async function onRequest(context) {
       });
       // E-246: hand a REAL, deploy-unique asset version to the shell. CF_PAGES_COMMIT_SHA changes on every
       // deployment, so the ?v= query string changes with it and the 4h edge cache can never serve a stale bundle.
-      html = renderShell(D, { buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38' });
+      // AUDIT_RENDER_V2 = "1" serves the v2 asset set (public/audit/*-v2.*); unset or anything else keeps
+      // v1 exactly as it is. Read per request, so the flip is an env change with no redeploy of the code.
+      html = renderShell(D, {
+        buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38',
+        renderV2: (env && env.AUDIT_RENDER_V2) || '',
+      });
     }
   } catch (e) {
     return htmlResponse(errorShell('Audit could not be rendered', 'The Tamazia team has been notified.'), 500);

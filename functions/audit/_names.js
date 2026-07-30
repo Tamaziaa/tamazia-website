@@ -57,25 +57,65 @@ export function decodeEnt(s) {
     return decodeNamedEnt(c, m);
   });
 }
+// The comparable form of a domain stem: lowercase alphanumerics only. DECLARED HERE, above its first use, and not
+// half-way down the file: `looksLikeTitle` consults the stem now, and a `const` referenced before its declaration
+// is a TDZ crash at module scope — the exact failure class that once froze the deployed render layer at an old
+// build (see the payloadToD freeze). Same reason for SUFFIX_WORD and nameWords immediately below.
+const normStem = (domain) => String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const SUFFIX_WORD = /^(llp|ltd|limited|plc|lp|llc|inc|pc|the|and|group|solicitors|law|legal)$/;
+// Legal suffixes are never evidence of identity; compare the remaining words only.
+const nameWords = (name) => (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => !SUFFIX_WORD.test(t));
+
 // A scraped page <title> is NOT a company name. Reject candidates that read like a title/marketing line so the
 // render falls back to the clean domain stem (cert: "Conference & Event Venue in Leeds", "14 Independent Brands...",
 // "New Construction Homes for Sale in New York by Toll Brothers", "Pricing Plans", "Our Team").
+const MARKETING_RX = /\b(reviews?|top \d+|best |guide|how to|pricing|plans?|welcome|home ?page|our team|about us|contact|menu|blog|news|brands?|things to do)\b/i;
+// ══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+//  EXP-3 · A SURNAME IS NOT AN ADJECTIVE
+// ══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+//  One of the marketing signs is the bare word `best `, so `looksLikeTitle("Bhatia Best Solicitors")` was TRUE,
+//  `firmName()` rejected the firm's own name at BOTH doors, and it fell through to
+//  titleCase(domainStem('bhatiabest.co.uk')). The client's compliance audit was headed "Bhatiabest." Measured:
+//  the sign fired on "Bhatia Best Solicitors" AND on "Bhatia Best Limited", so every door into the real name was
+//  shut, while `sharesTokenWithDomain` passed and would have admitted it.
+//
+//  Same shape as three defects already in these logs: "a star is an adjective" (B1-c), "a surname is not a
+//  country" (G1b, Stephen Ireland), "a short normalised name is not an identity" (NOCH F1). The guard built to
+//  stop "Best Solicitors in Leeds" rejected a firm literally called Best, on the one field the client reads
+//  first. A longer blocklist cannot fix this and a shorter one lets the titles back in, because "Best Solicitors"
+//  is a marketing line and "Bhatia Best Solicitors" is a firm and the two are the same words.
+//
+//  The corroborant is this file's own doctrine (NAME-01): THE FIRM'S OWN DOMAIN. A marketing word that the firm
+//  wrote into its domain stem is part of its identity, not a pitch. Two conditions, and both are needed:
+//    1. the matched word appears IN the domain stem  ("best" is inside "bhatiabest"), and
+//    2. the candidate carries at least one further identifying token that is NOT itself a marketing word
+//       ("bhatia"), so a bare "News", "Best Solicitors" or "Best Legal Reviews" is still rejected on ANY domain —
+//       including on bestsolicitors.co.uk, where condition 1 holds and condition 2 does not.
+//  Every other sign is unconditional: "Best Solicitors in Leeds" still dies on the in-city sign, a long title
+//  still dies on length, a separator still dies on separators.
+function firmOwnsKeyword(candidate, matchedWord, stem) {
+  const word = String(matchedWord || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!word || !stem || !stem.includes(word)) return false;
+  const rest = nameWords(candidate).filter((w) => w !== word);
+  return rest.length > 0 && !rest.some((w) => MARKETING_RX.test(w + ' '));
+}
 // Each sign that a candidate string is a page TITLE rather than a firm name, one rule per entry.
 const TITLE_SIGNS = [
   (t) => t.length > 42,                                                 // real names are short; titles are long
   (t) => /[|»·–—]| - | \| /.test(t),                                    // title separators
-  (t) => /\b(reviews?|top \d+|best |guide|how to|pricing|plans?|welcome|home ?page|our team|about us|contact|menu|blog|news|brands?|things to do)\b/i.test(t),
+  (t, stem) => { const m = t.match(MARKETING_RX); return Boolean(m) && !firmOwnsKeyword(t, m[1], stem); },
   (t) => /^\d/.test(t),
   (t) => /\b(in|near|for sale in)\b .*\b(london|leeds|bristol|edinburgh|manchester|new york|dubai|miami)\b/i.test(t),
   (t) => (t.match(/\s/g) || []).length >= 6,                            // >6 words = a sentence, not a name
 ];
-export function looksLikeTitle(s) {
+// `domain` is OPTIONAL: a caller that omits it gets exactly the previous behaviour, because a candidate can never
+// be corroborated by a stem that was not supplied.
+export function looksLikeTitle(s, domain) {
   const t = String(s || '').trim();
   if (!t) return true;
-  return TITLE_SIGNS.some((sign) => sign(t));
+  const stem = normStem(domain);
+  return TITLE_SIGNS.some((sign) => sign(t, stem));
 }
-// The comparable form of a domain stem: lowercase alphanumerics only.
-const normStem = (domain) => String(domainStem(domain) || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
 // NAME-01 — A FIRM'S NAME SHARES A TOKEN WITH ITS OWN DOMAIN. A PAGE HEADING DOES NOT.
 // Caught on the live birketts audit: the report was addressed to "Bristol Office". The engine had no company name
@@ -87,9 +127,7 @@ const normStem = (domain) => String(domainStem(domain) || '').toLowerCase().repl
 // A heading lifted off the page usually shares nothing with it. If the candidate shares no token with the domain,
 // we do not trust it and fall back to the clean domain stem, which is always right and never embarrassing.
 // Sending a magic-circle firm a compliance report addressed to "Bristol Office" ends the conversation.
-const SUFFIX_WORD = /^(llp|ltd|limited|plc|lp|llc|inc|pc|the|and|group|solicitors|law|legal)$/;
-// Legal suffixes are never evidence of identity; compare the remaining words only.
-const nameWords = (name) => (String(name || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((t) => !SUFFIX_WORD.test(t));
+// (SUFFIX_WORD and nameWords are declared above looksLikeTitle, which needs them too.)
 const wholeNameMatchesStem = (words, stem) => {
   const whole = words.join('');
   return stem.includes(whole) || whole.includes(stem);      // one-word firms: BDO -> bdo.co.uk

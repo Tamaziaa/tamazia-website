@@ -579,7 +579,7 @@
   const TIER_TIPS = {
     foundation: [
       "Keyword strategy built around transactional search across your sector, mapped against competitors' current positions before a word is written.",
-      "One compliance-reviewed content piece a month, checked against your sector's rules (SRA, MHRA, FCA, ABA, HIPAA, RERA) before Google or a regulator sees it.",
+      "One compliance-reviewed content piece a month, checked against your sector's own rules before Google or a regulator sees it.",
       "Core Web Vitals, redirect chains, crawl errors, broken links and schema gaps identified and ranked by impact, delivered as developer instructions.",
       "Full Google Business Profile optimisation for one location: categories, attributes, posting schedule, Q&A, photos and a review-response system.",
     ],
@@ -593,7 +593,7 @@
       "Every Authority deliverable carries forward into Enterprise, then scales across markets.",
       "50 or more keywords across every geography your buyers search from: London, Dubai, New York and beyond.",
       "Full AI-search dominance: structured data, entity and knowledge-panel work across Claude, ChatGPT, Perplexity, Google AI Overviews, Gemini and Copilot.",
-      "UK GDPR, FCA COBS, SRA, HIPAA, MHRA, ASA, ABA, RERA, DFSA, UAE PDPL and more, applied to every asset across every jurisdiction.",
+      "Data protection, financial promotion, professional conduct, advertising and health-marketing regimes covered in every jurisdiction you operate in, applied to every asset.",
     ],
   };
   // Founder r31 · "?" subtext for the "See all inclusions" pointers (more[]), indexed to each tier's more[].

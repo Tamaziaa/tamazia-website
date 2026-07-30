@@ -753,11 +753,39 @@
     ${glossaryBlock()}`;
   };
 
+  /* JURIGUARD-6 · the glossary defined UK GDPR and PECR on EVERY audit. The ADAPTER gates the PAYLOAD's
+     glossary by jurisdiction (GLOSSARY_TERM_JUR, adapter :2231 — "a UAE-only firm should never see GDPR /
+     UK GDPR / PECR / CCPA defined") and that gate was doing its job; the render then merged COPY.glossaryBase
+     on top of it UNCONDITIONALLY, so the base's own two UK entries walked straight past it. A Texas firm's
+     report defined the UK cookie regime in its glossary. Same term↗region table, applied to the base set. */
+  const GLOSS_TERM_JUR = {
+    'uk gdpr':['UK'], 'eu gdpr':['EU'], 'pecr':['UK'], 'dpa 2018':['UK'], 'equality act 2010':['UK'],
+    'ccpa':['US'], 'cpra':['US'], 'hipaa':['US'], 'ada title iii':['US'],
+  };
+  /* The firm's own jurisdictions, off the payload and nothing else: the adapter's D.jurisdictions (the
+     distinct jurisdictions actually present in the rendered regulatory layer), widened by the registered
+     country and the ccTLD, which is the same country+TLD spine authJurisdictions() trusts. */
+  function firmJurs(){
+    const s=new Set((Array.isArray(D.jurisdictions)?D.jurisdictions:[]).map(x=>String(x).toUpperCase()));
+    const c=String((D.meta&&D.meta.country)||'').toUpperCase();
+    if(/UNITED KINGDOM|GREAT BRITAIN|ENGLAND|SCOTLAND|WALES|\bUK\b|\bGB\b/.test(c)) s.add('UK');
+    if(/UNITED STATES|\bUSA?\b/.test(c)) s.add('US');
+    if(/UNITED ARAB EMIRATES|\bUAE\b/.test(c)) s.add('AE');
+    const tld=String((D.meta&&D.meta.domain)||'').toLowerCase().split('.').pop();
+    if(tld==='uk') s.add('UK'); if(tld==='us') s.add('US'); if(tld==='ae') s.add('AE');
+    return s;
+  }
   /* G16 / CONF-130, 155, 259…267 · ONE glossary. The base set in COPY is the superset (one
      definition per term, UK GDPR corrected, da/pa deleted); a payload term the base does not
      hold is merged in with its key title-cased. Open by default so a first read can reach it. */
   function glossaryBlock(){
-    const base=Object.assign({}, C.glossaryBase||{});
+    const jur=firmJurs();
+    const base={};
+    Object.entries(C.glossaryBase||{}).forEach(([k,v])=>{
+      const regions=GLOSS_TERM_JUR[String(k).toLowerCase().trim()];
+      if(regions && !regions.some(r=>jur.has(r))) return;     // a regime this firm is not in is not defined to it
+      base[k]=v;
+    });
     const keyed={}; Object.keys(base).forEach(k=>{ keyed[k.toLowerCase()]=k; });
     Object.entries(D.glossary||{}).forEach(([k,v])=>{
       const lk=String(k).toLowerCase();
@@ -918,7 +946,10 @@
   const TIER_TIPS = {
     foundation: [
       "Keyword strategy built around transactional search across your sector, mapped against competitors' current positions before a word is written.",
-      "One compliance-reviewed content piece a month, checked against your sector's rules (SRA, MHRA, FCA, ABA, HIPAA, RERA) before Google or a regulator sees it.",
+      // JURIGUARD-7 · the parenthetical named six regulators as "YOUR sector's rules" on every audit in every
+      // country: a Texas firm read SRA and MHRA, a UK firm read HIPAA. The promise is unchanged; the list of
+      // other people's regulators is gone, because this tooltip has no way to know which of them binds anyone.
+      "One compliance-reviewed content piece a month, checked against your sector's own rules before Google or a regulator sees it.",
       "Core Web Vitals, redirect chains, crawl errors, broken links and schema gaps identified and ranked by impact, delivered as developer instructions.",
       "Full Google Business Profile optimisation for one location: categories, attributes, posting schedule, Q&A, photos and a review-response system.",
     ],
@@ -932,7 +963,11 @@
       "Every Authority deliverable carries forward into Enterprise, then scales across markets.",
       "50 or more keywords across every geography your buyers search from: London, Dubai, New York and beyond.",
       "Full AI-search dominance: structured data, entity and knowledge-panel work across Claude, ChatGPT, Perplexity, Google AI Overviews, Gemini and Copilot.",
-      "UK GDPR, FCA COBS, SRA, HIPAA, MHRA, ASA, ABA, RERA, DFSA, UAE PDPL and more, applied to every asset across every jurisdiction.",
+      // JURIGUARD-8 · an eleven-acronym capability list, of which at most three bind any one reader. It named
+      // UK GDPR, SRA and ASA on US audits and HIPAA on UK ones. The Enterprise promise IS cross-jurisdiction, so
+      // it is stated as the regime FAMILIES covered and names no instrument: nothing here can now be read as a
+      // claim about which law binds this firm. The firm's actual regimes are the regulatory section's job.
+      "Data protection, financial promotion, professional conduct, advertising and health-marketing regimes covered in every jurisdiction you operate in, applied to every asset.",
     ],
   };
   // Founder r31 · "?" subtext for the "See all inclusions" pointers (more[]), indexed to each tier's more[].

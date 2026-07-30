@@ -387,9 +387,16 @@ function lhImpact(a) {
   if (/\bs\b/.test(d) && !/KiB|MiB|ms/.test(d)) w = num * 1000; else if (/ms/.test(d)) w = num; else if (/MiB/.test(d)) w = num * 1024 * 5; else if (/KiB/.test(d)) w = num * 5;
   return w + (a.node_count || 0) * 50 + (1 - (a.score == null ? 1 : a.score)) * 200;
 }
-// axe-core / WCAG 2.1–2.2 success-criterion + ADA Title III mapping for the accessibility audits Lighthouse
-// already runs (they ARE axe-core rules). Turns "color-contrast fails" into "WCAG 2.1 SC 1.4.3, ADA Title
-// III / EU EAA exposure" against the exact failing element. (arsenal repo 04: dequelabs/axe-core)
+// axe-core / WCAG 2.1–2.2 success-criterion mapping for the accessibility audits Lighthouse already runs (they
+// ARE axe-core rules). Turns "color-contrast fails" into "WCAG 2.1 SC 1.4.3" against the exact failing element.
+// (arsenal repo 04: dequelabs/axe-core)
+// JURIGUARD-10 · these values are WCAG success criteria and NOTHING ELSE. The fallback used to read
+// "WCAG 2.1 AA · ADA Title III", which shipped a US statute inside `D.seo.psiAudits[].wcag` on 15 UK fixtures
+// (jflaw and latitudelaw x6 each). It never painted, because audit-charts-v2.js `wcagLabel()` strips exactly
+// those statute tails and appends `a11yRoute()` — the jurisdiction-derived route — in their place. So the
+// adapter was emitting a label the render existed to delete, and the deleted version still went out inside
+// window.D in the page source. WCAG is a W3C standard with no jurisdiction; the statute is the render's job,
+// and only the render knows which country's it is.
 const WCAG = {
   'color-contrast': 'WCAG 2.1 SC 1.4.3 Contrast (Minimum) · AA', 'link-name': 'WCAG 2.1 SC 2.4.4 Link Purpose · A',
   'button-name': 'WCAG 2.1 SC 4.1.2 Name, Role, Value · A', 'image-alt': 'WCAG 2.1 SC 1.1.1 Non-text Content · A',
@@ -413,12 +420,19 @@ function compName(raw) { const s = String(raw || '').trim(); if (!s) return s; i
 function craftFix(p) {
   const cur = String(p.tamazia_fix_short || p.recommendation || '').trim();
   const generic = !cur || /(?:implements and verifies|resolves and verifies|closes this gap as part of the engagement)|(?:on your live site\.?$)/i.test(cur) || new RegExp('verifies ["‘’\'"]', 'i').test(cur);
-  if (cur && !generic) return cur;
+  // JURIGUARD-9 · an engine fix that cites a law from a jurisdiction this firm is not in is not usable prose,
+  // however specific it is. Discarded on the same footing as a templated one, and a crafted sentence takes over.
+  const offJur = offJurisdictionRegimes(cur);
+  if (cur && !generic && !offJur.length) return cur;
   const fw = String(p.framework_short || p.citation || '').toUpperCase();
   const t = (String(p.fact || '') + ' ' + fw).toLowerCase();
   const has = (re) => re.test(t);
   if (has(/cookie|pecr|eprivacy|consent banner|prior.?consent/)) return 'Tamazia installs a compliant consent banner, granular opt-in, nothing pre-ticked, every non-essential tag blocked until the visitor agrees, then proves it with a re-scan.';
-  if (has(/controller|identity of the|who is collecting/)) return 'Tamazia drafts the controller-identity block, registered name, company number, registered office and ICO registration, into the first data-collection page.';
+  // JURIGUARD-4 · "and ICO registration" named the UK data-protection regulator on any controller-identity
+  // finding, in any jurisdiction. Data-controller registration with the ICO is a UK-only duty (and one the DUAA
+  // narrowed); no US state privacy regime has an equivalent. The list is now the identity elements every regime
+  // asks for, and names no regulator.
+  if (has(/controller|identity of the|who is collecting/)) return 'Tamazia drafts the controller-identity block, registered legal name, company number and registered office, into the first data-collection page.';
   if (has(/purpose|legal basis|lawful basis/)) return 'Tamazia writes the purposes-and-lawful-basis table your privacy notice is missing, mapped to each category of data you actually collect.';
   if (has(/right to|data subject|erasure|rectif|portab|to object|access request|opt out of sale|do not sell/)) return 'Tamazia adds the data-subject-rights section, access, erasure, rectification, objection and portability, with a working request route behind it.';
   if (has(/retention|how long|storage period/)) return 'Tamazia publishes the retention schedule, how long each data category is held and exactly what triggers its deletion.';
@@ -427,7 +441,14 @@ function craftFix(p) {
   if (has(/hsts|csp|content.?security|x.?frame|security header|clickjack|referrer.?policy|permissions.?policy/)) return 'Tamazia ships the missing security headers, HSTS, Content-Security-Policy and X-Frame-Options, at the edge and confirms them with a header scan.';
   if (has(/canonical|\bh1\b|meta description|title tag|crawlable|robots|indexing|sitemap/)) return 'Tamazia repairs the on-page foundation, canonical tags, a single H1, meta descriptions and crawlable links, and validates it in Search Console.';
   if (has(/schema|structured data|llms\.txt|wikidata|entity|sameas|knowledge/)) return 'Tamazia builds your machine-readable entity, Organization schema, sameAs links, an llms.txt and a Wikidata entry, so answer engines can identify and cite you.';
-  if (has(/price|fee|transparen|pricing|hidden charge/)) return 'Tamazia publishes total-price-up-front disclosure, every mandatory fee shown before the customer commits, as the DMCC/CMA now require.';
+  // JURIGUARD-5 · "as the DMCC/CMA now require" attached the UK consumer regulator to every pricing finding.
+  // The authority is now THIS finding's own framework (the pointer's attached code, rendered through fwName),
+  // and with no code attached the sentence states the remediation and cites nobody.
+  if (has(/price|fee|transparen|pricing|hidden charge/)) {
+    const _pn = /^[A-Z]{2,}_/.test(String(p.framework_short || '')) ? fwName(p.framework_short).replace(/\s*·.*$/, '').trim() : '';
+    return 'Tamazia publishes total-price-up-front disclosure, every mandatory fee shown before the customer commits'
+      + (_pn && _pn !== 'Framework' ? ', as ' + _pn + ' now requires' : '') + '.';
+  }
   if (has(/review|testimonial|endorse|fake/)) return 'Tamazia documents a compliant reviews policy, verified, non-incentivised, with a takedown route, to meet the fake-review ban.';
   if (has(/cqc|gdc|mhra|care quality|dental council|rating|registration/)) return 'Tamazia publishes the sector-regulator disclosures you are missing, current rating, registration number and the complaints route, prominently on site.';
   if (has(/modern slavery|supply chain/)) return 'Tamazia drafts and publishes the modern-slavery statement, board-approved and dated, with the supply-chain due-diligence it must contain.';
@@ -504,7 +525,11 @@ function bingoFromPointer(p, pillar, news, i, sym) {
     // ("Geo") and never a bare "Framework" for a non-regulatory finding that carries no framework code. (geo-law)
     law: (/^GEO$/i.test(p.framework_short) || (p.bucket === 'ai_visibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Generative-engine visibility'
       : (/^SEO$/i.test(p.framework_short) || (/^(seo|technical_seo|technical|tech|tls_dns|performance)$/.test(String(p.bucket || '')) && !/^[A-Z]{2,}_/.test(String(p.framework_short || '')))) ? 'Search-engine visibility'
-        : (p.bucket === 'accessibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || ''))) ? 'Accessibility (WCAG / Equality Act)'
+        // JURIGUARD-3 · this branch fires EXACTLY when the pointer carries no statute code, i.e. when the payload
+        // attached no accessibility law to this finding — so it may not name one. It said "WCAG / Equality Act",
+        // which put a UK statute on the ③-The-law row of every US accessibility finding. WCAG is a W3C standard,
+        // not a jurisdiction's law, so it is the only thing this label can honestly carry.
+        : (p.bucket === 'accessibility' && !/^[A-Z]{2,}_/.test(String(p.framework_short || ''))) ? 'Accessibility (WCAG 2.1)'
           : (fwName(p.framework_short) || p.citation || pillar),
     // ③ row label per bucket: a regulatory finding is a "Law", an SEO/technical one a "Standard", an AI/GEO one a
     // "Signal" — never label a non-statutory finding "③ Law".
@@ -712,6 +737,103 @@ function authJurisdictions(payload) {
   return set;
 }
 
+/* ---------------- JURIGUARD · the render may never introduce a legal regime the payload did not attach --------
+   §EXPUS.3 D1 lane 2. Three adapter strings named UK and EU instruments UNCONDITIONALLY, with no jurisdiction
+   guard anywhere on the line — the tracking tile's "prior consent under PECR/GDPR", the a11y list's "the
+   Equality Act exposure most firms never see coming", and the fixes-card law label "Accessibility (WCAG /
+   Equality Act)". Measured on 12 of 12 US fixtures ever built. `applicable_frameworks` was CLEAN on every one
+   of them: the leak was pure render copy, so an Ohio law firm's report named UK law whatever the findings said
+   and no intelligence pass could override it.
+
+   THE RULE, and it is absolute: a regime name in rendered copy must come from a framework code the PAYLOAD
+   itself attached, and only after that code survives the jurisdiction membrane (authJurisdictions). When the
+   payload attached nothing in the relevant family, the sentence states the MEASUREMENT and names no regime at
+   all — never a guess, never a default, never the UK.
+
+   `payloadRegimeCodes` reads the payload's OWN framework codes from all four places they live (the confirmed
+   pointers, the raw rule list, `applicable_frameworks`, and the engine's `binding` map), filtered to the
+   allow-set exactly as the pointer membrane at :1205 filters findings. `regimeLabel` then renders their real
+   catalogue names through fwName(), so the label can only ever be a law the payload carries. */
+function payloadRegimeCodes(payload, allow) {
+  const set = new Set();
+  const add = (c) => { const s = String(c || '').trim().toUpperCase(); if (/^[A-Z]{2,}_/.test(s)) set.add(s); };
+  for (const p of arr(payload && payload.pointers)) add(p && (p.framework_short || p.citation));
+  for (const r of arr(payload && payload.rules)) add(r && (r.framework_short || r.framework || r.citation));
+  for (const f of arr(payload && payload.applicable_frameworks)) add(typeof f === 'string' ? f : (f && (f.framework_short || f.code)));
+  for (const c of Object.keys((payload && payload.binding) || {})) add(c);
+  const ok = allow || authJurisdictions(payload || {});
+  // Same gate the finding membrane applies: GLOBAL passes, anything else must be a jurisdiction this firm is in.
+  return Array.from(set).filter((c) => { const j = FW_JUR(c); return j === 'GLOBAL' || ok.has(j); });
+}
+// Distinct display names for the payload's attached codes in one regime FAMILY, capped at two so the sentence
+// stays readable ("PECR and UK GDPR", not a five-Act pile-up). Returns '' when the payload attached none, and
+// every caller MUST have a regime-free sentence ready for that case.
+function regimeLabel(payload, familyRx, allow) {
+  const names = [];
+  for (const c of payloadRegimeCodes(payload, allow)) {
+    if (!familyRx.test(c)) continue;
+    if (sectorInapplicable(c, payload)) continue;
+    // FW_NAME (the curated short map) FIRST, then the catalogue name. Inline prose wants the instrument as a
+    // reader names it — "UK PECR", "US ADA", "Equality Act 2010" — not the catalogue's descriptive title
+    // ("Privacy and Electronic Communications Regulations 2003", "Americans with Disabilities Act Title III —
+    // Website Accessibility"). The tail after a middot, a dash or a bracket is dropped either way, which also
+    // keeps the house ban on dashes. A UK firm therefore still reads the word PECR, which is the point: this
+    // guard removes an INVENTED regime, it must not remove a real one. (JURIGUARD · no over-correction)
+    const n = String(FW_NAME[c] || fwName(c)).replace(/\s*[·—–+-]\s.*$/, '').replace(/\s*\(.*$/, '').trim();
+    if (n && n !== 'Framework' && !names.includes(n)) names.push(n);
+  }
+  if (!names.length) return '';
+  return names.length === 1 ? names[0] : names.slice(0, 2).join(' and ');
+}
+// Cookie / e-privacy / data-protection family: the regimes that actually set a prior-consent duty for trackers.
+// NOT TCPA: the Telephone Consumer Protection Act sets a prior-consent duty for CALLS and TEXTS, never for
+// trackers, so `_CPA$` is anchored to keep US_TCPA out of a cookie sentence. (JURIGUARD-1a)
+const CONSENT_RX = /(?:PECR|EPRIVACY|ICO_COOKIES|GDPR|_DPA|_DPL|PDPL|PDPPL|CCPA|CPRA|VCDPA|_CPA$|CTDPA|TDPSA|COOKIE)/;
+// Digital-accessibility family: UK Equality Act, EU EAA, US ADA / Section 508, and their catalogue variants.
+const A11Y_RX = /(?:EQUALITY|_EAA|ACCESSIB|\bADA\b|_ADA|SECTION_?508|WCAG)/;
+
+/* JURIGUARD-9 · THE PROSE MEMBRANE. The three hardcoded strings above were ours. This one is not: the ENGINE
+   writes remediation prose, and on all four US fixtures that carry a contrast finding it wrote
+
+       "Tamazia fixes colour contrast to WCAG 2.1 AA (also an Equality Act / EAA exposure)."
+
+   into `tamazia_fix_short`, `recommendation` AND `bingo.fix` — on payloads whose `applicable_frameworks` attach
+   US_ADA and contain no UK or EU code at all. The pointer membrane at :1259 catches a wrong FRAMEWORK; nothing
+   caught a wrong law inside a SENTENCE. The engine's own framework set is the refutation, so the render can
+   apply it: an engine fix string that names a regime from a jurisdiction this firm is not in is not trusted,
+   and craftFix() writes its own sentence instead. We REJECT, we never rewrite: silently editing a regulator out
+   of a sentence leaves prose nobody authored and can invert its meaning.
+
+   Request-scoped, seeded once per payloadToD() call, exactly like setVoluntaryBinding / setBindingMap /
+   setFrameworkMeta above it. payloadToD is synchronous end to end, so no two payloads can interleave. Null (the
+   default) means NO membrane, so any other consumer of craftFix behaves precisely as it did before. */
+const REGIME_TOKENS = [
+  [/\bPECR\b|Privacy and Electronic Communications/i, 'UK'], [/\bUK GDPR\b/i, 'UK'],
+  [/\bData Protection Act 2018\b|\bDPA 2018\b/i, 'UK'], [/\bEquality Act\b/i, 'UK'],
+  [/\bICO\b|Information Commissioner/i, 'UK'], [/\bCMA\b|Competition and Markets Authority/i, 'UK'],
+  [/\bASA\b|Advertising Standards Authority|\bCAP Code\b/i, 'UK'], [/\bSRA\b|Solicitors Regulation Authority/i, 'UK'],
+  [/\bCQC\b|Care Quality Commission/i, 'UK'], [/\bEHRC\b/i, 'UK'], [/\bDMCCA?\b/i, 'UK'],
+  [/\bMHRA\b/i, 'UK'], [/\bGDC\b|General Dental Council/i, 'UK'],
+  [/\bEU GDPR\b|ePrivacy|\bEAA\b|European Accessibility Act/i, 'EU'],
+  [/\bCCPA\b|\bCPRA\b/i, 'US'], [/\bFTC\b|Federal Trade Commission/i, 'US'],
+  [/\bADA\b|Americans with Disabilities/i, 'US'], [/\bHIPAA\b/i, 'US'],
+];
+let _JUR_ALLOW = null;
+function setJurAllow(a) { _JUR_ALLOW = (a && typeof a.has === 'function') ? a : null; }
+export { setJurAllow, offJurisdictionRegimes, regimeLabel, payloadRegimeCodes, REGIME_TOKENS, CONSENT_RX, A11Y_RX };
+// The jurisdictions a string's regime names belong to that this firm is NOT in. Empty when clean, or when no
+// membrane is seeded. GLOBAL standards (WCAG, ISO, schema.org) carry no jurisdiction and are never flagged.
+function offJurisdictionRegimes(s) {
+  if (!_JUR_ALLOW) return [];
+  const t = String(s || '');
+  if (!t) return [];
+  const bad = [];
+  for (const [rx, jur] of REGIME_TOKENS) {
+    if (!_JUR_ALLOW.has(jur) && rx.test(t)) { const m = t.match(rx); if (m && !bad.includes(m[0])) bad.push(m[0]); }
+  }
+  return bad;
+}
+
 /* ---------------- canonical exposure (numeric-lock) ---------------- */
 const DP_FAMILY = new Set(['UK_GDPR_A13', 'UK_DPA_2018', 'UK_PECR', 'UK_ICO_COOKIES', 'EU_GDPR', 'EU_EPRIVACY', 'EU_EAA_2025']);
 // Rough order-of-magnitude annual turnover (£) so statutory "% -of-turnover" fines render REALISTICALLY. A
@@ -907,7 +1029,16 @@ function buildDims(payload, sig, psi, pointers, aiR, authority, siteScanned) {
       };
     })(),
     { nm: 'Authority & backlinks', key: 'authority', v: g(authority, 'you.da_100', null), sub: `DA ${g(authority, 'you.da_100', 'n/a')} · vs ${arr(authority.ranked).length} rivals`, w: 1 },
-    (function () { const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads; return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}, each one needs prior consent under PECR/GDPR` : 'No third-party trackers firing before consent'), w: 1 }; })(),
+    // JURIGUARD-1 · this tile said "each one needs prior consent under PECR/GDPR" unconditionally, so a Texas
+    // firm was told its cookies answer to the UK cookie regime. The regime is now the payload's own attached
+    // consent framework, and when the payload attached none the tile states the MEASUREMENT and names no law.
+    (function () {
+      const nT = arr(sig.trackers).length, ads = !!g(sig, 'ad_tech.runs_ads', false), has = nT > 0 || ads;
+      const _n = `${nT} tracker${nT === 1 ? '' : 's'}${ads ? ' + ad pixels' : ''}`;
+      const _reg = regimeLabel(payload, CONSENT_RX);
+      const _sub = _reg ? `${_n}, each one needs prior consent under ${_reg}` : `${_n}, none of them behind a consent gate`;
+      return { nm: 'Tracking & consent', key: 'tracking', _na: !siteScanned, st: !siteScanned ? 'na' : (has ? 'warn' : 'pass'), v: !siteScanned ? null : (has ? 45 : 85), sub: !siteScanned ? 'not assessed' : (has ? _sub : 'No third-party trackers firing before consent'), w: 1 };
+    })(),
   ];
   // E-28: a dimension that reads a bare "0" is unexplained and reads as a bug. Say WHY it is zero, in the card
   // itself. When Critical findings sit in the dimension, that is the reason: each Critical floors it until closed.
@@ -1177,6 +1308,7 @@ export function payloadToD(payload, ctx = {}) {
   const bindingMap = payload.binding || {};
   const now = ctx.now ? new Date(ctx.now) : new Date(g(payload, 'framework_last_reviewed', '2026-06-04'));
   const allow = authJurisdictions(payload);
+  setJurAllow(allow);   // JURIGUARD-9: seed the prose membrane for this payload, same lifetime as the setters above
   const company = firmName(payload, ctx.company);
   const market = String(payload.country || '').toUpperCase();
   // A safe absolute URL for screenshots even when payload.domain is missing, never "https://undefined".
@@ -1729,7 +1861,16 @@ export function payloadToD(payload, ctx = {}) {
     onpage: onpage.length ? onpage : [{ issue: siteScanned ? 'On-page basics present' : 'On-page not assessed this scan', sev: 'std', impact: siteScanned ? 'Title, meta and H1 detected, the deeper wins are schema, internal linking and content depth' : 'The live site was not readable this scan (bot-challenge / thin render), so on-page signals were not assessed, not confirmed absent. A re-scan completes it.', fix: siteScanned ? 'Tamazia layers compliant schema + topical depth on top of the basics.' : 'Tamazia re-scans with archive + rendered-DOM fallback to assess on-page signals on your live site.' }],
     security,
     // Accessibility list also infers from missing signals; when unscanned, only the generic exposure note stands.
-    a11y: (function () { const l = []; if (siteScanned) { if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); } l.push('Unlabelled forms + low-contrast text block screen-reader users today, the Equality Act exposure most firms never see coming'); return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l }; })(),
+    // JURIGUARD-2 · the closing line named the UK Equality Act on EVERY payload, US or UK. The regime is now the
+    // payload's own attached accessibility framework (UK Equality Act, EU EAA, US ADA — whichever it carries);
+    // with none attached the line says "the accessibility exposure" and names no statute.
+    a11y: (function () {
+      const l = [];
+      if (siteScanned) { if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); }
+      const _a = regimeLabel(payload, A11Y_RX, allow);
+      l.push('Unlabelled forms + low-contrast text block screen-reader users today, the ' + (_a || 'accessibility') + ' exposure most firms never see coming');
+      return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l };
+    })(),
     tech: { ssl: siteScanned ? (isHttps ? 'Valid · HTTPS' : 'Not HTTPS') : 'Not assessed', mobile: siteScanned ? !!sig.viewport : null, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : (siteScanned ? 'None detected' : 'Not assessed'), adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : (siteScanned ? 'None detected' : 'Not assessed'), pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : (siteScanned ? 'Not measured' : 'Not assessed'), render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered') },
     keywords: kws.length ? kws : [{ kw: categoryLabel(payload), vol: 'specialist', you: 'Not ranking', who: ', ', pos: '', intent: 'high' }],
     keywordsThin: kwThin,
@@ -1738,7 +1879,7 @@ export function payloadToD(payload, ctx = {}) {
   // Element-level PSI evidence, the real failing Lighthouse audits on YOUR live DOM (selector + cost). (R-018/N2)
   seo.psiAudits = arr(g(payload, 'scan.psi.audits', []))
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fix] = lhInfo(a.id); return { id: a.id, title, lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix, wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   // Desktop + mobile PSI (engine now returns both strategies). When present, the render shows a
   // Mobile|Desktop toggle with the 4 Lighthouse dials + Core Web Vitals + element-level audits-with-fixes
@@ -2221,7 +2362,7 @@ function buildPsiStrat(strat) {
   const sc = strat.scores, dial = (v) => isNum(v) ? Math.round(v * 100) : null;
   const audits = arr(strat.audits)
     .filter((a) => a && a.id && (a.score == null || a.score < 0.9))
-    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA · ADA Title III') : null, _w: lhImpact(a) }; })
+    .map((a) => { const [title, lane, fixFb] = lhInfo(a.id); const _dd = (s) => String(s || '').replace(/\s*[—–]\s*/g, ', ').trim(); return { id: a.id, title: _dd(title), lane: LH_LANE[lane] || 'Performance', laneKey: lane, disp: a.displayValue || '', nodes: a.node_count || 0, sel: String(a.node_selector || '').replace(/\s+/g, ' ').trim(), fix: _dd(a.fix || fixFb || ''), wcag: lane === 'a11y' ? (wcagFor(a.id) || 'WCAG 2.1 AA') : null, _w: lhImpact(a) }; })
     .sort((x, y) => y._w - x._w).slice(0, 10);
   return { dials: { performance: dial(sc.performance), accessibility: dial(sc.accessibility), bestPractices: dial(sc['best-practices']), seo: dial(sc.seo) }, cwv: buildCwvStrat(strat.cwv), audits };
 }

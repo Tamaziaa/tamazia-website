@@ -1248,7 +1248,9 @@ function beatBy(c, ctx) {
     ];
     return { fix: fixes[(+ctx.i || 0) % fixes.length], proof: 'AI names ' + (c.runs && c.of ? nm + ' in ' + c.runs + '/' + c.of + ' runs' : nm) + ' while your entity returns “no reliable information”', metric: 'entity readiness ' + ctx.youEntity + ' ↗ 70+ to enter the AI answer set ahead of ' + nm, lever };
   }
-  if (c.dr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' ↗ ' + (c.dr + 3) + ' to overtake ' + nm, lever };
+  // P2/2.1 (E29) · only claim a DR gap when YOUR DR was actually measured. With youDr null we do not know the gap,
+  // so fall through to the rank / generic angle rather than printing "to your null" or comparing against a fake 0.
+  if (c.dr != null && ctx.youDr != null && c.dr > ctx.youDr) return { fix: 'Earn authoritative backlinks + named-expert content', proof: nm + ' carries Domain Rating ' + c.dr + ' to your ' + ctx.youDr + ', that authority gap is why Google trusts them first', metric: 'DR ' + ctx.youDr + ' ↗ ' + (c.dr + 3) + ' to overtake ' + nm, lever };
   if (c.pos) return { fix: 'Publish a compliance-reviewed pillar page + schema for your priority term', proof: nm + ' ranks #' + c.pos + ' for it; you are unranked', metric: 'reach the top-5 for “' + (ctx.bestKw || ctx.category || 'your priority term') + '”', lever };
   // No DR / rank / AI-run signal for this rival: the generic fallback was IDENTICAL for every rival (Emaar's
   // 5 cloned rows). Rotate the angle deterministically by ladder position AND name the rival in each, so the
@@ -1803,9 +1805,19 @@ export function payloadToD(payload, ctx = {}) {
       .sort((x, y) => y._w - x._w);
     for (const a of _lhMore) { if (onpage.length >= 5) break; const k = a.title.toLowerCase(); if (_seenOn.has(k)) continue; _seenOn.add(k); onpage.push({ issue: a.title, sev: 'std', impact: 'Measured live on your DOM by Google PageSpeed; both search and AI answer engines read this signal.', fix: a.fix }); }
   }
-  const SEC = [['hsts', 'HSTS', 'Strict-Transport-Security absent, connection can be downgraded'], ['csp', 'Content-Security-Policy', 'No CSP, exposed to injection / XSS'], ['xfo', 'X-Frame-Options', 'Clickjacking protection missing'], ['xcto', 'X-Content-Type-Options', 'MIME-sniffing not blocked'], ['refpol', 'Referrer-Policy', 'Referrer leakage to third parties'], ['permpol', 'Permissions-Policy', 'Browser features not locked down']];
+  // P2/2.1 · each header carries BOTH notes and the rendered note is f(present), so a header that is genuinely
+  // configured is never paired with an "absent"-flavoured sentence (the 47 present:true + "absent" contradictions).
+  // [key, label, absentNote, presentNote]
+  const SEC = [
+    ['hsts', 'HSTS', 'Strict-Transport-Security absent, the connection can be downgraded to HTTP', 'Strict-Transport-Security is set, the connection is forced to HTTPS'],
+    ['csp', 'Content-Security-Policy', 'No CSP, the page is exposed to injection / XSS', 'Content-Security-Policy is set, the injection / XSS surface is constrained'],
+    ['xfo', 'X-Frame-Options', 'Clickjacking protection missing', 'X-Frame-Options is set, framing and clickjacking are blocked'],
+    ['xcto', 'X-Content-Type-Options', 'MIME-sniffing not blocked', 'X-Content-Type-Options is set, MIME-sniffing is blocked'],
+    ['refpol', 'Referrer-Policy', 'Referrer leakage to third parties', 'Referrer-Policy is set, referrer leakage is controlled'],
+    ['permpol', 'Permissions-Policy', 'Browser features not locked down', 'Permissions-Policy is set, browser features are locked down'],
+  ];
   // present:null = "not assessed" (no scan) so the consumer can show n/a instead of a confirmed "MISSING".
-  const security = SEC.map(([k, hh, note]) => ({ h: hh, present: siteScanned ? !!sig[k] : null, sev: 'high', note }));
+  const security = SEC.map(([k, hh, absentNote, presentNote]) => { const present = siteScanned ? !!sig[k] : null; return { h: hh, present, sev: 'high', note: present === true ? presentNote : absentNote }; });
   // Keyword RELEVANCE + ACCURACY filter (Gate 2 / Gate 7 / §5.5). A query is shown only if it genuinely
   // matches the firm's brand + vertical and reads in the right market. Three accuracy gates layer here:
   //  (1) RELEVANCE — you rank for it, OR a REAL firm (not a denylisted directory/aggregator) leads it AND
@@ -1822,7 +1834,11 @@ export function payloadToD(payload, ctx = {}) {
   const _cityToStrip = _big ? _kwCity : '';                  // national brand ↗ strip its own city too
   const _cleanKw = (t) => cleanKwTermFull(t, { fc: _fc, big: _big, cityToStrip: _cityToStrip });
   const _youRank = (k) => k.my_position != null;             // 0 is a valid rank (truthiness guard)
-  const _inBand = (k) => { const p = +k.my_position; return Number.isFinite(p) && p >= 20 && p <= 50; }; // winnable battleground
+  // P2/2.4 · widen the kept band. The old 20-50 window dropped every honest page-2+ ranked row outside it, which is
+  // why sparse firms rendered a single keyword. A row where YOU rank on page 2 or beyond (11-100) is a real gap a
+  // rival on page one captures, so it is kept; page-one ranks (<=10, already winning) are still excluded so we never
+  // frame a term you own as one a rival takes. rank-insight already keeps these rows; the adapter band was the cut.
+  const _inBand = (k) => { const p = +k.my_position; return Number.isFinite(p) && p >= 11 && p <= 100; };
   const _leaderOk = (k) => !!(k.leader && isRealCompetitor(k.leader, market) && leaderInMarket(k.leader, _fc));
   const kwRelevant = (k) => {
     const s = String(k.keyword || '');
@@ -1864,14 +1880,28 @@ export function payloadToD(payload, ctx = {}) {
     // JURIGUARD-2 · the closing line named the UK Equality Act on EVERY payload, US or UK. The regime is now the
     // payload's own attached accessibility framework (UK Equality Act, EU EAA, US ADA — whichever it carries);
     // with none attached the line says "the accessibility exposure" and names no statute.
+    // P2/2.1 · score comes from the REAL Lighthouse accessibility dial (mobile, then desktop), never the synthetic
+    // max(20, 100 - n*16) that contradicted the measured value. The always-appended "unlabelled forms + low-contrast"
+    // claim is deleted (it was asserted on every firm, measured on none); list carries only the real signal gaps here
+    // and is replaced below by the actual failing a11y audits Lighthouse ran. score is null when PSI did not run.
     a11y: (function () {
+      const accM = g(payload, 'scan.psi.mobile.scores.accessibility', null);
+      const accD = g(payload, 'scan.psi.desktop.scores.accessibility', null);
+      const acc = isNum(accM) ? accM : (isNum(accD) ? accD : null);
       const l = [];
       if (siteScanned) { if (!sig.lang) l.push('No html lang attribute'); if (!sig.viewport) l.push('No viewport meta, mobile zoom blocked'); if (!sig.h1_count) l.push('No H1 landmark for screen readers'); if (!sig.title) l.push('Empty or missing page title'); }
-      const _a = regimeLabel(payload, A11Y_RX, allow);
-      l.push('Unlabelled forms + low-contrast text block screen-reader users today, the ' + (_a || 'accessibility') + ' exposure most firms never see coming');
-      return { score: Math.max(20, 100 - l.length * 16), issues: l.length, list: l };
+      return { score: acc == null ? null : Math.round(acc * 100), issues: l.length, list: l };
     })(),
-    tech: { ssl: siteScanned ? (isHttps ? 'Valid · HTTPS' : 'Not HTTPS') : 'Not assessed', mobile: siteScanned ? !!sig.viewport : null, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : (siteScanned ? 'None detected' : 'Not assessed'), adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : (siteScanned ? 'None detected' : 'Not assessed'), pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : (siteScanned ? 'Not measured' : 'Not assessed'), render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered') },
+    tech: { ssl: siteScanned ? (isHttps ? 'Valid · HTTPS' : 'Not HTTPS') : 'Not assessed', mobile: siteScanned ? !!sig.viewport : null, trackers: arr(sig.trackers).length ? (arr(sig.trackers).map(nameOf).filter(Boolean).slice(0, 4).join(', ') || arr(sig.trackers).length + ' detected') : (siteScanned ? 'None detected' : 'Not assessed'), adPixels: g(sig, 'ad_tech.runs_ads', false) ? (arr(g(sig, 'ad_tech.platforms', [])).map(nameOf).filter(Boolean).join(', ') || 'Active') : (siteScanned ? 'None detected' : 'Not assessed'), pageWeight: sig.html_bytes ? (sig.html_bytes < 1024 ? sig.html_bytes + ' B' : Math.round(sig.html_bytes / 1024) + ' KB') : (siteScanned ? 'Not measured' : 'Not assessed'), render: ({ OK: 'Server-rendered', CHALLENGE: 'Bot-challenge wall', EMPTY_SPA: 'JS-only (SPA)', STAGING: 'Staging', LOGIN: 'Login-gated', SOFT_404: 'Soft 404', TINY: 'Thin / empty' }[g(payload, 'scan.render_class', 'OK')] || 'Server-rendered'),
+      // P2/2.2 · recovered measurements the engine already computes but used to discard: CMS (techStack fingerprint),
+      // server + CDN (response headers), DMARC (email-auth DNS), DNSSEC (DoH DS lookup). All read from
+      // scan.signals.tech, populated by the engine's extra-scanners recovery. Older payloads lack the block, so each
+      // falls back to an honest 'Not assessed' / 'None detected' rather than a fabricated value.
+      cms: g(sig, 'tech.cms', null) || (siteScanned ? 'Custom / undetected' : 'Not assessed'),
+      server: g(sig, 'tech.server', null) || (siteScanned ? 'Not disclosed' : 'Not assessed'),
+      cdn: g(sig, 'tech.cdn', null) || (siteScanned ? 'None detected' : 'Not assessed'),
+      dmarc: (function () { const d = g(sig, 'tech.dmarc', null); if (!d) return 'Not assessed'; if (!d.present) return 'Not configured'; return d.policy && d.policy !== 'set' ? 'p=' + d.policy : 'Configured'; })(),
+      dnssec: (function () { const s = g(sig, 'tech.dnssec', undefined); return s === true ? 'Signed' : s === false ? 'Not signed' : 'Not assessed'; })() },
     keywords: kws.length ? kws : [{ kw: categoryLabel(payload), vol: 'specialist', you: 'Not ranking', who: ', ', pos: '', intent: 'high' }],
     keywordsThin: kwThin,
     keywordSummary: { onPageOne, totalTracked: kws.length || 0, opportunity: String(Math.max(0, (kws.length || 0) - onPageOne)), oppLabel: 'high-intent searches a rival captures instead of you' },
@@ -1902,6 +1932,10 @@ export function payloadToD(payload, ctx = {}) {
   // Enrich the Accessibility + Content dim sub-lines with the REAL failing audits Chrome measured.
   const _a11y = seo.psiAudits.filter((a) => a.laneKey === 'a11y').slice(0, 3).map((a) => a.title);
   const _a11yDim = dims.find((d) => d.key === 'a11y'); if (_a11yDim && _a11y.length) _a11yDim.sub = _a11y.join(' · ');
+  // P2/2.1 · seo.a11y.list is the REAL failing accessibility audits Lighthouse ran (axe-core rules on your DOM),
+  // never the deleted unmeasured contrast/labels line. The structural signal gaps set above stand only when
+  // Lighthouse ran no a11y audits (site not PSI-scanned), so the list is always evidence, never a constant.
+  { const _a11yList = seo.psiAudits.filter((a) => a.laneKey === 'a11y').map((a) => a.title); if (_a11yList.length) { seo.a11y.list = _a11yList.slice(0, 8); seo.a11y.issues = _a11yList.length; } }
   const _spd = seo.psiAudits.filter((a) => a.laneKey === 'speed').slice(0, 2).map((a) => a.title.replace(/ \(.*\)$/, ''));
   const _cwvDim = dims.find((d) => d.key === 'cwv'); if (_cwvDim && _cwvDim.st !== 'na' && _spd.length) _cwvDim.sub = _spd.join(' · ');
 
@@ -1972,11 +2006,12 @@ export function payloadToD(payload, ctx = {}) {
     engineEstimate: true, enginesProbed: engines.length > 0, enginesNote: engines.length ? null : (geoEng.not_probed_note || 'per-engine AI citation was not probed on this scan'),
     radar, schema,
     citations: citations.length ? citations : arr(geoP.top_competitors).filter((t) => t && t.name && !looksAggregator(t.name) && !_isSelfName(t.name)).slice(0, 5).map((t) => ({ q: km.service_noun || categoryLabel(payload), who: compName(t.name) })),
+    // P2/2.1 · only rows backed by a real per-firm measurement survive. Wikidata presence IS measured
+    // (aiR.in_wikidata). The old Google-Business-Profile ('unverified'), Trustpilot (false) and Industry-directories
+    // ('partial') rows were hardcoded constants on 36/36 audits with no producer behind them, so they are dropped
+    // rather than shipped as a fixed verdict. A row returns here only when the engine can measure the source.
     sourceGap: [
-      { src: 'Wikipedia / Wikidata', you: !!aiR.in_wikidata, note: "No entity, AI's primary trust source" },
-      { src: 'Google Business Profile', you: 'unverified', note: 'Incomplete NAP + no posts' },
-      { src: 'Trustpilot / Reviews', you: false, note: 'No managed review presence, AI reads your reputation from whatever it finds, not what’s true' },
-      { src: 'Industry directories', you: 'partial', note: 'Inconsistent NAP across listings' },
+      { src: 'Wikipedia / Wikidata', you: !!aiR.in_wikidata, note: aiR.in_wikidata ? 'Wikidata entity present, the public knowledge graph can identify you' : "No entity, AI's primary trust source" },
     ],
     aiOverview: 'AI Overviews now sit above the classic results on a large, growing share of searches, and AI-referred visitors arrive ready to buy.' + (sov > 0 ? '' : ' You appear in none for your category.'),
   };
@@ -2022,7 +2057,11 @@ export function payloadToD(payload, ctx = {}) {
   const ranked = arr(authority.ranked);
   const authDr = {}; const drByStem = {};
   ranked.forEach((r) => { const h = cleanDomain(r.domain).toLowerCase(); if (h) authDr[h] = Math.round((r.dr || 0) * 10); const s = h.split('.')[0].replace(/[^a-z0-9]/g, ''); if (s) drByStem[s] = Math.round((r.dr || 0) * 10); });
-  const youDr = g(authority, 'you.da_100', Math.round((g(authority, 'you.dr', 0)) * 10)) || 0;
+  // P2/2.1 (E29) · when authority was never measured (no OpenPageRank / DR read for this firm), youDr is NULL, not 0.
+  // A fabricated 0 read to the client as "your Domain Rating is zero" — a wrong client-visible fact. Null renders as
+  // "Not assessed", exactly as an un-measured rival's DR already does. When authority IS measured, da_100 (or dr*10).
+  const _authMeasured = !!(authority && authority.you && (isNum(authority.you.da_100) || isNum(authority.you.dr)));
+  const youDr = _authMeasured ? (isNum(authority.you.da_100) ? authority.you.da_100 : Math.round((g(authority, 'you.dr', 0)) * 10)) : null;
   const brandKey = cleanDomain(payload.domain).split('.')[0].replace(/[^a-z0-9]/gi, '').toLowerCase();
   // 1) the firms AI actually names (real peers), self-stripped
   const llmPeers = [];
@@ -2077,7 +2116,7 @@ export function payloadToD(payload, ctx = {}) {
   const competitors = {
     you: company, bestKeyword: bestKw.term, youDr, youPos: bestKw.youPos, needsReview: ladder.length === 0,
     cols: ['Domain rating', 'AI answer set'],
-    rows: [{ name: company, you: true, dr: youDr, cells: [{ v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
+    rows: [{ name: company, you: true, dr: youDr, cells: [youDr == null ? { v: 'Not assessed', cls: 'mid' } : { v: youDr, cls: 'bad' }, { v: 'Not named', cls: 'bad' }] },
       // C1/N2: an unrated rival's DR cell reads "Not assessed" and carries NO `est` flag. The old cell
       // printed a name-hash number badged "Estimated from authority signals", which is a fabrication with
       // a footnote. `est` is deliberately not set: there is no estimate, there is no measurement.
@@ -2085,8 +2124,18 @@ export function payloadToD(payload, ctx = {}) {
     ladder,
     // Empty bars + drHidden flag so audit-charts.js skips the single-bar DR chart; chip drops "vs N" when hidden.
     drHidden, drRivalCount: drRivals.length,
-    drBars: drHidden ? [] : [...drRivals.map((c) => ({ l: c.name, v: c.dr })), { l: 'You', v: youDr, you: true }],
-    aiKwBars: (function () { const t = ladder[0]; return t ? [{ l: 'AI names · you', v: 0, you: true }, { l: 'AI names · ' + t.name, v: 2 }, { l: 'Page-one · you', v: onPageOne, you: true }, { l: 'Page-one · ' + t.name, v: 1 }] : [{ l: 'AI names · you', v: 0, you: true }, { l: 'Page-one · you', v: onPageOne, you: true }]; })(),
+    // P2/2.1 (E29) · omit the "You" bar when YOUR DR is un-measured, rather than drawing a zero-height fake bar.
+    drBars: drHidden ? [] : [...drRivals.map((c) => ({ l: c.name, v: c.dr })), ...(youDr == null ? [] : [{ l: 'You', v: youDr, you: true }])],
+    // P2/2.1 · the rival bars were literal v:2 / v:1 with no producer. Replaced by REAL measured counts only:
+    // AI-names-you = repeatability (how many of N AI runs actually named you), Page-one-you = your real page-one
+    // ranking count. The rival's AI-names bar is drawn ONLY when the geo probe named it a real number of runs
+    // (spine[0].src === 'AI' with a run count); there is no measured rival page-one count, so that bar is dropped.
+    aiKwBars: (function () {
+      const bars = [{ l: 'AI names · you', v: (isNum(geoP.repeatability) ? geoP.repeatability : 0), you: true }, { l: 'Page-one · you', v: onPageOne, you: true }];
+      const rv = spine[0];
+      if (rv && rv.src === 'AI' && isNum(rv.runs)) bars.splice(1, 0, { l: 'AI names · ' + compName(rv.name), v: rv.runs });
+      return bars;
+    })(),
   };
   // The single most persuasive bar in the product, straight from the engine's own metric{} object:
   // your AI share of voice vs the real firms it names every run (clean named peers, no directories). (R-007)
@@ -2335,11 +2384,24 @@ function sovClamp(v, samples, aiKnows) {
   if (!isNum(v)) return 0;
   return Math.max(0, Math.min(100, Math.round(v)));
 }
+// P2/2.1 + 2.3 · value-keyed Core Web Vitals explanations. The old code shipped ONE fixed sentence per metric
+// regardless of the measured value, so a passing metric read a failure sentence (28 pass-with-failure rows).
+// plain is now f(metric, status): a pass says the metric is healthy, warn/fail describe the actual problem.
+const CWV_PLAIN = {
+  LCP: { pass: 'The main content appears quickly, so visitors see your page before they lose patience.', warn: 'The main content is a little slow to appear; some visitors leave before the page feels ready.', fail: 'The main content is slow to appear. Slow LCP is the top reason visitors leave before the page loads.' },
+  INP: { pass: 'The page responds to a tap or click almost instantly, so it feels quick and trustworthy.', warn: 'The page is a little slow to respond to a tap or click, which starts to feel sluggish.', fail: 'The page is slow to respond to a tap or click. Laggy interaction reads as a broken, low-trust site.' },
+  CLS: { pass: 'The layout stays stable as the page loads, so nothing jumps under the reader.', warn: 'The layout shifts slightly as the page loads, which is noticeable to careful readers.', fail: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.' },
+  FCP: { pass: 'Something appears on screen fast, so the site feels alive the moment it opens.', warn: 'The first paint is a little slow, so the page feels sluggish on arrival.', fail: 'The first paint is slow, which makes the site feel dead on arrival.' },
+  TBT: { pass: 'The main thread is rarely blocked, so taps and scrolls stay responsive.', warn: 'The main thread is blocked for a while during load, so early taps can feel unresponsive.', fail: 'The page is frozen while scripts run, so taps do nothing for seconds after it loads.' },
+  TTFB: { pass: 'Your server sends the first byte quickly, which helps every downstream speed metric.', warn: 'Your server is a little slow to send the first byte, which delays everything that follows.', fail: 'Your server is slow to send the first byte, which holds back every downstream speed metric.' },
+  PERF: { pass: 'Overall performance is strong, which Google rewards in rankings.', warn: 'Overall performance is middling; Google ranks slow pages lower and some visitors leave early.', fail: 'Overall performance is poor. Google ranks slow pages lower and visitors leave before 3s.' },
+};
+const cwvPlain = (k, st) => (CWV_PLAIN[k] && CWV_PLAIN[k][st]) || '';
 function buildCwv(psi) {
   const out = [];
   const cls = +psi.cls;
-  if (isNum(cls)) out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: cls.toFixed(2), target: '< 0.10', pct: Math.max(8, Math.round(100 - cls * 100)), st: cls > 0.25 ? 'fail' : cls > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.' });
-  if (isNum(psi.perf)) out.push({ k: 'PERF', label: 'Performance score', v: Math.round(psi.perf * 100) + '/100', target: '> 90', pct: Math.round(psi.perf * 100), st: psi.perf >= 0.9 ? 'pass' : psi.perf >= 0.5 ? 'warn' : 'fail', plain: 'Overall mobile performance. Google ranks slow pages lower and visitors leave before 3s.' });
+  if (isNum(cls)) { const st = cls > 0.25 ? 'fail' : cls > 0.1 ? 'warn' : 'pass'; out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: cls.toFixed(2), target: '< 0.10', pct: Math.max(8, Math.round(100 - cls * 100)), st, plain: cwvPlain('CLS', st) }); }
+  if (isNum(psi.perf)) { const st = psi.perf >= 0.9 ? 'pass' : psi.perf >= 0.5 ? 'warn' : 'fail'; out.push({ k: 'PERF', label: 'Performance score', v: Math.round(psi.perf * 100) + '/100', target: '> 90', pct: Math.round(psi.perf * 100), st, plain: cwvPlain('PERF', st) }); }
   if (!out.length) out.push({ k: 'CWV', label: 'Core Web Vitals', v: 'not assessed', target: 'PageSpeed unavailable', pct: 0, st: 'warn', plain: 'PageSpeed data was unavailable on this scan, the live site was unreachable or behind a bot-challenge. Speed is captured on the next live scan.' });
   return out;
 }
@@ -2348,11 +2410,14 @@ function buildCwv(psi) {
 function buildCwvStrat(cwv) {
   if (!cwv) return [];
   const out = [], r = Math.round, cl = (n) => Math.max(8, Math.min(100, r(n)));
-  if (isNum(cwv.lcp_ms)) { const s = cwv.lcp_ms; out.push({ k: 'LCP', label: 'Largest Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 2.5s', pct: cl(100 - (s - 1000) / 40), st: s > 4000 ? 'fail' : s > 2500 ? 'warn' : 'pass', plain: 'How long until the main content appears. Slow LCP is the top reason visitors leave before the page loads.' }); }
-  if (isNum(cwv.inp_ms)) { const s = cwv.inp_ms; out.push({ k: 'INP', label: 'Interaction to Next Paint', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - (s - 100) / 5), st: s > 500 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How fast the page responds to a tap or click. Laggy interaction reads as a broken, low-trust site.' }); }
-  if (isNum(cwv.cls)) { const s = cwv.cls; out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: s.toFixed(2), target: '< 0.10', pct: cl(100 - s * 100), st: s > 0.25 ? 'fail' : s > 0.1 ? 'warn' : 'pass', plain: 'Content jumps around as the page loads. It reads as unprofessional and Google demotes it.' }); }
-  if (isNum(cwv.fcp_ms)) { const s = cwv.fcp_ms; out.push({ k: 'FCP', label: 'First Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 1.8s', pct: cl(100 - (s - 800) / 30), st: s > 3000 ? 'fail' : s > 1800 ? 'warn' : 'pass', plain: 'How fast anything first appears. A slow first paint makes the site feel dead on arrival.' }); }
-  if (isNum(cwv.tbt_ms)) { const s = cwv.tbt_ms; out.push({ k: 'TBT', label: 'Total Blocking Time', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - s / 10), st: s > 600 ? 'fail' : s > 200 ? 'warn' : 'pass', plain: 'How long the page is frozen while scripts run. High TBT means taps do nothing for seconds.' }); }
+  if (isNum(cwv.lcp_ms)) { const s = cwv.lcp_ms, st = s > 4000 ? 'fail' : s > 2500 ? 'warn' : 'pass'; out.push({ k: 'LCP', label: 'Largest Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 2.5s', pct: cl(100 - (s - 1000) / 40), st, plain: cwvPlain('LCP', st) }); }
+  // P2/2.3 · TTFB is now extracted unconditionally in the engine (server-response-time.numericValue, previously
+  // dropped when the audit passed), so a fast server can finally be reported as fast rather than omitted.
+  if (isNum(cwv.ttfb_ms)) { const s = cwv.ttfb_ms, st = s > 1800 ? 'fail' : s > 800 ? 'warn' : 'pass'; out.push({ k: 'TTFB', label: 'Time to First Byte', v: r(s) + 'ms', target: '< 800ms', pct: cl(100 - (s - 200) / 8), st, plain: cwvPlain('TTFB', st) }); }
+  if (isNum(cwv.inp_ms)) { const s = cwv.inp_ms, st = s > 500 ? 'fail' : s > 200 ? 'warn' : 'pass'; out.push({ k: 'INP', label: 'Interaction to Next Paint', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - (s - 100) / 5), st, plain: cwvPlain('INP', st) }); }
+  if (isNum(cwv.cls)) { const s = cwv.cls, st = s > 0.25 ? 'fail' : s > 0.1 ? 'warn' : 'pass'; out.push({ k: 'CLS', label: 'Cumulative Layout Shift', v: s.toFixed(2), target: '< 0.10', pct: cl(100 - s * 100), st, plain: cwvPlain('CLS', st) }); }
+  if (isNum(cwv.fcp_ms)) { const s = cwv.fcp_ms, st = s > 3000 ? 'fail' : s > 1800 ? 'warn' : 'pass'; out.push({ k: 'FCP', label: 'First Contentful Paint', v: (s / 1000).toFixed(1) + 's', target: '< 1.8s', pct: cl(100 - (s - 800) / 30), st, plain: cwvPlain('FCP', st) }); }
+  if (isNum(cwv.tbt_ms)) { const s = cwv.tbt_ms, st = s > 600 ? 'fail' : s > 200 ? 'warn' : 'pass'; out.push({ k: 'TBT', label: 'Total Blocking Time', v: r(s) + 'ms', target: '< 200ms', pct: cl(100 - s / 10), st, plain: cwvPlain('TBT', st) }); }
   return out;
 }
 // One strategy's full PSI view: the 4 Lighthouse dials (0-100, always present), CWV rows, and the

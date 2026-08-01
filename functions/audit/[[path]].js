@@ -90,6 +90,18 @@ export async function onRequest(context) {
   // or the customer can be handed a stale locked copy from the edge. Locked pages keep the 5-minute cache.
   const isUnlocked = row.unlocked === true || row.unlocked === 't' || url.searchParams.get('unlocked') === '1';
 
+  // V3 RENDER (framework_version "v3-final"): the v3 report stack is browser-only (adapt-v3 uses
+  // node:module + a browser copy module), so it is adapted AND rendered to a finished, self-contained
+  // HTML string at MINT time in Node, and stored in payload_json.__v3_html__. Serve it verbatim — no
+  // server-side adapter runs in the Workers runtime. Fonts are self-hosted (/audit/fonts, font-src
+  // 'self'); cal.com is already allowlisted in the site CSP; the page is noindex,nofollow.
+  if (payload && typeof payload.__v3_html__ === 'string' && payload.__v3_html__.length > 500) {
+    if (context.waitUntil) {
+      context.waitUntil(neonQuery(env, `UPDATE audit_pages SET open_count = COALESCE(open_count, 0) + 1, last_opened_at = now() WHERE slug = $1 AND hash = $2`, [slug, hash]).catch(() => {}));
+    }
+    return htmlResponse(payload.__v3_html__, 200, isUnlocked ? 0 : 300);
+  }
+
   let html;
   try {
     // VERSIONED DISPATCH (contract-v1.1): a v1.1 payload (findings[] + notLegalAdvice) now renders

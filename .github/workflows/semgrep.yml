@@ -18,7 +18,7 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - name: Semgrep scan (OSS rules)
         # p/default = curated OSS ruleset. p/secrets catches leaked keys, which matters because this
         # repo carries an ENV_B64 secret and a Neon URL. p/javascript + p/python for language depth.

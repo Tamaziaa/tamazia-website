@@ -52,10 +52,14 @@ const numOrNull = (v) => (v == null ? null : v);
 // The legal identity of one violation: finding fields first, its framework card as fallback -
 // every value verbatim from the engine payload.
 function legalIdentityOf(f, fw) {
+  const citation = firstOf(f.statutory_citation, fw.citation);
   return {
     display_name: firstOf(f.framework, fw.name),
     regulator: firstOf(f.regulator, fw.regulator),
-    provision: firstOf(f.statutory_citation, fw.citation),
+    // `provision` is the adapter's ARTICLE-GROUPING key (articleOf); `statutory_citation` is the
+    // field its FIX-R3 law-citation gate reads. Same catalogue string, both names it is read under.
+    provision: citation,
+    statutory_citation: citation,
     citation_url: orNull(fw.citation_url),
   };
 }
@@ -217,10 +221,14 @@ function complianceFieldsOf(p, frameworks, fwByCode) {
   const findings = Array.isArray(p.findings) ? p.findings : [];
   const violations = findings.filter((f) => f.state === 'violation');
   const review = findings.filter((f) => f.state === 'needs_review');
+  // review_candidates is the adapter's per-FRAMEWORK breach-suppression list, not a per-finding one.
+  // A framework carrying an ACCEPTED violation has already cleared review, so listing it there would
+  // suppress its own confirmed breach because a SIBLING obligation on the same instrument is undetermined.
+  const breached = new Set(violations.map((f) => f.record_id));
   return {
     pointers: violations.map((f) => pointerFromViolation(f, fwByCode)),
     // needs_review findings surface as 'applies to you' framework rows, never hard breaches
-    review_candidates: [...new Set(review.map((f) => f.record_id))],
+    review_candidates: [...new Set(review.map((f) => f.record_id))].filter((c) => !breached.has(c)),
     applicable_frameworks: frameworks.map((fw) => fw.code),
     framework_meta: frameworkMetaOf(frameworks),
     binding: bindingMapOf(frameworks),

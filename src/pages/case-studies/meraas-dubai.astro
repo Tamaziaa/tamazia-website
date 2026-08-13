@@ -1,5 +1,9 @@
 ---
-// G.5 · Case study: Meraas (Dubai Holding)
+// G.5 · Case study: UAE real estate developer (anonymised, no named client per TAMAZIA-FACTS-BIBLE)
+// COMPLIANCE FIX: this page previously named a specific real estate subsidiary and its parent
+// group, and referenced a named-individual directive — all permanently banned per the facts
+// bible. Content rewritten as an anonymised UAE real estate case study; the underlying
+// regulatory narrative (RERA, Trakheesi) is retained as generic, non-attributed content.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const canonicalUrl = 'https://tamazia.co.uk/case-studies/meraas-dubai/';
@@ -10,8 +14,8 @@ const jsonLd = {
     {
       '@type': 'Article',
       '@id': `${canonicalUrl}#article`,
-      headline: 'Case Study: Digital Presence for Meraas (Dubai Holding): RERA, Trakheesi, Zero Compliance Incidents',
-      description: 'How Tamazia built and delivered the digital presence and content architecture for Meraas, a Dubai Holding subsidiary, to Dubai Holding standard under RERA, Trakheesi, and a direct Sheikh Mohammed directive.',
+      headline: 'Case Study: Digital Presence for a UAE Real Estate Developer: RERA, Trakheesi, Zero Compliance Incidents',
+      description: 'How Tamazia built and delivered the digital presence and content architecture for a UAE real estate developer under RERA and Trakheesi.',
       author: { '@id': 'https://tamazia.co.uk/about/#person' },
       publisher: { '@id': 'https://tamazia.co.uk/#organization' },
       url: canonicalUrl,
@@ -22,7 +26,7 @@ const jsonLd = {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tamazia.co.uk/' },
         { '@type': 'ListItem', position: 2, name: 'Case Studies', item: 'https://tamazia.co.uk/case-studies/' },
-        { '@type': 'ListItem', position: 3, name: 'Meraas', item: canonicalUrl },
+        { '@type': 'ListItem', position: 3, name: 'UAE Real Estate Developer', item: canonicalUrl },
       ],
     },
   ],
@@ -30,8 +34,8 @@ const jsonLd = {
 ---
 
 <BaseLayout
-  title="Case Study: Meraas (Dubai Holding) · RERA & Trakheesi Compliance · Tamazia"
-  description="How Tamazia built the digital presence for Meraas, a Dubai Holding subsidiary, to Dubai Holding standard under RERA, Trakheesi, and a direct Sheikh Mohammed directive. Zero compliance incidents."
+  title="Case Study: UAE Real Estate Developer · RERA & Trakheesi Compliance · Tamazia"
+  description="How Tamazia built the digital presence for a UAE real estate developer under RERA and Trakheesi. Zero compliance incidents."
   canonical={canonicalUrl}
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
@@ -85,20 +89,20 @@ const jsonLd = {
       <ol>
         <li><a href="/">Home</a></li>
         <li><a href="/case-studies/">Case Studies</a></li>
-        <li aria-current="page">Meraas</li>
+        <li aria-current="page">UAE Real Estate Developer</li>
       </ol>
     </nav>
 
     <article>
       <header class="cs-hero" aria-labelledby="cs-h1">
-        <p class="cs-eyebrow">TAMAZIA · REAL ESTATE · DUBAI HOLDING</p>
-        <h1 id="cs-h1" class="cs-h1">Digital presence for a Dubai Holding subsidiary. Zero compliance incidents.</h1>
-        <p class="cs-sub">Meraas is a subsidiary of Dubai Holding. The engagement required full compliance with RERA under UAE Law No. 7 of 2013, the Trakheesi off-plan marketing system, and a direct directive from Sheikh Mohammed. Every piece of content cleared each standard before publication.</p>
+        <p class="cs-eyebrow">TAMAZIA · REAL ESTATE · UAE</p>
+        <h1 id="cs-h1" class="cs-h1">Digital presence for a UAE real estate developer. Zero compliance incidents.</h1>
+        <p class="cs-sub">A UAE real estate developer. The engagement required full compliance with RERA under UAE Law No. 7 of 2013 and the Trakheesi off-plan marketing system. Every piece of content cleared each standard before publication.</p>
         <ul class="cs-meta-strip" role="list">
-          <li><span class="meta-label">Client</span><span class="meta-value">Meraas (Dubai Holding)</span></li>
           <li><span class="meta-label">Sector</span><span class="meta-value">Real Estate · UAE</span></li>
-          <li><span class="meta-label">Standards</span><span class="meta-value">RERA · Trakheesi · Dubai Holding</span></li>
+          <li><span class="meta-label">Standards</span><span class="meta-value">RERA · Trakheesi</span></li>
           <li><span class="meta-label">Incidents</span><span class="meta-value">Zero</span></li>
+          <li><span class="meta-label">Jurisdiction</span><span class="meta-value">UAE</span></li>
         </ul>
       </header>
 
@@ -108,12 +112,12 @@ const jsonLd = {
             <li class="stat-card">
               <span class="stat-number" data-stat>Zero</span>
               <span class="stat-label">Compliance incidents</span>
-              <span class="stat-period">RERA + Trakheesi + Dubai Holding standard</span>
+              <span class="stat-period">RERA + Trakheesi standard</span>
             </li>
             <li class="stat-card">
-              <span class="stat-number" data-stat>3</span>
+              <span class="stat-number" data-stat>2</span>
               <span class="stat-label">Regulatory frameworks applied simultaneously</span>
-              <span class="stat-period">RERA · Trakheesi · Dubai Holding directive</span>
+              <span class="stat-period">RERA · Trakheesi</span>
             </li>
             <li class="stat-card">
               <span class="stat-number" data-stat>UAE</span>
@@ -132,7 +136,7 @@ const jsonLd = {
               Real estate advertising in the UAE is not a voluntary compliance exercise. The Real Estate Regulatory Authority, constituted under Dubai Law No. 7 of 2013, requires every real estate advertisement to include the property registration number, the developer's licence number, and the agent's RERA registration. The Trakheesi system governs off-plan marketing permissions. Non-compliant advertising is an enforcement matter, not a civil one.
             </p>
             <p>
-              The Meraas engagement operated under an additional layer of obligation: Dubai Holding standards and a direct directive issued by Sheikh Mohammed. That directive established specific presentation requirements for Meraas properties that went beyond the minimum RERA threshold. Content that met the legal minimum but did not meet the Dubai Holding standard was not acceptable.
+              This engagement operated under an additional layer of obligation: an internal brand presentation standard that established specific presentation requirements for the developer's properties, going beyond the minimum RERA threshold. Content that met the legal minimum but did not meet that internal standard was not acceptable.
             </p>
             <p>
               The engagement was also subject to the expectations of an international buyer audience that included UK buyers (CPR 2008 compliance), European buyers, and buyers from across the GCC. A property marketed with an investment return expectation to US buyers raises separate considerations under applicable state securities laws. The review process covered each buyer jurisdiction simultaneously.
@@ -142,17 +146,17 @@ const jsonLd = {
           <h2 class="cs-section-label">The Approach</h2>
           <div class="cs-prose">
             <p>
-              Every content deliverable was mapped against the RERA checklist first: registration numbers present, developer licence number visible, Trakheesi permission confirmed for off-plan references. The Dubai Holding presentation standard was applied as a secondary layer: tone, structure, and claim substantiation reviewed against the internal standard before external publication.
+              Every content deliverable was mapped against the RERA checklist first: registration numbers present, developer licence number visible, Trakheesi permission confirmed for off-plan references. The developer's internal presentation standard was applied as a secondary layer: tone, structure, and claim substantiation reviewed against the internal standard before external publication.
             </p>
             <p>
-              Property descriptions, amenity content, and location guides were produced under the same dual-standard review. The content architecture was built to make future compliance updates, triggered by changes in RERA guidance or Dubai Holding direction, straightforward to implement without full content rebuilds.
+              Property descriptions, amenity content, and location guides were produced under the same dual-standard review. The content architecture was built to make future compliance updates, triggered by changes in RERA guidance or internal brand direction, straightforward to implement without full content rebuilds.
             </p>
           </div>
 
           <h2 class="cs-section-label">The Outcome</h2>
           <div class="cs-prose">
             <p>
-              Zero compliance incidents across the engagement. No RERA enforcement action. No Dubai Holding escalation. No content required to be withdrawn or amended post-publication.
+              Zero compliance incidents across the engagement. No RERA enforcement action. No internal escalation. No content required to be withdrawn or amended post-publication.
             </p>
             <p>
               The compliance record stands as the primary metric of this engagement. In a regulatory environment where non-compliant advertising is an enforcement matter, the absence of incidents is not a baseline expectation. It is a deliverable.

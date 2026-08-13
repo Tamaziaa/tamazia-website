@@ -1,5 +1,10 @@
 ---
-// G.5 · Case study: CG Oncology (Nasdaq: CGON)
+// G.5 · Case study: Nasdaq-listed healthcare IPO (anonymised, no named client per TAMAZIA-FACTS-BIBLE)
+// COMPLIANCE FIX: this page previously named a specific biotech IPO client and its Nasdaq
+// ticker, and attributed a specific share-price move to Tamazia's work. Both are permanently
+// banned per the facts bible. Content rewritten as an anonymised healthcare-IPO case study;
+// the underlying regulatory narrative (SEC Reg FD / FDA / FINRA) is retained as generic,
+// non-attributed content.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const canonicalUrl = 'https://tamazia.co.uk/case-studies/cg-oncology/';
@@ -10,8 +15,8 @@ const jsonLd = {
     {
       '@type': 'Article',
       '@id': `${canonicalUrl}#article`,
-      headline: 'Case Study: CG Oncology IPO Digital Content, SEC Reg FD, FDA and FINRA Reviewed, Zero Compliance Incidents',
-      description: 'How Tamazia produced digital content for the CG Oncology Nasdaq IPO under SEC Regulation FD, FDA disclosure requirements, and FINRA Rule 2210 simultaneously. Shares up 96% at IPO. Zero compliance incidents.',
+      headline: 'Case Study: Nasdaq Healthcare IPO Digital Content, SEC Reg FD, FDA and FINRA Reviewed, Zero Compliance Incidents',
+      description: 'How Tamazia produced digital content for a Nasdaq-listed healthcare IPO under SEC Regulation FD, FDA disclosure requirements, and FINRA Rule 2210 simultaneously. Zero compliance incidents.',
       author: { '@id': 'https://tamazia.co.uk/about/#person' },
       publisher: { '@id': 'https://tamazia.co.uk/#organization' },
       url: canonicalUrl,
@@ -22,7 +27,7 @@ const jsonLd = {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tamazia.co.uk/' },
         { '@type': 'ListItem', position: 2, name: 'Case Studies', item: 'https://tamazia.co.uk/case-studies/' },
-        { '@type': 'ListItem', position: 3, name: 'CG Oncology', item: canonicalUrl },
+        { '@type': 'ListItem', position: 3, name: 'Nasdaq Healthcare IPO', item: canonicalUrl },
       ],
     },
   ],
@@ -30,8 +35,8 @@ const jsonLd = {
 ---
 
 <BaseLayout
-  title="Case Study: CG Oncology IPO · SEC Reg FD + FDA + FINRA · Tamazia"
-  description="Tamazia produced digital content for the CG Oncology (Nasdaq: CGON) IPO under SEC Regulation FD, FDA disclosure requirements, and FINRA Rule 2210 simultaneously. Shares up 96% at IPO. Zero compliance incidents."
+  title="Case Study: Nasdaq Healthcare IPO · SEC Reg FD + FDA + FINRA · Tamazia"
+  description="Tamazia produced digital content for a Nasdaq-listed healthcare IPO under SEC Regulation FD, FDA disclosure requirements, and FINRA Rule 2210 simultaneously. Zero compliance incidents."
   canonical={canonicalUrl}
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
@@ -85,20 +90,20 @@ const jsonLd = {
       <ol>
         <li><a href="/">Home</a></li>
         <li><a href="/case-studies/">Case Studies</a></li>
-        <li aria-current="page">CG Oncology</li>
+        <li aria-current="page">Nasdaq Healthcare IPO</li>
       </ol>
     </nav>
 
     <article>
       <header class="cs-hero" aria-labelledby="cs-h1">
-        <p class="cs-eyebrow">TAMAZIA · HEALTHCARE · NASDAQ: CGON</p>
-        <h1 id="cs-h1" class="cs-h1">IPO digital content under SEC Reg FD, FDA, and FINRA. Shares up 96%. Zero compliance incidents.</h1>
-        <p class="cs-sub">CG Oncology listed on Nasdaq as CGON. The digital content surrounding the IPO was required to comply with SEC Regulation FD, FDA advertising and disclosure requirements, and FINRA Rule 2210 communications standards, simultaneously. No incidents. No corrections. Shares up 96% at IPO.</p>
+        <p class="cs-eyebrow">TAMAZIA · HEALTHCARE · NASDAQ IPO</p>
+        <h1 id="cs-h1" class="cs-h1">IPO digital content under SEC Reg FD, FDA, and FINRA. Zero compliance incidents.</h1>
+        <p class="cs-sub">A Nasdaq-listed healthcare client. The digital content surrounding the IPO was required to comply with SEC Regulation FD, FDA advertising and disclosure requirements, and FINRA Rule 2210 communications standards, simultaneously. No incidents. No corrections.</p>
         <ul class="cs-meta-strip" role="list">
-          <li><span class="meta-label">Client</span><span class="meta-value">CG Oncology (Nasdaq: CGON)</span></li>
           <li><span class="meta-label">Sector</span><span class="meta-value">Healthcare · Biotech</span></li>
+          <li><span class="meta-label">Listing</span><span class="meta-value">Nasdaq IPO</span></li>
           <li><span class="meta-label">Standards</span><span class="meta-value">SEC Reg FD · FDA · FINRA 2210</span></li>
-          <li><span class="meta-label">IPO result</span><span class="meta-value">+96% at listing</span></li>
+          <li><span class="meta-label">Incidents</span><span class="meta-value">Zero</span></li>
         </ul>
       </header>
 
@@ -111,9 +116,9 @@ const jsonLd = {
               <span class="stat-period">SEC Reg FD + FDA + FINRA reviewed</span>
             </li>
             <li class="stat-card">
-              <span class="stat-number" data-stat>+96%</span>
-              <span class="stat-label">Share price at IPO</span>
-              <span class="stat-period">Nasdaq listing · CGON</span>
+              <span class="stat-number" data-stat>Nasdaq</span>
+              <span class="stat-label">Listing venue</span>
+              <span class="stat-period">Healthcare IPO</span>
             </li>
             <li class="stat-card">
               <span class="stat-number" data-stat>3</span>
@@ -132,7 +137,7 @@ const jsonLd = {
               Digital content produced in connection with a public offering occupies one of the most heavily regulated positions in commercial communication. SEC Regulation FD prohibits the selective disclosure of material non-public information. Any digital content that touches on the company's clinical pipeline, financial position, or business prospects during the pre-IPO and IPO window must be reviewed against that prohibition before publication.
             </p>
             <p>
-              At the same time, CG Oncology is a healthcare company. Its products are subject to FDA regulation. Communications about oncology treatments, clinical trial results, and patient outcomes are subject to FDA advertising and disclosure requirements under 21 CFR Part 202. Content that would be permissible for a technology company at IPO may not be permissible for a biotech company subject to FDA oversight.
+              At the same time, this client is a healthcare company. Its products are subject to FDA regulation. Communications about clinical treatments, trial results, and patient outcomes are subject to FDA advertising and disclosure requirements under 21 CFR Part 202. Content that would be permissible for a technology company at IPO may not be permissible for a biotech company subject to FDA oversight.
             </p>
             <p>
               FINRA Rule 2210 adds a third layer. For broker-dealers and any entity whose communications are distributed through regulated channels, the rule sets standards for communications that include numerical performance claims or projections. Where digital content references clinical outcomes or financial metrics, FINRA Rule 2210 review applies.
@@ -161,7 +166,7 @@ const jsonLd = {
               Zero compliance incidents across the listing process. No content was required to be withdrawn, amended, or corrected post-publication. No SEC, FDA, or FINRA enquiry arose from the digital content produced in connection with the IPO.
             </p>
             <p>
-              CG Oncology listed on Nasdaq as CGON. Shares were up 96% at IPO. The compliance record and the market outcome are both a function of the same discipline: content that is built to survive scrutiny is content that supports the proposition being made.
+              The client listed on Nasdaq. The compliance record stands as the primary metric of this engagement: content that is built to survive scrutiny is content that supports the proposition being made.
             </p>
           </div>
         </div>

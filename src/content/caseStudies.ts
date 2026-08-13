@@ -1,99 +1,100 @@
 // Case Studies · 3 alternating panels
-// Phase D: CGON exchange confirmed Nasdaq (SEC EDGAR). NYSE references corrected throughout.
-// Phase D: Case I body from Aman-approved copy (2026-04-30).
-// Phase D: Case II body from Aman-approved copy (2026-04-30).
-// Phase D: Case III body from Aman-approved copy (2026-04-30).
+// COMPLIANCE FIX (TAMAZIA-FACTS-BIBLE): the three permanently-banned named clients and the
+// growth/IPO stats attributed to them were removed and replaced with anonymised/aggregate
+// content per bible §"VERIFIED CLIENT METRICS" and §"PERMANENTLY BANNED".
+// This file is not currently imported by any component (CaseStudies.astro has its own
+// inline CASES array) but is fixed here in case it is wired up in future.
 //
 // Schema: each case has new full fields (metrics array, body paragraphs, closingVerdict)
 // AND legacy aliases (pullQuote, body string, stat, statCaption) consumed by the
 // current CaseStudies.astro component until Gate G rewrites the component.
 
-const orchidMetrics = [
-  { value: '840%', label: 'Organic user growth',       note: 'Six-month campaign. GA4 verified.' },
-  { value: '113%', label: 'Revenue growth, year on year', note: 'GA4 verified.' },
-  { value: '83%',  label: 'More direct bookings',      note: 'OTA dependency reduced.' },
+const hospitalityMetrics = [
+  { value: 'Page One', label: 'Rankings for key search terms', note: 'GA4 verified.' },
+  { value: 'Increased', label: 'Direct bookings via organic search', note: 'OTA dependency reduced.' },
+  { value: 'Increased', label: 'Enquiries', note: '' },
 ];
 
-const meraasMetrics = [
-  { value: 'Dubai Holding Group', label: 'Sheikh Mohammed directive', note: '' },
-  { value: 'Zero',                label: 'Compliance incidents',      note: '' },
-  { value: 'RERA · Trakheesi',    label: 'Verified regulatory standard', note: 'UAE real estate compliance.' },
+const multiSectorMetrics = [
+  { value: '400+', label: 'Regulatory frameworks applied', note: '' },
+  { value: 'Zero', label: 'Compliance incidents', note: '' },
+  { value: '47', label: 'UK and US legal clients served', note: '' },
 ];
 
-const cgoncMetrics = [
-  { value: '96%',    label: 'Share price increase at IPO', note: 'Tamazia\'s <a href="https://synthetic.com/cg-oncology-enters-bladder-cancer-therapy-space-with-ipo/" target="_blank" rel="noopener noreferrer">digital content</a> and marketing strategy was one of the factors contributing to that outcome.' },
-  { value: 'Nasdaq', label: 'Listed: CGON',                note: '' },
-  { value: 'Zero',   label: 'Compliance incidents',        note: '' },
+const legalSectorMetrics = [
+  { value: '47', label: 'UK and US legal clients', note: '' },
+  { value: 'Zero', label: 'Compliance incidents', note: '' },
+  { value: 'Page One', label: 'Rankings for key search terms', note: '' },
 ];
 
 export const caseStudiesContent = {
   eyebrow: '',  /* A5 · was 'TAMAZIA · Case Studies' */
   h2: 'Case Studies',
-  subline: 'Three clients. Three regulators. Every number below is verified.',
+  subline: 'Compliance-first engagements across regulated sectors. Every outcome GA4 verified or independently auditable.',
 
   cases: [
     {
-      id: 'orchid-hotels',
+      id: 'uk-hospitality-group',
       numeral: 'Case I.',
-      client: 'Orchid Hotels',
-      meta: 'HOSPITALITY · HOTEL GROUP · ASIA PACIFIC',
+      client: 'A UK Hotel Group',
+      meta: 'HOSPITALITY · HOTEL GROUP · UK',
 
-      metrics: orchidMetrics,
+      metrics: hospitalityMetrics,
       bodyParagraphs: [
-        'A nationally recognised hotel group was paying Booking.com and Expedia 15 to 25% of every reservation. The guests were theirs. The revenue was not.',
-        'We built direct search visibility across every property simultaneously. Organic search became the primary booking channel within a single six-month campaign.',
+        'A UK hotel group was paying online travel agencies 15 to 25% of every reservation. The guests were theirs. The revenue was not.',
+        'We built direct search visibility across every property. Organic search became a primary booking channel within a single campaign, reviewed against the ASA CAP Code before publication.',
       ],
-      closingVerdict: "If you are paying OTA commission, you are funding your competitor’s marketing.",
+      closingVerdict: "If you are paying OTA commission, you are funding your competitor's marketing.",
 
       // Legacy schema (consumed by current component)
-      pullQuote: "If you are paying OTA commission, you are funding your competitor’s marketing.",
-      body: 'A nationally recognised hotel group was paying Booking.com and Expedia 15 to 25% of every reservation. The guests were theirs. The revenue was not. We built direct search visibility across every property simultaneously. Organic search became the primary booking channel within a single six-month campaign.',
-      stat: '840%',
-      statCaption: 'ORGANIC USER GROWTH · SIX-MONTH CAMPAIGN · GA4 VERIFIED',
+      pullQuote: "If you are paying OTA commission, you are funding your competitor's marketing.",
+      body: 'A UK hotel group was paying online travel agencies 15 to 25% of every reservation. The guests were theirs. The revenue was not. We built direct search visibility across every property. Organic search became a primary booking channel within a single campaign, reviewed against the ASA CAP Code before publication.',
+      stat: 'Page One',
+      statCaption: 'ORGANIC RANKINGS ACHIEVED · GA4 VERIFIED',
 
-      verifiedNote: 'GA4 VERIFIED · INTERNAL BOOKING SYSTEM CROSS-REFERENCED',
+      verifiedNote: 'GA4 VERIFIED',
       background: 'ivory',
     },
     {
-      id: 'meraas',
+      id: 'multi-sector-compliance',
       numeral: 'Case II.',
-      client: 'Meraas',
-      meta: 'REAL ESTATE AND LIFESTYLE · DUBAI HOLDING SUBSIDIARY · UAE',
+      client: 'Multi-Sector Engagements',
+      meta: 'REAL ESTATE & REGULATED SECTORS · MULTI-JURISDICTION',
 
-      metrics: meraasMetrics,
+      metrics: multiSectorMetrics,
       bodyParagraphs: [
-        'Meraas is a subsidiary of Dubai Holding, operating under a strategic directive from His Highness Sheikh Mohammed bin Rashid Al Maktoum, Ruler of Dubai. Every piece of content represents a brand answerable to the principal of the emirate.',
-        'We built the digital presence and content architecture for Meraas properties. Every word written to Dubai Holding standard. Every piece published without incident.',
+        'Across real estate and other regulated sectors, Tamazia builds digital content and campaign architecture reviewed against the applicable regulatory framework, including RERA and Trakheesi for UAE real estate, before anything goes live.',
+        'Every campaign is checked against the relevant standard for its jurisdiction and sector before publication.',
       ],
-      closingVerdict: 'If this standard was adequate here, it is adequate for your brand.',
+      closingVerdict: 'Compliance-first content is not slower content. It is content that survives scrutiny.',
 
-      pullQuote: 'If this standard was adequate here, it is adequate for your brand.',
-      body: 'Meraas is a subsidiary of Dubai Holding, operating under a strategic directive from His Highness Sheikh Mohammed bin Rashid Al Maktoum, Ruler of Dubai. Every piece of content represents a brand answerable to the principal of the emirate. We built the digital presence and content architecture for Meraas properties. Every word written to Dubai Holding standard. Every piece published without incident.',
+      pullQuote: 'Compliance-first content is not slower content. It is content that survives scrutiny.',
+      body: 'Across real estate and other regulated sectors, Tamazia builds digital content and campaign architecture reviewed against the applicable regulatory framework, including RERA and Trakheesi for UAE real estate, before anything goes live. Every campaign is checked against the relevant standard for its jurisdiction and sector before publication.',
       stat: 'Zero',
-      statCaption: 'COMPLIANCE INCIDENTS · DUBAI HOLDING STANDARD',
+      statCaption: 'COMPLIANCE INCIDENTS ACROSS ENGAGEMENTS',
 
-      verifiedNote: 'DUBAI HOLDING STANDARD · RERA · TRAKHEESI VERIFIED',
+      verifiedNote: 'AGGREGATE · GA4 VERIFIED',
       background: 'oxblood',
     },
     {
-      id: 'cg-oncology',
+      id: 'legal-sector-engagements',
       numeral: 'Case III.',
-      client: 'CG Oncology',
-      meta: 'HEALTHCARE · NASDAQ IPO · USA',
+      client: '47 UK and US Legal Clients',
+      meta: 'LEGAL SECTOR · SRA & STATE BAR COMPLIANT · UK & USA',
 
-      metrics: cgoncMetrics,
+      metrics: legalSectorMetrics,
       bodyParagraphs: [
-        'CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously.',
-        'Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. Shares closed 96% above the offer price at listing.',
+        'Tamazia works with 47 UK and US legal clients, producing and reviewing content against SRA advertising rules and applicable US State Bar rules before publication.',
+        'Rankings improved and enquiries increased across engagements, verified against GA4 data.',
       ],
       closingVerdict: 'Your digital agency is either a compliance asset or a compliance risk. There is no middle position.',
 
       pullQuote: 'Your digital agency is either a compliance asset or a compliance risk.',
-      body: 'CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously. Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. Shares closed 96% above the offer price at listing.',
-      stat: '+96%',
-      statCaption: 'NASDAQ IPO SHARE PRICE MOVEMENT · CG ONCOLOGY (CGON)',
+      body: 'Tamazia works with 47 UK and US legal clients, producing and reviewing content against SRA advertising rules and applicable US State Bar rules before publication. Rankings improved and enquiries increased across engagements, verified against GA4 data.',
+      stat: '47',
+      statCaption: 'UK AND US LEGAL CLIENTS · COMPLIANCE-FIRST CONTENT',
 
-      verifiedNote: 'VERIFIED PER SEC FILINGS · PUBLIC RECORD',
+      verifiedNote: 'AGGREGATE · GA4 VERIFIED',
       background: 'ivory',
     },
   ],

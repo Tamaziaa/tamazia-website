@@ -34,7 +34,7 @@ export interface Props {
 
 const {
   title = 'Tamazia · International SEO for regulated enterprises',
-  description = 'Lawyer-led SEO and regulatory compliance firm. Every campaign passes through 400+ laws before anything goes live. Trusted by an NSE-listed hotel group, CG Oncology (Nasdaq: CGON), Meraas (Dubai Holding).',
+  description = 'Lawyer-led SEO and regulatory compliance firm. Every campaign passes through 400+ laws before anything goes live. Trusted by 47 UK and US legal clients.',
   canonical = 'https://tamazia.co.uk/',
   ogImage = '/og-default.png',
   noindex = false,
@@ -118,6 +118,16 @@ const jsonLd = {
 };
 
 // K3 · BreadcrumbList auto-derived from canonical path on non-home routes
+// COMPLIANCE FIX (TAMAZIA-FACTS-BIBLE): the URL slugs below still contain fragments of
+// permanently-banned client names (retained as legacy URLs so we don't break/duplicate
+// existing routes). Without this override, naive title-casing of the slug would surface
+// those names inside the page's JSON-LD BreadcrumbList even though the visible content
+// is anonymised. Map those specific segments to compliant labels; everything else still
+// falls back to the default title-casing.
+const _segLabelOverrides: Record<string, string> = {
+  'meraas-dubai': 'UAE Real Estate Developer',
+  'cg-oncology': 'Nasdaq Healthcare IPO',
+};
 const _path = (canonical || 'https://tamazia.co.uk/').replace('https://tamazia.co.uk', '').replace(/\/$/, '');
 const _segs = _path.split('/').filter(Boolean);
 if (extraSchema) {
@@ -136,7 +146,7 @@ if (_segs.length > 0) {
       ..._segs.map((seg, i) => ({
         '@type': 'ListItem',
         position: i + 2,
-        name: seg.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+        name: _segLabelOverrides[seg] || seg.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
         item: 'https://tamazia.co.uk/' + _segs.slice(0, i + 1).join('/') + '/',
       })),
     ],

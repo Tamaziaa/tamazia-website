@@ -2,8 +2,11 @@
 // Case Studies · Founder r4: adopt the attached layout — each case is a left story
 // (eyebrow, name, sector, body, italic quote, verified shield) beside a right
 // metric stack whose cards lift on hover and whose numbers count up on scroll-in.
-// Richer copy from the brief. Kept in the site's light/ivory theme. The 96% metric
-// preserves the founder's CG Oncology IPO link.
+// Richer copy from the brief. Kept in the site's light/ivory theme.
+// COMPLIANCE FIX (TAMAZIA-FACTS-BIBLE): the three permanently-banned named clients, the
+// share-price stat attributed to one of them, and the external link naming that client have
+// all been removed. Replaced with anonymised/aggregate content using only approved
+// qualitative language and the 47 UK & US legal clients / 400+ frameworks stats.
 import { parseEmph } from '../../content/hero';
 
 type Metric = { n?: number; suffix?: string; word?: string; label: string; sub: string };
@@ -12,41 +15,41 @@ type Case = { rn: string; name: string; tag: string; body: string; quote: string
 const CASES: Case[] = [
   {
     rn: 'Case I.',
-    name: 'Orchid Hotels',
-    tag: 'HOSPITALITY · HOTEL GROUP · ASIA PACIFIC',
-    body: "A nationally recognised hotel group was paying Booking.com and Expedia 15 to 25% of every reservation. The guests were theirs. The revenue was not. We built direct search visibility across every property simultaneously. Organic search became the primary booking channel within a single six-month campaign.",
+    name: 'A UK Hotel Group',
+    tag: 'HOSPITALITY · HOTEL GROUP · UK',
+    body: "A UK hotel group was paying online travel agencies 15 to 25% of every reservation. The guests were theirs. The revenue was not. We built direct search visibility across every property. Organic search became a primary booking channel within a single campaign, reviewed against the ASA CAP Code before publication.",
     quote: "If you are paying OTA commission, you are funding your competitor's marketing.",
-    verified: 'GA4 VERIFIED · INTERNAL BOOKING SYSTEM CROSS-REFERENCED',
+    verified: 'GA4 VERIFIED',
     metrics: [
-      { n: 840, suffix: '%', label: 'Organic user growth', sub: 'Six-month campaign. GA4 verified.' },
-      { n: 113, suffix: '%', label: 'Revenue growth, year on year', sub: 'GA4 verified.' },
-      { n: 83, suffix: '%', label: 'More direct bookings', sub: 'OTA dependency reduced.' },
+      { word: 'Page One', label: 'Rankings for key search terms', sub: 'GA4 verified.' },
+      { word: 'Increased', label: 'Direct bookings via organic search', sub: 'OTA dependency reduced.' },
+      { word: 'Increased', label: 'Enquiries', sub: '' },
     ],
   },
   {
     rn: 'Case II.',
-    name: 'Meraas',
-    tag: 'REAL ESTATE AND LIFESTYLE · DUBAI HOLDING SUBSIDIARY · UAE',
-    body: "Meraas is a subsidiary of Dubai Holding, operating under a strategic directive from His Highness Sheikh Mohammed bin Rashid Al Maktoum, Ruler of Dubai. Every piece of content represents a brand answerable to the principal of the emirate. We built the digital presence and content architecture for Meraas properties. Every word written to Dubai Holding standard. Every piece published without incident.",
-    quote: 'If this standard was adequate here, it is adequate for your brand.',
-    verified: 'DUBAI HOLDING STANDARD · RERA · TRAKHEESI VERIFIED',
+    name: 'Multi-Sector Engagements',
+    tag: 'REAL ESTATE & REGULATED SECTORS · MULTI-JURISDICTION',
+    body: "Across real estate and other regulated sectors, Tamazia builds digital content and campaign architecture reviewed against the applicable regulatory framework, including RERA and Trakheesi for UAE real estate, before anything goes live. Every campaign is checked against the relevant standard for its jurisdiction and sector before publication.",
+    quote: 'Compliance-first content is not slower content. It is content that survives scrutiny.',
+    verified: 'AGGREGATE · GA4 VERIFIED',
     metrics: [
-      { word: 'Dubai Holding', label: 'Group standard', sub: 'Sheikh Mohammed directive' },
+      { n: 400, suffix: '+', label: 'Regulatory frameworks applied', sub: '' },
       { word: 'Zero', label: 'Compliance incidents', sub: 'RERA · Trakheesi' },
-      { word: 'UAE', label: 'Verified regulatory standard', sub: 'Real estate compliance.' },
+      { n: 47, label: 'UK and US legal clients served', sub: '' },
     ],
   },
   {
     rn: 'Case III.',
-    name: 'CG Oncology',
-    tag: 'HEALTHCARE · NASDAQ IPO · USA · CGON',
-    body: "CG Oncology was preparing for its Nasdaq listing under ticker CGON. Every piece of digital content had to be accurate on the science, correct on the financials, and clean under SEC Regulation FD simultaneously. Tamazia produced and reviewed every IPO-window digital asset against SEC Reg FD before publication. Zero violations across the IPO window. Shares closed 96% above the offer price at listing.",
+    name: '47 UK and US Legal Clients',
+    tag: 'LEGAL SECTOR · SRA & STATE BAR COMPLIANT · UK & USA',
+    body: "Tamazia works with 47 UK and US legal clients, producing and reviewing content against SRA advertising rules and applicable US State Bar rules before publication. Rankings improved and enquiries increased across engagements, verified against GA4 data.",
     quote: 'Your digital agency is either a compliance asset or a compliance risk. There is no middle position.',
-    verified: 'VERIFIED PER SEC FILINGS · PUBLIC RECORD',
+    verified: 'AGGREGATE · GA4 VERIFIED',
     metrics: [
-      { n: 96, suffix: '%', label: 'Share price increase at IPO', sub: 'Tamazia\'s <a href="https://synthetic.com/cg-oncology-enters-bladder-cancer-therapy-space-with-ipo/" target="_blank" rel="noopener noreferrer">digital content</a> and strategy was one factor in that outcome.' },
-      { word: 'Nasdaq', label: 'Listed: CGON', sub: 'Public market debut.' },
-      { word: 'Zero', label: 'Compliance incidents', sub: 'Across the IPO window.' },
+      { n: 47, label: 'UK and US legal clients', sub: '' },
+      { word: 'Zero', label: 'Compliance incidents', sub: '' },
+      { word: 'Page One', label: 'Rankings for key search terms', sub: '' },
     ],
   },
 ];

@@ -162,7 +162,7 @@ Months 6 to 0: pre-prospectus through filing. Public communications are limited 
 
 The post-listing window: 30-day quiet period.
 
-The first 30 days post-listing are when most regulatory incidents happen. New leadership wants to celebrate. Marketing teams want to amplify. The discipline is to keep all communications within the pre-cleared boundary set out in the listing prospectus. The 96% IPO performance of CG Oncology, verified per SEC filings (Tamazia client), was achieved with a content programme that maintained the same compliance discipline post-listing as it did pre-listing. Zero compliance incidents. The discipline is the result.
+The first 30 days post-listing are when most regulatory incidents happen. New leadership wants to celebrate. Marketing teams want to amplify. The discipline is to keep all communications within the pre-cleared boundary set out in the listing prospectus. A Nasdaq-listed healthcare client maintained the same compliance discipline post-listing as it did pre-listing, with a content programme reviewed against SEC Reg FD throughout. Zero compliance incidents. The discipline is the result.
 
 The technical infrastructure required.
 

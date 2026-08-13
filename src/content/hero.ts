@@ -107,23 +107,23 @@ export const heroContent = {
   // Founder directive 2026-06-10 · simplified register label
   ribbonLabel: 'Live 400+ regulatory register applied to client work',
 
-  // Client ribbon — verbatim live site. Kamat stays here (live site confirms).
-  // Case-study panel is Orchid (not Kamat) — handled separately in caseStudies.ts.
+  // Client ribbon — anonymised aggregate stats only (compliance fix, TAMAZIA-FACTS-BIBLE).
+  // The three previously-named banned clients were removed entirely per the bible: zero mentions.
   clientRibbonPrefix: 'Trusted by',
   clientRibbonClients: [
-    'KAMAT HOTELS (NSE)',
-    'CG ONCOLOGY (Nasdaq: CGON)',
-    'MERAAS (DUBAI HOLDING)',
+    '47 UK AND US LEGAL CLIENTS',
+    '400+ REGULATORY FRAMEWORKS APPLIED',
+    'MULTI-SECTOR · MULTI-JURISDICTION',
   ],
   clientRibbonSuffix:
     'Engagements delivered in UK, UAE, USA, EU & Worldwide.',
 
   // Legacy ticker — kept as below-fold strip for scrolling marquee.
-  // Dates removed per filler-removal rule.
+  // Dates removed per filler-removal rule. Named-client lines removed per compliance fix.
   tickerItems: [
-    'KAMAT HOTELS GROUP · NSE-LISTED HOSPITALITY · DIRECT-BOOKING SHIFT',
-    'CG ONCOLOGY · Nasdaq: CGON · +96% AT IPO · VERIFIED PER SEC FILINGS',
-    'MERAAS · DUBAI HOLDING SUBSIDIARY · SHEIKH MOHAMMED DIRECTIVE',
+    '47 UK & US LEGAL CLIENTS · SRA & STATE BAR COMPLIANT SEO',
+    'COMPLIANCE-FIRST CONTENT · ZERO INCIDENTS ACROSS ENGAGEMENTS',
+    'RANKINGS IMPROVED · ENQUIRIES INCREASED · PAGE ONE FOR KEY SEARCHES',
     '400+ LAWS REVIEWED PER CAMPAIGN',
     'FOUR CONTINENTS · LONDON · DUBAI · NEW YORK · PARIS',
   ],

@@ -49,9 +49,9 @@ In the United States, the FDA regulates prescription drug advertising under 21 C
 
 Tamazia reviews every piece of healthcare content against the applicable standard before publication. Private clinic service pages, surgeon biographies, treatment descriptions, and before-and-after testimonials are reviewed against MHRA, ASA Health Code, CQC presentation requirements, and, for US-facing content, FDA and HIPAA simultaneously. Content that would expose the practice to regulatory scrutiny does not reach Google.`,
     regulators: ['MHRA Human Medicines Regulations 2012', 'ASA CAP Health Code', 'CQC Standards', 'HIPAA Privacy Rule 45 CFR 164.508', 'FDA 21 CFR Part 202', 'FTC Health Claims Guidance', 'GMC GMP', 'GDC Standards', 'NMC Code', 'ACA Section 1557', 'NHS Constitution', 'HTA 2004', 'GDPR / UK GDPR', 'HITECH Act'],
-    proofPoint: 'CG Oncology, Nasdaq-listed (CGON): digital content for IPO executed under SEC Regulation FD and FDA disclosure requirements simultaneously. Zero compliance incidents across the listing process.',
+    proofPoint: 'Healthcare IPO digital content executed under SEC Regulation FD and FDA disclosure requirements simultaneously. Zero compliance incidents across the listing process.',
     proofStat: 'Zero',
-    proofCaption: 'COMPLIANCE INCIDENTS · CG ONCOLOGY IPO · SEC REG FD + FDA REVIEWED',
+    proofCaption: 'COMPLIANCE INCIDENTS · NASDAQ HEALTHCARE IPO · SEC REG FD + FDA REVIEWED',
     mandateCta: 'Begin a Healthcare audit enquiry →',
     metaTitle: 'Healthcare SEO · MHRA, HIPAA & CQC Compliant · Tamazia',
     metaDescription: 'Tamazia builds search visibility for private clinics, medical groups, and healthcare enterprises. Every piece of content reviewed against MHRA, HIPAA, FDA, CQC, and ASA Health Code before publication.',
@@ -69,12 +69,12 @@ At the same time, hospitality marketing must comply with the ASA CAP Code on pri
 
 Tamazia builds direct booking visibility for hotel groups across UK, UAE, and international markets. Every piece of content reviewed against applicable advertising standards. Schema markup for hotel-category structured data, Google Hotels eligibility, and local pack placement included as standard.`,
     regulators: ['ASA CAP Code', 'Package Travel Regulations 2018', 'DTCM Dubai', 'SCTA Saudi', 'GBP Hotel Schema', 'UK Hospitality Advertising Guidelines', 'GDPR / UK GDPR', 'UAE PDPL 2021', 'Google Hotels Policies', 'Booking Platform Terms'],
-    proofPoint: 'Orchid Hotels: 840% organic user growth, 83% direct booking increase, 113% revenue growth year on year. OTA dependency reduced within a single six-month campaign. GA4 verified.',
-    proofStat: '840%',
-    proofCaption: 'ORGANIC USER GROWTH · ORCHID HOTELS · SIX-MONTH CAMPAIGN · GA4 VERIFIED',
+    proofPoint: 'A UK hotel group: rankings improved, direct bookings increased, and OTA dependency was reduced within a single campaign. GA4 verified.',
+    proofStat: 'Page One',
+    proofCaption: 'RANKINGS ACHIEVED · UK HOTEL GROUP · GA4 VERIFIED',
     mandateCta: 'Begin a Hospitality audit enquiry →',
     metaTitle: 'Hotel SEO · Direct Booking Growth · OTA Dependency Reduction · Tamazia',
-    metaDescription: 'Tamazia builds direct booking visibility for hotels, resorts, and hospitality groups. 840% organic user growth for Orchid Hotels. Every campaign reviewed against ASA, DTCM, and international advertising standards.',
+    metaDescription: 'Tamazia builds direct booking visibility for hotels, resorts, and hospitality groups. Every campaign reviewed against ASA, DTCM, and international advertising standards.',
   },
   {
     slug: 'financial-services',
@@ -89,9 +89,9 @@ In the United States, SEC Regulation FD prohibits the selective disclosure of ma
 
 Tamazia has managed digital content for businesses operating under FCA, SEC, and DFSA supervision simultaneously. Every financial services piece is reviewed against the specific regulatory instruments applicable to the firm's regulated status before publication. Numerical claims, projections, and past-performance references are reviewed against the standards that apply in every distribution jurisdiction.`,
     regulators: ['FCA COBS 4', 'FSMA 2000 Section 21', 'MiFID II', 'MiFIR', 'ESMA Marketing Guidelines', 'SEC Regulation FD', 'FINRA Rule 2210', 'DFSA Dubai', 'FSRA ADGM', 'MAR (EU)', 'Prospectus Regulation', 'Consumer Duty 2023', 'GDPR / UK GDPR', 'SFDR', 'IOSCO Principles'],
-    proofPoint: 'CG Oncology IPO content produced under SEC Regulation FD, FDA, and FINRA advertising standards simultaneously. Zero compliance incidents. Shares up 96% at IPO.',
+    proofPoint: 'Pre-IPO and listing-window content produced under SEC Regulation FD, FDA, and FINRA advertising standards simultaneously. Zero compliance incidents across the listing process.',
     proofStat: 'Zero',
-    proofCaption: 'COMPLIANCE INCIDENTS · CG ONCOLOGY · SEC REG FD + FINRA + FDA REVIEWED',
+    proofCaption: 'COMPLIANCE INCIDENTS · NASDAQ LISTING WINDOW · SEC REG FD + FINRA + FDA REVIEWED',
     mandateCta: 'Begin a Financial services audit enquiry →',
     metaTitle: 'Financial Services SEO · FCA, SEC & MiFID II Compliant · Tamazia',
     metaDescription: 'Tamazia builds search visibility for FCA-regulated firms, wealth managers, fintech, and pre-IPO businesses. Every financial promotion reviewed against FCA COBS 4, MiFID II, SEC Reg FD, and FINRA Rule 2210.',
@@ -109,12 +109,12 @@ In Saudi Arabia, the Real Estate General Authority (REGA) regulates property mar
 
 International developers targeting buyers across multiple jurisdictions face simultaneous compliance obligations. A property marketed to UK buyers must comply with UK consumer protection law. The same property marketed to UAE buyers must comply with RERA. The same property marketed to US buyers must comply with applicable state securities laws if marketed with an investment return expectation. Tamazia manages multi-jurisdiction compliance as a single review process, not three separate ones.`,
     regulators: ['RERA UAE Law No. 7 of 2013', 'Trakheesi', 'Property Misdescriptions Act', 'CPR Regulations 2008', 'CMA Property Guidance 2024', 'Property Ombudsman Code', 'REGA Saudi', 'CEA Singapore', 'FCA (investment properties)', 'GDPR / UK GDPR', 'UAE PDPL 2021', 'Google Real Estate Policies'],
-    proofPoint: 'Meraas (Dubai Holding subsidiary): digital presence and content architecture built to Dubai Holding standard under RERA, Trakheesi, and a direct Sheikh Mohammed directive. Zero compliance incidents.',
+    proofPoint: 'A UAE real estate developer: digital presence and content architecture built to RERA and Trakheesi standard. Zero compliance incidents.',
     proofStat: 'Zero',
-    proofCaption: 'COMPLIANCE INCIDENTS · MERAAS · RERA + TRAKHEESI + DUBAI HOLDING STANDARD',
+    proofCaption: 'COMPLIANCE INCIDENTS · UAE REAL ESTATE DEVELOPER · RERA + TRAKHEESI STANDARD',
     mandateCta: 'Begin a Real estate audit enquiry →',
     metaTitle: 'Real Estate SEO · RERA, REGA & International Compliance · Tamazia',
-    metaDescription: 'Tamazia builds search visibility for real estate developers, agents, and international property groups. Meraas and Orchid Hotels clients. Every campaign reviewed against RERA, Trakheesi, UK CPR, and applicable international standards.',
+    metaDescription: 'Tamazia builds search visibility for real estate developers, agents, and international property groups. Every campaign reviewed against RERA, Trakheesi, UK CPR, and applicable international standards.',
   },
 ];
 

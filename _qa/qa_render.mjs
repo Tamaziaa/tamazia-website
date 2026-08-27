@@ -65,10 +65,26 @@ function checkD(D) {
   if (D.trajectory && D.trajectory[0] && D.trajectory[0].v !== D.score) out.push(`traj[0].v ${D.trajectory[0].v} != score ${D.score}`);
   if (D.counts && (D.counts.critical + D.counts.high + D.counts.standard) !== D.counts.total) out.push(`counts don't sum: ${D.counts.critical}+${D.counts.high}+${D.counts.standard} != ${D.counts.total}`);
   if (D.competitors && (!D.competitors.rows || !D.competitors.rows[0] || !D.competitors.rows[0].you)) out.push('competitors.rows[0].you not the firm');
-  if (D.geo && (!D.geo.engines || D.geo.engines.length !== 8)) out.push(`geo.engines length ${D.geo && D.geo.engines && D.geo.engines.length}`);
+  // B3: this used to require EXACTLY 8 engines. That is the fabrication, asserted as a gate: the adapter
+  // fanned one provider's boolean across eight names, seven of which were never asked anything. The list is
+  // now the engines actually probed, so the only invariant left is that every row carries a probe receipt.
+  if (D.geo && !Array.isArray(D.geo.engines)) out.push('geo.engines is not a list');
+  (D.geo && D.geo.engines || []).forEach((e, i) => { if (!e.probed) out.push(`geo.engines[${i}] "${e.nm}" has no probe receipt`); });
+  if (D.geo && Array.isArray(D.geo.engines) && D.geo.engines.length === 0 && !D.geo.enginesNote) out.push('geo.engines is empty with no stated reason');
   if (D.seo && (!D.seo.keywords || !D.seo.keywords.length)) out.push('seo.keywords empty');
   (D.frameworks || []).forEach((f, i) => { if (!f.name || /^[A-Z_]+$/.test(f.name)) out.push(`framework[${i}].name raw code "${f.name}"`); if (f.regulator && f.regulator.length > 50) out.push(`framework[${i}].regulator too long`); });
-  (D.fixes || []).forEach((f, i) => { if (!f.title) out.push(`fixes[${i}] no title`); if (!f.fix) out.push(`fixes[${i}] no fix`); });
+  // T3: the ladder's slot-2 (AT RISK) and slot-3 (BINDING, NOT VERIFIED) cards carry NO remediation by
+  // design — they assert no breach, so there is nothing to remediate yet. Only a BREACHED card owes a fix.
+  (D.fixes || []).forEach((f, i) => {
+    if (!f.title) out.push(`fixes[${i}] no title`);
+    if (!f.fix && (!f.state || f.state === 'BREACHED')) out.push(`fixes[${i}] no fix`);
+    if (f.state && !f.badge) out.push(`fixes[${i}] state "${f.state}" with no badge`);
+  });
+  // T3: never two cards for one rule (the thackraywilliams defect: 15 pointers, one rule, three cards).
+  {
+    const keys = (D.fixes || []).map((f) => f.ruleKey).filter(Boolean);
+    if (new Set(keys).size !== keys.length) out.push(`fixes repeat a ruleKey: ${keys.join(' || ')}`);
+  }
   const dashFields = [];
   (function walk(o, p) {
     if (o == null) return;
@@ -81,7 +97,7 @@ function checkD(D) {
   return out;
 }
 
-function checkDom(doc) {
+function checkDom(doc, D) {
   const out = [];
   const app = doc.getElementById('app');
   if (!app || !app.innerHTML.trim()) return ['#app NOT BUILT (app.js threw)'];
@@ -93,7 +109,10 @@ function checkDom(doc) {
     ['.dimcard', 10, '='], ['.cc-node', 4, '='], ['#sec-regulatory .fwbar', 1, '>='],
     ['#sec-overview .finding', 1, '>='], ['#sec-regulatory .fw', 1, '>='],
     ['#sec-seo .issrow', 1, '>='], ['#sec-seo .seccell', 6, '>='], ['#sec-seo table tbody tr', 1, '>='],
-    ['#sec-geo .engcell', 8, '='], ['#sec-geo .checkrow', 4, '>='], ['#sec-geo table tbody tr', 1, '>='],
+    // B3: this used to read ['#sec-geo .engcell', 8, '=']. That gate REQUIRED the fabrication: eight named
+    // engine cells, each rendered "cites you"/"not citing you", from a payload that probed at most one.
+    // The honest gate is: as many cells as were probed, and when none were probed, a stated reason.
+    ['#sec-geo .checkrow', 4, '>='], ['#sec-geo table tbody tr', 1, '>='],
     ['#sec-competitors table.cmp tbody tr', 2, '>='], ['#sec-competitors .bar-row', 2, '>='],
     ['#sec-plan .route1', 1, '>='], ['#sec-plan .addon', 3, '>='],
     // conversion round: Route 1 toggle (3), dual founder calendars (2), summary bullets,
@@ -110,6 +129,16 @@ function checkDom(doc) {
     // r22 half-visible lock: at least one fix renders free (⌈N/2⌉). The locked/free split invariant is checked below.
   ];
   for (const [sel, n, op] of expect) { const c = q(sel); const ok = op === '=' ? c === n : c >= n; if (!ok) out.push(`${sel} = ${c} (expected ${op}${n})`); }
+  // B3: no engine row without a probe, and no empty frame either. Every rendered cell must correspond to a
+  // probed engine; zero cells is legal ONLY when the pane states that nothing was probed.
+  {
+    const cells = q('#sec-geo .engcell');
+    const probed = (((D && D.geo) || {}).engines || []).length;
+    if (cells !== probed) out.push(`#sec-geo .engcell = ${cells} but only ${probed} engine(s) were probed`);
+    if (cells === 0 && !/not probed|was not probed/i.test((doc.querySelector('#sec-geo') || {}).textContent || '')) {
+      out.push('#sec-geo renders no engine cells and does not say why');
+    }
+  }
   // r22 half-visible-lock invariant: with N total Tamazia-fix values, locked = ⌊N/2⌋ and free = ⌈N/2⌉.
   // So locked must be < free always (never all-locked), free >= 1 when any fix renders, and a rich report
   // (N>=2) must lock at least one (drives Route 3). Thin reports (N<2) legitimately lock none.
@@ -136,7 +165,7 @@ for (const f of files) {
     const D = payloadToD(payload, { company, now: Date.parse('2026-06-05T00:00:00Z') });
     issues = issues.concat(checkD(D).map((i) => 'D: ' + i));
     const dom = renderDom(D);
-    issues = issues.concat(checkDom(dom.window.document).map((i) => 'R: ' + i));
+    issues = issues.concat(checkDom(dom.window.document, D).map((i) => 'R: ' + i));
     dom.window.close();
   } catch (e) { issues.push('THREW: ' + (e.stack || e.message).split('\n').slice(0, 2).join(' | ')); }
   total += issues.length;

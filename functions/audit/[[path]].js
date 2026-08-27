@@ -6,7 +6,11 @@ import { neonQuery } from '../api/_neon.js';
 import { payloadToD } from './_adapter.js';
 import { renderShell, errorShell } from './_shell.js';
 import { renderLuxShell, isV11 } from './_lux.js';
-import { v11ToD } from './_v11.js';
+// BRIDGE v1.1 (second edition). _v12.js is a FULL REPLACEMENT for _v11.js and exports the same
+// v11ToD / v11ToLegacy / overlaySections names, so this route changes only its import specifier.
+// _v11.js stays on disk because _qa/qa_v11.mjs still pins the old bridge's contract; nothing on the
+// serving path reads it any more.
+import { v11ToD } from './_v12.js';
 
 // Founder-confirmed direct line. Threaded to window.D.contactPhone so the audit founder block
 // (and any element keyed on it) renders the number beside founder@tamazia.co.uk. env.CONTACT_PHONE
@@ -105,7 +109,7 @@ export async function onRequest(context) {
   let html;
   try {
     // VERSIONED DISPATCH (contract-v1.1): a v1.1 payload (findings[] + notLegalAdvice) now renders
-    // through the SAME rich report as every legacy payload - the _v11.js bridge maps its compliance
+    // through the SAME rich report as every legacy payload - the _v12.js bridge maps its compliance
     // half into the adapter's input contract and overlays the probe sections, so one product has ONE
     // look (the founder's verdict on the sparse lux shell). The lux shell stays reachable at
     // ?shell=lux as a debugging view of the raw payload, never the default. The cache/unlock/PostHog
@@ -144,7 +148,12 @@ export async function onRequest(context) {
       });
       // E-246: hand a REAL, deploy-unique asset version to the shell. CF_PAGES_COMMIT_SHA changes on every
       // deployment, so the ?v= query string changes with it and the 4h edge cache can never serve a stale bundle.
-      html = renderShell(D, { buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38' });
+      // AUDIT_RENDER_V2 = "1" serves the v2 asset set (public/audit/*-v2.*); unset or anything else keeps
+      // v1 exactly as it is. Read per request, so the flip is an env change with no redeploy of the code.
+      html = renderShell(D, {
+        buildId: (env && (env.CF_PAGES_COMMIT_SHA || env.CF_PAGES_BUILD_ID)) || 'r38',
+        renderV2: (env && env.AUDIT_RENDER_V2) || '',
+      });
     }
   } catch (e) {
     return htmlResponse(errorShell('Audit could not be rendered', 'The Tamazia team has been notified.'), 500);

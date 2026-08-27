@@ -75,7 +75,21 @@ C('regulatory-fw>=1', ({ app }) => q(app, '#sec-regulatory .fw') >= 1 ? null : '
 C('seo-issues>=1', ({ app }) => (q(app, '#sec-seo .issrow') + q(app, '#sec-seo .psi-row')) >= 1 ? null : 'seo issues 0');
 C('seo-security=6', ({ app }) => q(app, '#sec-seo .seccell') === 6 ? null : 'seccell ' + q(app, '#sec-seo .seccell'));
 C('seo-keyword-table>=1', ({ app }) => q(app, '#sec-seo table tbody tr') >= 1 ? null : 'kw table 0');
-C('geo-engines=8', ({ app }) => q(app, '#sec-geo .engcell') === 8 ? null : 'engcell ' + q(app, '#sec-geo .engcell'));
+// B3 · WAS `geo-engines=8`, AND THAT GATE REQUIRED THE FABRICATION. It demanded eight named engine cells,
+// each rendered "cites you" / "not citing you", from payloads that probed at most one provider: the adapter
+// fanned `geoP.ai_knows` across all eight names to satisfy it. The adapter now emits only the engines that
+// were actually probed (payload.geo_engines), so the honest gate is: exactly as many cells as probes, and
+// when nothing was probed, a rendered reason instead of an empty frame. (SOUNDNESS-REPORT §1/§2 B3.)
+C('geo-engines-probed', ({ app, D }) => {
+  const cells = q(app, '#sec-geo .engcell');
+  const probed = ((D.geo || {}).engines || []).length;
+  if (cells !== probed) return 'engcell ' + cells + ' but ' + probed + ' engine(s) probed';
+  if (cells === 0) {
+    const sec = app.querySelector('#sec-geo');
+    if (!sec || !/not probed|was not probed/i.test(sec.textContent || '')) return 'no engine cells and no stated reason';
+  }
+  return null;
+});
 C('geo-checkrows>=4', ({ app }) => q(app, '#sec-geo .checkrow') >= 4 ? null : 'checkrow ' + q(app, '#sec-geo .checkrow'));
 C('geo-citation-table>=1', ({ app }) => q(app, '#sec-geo table tbody tr') >= 1 ? null : 'citation table 0');
 C('competitors-table>=2', ({ app }) => q(app, '#sec-competitors table.cmp tbody tr') >= 2 ? null : 'cmp rows ' + q(app, '#sec-competitors table.cmp tbody tr'));
@@ -100,10 +114,36 @@ C('dims-complete', ({ D }) => (D.dims || []).every((d) => d.nm && d.st && d.sub 
 C('exposure-canonical', ({ D, T }) => { const wf = D.exposureWaterfall; return !wf || wf.collapsed === T._exposureN ? null : 'waterfall!=canonical'; });
 C('frameworks-named', ({ D }) => (D.frameworks || []).every((f) => f.name && !/^[A-Z_]{2,}$/.test(f.name)) ? null : 'raw fw code');
 C('frameworks>=1', ({ D }) => (D.frameworks || []).length >= 1 ? null : 'no frameworks');
-C('fixes-complete', ({ D }) => (D.fixes || []).every((f) => f.title && f.fix) ? null : 'fix missing title/fix');
-C('fixes-unique', ({ D }) => { const o = (D.fixes || []).map((f) => String(f.fix).toLowerCase().slice(0, 30)); return new Set(o).size === o.length ? null : 'duplicate fix text'; });
+// T3 · the ladder's AT RISK and BINDING, NOT VERIFIED slots carry NO remediation by design: they assert no
+// breach, so there is nothing to remediate yet. Only a BREACHED card owes a fix. Every card still owes a
+// title and, once it declares a state, the badge that qualifies it.
+C('fixes-complete', ({ D }) => {
+  const bad = (D.fixes || []).filter((f) => !f.title || (!f.fix && (!f.state || f.state === 'BREACHED')) || (f.state && !f.badge));
+  return bad.length ? 'fix missing title/fix/badge' : null;
+});
+// A · WAS a uniqueness test on the first 30 chars of the REMEDIATION PROSE, and `differentiateFixes()` — the
+// cosmetic band-aid this hunk deletes — existed to satisfy exactly this gate (its own comment said so:
+// "QA: fixes-unique"). It is why card 3 on the live page literally read "(3) Make reasonable adjustments".
+// The defect was never shared prose: it was THREE CARDS FOR ONE RULE (thackraywilliams: 15 pointers, one
+// Equality Act image-alt rule, sliced three times). The gate now keys on rule IDENTITY, which no prose
+// rewrite can satisfy. Three genuinely distinct rules sharing one generic remediation sentence is honest
+// copy, not a duplicate.
+C('fixes-unique', ({ D }) => {
+  const keys = (D.fixes || []).map((f) => f.ruleKey || ('title:' + String(f.title || '').toLowerCase()));
+  if (new Set(keys).size !== keys.length) return 'two cards for one rule: ' + keys.join(' || ');
+  const titles = (D.fixes || []).map((f) => String(f.title || '').toLowerCase().trim());
+  return new Set(titles).size === titles.length ? null : 'duplicate card title';
+});
 C('rootCause-chain=4', ({ D }) => D.geo && D.geo.rootCause && D.geo.rootCause.chain.length === 4 ? null : 'rootCause chain');
-C('geo-engines=8', ({ D }) => (D.geo.engines || []).length === 8 ? null : 'geo engines ' + (D.geo.engines || []).length);
+// B3, data side. Not "how many" — "does every row carry a probe receipt", and does an empty list say why.
+C('geo-engines-receipted', ({ D }) => {
+  const engines = (D.geo || {}).engines;
+  if (!Array.isArray(engines)) return 'geo.engines is not a list';
+  const noReceipt = engines.filter((e) => !e || !e.probed);
+  if (noReceipt.length) return noReceipt.length + ' engine row(s) with no probe receipt';
+  if (!engines.length && !(D.geo || {}).enginesNote) return 'geo.engines empty with no stated reason';
+  return null;
+});
 C('seo-keywords-nonempty', ({ D }) => (D.seo.keywords || []).length >= 1 ? null : 'no keywords');
 C('bestKeyword-clean', ({ D }) => { const k = String(D.competitors.bestKeyword || ''); return k && !/\bnear\b/.test(k) && !/(\b\w+\b) \1/.test(k) ? null : 'bad bestKeyword "' + k + '"'; });
 C('competitors-no-aggregators', ({ D, T }) => { const a = (T.competitors || []).filter(looksDomain).filter((c) => !isRealCompetitor(c, T.market)); return a.length ? 'aggregator ' + a[0] : null; });
@@ -156,7 +196,23 @@ C('pillar-bodies-nonempty', ({ app }) => { let bad = ''; app.querySelectorAll('.
 // ---- F. OVERHAUL invariants (Phases 0-12) ----
 C('kw-band-2050', ({ D }) => { const bad = (D.seo.keywords || []).filter((k) => /^#\d/.test(String(k.you))).filter((k) => { const n = +String(k.you).slice(1); return !(n >= 20 && n <= 50); }); return bad.length ? 'out-of-band ' + bad.map((k) => k.you).join(',') : null; });
 C('kw-leader-real', ({ D, T }) => { const bad = (D.seo.keywords || []).map((k) => k.who).filter((w) => w && w !== ', ' && w !== '—').filter((w) => !isRealCompetitor(w, T.market)); return bad.length ? 'junk keyword leader ' + bad[0] : null; });
-C('dr-no-null', ({ D }) => { const L = D.competitors.ladder || []; const nul = L.filter((c) => !Number.isFinite(+c.dr)); if (nul.length) return 'null dr x' + nul.length; if (L.length >= 2 && (D.competitors.drBars || []).length < 2) return 'drBars<2 with ladder>=2'; return null; });
+// C1/N2 · WAS `dr-no-null`, and it pinned the fabrication: it required EVERY rival to carry a finite Domain
+// Rating, which `drFallback()` guaranteed by hashing the rival's NAME into a number in the 50-70 band and
+// badging it "est". That is how the golden dental capture shipped "Hove Dental Clinic DR 51" on a live page.
+// drFallback is deleted (hunk I; the new engine refuses to port it too, probes/index.js:178). The honest
+// gate: a DR is either MEASURED and finite, or NOT ASSESSED and null — never a number without a lookup —
+// and a chart that cannot show a comparison is hidden rather than drawn with one bar.
+C('dr-measured-or-absent', ({ D }) => {
+  const L = D.competitors.ladder || [];
+  // `+null` is 0 and 0 is finite, so the null case must be tested before the numeric one.
+  const hasNumber = (c) => c.dr != null && c.dr !== '' && Number.isFinite(+c.dr);
+  const bad = L.filter((c) => (c.drState === 'measured') !== hasNumber(c));
+  if (bad.length) return 'dr/drState disagree on ' + bad.map((c) => c.name).join(', ');
+  const bars = (D.competitors.drBars || []).length;
+  if (bars === 1) return 'a one-bar DR chart is not a comparison';
+  if (bars === 0 && !D.competitors.drHidden) return 'no DR bars and the chart is not hidden';
+  return null;
+});
 C('beatby-distinct', ({ D }) => { const L = D.competitors.ladder || []; if (L.length < 2) return null; const sig = L.map((c) => String((c.beatBy && c.beatBy.proof) || '') + '|' + String((c.beatBy && c.beatBy.fix) || '')); return new Set(sig).size === sig.length ? null : 'duplicate beatBy row'; });
 C('frameworks-merge-stable', ({ D }) => { const F = D.frameworks || []; const nm = F.map((f) => f.name); if (new Set(nm).size !== nm.length) return 'duplicate framework name (siblings not merged)'; for (const f of F) { for (const pv of (f.provisions || [])) { if (!pv.fix || !String(pv.fix).trim()) return 'empty provision fix in ' + f.code; if (/^[A-Z_]{2,}$/.test(String(pv.label || ''))) return 'raw provision label ' + pv.label; } } return null; });
 C('cwv-label-honest', ({ D, app }) => { const real = (D.seo.cwv || []).some((m) => m.k === 'CLS' || m.k === 'PERF'); if (real) return null; const seo = app.querySelector('#sec-seo'); return seo && /failing\s+\d+\s+of\s+\d+/i.test(seo.textContent) ? '"failing N of M" shown with no PSI' : null; });

@@ -29,7 +29,7 @@
     },
     fixSprintCreditPct: 50,                             // fixSprintCreditPct
     fixSprintCreditDays: 60,                            // fixSprintCreditDays
-    fixPacksLane: 'One fixed price. One fixed timeline. No retainer. The work is owned outright.', // fixPacksLane
+    fixPacksLane: 'One fixed price. One fixed timeline. No mandate. You own the work outright.', // fixPacksLane
     // sccoGuidelineRates · Senior Courts Costs Office guideline hourly rates, London 1, in force 1 January 2026.
     // Source printed inline beside every figure derived from it. Replaces the invented consultancy anchors (E36).
     scco: {
@@ -37,10 +37,15 @@
       source: 'SCCO Guideline Hourly Rates, London 1, in force 1 January 2026',
       sourceUrl: 'https://www.gov.uk/guidance/solicitors-guideline-hourly-rates',
     },
-    // exposureReportGbp · £495 unlocks the full report AND includes the first month of Regulatory Watch;
-    // from month two it is £1,500 a month. The £495 is credited in full against any Sprint or mandate
-    // within 90 days. realValue (£1,500) is the report's published standalone price, so the strike is honest.
-    exposureReport: { unlock:495, monthlyCover:1500, realValue:1500, creditDays:90 },
+    // FOUNDER DECISION Q4 (2026-07-29) · the £495 unlock framing is RETIRED. The middle offer is
+    // Regulatory Watch at £1,500 a month with month one free: it unlocks the full audit, runs the
+    // continuous law watch, re-runs the audit monthly, and DELIVERS the fix specification (the exact
+    // page, rule and change). It does not implement: implementation is a Sprint or a mandate.
+    // DMCCA Sch 20 / subscription rules: the renewal must be stated plainly on the card, and it is.
+    // OPEN, FOUNDER-GATED (see PRICING-REQUIREMENTS.md Q4): pricing.ts still carries unlock:495 and a
+    // LIVE £495 Payment Link. A "first month free, then £1,500/month" offer must NOT be wired to it,
+    // so the pay CTA below routes to the subscription path, never to the one-time unlock link.
+    exposureReport: { monthlyCover:1500, freeMonths:1 },
     independent: {                                       // independentSolutionsGbp · anchor = 2 x offer
       websiteRemodelling:    { anchor:17000, offer:8500, typical:12000 },
       aiAuthority:           { anchor:3800,  offer:1900 },
@@ -122,14 +127,12 @@
     q.push('intent=' + encodeURIComponent(intent || 'findings'));
     return base + (base.indexOf('?') > -1 ? '&' : '?') + q.join('&');
   }
-  // Append the minted report's identity so the webhook can flip THIS report to unlocked after payment.
-  function unlockHref(){
-    const ap = (location.pathname.match(/\/audit\/([^/]+)\/([^/]+)/) || []);
-    const slug = ap[1] || (window.D && window.D.meta && window.D.meta.slug) || '';
-    const hash = ap[2] || '';
-    const ref = (slug && hash) ? ('?client_reference_id=' + encodeURIComponent(slug + '__' + hash)) : '';
-    return STRIPE.unlock ? (STRIPE.unlock + ref) : '';
-  }
+  // Q4 · the one-time unlock Payment Link is no longer reachable from the render. It is kept
+  // in STRIPE only so a drift check against pricing.ts still has something to compare, and it
+  // must NOT be wired to the monitoring CTA: it charges a one-time £495, while the offer on
+  // the page is a monthly subscription with the first month free (DMCCA: the displayed price
+  // must be the charged price). Founder action is logged in PRICING-REQUIREMENTS.md Q4.
+  void STRIPE.unlock;
 
   const $ = (s,r=document)=>r.querySelector(s);
   // count-aware pluralization: plur(1,'finding')↗'finding', plur(2,'finding')↗'findings',
@@ -140,7 +143,179 @@
   // De-dash THEN HTML-escape every data-sourced display string: the founder's "no dashes anywhere" rule, applied
   // at the render chokepoint so any em/en dash baked into an engine payload (PSI fix, evidence quote, competitor
   // name) is neutralised to a comma. Regular hyphens (co-working, e-commerce) are left intact.
-  const escH = s=>String(s==null?'':s).replace(/\s*[—–]\s*/g,', ').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // Legacy payloads embed marketing claims the spec bans as floating numbers (R5/N2): normalise
+  // them at the same chokepoint that escapes. The screened-label system, not payload prose, is the
+  // only place register counts may appear.
+  // CONFUSION-LEDGER G5/G6/G7/G14/G17: the claim fix, the money/date/unit formats, the
+  // engine-internals scrub and the UK-spelling normaliser all live in ONE function
+  // (COPY.js -> window.TZTEXT.norm) so a format defect is fixed once, not at 200 call sites.
+  const NORM = (window.TZTEXT && window.TZTEXT.norm) ? window.TZTEXT.norm : (v=>String(v==null?'':v));
+  const escH = s=> NORM(s).replace(/\s*[—–]\s*/g,', ').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const TFIX = s => (window.TZTEXT && window.TZTEXT.termFix) ? window.TZTEXT.termFix(s) : s;
+
+  /* ============================================================
+     v2 TRUTH LAYER — every count, state and empty string resolves here.
+     N3 (counts agree everywhere), N1 (never claim what was not measured)
+     and spec item 11 (no "null"/"undefined"/"NaN" in rendered text) are
+     enforced at this single chokepoint rather than at 40 call sites.
+     ============================================================ */
+  const C = (window.COPY) || {};
+  const txt = v => { const s=String(v==null?'':v).trim(); return /^(null|undefined|NaN)$/i.test(s)?'':s; };
+  const numOr = (v,f) => { const n=+v; return isFinite(n)?n:f; };
+  const isNum = v => (v!==null && v!=='' && typeof v!=='boolean' && isFinite(+v));
+  const NA = C.notAssessed || 'Not assessed on this scan.';
+  const naLine = t => '<div class="na-line">'+escH(t||NA)+'</div>';
+  const naChip = () => '<span class="na-chip">'+escH(C.notAssessedChip||'Not assessed')+'</span>';
+  const isMoney = s => (window.CH && CH.isMoneyStr) ? CH.isMoneyStr(s) : /^[£$€]/.test(String(s||''));
+  // a currency string with no non-zero digit carries no value claim (N2)
+  const hasValue = s => isMoney(s) && /[1-9]/.test(String(s||''));
+  /* R3 · the exposure badge. Money is a gradient chip; a measured non-money exposure
+     ("ranking", "Unlimited (Vento bands ...)") is a muted chip carrying its own words;
+     an absent exposure renders NOTHING rather than an invented phrase. */
+  function expBadge(raw,cls){
+    let full=txt(raw)==='ranking' ? 'ranking impact' : txt(raw);
+    if(/^(applies to you|applies|binding|binds you|assessed)$/i.test(full)) full=C.regNoFine||full;
+    if(!full) return '';
+    if(isMoney(full)) return '<span class="'+cls+'">'+escH(full)+'</span>';
+    const short=full.length>30 ? full.slice(0,29).replace(/\s+\S*$/,'')+'\u2026' : full;
+    return '<span class="'+cls+' nonmoney" title="'+escH(full)+'">'+escH(short)+'</span>';
+  }
+
+  /* PAYLOAD CLASS. dental-old is the one pre-bridge capture and the one that carries
+     psiStrats (D-live-evidence §2). On a LEGACY payload "None detected" is a measured
+     absence and renders as such; on a v1.1 payload the tracker sniffer never ran, so the
+     same string is a false negative and degrades to "Not assessed on this scan" (N1/B2).
+     A bridge that sets D.payloadClass explicitly always wins over the heuristic. */
+  const PCLASS = txt(D.payloadClass) || ((D.seo && D.seo.psiStrats) ? 'legacy' : 'v1.1');
+  const ABSENCE = /^(none detected|not measured|not assessed|unknown|n\/a|not detected)$/i;
+  function measured(v){
+    const s=txt(v);
+    if(!s) return '';
+    if(!ABSENCE.test(s)) return s;
+    if(PCLASS==='legacy' && /^none detected$/i.test(s)) return (C.noneFound||s);   // genuinely measured absence
+    return '';
+  }
+  const techCell = v => { const m=measured(v); return m ? escH(m) : naChip(); };
+
+  /* REGULATORY TRUTH (N3 / C §1 fix 3). The framework boxes already dedupe by subject,
+     so the deduped set IS what the page renders; every headline count derives from it.
+     The raw pointer count survives only as an explicit "N failing elements" sub-line. */
+  const REG = (function(){
+    const seen=new Set(), items=[]; const fwHit=new Set();
+    for(const fw of (D.frameworks||[])){
+      for(const g of ((fw&&fw.articleGroups)||[])){
+        for(const it of ((g&&g.items)||[])){
+          const k=String((it&&it.subject)||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+          if(!k || seen.has(k)) continue;
+          seen.add(k); items.push({it:it, fw:fw, g:g}); fwHit.add(String(fw.code||fw.name||''));
+        }
+      }
+    }
+    const sev={crit:0,high:0,std:0};
+    for(const r of items){
+      const s=String((r.it&&r.it.sev)||'').toLowerCase();
+      if(/^(p0|crit)/.test(s)) sev.crit++; else if(/^(p1|high)/.test(s)) sev.high++; else sev.std++;
+    }
+    const rules=items.length;
+    const inst=numOr(D.countsRegulatory&&D.countsRegulatory.total, numOr(D.counts&&D.counts.total, rules));
+    return { rules:rules, instances:Math.max(rules,inst), sev:sev, items:items, fwWithBreach:fwHit.size };
+  })();
+
+  /* ============================================================
+     THE MEASUREMENT GATE (G8 · CONF-211, 247, 248, 251).
+     A scan that assessed NO dimension measured nothing, so nothing on it may render as a
+     number: not a score, not a grade, not "0 issues", not a trajectory. REPORT-SPEC L3 banned
+     "0 ahead" from a dead probe; this is the same rule applied to every chip and the dial.
+     Every REAL fixture keeps its score, because every real fixture assesses at least one
+     dimension (the six live reports assess 8 or 10 of 10).
+     ============================================================ */
+  const SCORED = ((D.dims)||[]).some(d=> d && d.st && d.st!=='na');
+  const SEO_ASSESSED = (((D.seo&&D.seo.onpage)||[]).length>0)
+    || !!(D.seo&&D.seo.psiStrats) || !!(D.seo&&D.seo.psi&&isNum(D.seo.psi.performance))
+    || (((D.seo&&D.seo.keywords)||[]).length>0);
+  const GEO_ASSESSED = numOr(D.geo&&D.geo.issueCount,0)>0
+    || (((D.geo&&D.geo.citations)||[]).length>0);
+
+  /* COMPETITOR STATE (C1/C2). "0 ahead" from a dead probe is banned; the set is either
+     assessed (real ladder + real rivals) or it is not assessed. */
+  function competitorState(){
+    const c=D.competitors||{};
+    const rows=((c.rows)||[]).length, ladder=((c.ladder)||[]).length;
+    return { assessed: !c.needsReview && ladder>0 && rows>1, ahead: Math.max(0,rows-1), rows:rows, ladder:ladder };
+  }
+
+  /* THE COUNT REGISTER. The rail chip and the pillar header chip read the SAME string,
+     so N3 cannot break by editing one of them. Every count equals items rendered. */
+  // G2 · ONE count vocabulary. "issue" and "gap" are banned as count nouns; a countable item on
+  // this report is a FINDING, an evidenced failure is a BREACH, a catalogue duty is an
+  // OBLIGATION, a catalogue law is a FRAMEWORK and a DOM instance is a FAILING ELEMENT.
+  const COUNTS = (function(){
+    const seoN=((D.seo&&D.seo.onpage)||[]).length;
+    const geoN=numOr(D.geo&&D.geo.issueCount,0);
+    const fwN=((D.frameworks)||[]).length;
+    const cmp=competitorState();
+    const na=C.notAssessedChip||'Not assessed';
+    return {
+      seo:{ n:seoN, assessed:SEO_ASSESSED, chip: SEO_ASSESSED ? (seoN+' '+plur(seoN,'finding')) : na },
+      geo:{ n:geoN, assessed:GEO_ASSESSED, chip: GEO_ASSESSED ? (geoN+' '+plur(geoN,'finding')) : na },
+      regulatory:{ n:fwN, chip:fwN+' '+plur(fwN,'framework') },
+      competitors:{ n:cmp.ahead, assessed:cmp.assessed,
+        chip: cmp.assessed ? (C.cmpAhead?C.cmpAhead(cmp.ahead):(cmp.ahead+' ahead')) : na },
+    };
+  })();
+
+  /* T3 · the 3-slot ladder. The bridge builds it deduped; this is the RENDER-SIDE GUARD
+     so a stale payload carrying three copies of one rule can still never show three
+     identical cards (C §1 fault 1A). ruleKey = framework_short | fact.slice(0,60). */
+  const normKey = s => String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  // the fact, normalised and capped at the spec's 60 characters
+  function factKey(f){ return normKey(txt(f.fact)||txt(f.title)||txt(f.plain)).slice(0,60); }
+  function fixRuleKey(f){
+    if(txt(f.ruleKey)) return normKey(f.ruleKey);
+    const fw=normKey(txt(f.framework_short)||txt(f.reg)||txt(f.law));
+    return fw+'|'+factKey(f);
+  }
+  const LADDER = (function(){
+    const seen=new Set(), out=[];
+    for(const f of (D.fixes||[])){
+      if(!f) continue;
+      const k=factKey(f)||fixRuleKey(f);
+      if(!k || seen.has(k)) continue;
+      seen.add(k); out.push(f);
+    }
+    if(out.length<3){
+      const have=new Set(out.map(factKey));
+      for(const r of REG.items){
+        if(out.length>=3) break;
+        const subj=txt(r.it&&r.it.subject); if(!subj) continue;
+        const k=factKey({ title:subj });
+        if(!k || have.has(k)) continue;
+        have.add(k);
+        out.push({
+          state:'breached',
+          reg: txt(r.fw.code)||txt(r.fw.regulator),
+          law: txt(r.fw.name),
+          title: subj,
+          plain: '',
+          quote: txt(r.it.quote),
+          fix: txt(r.it.fix),
+          exp: txt(r.fw.exp),
+          page: txt((r.g.inspected||[])[0]),
+          sev: txt(r.it.sev),
+        });
+      }
+    }
+    return out;
+  })();
+
+  /* W4 · the three severity definitions become tooltips on the dots, not a page row. */
+  const SEV_DEFS = (D.severityDefs && D.severityDefs.length) ? D.severityDefs : [];
+  function sevDef(sev){
+    const s=String(sev||'').toLowerCase();
+    const want=/^(p0|crit)/.test(s)?'critical':(/^(p1|high)/.test(s)?'high':'standard');
+    const hit=SEV_DEFS.filter(function(x){ return String(x.word||'').toLowerCase()===want; })[0];
+    return hit ? (hit.word+': '+hit.def) : want.charAt(0).toUpperCase()+want.slice(1);
+  }
 
   // C-G: the SINGLE source for "which retainer tier do we recommend this firm". The adapter flags the
   // recommended tier on D.pricing (rec:true). The rail CTA routes to THIS tier
@@ -152,35 +327,88 @@
     return /^(foundation|authority|enterprise)$/i.test(nm) ? (nm.charAt(0).toUpperCase()+nm.slice(1).toLowerCase()) : 'Enterprise';
   }
 
-  /* ---------------- LEFT RAIL ---------------- */
-  function rail(){
-    const nav=[
-      {id:'overview', nm:'Overview', dot:'r', c:''},
-      {id:'seo', nm:'SEO &amp; Technical', dot:'a', c:(D.seo.issueCount||(D.seo.onpage||[]).length)+' '+plur(D.seo.issueCount||(D.seo.onpage||[]).length,'issue')},
-      {id:'geo', nm:'AI &amp; GEO', dot:'r', c:(D.geo.issueCount||0)+' '+plur(D.geo.issueCount||0,'gap')},
-      {id:'regulatory', nm:'Regulatory', dot:'r', c:(D.frameworks||[]).length+' '+plur((D.frameworks||[]).length,'framework')},
-      {id:'competitors', nm:'Competitors', dot:'a', c:Math.max(0,(D.competitors.rows||[]).length-1)+' ahead'},
-      {id:'plan', nm:'Plan &amp; Pricing', dot:'g', c:''}
+  /* ---------------- LEFT RAIL · L1-L3, eight bands, one view ----------------
+     The fit is bought with CONTENT CUTS, not type shrinking: the four @media
+     shrink packs and all 25 clamp() font declarations are deleted from the CSS.
+     ------------------------------------------------------------------------- */
+  // G1 / CONF-001…006 · ONE section-name source (COPY.sections). The nav row, the pillar header
+  // and the pane eyebrow now carry the identical string, so a click and the box it opens can
+  // never read as two different places, and no future edit can drift one of the three arrays.
+  const S = C.sections || {overview:'Overview',seo:'SEO & technical',geo:'AI & GEO',
+    regulatory:'Regulatory exposure',competitors:'Competitors',plan:'Plan & pricing'};
+  function railNav(){
+    const n=[
+      {id:'overview',    nm:S.overview,    dot:'r', c:''},
+      {id:'seo',         nm:S.seo,         dot:'a', c:COUNTS.seo.chip},
+      {id:'geo',         nm:S.geo,         dot:'r', c:COUNTS.geo.chip},
+      {id:'regulatory',  nm:S.regulatory,  dot:'r', c:COUNTS.regulatory.chip},
+      {id:'competitors', nm:S.competitors, dot:'a', c:COUNTS.competitors.chip},
+      {id:'plan',        nm:S.plan,        dot:'g', c:''}
     ];
+    // L2 item 7: the Competitors row disappears when the set was not assessed.
+    return COUNTS.competitors.assessed ? n : n.filter(function(x){ return x.id!=='competitors'; });
+  }
+  // L2 item 3: REAL values only. An empty sector or city renders nothing, never an empty row.
+  function railMetaLine(){
+    const parts=[D.meta&&D.meta.sector, D.meta&&D.meta.city, D.meta&&D.meta.domain].map(txt).filter(Boolean);
+    return parts.length ? '<div class="rail-meta">'+parts.map(escH).join(' · ')+'</div>' : '';
+  }
+  /* C §3: "N compliance rules screened" prints an obligations-evaluated count as a register
+     size. Until the engine emits catalogueObligations we fall back to its own honest label. */
+  // G2 / G3 · CONF-079 / 080 · the scoring inputs shipped "1 evidence checks" beside
+  // "0 evidence checks passed", two counts of different things under one name, in adjacent
+  // rows. The ambiguous segment is dropped; the card meta above states the one true figure.
+  const MISLABELLED=/(compliance rules screened|rule checks (were )?executed|evidence checks passed)/i;
+  function sanitiseInputs(s){
+    return txt(s).split('·').map(x=>x.trim())
+      .filter(x=>x && !MISLABELLED.test(x)).join(' · ');
+  }
+  function honestScreenedLabel(){
+    const s=txt(D.screenedLabel);
+    if(!s || /compliance rules screened/i.test(s) || /^full catalogue screened$/i.test(s)) return C.screenedFallback;
+    return s;
+  }
+  function screenedCaption(){
+    const bind=numOr(D.frameworksBinding, numOr(D.frameworksAssessed,0));
+    const obl=numOr(D.catalogueObligations,0);
+    const checked=numOr(D.rulesEvaluated,0);
+    const parts=[obl>0 ? (obl.toLocaleString('en-GB')+' obligations screened') : honestScreenedLabel()];
+    if(bind>0) parts.push(C.bindYou(bind));
+    if(checked>0) parts.push(C.checkedOnPages(checked));
+    return parts.join(' · ');
+  }
+  // L2 item 5: big figure + a <=6-word label; the no-FX sentence lives on the tooltip.
+  // CONF-052 / 053 / 268 · the biggest number-shaped element on the page may not carry a
+  // non-number ("Ranking & AI" under a label that says "cost"), and its label may not end in a
+  // bare currency symbol. No money exposure ⇒ no money tile, and no currency tooltip either.
+  function exposureTile(){
+    const v=txt(D.exposureHeadline)||txt(D.exposure);
+    if(!hasValue(v)) return '';
+    const label=C.exposureLabel+', in '+String((D.cur||'£')).trim();
+    // COPY.exposureTip is the single tooltip source; payload exposureBasis carries the legacy
+    // banned sentence ("No exchange rate is applied") and never reaches the DOM (CONF/W3).
+    return '<div class="rail-exposure"><div class="v">'+escH(v)+'</div>'
+      +'<div class="l" title="'+escH(C.exposureTip)+'">'+escH(label)+'</div></div>';
+  }
+  const RAIL_SOCIAL='<span class="rail-social">'
+    +'<a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>'
+    +'<a href="https://www.linkedin.com/in/amanpareekk/" target="_blank" rel="noopener" aria-label="Aman Pareek on LinkedIn"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9V9Z"/></svg></a>'
+    +'<a href="mailto:contact@tamazia.co.uk" aria-label="Email contact@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></span>';
+  function rail(){
+    const nav=railNav();
     return `
     <aside class="rail"><div class="rail-inner">
       <div class="rail-brand"><a href="https://tamazia.co.uk" target="_blank" rel="noopener" aria-label="Tamazia, visit tamazia.co.uk"><img src="/tamazia-lockup-masthead-transparent.png" alt="Tamazia" class="rail-logo"></a></div>
-      <h1>${escH(D.meta.company)}</h1>
-      <div class="rail-report"><div class="rr-name">The Exposure Report</div><div class="rr-sub">Compliance, Search and AI Visibility</div></div>
-      <div class="rail-meta">${escH(D.meta.sector)}<br>${[D.meta.country,D.meta.city].filter(Boolean).map(escH).join(' · ')}<br>${escH(D.meta.domain)}</div>
-      <div class="rail-gauge">${CH.gauge(D.score,D.grade,{size:96,dark:true})}</div>
-      <div class="rail-band">${D.screenedLabel} · ${D.frameworksBinding} bind you</div>
-      <div class="rail-exposure"><div class="v">${D.exposureHeadline||D.exposure}</div><div class="l">${D.exposureNote}</div></div>
-      ${D.adjudication ? `<div class="rail-adj"><div class="adj-h">✓ ${D.adjudication.reviewed} findings re-examined against the statute</div><div class="adj-l">${escH(D.adjudication.line)}</div></div>` : ''}
-      <div class="rail-prep"><div class="rp-by">Report prepared by</div><div class="rp-name">Aman Pareek</div><div class="rp-deg">LLM in International Business Law,</div><div class="rp-inst"><img class="rp-logo" src="/audit/kings-logo.png" alt="King's College London" onerror="this.remove()">King&rsquo;s College London</div><div class="rp-rules">Every fix checked against ${D.rulesChecked} rule ${plur(D.rulesChecked,'check','checks')}</div></div>
-      <div class="rail-social">
-        <a href="https://www.instagram.com/tamaziauk/" target="_blank" rel="noopener" aria-label="Tamazia on Instagram" title="@tamaziauk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-        <a href="https://www.linkedin.com/in/amanpareekk/" target="_blank" rel="noopener" aria-label="Aman Pareek on LinkedIn" title="Aman Pareek on LinkedIn"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9V9Z"/></svg></a>
-        <a href="mailto:contact@tamazia.co.uk" aria-label="Email contact@tamazia.co.uk" title="contact@tamazia.co.uk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+      <div class="rail-ident"><h1>${escH(txt(D.meta&&D.meta.company))}</h1><span class="rail-ident-sub">${escH(C.reportName)}</span></div>
+      ${railMetaLine()}
+      <div class="rail-score">${CH.gauge(numOr(D.score,0),escH(txt(D.grade)),{size:96,dark:true,na:!SCORED})}${SCORED?`<div class="rail-screened">${escH(C.scoreScale)}</div>`:''}<div class="rail-screened">${escH(screenedCaption())}</div></div>
+      ${exposureTile()}
+      <div class="rail-prep">
+        <div class="rp-line"><img class="rp-logo" src="/audit/kings-logo.png" alt="" onerror="this.remove()">${escH(C.preparedBy)}</div>
+        <div class="rp-foot"><span class="rp-rules">${escH(C.rulesLine())}</span>${RAIL_SOCIAL}</div>
       </div>
-      <div class="rail-navtitle">Jump to</div>
-      <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${n.nm}<span class="nc">${n.c}</span></button>`).join('')}</nav>
-      <button class="rail-cta" data-book="package" data-tier="${escH(recommendedTierName())}">Walk the report through in 20 minutes with the founder ↗</button>
+      <nav class="railnav">${nav.map((n,i)=>`<button data-pane="${n.id}" class="${i===0?'active':''}"><span class="ni dot ${n.dot}"></span>${escH(n.nm)}<span class="nc">${escH(n.c)}</span></button>`).join('')}</nav>
+      <button class="rail-cta" data-book="package" data-tier="${escH(recommendedTierName())}">${escH(C.ctaRail)}</button>
     </div></aside>`;
   }
 
@@ -190,46 +418,72 @@
   // becomes a clickable SUMMARY that opens the overview detail. fixSummary keys on the fix's
   // position in D.fixes so the id matches the overview card exactly.
   function fixSummary(f){
-    const i=(D.fixes||[]).indexOf(f);
+    const i=LADDER.indexOf(f);
     return `<button class="fix-summary" data-finding="fx-${i+1}">
-      <span class="fs-tag">${escH(f.reg||f.pillar||'')}</span><span class="fs-t">${escH(f.title)}</span>
-      <span class="fs-e">${escH(f.exp)}</span><span class="fs-go">full finding ↑</span></button>`;
+      <span class="fs-tag">${escH(txt(f.reg)||txt(f.pillar))}</span><span class="fs-t">${escH(txt(f.title))}</span>
+      <span class="fs-e">${escH(txt(f.exp))}</span><span class="fs-go">full finding ↑</span></button>`;
   }
   const P = {};
 
+  // W4: the severity-definition strip is deleted; the definitions ride the severity dots.
+  /* CONF-175 / 176 / 078 · the header may only call the cards "breaches" when EVERY card is a
+     breach. A trio badged SEVERE / AT RISK / APPLIES TO YOU is a set of priority FINDINGS, and
+     when the trio is a subset of the total the header says which subset it is showing.
+     (T2 keeps the per-card kicker at "Priority breach NN" — that is REPORT-SPEC, not drift.) */
+  function trioAllBreached(){
+    const cards=LADDER.slice(0,3);
+    return cards.length>0 && cards.every(function(f){ return CH.stateOf(f)===CH.SEV_STATE.breached; });
+  }
+  function trioHead(){
+    const n=Math.min(3,LADDER.length);
+    if(!n) return '<div class="subhead mt-0"><span class="nt">↳</span><h3>'+escH(C.trioNone)+'</h3></div>';
+    const allB=trioAllBreached();
+    const total=Math.max(REG.rules, LADDER.length);
+    const h = (n<total) ? C.trioSubset(n,total,allB)
+                        : (allB ? C.trioHeader(n) : C.trioHeaderMixed(n));
+    return '<div class="subhead mt-0"><span class="nt">↳</span><h3>'+escH(h)+'</h3></div>';
+  }
+  function adjudicationCard(){
+    const a=D.adjudication; if(!a||!isNum(a.reviewed)) return '';
+    return '<div class="card pad mt-9"><div class="card-h"><div class="t">'+escH(C.ovAdjudication(numOr(a.reviewed,0)))+'</div></div>'
+      +'<p class="jur-p">'+escH(txt(a.line))+'</p></div>';
+  }
+  // CONF-042 · "Critical" is already a severity word on this page; an F-band firm reading
+  // "Critical" beside its grade reads it as a severity. The failing band is "Failing".
+  const bandDesc = (b)=> String(b.g||'').toUpperCase()==='F'
+    ? txt(b.d).replace(/\bcritical\b/i, C.bandCritical) : txt(b.d);
   P.overview = ()=>`
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The three you fix this quarter, Tamazia closes all three inside the first eight weeks.</h3></div>
-    ${severityKey()}
-    ${severeTrio()}
+    ${restFindings()}
     ${heroCharts()}
-    <div class="grid g2" style="margin-top:12px">
-      <div class="card pad"><div class="card-h"><div class="t">Findings by severity</div><div class="meta">${D.confirmed} confirmed v. evidence</div></div>${CH.donut()}</div>
-      <div class="card pad"><div class="card-h"><div class="t">Risk heatmap</div><div class="meta">likelihood &times; financial impact</div></div>${CH.heatmap()}</div>
-    </div>
-    <div class="card pad" style="margin-top:9px"><div class="card-h"><div class="t">Jurisdiction that governs you</div></div><p style="font-family:var(--body);font-size:13px;color:#3a2d30;line-height:1.5">${escH(D.jurisdiction)}</p></div>
-    <div class="card pad" style="margin-top:9px">
-      <div class="card-h"><div class="t" style="font-size:11px;color:var(--muted);letter-spacing:.02em">How your ${D.score}/100 is calculated</div><div class="meta">${D.frameworksBinding} binding ${plur(D.frameworksBinding,'framework','frameworks')} · ${D.confirmed} evidence checks</div></div>
+    <div class="card pad mt-12"><div class="card-h"><div class="t">${escH(C.ovSeverity)}</div><div class="meta">${escH(C.ovConfirmed(numOr(D.confirmed,0)))}</div></div>${CH.donut()}</div>
+    ${adjudicationCard()}
+    <div class="card pad mt-9"><div class="card-h"><div class="t">${escH(C.ovJurisdiction)}</div></div><p class="jur-p">${escH(txt(D.jurisdiction))}</p></div>
+    <div class="card pad mt-9">
+      <div class="card-h"><div class="t t-quiet">${escH(SCORED?C.ovScoring(numOr(D.score,0)):C.ovScoringNA)}</div><div class="meta">${numOr(D.frameworksBinding,0)} binding ${plur(numOr(D.frameworksBinding,0),'framework','frameworks')} · ${escH(C.ovConfirmed(numOr(D.confirmed,0)))}</div></div>
       <div class="grid g-7-5" style="gap:20px">
-        <div><p style="font-size:13.5px;color:#3a2d30;line-height:1.55">${D.scoring.formula}</p>
-          <p style="font-size:13px;color:var(--muted);margin-top:9px;line-height:1.5">${D.scoring.why}</p>
-          <div class="mono" style="font-size:10px;color:var(--ox);margin-top:11px;letter-spacing:.02em;line-height:1.6">${D.scoring.inputs}</div></div>
-        <div class="scorebands">${D.scoring.bands.map(b=>`<div class="sb ${b.g===D.grade[0]?'on':''}"><span class="sbg">${b.g}</span><span class="sbr">${b.r}</span><span class="sbd">${b.d}</span></div>`).join('')}</div>
+        <div>${SCORED?`<p class="sc-formula">${escH(txt(D.scoring&&D.scoring.formula).replace(MISLABELLED,'catalogue screened'))}</p>
+          <p class="sc-why">${escH(txt(D.scoring&&D.scoring.why).replace(MISLABELLED,'catalogue screened'))}</p>`:`<p class="sc-why">${escH(C.notScoredWhy)}</p>`}
+          <div class="mono sc-inputs">${escH(sanitiseInputs(D.scoring&&D.scoring.inputs))}</div></div>
+        <div class="scorebands">${((D.scoring&&D.scoring.bands)||[]).map(b=>`<div class="sb ${b.g===String(D.grade||'')[0]?'on':''}"><span class="sbg">${escH(txt(b.g))}</span><span class="sbr">${escH(txt(b.r))}</span><span class="sbd">${escH(bandDesc(b))}</span></div>`).join('')}</div>
       </div>
     </div>
-    <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Where Tamazia takes you</div><div class="meta">projected · prior engagements</div></div>${CH.trajectory(820,150)}</div>`;
+    <div class="card pad mt-10"><div class="card-h"><div class="t">${escH(C.ovTrajectory)}</div><div class="meta">${escH(C.ovTrajectoryMeta)}</div></div>${SCORED?CH.trajectory(820,150):naLine(C.ovTrajectoryNA)}</div>`;
 
   // --- P.regulatory helpers: single-purpose builders (CodeScene: flat conditionals, small methods).
   // Output is identical to the previous inline build; only the structure changed.
+  // CONF-050 · "confirmed" already counts evidence elsewhere; a register row is FOUND or not.
+  // CONF-257 · a status chip states the status; it does not hand the reader a task.
   const regRowStatus = (r)=>{
-    if (r.status==='confirmed') return {cls:'ok', st:'On the register'};
-    if (r.status==='not_found') return {cls:'miss', st:'No exact match, confirm on the call'};
-    if (r.status==='unavailable') return {cls:'na', st:'Register unavailable this scan'};
-    return {cls:'link', st:'Verify on the register'};
+    if (r.status==='confirmed') return {cls:'ok', st:C.regOnRegister};
+    if (r.status==='not_found') return {cls:'miss', st:C.regNoMatch};
+    if (r.status==='unavailable') return {cls:'na', st:C.regUnavailable};
+    return {cls:'link', st:C.regVerify};
   };
+  // CONF-258 · one tri-state, one tense, one structure.
   const regRowSite = (r)=>{
-    if (r.on_site===true) return 'Displayed on your site.';
-    if (r.on_site===false) return 'Not found on your site on this scan.';
-    return 'Site display not confirmed on this scan.';
+    if (r.on_site===true) return C.siteShown;
+    if (r.on_site===false) return C.siteNotShown;
+    return C.siteUnknown;
   };
   // E-233: OWN markup + OWN classes. Never reuse the framework grid (.fw/.fw-head) here - passing one
   // child into that 4-column grid dropped the content into the 46px column (one word per line).
@@ -240,7 +494,7 @@
         <div class="regrow-top"><span class="reg-name">${escH(r.label)}</span><span class="reg-status ${cls}">${st}</span></div>
         ${rec?`<div class="reg-rec">${rec}</div>`:''}
         <div class="reg-line">${escH(r.statute_line)}</div>
-        <div class="reg-foot"><span class="reg-site">${regRowSite(r)}</span><a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="reg-verify">Verify on the official register &#8599;</a></div>
+        <div class="reg-foot"><span class="reg-site">${escH(regRowSite(r))}</span>${r.status==='unavailable'?'':`<a href="${escH(r.source_url)}" target="_blank" rel="noopener nofollow" class="reg-verify">${escH(C.verifyRegister)}</a>`}</div>
       </div>`;
   };
   // E-213 REGISTERED REALITY: the government-register cross-check rows; every line links to the
@@ -249,18 +503,22 @@
     const regRows=(D.registers&&D.registers.rows)||[];
     if(!regRows.length) return '';
     return `
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>Registered reality: your public register record, checked</h3></div>
-    <p class="reg-sub">These lines come from the government registers your firm is already on, by API, not from your website. Verify each one on the official source.</p>
+    <div class="subhead mt-0"><span class="nt">↳</span><h3>${escH(C.registersHead)}</h3></div>
+    <p class="reg-sub">${escH(C.registersSub)}</p>
     <div class="reglist">${regRows.map(regRowHtml).join('')}</div>`;
   };
   // E-218: point-in-time banner for anything the verifier has not passed. Honest scope, zero fear
   // theatre, and the re-check is the conversion mechanic.
+  // CONF-231 · three short sentences, not one 55-word chain. CONF-201 · the re-check names its price.
   const regPitBanner = ()=>{
     if (D.verified) return '';
-    const when = (D.meta&&D.meta.date)?(' of '+escH(D.meta.date)):'';
-    const sup = D.superseded?', since superseded by a newer assessment':'';
-    const book = (D.links&&D.links.booking)?(': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">book the re-check</a>'):'.';
-    return `<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">Point-in-time scan${when}${sup}. This view shows register facts, the binding-law map and only the findings that pass Tamazia&rsquo;s evidence gates from that scan. A fresh verified assessment re-checks every line against your live site${book}</div>`;
+    const when = (D.meta&&D.meta.date)?escH(D.meta.date):'';
+    const sup = D.superseded?' It has since been superseded by a newer assessment.':'';
+    const price = fmtMoney(PRICES.exposureReport.monthlyCover);
+    const book = (D.links&&D.links.booking)
+      ? (': <a href="'+escH(D.links.booking)+'" target="_blank" rel="noopener">'+escH(C.pointInTimeBook(price))+'</a>.')
+      : '.';
+    return `<div class="capt" style="margin:0 0 14px;padding:10px 14px;border:1px solid var(--line,#2a2a2a);border-radius:8px">${escH(C.pointInTime(when))}${sup} ${escH(C.pointInTime2)} ${escH(C.pointInTime3)}${book}</div>`;
   };
   const regKnowledgeMode = ()=> D.render_mode==='knowledge' && (D.frameworksBinding||0)>0;
   const regHeadlineUnassessed = ()=>{
@@ -269,56 +527,117 @@
     }
     return 'Compliance could not be assessed this scan. Your site blocked a deep read, so the checks below are incomplete and no pass is implied. A re-scan completes it.';
   };
-  const regScreenedLine = ()=>{
-    if (D.catalogueSize) return 'All '+D.catalogueSize.toLocaleString('en-GB')+' compliance rules in the register were screened. ';
-    return 'The full regulatory catalogue was screened. ';
-  };
-  const regHeadlineText = ()=>{
+  /* R1 · ONE sentence, built from the DEDUPED set the boxes below actually render. */
+  // G3 / CONF-084 / 085 · the band says "27 frameworks bind you" and the lede used to say "26
+  // further frameworks bind you" one line below it. One sentence now reconciles the two.
+  const regLedeText = ()=>{
     if (D.compliance_unassessed) return regHeadlineUnassessed();
-    if (D.regulatoryHeadline) return D.regulatoryHeadline;
-    const nb = D.frameworksBinding||D.frameworksAssessed;
-    return regScreenedLine()+nb+' '+plur(nb,'framework legally binds','frameworks legally bind')+' you, '+D.rulesChecked+' rule '+plur(D.rulesChecked,'check was','checks were')+' executed against them, and '+D.counts.critical+' '+plur(D.counts.critical,'is','are')+' breached on your live site right now.';
+    const bind=numOr(D.frameworksBinding, numOr(D.frameworksAssessed,0));
+    if(!REG.rules || !REG.fwWithBreach) return C.regLedeClean(bind);
+    const breached=Math.min(REG.fwWithBreach, bind);
+    return C.regLedeOfTotal(breached, bind, Math.max(0, bind-breached));
+  };
+  /* R1 · the value band. A cell renders only where a real figure exists (N2). */
+  const regValueBand = ()=>{
+    const cell=(k,v,l)=>'<div class="regval-cell '+k+'"><div class="regval-v">'+escH(v)+'</div><div class="regval-l">'+escH(l)+'</div></div>';
+    const median=txt(D.exposureHeadline)||txt(D.exposure);
+    const ceiling=txt(D.exposureCeiling);
+    const bind=numOr(D.frameworksBinding, numOr(D.frameworksAssessed,0));
+    const cells=[];
+    if(hasValue(median)) cells.push(cell('median',median,C.regMedian));
+    if(hasValue(ceiling)) cells.push(cell('ceiling',ceiling,C.regCeiling));
+    cells.push(cell('bind',String(bind),C.regBinding(bind)));
+    // G3 / CONF-081 · two money figures side by side need the sentence that reconciles them.
+    // CONF-244 · a median needs a pointer to what it is a median of.
+    const notes=[];
+    if(hasValue(median) && hasValue(ceiling)) notes.push(C.regBandBridge(ceiling,median));
+    if(hasValue(median)) notes.push(C.regMedianBasis);
+    const note=notes.length?'<div class="regval-note capt">'+escH(notes.join(' '))+'</div>':'';
+    return '<div class="regval">'+cells.join('')+'</div>'+note;
+  };
+  /* R2 · the waterfall moves out of Overview and sits under the value band, with the
+     exposure bars beside it when there is an actual comparison to draw. */
+  const regExposureExhibits = ()=>{
+    const wf=CH.waterfall();
+    const bars=CH.exposureBars();
+    if(!wf && !bars) return '';
+    const wfCard=wf ? '<div class="card pad"><div class="card-h"><div class="t">'
+      +escH(hasValue(txt(D.exposure))?C.ovExposure(txt(D.exposure)):C.ovExposureNone)
+      +'</div><div class="meta">not just a sum of ceilings</div></div>'+wf+'</div>' : '';
+    const barCard=bars ? '<div class="card pad"><div class="card-h"><div class="t">Exposure by framework</div><div class="meta">'+escH(C.regCeiling)+'</div></div>'+bars+'</div>' : '';
+    return '<div class="grid '+(wfCard&&barCard?'g2':'')+'" style="margin-bottom:12px">'+wfCard+barCard+'</div>';
   };
   const sevDotCls = (sev)=>{
     if (sev==='P0') return 'c';
     if (sev==='P1') return 'h';
     return 's';
   };
-  const regBreachItem = (it, locked)=>`<div class="art-item"><div class="art-subj"><span class="art-dot ${sevDotCls(it.sev)}"></span>${escH(it.subject)}</div>${it.quote?`<div class="art-quote">&ldquo;${escH(it.quote)}&rdquo;</div>`:''}${(!it.quote&&it.absence)?`<div class="art-absence">${escH(it.absence)}</div>`:''}<div class="art-fix"><b>Tamazia fix</b>${CH.lockFix(escH(it.fix), locked)}</div></div>`;
+  /* R4 · every breach row reads error, then where, then fine. The quote is sanitised
+     (T5): raw DOM fragments and entities never reach the page. */
+  const regBreachItem = (it, locked, ctx)=>{
+    ctx=ctx||{};
+    // CONF-240 · severeCard already floors evidence at 3 alphanumerics; a one-character residue
+    // ("X") is not proof, so the same floor applies here.
+    const q0=CH.sanitiseQuote(it.quote,190);
+    const q=q0.replace(/[^a-z0-9]/gi,'').length>=3 ? q0 : '';
+    const pages=((ctx.inspected)||[]).map(txt).filter(Boolean);
+    const where=pages.length?'<span class="art-where"><b>'+escH(C.whereLabel)+'</b> '+escH(pages.slice(0,3).join(', '))+'</span>':'';
+    const fine=expBadge(ctx.exp,'art-fine');
+    const meta=(where||fine)?('<div class="art-meta">'+where+fine+'</div>'):'';
+    return `<div class="art-item"><div class="art-subj"><span class="art-dot ${sevDotCls(it.sev)}" title="${escH(sevDef(it.sev))}"></span>${escH(txt(it.subject))}</div>${q?`<div class="art-quote">&ldquo;${escH(q)}&rdquo;</div>`:''}${(!q&&txt(it.absence))?`<div class="art-absence">${escH(txt(it.absence))}</div>`:''}${meta}<div class="art-fix"><b>${escH(C.tamaziaFix)}</b>${CH.lockFix(escH(txt(it.fix)), locked)}</div></div>`;
+  };
   const regBreachList = (fw)=>{
     const groups=fw.articleGroups||[];
     if(!groups.length) return '';
     const all=groups.reduce((s,g)=>s+((g.items||[]).length),0);
     const half=Math.ceil(all/2);
     let k=0;
-    return `<div class="lbl">The breaches on your live site, and the Tamazia fix for each</div>
-        <div class="artlist">${groups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(gp.article)}</span>${gp.inspected.length?`<span class="art-insp">inspected ${gp.inspected.map(escH).join(', ')}</span>`:''}</div>
-          <div class="art-items">${gp.items.map(it=>regBreachItem(it,(k++)>=half)).join('')}</div>
+    return `<div class="lbl">${escH(C.breachesHead)}</div>
+        <div class="artlist">${groups.map(gp=>`<div class="artgroup"><div class="art-head"><span class="art-a">${escH(txt(gp.article))}</span>${(gp.inspected||[]).length?`<span class="art-insp">inspected ${gp.inspected.map(txt).filter(Boolean).map(escH).join(', ')}</span>`:''}</div>
+          <div class="art-items">${(gp.items||[]).map(it=>regBreachItem(it,(k++)>=half,{inspected:gp.inspected,exp:fw.exp})).join('')}</div>
         </div>`).join('')}</div>`;
   };
   const regFwAssessed = (fw)=>{
     if(!fw.screened) return '';
-    const pages=(fw.inspected_pages&&fw.inspected_pages.length)?`<span class="inspected" title="${escH(fw.inspected_pages.slice(0,8).join('  '))}">${fw.inspected_pages.length} ${plur(fw.inspected_pages.length,'page','pages')} inspected</span>`:'';
-    return `<div class="fw-assessed"><span class="abadge">${escH(fw.assessed_label || 'APPLIES · ASSESSED')}</span>${pages}</div>`;
+    // CONF-047 · the title used to render a raw URL where the visible text said "1 page inspected".
+    const pages=(fw.inspected_pages&&fw.inspected_pages.length)?`<span class="inspected">${fw.inspected_pages.length} ${plur(fw.inspected_pages.length,'page','pages')} inspected</span>`:'';
+    // CONF-034 · "APPLIES · ASSESSED" is internal shorthand; the verb is "binds you".
+    return `<div class="fw-assessed"><span class="abadge">${escH(C.bindsYouBadge)}</span>${pages}</div>`;
   };
   const regFwSummary = (fw)=>{
     const badges=`<span class="jbadge">${escH(fw.jur||'Global')}</span>${fw.binding_label?' <span class="jbadge bbadge">'+escH(fw.binding_label)+'</span>':''}`;
-    const status=fw.screened?'screened this scan':(fw.findings+' '+plur(fw.findings,'breach','breaches'));
+    // CONF-039 · one data type in this slot: a count. A framework screened and clean is "0 breaches".
+    const nb=fw.screened?0:numOr(fw.findings,0);
+    const status=nb+' '+plur(nb,'breach','breaches');
     const cnt=`${fw.c?`<span class="c">${fw.c} crit</span>`:''}${fw.h?`<span class="h">${fw.h} high</span>`:''}${fw.s?`<span class="s">${fw.s} std</span>`:''}`;
-    return `<div class="fw-head"><span class="code">${escH(fw.code)}</span>
-          <div class="fwn-wrap"><div class="fwn">${escH(fw.name)} ${badges}</div>${regFwAssessed(fw)}<div class="fwr">${escH(fw.regulator)} · ${status}</div></div>
+    // R3 · the fine is a right-aligned money badge, not a cell in a four-column grid.
+    const expRaw=txt(fw.exp);
+    let badge=expBadge(expRaw,'fw-money');
+    if(badge && isMoney(expRaw)) badge=badge.replace('class="fw-money"',
+      'class="fw-money" style="background:linear-gradient(135deg,'+CH.badgeColor(fw.code)+',var(--ox-deep))"');
+    return `<div class="fw-head"><span class="code">${escH(txt(fw.code))}</span>
+          <div class="fwn-wrap"><div class="fwn">${escH(txt(fw.name))} ${badges}</div>${regFwAssessed(fw)}<div class="fwr">${escH(txt(fw.regulator))} · ${status}</div></div>
           <div class="cnt">${cnt}</div>
-          <div class="fwe">${escH(fw.exp)}</div></div>`;
+          ${badge}</div>`;
   };
-  const regFwBody = (fw)=>`<div class="fwbody">
-        <div class="lbl">Why this framework matters</div>${escH(fw.why)}
-        ${(fw.obligations||[]).length?`<div class="lbl">What ${escH(fw.regulator)} assesses</div><ul class="obl">${fw.obligations.map(o=>`<li>${escH(o)}</li>`).join('')}</ul>`:''}
-        ${fw.reg_focus?`<div class="lbl">What ${escH(fw.regulator)} is enforcing right now</div><div class="action">${escH(fw.reg_focus)}</div>`:''}
-        ${fw.action?`<div class="lbl">${escH(fw.regulator)} &middot; recent enforcement</div><div class="action">${escH(fw.action)}${fw.enforcement_url?` <a href="${escH(fw.enforcement_url)}" target="_blank" rel="noopener nofollow" class="lawcite">source &#8599;</a>`:''}</div>`:''}
-        ${fw.guidance?`<div class="lbl">Recent regulatory change</div><div class="action">${escH(fw.guidance)}</div>`:''}
-        ${fw.citation_url?`<div class="lbl">The law</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(fw.name)}, ${escH(fw.regulator)} official source &#8599;</a></div>`:''}
+  /* CONF-227 · the per-card "This framework legally binds you…" sentence is stated ONCE above the
+     list, not appended to roughly twenty cards. Stripped here if the payload still carries it. */
+  const stripPreamble = (s)=> txt(s).replace(/\s*This framework legally binds you[^.]*\./i,'').trim();
+  /* G11 / CONF-167 · a label that promises a reason must be followed by a reason. When the body
+     is a duty it says so; when it is a question the regulator would ask, it says that instead. */
+  const whyLabel = (why)=> /\?\s*$/.test(String(why||'').trim()) ? C.fwQuestionLabel : C.fwRequiresLabel;
+  const regFwBody = (fw)=>{
+    const why=stripPreamble(fw.why);
+    return `<div class="fwbody">
+        ${why?`<div class="lbl">${escH(whyLabel(why))}</div>${escH(why)}`:''}
+        ${(fw.obligations||[]).length?`<div class="lbl">${escH(C.fwAssessedLabel)}</div><div class="capt fw-by">${escH(C.fwAssessedBy)}: ${escH(fw.regulator)}</div><ul class="obl">${fw.obligations.map(o=>`<li>${escH(o)}</li>`).join('')}</ul>`:''}
+        ${(fw.reg_focus && txt(fw.reg_focus)!==why)?`<div class="lbl">${escH(C.fwFocusLabel)}</div><div class="action">${escH(fw.reg_focus)}</div>`:''}
+        ${(fw.action&&fw.enforcement_url)?`<div class="lbl">${escH(C.fwEnforcement)}</div><div class="action">${escH(fw.action)} <a href="${escH(fw.enforcement_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(C.sourceLink)}</a></div>`:''}
+        ${fw.guidance?`<div class="lbl">${escH(C.fwGuidance)}</div><div class="action">${escH(fw.guidance)}</div>`:''}
+        ${fw.citation_url?`<div class="lbl">${escH(C.fwLawLabel)}</div><div class="action"><a href="${escH(fw.citation_url)}" target="_blank" rel="noopener nofollow" class="lawcite">${escH(C.fwLawLink)}</a></div>`:''}
         ${regBreachList(fw)}
       </div>`;
+  };
   const regFwCard = (fw,i)=>{
     const tot=Math.max(1,fw.findings), cp=fw.c/tot*100, hp=fw.h/tot*100, sp=Math.max(0,100-cp-hp);
     return `<details class="fw" data-code="${escH(fw.code)}" data-jur="${fw.jur||'Global'}" ${i===0?'open':''}>
@@ -329,61 +648,55 @@
       ${regFwBody(fw)}</details>`;
   };
   P.regulatory = ()=>{
-    const jurFilter=(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${j}">${j}</button>`).join('')}</div>`:'';
+    const jurFilter=(D.jurisdictions||[]).length>1?`<div class="jur-select"><span class="jur-lbl">Filter by jurisdiction</span><button class="jur-chip active" data-jurf="all">All</button>${D.jurisdictions.map(j=>`<button class="jur-chip" data-jurf="${escH(j)}">${escH(j)}</button>`).join('')}</div>`:'';
+    const fws=(D.frameworks||[]);
     return `
     ${regPitBanner()}
     ${regRegistersBlock()}
-    <div class="pane-head"><span class="eyebrow">Regulatory exposure</span>
-      <h2>${regHeadlineText()}</h2>
-      <p>Every scan screens the full framework register${D.catalogueSize?(' ('+D.catalogueSize+' frameworks)'):''}; each one is jurisdiction-, sector-, capability- and trigger-gated, so only the laws that genuinely attach to you appear here. ${D.frameworksBinding} ${plur(D.frameworksBinding,'framework binds','frameworks bind')} you, and ${D.rulesChecked} page-level rule ${plur(D.rulesChecked,'check was','checks were')} executed against them. One box per framework; open it for the breaches, the regulator and its most recent enforcement action.</p></div>
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>The ${D.frameworksAssessed} frameworks carrying your exposure${D.counts.critical>0?(', with '+D.counts.critical+' breached on your live site right now'):''}, worst exposure first</h3></div>
-    <p class="reg-sub">One box per regulator. The bar shows the severity mix; open it for every breach evidenced on your live pages, the regulator's most recent enforcement, and the exact Tamazia fix.</p>
+    <div class="pane-head"><span class="eyebrow">${escH(C.regEyebrow)}</span>
+      ${regValueBand()}
+      <h2>${escH(regLedeText())}</h2></div>
+    ${regExposureExhibits()}
+    <div class="subhead mt-0"><span class="nt">↳</span><h3>${escH(C.fwListHead(fws.length))}</h3></div>
+    <p class="capt fw-preamble">${escH(C.fwBindingPreamble)}</p>
     ${jurFilter}
-    ${D.frameworks.map(regFwCard).join('')}`;
+    ${fws.map(regFwCard).join('')}`;
   };
 
   P.seo = ()=>{
-    const ks=D.seo.keywordSummary||{};
-    const totalTracked=+ks.totalTracked||0, onPageOne=+ks.onPageOne||0;
-    const noKeywords=totalTracked===0;
-    // PSI is unavailable when the CWV builder fell back to its "not assessed" sentinel
-    // (no real CLS/PERF rows). Drives the speed clause + the "failing N of M" header.
-    const cwv=(D.seo.cwv||[]);
-    const cwvReal=cwv.filter(m=>m.k==='CLS'||m.k==='PERF');
-    const psiAvail=cwvReal.length>0;
-    const cwvFail=cwv.filter(m=>(m.st||m.state)==='fail').length;
-    const cwvN=psiAvail?cwvReal.length:cwv.length;
-    const seoHeadline=noKeywords
-      ? (psiAvail
-          ? 'Your buyers search specialist, commercial terms, not directory listings, and your live site is slow and thin when they do arrive.'
-          : 'Your buyers search specialist, commercial terms, not directory listings, and the technical signals below decide who the answer engines surface.')
-      : ('Off page one for '+(totalTracked-onPageOne)+' of '+totalTracked+' high-intent searches your buyers are typing'+(psiAvail?', and slow when they do arrive.':'.'));
-  return `
-    <div class="pane-head"><span class="eyebrow">Search &amp; AI both read these signals</span>
-      <h2>${seoHeadline}</h2>
-      <p>Search engines and AI answer engines read the same things, speed, structure, security, depth. Every signal below was measured live on your site, and each one is a buyer a competitor is capturing instead of you. Here is the exact fix.</p></div>
-    <div class="subhead" style="margin-top:0"><span class="nt">↳</span><h3>On-page, technical and security signals, the structure that decides who ranks and who the answer engines surface.</h3><span class="subhead-note">Live PageSpeed (mobile and desktop) is in the scorecard above.</span></div>
+    const ks=(D.seo&&D.seo.keywordSummary)||{};
+    const rows=CH.usableKeywords();
+    const totalTracked=numOr(ks.totalTracked,0), onPageOne=numOr(ks.onPageOne,0);
+    const psiAvail=!!(D.seo&&D.seo.psiStrats);
+    // G9 / CONF-047 · the heading degrades with the body, and "page one" (a rank) never collides
+    // with "Page" (a URL).
+    const seoHeadline = !SEO_ASSESSED ? C.seoHeadNA
+      : (rows.length ? C.seoHeadline(Math.max(0,totalTracked-onPageOne), totalTracked)
+                     : C.seoHeadlineTech);
+    return `
+    <div class="pane-head"><span class="eyebrow">${escH(C.seoEyebrow)}</span>
+      <h2>${escH(seoHeadline)}</h2>
+      ${SEO_ASSESSED?`<p>${escH(C.seoLede)}</p>`:''}</div>
+    <div class="subhead mt-0"><span class="nt">↳</span><h3>${escH(C.seoSub)}</h3></div>
     <div class="grid g2">
-      <div class="card pad"><div class="card-h"><div class="t">On-page issues</div><div class="meta">hover a fix</div></div>${CH.issueList(D.seo.onpage,'issue')}</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="card pad"><div class="card-h"><div class="t">Tech &amp; tracking</div></div>
-          <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${D.seo.tech.ssl}</span></div>
-          <div class="fact"><span class="k">Mobile-ready</span><span class="v" style="color:var(--${D.seo.tech.mobile==null?'muted':(D.seo.tech.mobile?'green':'red')})">${D.seo.tech.mobile==null?'Not assessed':(D.seo.tech.mobile?'Yes':'No')}</span></div>
-          <div class="fact"><span class="k">Trackers</span><span class="v">${escH(D.seo.tech.trackers)}</span></div>
-          <div class="fact"><span class="k">Ad pixels</span><span class="v">${escH(D.seo.tech.adPixels)}</span></div>
-          <div class="fact"><span class="k">Page weight</span><span class="v">${D.seo.tech.pageWeight}</span></div>
-          <div class="fact"><span class="k">Render</span><span class="v">${D.seo.tech.render}</span></div></div>
+      <div class="card pad"><div class="card-h"><div class="t">${escH(C.onpageHead)}</div><div class="meta">${escH(COUNTS.seo.chip)}</div></div>${COUNTS.seo.n?CH.issueList(D.seo.onpage,'issue'):naLine()}</div>
+      <div class="col-stack">
+        <div class="card pad"><div class="card-h"><div class="t">${escH(C.techHead)}</div></div>
+          <div class="facts"><div class="fact"><span class="k">SSL</span><span class="v">${techCell(D.seo.tech.ssl)}</span></div>
+          <div class="fact"><span class="k">Mobile-ready</span><span class="v">${D.seo.tech.mobile==null?naChip():(D.seo.tech.mobile?'Yes':'No')}</span></div>
+          <div class="fact"><span class="k">Trackers</span><span class="v">${techCell(D.seo.tech.trackers)}</span></div>
+          <div class="fact"><span class="k">Ad pixels</span><span class="v">${techCell(D.seo.tech.adPixels)}</span></div>
+          <div class="fact"><span class="k">Page weight</span><span class="v">${techCell(D.seo.tech.pageWeight)}</span></div>
+          <div class="fact"><span class="k">Render</span><span class="v">${techCell(D.seo.tech.render)}</span></div></div>
         </div>
-        <div class="card pad"><div class="card-h"><div class="t">Security headers</div><div class="meta">each missing one is a red flag in enterprise review</div></div>${CH.securityGrid()}</div>
+        <div class="card pad"><div class="card-h"><div class="t">${escH(C.securityHead)}</div><div class="meta">${escH(C.securitySub)}</div></div>${CH.securityGrid()}</div>
       </div>
     </div>
-    <div class="subhead"><span class="nt">↳</span><h3>${D.seo.keywordsThin?'The queries that actually fit a firm of your scale':'Keyword demand a rival is capturing'}</h3></div>
+    ${psiBlock()}
+    <div class="subhead"><span class="nt">↳</span><h3>${escH(rows.length?C.keywordsHead:C.keywordsHeadNA)}</h3></div>
     <div class="card pad">
-      ${D.seo.keywordsThin?`<div class="urgent" style="margin-bottom:13px;background:linear-gradient(100deg,var(--cream-2),#fff);border-left-color:var(--gold)"><span class="upulse" style="background:var(--gold);animation:none"></span><div><div class="ut">Local “near me” searches are not your battleground.</div><div class="us">For a firm of your size, buyers search specialist, commercial terms, not directory listings. The low-intent and aggregator-led queries that would misrepresent you have been filtered out. Your real fight is brand authority and AI visibility, where the named rivals are pulling ahead.</div></div></div>`:''}
-      ${noKeywords?'':`<div class="flexrow" style="justify-content:space-between;margin-bottom:12px">
-        ${CH.stat(D.seo.keywordSummary.opportunity, D.seo.keywordSummary.oppLabel,{red:true,size:'30'})}
-        ${CH.stat(D.seo.keywordSummary.onPageOne+' / '+D.seo.keywordSummary.totalTracked,'on page one today',{size:'30'})}
-      </div>`}${CH.keywordTable()}</div>`;
+      ${(D.seo.keywordsThin&&rows.length)?`<div class="urgent" style="margin-bottom:13px;background:linear-gradient(100deg,var(--cream-2),#fff);border-left-color:var(--gold)"><span class="upulse" style="background:var(--gold);animation:none"></span><div><div class="ut">${escH(C.nearMeTitle)}</div><div class="us">${escH(C.nearMeBody)}</div></div></div>`:''}
+      ${CH.keywordTable()}</div>`;
   };
 
   P.geo = ()=>{
@@ -404,57 +717,115 @@
     const aiOverview=isUK
       ? D.geo.aiOverview
       : String(D.geo.aiOverview||'').replace(/^[^.;]*AI Overviews[;.]?\s*/i,'AI Overviews now sit above the classic results for your category; ');
+  // CONF-070 / 156 / 245 · "Repeatability" is an abstract noun with no definition anywhere.
+  // The sentence carries the sample size on its face instead.
+  const repeatLine=(function(){
+    const raw=txt(D.geo.repeatability);
+    const m=raw.match(/named\s+(\d+)\s+of\s+(\d+)/i);
+    return m ? C.repeatLine(+m[1],+m[2]) : raw;
+  })();
   return `
-    <div class="pane-head"><span class="eyebrow">When your buyers ask AI</span>
+    <div class="pane-head"><span class="eyebrow">${escH(C.geoEyebrow)}</span>
       <h2>${D.geo.aiKnows ? 'Are AI assistants recommending '+escH(D.meta.company)+'? You are cited, but rivals are still named alongside you on the core queries your buyers ask.' : (D.geo.citations.length>0 ? 'Are AI assistants recommending '+escH(D.meta.company)+'? Right now, no. On the core queries your buyers ask, the engines name a competitor instead.' : 'Are AI assistants recommending '+escH(D.meta.company)+'? Right now, no. The answer engines do not name you for the core queries your buyers ask yet.')}</h2>
-      <p>${D.geo.rootCause?escH(D.geo.rootCause.reason):'The answer engines decide who to name from structured signals you are missing.'} ${escH(aiOverview)}</p></div>
+      <p>${D.geo.rootCause?escH(D.geo.rootCause.reason):'The answer engines decide who to name from structured signals you are missing.'}</p>
+      <p>${escH(aiOverview)}</p>
+      <p class="capt geo-prov">${escH(C.geoProvenance(!!D.geo.engineEstimate))}</p></div>
     ${aiCallout}
     <div class="grid g-4-8" style="margin-top:10px">
-      <div class="card pad" style="display:grid;place-items:center"><div class="card-h" style="width:100%"><div class="t">AI visibility</div><div class="meta">6 signals</div></div>${CH.radar(radarAxes,210)}</div>
-      <div style="display:flex;flex-direction:column;gap:15px">
-        <div class="card pad"><div class="card-h"><div class="t">Do AI engines cite you?</div><div class="meta">readiness /100 · ${D.geo.aiKnows?'recognised':'0 citing'}</div></div>${CH.engineGrid()}</div>
-        <div class="flexrow" style="gap:15px">
-          <div class="card pad" style="flex:1;text-align:center">${CH.stat(D.geo.entityReadiness,'Entity readiness')}</div>
-          <div class="card pad" style="flex:1;text-align:center">${CH.stat(D.geo.shareOfVoice,'Share of voice',{red:true})}</div>
-          <div class="card pad" style="flex:1.4"><div class="capt" style="margin:0"><b style="font-family:var(--mono);font-size:10px;color:var(--ink)">REPEATABILITY</b><br>${D.geo.repeatability}, the rivals named every run are the ones AI now treats as the default answer.</div></div>
+      <div class="card pad geo-radar-card"><div class="card-h"><div class="t">${escH(C.aiVisHead)}</div><div class="meta">${escH(C.aiVisMeta)}</div></div>${CH.radar(radarAxes,210)}</div>
+      <div class="col-stack-lg">
+        <div class="card pad"><div class="card-h"><div class="t">${escH(D.geo.engineEstimate?C.geoCiteQModelled:C.geoCiteQ)}</div><div class="meta">${D.geo.engineEstimate?`<span class="est-tag" title="${escH(C.modelledTip)}">${escH(C.modelled)}</span>`:'real probe'}</div></div>${CH.engineGrid()}</div>
+        <div class="geo-3">
+          <div class="card pad" style="flex:1;text-align:center">${CH.stat(D.geo.entityReadiness,C.entityStat,{na:!GEO_ASSESSED})}</div>
+          <div class="card pad" style="flex:1;text-align:center">${CH.stat(D.geo.shareOfVoice,C.sovStat,{red:true,na:!GEO_ASSESSED})}</div>
+          <div class="card pad wide"><div class="capt" style="margin:0">${escH(GEO_ASSESSED?repeatLine:C.notAssessed)}</div></div>
         </div>
       </div>
     </div>
     <div class="grid g2" style="margin-top:10px">
-      <div class="card pad"><div class="card-h"><div class="t">Structured-data gaps</div><div class="meta">what AI reads first</div></div>${CH.schemaChecklist()}</div>
-      <div class="card pad"><div class="card-h"><div class="t">Authority sources you're absent from</div><div class="meta">source gap</div></div>${CH.sourceGap()}</div>
+      <div class="card pad"><div class="card-h"><div class="t">${escH(C.schemaHead)}</div><div class="meta">${escH(C.schemaMeta)}</div></div>${CH.schemaChecklist()}</div>
+      <div class="card pad"><div class="card-h"><div class="t">${escH(C.sourceHead)}</div><div class="meta">${escH(C.sourceMeta)}</div></div>${CH.sourceGap()}</div>
     </div>
-    <div class="subhead"><span class="nt">↳</span><h3>Who AI names instead of you</h3></div>
+    <div class="subhead"><span class="nt">↳</span><h3>${escH(((D.geo.citations||[]).length)?C.geoCiteHead:C.geoCiteHeadNA)}</h3></div>
     <div class="card pad">${CH.citationTable()}</div>
-    ${(!D.seo.keywordsThin && (D.seo.keywords||[]).length>=2)?`<div class="subhead"><span class="nt">↳</span><h3>You currently rank 20 to 50 for these. Moving into the top 1 to 10 captures the high-intent traffic AI and Google hand to whoever ranks first</h3></div>
-    <div class="card pad">${CH.keywordTable()}</div>`:''}
-    <div class="subhead"><span class="nt">↳</span><h3>The fix, in full</h3></div>
+    <div class="subhead"><span class="nt">↳</span><h3>${escH(C.geoFixHead)}</h3></div>
     ${CH.finding(D.geo.fix,true,{locked:false})}
-    <details class="gloss-mini"><summary>Plain-English glossary · ${Object.keys(D.glossary).length} terms</summary>
-      <div class="glossgrid">${Object.entries(D.glossary).map(([k,v])=>`<div class="glossitem"><b>${escH(k)}</b><span>${escH(v)}</span></div>`).join('')}</div></details>`;
+    ${glossaryBlock()}`;
   };
 
-  P.competitors = ()=>`
-    <div class="pane-head"><span class="eyebrow">The firms being chosen over you</span>
-      <h2>You versus the firms AI and Google name first for “${escH(D.competitors.bestKeyword)}”, and the exact move that overtakes each one.</h2>
-      <p>These are the real, direct competitors the answer engines and search results put ahead of you, directories, blogs and listicles filtered out. For each, the one gap that decides it and the precise way you close it. The gap compounds every month you wait.</p></div>
-    <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">Head-to-head</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
-    <div class="subhead"><span class="nt">↳</span><h3>How you beat each of them, the specific play, rival by rival</h3></div>
+  /* JURIGUARD-6 · the glossary defined UK GDPR and PECR on EVERY audit. The ADAPTER gates the PAYLOAD's
+     glossary by jurisdiction (GLOSSARY_TERM_JUR, adapter :2231 — "a UAE-only firm should never see GDPR /
+     UK GDPR / PECR / CCPA defined") and that gate was doing its job; the render then merged COPY.glossaryBase
+     on top of it UNCONDITIONALLY, so the base's own two UK entries walked straight past it. A Texas firm's
+     report defined the UK cookie regime in its glossary. Same term↗region table, applied to the base set. */
+  const GLOSS_TERM_JUR = {
+    'uk gdpr':['UK'], 'eu gdpr':['EU'], 'pecr':['UK'], 'dpa 2018':['UK'], 'equality act 2010':['UK'],
+    'ccpa':['US'], 'cpra':['US'], 'hipaa':['US'], 'ada title iii':['US'],
+  };
+  /* The firm's own jurisdictions, off the payload and nothing else: the adapter's D.jurisdictions (the
+     distinct jurisdictions actually present in the rendered regulatory layer), widened by the registered
+     country and the ccTLD, which is the same country+TLD spine authJurisdictions() trusts. */
+  function firmJurs(){
+    const s=new Set((Array.isArray(D.jurisdictions)?D.jurisdictions:[]).map(x=>String(x).toUpperCase()));
+    const c=String((D.meta&&D.meta.country)||'').toUpperCase();
+    if(/UNITED KINGDOM|GREAT BRITAIN|ENGLAND|SCOTLAND|WALES|\bUK\b|\bGB\b/.test(c)) s.add('UK');
+    if(/UNITED STATES|\bUSA?\b/.test(c)) s.add('US');
+    if(/UNITED ARAB EMIRATES|\bUAE\b/.test(c)) s.add('AE');
+    const tld=String((D.meta&&D.meta.domain)||'').toLowerCase().split('.').pop();
+    if(tld==='uk') s.add('UK'); if(tld==='us') s.add('US'); if(tld==='ae') s.add('AE');
+    return s;
+  }
+  /* G16 / CONF-130, 155, 259…267 · ONE glossary. The base set in COPY is the superset (one
+     definition per term, UK GDPR corrected, da/pa deleted); a payload term the base does not
+     hold is merged in with its key title-cased. Open by default so a first read can reach it. */
+  function glossaryBlock(){
+    const jur=firmJurs();
+    const base={};
+    Object.entries(C.glossaryBase||{}).forEach(([k,v])=>{
+      const regions=GLOSS_TERM_JUR[String(k).toLowerCase().trim()];
+      if(regions && !regions.some(r=>jur.has(r))) return;     // a regime this firm is not in is not defined to it
+      base[k]=v;
+    });
+    const keyed={}; Object.keys(base).forEach(k=>{ keyed[k.toLowerCase()]=k; });
+    Object.entries(D.glossary||{}).forEach(([k,v])=>{
+      const lk=String(k).toLowerCase();
+      if(keyed[lk]) return;                                    // one definition per term, ours wins
+      const title=String(k).replace(/^[a-z]/,c=>c.toUpperCase());
+      base[title]=v;
+    });
+    const rows=Object.entries(base).sort((a,b)=>a[0].localeCompare(b[0]));
+    return `<details class="gloss-mini" open><summary>${escH(C.glossaryHead(rows.length))}</summary>
+      <div class="glossgrid">${rows.map(([k,v])=>`<div class="glossitem"><b>${escH(k)}</b><span>${escH(v)}</span></div>`).join('')}</div></details>`;
+  }
+
+  P.competitors = ()=>{
+    const st=competitorState();
+    // C2 · not assessed renders one honest line: no apology, no empty charts, no zero bars.
+    // G9 / CONF-164 · the eyebrow may not assert that rivals are winning when nothing was checked.
+    if(!st.assessed) return `
+    <div class="pane-head"><span class="eyebrow">${escH(C.cmpEyebrowNA)}</span>
+      <h2>${escH(C.cmpNA)}</h2></div>`;
+    return `
+    <div class="pane-head"><span class="eyebrow">${escH(C.cmpEyebrow)}</span>
+      <h2>You versus the firms AI and Google name first for “${escH(txt(D.competitors.bestKeyword))}”.</h2>
+      <p>${escH(C.cmpLede)}</p></div>
+    <div class="card pad" style="margin-bottom:14px"><div class="card-h"><div class="t">${escH(C.cmpHead)}</div><div class="meta">real peers · your row highlighted</div></div>${CH.competitorTable()}</div>
+    <div class="subhead"><span class="nt">↳</span><h3>${escH(C.cmpBeatHead)}</h3></div>
     <div class="card pad" style="margin-bottom:14px">${(D.competitors.ladder||[]).map((c,i)=>`<div class="beatcard">
       <div class="bc-rank">${i+1}</div>
       <div class="bc-body">
-        <div class="bc-top"><span class="bc-rival">${escH(c.name)}</span><span class="bc-sig">${escH(c.signal)}</span></div>
-        <div class="bc-move"><span class="bc-k">Beat them by</span> <b>${escH(c.beatBy.fix)}</b></div>
-        <div class="bc-proof"><span class="bc-arrow">↳</span> ${escH(c.beatBy.proof)}</div>
-        <div class="bc-foot"><span class="bc-metric">▸ ${escH(c.beatBy.metric)}</span>${c.beatBy.lever?`<span class="bc-lever"><span class="bc-lk">Tamazia lever</span> ${escH(c.beatBy.lever)}</span>`:''}</div>
-      </div></div>`).join('')||'<div class="capt" style="margin:0">Your category was mis-classified upstream, competitor set is being re-probed for this firm.</div>'}</div>
+        <div class="bc-top"><span class="bc-rival">${escH(txt(c.name))}</span><span class="bc-sig">${escH(txt(c.signal))}</span></div>
+        <div class="bc-move"><span class="bc-k">${escH(C.cmpBeatLabel)}</span> <b>${escH(txt(c.beatBy&&c.beatBy.fix))}</b></div>
+        <div class="bc-proof"><span class="bc-arrow" aria-hidden="true">›</span> ${escH(txt(c.beatBy&&c.beatBy.proof))}</div>
+        <div class="bc-foot"><span class="bc-metric">▸ ${escH(txt(c.beatBy&&c.beatBy.metric))}</span> ${(c.beatBy&&txt(c.beatBy.lever))?`<span class="bc-lever"><span class="bc-lk">${escH(C.cmpLever)}</span> ${escH(txt(c.beatBy.lever))}</span>`:''}</div>
+      </div></div>`).join('')}</div>
     <div class="grid g2">
       ${D.competitors.sovBar
-        ? `<div class="card pad"><div class="card-h"><div class="t">AI share of voice, you vs the firms named every run</div><div class="meta">real probe · ${D.competitors.sovBar.of} ${plur(D.competitors.sovBar.of,'run')}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:D.competitors.sovBar.of,fmt:v=>v+'/'+D.competitors.sovBar.of})}</div>`
-        : `<div class="card pad"><div class="card-h"><div class="t">AI citations &amp; page-one</div><div class="meta">you vs leader</div></div>${CH.bars(D.competitors.aiKwBars,{max:Math.max(2,...(D.competitors.aiKwBars||[{v:1}]).map(b=>b.v))})}</div>`}
-      <div class="card pad"><div class="card-h"><div class="t">Domain rating vs rivals</div><div class="meta">0 to 100 authority</div></div>${CH.bars(D.competitors.drBars,{max:100})}${(D.competitors.ladder||[]).some(c=>c.drEstimated)?'<div class="capt" style="margin-top:7px">Rivals that publish no Domain Rating are shown as an <b>est</b>imate from their authority signals.</div>':''}</div>
-    </div>
-    ${CH.urgent('The gap compounds. Every month you are absent, the firms AI names every time accumulate the citations and authority that make them harder to displace.', 'Tamazia closes the entity, schema and authority gap that decides who gets named.')}`;
+        ? `<div class="card pad"><div class="card-h"><div class="t">${escH(C.sovHead)}</div><div class="meta">${escH(C.sovMeta(numOr(D.competitors.sovBar.of,0)))}</div></div>${CH.bars(D.competitors.sovBar.rows,{max:numOr(D.competitors.sovBar.of,1),fmt:v=>v+' of '+numOr(D.competitors.sovBar.of,0)})}</div>`
+        : ''}
+      <div class="card pad"><div class="card-h"><div class="t">${escH(C.drHead)}</div><div class="meta">${escH(C.drMeta)}</div></div>${CH.bars(D.competitors.drBars,{max:100,drHidden:D.competitors.drHidden,zeroNA:true})}</div>
+    </div>`;
+  };
 
   P.plan = ()=> planAndPricing();
 
@@ -467,28 +838,24 @@
   // E12/E40 · severity language, defined inline at first use. "P0" was internal engineering vocabulary,
   // and every finding was being called "critical" regardless of its actual severity. The three words are
   // now defined once, here, and every severity dot carries the matching definition as a hover tip.
-  const SEV_KEY = (D.severityDefs && D.severityDefs.length) ? D.severityDefs : [
-    {word:'Critical', def:"A live breach of binding law on your site today, the item a regulator's first letter cites."},
-    {word:'High',     def:'Regulator-visible on inspection, one step from a breach citation.'},
-    {word:'Standard', def:'A best-practice gap costing rankings and AI visibility, not enforcement.'},
-  ];
-  function severityKey(){
-    return `<div class="sev-key capt" role="note" aria-label="How severity is graded in this report">
-      <span class="sev-key-h">How severity is graded here:</span>
-      ${SEV_KEY.map(x=>`<span class="sev-key-i"><b>${escH(x.word)}</b> ${escH(x.def)}</span>`).join('')}
-    </div>`;
-  }
-
-  // The top breaches as yellow-caution severe cards (Kimi §3); any beyond three continue as the existing
-  // collapsed .finding rows. The locked flag is computed on the FULL D.fixes list exactly as before
-  // (i >= ⌈N/2⌉) so the freemium half-lock counts are byte-identical. ids stay fx-1..N; severeCard renders
-  // <article class="finding sev-card"> so the data-finding jump + the .finding contract still hold.
+  /* T3 · the trio consumes the DEDUPED ladder. Two cards can never carry one ruleKey.
+     Anything past slot 3 continues as the existing collapsed .finding rows; the freemium
+     half-lock counts from the same list so the lock arithmetic stays consistent. */
+  const lockOf = i => i>=Math.ceil(LADDER.length/2);
   function severeTrio(){
-    const all=D.fixes||[]; const n=all.length; const lockOf=i=>i>=Math.ceil(n/2);
-    const sev=all.slice(0,3).map((f,i)=>CH.severeCard(f,i,{id:'fx-'+(i+1),locked:lockOf(i)})).join('');
-    const rest=all.slice(3).map((f,j)=>CH.finding(f,false,{id:'fx-'+(j+4),locked:lockOf(j+3)})).join('');
-    return `<div class="sev3">${sev}</div>${rest}`;
+    const n=Math.min(3,LADDER.length);
+    if(!n) return naLine(C.trioNone);
+    const sev=LADDER.slice(0,3).map((f,i)=>CH.severeCard(f,i,{id:'fx-'+(i+1),locked:lockOf(i)})).join('');
+    // the grid tracks the real card count so one card never sits in a three-column hole
+    return '<div class="sev3" data-n="'+n+'">'+sev+'</div>';
   }
+  // everything past slot 3 keeps the existing collapsed .finding rows, inside Overview
+  function restFindings(){
+    return LADDER.slice(3).map((f,j)=>CH.finding(f,false,{id:'fx-'+(j+4),locked:lockOf(j+3)})).join('');
+  }
+  // the block the main column mounts directly under the verdict
+  function trioBlock(){ return trioHead()+severeTrio(); }
+
 
   /* ---------------- PLAN + PRICING + ADD-ONS + BOOKING ---------------- */
   // C-A: this pane is the ONE display source. Every price/figure here READS from the PRICES block above,
@@ -545,7 +912,7 @@
         'Everything in Foundation, included',
         'Every location, practice area & service line ranked simultaneously (30 keywords)',
         'GEO included as standard, your brand inside AI-generated answers',
-        'The strategy that removes dependency on platforms taking 15 to 25% per booking',
+        'The strategy that removes dependency on booking platforms charging 15% to 25% commission on each reservation',
       ],
       more:[
         'Online personal branding grown alongside your rankings',
@@ -553,8 +920,8 @@
         'Four compliance-reviewed content pieces monthly',
         'Editorial placements in sector-relevant publications',
         'Up to three locations fully managed on Google Business Profile',
-        'Regulatory monitoring across both jurisdictions, 72-hour notification',
-        'Bi-weekly reporting with revenue attribution across all locations',
+        'Regulatory monitoring across both jurisdictions',
+        'Twice-monthly reporting with revenue attribution across all locations',
       ]},
     {key:'enterprise',name:'Enterprise',standard:PRICES.tiers.enterprise.standard,from:PRICES.tiers.enterprise.from,saves6:PRICES.tiers.enterprise.saves6,wk:'Full-stack · multi-market mandate',
       blurb:'Enterprise and regulated brands requiring full-stack SEO dominance across multiple jurisdictions.',
@@ -570,7 +937,7 @@
         'Ten compliance-reviewed content pieces monthly',
         'Every location in your portfolio managed on Google Business Profile',
         'Crisis reputation management built before it is needed',
-        'Dedicated regulatory monitoring with 24-hour notification',
+        'Dedicated regulatory monitoring',
         'Transaction-level revenue attribution across every market',
       ]},
   ];
@@ -579,6 +946,9 @@
   const TIER_TIPS = {
     foundation: [
       "Keyword strategy built around transactional search across your sector, mapped against competitors' current positions before a word is written.",
+      // JURIGUARD-7 · the parenthetical named six regulators as "YOUR sector's rules" on every audit in every
+      // country: a Texas firm read SRA and MHRA, a UK firm read HIPAA. The promise is unchanged; the list of
+      // other people's regulators is gone, because this tooltip has no way to know which of them binds anyone.
       "One compliance-reviewed content piece a month, checked against your sector's own rules before Google or a regulator sees it.",
       "Core Web Vitals, redirect chains, crawl errors, broken links and schema gaps identified and ranked by impact, delivered as developer instructions.",
       "Full Google Business Profile optimisation for one location: categories, attributes, posting schedule, Q&A, photos and a review-response system.",
@@ -587,12 +957,16 @@
       "Every Foundation deliverable carries forward into Authority, then builds on it.",
       "30 keywords across your full commercial footprint, so every location and service line surfaces for its own searches on the same day.",
       "GEO as standard: content restructured for AI citation across Claude, ChatGPT, Perplexity and Google AI Overviews.",
-      "Direct search visibility that intercepts buyers before Booking.com or Expedia take their 15 to 25% cut, the approach behind 480% peak client revenue growth (verified).",
+      "Direct search visibility that intercepts buyers before Booking.com or Expedia take their 15% to 25% commission.",
     ],
     enterprise: [
       "Every Authority deliverable carries forward into Enterprise, then scales across markets.",
       "50 or more keywords across every geography your buyers search from: London, Dubai, New York and beyond.",
       "Full AI-search dominance: structured data, entity and knowledge-panel work across Claude, ChatGPT, Perplexity, Google AI Overviews, Gemini and Copilot.",
+      // JURIGUARD-8 · an eleven-acronym capability list, of which at most three bind any one reader. It named
+      // UK GDPR, SRA and ASA on US audits and HIPAA on UK ones. The Enterprise promise IS cross-jurisdiction, so
+      // it is stated as the regime FAMILIES covered and names no instrument: nothing here can now be read as a
+      // claim about which law binds this firm. The firm's actual regimes are the regulatory section's job.
       "Data protection, financial promotion, professional conduct, advertising and health-marketing regimes covered in every jurisdiction you operate in, applied to every asset.",
     ],
   };
@@ -601,7 +975,7 @@
     foundation: [
       "Directory citations with consistent name, address and phone across legal directories, healthcare registries, hospitality aggregators and property portals.",
       "Your current presence across the AI engines for your most commercial queries, documented at start and reviewed quarterly.",
-      "A GA4 report showing which searches converted to bookings, appointments or enquiries, attributed to organic search at channel level.",
+      "A Google Analytics 4 (GA4) report showing which searches converted to bookings, appointments or enquiries, attributed to organic search at channel level.",
       "Your market's legal framework applied to every piece, with notification within one week of any change requiring an update.",
     ],
     authority: [
@@ -610,26 +984,36 @@
       "Practice areas, property types, service lines and procedures covered in one monthly programme.",
       "Two media outreach contacts a month to sector-relevant publications; placement earned on editorial merit, not guaranteed.",
       "Each location profiled separately with its own category strategy, posting schedule and review management.",
-      "Every new ruling in your sectors flagged within 72 hours, with the exact page and rule affected.",
+      "Every new ruling in your sectors flagged, with the exact page and rule affected.",
       "Twice-monthly reporting tying organic search to revenue across every location.",
     ],
     enterprise: [
       "A full personal-brand programme for your senior team across every platform buyers and partners evaluate.",
-      "Hreflang, geo-targeted content and market-specific keyword strategies across up to five territories.",
+      "International language and country tags (hreflang), geo-targeted content and market-specific keyword strategies across up to five territories.",
       "Volume calibrated to your full operational scope, every piece reviewed across all covered jurisdictions.",
       "No location cap: hotel groups across countries, firms across cities, each with its own local strategy.",
       "Monitoring, suppression and response architecture in place before any incident, structural protection not reactive PR.",
       "Law changes tracked across every country you operate in, with content updated within one week.",
-      "GA4 at transaction level, a monthly senior strategy call, and a board-ready executive review.",
+      "Google Analytics 4 at transaction level, a monthly senior strategy call, and a board-ready executive review.",
     ],
   };
+  /* CONF-184 · "See all inclusions" revealed `more[]` only, so `feats[3]` — the fourth headline
+     feature of EVERY tier — was rendered nowhere on the page and the control's label was false.
+     The reveal now opens with the features the collapsed card could not fit, then the rest. */
+  function tierMore(t){
+    const out=[];
+    (t.feats||[]).slice(3).forEach((f,i)=> out.push({t:f, tip:(TIER_TIPS[t.key]||[])[i+3]||''}));
+    (t.more||[]).forEach((f,i)=> out.push({t:f, tip:(MORE_TIPS[t.key]||[])[i]||''}));
+    return out;
+  }
   function planData(){
     const Dp=Array.isArray(D.pricing)?D.pricing:[];
     const byName=n=>Dp.find(p=>String(p.tier||'').toLowerCase()===n)||{};
     const TIERS=PRICING_TIERS_RENDER.map(t=>{const d=byName(t.key);return Object.assign({ rec:!!d.rec, popular:!!d.popular },t);});
-    // ensure exactly one recommended + one popular even if the adapter flags drift
+    // P1 · EXACTLY ONE emphasis flag across the card set, and 'rec' wins over 'popular'
+    // (the payload carries both today, which lit two ribbons on one row).
     if(!TIERS.some(t=>t.rec)) TIERS[2].rec=true;
-    if(!TIERS.some(t=>t.popular)) TIERS[1].popular=true;
+    TIERS.forEach(t=>{ t.popular=false; });
     return TIERS;
   }
   // #8: add-on copy must not leak wrong-sector regulators. MHRA (UK medicines) only fits
@@ -648,35 +1032,35 @@
   const I=PRICES.independent;
   const ADDONS=[
     {key:'websiteRemodelling', nm:'Website Remodelling', anchor:I.websiteRemodelling.anchor, offer:I.websiteRemodelling.offer, typical:I.websiteRemodelling.typical, unit:'one-time', hero:true,
-      scope:'The site buyers trust and act on, rebuilt end to end on a compliant, fast, conversion-led foundation.',
-      usp:'SEO and GEO can deliver the buyer; a site that does not convert spends that buyer. And your website is your largest regulated publication, live in front of your regulator 24 hours a day. The rebuild treats both problems as one.',
-      excl:'A build, not a mandate: ongoing rankings, AI visibility and monthly content live in the mandates.',
+      scope:'The site buyers trust and act on, rebuilt compliant, fast and conversion-led.',
+      usp:'SEO and GEO deliver the buyer; a site that does not convert spends them. Your website is also your largest regulated publication, live to your regulator every day.',
+      excl:'A build, not a mandate. Rankings, AI visibility and content live in the mandates.',
       spec:['Audit of the current site against speed, conversion and compliance','Information architecture and page plan mapped to buyer intent','Colour, type and copy crafted end to end; each word keyword-optimised','Design and build on a Core-Web-Vitals-clean foundation','Optimised for the AI engines: schema, entity and llms.txt built in','Every page legally reviewed before launch; CTAs tested before ship','Handover with the work owned outright once paid']},
-    {key:'aiAuthority', nm:'AI Authority', anchor:I.aiAuthority.anchor, offer:I.aiAuthority.offer, unit:'mo', hero:true,
-      scope:'Be the named answer across the AI engines, with the machine-readable identity they read first. Month one is the entity build.',
-      usp:'Ask ChatGPT tonight who the leading firms in your field are. Whatever it answers is already being read by your next client. The engines are choosing their citation set for your sector now; the names cited early compound.',
-      excl:'Included inside Authority and Enterprise mandates; buy standalone only when no mandate runs.',
+    {key:'aiAuthority', nm:'AI Authority', anchor:I.aiAuthority.anchor, offer:I.aiAuthority.offer, unit:'a month', hero:true,
+      scope:'Be the named answer across the AI engines. Month one builds the machine-readable identity.',
+      usp:'Ask ChatGPT tonight who leads your field. That answer is already reaching your next client, and the names cited early compound.',
+      excl:'Included in Authority and Enterprise mandates; buy standalone only when no mandate runs.',
       spec:['Entity, schema, llms.txt and Wikidata build in month one','Google Knowledge Panel and sameAs across every verified profile','Answer-surface content targeting real buyer prompts, monthly','Compliance review of what the AI engines say about you','Per-engine position and share-of-voice reporting against named rivals (a report, not a guaranteed placement)']},
-    {key:'onlinePersonalBranding', nm:'Online Personal Branding', anchor:I.onlinePersonalBranding.anchor, offer:I.onlinePersonalBranding.offer, unit:'mo',
-      scope:'You and your senior team made the named experts buyers find first, on every platform they check. LinkedIn programme included.',
-      usp:'Buyers shortlist the partner before the firm. When a general counsel, a patient or an investor searches your name, whatever surfaces is the pitch that happens without you.',
-      excl:'Individual authority only; the firm’s rankings and AI visibility live in the mandates.',
-      spec:['Voice and positioning captured for each principal','500-parameter LinkedIn profile optimisation, refreshed monthly','Ghostwritten, SEO-optimised posts on a schedule, each legally reviewed before publication','All profiles optimised and synced to the persona','Google snippet and priority-box targeting for your name','Reach and engagement reported monthly']},
-    {key:'instagramPresence', nm:'Instagram Presence', anchor:I.instagramPresence.anchor, offer:I.instagramPresence.offer, unit:'mo',
-      scope:'The social proof buyers check before they ever reach your website, held to your sector’s advertising code.',
-      usp:'Before a patient books, a guest reserves or a buyer enquires, they look. An inactive or off-brand profile quietly prices you down before a word is exchanged.',
-      excl:'Built for healthcare, aesthetics, hospitality, F&B and property. For law firms, Online Personal Branding is the correct instrument.',
+    {key:'onlinePersonalBranding', nm:'Online Personal Branding', anchor:I.onlinePersonalBranding.anchor, offer:I.onlinePersonalBranding.offer, unit:'a month',
+      scope:'You and your senior team made the named experts buyers find first. LinkedIn programme included.',
+      usp:'Buyers shortlist the partner before the firm. Whatever surfaces when they search your name is the pitch that happens without you.',
+      excl:'Individual authority only; firm rankings and AI visibility live in the mandates.',
+      spec:['Voice and positioning captured for each principal','A full LinkedIn profile rebuild against our published checklist, refreshed monthly','Ghostwritten, SEO-optimised posts on a schedule, each legally reviewed before publication','All profiles optimised and synced to the persona','Google snippet and priority-box targeting for your name','Reach and engagement reported monthly']},
+    {key:'instagramPresence', nm:'Instagram Presence', anchor:I.instagramPresence.anchor, offer:I.instagramPresence.offer, unit:'a month',
+      scope:'The social proof buyers check before your website, held to your sector’s advertising code.',
+      usp:'Before a patient books or a buyer enquires, they look. An inactive profile quietly prices you down before a word is exchanged.',
+      excl:'Built for healthcare, aesthetics, hospitality and property. For law firms, Online Personal Branding is the instrument.',
       spec:['Content plan aligned to the brand and sector','Posts and stories produced on a schedule','Profile optimisation and sector-aligned audience engagement by a specialist growth team, never bought followers','Every post checked against '+gbpAdRule+' before publication','Reach and engagement reported monthly (no follower guarantee)']},
-    {key:'ymylContent', nm:'YMYL Content', anchor:I.ymylContent.anchor, offer:I.ymylContent.offer, unit:'piece',
+    {key:'ymylContent', nm:'YMYL (Your Money or Your Life) content', anchor:I.ymylContent.anchor, offer:I.ymylContent.offer, unit:'per piece',
       scope:'Health, legal and money grade content, per compliance-reviewed piece.',
-      usp:'Google holds Your-Money-or-Your-Life content to its highest standard; your regulator holds it higher. A piece that fails legal review costs you twice: the rewrite, and the exposure for every day it was live.',
+      usp:'Google holds Your-Money-or-Your-Life content to its highest standard; your regulator holds it higher. A piece that fails legal review costs you twice.',
       excl:'Per piece, on demand; monthly content programmes live inside the mandates.',
-      spec:['1,500 or more words per piece, scoped to the query, never padded','Up to 100 keywords mapped per piece','Structured for search and AI citation','Vetted against your sector’s legal register before publication','Published on your website plus two blog properties','Brand and reputation angle built into every brief']},
-    {key:'gbpDomination', nm:'GBP Domination', anchor:I.gbpDomination.anchor, offer:I.gbpDomination.offer, unit:'mo',
-      scope:'Local map dominance for up to three locations, every element compliance-checked.',
-      usp:'For clinics, hotels, restaurants and local firms, the map pack is the first screen most buyers ever see, and the last one most ever scroll past.',
+      spec:['1,500 or more words per piece, scoped to the query, never padded','Structured for search and AI citation','Vetted against your sector’s legal register before publication','Published on your website plus two blog properties','Brand and reputation angle built into every brief']},
+    {key:'gbpDomination', nm:'Google Business Profile Domination', anchor:I.gbpDomination.anchor, offer:I.gbpDomination.offer, unit:'a month',
+      scope:'Google Business Profile dominance for up to three locations, every element compliance-checked.',
+      usp:'For clinics, hotels and local firms, the map pack is the first screen most buyers see and the last they scroll past.',
       excl:'Local visibility only; site-wide rankings, content and AI visibility live in the mandates.',
-      spec:['Up to three locations, each with its own category strategy','30,000 or more compliance-checked map citations per location','Posting schedule, Q&A and review-response system','Every element checked against '+gbpAdRule,'Local positions reported monthly']},
+      spec:['Up to three locations, each with its own category strategy','Citations built and kept consistent across the directories your buyers use','Posting schedule, Q&A and review-response system','Every element checked against '+gbpAdRule,'Local positions reported monthly']},
   ];
   // ---- interactive trajectory: current (flat/declining) vs Tamazia-projected (rising) ----
   // Reads real numbers from D (score, projected.wk12/wk24, trajectory). Hovering a tier tab
@@ -703,7 +1087,7 @@
         data-c1="${cur[1]}" data-c2="${cur[2]}">
       <div class="ptj-head">
         <div><div class="ptj-t">Your trajectory, with Tamazia and without</div>
-          <div class="ptj-meta">today ${score} ↗ week 12 ${proj[1]} ↗ week 24 ${proj[2]} · hover a tier to see it lift</div></div>
+          <div class="ptj-meta">${escH(C.trajHint)}</div></div>
         <div class="ptj-key"><span class="k-cur">Left to drift</span><span class="k-proj">With Tamazia</span></div>
       </div>
       <svg class="ptj-svg" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Projected score trajectory">
@@ -717,11 +1101,11 @@
         ${dotsCur}${dotsProj}
       </svg>
       <div class="traj-pts">
-        <div class="traj-pt now"><b>${score}</b>Today · ${D.grade}</div>
+        <div class="traj-pt now"><b>${score}</b>Today · ${escH(txt(D.grade))}</div>
         <div class="traj-pt"><b>${proj[1]}</b>Week 12</div>
         <div class="traj-pt end"><b>${proj[2]}</b>Week 24</div>
       </div>
-      <p class="ptj-caption capt">Projected score with Sprint II completed and a mandate underway. The trajectory is a model of the fix plan, not a promise. Rankings typically move in months two to three, revenue in months four to six.</p>
+      <p class="ptj-caption capt">${escH(C.trajectoryCaption)}</p>
       <div class="ptj-tiers"><span class="lbl">Projection assumes</span>${TIERS.map((t,i)=>`<button type="button" data-tier-tab="${i}" class="${i===0?'active':''}">${t.name}</button>`).join('')}</div>
     </div>`;
   }
@@ -732,7 +1116,31 @@
   // FIRST-ENGAGEMENT PRICING: `standard` is the published fee, `price` is what this report unlocks.
   // price = standard / 2, exactly. The strike is explained on the card, never left as decoration.
   function issuesTotal(){
-    return (D.counts&&(D.counts.total||((D.counts.critical||0)+(D.counts.high||0)+(D.counts.medium||0)+(D.counts.low||0))))||+D.rulesChecked||0;
+    // N3 · findings, not frameworks. The old "|| +D.rulesChecked" fallback printed a
+    // framework count as a finding count on any report with a zero total.
+    return Math.max(REG.rules, numOr(D.counts&&D.counts.total, 0));
+  }
+  // P6 / LEDGER P011 · grammar that survives n===0 and n===1 alike. The old form built
+  // "All "+n+" finding" and so shipped the exact string the copy header bans,
+  // "All 1 finding on this report, closed." n===1 now takes its own phrasing.
+  function findingsPhrase(n){
+    if(n>1) return 'All '+n+' findings on this report';
+    if(n===1) return 'The one finding on this report';
+    return 'Every finding on this report';
+  }
+  // The first fix title is an engine-authored obligation statement: it can run 30 words and
+  // carry a statutory citation in brackets. The old code lower-cased the whole thing, which
+  // mangled acronyms ("wcag 2.2 aa") and dumped a 30-word clause into a bullet.
+  // C1 · a truncated obligation reads as a misquoted law, so this returns a name ONLY when a
+  // COMPLETE leading clause exists (terminated by ; : or .) and it fits in nine words.
+  // Otherwise the bullet drops the clause rather than shipping a fragment.
+  function topFixShort(){
+    const raw=txt((((D.fixes||[])[0])||{}).title);
+    if(!raw) return '';
+    const m=raw.match(/^([^;:.(]+)(;|:|\.)/);
+    const clause=m ? m[1].trim() : '';
+    if(!clause || clause.split(/\s+/).length>9) return '';
+    return clause;
   }
   function sprintTiers(){
     const S=PRICES.fixSprints, n=issuesTotal();
@@ -740,13 +1148,32 @@
     return [
       {k:'1', label:'Sprint I', nm:'Enforcement Clearance', price:S.sprint1.offer, standard:S.sprint1.standard, days:S.sprint1.days,
        head:'Every Critical and High regulatory finding on this report, closed.',
-       blurb:`The layer a regulator's first letter cites, gone before the letter exists. ${critHigh>0?(critHigh+' '+plur(critHigh,'finding')+' in scope on this report.'):'Scoped to the regulatory findings on this report.'}`},
+       blurb:`The layer a regulator's first letter cites, gone before the letter exists. ${critHigh>0?(critHigh+' '+plur(critHigh,'finding')+' in scope here.'):'Scoped to the regulatory findings here.'}`,
+       // Q4 · compact spec rows: term + one line. Deliverables and timeline, never prose.
+       specs:[
+         ['Scope', critHigh>0 ? (critHigh+' Critical and High regulatory '+plur(critHigh,'finding')+' on this report') : 'The Critical and High regulatory findings on this report'],
+         ['Delivered', 'Rewritten pages and elements, each re-checked against the rule it breached'],
+         ['Evidence', 'A before and after record for every finding closed'],
+         ['Timeline', S.sprint1.days+' days from scope sign-off, contractual'],
+       ]},
       {k:'2', label:'Sprint II', nm:'Full Remediation', price:S.sprint2.offer, standard:S.sprint2.standard, days:S.sprint2.days, badge:'Most chosen',
-       head:`All ${n} ${plur(n,'finding')} on this report, closed.`,
-       blurb:'Every finding on this report closed: compliance, search and AI visibility together.'},
+       head:findingsPhrase(n)+', closed.',
+       blurb:'Every finding on this report closed. Compliance, search and AI visibility together.',
+       specs:[
+         ['Scope', 'Everything in Sprint I, plus every search and AI visibility finding'],
+         ['Delivered', 'Compliance, on-page, technical and entity fixes implemented on your live site'],
+         ['Evidence', 'A before and after record, plus the evidence pack your committee can file'],
+         ['Timeline', S.sprint2.days+' days from scope sign-off, contractual'],
+       ]},
       {k:'3', label:'Sprint III', nm:'Remediation + Verified Re-score', price:S.sprint3.offer, standard:S.sprint3.standard, days:S.sprint3.days,
-       head:`All ${n} ${plur(n,'finding')} closed, re-scanned and certified.`,
-       blurb:'Sprint II, then the prosecution-grade re-scan, a re-scored certificate, the evidence pack, and 30 days of Regulatory Watch. Built for the firm whose committee and insurer need the paper, not just the fix.'},
+       head:findingsPhrase(n)+', closed, re-scanned and certified.',
+       blurb:'Sprint II plus '+C.sprintReScan+', a re-scored certificate and 30 days of Watch. Built for a committee and an insurer who need the paper.',
+       specs:[
+         ['Scope', 'Everything in Sprint II, then the whole site re-scanned from scratch'],
+         ['Delivered', 'A re-scored certificate and the filed evidence pack, plus 30 days of Regulatory Watch'],
+         ['Evidence', 'Every fix proven against the statute it answers, finding by finding'],
+         ['Timeline', S.sprint3.days+' days from scope sign-off, contractual'],
+       ]},
     ];
   }
   const SPRINT_DEFAULT=1;   // Sprint II is the default tab (C1)
@@ -756,119 +1183,171 @@
   function sprintCta(k){
     const url=sprintStripe(k);
     return url
-      ? `<a class="btn solid block r1-buy" href="${escH(url)}" target="_blank" rel="noopener" data-fixtier="${escH(k)}">Take the first-engagement rate&nbsp;↗</a>`
-      : `<a class="btn solid block r1-buy" href="${escH(bookUrl('sprint'))}" data-book="one_time_fix" data-fixtier="${escH(k)}">Start the Fix Sprint&nbsp;↗</a>`;
+      ? `<a class="btn solid block r1-buy" href="${escH(url)}" target="_blank" rel="noopener" data-fixtier="${escH(k)}">${escH(C.ctaSprintBuy)}</a>`
+      : `<a class="btn solid block r1-buy" href="${escH(bookUrl('sprint'))}" data-book="one_time_fix" data-fixtier="${escH(k)}">${escH(C.ctaSprintScope)}</a>`;
   }
   // The whole card body, re-rendered on every tab change (one code path, so the tabs can never desync).
   function sprintCardHtml(i){
     const T=sprintTiers(), sp=T[i]||T[SPRINT_DEFAULT];
     const credit=Math.round(sp.price*(PRICES.fixSprintCreditPct/100));
     const found=PRICES.tiers.foundation.from;
-    const spare=credit-found;
     const sc=PRICES.scco;
     const hours=35, counsel=hours*sc.gradeA;
-    const topFix=String((((D.fixes||[])[0])||{}).title||'your highest-severity finding').toLowerCase();
+    const topFix=topFixShort();
     const n=issuesTotal();
-    const outcomes=[
-      `Your highest-severity findings closed first, in priority order, starting with ${topFix}`,
-      `A prosecution-grade re-scan of all ${D.frameworksBinding} binding ${plur(D.frameworksBinding,'framework','frameworks')}, proving every fix landed`,
-      'An evidence pack your compliance committee and your insurer can file',
-      `Half of your Sprint fee returned as credit against any mandate begun within ${PRICES.fixSprintCreditDays} days`,
-      'A fixed scope and a fixed price. One engagement, not a retainer',
-    ];
+    // Q4 · the shared five-bullet outcome list is replaced by the tier's OWN spec rows, so
+    // each price is answered by what that Sprint actually delivers and by when. The order
+    // line is the one per-firm bullet: it names this report's top finding when the engine
+    // gives a clean, short clause for it.
+    const order='Your highest-severity findings closed first, in priority order'+(topFix?', starting with “'+topFix+'”':'');
+    const specRows=(sp.specs||[]).map(r=>`<div class="fx-spec"><dt>${escH(r[0])}</dt><dd>${escH(r[1])}</dd></div>`).join('');
     return `
           <div class="fx-body">
-            <div class="fx-eyebrow">One-time Fix Sprint · ${escH(sp.label)} · ${escH(sp.nm)}</div>
+            <div class="fx-eyebrow">Fix ${escH(sp.label)} · ${escH(sp.nm)}</div>
             <h3 class="r1-head">${escH(sp.head)}</h3>
-            <p class="fx-line">A regulator does not read your intentions; it reads your live site, exactly as this scan did. ${n} ${plur(n,'finding')} ${plur(n,'sits','sit')} on yours today. At the courts' guideline hourly rates a Grade A London solicitor is ${priceSpan(sc.gradeA)} an hour (<a href="${escH(sc.sourceUrl)}" target="_blank" rel="noopener">${escH(sc.source)}</a>); ${hours} hours of external counsel time on this scope is ${priceSpan(counsel)} in advice alone, before anyone edits a page. The Sprint is the same outcome, productised: reviewed by lawyers, implemented by engineers, evidenced at the end, at a fixed price a partner can sign without a meeting.</p>
+            <p class="fx-line">${escH(C.sccoHeadline(hours,fmtMoney(sc.gradeA),fmtMoney(counsel)))}</p>
+            <details class="scco-note"><summary>${escH(C.sccoSummary)}</summary><p>${escH(C.sccoDetail(fmtMoney(sc.gradeA),sc.band,sc.inForce,fmtMoney(counsel),hours))} <a href="${escH(sc.sourceUrl)}" target="_blank" rel="noopener">${escH(sc.source)}</a></p></details>
             <p class="fx-tierline">${escH(sp.blurb)}</p>
-            <ul class="fx-list">${outcomes.map(o=>`<li>${escH(o)}</li>`).join('')}</ul>
+            <dl class="fx-specs">${specRows}</dl>
+            <p class="fx-order capt">${escH(order)}</p>
           </div>
           <div class="fx-side">
             <div class="fx-price"><span class="fx-was r1-was cmoney" data-gbp="${sp.standard}">${fmtMoney(sp.standard)}</span><b class="r1-price cmoney" data-gbp="${sp.price}">${fmtMoney(sp.price)}</b></div>
-            <div class="fx-firstline">First-engagement rate. The standard fee is ${priceSpan(sp.standard)}; this report unlocks the introductory price of ${priceSpan(sp.price)} because it is your first engagement with Tamazia.</div>
+            <div class="fx-firstline">${escH(C.firstEngagement('{S}','{O}')).replace('{S}',priceSpan(sp.standard)).replace('{O}',priceSpan(sp.price))}</div>
             <div class="fx-anchor r1-cap">One-time · fixed scope · delivered in ${sp.days} days, contractually</div>
-            <div class="fx-credit">${PRICES.fixSprintCreditPct}% of the fee, ${priceSpan(credit)}, is credited against your first retainer or mandate begun within ${PRICES.fixSprintCreditDays} days. Foundation is ${priceSpan(found)} a month, so the credit covers your first mandate month${spare>0?` with ${fmtMoney(spare)} spare`:''}.</div>
+            <div class="fx-credit">${escH(C.sprintCredit(PRICES.fixSprintCreditPct,'{C}',PRICES.fixSprintCreditDays)).replace('{C}',priceSpan(credit))}${credit>=found?escH(C.sprintCreditCovers('{F}')).replace('{F}',priceSpan(found)):''}</div>
             ${sprintCta(sp.k)}
-            <a class="btn block fx-cta" href="${escH(bookUrl('sprint'))}" data-book="one_time_fix" data-fixtier="${escH(sp.k)}">Or scope it in 20 minutes&nbsp;↗</a>
+            <a class="btn block fx-cta" href="${escH(bookUrl('sprint'))}" data-book="one_time_fix" data-fixtier="${escH(sp.k)}">${escH(C.ctaSprintCall)}</a>
           </div>`;
   }
 
-  /* ---------------- ROUTE 3 (C3): Unlock + Regulatory Watch, the merged product ---------------- */
-  // £495 unlocks every finding on this report AND starts month one of Regulatory Watch; from month two it is
-  // £1,500 a month. The £495 is credited in full against any Sprint or mandate within 90 days (E41 / E49).
-  // Regulatory Watch absorbs the retired Reputation & Crisis product (E51): review, mention and press
-  // monitoring now sit inside the Watch spec list. The struck £1,500 is the report's published standalone
-  // price, so the anchor is honest, not invented.
-  // E39/E16: the buy CTA is NEVER hidden. When no Payment Link is set it routes to the metadata-bearing
-  // /api/stripe/checkout intake (data-subscribe), whose contract is UNCHANGED so the webhook can still flip
-  // audit_pages.unlocked for THIS exact report.
-  function route3(){
-    const P3=PRICES.exposureReport;
-    const unlock=P3.unlock, cover=P3.monthlyCover, rv=P3.realValue, creditDays=P3.creditDays;
-    const specs=[
-      ['The full Exposure Report','Every locked fix opened in full, plus the complete compliance, search and AI-visibility assessment.'],
-      ['Monthly re-scan and re-score','This exact audit re-run on your live data every month; the record always reflects the site as it stands today.'],
-      ['Change log','A month-by-month history of what moved: findings closed, new gaps, score and exposure over time.'],
-      ['72-hour breach alert','A new breach on your live site flagged within 72 hours of appearing, before enforcement or a competitor moves.'],
-      ['Regulatory change alerts','Every new ruling in your sector flagged the day it lands, with the exact page, rule, impact, and the change required.'],
-      ['Review, mention and press monitoring','Your reputation watched in real time, with a crisis playbook on standby.'],
-      ['Board-ready quarterly certificate','A filed record your committee and insurer can rely on, benchmarked against your named competitors.'],
-      ['Search and AI position tracking','Rankings and AI share of voice tracked over time against the rivals named alongside you.'],
-      ['Legal oversight','Every monthly record is reviewed by the legal team before it reaches you.'],
-    ];
-    const specList=`<ul class="r3-list r3-specs">${specs.map(s=>`<li><span class="r3-spec-t">${escH(s[0])}</span><span class="r3-spec-q" data-tip="${escH(s[1])}" tabindex="0" role="note" aria-label="${escH(s[0])}: ${escH(s[1])}">?</span></li>`).join('')}</ul>`;
-    // The pay CTA. A Payment Link is used only when one is pasted; otherwise the always-valid checkout/intake
-    // path runs. Either way a button renders with a real destination.
-    const payCta=(label,kind,trial)=>{
-      const href=unlockHref();
-      return href
-        ? `<a class="btn solid block" href="${escH(href)}" target="_blank" rel="noopener">${label}&nbsp;↗</a>`
-        : `<a class="btn solid block" href="${escH(bookUrl(kind==='exposure_cover'?'scoping':'findings'))}" data-subscribe="${escH(kind)}" data-trial="${trial||0}">${label}&nbsp;↗</a>`;
-    };
-
-    if(D.unlocked){
-      // Cold / already-unlocked page: no paywall. Lead with the standing-record framing and ongoing Watch.
-      return `
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Regulatory Watch</h3></div>
-    <p class="plan-sub r3-gold">Every fix in this report is already open to you. Keep it that way: ${priceSpan(cover)} a month keeps a legal team standing between your website and your regulator.</p>
-    <div class="route route3">
-      <div class="r3-rib">Where most boardrooms start</div>
-      <div class="r3-grid">
-        <div class="r3-main">
-          <div class="fx-eyebrow">This exact report, current, in your inbox every month</div>
-          <h3 class="r3-h">See everything today. Be told the moment anything changes.</h3>
-          <p class="r3-body">When the law changes, your published pages do not. Watch closes that gap: within 72 hours of any development that touches you, you receive the exact page, the exact rule, the impact, and the exact change required. Not a newsletter. A named instruction. Your report is re-run on live data every month, so the record your committee sees is never stale, and every mention of your firm in reviews and the press is monitored on the same desk.</p>
-          ${specList}
-        </div>
-        <div class="r3-side r3-pay">
-          <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>/month</small></div>
-          ${payCta('Start Regulatory Watch','exposure_cover',0)}
-          <div class="r3-terms">${priceSpan(cover)} a month. Watch detects and instructs; it never edits a page. Implementation is a Sprint or a mandate. Cancel anytime.</div>
-        </div>
+  /* ---------------- THE MONITORING RADAR (Q4, founder 2026-07-29) ----------------
+     A large radar showing what Regulatory Watch actually watches. Every part of it is
+     honest by construction:
+       · the SPOKES are the monitored dimensions. They are a CAPABILITY statement and render
+         identically for every firm, so nobody can read a spoke as a measurement of their site.
+         The caption says so in as many words (CAP 3.7: never state an unmeasured finding as fact).
+       · the OUTER RING carries the real regulators resolved from THIS report's frameworks.
+         A regulator that does not reduce to a clean short name is dropped, never guessed.
+       · the CENTRE is the audited domain.
+       · the sweep is motion, not data, and it is disabled under prefers-reduced-motion.
+     Inline SVG only: no external asset, no web font, font sizes as SVG attributes (never a
+     style="font-size" that the type guard would, correctly, reject).                        */
+  const RADAR_SPOKES=['Advertising law','Data and GDPR','Regulator rules','Consumer law','Accessibility','SEO','AI visibility'];
+  // Short regulator names for the outer ring. Prefer the parenthesised acronym the engine
+  // already writes; otherwise an all-caps token; otherwise a short single-word name. Anything
+  // that does not reduce cleanly is DROPPED rather than abbreviated into something wrong.
+  function regulatorShorts(){
+    const out=[];
+    ((D.frameworks)||[]).forEach(f=>{
+      const raw=txt(f&&(f.regulator||f.authority)); if(!raw) return;
+      let s='';
+      const paren=raw.match(/\(([A-Z][A-Za-z0-9&./-]{1,9})\)/);
+      if(paren) s=paren[1];
+      else { const caps=raw.match(/\b[A-Z]{2,6}\b/); if(caps) s=caps[0];
+             else if(raw.length<=12 && !/[,;/(]/.test(raw)) s=raw; }
+      s=s.trim();
+      if(!s || s.length>12 || out.indexOf(s)>-1) return;
+      out.push(s);
+    });
+    return out.slice(0,6);
+  }
+  function watchRadar(){
+    const W=520,H=440,cx=260,cy=220;
+    const rings=[52,92,132], rSpoke=132, rLab=150, rReg=182;
+    const pt=(r,deg)=>[cx+r*Math.cos((deg-90)*Math.PI/180), cy+r*Math.sin((deg-90)*Math.PI/180)];
+    const ringEls=rings.map((r,i)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${i===rings.length-1?1.4:1}"/>`).join('');
+    const step=360/RADAR_SPOKES.length;
+    const spokes=RADAR_SPOKES.map((nm,i)=>{
+      const a=i*step, [x2,y2]=pt(rSpoke,a), [lx,ly]=pt(rLab,a);
+      const anchor=(Math.abs(a%360)<1||Math.abs(a%360-180)<1)?'middle':((a%360)<180?'start':'end');
+      const dy=(Math.abs(a%360)<1)?-4:((Math.abs(a%360-180)<1)?11:4);
+      return `<line x1="${cx}" y1="${cy}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--line-2)" stroke-width="1"/>`
+        +`<circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="3.6" fill="var(--gold)"/>`
+        +`<text x="${lx.toFixed(1)}" y="${(ly+dy).toFixed(1)}" text-anchor="${anchor}" font-family="var(--mono)" font-size="11" fill="var(--ox)">${escH(nm)}</text>`;
+    }).join('');
+    const regs=regulatorShorts();
+    const regRing=`<circle cx="${cx}" cy="${cy}" r="${rReg}" fill="none" stroke="var(--gold)" stroke-width="1" stroke-dasharray="3 7" opacity=".55"/>`;
+    const regEls=regs.length>=3 ? regs.map((r,i)=>{
+      const a=(360/regs.length)*i+(360/regs.length)/2, [x,y]=pt(rReg,a);
+      return `<g><rect x="${(x-r.length*3.6-7).toFixed(1)}" y="${(y-9).toFixed(1)}" width="${(r.length*7.2+14).toFixed(1)}" height="18" rx="9" fill="var(--paper)" stroke="var(--gold)" stroke-width="1"/>`
+        +`<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ox)">${escH(r)}</text></g>`;
+    }).join('') : '';
+    const [sx,sy]=pt(rSpoke,0);
+    const sweep=`<g class="rdr-sweep" style="transform-origin:${cx}px ${cy}px">`
+      +`<path d="M${cx} ${cy} L${sx.toFixed(1)} ${sy.toFixed(1)} A${rSpoke} ${rSpoke} 0 0 1 ${pt(rSpoke,52)[0].toFixed(1)} ${pt(rSpoke,52)[1].toFixed(1)} Z" fill="url(#rdrg)"/></g>`;
+    const dom=txt(D.meta&&D.meta.domain)||txt(D.meta&&D.meta.company)||'your site';
+    const domShort=dom.length>22 ? dom.slice(0,21)+'…' : dom;
+    return `<div class="rdr">
+      <svg class="rdr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${escH(C.radarAria)}">
+        <defs><radialGradient id="rdrg"><stop offset="0" stop-color="var(--gold)" stop-opacity=".38"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0"/></radialGradient></defs>
+        ${regRing}${ringEls}${sweep}${spokes}${regEls}
+        <circle cx="${cx}" cy="${cy}" r="34" fill="var(--ox-deep)"/>
+        <text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">YOU</text>
+        <text x="${cx}" y="${cy+54}" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--muted)">${escH(domShort)}</text>
+      </svg>
+      <div class="rdr-side">
+        <div class="rdr-h">${escH(C.radarHead)}</div>
+        <ul class="rdr-chips">${C.radarChips.map(c=>`<li>${escH(c)}</li>`).join('')}</ul>
+        <p class="rdr-cap capt">${escH(C.radarCaption)}</p>
+        <p class="rdr-cap capt">${escH(regs.length>=3 ? C.radarRegs(regs.length) : C.radarRegsNone)}</p>
+        <p class="rdr-cap capt rdr-tiein"><b>${escH(C.watchTieIn ? C.watchTieIn(numOr(D.frameworksBinding, COUNTS.regulatory.n), numOr(REG.rules,0)) : '')}</b></p>
       </div>
     </div>`;
-    }
+  }
 
-    // Standard locked page: the paywall. £495 unlocks the report and includes month one of Watch.
+  /* ---------------- ROUTE 2 (Q4): Regulatory Watch, the monitoring tier ----------------
+     FOUNDER DECISION Q4 (2026-07-29): the £495 unlock is retired. The middle offer is
+     £1,500 a month with month one free. It unlocks the full audit, watches the law
+     continuously, re-runs the audit monthly and DELIVERS the fix specification. It does not
+     implement: implementation lives in a Sprint or a mandate, and the card says so.
+     DMCCA Sch 20 · the renewal is stated plainly on the card, not in a footnote.
+     E39/E16: the buy CTA is NEVER hidden. It routes to the SUBSCRIPTION intake, never to the
+     one-time £495 Payment Link still sitting in pricing.ts, which would charge the wrong
+     amount for this offer (flagged as founder-gated in PRICING-REQUIREMENTS.md).           */
+  function routeWatch(){
+    const cover=PRICES.exposureReport.monthlyCover;
+    const specs=[
+      ['The full audit, unlocked','Every locked fix opened in full, plus the complete compliance, search and AI-visibility assessment.'],
+      ['Monthly re-run and re-score','This report re-run on your live data every month, so the record always reflects the site as it stands.'],
+      ['Law watch, around the clock','Your sector’s registers and regulators watched continuously, not swept once a month.'],
+      ['Law change flagged within 48 hours','Every new ruling that touches you flagged within 48 hours, with the page and the rule it affects.'],
+      ['Breach specified within 72 hours','A new breach on your live site returned as a written fix specification within 72 hours.'],
+      ['The exact page, rule and change','You are told precisely what to change and where. Implementation is a Sprint or a mandate.'],
+      ['Change log and quarterly certificate','A month-by-month history, and a filed record your committee and insurer can rely on.'],
+      ['Search and AI position tracking','Rankings and AI share of voice tracked over time against the rivals named alongside you.'],
+      ['Review, mention and press monitoring','Your reputation watched alongside the law, with a crisis playbook on standby.'],
+    ];
+    const specList=`<ul class="r3-list r3-specs">${specs.map(s=>`<li><span class="r3-spec-t">${escH(s[0])}</span><span class="r3-spec-q" data-tip="${escH(s[1])}" tabindex="0" aria-label="${escH(s[0])}: ${escH(s[1])}">?</span></li>`).join('')}</ul>`;
+    // A Payment Link is used only when a SUBSCRIPTION link is pasted; otherwise the
+    // always-valid checkout/intake path runs. Either way a button renders with a real
+    // destination, and neither path can charge the retired one-time price.
+    const payCta=(label)=>{
+      const href=strOr(STRIPE.cover);
+      return href
+        ? `<a class="btn solid block" href="${escH(href)}" target="_blank" rel="noopener">${label}&nbsp;↗</a>`
+        : `<a class="btn solid block" href="${escH(bookUrl('scoping'))}" data-subscribe="exposure_cover" data-trial="${PRICES.exposureReport.freeMonths}">${label}&nbsp;↗</a>`;
+    };
+    const open=!!D.unlocked;
     return `
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 3 · Unlock this report, and start Regulatory Watch</h3></div>
-    <p class="plan-sub r3-gold">${priceSpan(unlock)} unlocks every finding on this report and starts your first month of Regulatory Watch. From month two, ${priceSpan(cover)} a month keeps a legal team standing between your website and your regulator.</p>
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>${escH(open?C.routeWatchHeadOpen:C.routeWatchHead)}</h3></div>
+    <p class="plan-sub r3-gold">${escH((open?C.watchLedeOpen:C.watchLede)('{C}')).replace('{C}',priceSpan(cover))}</p>
     <div class="route route3">
-      <div class="r3-rib">Where most boardrooms start</div>
+      <div class="r3-rib">${escH(C.watchRib)}</div>
+      ${watchRadar()}
       <div class="r3-grid">
         <div class="r3-main">
-          <div class="fx-eyebrow">This exact report, current, in your inbox every month</div>
-          <h3 class="r3-h">See everything today. Be told the moment anything changes.</h3>
-          <p class="r3-body">When the law changes, your published pages do not. Watch closes that gap: within 72 hours of any development that touches you, you receive the exact page, the exact rule, the impact, and the exact change required. Not a newsletter. A named instruction. Your report is re-run on live data every month, so the record your committee sees is never stale, and every mention of your firm in reviews and the press is monitored on the same desk.</p>
+          <div class="fx-eyebrow">${escH(C.watchEyebrow)}</div>
+          <h3 class="r3-h">${escH(C.watchHead)}</h3>
+          <p class="r3-body">${escH(C.watchBody)}</p>
           ${specList}
         </div>
         <div class="r3-side r3-pay">
-          <div class="r3-was"><s class="cmoney" data-gbp="${rv}">${fmtMoney(rv)}</s></div>
-          <div class="r3-price"><b class="cmoney" data-gbp="${unlock}">${fmtMoney(unlock)}</b><small>to unlock</small></div>
-          <div class="r3-free">First month of Regulatory Watch included</div>
-          ${payCta('Unlock the full report','compliance',1)}
-          <div class="r3-terms">${priceSpan(unlock)} unlocks the full report and includes your first month of Watch. Then ${priceSpan(cover)} a month. Watch detects and instructs; it never edits a page. Implementation is a Sprint or a mandate. Cancel anytime. The ${priceSpan(unlock)} is credited in full against any Sprint or mandate within ${creditDays} days. The struck ${priceSpan(rv)} is the report's published standalone price, not an invented anchor.</div>
+          <div class="r3-price"><b class="cmoney" data-gbp="${cover}">${fmtMoney(cover)}</b><small>a month</small></div>
+          <div class="r3-free">${escH(C.watchFree)}</div>
+          ${payCta(C.watchCta)}
+          <div class="r3-terms">${escH(C.watchTerms('{C}')).replace('{C}',priceSpan(cover))}</div>
+          <details class="r3-note"><summary>${escH(C.r3TermsSummary)}</summary><p>${escH(C.watchTermsDetail)}</p></details>
         </div>
       </div>
     </div>`;
@@ -878,14 +1357,13 @@
     const TIERS=planData();
     const recT=TIERS.find(t=>t.rec)||TIERS[2];
     const recTier=recT.name;
-    const crit=D.counts.critical;
-    const score=+D.score||0;
+    const crit=REG.sev.crit;
+    const score=numOr(D.score,0);
     const wk12=(D.projected&&D.projected.wk12)||(D.trajectory&&D.trajectory[1]&&D.trajectory[1].v)||score;
     const wk24=(D.projected&&D.projected.wk24)||(D.trajectory&&D.trajectory[2]&&D.trajectory[2].v)||score;
     const topFix=((D.fixes||[])[0]||{}).title||'your highest-severity finding';
 
     const SPRINTS=sprintTiers();
-    const crit2=D.counts.critical;
     const isLegal=/law|legal|solicit|barrist|attorney|chambers/.test(_sectorStr);
     // Sector conditioning: the Instagram card is suppressed on legal-sector reports (Online Personal
     // Branding is the correct instrument for a law firm).
@@ -893,67 +1371,74 @@
 
     return `
     <div class="plan2">
-    <div class="pane-head"><span class="eyebrow">Three ways forward</span>
-      <h2>${crit>0?`${crit} Critical ${plur(crit,'finding')} on your live site today. Three ways to close them, and the trajectory once you do.`:`Three ways to close your highest-severity gaps, and the trajectory once you do.`}</h2>
-      <p>${escH(D.pricingNotes)}</p></div>
+    <div class="pane-head"><span class="eyebrow">${escH(C.planEyebrow)}</span>
+      <h2>${escH(crit>0?C.planHead(crit):C.planHeadClean)}</h2>
+      <p>${escH(C.pricingNotes)}</p></div>
 
-    ${planTrajectory(score,wk12,wk24,TIERS,recT.key)}
+    ${SCORED?planTrajectory(score,wk12,wk24,TIERS,recT.key):''}
 
-    <div class="cur-bar" role="tablist" aria-label="Display currency"><span class="cur-lbl">Prices in</span>${['GBP','USD','EUR','AED'].map(c=>{const s=CURRS[c].sym.trim();const lab=(s&&s!==c)?s+' '+c:c;return `<button class="cur-btn${_curState.code===c?' active':''}" data-cur="${c}" type="button" role="tab" aria-selected="${_curState.code===c?'true':'false'}">${lab}</button>`;}).join('')}<span class="cur-note">quoted &amp; invoiced in GBP</span></div>
+    <div class="cur-bar" role="group" aria-label="Display currency"><span class="cur-lbl">Prices in</span>${['GBP','USD','EUR','AED'].map(c=>`<button class="cur-btn${_curState.code===c?' active':''}" data-cur="${c}" type="button" aria-pressed="${_curState.code===c?'true':'false'}">${c}</button>`).join('')}<span class="cur-note">quoted &amp; invoiced in GBP</span></div>
 
-    <div class="subhead" style="margin-top:12px"><span class="nt">↳</span><h3>Route 1 · One-time Fix Sprint</h3></div>
+    <div class="subhead" style="margin-top:12px"><span class="nt">↳</span><h3>${escH(C.routeSprintHead)}</h3></div>
     <p class="plan-sub r1-lane">${escH(PRICES.fixPacksLane)}</p>
     <div class="route route1">
       <div class="fixbox r1-fixbox">
-        <div class="fx-rib">One-time · no retainer</div>
+        <div class="fx-rib">One-time · no mandate</div>
         <div class="r1-toggle r1-toggle-dark" role="tablist" aria-label="Choose a Fix Sprint">${SPRINTS.map((sp,i)=>`<button class="r1-tab${i===SPRINT_DEFAULT?' active':''}" data-sprint="${i}" data-fixtier="${sp.k}" type="button" role="tab" aria-selected="${i===SPRINT_DEFAULT?'true':'false'}"><span class="r1t-l">${escH(sp.label)}${sp.badge?` <em class="r1t-badge">${escH(sp.badge)}</em>`:''}</span><small class="cmoney" data-gbp="${sp.price}">${fmtMoney(sp.price)}</small></button>`).join('')}</div>
         <div class="fx-main">${sprintCardHtml(SPRINT_DEFAULT)}</div>
-        <div class="fx-foot capt">Delivery timeline is contractual. The Sprint clears today's backlog; it does not watch tomorrow. That is Regulatory Watch, below.</div>
+        <div class="fx-foot capt">${escH(C.sprintFoot)}</div>
       </div>
     </div>
 
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Route 2 · A mandate</h3></div>
-    <p class="plan-sub">Mandates implement and grow: the Sprint's fixes, sustained, plus rankings, AI visibility and compliance-reviewed content, every month. Regulatory Watch is included from Authority upward. Prices below are the mandate rates; no introductory discount applies to a recurring mandate.</p>
+    ${routeWatch()}
+
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>${escH(C.routeMandateHead)}</h3></div>
+    <p class="plan-sub">${escH(C.routeMandateLede)}</p>
+    <div class="pilot-bar">
+      <button class="pilot-btn" type="button" data-pilot aria-pressed="false"><span class="pilot-dot" aria-hidden="true"></span>${escH(C.pilotToggle)}</button>
+    </div>
     <div class="route tiers3 tiers-lux">${TIERS.map(t=>`
       <div class="tier3 tl ${t.rec?'rec':''} ${t.popular?'pop':''}" data-tier-card="${t.key}">
-        ${t.popular?'<div class="tl-rib">Most popular</div>':(t.rec?'<div class="tl-rib tl-rib-rec">Recommended</div>':'')}
+        ${t.rec?'<div class="tl-rib tl-rib-rec">Recommended</div>':''}
         <div class="tl-head"><div class="tl-nm">${t.name}</div><div class="tl-who">${escH(t.wk)}</div></div>
-        <div class="tl-priceline"><span class="tl-from">From</span><b class="cmoney" data-gbp="${t.from}">${fmtMoney(t.from)}</b><span class="tl-per">/month</span></div>
-        <details class="tl-who-acc"><summary class="tl-who-sum">Who it is for <span class="tl-who-x" aria-hidden="true">+</span></summary><p class="tl-blurb tl-who-p">${escH(t.blurb)}</p></details>
-        <ul class="tl-feats">${t.feats.map((f,i)=>{const tip=(TIER_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul>
-        <div class="t3-more tl-more" hidden><ul>${t.more.map((f,i)=>{const tip=(MORE_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" role="note" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul></div>
-        <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">See all inclusions</button><a class="btn block tl-cta" href="${escH(bookUrl('package'))}" data-book="package" data-tier="${escH(t.name)}">Begin ${/^[aeiou]/i.test(t.name)?'an':'a'} ${t.name} enquiry ↗</a></div>
+        <div class="tl-priceline"><span class="tl-from">From</span><b class="cmoney" data-gbp="${t.from}">${fmtMoney(t.from)}</b><span class="tl-per">a month</span><span class="tl-vs">· ${escH(C.tierStandard)}</span><s class="tl-was cmoney" data-gbp="${t.standard}">${fmtMoney(t.standard)}</s></div>
+        <p class="tl-saves">${escH(C.tierSaves('{M}','{S}','{V}'))
+            .replace('{M}','<span class="cmoney" data-gbp="'+(t.standard-t.from)+'">'+fmtMoney(t.standard-t.from)+'</span>')
+            .replace('{S}','<span class="cmoney" data-gbp="'+t.standard+'">'+fmtMoney(t.standard)+'</span>')
+            .replace('{V}','<span class="cmoney" data-gbp="'+t.saves6+'">'+fmtMoney(t.saves6)+'</span>')}</p>
+        <p class="tl-blurb">${escH(t.blurb)}</p>
+        <ul class="tl-feats">${t.feats.slice(0,3).map((f,i)=>{const tip=(TIER_TIPS[t.key]||[])[i]; return `<li><span class="tl-feat-t">${escH(f)}</span>${tip?`<span class="r3-spec-q tl-q" data-tip="${escH(tip)}" tabindex="0" aria-label="${escH(f)}: ${escH(tip)}">?</span>`:''}</li>`;}).join('')}</ul>
+        <div class="t3-more tl-more" hidden><ul>${tierMore(t).map(m=>`<li><span class="tl-feat-t">${escH(m.t)}</span>${m.tip?`<span class="r3-spec-q tl-q" data-tip="${escH(m.tip)}" tabindex="0" aria-label="${escH(m.t)}: ${escH(m.tip)}">?</span>`:''}</li>`).join('')}</ul></div>
+        <div class="tl-foot"><button class="t3-toggle tl-toggle" type="button">${escH(C.ctaShowMore)}</button><a class="btn block tl-cta" href="${escH(bookUrl('package'))}" data-book="package" data-tier="${escH(t.name)}">${escH(C.ctaTier(t.name))}</a></div>
       </div>`).join('')}</div>
-    <p class="plan-sub tl-note">Every engagement opens with the Exposure Report you are reading; the ${priceSpan(PRICES.exposureReport.unlock)} unlock is credited in full against any Sprint or mandate within ${PRICES.exposureReport.creditDays} days. Mandates run on 90-day rolling terms; electing a six-month term unlocks the pilot rate shown. Quoted and invoiced in GBP.</p>
+    <p class="plan-sub tl-note">${escH(C.mandateNote)}</p>
 
-    ${route3()}
-
-    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>Independent Solutions, each one a programme in its own right</h3></div>
-    <p class="plan-sub">Take any of these on its own, or layer it onto a Sprint or a mandate. Each carries the same first-engagement rate: the standard fee is struck, and this report unlocks the introductory price. Founding mandate rate held for the first three clients per sector per jurisdiction.</p>
+    <div class="subhead" style="margin-top:16px"><span class="nt">↳</span><h3>${escH(C.addonsHead)}</h3></div>
+    <p class="plan-sub">${escH(C.addonsLede)}</p>
     <div class="addon-railwrap">
-      <button type="button" class="addon-nav addon-prev" aria-label="Previous solutions">&lsaquo;</button>
+      <button type="button" class="addon-nav addon-prev" aria-label="${escH(C.navPrev)}">&lsaquo;</button>
       <div class="addon-grid" role="list">
       ${ADDONS_SHOWN.map(a=>{
         const off=(a.offer!=null)?a.offer:a.price;          // the price actually charged
         const priceHtml=(a.anchor!=null)
-          ? `<span class="apwas cmoney" data-gbp="${a.anchor}">${fmtMoney(a.anchor)}</span><b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`
-          : `<b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>/${a.unit}</small>`;
+          ? `<span class="apwas cmoney" data-gbp="${a.anchor}">${fmtMoney(a.anchor)}</span><b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>${escH(a.unit)}</small>`
+          : `<b class="cmoney" data-gbp="${off}">${fmtMoney(off)}</b><small>${escH(a.unit)}</small>`;
         // E16/E39: the CTA always has a destination. A pasted Payment Link takes the payment; an empty one
         // routes to the intake modal, which is never hidden.
         const su=addonStripe(a.key);
         const cta=su
-          ? `<a class="btn gold addon-cta" href="${escH(su)}" target="_blank" rel="noopener">Add ${escH(a.nm.split(' ')[0])} ↗</a>`
-          : `<a class="btn gold addon-cta" href="${escH(bookUrl('scoping'))}" data-addon="${escH(a.nm)}" data-price="${off}">Add ${escH(a.nm.split(' ')[0])} ↗</a>`;
+          ? `<a class="btn gold addon-cta" href="${escH(su)}" target="_blank" rel="noopener">${escH(C.ctaAddon(a.nm))}</a>`
+          : `<a class="btn gold addon-cta" href="${escH(bookUrl('scoping'))}" data-addon="${escH(a.nm)}" data-price="${off}">${escH(C.ctaAddon(a.nm))}</a>`;
         return `<div class="addon ${a.hero?'ag-hero':''}" role="listitem" tabindex="0">
         <div class="is-top">
           <div class="an">${escH(a.nm)}</div>
           <div class="ap">${priceHtml}</div>
-          ${a.typical?`<div class="atyp capt">From ${fmtMoney(off)}; typical engagement ${fmtMoney(a.typical)}.</div>`:''}
+          ${a.typical?`<div class="atyp capt">${escH(C.addonTypical(fmtMoney(off),fmtMoney(a.typical)))}</div>`:''}
           <div class="ascope">${escH(a.scope)}</div>
         </div>
         <div class="is-detail">
           <div class="tag">${escH(a.usp)}</div>
-          <div class="afirst capt">First-engagement rate: the standard fee is ${fmtMoney(a.anchor)}; this report unlocks ${fmtMoney(off)}.</div>
+          <div class="afirst capt">${escH(C.addonFirst(fmtMoney(a.anchor),fmtMoney(off)))}</div>
           <div class="aspec-h">How it runs, step by step</div>
           <ol class="aspec-steps">${a.spec.map(x=>`<li>${escH(x)}</li>`).join('')}</ol>
           <div class="aexcl capt">${escH(a.excl||'')}</div>
@@ -961,26 +1446,26 @@
         </div>
       </div>`;}).join('')}
       </div>
-      <button type="button" class="addon-nav addon-next" aria-label="More solutions">&rsaquo;</button>
+      <button type="button" class="addon-nav addon-next" aria-label="${escH(C.navNext)}">&rsaquo;</button>
     </div>
-    <p class="plan-sub addon-disclosure">Figures shown for client engagements are drawn from verified analytics and are identified as such. Any figure labelled illustrative is a worked example, not a client result. Each solution commits to defined deliverables and to reach; commercial outcomes depend on factors outside any agency's control and are not guaranteed. Full terms: /legal/service-terms.</p>
+    <p class="plan-sub addon-disclosure">${escH(C.addonDisclosure)}</p>
 
-    <div class="subhead founder-subhead" style="margin-top:13px"><span class="nt">↳</span><h3>Walk the report through in 20 minutes</h3></div>
-    <div class="founder-cred">Every report is reviewed by the legal team, led by Aman Pareek, LLM in International Business Law, King&rsquo;s College London, before it reaches you.</div>
-    <p class="plan-sub">Three ways to start. No sales team, no discovery loop; your route and strongest finding are carried into the first conversation.</p>
+    <div class="subhead founder-subhead" style="margin-top:13px"><span class="nt">↳</span><h3>${escH(C.bookingHead)}</h3></div>
+    <div class="founder-cred">${escH(C.legalReviewed)}</div>
+    <p class="plan-sub">${escH(C.bookingLede)}</p>
     <div class="booking">
-      <div class="bookcard"><div class="rt">Mandate enquiries</div><h3>Discuss a mandate</h3>
-        <p>A 30 minute confidential session on the Foundation, Authority or Enterprise mandate, and which one fits ${escH(D.meta.company)}.</p>
-        <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="Mandate strategy call calendar"></div>
-        <p class="bookcard-note">Pick a time above, or <a href="${escH(bookUrl('package'))}" target="_blank" rel="noopener">open the calendar directly</a>. Your route and strongest finding are carried into the call.</p></div>
-      <div class="bookcard"><div class="rt">One-time sprint</div><h3>Start a Fix Sprint</h3>
-        <p>A 30 minute confidential session to scope a one-time, fixed-scope Fix Sprint. The urgent items closed first, no retainer.</p>
-        <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="Fix Sprint call calendar"></div>
-        <p class="bookcard-note">Pick a time above, or <a href="${escH(bookUrl('sprint'))}" target="_blank" rel="noopener">open the calendar directly</a>. A written confirmation follows by email.</p></div>
+      <div class="bookcard"><div class="rt">${escH(C.bookMandateTag)}</div><h3>${escH(C.bookMandateHead)}</h3>
+        <p>${escH(C.bookMandateBody(txt(D.meta&&D.meta.company)||'your firm'))}</p>
+        <div class="cal-embed" data-cal-embed data-intent="package" data-tier="${recTier}" aria-label="${escH(C.bookMandateHead)}"></div>
+        <p class="bookcard-note">${escH(C.bookPick)}<a href="${escH(bookUrl('package'))}" target="_blank" rel="noopener">${escH(C.bookPickLink)}</a>.</p></div>
+      <div class="bookcard"><div class="rt">${escH(C.bookSprintTag)}</div><h3>${escH(C.bookSprintHead)}</h3>
+        <p>${escH(C.bookSprintBody)}</p>
+        <div class="cal-embed" data-cal-embed data-intent="one_time_fix" aria-label="${escH(C.bookSprintHead)}"></div>
+        <p class="bookcard-note">${escH(C.bookPick)}<a href="${escH(bookUrl('sprint'))}" target="_blank" rel="noopener">${escH(C.bookPickLink)}</a>. ${escH(C.bookSprintNote)}</p></div>
     </div>
 
-    <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>Prefer a written reply? Leave your details</h3></div>
-    <p class="plan-sub">Send the basics and Tamazia replies within one business day. No obligation, no sales sequence.</p>
+    <div class="subhead" style="margin-top:14px"><span class="nt">↳</span><h3>${escH(C.writtenHead)}</h3></div>
+    <p class="plan-sub">${escH(C.writtenLede)}</p>
     <form class="audit-bookform" novalidate aria-label="Contact Tamazia">
       <input type="text" name="c_website_2" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
       <div class="abf-grid">
@@ -990,104 +1475,143 @@
         <label class="abf-field"><span>Sector</span><input name="sector" value="${escH((D.meta&&D.meta.sector)||'')}"></label>
       </div>
       <div class="abf-err" role="alert" hidden></div>
-      <div class="abf-actions"><button type="submit" class="btn solid abf-submit">Send to Tamazia ↗</button></div>
-      <p class="abf-fine">Your details are recorded with Tamazia and acknowledged by email. No payment is taken here.</p>
+      <div class="abf-actions"><button type="submit" class="btn solid abf-submit">${escH(C.ctaWritten)}</button></div>
+      <p class="abf-fine">${escH(C.writtenFine)}</p>
     </form>
 
-    <div class="card pad" style="margin-top:10px;background:var(--cream-2);border:0">
-      <div class="capt" style="font-size:11px;line-height:1.6;margin:0">This is an automated marketing diagnostic from publicly observable signals (or the most recent web-archive snapshot where the live site was unreachable). The monetary figures are <b>statutory maximum fines</b>: worst-case ceilings to indicate exposure, not predictions. Not legal advice. Framework catalogue ${D.meta.catalogue}. Produced by Tamazia Ltd, London. Marketing diagnostic only.</div>
+    <div class="card pad mt-10" style="background:var(--cream-2);border:0">
+      <details class="legal-more"><summary>${escH(C.legalSummary)}</summary>
+        <div class="capt legal-fine">${escH(C.legalBody(txt(D.meta&&D.meta.catalogue).replace(/^v+/i,'v')||'not stated'))}</div></details>
     </div>
     </div>`;
   }
 
-  /* ---------------- VERDICT (always-visible, compact) ---------------- */
+  /* ---------------- VERDICT (A2, R1: conclusion first) ---------------- */
+  // T1 · the .vfix-head / .vfixes chip strip is DELETED. The trio has exactly one home:
+  // the yellow caution cards in Overview.
   function verdict(){
-    const f=D.fixes||[];
-    const company=(D.meta&&D.meta.company)||'your firm';
-    const crit=(D.counts&&D.counts.critical)||0;
-    const top=f[0]||{};
-    const sov=D.geo&&D.geo.shareOfVoice;
-    const rivals=Math.max(0,((D.competitors&&D.competitors.rows)||[]).length-1);
-    const hasMoney=!!(D._meta&&D._meta.exposureN>0);
-    // Crisp, personalised summary bullets built render-side from existing D fields (no engine change):
-    // what the report is, the single biggest finding, where they stand on law/AI/competitors, how to read it,
-    // and why to keep it current. (founder: replace the dense exec paragraph with crisp bullet points.)
+    const company=txt(D.meta&&D.meta.company)||'your firm';
+    const expStr=txt(D.exposure);
+    const hasMoney=hasValue(expStr) && REG.rules>0;
+    const bind=numOr(D.frameworksAssessed, numOr(D.frameworksBinding,0));
     const bullets=[];
-    bullets.push(`<b>What this is.</b> A live audit of ${escH(company)} across regulation, search and AI visibility. Every finding below was measured on your own site, never estimated.`);
-    if(crit>0) bullets.push(`<b>The headline.</b> ${crit} critical ${plur(crit,'breach','breaches')} ${plur(crit,'is','are')} live on your site right now${hasMoney?(', carrying a median enforcement exposure of '+D.exposure):''}. Start with ${escH(String(top.title||'your highest-severity finding').toLowerCase())}.`);
-    else if (D.compliance_unassessed) bullets.push(D.render_mode==='knowledge' && (D.frameworksBinding||0)>0 ? `<b>The headline.</b> ${D.frameworksBinding} statutory frameworks bind your firm on registration facts alone, mapped below with regulator and obligation. No breach is claimed because your live pages resisted a deep read this scan; the map is the floor, the re-scan finds what sits on top of it.` : `<b>The headline.</b> Your live site blocked a deep compliance read this scan, so the regulatory checks below could not be completed and no clean bill of health is implied. The ranking, authority and AI-visibility findings were still measured on your site and stand. A re-scan with a rendered-DOM read completes the compliance assessment.`);
-    else bullets.push(`<b>The headline.</b> No critical statutory breach surfaced this scan. The gaps below are costing you rankings, buyers and AI visibility, not fines.`);
-    bullets.push(`<b>Where you stand.</b> ${D.frameworksAssessed} framework${D.frameworksAssessed!==1?'s':''} legally bind${D.frameworksAssessed===1?'s':''} you${sov?(', AI names you in '+sov+' of the buyer queries probed'):''}${rivals>0?(', and '+rivals+' '+plur(rivals,'rival')+' '+plur(rivals,'is','are')+' ranked ahead of you'):''}.`);
-    bullets.push(`<b>How to read it.</b> Open any of the six sections below. Each box opens in place, with the live evidence on the left and the exact Tamazia fix on the right.`);
-    bullets.push(`<b>Keep it current.</b> Re-run this report every month so a new breach is caught the day it appears, before enforcement or a competitor moves first.`);
-    return `<div class="verdict">
-      <div><span class="eyebrow">The verdict</span>
-        <h2>${D.score} / 100 · ${D.grade}${hasMoney?`, with a median enforcement exposure of <span class="vexp">${D.exposure}</span> across the ${D.counts.total} ${plur(D.counts.total,'breach','breaches')} evidenced on your live site.`:`, the gaps below are costing you rankings, buyers and AI visibility right now.`}</h2>
-        <ul class="verdict-bullets">${bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
-        ${f.length?`<div class="vfix-head">Your three highest-priority breaches, fix these first</div>`:''}
-        <div class="vfixes">${f.slice(0,3).map((x,i)=>`<button class="vfix" data-finding="fx-${i+1}"><span class="n">${i+1}</span><span class="t">${escH(x.title)}</span><span class="e">${x.exp}</span></button>`).join('')}</div>
-      </div></div>`;
+    bullets.push('<b>'+escH(C.labelWhat)+'</b> '+escH(C.verdictWhat(company)));
+    if(REG.rules>0) bullets.push('<b>'+escH(C.labelHeadline)+'</b> '+escH(C.verdictHeadline(REG.rules)));
+    else if(D.compliance_unassessed) bullets.push('<b>'+escH(C.labelHeadline)+'</b> '+escH(C.verdictBlocked));
+    else bullets.push('<b>'+escH(C.labelHeadline)+'</b> '+escH(C.verdictClean));
+    bullets.push('<b>'+escH(C.labelStand)+'</b> '+escH(C.verdictStand(bind)));
+    // N3 · the rule count leads; the raw element instances are an explicit sub-line, never
+    // a second contradictory total.
+    const totalFindings=issuesTotal();
+    const sub=(REG.instances>REG.rules || totalFindings>REG.rules)
+      ? '<div class="capt">'+escH(C.instanceLine(REG.rules,REG.instances,totalFindings))+'</div>' : '';
+    // CONF-211 · a score computed from zero assessed dimensions is not a score.
+    // CONF-013 · ONE string names this figure, here and in the value band.
+    // CONF-210 · a clean scan must not point the reader at "the gaps below".
+    const scorePart=numOr(D.score,0)+' / 100 · '+escH(txt(D.grade));
+    let head;
+    if(!SCORED) head=escH(C.notScoredLine)+' '+escH(C.notScoredWhy);
+    else if(hasMoney) head=scorePart+'. '+escH(C.regMedian)+' <span class="vexp">'+escH(expStr)+'</span> across '+REG.rules+' '+plur(REG.rules,'breach','breaches')+' evidenced on your live site.';
+    else head=scorePart+'. '+escH(REG.rules>0?C.verdictGapsLine:C.verdictNoGaps);
+    return '<div class="verdict"><div><span class="eyebrow">'+escH(C.verdictEyebrow)+'</span>'
+      +'<h2>'+head+'</h2>'+sub
+      +'<ul class="verdict-bullets">'+bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul>'
+      +'<p class="verdict-foot capt">'+escH(C.verdictRead)+' '+escH(C.verdictKeep)+'</p>'
+      +'</div></div>';
   }
 
   /* Founder-session yellow band removed (founder request 2026-07-20). The recommended-tier
      booking CTA remains on the rail (.rail-cta data-book="package") and in the Plan pane, so
      Drawer/Commerce wiring is unaffected. No .fsx-* / .cta-blindsend markup is emitted anywhere. */
 
-  /* ---------------- PSI box (mobile|desktop) — rendered on the FIRST view, under the scorecard ---------------- */
+  /* ---------------- S2 · PageSpeed: desktop AND mobile, side by side ---------------- */
   function psiBlock(){
-    if(D.seo && D.seo.psiStrats){
-      const av=['mobile','desktop'].filter(s=>D.seo.psiStrats[s]);
-      return `<div class="subhead" style="margin:14px 0 10px"><span class="nt">↳</span><h3>Google PageSpeed, measured live on your DOM${av.length>1?', desktop and mobile':''}.</h3></div>
-      ${av.length>1?`<div class="psi-toggle" role="tablist">${av.map(st=>`<button class="psi-tab${st===av[0]?' active':''}" data-strat="${st}" type="button" role="tab">${st==='mobile'?'Mobile':'Desktop'}</button>`).join('')}</div>`:''}
-      ${av.map((st,i)=>{const S=D.seo.psiStrats[st];const fail=(S.cwv||[]).filter(c=>c.st==='fail').length;return `<div class="psi-strat${i===0?' active':''}" data-strat="${st}">
-        <div class="grid g2">
-          <div class="card pad"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live &middot; ${st}</div></div>${CH.psiDialRow(S.dials)}</div>
-          <div class="card pad"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${st} &middot; failing ${fail} of ${(S.cwv||[]).length}</div></div>${CH.cwvMeterRow(S.cwv)}</div>
-        </div>
-        <div class="card pad" style="margin-top:10px"><div class="card-h"><div class="t">Failing audits on your live DOM</div><div class="meta">${st} &middot; ${(S.audits||[]).length} found &middot; hover the fix</div></div>${CH.psiAuditRow(S.audits,st)}</div>
-      </div>`;}).join('')}`;
-    }
-    // single-strategy / not-assessed fallback (never blank)
-    const psi=(D.seo&&D.seo.psi)||{}; const psiAvail=psi.performance!=null;
-    return `<div class="subhead" style="margin:14px 0 10px"><span class="nt">↳</span><h3>Google PageSpeed, measured live on your site.</h3></div>
-      <div class="grid g2">
-        <div class="card pad"><div class="card-h"><div class="t">PageSpeed Insights</div><div class="meta">live · mobile</div></div>${CH.psiDials()}</div>
-        <div class="card pad"><div class="card-h"><div class="t">Core Web Vitals</div><div class="meta">${psiAvail?'real-user':'not assessed'}</div></div>${CH.cwvMeters()}</div>
-      </div>`;
+    const S=(D.seo&&D.seo.psiStrats)||null;
+    const av=S?['mobile','desktop'].filter(s=>S[s]):[];
+    // G9 / CONF-162 · the heading may only claim the measurement its body carries.
+    const headText = av.length ? C.psiHead : C.psiHeadNA;
+    const head='<div class="subhead" style="margin:14px 0 10px"><span class="nt">↳</span><h3>'+escH(headText)+'</h3></div>';
+    // N1 · absent means "Not assessed on this scan", never a red zero and never "Perf null".
+    if(!av.length) return head+naLine(C.psiNA);
+    const pair=av.map(function(st){
+      const s=S[st]||{}; const cwv=(s.cwv||[]);
+      // G3 / CONF-091 / 092 · the failing COUNT is computed from the same value-versus-target
+      // comparison the reader can see in the chips below it.
+      const fail=CH.cwvFailCount(cwv);
+      return '<div class="psi-col">'
+        +'<div class="card pad"><div class="card-h"><div class="t">'+escH(st==='mobile'?C.psiMobile:C.psiDesktop)+'</div><div class="meta">PageSpeed Insights · live</div></div>'+CH.psiDialRow(s.dials)+'</div>'
+        +'<div class="card pad"><div class="card-h"><div class="t">'+escH(C.cwvHead)+'</div><div class="meta">'+escH(cwv.length?C.cwvFailing(fail,cwv.length):C.notAssessedChip)+'</div></div>'
+        +(cwv.length?CH.cwvMeterRow(cwv):naLine(C.psiNA))+'</div>'
+        +'</div>';
+    }).join('');
+    const audits=av.map(function(st){
+      const a=((S[st]||{}).audits)||[];
+      if(!a.length) return '';
+      return '<div class="card pad mt-10"><div class="card-h"><div class="t">'+escH(C.psiAuditsHead)+'</div>'
+        +'<div class="meta">'+escH(st)+' · '+a.length+' found</div></div>'+CH.psiAuditRow(a,st)+'</div>';
+    }).join('');
+    return head+'<div class="psi-pair">'+pair+'</div>'+audits;
   }
 
-  /* ---------------- HERO, the charts, above the collapsed boxes ---------------- */
+  /* ---------------- HERO charts ----------------
+     A3 · the risk heatmap is removed at every layer. R2 · the waterfall moved into the
+     Regulatory pane. What is left is the scorecard and the AI root-cause chain. */
   function heroCharts(){
+    const chain=CH.causalChain();
     return `<section class="hero-charts">
-      <div class="subhead" style="margin:2px 0 10px"><span class="nt">↳</span><h3>Every metric behind your score, visualised.</h3></div>
-      <div class="card pad">${CH.dimCardGrid()}</div>
-      ${psiBlock()}
-      <div class="grid g2" style="margin-top:12px">
-        <div class="card pad"><div class="card-h"><div class="t">${(D._meta&&D._meta.exposureN>0)?'How your '+D.exposure+' exposure is really calculated':'Exposure breakdown'}</div><div class="meta">not just a sum of ceilings</div></div>${CH.waterfall()||'<div class="capt" style="margin:0">No statutory exposure confirmed this scan, the gaps below are ranking and AI-visibility costs, not fines.</div>'}</div>
-        <div class="card pad"><div class="card-h"><div class="t">Why AI can’t see ${escH(D.meta.company)}</div><div class="meta">root-cause chain</div></div>${CH.causalChain()||'<div class="capt" style="margin:0">Your identity signals are largely present, the work is to defend and deepen them.</div>'}</div>
-      </div>
+      <div class="subhead" style="margin:2px 0 10px"><span class="nt">↳</span><h3>${escH(C.ovMetrics)}</h3></div>
+      <div class="card pad">${CH.dimCardGrid({competitors:COUNTS.competitors.assessed, seo:SEO_ASSESSED, geo:GEO_ASSESSED})}</div>
+      <div class="card pad mt-12"><div class="card-h"><div class="t">${escH(C.ovCausal(txt(D.meta&&D.meta.company)||'your firm'))}</div><div class="meta">root-cause chain</div></div>${chain||naLine(C.ovCausalOk)}</div>
     </section>`;
   }
 
   /* ---------------- MOUNT, command deck: 6 collapsed pillars ---------------- */
   const app = document.getElementById('app');
-  const SECT=[['overview','Overview'],['seo','SEO &amp; Technical'],['geo','AI &amp; GEO'],['regulatory','Regulatory'],['competitors','Competitors'],['plan','Plan &amp; Pricing']];
+  // G1 · the pillar header reads the SAME string as the nav row that opens it.
+  const SECT=[['overview',S.overview],['seo',S.seo],['geo',S.geo],['regulatory',S.regulatory],['competitors',S.competitors],['plan',S.plan]];
   const chip=(t,c)=>`<span class="pkpi ${c||''}">${t}</span>`;
-  const maxDr=Math.max(0,...(D.competitors.ladder||[]).map(c=>c.dr||0));
-  // DR chip: only show "vs N" when rival DR is actually known (adapter sets drHidden when <2 rivals have a DR);
-  // never render "DR X vs 0" or "DR — vs 0".
-  const drChip=(()=>{const y=((D.competitors.rows||[])[0]||{}).dr; if(y==null||y==='—'||y===''||y===', ')return ''; return D.competitors.drHidden?chip('DR '+y):chip('DR '+y+' vs '+maxDr,'red');})();
+  const maxDr=Math.max(0,...((D.competitors&&D.competitors.ladder)||[]).map(c=>numOr(c&&c.dr,0)));
+  // C1 · a DR chip renders only from a REAL rival DR. "DR X vs 0" is banned.
+  // CONF-008 / 138 · "DR" is expanded; the abbreviation is never a chip's first appearance.
+  const drChip=(function(){
+    if(!COUNTS.competitors.assessed) return '';
+    const y=((D.competitors.rows||[])[0]||{}).dr;
+    if(!isNum(y)) return '';
+    return D.competitors.drHidden ? chip(escH(C.drChipSolo(y))) : chip(escH(C.drChip(y,maxDr)),'red');
+  })();
+  // S1 · the header chip renders a value or "Not assessed". "Perf null" cannot happen.
+  // CONF-093 · the strategy is named, so a mobile figure cannot be read as the desktop one.
+  // CONF-166 · when it is absent the chip says WHICH signal is unassessed.
+  const perfChip=(function(){
+    const p=(D.seo&&D.seo.psi)?D.seo.psi.performance:null;
+    if(!isNum(p)) return chip(escH(C.perfChipNA));
+    const st=(D.seo&&D.seo.psiStrats)||null;
+    const dk=st&&st.desktop&&st.desktop.dials?st.desktop.dials.performance:null;
+    return chip('Perf '+Math.round(+p)+' mobile'+(isNum(dk)?' · '+Math.round(+dk)+' desktop':''));
+  })();
+  // CONF-047 · a rank position is "top 10", never "page one" (which collides with "Page" = URL).
+  const kwChip=(function(){
+    const ks=(D.seo&&D.seo.keywordSummary)||{};
+    const t=numOr(ks.totalTracked,0);
+    return (t>0 && CH.usableKeywords().length) ? chip(numOr(ks.onPageOne,0)+' of '+t+' in the top 10') : '';
+  })();
+  const failDims=((D.dims||[]).filter(d=>d&&d.st==='fail')).length;
+  const totalDims=((D.dims||[]).length)||10;
+  // CONF-075 · the pillar chip and Sprint II's "All M findings on this report, closed." now read
+  // the SAME total. They disagreed on every fixture (DEN 4 vs 56, SM 4 vs 59, THA 1 vs 15).
+  const planFixChip=(function(){ const n=issuesTotal(); return n+' '+plur(n,'finding')+' to fix'; })();
   const SUMM={
-    overview:{ico:'◆',nm:'Diagnostics &amp; scorecard',kpis:chip(D.score+'/100')+chip(D.grade,'red')+chip(((D.dims||[]).filter(d=>d.st==='fail').length)+' '+plur((D.dims||[]).filter(d=>d.st==='fail').length,'dim')+' failing')},
-    regulatory:{ico:'§',nm:'Regulatory exposure',kpis:chip(D.counts.critical+' critical','red')+(D.exposureFull>0?chip(D.exposure,'red'):'')+chip(D.frameworksAssessed+' frameworks bind')},
-    seo:{ico:'⌕',nm:'SEO &amp; technical',kpis:chip('Perf '+D.seo.psi.performance)+chip(D.seo.onpage.length+' '+plur(D.seo.onpage.length,'issue'),'amber')+chip(D.seo.keywordSummary.onPageOne+'/'+D.seo.keywordSummary.totalTracked+' page-one')},
-    geo:{ico:'❖',nm:'AI &amp; GEO visibility',kpis:chip('SoV '+D.geo.shareOfVoice,'red')+chip(D.geo.aiKnows?'AI cites you':'AI can’t cite you','red')+chip('Entity '+D.geo.entityReadiness)},
-    competitors:{ico:'⤧',nm:'Competitors',kpis:chip(Math.max(0,(D.competitors.rows||[]).length-1)+' '+plur(Math.max(0,(D.competitors.rows||[]).length-1),'rival')+' ahead')+drChip},
-    plan:{ico:'✦',nm:'Plan &amp; pricing',kpis:chip('From '+fmtMoney(PRICING_TIERS_RENDER[0].from)+'/mo')+chip(D.counts.critical+' to fix')},
+    overview:{ico:'◆',nm:S.overview,kpis:(SCORED?chip(numOr(D.score,0)+'/100')+chip(escH(txt(D.grade)),'red')+chip(escH(C.dimsChip(failDims,totalDims))):chip(escH(C.notScoredChip)))},
+    regulatory:{ico:'§',nm:S.regulatory,kpis:(REG.sev.crit?chip(REG.sev.crit+' critical','red'):'')+(hasValue(txt(D.exposure))?chip(escH(txt(D.exposure)),'red'):'')+chip(escH(COUNTS.regulatory.chip))},
+    seo:{ico:'⌕',nm:S.seo,kpis:perfChip+chip(escH(COUNTS.seo.chip),'amber')+kwChip},
+    geo:{ico:'❖',nm:S.geo,kpis:(GEO_ASSESSED?chip(escH(C.sovChip(txt(D.geo&&D.geo.shareOfVoice)||'0')),'red'):'')+chip(escH(COUNTS.geo.chip))+(GEO_ASSESSED?chip(escH(C.entityChip(numOr(D.geo&&D.geo.entityReadiness,0)))):'')},
+    competitors:{ico:'⤧',nm:S.competitors,kpis:chip(escH(COUNTS.competitors.chip))+drChip},
+    plan:{ico:'✦',nm:S.plan,kpis:chip('From '+fmtMoney(PRICING_TIERS_RENDER[0].from)+' a month')+chip(escH(planFixChip))},
   };
   app.innerHTML = rail() + `<main class="content">
     ${verdict()}
-    ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"${k==='overview'?' open':''}><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${SUMM[k].nm}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
+    ${trioBlock()}
+    ${SECT.map(([k])=>`<details class="pillar" id="sec-${k}" data-section="${k}"><summary><span class="pico">${SUMM[k].ico}</span><span class="pname">${escH(SUMM[k].nm)}</span><span class="pkpis">${SUMM[k].kpis}</span><span class="pchev">▸</span></summary><div class="pbody">${P[k]()}</div></details>`).join('')}
   </main>`;
 
   /* ---------------- NAV, one pillar open at a time ---------------- */
@@ -1121,12 +1645,6 @@
   // Scorecard dimcards ("Every metric we judged you on") jump to their pillar.
   app.addEventListener('click',e=>{ const dc=e.target.closest('.dimcard[data-pane]'); if(dc){ e.preventDefault(); openPillar(dc.dataset.pane); } });
   app.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ const dc=e.target.closest('.dimcard[data-pane]'); if(dc){ e.preventDefault(); openPillar(dc.dataset.pane); } } });
-  // PSI desktop|mobile toggle: switch the active strategy card-set within the SEO pane.
-  app.addEventListener('click',function(e){ const t=e.target.closest('.psi-tab'); if(!t) return; e.preventDefault();
-    const strat=t.dataset.strat, scope=t.closest('.pbody')||document;
-    scope.querySelectorAll('.psi-tab').forEach(b=>b.classList.toggle('active', b===t));
-    scope.querySelectorAll('.psi-strat').forEach(s=>s.classList.toggle('active', s.dataset.strat===strat));
-  });
 
   /* ---------------- OPEN-FROM-HEADING for every box (robust) ---------------- */
   // Pin a box's heading (its <summary>) just under the top of the viewport when it opens.
@@ -1244,16 +1762,23 @@
         document.querySelectorAll('.cmoney').forEach(el=>{ el.textContent=fmtMoney(+el.dataset.gbp||0); }); } return; }
     // Route 2 — tier card "See all inclusions" reveal.
     const t3=e.target.closest('.t3-toggle');
-    if(t3){ const card=t3.closest('.tier3'); const more=card.querySelector('.t3-more'); const open=more.hidden; more.hidden=!open; t3.textContent=open?'Show less':'See all inclusions'; card.classList.toggle('lx-open',open); return; }
-    // Route 3 — recurring Exposure Report cover. The 'compliance' value keeps its EXACT legacy contract
-    // (startAddon('Compliance Monitoring', …, {trial}) → /api/stripe/checkout → webhook flips audit_pages.unlocked).
-    // 'exposure_cover' (the cold-page ongoing-cover CTA) routes to the same checkout/intake fallback. Do NOT
-    // change the 'compliance' branch — the freemium unlock depends on it.
+    if(t3){ const card=t3.closest('.tier3'); const more=card.querySelector('.t3-more'); const open=more.hidden; more.hidden=!open; t3.textContent=open?C.ctaShowLess:C.ctaShowMore; card.classList.toggle('lx-open',open); return; }
+    // Q4 · the six-month engagement toggle, mirroring the live site's pilot switch: it reveals
+    // the struck standard fee and what the six-month term saves. Both figures are .cmoney, so
+    // the currency switcher re-formats them without a second code path.
+    const pt=e.target.closest('[data-pilot]');
+    if(pt){ const on=pt.getAttribute('aria-pressed')!=='true';
+      pt.setAttribute('aria-pressed',on?'true':'false');
+      document.querySelectorAll('.tiers3').forEach(g=>g.classList.toggle('show-saves',on));
+      return; }
+    // Regulatory Watch, the recurring monitoring tier. The checkout contract is unchanged
+    // (startAddon('Compliance Monitoring', …, {trial}) → /api/stripe/checkout → webhook flips
+    // audit_pages.unlocked), but Q4 retired the one-time unlock price, so the ONLY figure
+    // that can reach checkout is the monthly cover, carrying the free-month count as trial.
+    // A path that could post the retired £495 no longer exists.
     const sub=e.target.closest('[data-subscribe]');
     if(sub){ e.preventDefault();
-      const kind=sub.dataset.subscribe;
-      if(kind==='exposure_cover'){ Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.monthlyCover), sub, { trial:0 }); }
-      else { Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.unlock), sub, { trial:+sub.dataset.trial||0 }); }
+      Commerce.startAddon('Compliance Monitoring', gbpFmt(PRICES.exposureReport.monthlyCover), sub, { trial:+sub.dataset.trial||0 });
       return; }
   });
 
@@ -1302,8 +1827,8 @@
     const home=document.createComment('plan-home'); plan.parentNode.insertBefore(home, plan);
     const ov=document.createElement('div'); ov.className='pdrawer-ov'; ov.setAttribute('aria-hidden','true');
     const panel=document.createElement('aside'); panel.className='pdrawer'; panel.setAttribute('role','dialog');
-    panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-label','Plans and pricing'); panel.setAttribute('aria-hidden','true');
-    panel.innerHTML='<div class="pdrawer-bar"><span class="pdrawer-t">Plans &amp; pricing</span><button class="pdrawer-x" aria-label="Close plans">×</button></div><div class="pdrawer-body"></div>';
+    panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-label',S.plan); panel.setAttribute('aria-hidden','true');
+    panel.innerHTML='<div class="pdrawer-bar"><span class="pdrawer-t">'+escH(S.plan)+'</span><button class="pdrawer-x" aria-label="Close '+escH(S.plan)+'">×</button></div><div class="pdrawer-body"></div>';
     // both overlay + panel sit INSIDE #app so the app-level delegated click/keydown handlers still receive events.
     app.appendChild(ov); app.appendChild(panel);
     const body=panel.querySelector('.pdrawer-body');
@@ -1334,23 +1859,10 @@
     ov.addEventListener('click',doClose);
     panel.querySelector('.pdrawer-x').addEventListener('click',doClose);
     document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&open) doClose(); });
-    // sticky "Plans" pill (bottom-left; distinct from the bottom-right FAB + Notes toggle).
-    const pill=document.createElement('button'); pill.className='plans-pill'; pill.type='button';
-    pill.innerHTML='<span class="pp-ic">✦</span>Plans'; pill.setAttribute('aria-label','Open plans and pricing');
-    pill.addEventListener('click',()=>doOpen()); document.body.appendChild(pill);
+    // A4 · the "+PLANS" pill is removed. Plan access is the rail nav row and pillar 6.
     return { open:doOpen, close:doClose, isOpen };
   })();
 
-  /* ---------------- FLOATING CTA, "Fix these now!" opens the pricing drawer ---------------- */
-  (function floatingCta(){
-    const b=document.createElement('button');
-    b.className='fix-fab'; b.type='button';
-    b.innerHTML='<span class="ff-dot"></span>Fix these now!';
-    // E3: open the in-page drawer at the Fix Sprint, no navigation. Falls back to the in-page pane if the drawer
-    // is unavailable, so the control is never dead.
-    b.addEventListener('click',()=>{ if(Drawer.isOpen&&Drawer.open){ Drawer.open('.route1'); } else { openPillar('plan'); requestAnimationFrame(()=>{ const fx=document.querySelector('#sec-plan .route1')||document.querySelector('#sec-plan .route'); if(fx) scrollHeadingTop(fx); }); } });
-    document.body.appendChild(b);
-  })();
 
 
   /* ============================================================
@@ -1373,7 +1885,7 @@
     function intentLabel(intent){
       if(intent==='one_time_fix') return 'One-time Fix Sprint';
       if(TIER_INTENTS[intent]) return intent.charAt(0).toUpperCase()+intent.slice(1)+' mandate';
-      return String(intent||'')+' add-on'; // add-on display name
+      return String(intent||''); // Independent Solution display name
     }
     function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
@@ -1404,10 +1916,10 @@
       const topFinding=((D.fixes||[])[0]||{}).title||'';
       const m=ensureModal(); open();
       const turnstileSite = (window.TURNSTILE_SITE_KEY||'');
-      const eyebrow=isAddon?(esc(opts.addon)+' · add-on'):esc(intentLabel(intent));
+      const eyebrow=isAddon?(esc(opts.addon)+' · Independent Solution'):esc(intentLabel(intent));
       const lede=isAddon
         ? 'Online checkout for this solution is being switched on. Leave your details and pick a time, and Tamazia will set it up with you on the call.'
-        : ('30 seconds. This scopes the call so no time is wasted on discovery. '+(intent==='one_time_fix'?'A one-time, fixed-scope sprint, not a retainer.':'Your tier and strongest finding are carried into the conversation.'));
+        : ('30 seconds. This scopes the call so no time is wasted on discovery. '+(intent==='one_time_fix'?'A one-time, fixed-scope sprint, not a mandate.':'Your tier and strongest finding are carried into the conversation.'));
       m.querySelector('.cmx-body').innerHTML=`
         <div class="cmx-head">
           <span class="cmx-eyebrow">${eyebrow}</span>
@@ -1444,7 +1956,7 @@
           ${turnstileSite?`<div class="cf-turnstile" data-sitekey="${esc(turnstileSite)}" data-theme="light"></div>`:''}
           <div class="cmx-err" role="alert" hidden></div>
           <div class="cmx-actions">
-            <button type="submit" class="btn solid cmx-submit">Continue to the calendar ↗</button>
+            <button type="submit" class="btn solid cmx-submit">${esc(C.ctaIntake)}</button>
           </div>
           <p class="cmx-fine">Submitting records this enquiry with Tamazia and opens the founder's calendar. No payment is taken here.</p>
         </form>`;
@@ -1575,7 +2087,7 @@
         if(r.ok && res && res.ok && res.url){ window.location.assign(res.url); return; }
         // Explicit, expected fallback (no Stripe key / price): route to the intake modal.
         if(res && res.fallback){
-          addonFallback(addon, btn, label, 'Online checkout for this add-on is being switched on. Leave your details and the founder will set it up with you.');
+          addonFallback(addon, btn, label, 'Online checkout for this solution is being switched on. Leave your details and the founder will set it up with you.');
           return;
         }
         throw new Error((res&&res.error)||('http_'+r.status));

@@ -1,5 +1,6 @@
 // E04 / E05 / E06 / E11 / E27 + the "400+" claim.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { payloadToD } from '../functions/audit/_adapter.js';
 
 const base = {
@@ -18,22 +19,28 @@ const t = (name, fn) => { n++; try { fn(); console.log('ok ' + n + ' ' + name); 
 const P1 = [{ severity: 'P0', bucket: 'compliance', framework_short: 'UK_GDPR', fact: 'a', enforce_typical_low_gbp: 1e5, enforce_typical_high_gbp: 5e6 }];
 
 // ---------- E27 / E04: our own consistency-fixer was fabricating the claim ----------
-t('E27: a figure attributed to a NAMED regulator is never rewritten to the report aggregate', () => {
+// W3 CLOSED THIS AT THE SOURCE. `grep -c "D.exec"` over public/audit/audit-app.js + audit-charts.js returns
+// 0: the LLM exec summary was carried the whole way through the adapter and then never rendered. It is no
+// longer emitted, and scrubMoney() — the "consistency fixer" that turned a correct "SRA penalty of up to
+// £25,000" into the £2.6M report AGGREGATE — is deleted with it. The E27/E04 doctrine is now enforced by
+// ABSENCE, which is the only version of it that cannot regress: an LLM sentence that never reaches the page
+// cannot attribute an aggregate to a named regulator.
+t('E27/E04: no LLM exec summary reaches the render, so none can misattribute a figure', () => {
   const d = D({ pointers: P1, binding: { UK_GDPR: 'statute' },
     exec_summary: 'Failure to comply with SRA regulations could result in a statutory penalty of up to £25,000.' });
-  const exec = String(d.exec || d.execSummary || '');
-  assert.ok(!/SRA[^.]*[£$€]\s?[\d,]/.test(exec), 'a monetary figure is still asserted against the SRA: ' + exec);
-  assert.match(exec, /SRA/, 'the qualitative statement must survive');
+  assert.equal(d.exec, undefined, 'the exec emit is deleted (W3)');
+  assert.ok(!/statutory penalty of up to/.test(JSON.stringify(d)), 'the raw exec_summary leaked into D');
 });
 t('E27: the SRA can never be made to carry a multi-million figure', () => {
   const d = D({ pointers: P1, binding: { UK_GDPR: 'statute' },
     exec_summary: 'Non-compliance with SRA regulations could result in a penalty of up to £2,600,000.' });
-  assert.ok(!/[£$€]\s?2[.,]?6/.test(String(d.exec || d.execSummary || '')), 'the aggregate was attributed to the SRA');
+  assert.ok(!/SRA[^"]*[£$€]\s?[\d,]/.test(JSON.stringify(d)), 'a monetary figure is asserted against the SRA');
 });
-t('E04: an aggregate with NO named body is still normalised to the canonical figure', () => {
-  const d = D({ pointers: P1, binding: { UK_GDPR: 'statute' },
-    exec_summary: 'The median enforcement exposure evidenced across this report is £2,300,000.' });
-  assert.match(String(d.exec || d.execSummary || ''), /[£$€]/, 'a genuine aggregate must still print');
+t('E04: the money scrubber that manufactured the false claim is gone, not merely tuned', () => {
+  const ADAPTER = readFileSync(new URL('../functions/audit/_adapter.js', import.meta.url), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.ok(!/function\s+scrubMoney/.test(ADAPTER), 'scrubMoney is back in _adapter.js');
+  assert.ok(!/execFallback/.test(ADAPTER), 'execFallback is back in _adapter.js');
 });
 
 // ---------- E05 / E29: two tallies, no stated scope ----------
@@ -75,16 +82,18 @@ t('E11: a firm that IS cited still scores well (the fix is not a blanket penalty
 });
 
 // ---------- the 400+ claim ----------
-t('THE CLAIM: we screen RULES. We must never claim 400+ FRAMEWORKS (we hold 294)', () => {
+t('THE CLAIM: we screen OBLIGATIONS. We must never claim 400+ FRAMEWORKS (we hold 294)', () => {
   const d = D({ pointers: P1, binding: { UK_GDPR: 'statute' } });
   const s = JSON.stringify(d);
   assert.ok(!/400\+?\s*frameworks/i.test(s), 'a false framework count would render: CAP 3.7 binds us too');
-  assert.ok(!/frameworks screened/i.test(s), 'frameworks do not get "screened"; rules do');
-  assert.match(String(d.screenedLabel), /compliance rules screened/i);
+  assert.ok(!/frameworks screened/i.test(s), 'frameworks do not get "screened"; obligations do');
+  // R5: a register total ALONE is not a screening claim. All three units, or no number at all.
+  assert.ok(!/\d/.test(String(d.screenedLabel)), 'one number out of three claims nothing: ' + d.screenedLabel);
 });
 t('THE CLAIM: the screened figure is READ from the register, never invented', () => {
-  assert.match(String(D({ pointers: P1, binding: { UK_GDPR: 'statute' } }).screenedLabel), /671/);
-  const none = D({ pointers: P1, binding: { UK_GDPR: 'statute' }, catalogue_rules: undefined });
+  const full = D({ pointers: P1, binding: { UK_GDPR: 'statute' }, rules_evaluated: 47 });
+  assert.match(String(full.screenedLabel), /671 obligations screened · \d+ frameworks bind you · 47 checked on your pages/);
+  const none = D({ pointers: P1, binding: { UK_GDPR: 'statute' }, catalogue_rules: undefined, rules_evaluated: 47 });
   assert.ok(!/\d/.test(String(none.screenedLabel)), 'with no register count we must claim no number: ' + none.screenedLabel);
 });
 
